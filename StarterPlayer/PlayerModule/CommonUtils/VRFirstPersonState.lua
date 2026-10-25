@@ -1,0 +1,1 @@
+return {inFirstPerson = false}
