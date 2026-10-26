@@ -5,6 +5,41 @@ tbl_upv_1.NAME_MAX = 28
 tbl_upv_1.NAME_MIN = 3
 tbl_upv_1.MAX_PLAYERS = 10
 tbl_upv_1.TEAM_SIZE = 3
+tbl_upv_1.MODES = {"3v3", "1v1"}
+tbl_upv_1.DEFAULT_MODE = "3v3"
+function tbl_upv_1.Mode(a1)
+    --[[
+      name: Mode
+      line: 31
+      upvalues:
+        tbl_upv_1 (copy, index: 1)
+    ]]
+    if a1 ~= "1v1" then
+        return tbl_upv_1.DEFAULT_MODE
+    end
+    return "1v1"
+end
+function tbl_upv_1.TeamSize(a1)
+    --[[
+      name: TeamSize
+      line: 36
+      upvalues:
+        tbl_upv_1 (copy, index: 1)
+    ]]
+    if tbl_upv_1.Mode(a1) ~= "1v1" then
+        return tbl_upv_1.TEAM_SIZE
+    end
+    return 1
+end
+function tbl_upv_1.ModeLabel(a1)
+    --[[
+      name: ModeLabel
+      line: 41
+      upvalues:
+        tbl_upv_1 (copy, index: 1)
+    ]]
+    return string.upper(tbl_upv_1.Mode(a1))
+end
 tbl_upv_1.LIST_MAX = 40
 tbl_upv_1.LIST_REFRESH = 5
 tbl_upv_1.NO_REWARDS = "Custom matches don't give rewards"
@@ -15,7 +50,7 @@ end
 function tbl_upv_1.CleanCode(a1)
     --[[
       name: CleanCode
-      line: 41
+      line: 64
       upvalues:
         tbl_upv_2 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -38,7 +73,7 @@ end
 function tbl_upv_1.ValidCode(a1)
     --[[
       name: ValidCode
-      line: 58
+      line: 81
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -51,7 +86,7 @@ end
 function tbl_upv_1.FormatCode(a1)
     --[[
       name: FormatCode
-      line: 67
+      line: 90
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -63,7 +98,7 @@ end
 function tbl_upv_1.CleanName(a1)
     --[[
       name: CleanName
-      line: 76
+      line: 99
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -85,7 +120,7 @@ end
 function tbl_upv_1.DefaultName(a1)
     --[[
       name: DefaultName
-      line: 95
+      line: 118
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -95,54 +130,53 @@ function tbl_upv_1.DefaultName(a1)
     end
     return v6
 end
-function tbl_upv_1.Deal(a1, a2)
+function tbl_upv_1.Deal(a1, a2, a3)
     --[[
       name: Deal
-      line: 105
+      line: 129
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
     local v7 = a2 or (Random.new())
+    local v8 = a3 or (tbl_upv_1.TEAM_SIZE)
     local tbl_4 = {{}, {}}
     local tbl_5 = {}
     local tbl_6 = {}
-    local v8 = nil
+    local v9 = nil
     for _, value_1 in a1 do
         local team_1 = value_1.team
         if team_1 == 1 or team_1 == 2 then
-            if #tbl_4[team_1] < tbl_upv_1.TEAM_SIZE then
-                v8 = tbl_4[team_1]
+            if #tbl_4[team_1] < v8 then
+                v9 = tbl_4[team_1]
             else
-                v8 = tbl_5
+                v9 = tbl_5
             end
-            local v9 = nil
-            table.insert(v8, v9.id)
+            table.insert(v9, value_1.id)
         end
         table.insert(tbl_6, value_1.id)
     end
     local tbl_7 = {}
-    local v10 = nil
     for key_2, value_2 in tbl_6 do
-        if key_2 <= ((tbl_upv_1.TEAM_SIZE * 2) - #tbl_4[1]) - #tbl_4[2] then
-            v10 = tbl_7
+        if key_2 <= ((v8 * 2) - #tbl_4[1]) - #tbl_4[2] then
+            v9 = tbl_7
         else
-            v10 = tbl_5
+            v9 = tbl_5
         end
-        table.insert(v10, value_2)
+        table.insert(v9, value_2)
     end
     for n_2 = #tbl_7, 2, -1 do
-        local v11 = v7:NextInteger(1, n_2)
-        local v12 = tbl_7[n_2]
-        tbl_7[n_2] = tbl_7[v11]
-        tbl_7[v11] = v12
+        local v10 = v7:NextInteger(1, n_2)
+        local v11 = tbl_7[n_2]
+        tbl_7[n_2] = tbl_7[v10]
+        tbl_7[v10] = v11
     end
     for _, value_3 in tbl_7 do
         if #tbl_4[2] < #tbl_4[1] then
-            v10 = tbl_4[2]
+            v9 = tbl_4[2]
         else
-            v10 = tbl_4[1]
+            v9 = tbl_4[1]
         end
-        table.insert(v10, value_3)
+        table.insert(v9, value_3)
     end
     return tbl_4[1], tbl_4[2], tbl_5
 end
