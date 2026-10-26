@@ -106,8 +106,7 @@ local function CreateWaypointTemplates()
     v11.Parent = v10
     return v1, v3, v7
 end
-local u13, u14
-local u15, u13, u14 = CreateWaypointTemplates()
+local u13, u14, u15 = CreateWaypointTemplates()
 local function getTrailDotParent()
     --[[
       name: getTrailDotParent
@@ -178,10 +177,10 @@ function tbl_upv_2.NewDisplayModel(a1, a2)
       name: NewDisplayModel
       line: 181
       upvalues:
-        u15 (ref,  index: 1)
+        u13 (ref,  index: 1)
         placePathWaypoint (copy, index: 2)
     ]]
-    local v19 = u15:Clone()
+    local v19 = u13:Clone()
     placePathWaypoint(v19, a2)
     return v19
 end
@@ -213,10 +212,10 @@ function tbl_upv_3.NewDisplayModel(a1, a2)
       name: NewDisplayModel
       line: 205
       upvalues:
-        u13 (ref,  index: 1)
+        u14 (ref,  index: 1)
         placePathWaypoint (copy, index: 2)
     ]]
-    local v21 = u13:Clone()
+    local v21 = u14:Clone()
     placePathWaypoint(v21, a2)
     return v21
 end
@@ -297,14 +296,14 @@ function tbl_upv_4.NewDisplayModel(a1, a2)
       name: NewDisplayModel
       line: 268
       upvalues:
-        u14 (ref,  index: 1)
+        u15 (ref,  index: 1)
         placePathWaypoint (copy, index: 2)
         u12 (copy, index: 3)
         u11 (copy, index: 4)
         Workspace_upv_1 (copy, index: 5)
         LocalPlayer_upv_1 (copy, index: 6)
     ]]
-    local v24 = u14:Clone()
+    local v24 = u15:Clone()
     placePathWaypoint(v24, a2)
     local v25 = nil
     if u12 then
@@ -595,13 +594,13 @@ function tbl_1.SetWaypointTexture(a1)
       line: 480
       upvalues:
         u1 (ref,  index: 1)
-        u15 (ref,  index: 2)
-        u13 (ref,  index: 3)
-        u14 (ref,  index: 4)
+        u13 (ref,  index: 2)
+        u14 (ref,  index: 3)
+        u15 (ref,  index: 4)
         CreateWaypointTemplates (copy, index: 5)
     ]]
     u1 = a1
-    u15, u13, u14 = CreateWaypointTemplates()
+    u13, u14, u15 = CreateWaypointTemplates()
 end
 function tbl_1.GetWaypointTexture()
     --[[
@@ -618,13 +617,13 @@ function tbl_1.SetWaypointRadius(a1)
       line: 489
       upvalues:
         u10 (ref,  index: 1)
-        u15 (ref,  index: 2)
-        u13 (ref,  index: 3)
-        u14 (ref,  index: 4)
+        u13 (ref,  index: 2)
+        u14 (ref,  index: 3)
+        u15 (ref,  index: 4)
         CreateWaypointTemplates (copy, index: 5)
     ]]
     u10 = Vector2.new(a1, a1)
-    u15, u13, u14 = CreateWaypointTemplates()
+    u13, u14, u15 = CreateWaypointTemplates()
 end
 function tbl_1.GetWaypointRadius()
     --[[
@@ -641,13 +640,13 @@ function tbl_1.SetEndWaypointTexture(a1)
       line: 498
       upvalues:
         u2 (ref,  index: 1)
-        u15 (ref,  index: 2)
-        u13 (ref,  index: 3)
-        u14 (ref,  index: 4)
+        u13 (ref,  index: 2)
+        u14 (ref,  index: 3)
+        u15 (ref,  index: 4)
         CreateWaypointTemplates (copy, index: 5)
     ]]
     u2 = a1
-    u15, u13, u14 = CreateWaypointTemplates()
+    u13, u14, u15 = CreateWaypointTemplates()
 end
 function tbl_1.GetEndWaypointTexture()
     --[[
@@ -664,13 +663,13 @@ function tbl_1.SetWaypointsAlwaysOnTop(a1)
       line: 507
       upvalues:
         u3 (ref,  index: 1)
-        u15 (ref,  index: 2)
-        u13 (ref,  index: 3)
-        u14 (ref,  index: 4)
+        u13 (ref,  index: 2)
+        u14 (ref,  index: 3)
+        u15 (ref,  index: 4)
         CreateWaypointTemplates (copy, index: 5)
     ]]
     u3 = a1
-    u15, u13, u14 = CreateWaypointTemplates()
+    u13, u14, u15 = CreateWaypointTemplates()
 end
 function tbl_1.GetWaypointsAlwaysOnTop()
     --[[
