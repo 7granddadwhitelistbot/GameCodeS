@@ -2001,9 +2001,9 @@ local function drawStreak(a1, a2)
                     clip_upv_1 (copy, index: 10)
                 ]]
                 if u27 then
-                    local v158, v159, v160, v161 = nil, nil, nil, nil
-                    local v162, v158, v163, v164, v165, v159, v160, v161, v166, v167, v168, v169 = BladeClips_upv_1.Eval(leftClip_upv_1, tbl_upv_15.leftFrom, a3, clipScale_upv_1, tbl_upv_15.restFrame, tbl_upv_15.leftFromVel):GetComponents()
-                    local v170 = CFrame.new(-v162, v158, v163, v164, -v165, -v159, -v160, v161, v166, -v167, v168, v169)
+                    local v158, v159, v160 = nil, nil, nil
+                    local v161, v158, v162, v163, v159, v164, v160, v165, v166, v167, v168, v169 = BladeClips_upv_1.Eval(leftClip_upv_1, tbl_upv_15.leftFrom, a3, clipScale_upv_1, tbl_upv_15.restFrame, tbl_upv_15.leftFromVel):GetComponents()
+                    local v170 = CFrame.new(-v161, v158, v162, v163, -v159, -v164, -v160, v165, v166, -v167, v168, v169)
                     local v171 = v170.Position + u25
                     local tipCanon_1 = a2.tipCanon
                     return Vector3.new(v171.X, v171.Y, v171.Z * a1) + (u26 * v170.Rotation):VectorToWorldSpace(Vector3.new(-tipCanon_1.X, tipCanon_1.Y, tipCanon_1.Z))
@@ -3291,9 +3291,8 @@ local function step(a1)
             else
                 v327 = v308
             end
-            local v336, v337, v338, v339, v340, v341, v342 = nil, nil, nil, nil, nil, nil, nil
-            local v343, v336, v337, v344, v338, v345, v339, v340, v341, v346, v342, v347 = v327:GetComponents()
-            local v348 = CFrame.new(-v343, v336, v337, v344, -v338, -v345, -v339, v340, v341, -v346, v342, v347)
+            local v336, v337, v338, v339, v340, v341, v342, v343, v344, v345, v346, v347 = v327:GetComponents()
+            local v348 = CFrame.new(-v336, v337, v338, v339, -v340, -v341, -v342, v343, v344, -v345, v346, v347)
             tbl_upv_15.leftFrame = CFrame.new((v348.Position + v306) + Vector3.new(0, 0, tbl_upv_15.wallPush)) * CFrame.fromEulerAnglesYXZ(v307.X, v307.Y, v307.Z) * v348.Rotation
         else
             tbl_upv_15.leftFrame = nil
