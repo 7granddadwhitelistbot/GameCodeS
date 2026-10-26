@@ -176,7 +176,8 @@ function tbl_1.Init(a1)
     local u28 = UI_upv_1.new("TextBox", tbl_upv_6)
     UI_upv_1.Stroke(Colors_upv_1.Accent, 1.5, 0.3).Parent = u28
     local u29 = row("PublicRow", 2)
-    local tbl_upv_6, u30, u31 = rowText(u29, "PUBLIC")
+    local u30, u31
+    tbl_upv_6, u30, u31 = rowText(u29, "PUBLIC")
     local u32 = UI_upv_1.Switch({Width = 58, AnchorPoint = Vector2.new(1, 0.5), Parent = u29})
     local u33 = row("BotsRow", 3)
     local u34, u35

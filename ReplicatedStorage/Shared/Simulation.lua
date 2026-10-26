@@ -1922,8 +1922,8 @@ local function stepChar(a1, a2)
             v101 = false
             if v102 then
                 if v98 then
-                    local v143 = v83 or v108 > 0
-                    v101 = v143
+                    v121 = v83 or v108 > 0
+                    v101 = v121
                 elseif s_5.SJumped ~= true and v90 <= u7 and AssemblyLinearVelocity_3.Y <= 1 and v108 > 0 then
                     s_5.SJumped = true
                     v108 = 0

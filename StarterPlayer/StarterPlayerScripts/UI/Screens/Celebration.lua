@@ -191,7 +191,6 @@ function tbl_1.Init(a1)
     u28.Parent = u27
     local u29 = UI_upv_1.new("Frame", {Name = "Score", AnchorPoint = Vector2.new(0.5, 0), Size = UDim2.fromOffset(300, 80), Parent = u10})
     local u30 = UI_upv_1.new("UIScale", {Parent = u29})
-    local u31, u32
     local function digitSlot(a14)
         --[[
           name: digitSlot
@@ -202,8 +201,8 @@ function tbl_1.Init(a1)
             u1 (copy, index: 3)
             Colors_upv_1 (copy, index: 4)
         ]]
-        local u33 = UI_upv_1.new("Frame", {ZIndex = 6, ClipsDescendants = true, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, a14, 0.5, 0), Size = UDim2.fromOffset(90, 80), Parent = u29})
-        local v10 = UI_upv_1.new("UIScale", {Parent = u33})
+        local u31 = UI_upv_1.new("Frame", {ZIndex = 6, ClipsDescendants = true, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, a14, 0.5, 0), Size = UDim2.fromOffset(90, 80), Parent = u29})
+        local v10 = UI_upv_1.new("UIScale", {Parent = u31})
         local function digit_1()
             --[[
               name: digit
@@ -212,15 +211,14 @@ function tbl_1.Init(a1)
                 UI_upv_1 (copy, index: 1)
                 u1 (copy, index: 2)
                 Colors_upv_1 (copy, index: 3)
-                u33 (copy, index: 4)
+                u31 (copy, index: 4)
             ]]
-            return (UI_upv_1.new("TextLabel", {ZIndex = 6, Text = "0", TextSize = 72, Size = UDim2.fromScale(1, 1), FontFace = u1, TextColor3 = Colors_upv_1.Text, Parent = u33}))
+            return (UI_upv_1.new("TextLabel", {ZIndex = 6, Text = "0", TextSize = 72, Size = UDim2.fromScale(1, 1), FontFace = u1, TextColor3 = Colors_upv_1.Text, Parent = u31}))
         end
-        return u33, digit_1(), digit_1(), v10
+        return u31, digit_1(), digit_1(), v10
     end
-    local u34, u31, u32, u35 = digitSlot(-76)
-    local u36, u37, u38
-    local u39, u36, u37, u38 = digitSlot(76)
+    local u32, u33, u34, u35 = digitSlot(-76)
+    local u36, u37, u38, u39 = digitSlot(76)
     local u40 = UI_upv_1.new("Frame", {Name = "Dash", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(34, 6), BackgroundColor3 = Colors_upv_1.TextDim, ZIndex = 6, [1] = UI_upv_1.Corner(3), Parent = u29})
     local u41 = UI_upv_1.new("Frame", {Name = "Team", Visible = false, AnchorPoint = Vector2.new(0.5, 0), Size = UDim2.fromOffset(480, 170), Parent = u10})
     local tbl_upv_7 = {}
@@ -871,16 +869,16 @@ function tbl_1.Init(a1)
             u45 (copy, index: 59)
             u29 (copy, index: 60)
             u30 (copy, index: 61)
-            u31 (copy, index: 62)
-            u32 (copy, index: 63)
-            u36 (copy, index: 64)
-            u37 (copy, index: 65)
+            u33 (copy, index: 62)
+            u34 (copy, index: 63)
+            u37 (copy, index: 64)
+            u38 (copy, index: 65)
             u40 (copy, index: 66)
             rollDigit (copy, index: 67)
-            u34 (copy, index: 68)
+            u32 (copy, index: 68)
             u35 (copy, index: 69)
-            u39 (copy, index: 70)
-            u38 (copy, index: 71)
+            u36 (copy, index: 70)
+            u39 (copy, index: 71)
             u41 (copy, index: 72)
             tbl_upv_7 (copy, index: 73)
             u54 (copy, index: 74)
@@ -1785,17 +1783,17 @@ function tbl_1.Init(a1)
         local v82 = (u74 and (v41 + 0.24)) or (v42 + 0.38)
         u30.Scale = (a66 and 1.3) or 1
         u29.Position = UDim2.fromOffset(0, u94 + 16)
-        u31.Text = tostring(a69)
-        u31.Position = UDim2.new()
-        u31.TextColor3 = Colors_upv_1.Ally
-        u31.TextTransparency = 0
-        u32.Visible = false
-        u36.Text = tostring(a70)
-        u36.Position = UDim2.new()
-        u36.TextColor3 = Colors_upv_1.Enemy
-        u36.TextTransparency = 0
-        u37.Visible = false
-        for _, value_28 in {u31, u36} do
+        u33.Text = tostring(a69)
+        u33.Position = UDim2.new()
+        u33.TextColor3 = Colors_upv_1.Ally
+        u33.TextTransparency = 0
+        u34.Visible = false
+        u37.Text = tostring(a70)
+        u37.Position = UDim2.new()
+        u37.TextColor3 = Colors_upv_1.Enemy
+        u37.TextTransparency = 0
+        u38.Visible = false
+        for _, value_28 in {u33, u37} do
             value_28.TextTransparency = 1
             local tbl_85 = {TextTransparency = 0}
             local v83 = u3 * 0.3
@@ -1824,26 +1822,26 @@ function tbl_1.Init(a1)
                     a67 (copy, index: 3)
                     a69 (copy, index: 4)
                     rollDigit (copy, index: 5)
-                    u34 (copy, index: 6)
-                    u31 (copy, index: 7)
-                    u32 (copy, index: 8)
+                    u32 (copy, index: 6)
+                    u33 (copy, index: 7)
+                    u34 (copy, index: 8)
                     u35 (copy, index: 9)
                     Colors_upv_1 (copy, index: 10)
                     a68 (copy, index: 11)
                     a70 (copy, index: 12)
-                    u39 (copy, index: 13)
-                    u36 (copy, index: 14)
-                    u37 (copy, index: 15)
-                    u38 (copy, index: 16)
+                    u36 (copy, index: 13)
+                    u37 (copy, index: 14)
+                    u38 (copy, index: 15)
+                    u39 (copy, index: 16)
                 ]]
                 if u72 ~= u68 then
                     return
                 end
                 if a67 ~= a69 then
-                    rollDigit(u34, u31, u32, u35, a67, Colors_upv_1.Ally)
+                    rollDigit(u32, u33, u34, u35, a67, Colors_upv_1.Ally)
                 end
                 if a68 ~= a70 then
-                    rollDigit(u39, u36, u37, u38, a68, Colors_upv_1.Enemy)
+                    rollDigit(u36, u37, u38, u39, a68, Colors_upv_1.Enemy)
                 end
             end
         )
@@ -2159,8 +2157,8 @@ function tbl_1.Init(a1)
                     u22 (copy, index: 11)
                     u27 (copy, index: 12)
                     u28 (copy, index: 13)
-                    u31 (copy, index: 14)
-                    u36 (copy, index: 15)
+                    u33 (copy, index: 14)
+                    u37 (copy, index: 15)
                     u40 (copy, index: 16)
                     u74 (copy, index: 17)
                     u44 (copy, index: 18)
@@ -2207,7 +2205,7 @@ function tbl_1.Init(a1)
                 TweenService_upv_1:Create(u27, TweenInfo.new(u3 * 0.2, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u3), tbl_108):Play()
                 tbl_108 = {Transparency = 1}
                 TweenService_upv_1:Create(u28, TweenInfo.new(u3 * 0.2, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u3), tbl_108):Play()
-                for _, value_31 in {u31, u36} do
+                for _, value_31 in {u33, u37} do
                     local tbl_109 = {TextTransparency = 1}
                     TweenService_upv_1:Create(value_31, TweenInfo.new(u3 * 0.2, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u3), tbl_109):Play()
                 end
