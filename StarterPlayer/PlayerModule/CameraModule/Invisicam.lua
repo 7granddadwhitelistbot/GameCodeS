@@ -287,8 +287,9 @@ function u4.SmartCircleBehavior(a1, a2)
             end
             v25 = RayIntersection(v37, unit_6, v27, v28)
             if v25.Magnitude > 0 then
-                local v41, v42, v43 = game.Workspace:FindPartOnRayWithIgnoreList(Ray.new(v37, v25 - v37), {a1.char}, false, false)
-                v25 = (v41 and (v42 + (0.1 * v43.unit))) or v25
+                local v41, v42 = nil, nil
+                local v43, v41, v42 = game.Workspace:FindPartOnRayWithIgnoreList(Ray.new(v37, v25 - v37), {a1.char}, false, false)
+                v25 = (v43 and (v41 + (0.1 * v42.unit))) or v25
             else
                 v25 = v37
             end
