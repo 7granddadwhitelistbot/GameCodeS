@@ -12,70 +12,66 @@ tbl_upv_1.__index = tbl_upv_1
 function tbl_upv_1.new()
     --[[
       name: new
-      line: 70
+      line: 63
       upvalues:
-        u2 (copy, index: 1)
-        u3 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        Parent_upv_1 (copy, index: 1)
+        u2 (copy, index: 2)
+        u3 (copy, index: 3)
+        tbl_upv_1 (copy, index: 4)
     ]]
-    return (setmetatable({data = {isServerAuthority = false, playerData = {}, connectionUtil = u2.new(), eventBus = u3.new()}}, tbl_upv_1))
+    return (setmetatable({data = {isJumping = false, isServerAuthority = false, playerModule = Parent_upv_1, moveVector = Vector2.new(), worldMoveVector = Vector3.new(), actions = {}, connectionUtil = u2.new(), eventBus = u3.new()}}, tbl_upv_1))
 end
 function tbl_upv_1.start(a1)
     --[[
       name: start
-      line: 83
+      line: 82
       upvalues:
         u1 (copy, index: 1)
-        Parent_upv_1 (copy, index: 2)
-        ServerAuthority_upv_1 (copy, index: 3)
-        ControlModule_upv_1 (copy, index: 4)
-        RunService_upv_1 (copy, index: 5)
-        CameraModule_upv_1 (copy, index: 6)
+        ServerAuthority_upv_1 (copy, index: 2)
+        ControlModule_upv_1 (copy, index: 3)
+        RunService_upv_1 (copy, index: 4)
+        CameraModule_upv_1 (copy, index: 5)
     ]]
     a1.data.connectionUtil:trackConnection(
         "ONLOCALPLAYER",
         u1.onLocalPlayer(
             function(a2)
                 --[[
-                  line: 85
+                  line: 84
                   upvalues:
                     a1 (copy, index: 1)
-                    Parent_upv_1 (copy, index: 2)
-                    ServerAuthority_upv_1 (copy, index: 3)
-                    ControlModule_upv_1 (copy, index: 4)
-                    RunService_upv_1 (copy, index: 5)
-                    u1 (copy, index: 6)
-                    CameraModule_upv_1 (copy, index: 7)
+                    ServerAuthority_upv_1 (copy, index: 2)
+                    ControlModule_upv_1 (copy, index: 3)
+                    RunService_upv_1 (copy, index: 4)
+                    u1 (copy, index: 5)
+                    CameraModule_upv_1 (copy, index: 6)
                 ]]
-                a1.data.playerData[a2] = {isJumping = false, playerModule = Parent_upv_1, moveVector = Vector2.new(), worldMoveVector = Vector3.new(), actions = {}, player = a2}
+                a1.data.player = a2
                 ServerAuthority_upv_1.initialize(a1.data)
-                ControlModule_upv_1:initialize(a1.data, a1.data.playerData[a2])
+                ControlModule_upv_1:initialize(a1.data)
                 RunService_upv_1:BindToRenderStep(
                     "PLAYERMODULE_RENDERSTEPPED_INPUT",
                     Enum.RenderPriority.Input.Value,
                     function(a3)
                         --[[
-                          line: 101
+                          line: 91
                           upvalues:
                             a1 (copy, index: 1)
                             u1 (copy, index: 2)
                             ControlModule_upv_1 (copy, index: 3)
                         ]]
-                        for _, value_1 in pairs(a1.data.playerData) do
-                            value_1.character = u1.getCharacter()
-                            if value_1.character then
-                                ControlModule_upv_1:Update(a1.data, value_1, a3)
-                                continue
-                            end
+                        a1.data.character = u1.getCharacter()
+                        if not a1.data.character then
                             return
                         end
+                        ControlModule_upv_1:Update(a1.data, a3)
                     end
                 )
                 a1.data.connectionUtil:trackBoundFunction(
                     "PLAYERMODULE_RENDERSTEPPED_INPUT",
                     function()
                         --[[
-                          line: 111
+                          line: 99
                           upvalues:
                             RunService_upv_1 (copy, index: 1)
                         ]]
@@ -87,21 +83,19 @@ function tbl_upv_1.start(a1)
                     Enum.RenderPriority.Camera.Value,
                     function(a4)
                         --[[
-                          line: 116
+                          line: 104
                           upvalues:
-                            a1 (copy, index: 1)
-                            CameraModule_upv_1 (copy, index: 2)
+                            CameraModule_upv_1 (copy, index: 1)
+                            a1 (copy, index: 2)
                         ]]
-                        for _, value_2 in pairs(a1.data.playerData) do
-                            CameraModule_upv_1:Update(value_2, a4)
-                        end
+                        CameraModule_upv_1:Update(a1.data, a4)
                     end
                 )
                 a1.data.connectionUtil:trackBoundFunction(
                     "PLAYERMODULE_RENDERSTEPPED_CAMERA",
                     function()
                         --[[
-                          line: 121
+                          line: 107
                           upvalues:
                             RunService_upv_1 (copy, index: 1)
                         ]]
@@ -115,7 +109,7 @@ end
 function tbl_upv_1.stop(a1)
     --[[
       name: stop
-      line: 127
+      line: 113
     ]]
     a1.data.connectionUtil:disconnectAll()
 end
