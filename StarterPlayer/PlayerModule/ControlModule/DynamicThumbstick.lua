@@ -36,7 +36,7 @@ function u9.new(a1)
         u9 (copy, index: 2)
     ]]
     local v2 = setmetatable(ActionController_upv_1.new(), u9)
-    v2.data = a1
+    v2.playerData = a1
     v2.enabled = false
     v2.isTouchActive = false
     v2.moveTouchFirstChanged = false
@@ -181,7 +181,7 @@ function u9.OnInputEnded(a1)
       line: 194
     ]]
     a1.isTouchActive = false
-    local DynamicThumbstickScriptableBinding_1 = a1.data.actions.MoveAction:FindFirstChild("DynamicThumbstickScriptableBinding")
+    local DynamicThumbstickScriptableBinding_1 = a1.playerData.actions.MoveAction:FindFirstChild("DynamicThumbstickScriptableBinding")
     if DynamicThumbstickScriptableBinding_1 then
         DynamicThumbstickScriptableBinding_1:Fire(Vector2.zero)
     end
@@ -311,7 +311,7 @@ function u9.DoMove(a1, a2)
     ]]
     local v6 = ((not (a2.Magnitude < a1.radiusOfDeadZone)) and (a2.Unit * (1 - math.max(0, (a1.radiusOfMaxSpeed - a2.Magnitude) / a1.radiusOfMaxSpeed)))) or (Vector2.new())
     local v7 = Vector2.new(v6.X, -v6.Y)
-    local DynamicThumbstickScriptableBinding_2 = a1.data.actions.MoveAction:FindFirstChild("DynamicThumbstickScriptableBinding")
+    local DynamicThumbstickScriptableBinding_2 = a1.playerData.actions.MoveAction:FindFirstChild("DynamicThumbstickScriptableBinding")
     if not DynamicThumbstickScriptableBinding_2 then
         return
     end

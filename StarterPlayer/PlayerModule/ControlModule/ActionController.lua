@@ -12,7 +12,7 @@ function tbl_upv_1.new()
     v1.enabled = true
     return v1
 end
-function tbl_upv_1.initializeActions(a1)
+function tbl_upv_1.initializeActions(a1, a2)
     --[[
       name: initializeActions
       line: 31
@@ -24,26 +24,27 @@ function tbl_upv_1.initializeActions(a1)
                 --[[
                   line: 33
                   upvalues:
-                    a1 (copy, index: 1)
+                    a2 (copy, index: 1)
                 ]]
-                a1.actions = {}
+                a2.actions = {}
             end
         )
     )
-    if (not a1.actions.MoveAction or not a1.actions.JumpAction) and a1.player then
+    if (not a2.actions.MoveAction or not a2.actions.JumpAction) and a2.player then
         pcall(
             function()
                 --[[
                   line: 42
                   upvalues:
                     a1 (copy, index: 1)
+                    a2 (copy, index: 2)
                 ]]
                 local InputContexts_1 = script.Parent.Parent.InputContexts
                 if a1.isServerAuthority then
-                    InputContexts_1 = a1.player.InputContexts
+                    InputContexts_1 = a2.player.InputContexts
                 end
                 local CharacterContext_1 = InputContexts_1.CharacterContext
-                a1.actions = {MoveAction = CharacterContext_1.MoveAction, JumpAction = CharacterContext_1.JumpAction}
+                a2.actions = {MoveAction = CharacterContext_1.MoveAction, JumpAction = CharacterContext_1.JumpAction}
                 a1.eventBus:publish("ACTIONS_RELOADED")
             end
         )
