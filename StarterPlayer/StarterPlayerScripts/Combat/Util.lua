@@ -8,74 +8,118 @@ local Metrics_upv_1 = require(script.Parent.Metrics)
 local Quality_upv_1 = require(script.Parent.Quality)
 local tbl_upv_1 = {}
 local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-local v1 = ReplicatedStorage_1:WaitForChild("Assets", 30)
-tbl_upv_1.Assets = v1
+local u1 = nil
+local function stats()
+    --[[
+      name: stats
+      line: 22
+      upvalues:
+        u1 (ref,  index: 1)
+        LocalPlayer_upv_1 (copy, index: 2)
+    ]]
+    if not (u1) then
+        local v1 = LocalPlayer_upv_1:FindFirstChild("PlayerScripts") and (LocalPlayer_upv_1.PlayerScripts:FindFirstChild("Core"))
+        local v2 = v1 and (v1:FindFirstChild("InputStats"))
+        if v2 and v2:IsA("ModuleScript") then
+            u1 = require(v2)
+        end
+    end
+    return u1
+end
+local function notes()
+    --[[
+      name: notes
+      line: 32
+      upvalues:
+        stats (copy, index: 1)
+    ]]
+    local v3 = stats()
+    if v3 then
+        return (v3.Take())
+    end
+    return 0
+end
+local function caller(a1)
+    --[[
+      name: caller
+      line: 37
+      upvalues:
+        stats (copy, index: 1)
+    ]]
+    local v4 = stats()
+    if not v4 then
+        return
+    end
+    v4.Caller(a1)
+end
+local v5 = ReplicatedStorage_1:WaitForChild("Assets", 30)
+tbl_upv_1.Assets = v5
 local Shared_upv_1 = ReplicatedStorage_1:WaitForChild("Shared")
 local Combat_upv_1 = require(Shared_upv_1:WaitForChild("Combat"))
-local u1 = nil
 local u2 = nil
+local u3 = nil
 task.spawn(
     function()
         --[[
-          line: 28
+          line: 53
           upvalues:
             Shared_upv_1 (copy, index: 1)
-            u1 (ref,  index: 2)
+            u2 (ref,  index: 2)
         ]]
-        local v2 = Shared_upv_1:WaitForChild("Camera", 12)
-        if not v2 then
+        local v6 = Shared_upv_1:WaitForChild("Camera", 12)
+        if not v6 then
             return
         end
-        if v2:IsA("ModuleScript") then
-            local success_1, v3 = pcall(require, v2)
-            if not success_1 or type(v3) ~= "table" then
-                warn("[Combat] Shared.Camera failed to load, using fallback camera helpers:", v3)
+        if v6:IsA("ModuleScript") then
+            local success_1, v7 = pcall(require, v6)
+            if not success_1 or type(v7) ~= "table" then
+                warn("[Combat] Shared.Camera failed to load, using fallback camera helpers:", v7)
             end
-            u1 = v3
+            u2 = v7
         end
     end
 )
 task.spawn(
     function()
         --[[
-          line: 39
+          line: 64
           upvalues:
             Shared_upv_1 (copy, index: 1)
-            u2 (ref,  index: 2)
+            u3 (ref,  index: 2)
         ]]
-        local v4 = Shared_upv_1:WaitForChild("Sfx", 20)
-        if not v4 then
+        local v8 = Shared_upv_1:WaitForChild("Sfx", 20)
+        if not v8 then
             return
         end
-        if v4:IsA("ModuleScript") then
-            local success_2, v5 = pcall(require, v4)
-            if not success_2 or type(v5) ~= "table" or type(v5.Play) ~= "function" then
+        if v8:IsA("ModuleScript") then
+            local success_2, v9 = pcall(require, v8)
+            if not success_2 or type(v9) ~= "table" or type(v9.Play) ~= "function" then
                 return
             end
-            u2 = v5
+            u3 = v9
         end
     end
 )
 function tbl_upv_1.Camera()
     --[[
       name: Camera
-      line: 49
+      line: 74
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    return u1
+    return u2
 end
 function tbl_upv_1.Drawn(a1)
     --[[
       name: Drawn
-      line: 58
+      line: 83
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    if a1 and u1 and type(u1.Drawn) == "function" then
-        local success_3, v6 = pcall(u1.Drawn, a1)
-        if success_3 and typeof(v6) == "Instance" then
-            return v6
+    if a1 and u2 and type(u2.Drawn) == "function" then
+        local success_3, v10 = pcall(u2.Drawn, a1)
+        if success_3 and typeof(v10) == "Instance" then
+            return v10
         end
     end
     return a1
@@ -83,24 +127,24 @@ end
 function tbl_upv_1.InFirstPerson()
     --[[
       name: InFirstPerson
-      line: 72
+      line: 97
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    local v7 = (u1 ~= nil) and ((type(u1.InFirstPerson) == "function") and (u1.InFirstPerson() == true))
-    return v7
+    local v11 = (u2 ~= nil) and ((type(u2.InFirstPerson) == "function") and (u2.InFirstPerson() == true))
+    return v11
 end
 function tbl_upv_1.GetAimRay()
     --[[
       name: GetAimRay
-      line: 76
+      line: 101
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    if u1 and type(u1.GetAimRay) == "function" then
-        local success_4, v8 = pcall(u1.GetAimRay)
-        if success_4 and typeof(v8) == "Ray" then
-            return v8
+    if u2 and type(u2.GetAimRay) == "function" then
+        local success_4, v12 = pcall(u2.GetAimRay)
+        if success_4 and typeof(v12) == "Ray" then
+            return v12
         end
     end
     local CurrentCamera_1 = workspace.CurrentCamera
@@ -110,54 +154,54 @@ end
 function tbl_upv_1.SetAiming(a1, a2)
     --[[
       name: SetAiming
-      line: 88
+      line: 113
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    if u1 and type(u1.SetAiming) == "function" then
-        pcall(u1.SetAiming, a1, a2)
+    if u2 and type(u2.SetAiming) == "function" then
+        pcall(u2.SetAiming, a1, a2)
         return
     end
     local TweenService_1 = game:GetService("TweenService")
-    local v9 = TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local v13 = TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     local tbl_2 = {FieldOfView = 0}
     tbl_2.FieldOfView = ((not a1) and 70) or (a2 or 55)
-    TweenService_1:Create(workspace.CurrentCamera, v9, tbl_2):Play()
+    TweenService_1:Create(workspace.CurrentCamera, v13, tbl_2):Play()
 end
 function tbl_upv_1.FovKick(a1, a2, a3)
     --[[
       name: FovKick
-      line: 100
+      line: 125
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    if not u1 or type(u1.FovKick) ~= "function" then
+    if not u2 or type(u2.FovKick) ~= "function" then
         return
     end
-    pcall(u1.FovKick, a1, a2, a3)
+    pcall(u2.FovKick, a1, a2, a3)
 end
 function tbl_upv_1.Shake(a1, a2)
     --[[
       name: Shake
-      line: 106
+      line: 131
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    if not u1 or type(u1.Shake) ~= "function" then
+    if not u2 or type(u2.Shake) ~= "function" then
         return
     end
-    pcall(u1.Shake, a1, a2)
+    pcall(u2.Shake, a1, a2)
 end
 function tbl_upv_1.RecoilSlow(a1, a2, a3, a4)
     --[[
       name: RecoilSlow
-      line: 114
+      line: 139
       upvalues:
-        u1 (ref,  index: 1)
+        u2 (ref,  index: 1)
         tbl_upv_1 (copy, index: 2)
     ]]
-    if u1 and type(u1.RecoilSlow) == "function" then
-        pcall(u1.RecoilSlow, a1, a2, a3, a4)
+    if u2 and type(u2.RecoilSlow) == "function" then
+        pcall(u2.RecoilSlow, a1, a2, a3, a4)
     else
         tbl_upv_1.Recoil(a1 * 5, (a2 or 0) * 5)
     end
@@ -165,142 +209,142 @@ end
 function tbl_upv_1.Recoil(a1, a2)
     --[[
       name: Recoil
-      line: 123
+      line: 148
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    if not u1 or type(u1.Recoil) ~= "function" then
+    if not u2 or type(u2.Recoil) ~= "function" then
         return
     end
-    pcall(u1.Recoil, a1, a2)
+    pcall(u2.Recoil, a1, a2)
 end
 function tbl_upv_1.IsMouseUnlocked()
     --[[
       name: IsMouseUnlocked
-      line: 129
+      line: 154
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    if u1 and type(u1.IsMouseUnlocked) == "function" then
-        local success_5, v10 = pcall(u1.IsMouseUnlocked)
-        return success_5 and (v10 == true)
+    if u2 and type(u2.IsMouseUnlocked) == "function" then
+        local success_5, v14 = pcall(u2.IsMouseUnlocked)
+        return success_5 and (v14 == true)
     end
     return false
 end
 function tbl_upv_1.FaceCamera()
     --[[
       name: FaceCamera
-      line: 138
+      line: 163
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    if not u1 or type(u1.FaceCamera) ~= "function" then
+    if not u2 or type(u2.FaceCamera) ~= "function" then
         return
     end
-    pcall(u1.FaceCamera)
+    pcall(u2.FaceCamera)
 end
 function tbl_upv_1.SetCameraModifier(a1, a2)
     --[[
       name: SetCameraModifier
-      line: 145
+      line: 170
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    if not u1 or type(u1.SetModifier) ~= "function" then
+    if not u2 or type(u2.SetModifier) ~= "function" then
         return
     end
-    if a2 and a2.pivot and type(u1.GetShoulderSide) == "function" then
-        local success_6, v11 = pcall(u1.GetShoulderSide)
-        if success_6 and type(v11) == "number" then
+    if a2 and a2.pivot and type(u2.GetShoulderSide) == "function" then
+        local success_6, v15 = pcall(u2.GetShoulderSide)
+        if success_6 and type(v15) == "number" then
             local pivot_1 = a2.pivot
             a2 = table.clone(a2)
-            a2.pivot = Vector3.new(pivot_1.X * v11, pivot_1.Y, pivot_1.Z)
+            a2.pivot = Vector3.new(pivot_1.X * v15, pivot_1.Y, pivot_1.Z)
         end
     end
-    pcall(u1.SetModifier, a1, a2)
+    pcall(u2.SetModifier, a1, a2)
 end
 function tbl_upv_1.GetFOV()
     --[[
       name: GetFOV
-      line: 159
+      line: 184
     ]]
     return workspace.CurrentCamera.FieldOfView
 end
 local function matchOf(a1)
     --[[
       name: matchOf
-      line: 165
+      line: 190
     ]]
-    local v12 = a1 and (a1:GetAttribute("MatchId"))
-    if type(v12) ~= "string" then
+    local v16 = a1 and (a1:GetAttribute("MatchId"))
+    if type(v16) ~= "string" then
         return ""
     end
-    return v12
+    return v16
 end
 function tbl_upv_1.InMatch()
     --[[
       name: InMatch
-      line: 171
+      line: 196
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
     ]]
     local Character_1 = LocalPlayer_upv_1.Character
-    local v13 = Character_1 and (Character_1:GetAttribute("MatchId"))
-    local v14
-    if type(v13) ~= "string" then
-        v14 = ""
+    local v17 = Character_1 and (Character_1:GetAttribute("MatchId"))
+    local v18
+    if type(v17) ~= "string" then
+        v18 = ""
     else
-        v14 = v13
+        v18 = v17
     end
-    local v15
-    if v14 ~= "" then
-        v15 = true
+    local v19
+    if v18 ~= "" then
+        v19 = true
     else
-        v15 = false
+        v19 = false
     end
-    return v15
+    return v19
 end
 local function phaseLive(a1)
     --[[
       name: phaseLive
-      line: 175
+      line: 200
     ]]
     local Arenas_1 = workspace:FindFirstChild("Arenas")
-    local v16 = Arenas_1 and (Arenas_1:FindFirstChild(a1))
-    local v17 = v16 and (v16:GetAttribute("Phase"))
-    local v18 = true
-    if v17 ~= "Live" then
-        v18 = v17 == "Overtime"
+    local v20 = Arenas_1 and (Arenas_1:FindFirstChild(a1))
+    local v21 = v20 and (v20:GetAttribute("Phase"))
+    local v22 = true
+    if v21 ~= "Live" then
+        v22 = v21 == "Overtime"
     end
-    return v18
+    return v22
 end
 function tbl_upv_1.IsEnemy(a1)
     --[[
       name: IsEnemy
-      line: 183
+      line: 208
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
     ]]
     local Character_2 = LocalPlayer_upv_1.Character
     if a1 and Character_2 and a1 ~= Character_2 then
-        local v19 = Character_2 and (Character_2:GetAttribute("MatchId"))
-        local v20
-        if type(v19) ~= "string" then
-            v20 = ""
+        local v23 = Character_2 and (Character_2:GetAttribute("MatchId"))
+        local v24
+        if type(v23) ~= "string" then
+            v24 = ""
         else
-            v20 = v19
+            v24 = v23
         end
-        if v20 ~= "" then
-            local v21 = a1 and (a1:GetAttribute("MatchId"))
-            if type(v21) ~= "string" then
-                v19 = ""
+        if v24 ~= "" then
+            local v25 = a1 and (a1:GetAttribute("MatchId"))
+            if type(v25) ~= "string" then
+                v23 = ""
             else
-                v19 = v21
+                v23 = v25
             end
-            if v19 == v20 then
-                v19 = Character_2:GetAttribute("Team")
-                local v22 = a1:GetAttribute("Team")
-                return (v19 ~= nil) and ((v22 ~= nil) and (v19 ~= v22))
+            if v23 == v24 then
+                v23 = Character_2:GetAttribute("Team")
+                local v26 = a1:GetAttribute("Team")
+                return (v23 ~= nil) and ((v26 ~= nil) and (v23 ~= v26))
             end
         end
         return false
@@ -310,66 +354,66 @@ end
 function tbl_upv_1.IsTeammate(a1)
     --[[
       name: IsTeammate
-      line: 196
+      line: 221
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
     ]]
     local Character_3 = LocalPlayer_upv_1.Character
     if a1 and Character_3 and a1 ~= Character_3 then
-        local v23 = Character_3 and (Character_3:GetAttribute("MatchId"))
-        local v24
-        if type(v23) ~= "string" then
-            v24 = ""
+        local v27 = Character_3 and (Character_3:GetAttribute("MatchId"))
+        local v28
+        if type(v27) ~= "string" then
+            v28 = ""
         else
-            v24 = v23
+            v28 = v27
         end
-        local v25 = false
-        local v26
-        if v24 == "" then
-            v26 = v25
+        local v29 = false
+        local v30
+        if v28 == "" then
+            v30 = v29
         else
-            v26 = false
-            local v27 = a1 and (a1:GetAttribute("MatchId"))
-            local v28
-            if type(v27) ~= "string" then
-                v28 = ""
+            v30 = false
+            local v31 = a1 and (a1:GetAttribute("MatchId"))
+            local v32
+            if type(v31) ~= "string" then
+                v32 = ""
             else
-                v28 = v27
+                v32 = v31
             end
-            if v28 == v24 then
-                v26 = a1:GetAttribute("Team") == Character_3:GetAttribute("Team")
+            if v32 == v28 then
+                v30 = a1:GetAttribute("Team") == Character_3:GetAttribute("Team")
             end
         end
-        return v26
+        return v30
     end
     return false
 end
-local u3 = nil
+local u4 = nil
 function tbl_upv_1.ItemBonus(a1)
     --[[
       name: ItemBonus
-      line: 209
+      line: 234
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
-        u3 (ref,  index: 2)
+        u4 (ref,  index: 2)
         Shared_upv_1 (copy, index: 3)
     ]]
     local Character_4 = LocalPlayer_upv_1.Character
     if Character_4 and type(a1) == "string" then
-        local v29 = Character_4:GetAttribute("ItemLevels")
-        if type(v29) == "string" and v29 ~= "" then
-            if u3 == nil then
-                local success_7, v30 = pcall(require, Shared_upv_1:FindFirstChild("Shards"))
-                local v31
-                if (success_7) and type(v30) == "table" then
-                    v31 = v30
+        local v33 = Character_4:GetAttribute("ItemLevels")
+        if type(v33) == "string" and v33 ~= "" then
+            if u4 == nil then
+                local success_7, v34 = pcall(require, Shared_upv_1:FindFirstChild("Shards"))
+                local v35
+                if (success_7) and type(v34) == "table" then
+                    v35 = v34
                 else
-                    v31 = false
+                    v35 = false
                 end
-                u3 = v31
+                u4 = v35
             end
-            if u3 then
-                return u3.Bonus(u3.DecodeLevels(v29)[a1] or 1)
+            if u4 then
+                return u4.Bonus(u4.DecodeLevels(v33)[a1] or 1)
             end
             return 1
         end
@@ -380,7 +424,7 @@ end
 function tbl_upv_1.CanPredictHit(a1)
     --[[
       name: CanPredictHit
-      line: 230
+      line: 255
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         CollectionService_upv_1 (copy, index: 2)
@@ -390,83 +434,83 @@ function tbl_upv_1.CanPredictHit(a1)
         return false
     end
     local Character_5 = LocalPlayer_upv_1.Character
-    local v32 = nil
+    local v36 = nil
     if CollectionService_upv_1:HasTag(a1, "TrainingDummy") then
-        local v33 = Character_5 and (Character_5:GetAttribute("MatchId"))
-        local v34
-        if type(v33) ~= "string" then
-            v34 = ""
+        local v37 = Character_5 and (Character_5:GetAttribute("MatchId"))
+        local v38
+        if type(v37) ~= "string" then
+            v38 = ""
         else
-            v34 = v33
+            v38 = v37
         end
-        local v35
-        if v34 == "" then
-            v35 = true
+        local v39
+        if v38 == "" then
+            v39 = true
         else
-            v35 = false
+            v39 = false
         end
-        return v35
+        return v39
     else
-        v32 = tbl_upv_1.IsEnemy(a1)
-        local v36
-        if v32 then
-            local v37 = Character_5 and (Character_5:GetAttribute("MatchId"))
-            local v34
-            if type(v37) ~= "string" then
-                v34 = ""
+        v36 = tbl_upv_1.IsEnemy(a1)
+        local v40
+        if v36 then
+            local v41 = Character_5 and (Character_5:GetAttribute("MatchId"))
+            local v38
+            if type(v41) ~= "string" then
+                v38 = ""
             else
-                v34 = v37
+                v38 = v41
             end
             local Arenas_2 = workspace:FindFirstChild("Arenas")
-            local v38 = Arenas_2 and (Arenas_2:FindFirstChild(v34))
-            local v39 = v38 and (v38:GetAttribute("Phase"))
-            v36 = true
-            if v39 ~= "Live" then
-                v36 = v39 == "Overtime"
+            local v42 = Arenas_2 and (Arenas_2:FindFirstChild(v38))
+            local v43 = v42 and (v42:GetAttribute("Phase"))
+            v40 = true
+            if v43 ~= "Live" then
+                v40 = v43 == "Overtime"
             end
         else
-            v36 = v32
+            v40 = v36
         end
-        return v36
+        return v40
     end
 end
-local u4 = -math.huge
-local u5 = nil
-local u6 = 0
+local u5 = -math.huge
+local u6 = nil
+local u7 = 0
 function tbl_upv_1.GuardDown(a1, a2)
     --[[
       name: GuardDown
-      line: 247
+      line: 272
       upvalues:
-        u4 (ref, index: 1)
-        u5 (ref, index: 2)
-        u6 (ref, index: 3)
+        u5 (ref, index: 1)
+        u6 (ref, index: 2)
+        u7 (ref, index: 3)
     ]]
     if type(a2) ~= "number" or not (a2 > 0) then
         return
     end
-    u4 = os.clock()
-    u5 = a1
-    u6 = a2
+    u5 = os.clock()
+    u6 = a1
+    u7 = a2
 end
 function tbl_upv_1.GuardRecovery(a1)
     --[[
       name: GuardRecovery
-      line: 253
+      line: 278
       upvalues:
-        u5 (ref, index: 1)
-        u4 (ref, index: 2)
-        u6 (ref, index: 3)
+        u6 (ref, index: 1)
+        u5 (ref, index: 2)
+        u7 (ref, index: 3)
     ]]
-    if a1 ~= nil and a1 ~= u5 then
-        return (math.max(0, (u4 + u6) - os.clock()))
+    if a1 ~= nil and a1 ~= u6 then
+        return (math.max(0, (u5 + u7) - os.clock()))
     end
     return 0
 end
 function tbl_upv_1.CanAct()
     --[[
       name: CanAct
-      line: 260
+      line: 285
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
     ]]
@@ -477,35 +521,35 @@ function tbl_upv_1.CanAct()
     if Character_6 and Character_6:GetAttribute("Frozen") == true then
         return false
     end
-    local v40 = Character_6 and (Character_6:GetAttribute("StaggerUntil"))
-    if type(v40) == "number" and workspace:GetServerTimeNow() < v40 then
+    local v44 = Character_6 and (Character_6:GetAttribute("StaggerUntil"))
+    if type(v44) == "number" and workspace:GetServerTimeNow() < v44 then
         return false
     end
-    local v41 = Character_6 and (Character_6:GetAttribute("MatchId"))
-    if type(v41) ~= "string" then
-        v40 = ""
+    local v45 = Character_6 and (Character_6:GetAttribute("MatchId"))
+    if type(v45) ~= "string" then
+        v44 = ""
     else
-        v40 = v41
+        v44 = v45
     end
-    local v42 = true
-    local v43
-    if v40 == "" then
-        v43 = v42
+    local v46 = true
+    local v47
+    if v44 == "" then
+        v47 = v46
     else
         local Arenas_3 = workspace:FindFirstChild("Arenas")
-        local v44 = Arenas_3 and (Arenas_3:FindFirstChild(v40))
-        local v45 = v44 and (v44:GetAttribute("Phase"))
-        v43 = true
-        if v45 ~= "Live" then
-            v43 = v45 == "Overtime"
+        local v48 = Arenas_3 and (Arenas_3:FindFirstChild(v44))
+        local v49 = v48 and (v48:GetAttribute("Phase"))
+        v47 = true
+        if v49 ~= "Live" then
+            v47 = v49 == "Overtime"
         end
     end
-    return v43
+    return v47
 end
 function tbl_upv_1.Targets()
     --[[
       name: Targets
-      line: 292
+      line: 317
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         Players_upv_1 (copy, index: 2)
@@ -542,7 +586,7 @@ end
 function tbl_upv_1.Teammates()
     --[[
       name: Teammates
-      line: 318
+      line: 343
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -557,13 +601,13 @@ end
 local function fxFolders()
     --[[
       name: fxFolders
-      line: 280
+      line: 305
     ]]
     local tbl_6 = {}
     for _, value_6 in {"FX", "Projectiles"} do
-        local v46 = workspace:FindFirstChild(value_6)
-        if v46 then
-            table.insert(tbl_6, v46)
+        local v50 = workspace:FindFirstChild(value_6)
+        if v50 then
+            table.insert(tbl_6, v50)
         end
     end
     return tbl_6
@@ -571,184 +615,194 @@ end
 function tbl_upv_1.WorldParams(a1)
     --[[
       name: WorldParams
-      line: 328
+      line: 353
       upvalues:
         fxFolders (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
     ]]
-    local v47 = RaycastParams.new()
-    v47.FilterType = Enum.RaycastFilterType.Exclude
-    local v48 = fxFolders()
+    local v51 = RaycastParams.new()
+    v51.FilterType = Enum.RaycastFilterType.Exclude
+    local v52 = fxFolders()
     local Character_9 = LocalPlayer_upv_1.Character
     if Character_9 then
-        table.insert(v48, Character_9)
+        table.insert(v52, Character_9)
     end
     if a1 then
         for _, value_7 in a1 do
-            table.insert(v48, value_7)
+            table.insert(v52, value_7)
         end
     end
-    v47.FilterDescendantsInstances = v48
-    v47.IgnoreWater = true
-    return v47
+    v51.FilterDescendantsInstances = v52
+    v51.IgnoreWater = true
+    return v51
 end
 function tbl_upv_1.AimPoint(a1)
     --[[
       name: AimPoint
-      line: 347
+      line: 372
       upvalues:
-        u1 (ref,  index: 1)
-        fxFolders (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        stats (copy, index: 1)
+        u2 (ref,  index: 2)
+        fxFolders (copy, index: 3)
+        tbl_upv_1 (copy, index: 4)
     ]]
-    if u1 then
-        if type(u1.GetAimPoint) ~= "function" then
-            local v49 = tbl_upv_1.GetAimRay()
-            local v50 = a1 or 1000
-            local v51 = workspace:Raycast(v49.Origin, v49.Direction.Unit * v50, tbl_upv_1.WorldParams(tbl_upv_1.Teammates()))
-            if v51 then
-                return v51.Position, v51
+    local v53 = stats()
+    if v53 then
+        v53.Caller(16384)
+    end
+    if u2 then
+        if type(u2.GetAimPoint) ~= "function" then
+            local v54 = tbl_upv_1.GetAimRay()
+            local v55 = a1 or 1000
+            local v56 = workspace:Raycast(v54.Origin, v54.Direction.Unit * v55, tbl_upv_1.WorldParams(tbl_upv_1.Teammates()))
+            if v56 then
+                return v56.Position, v56
             end
-            return v49.Origin + (v49.Direction.Unit * v50), nil
+            return v54.Origin + (v54.Direction.Unit * v55), nil
         else
-            local v52 = fxFolders()
+            local v57 = fxFolders()
             for _, value_8 in tbl_upv_1.Teammates() do
-                table.insert(v52, value_8)
+                table.insert(v57, value_8)
             end
-            local success_8, v53, v54 = pcall(u1.GetAimPoint, a1, v52)
-            if success_8 then
-                if typeof(v53) == "Vector3" then
-                    return v53, v54
+            local v58, v59, v60 = pcall(u2.GetAimPoint, a1, v57)
+            if v58 then
+                if typeof(v59) == "Vector3" then
+                    return v59, v60
                 end
-                local v49 = tbl_upv_1.GetAimRay()
-                local v50 = a1 or 1000
-                local v51 = workspace:Raycast(v49.Origin, v49.Direction.Unit * v50, tbl_upv_1.WorldParams(tbl_upv_1.Teammates()))
-                if v51 then
-                    return v51.Position, v51
+                local v54 = tbl_upv_1.GetAimRay()
+                local v55 = a1 or 1000
+                local v56 = workspace:Raycast(v54.Origin, v54.Direction.Unit * v55, tbl_upv_1.WorldParams(tbl_upv_1.Teammates()))
+                if v56 then
+                    return v56.Position, v56
                 end
-                return v49.Origin + (v49.Direction.Unit * v50), nil
+                return v54.Origin + (v54.Direction.Unit * v55), nil
             else
-                local v49 = tbl_upv_1.GetAimRay()
-                local v50 = a1 or 1000
-                local v51 = workspace:Raycast(v49.Origin, v49.Direction.Unit * v50, tbl_upv_1.WorldParams(tbl_upv_1.Teammates()))
-                if v51 then
-                    return v51.Position, v51
+                local v54 = tbl_upv_1.GetAimRay()
+                local v55 = a1 or 1000
+                local v56 = workspace:Raycast(v54.Origin, v54.Direction.Unit * v55, tbl_upv_1.WorldParams(tbl_upv_1.Teammates()))
+                if v56 then
+                    return v56.Position, v56
                 end
-                return v49.Origin + (v49.Direction.Unit * v50), nil
+                return v54.Origin + (v54.Direction.Unit * v55), nil
             end
         end
     else
-        local v49 = tbl_upv_1.GetAimRay()
-        local v50 = a1 or 1000
-        local v51 = workspace:Raycast(v49.Origin, v49.Direction.Unit * v50, tbl_upv_1.WorldParams(tbl_upv_1.Teammates()))
-        if v51 then
-            return v51.Position, v51
+        local v54 = tbl_upv_1.GetAimRay()
+        local v55 = a1 or 1000
+        local v56 = workspace:Raycast(v54.Origin, v54.Direction.Unit * v55, tbl_upv_1.WorldParams(tbl_upv_1.Teammates()))
+        if v56 then
+            return v56.Position, v56
         end
-        return v49.Origin + (v49.Direction.Unit * v50), nil
+        return v54.Origin + (v54.Direction.Unit * v55), nil
     end
 end
 function tbl_upv_1.AimDirection(a1)
     --[[
       name: AimDirection
-      line: 369
+      line: 395
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        stats (copy, index: 1)
+        tbl_upv_1 (copy, index: 2)
     ]]
-    local v55 = tbl_upv_1.GetAimRay()
-    local v56 = tbl_upv_1.AimPoint() - a1
-    if not (v56.Magnitude < 2) and not (v56.Unit:Dot(v55.Direction.Unit) < 0.2) then
-        return v56.Unit
+    local v61 = stats()
+    if v61 then
+        v61.Caller(16384)
     end
-    return v55.Direction.Unit
+    local v62 = tbl_upv_1.GetAimRay()
+    local v63 = tbl_upv_1.AimPoint() - a1
+    if not (v63.Magnitude < 2) and not (v63.Unit:Dot(v62.Direction.Unit) < 0.2) then
+        return v63.Unit
+    end
+    return v62.Direction.Unit
 end
 tbl_upv_1.ASSIST_MAGNET = {touch = {ranged = 2.5, scoped = 1.5, aimed = 2.5}, gamepad = {ranged = 1.5, scoped = 1.5, aimed = 1.5}}
 tbl_upv_1.MELEE_NUDGE = {touch = {cone = 50, max = 20, reach = 1.5}, gamepad = {cone = 40, max = 12, reach = 1}}
 local function countAssist(a1)
     --[[
       name: countAssist
-      line: 405
+      line: 432
       upvalues:
         RunService_upv_1 (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
     ]]
     if RunService_upv_1:IsStudio() then
-        local v57 = LocalPlayer_upv_1:GetAttribute(a1)
-        local v58
-        if type(v57) ~= "number" then
-            v58 = 0
+        local v64 = LocalPlayer_upv_1:GetAttribute(a1)
+        local v65
+        if type(v64) ~= "number" then
+            v65 = 0
         else
-            v58 = v57
+            v65 = v64
         end
-        LocalPlayer_upv_1:SetAttribute(a1, v58 + 1)
+        LocalPlayer_upv_1:SetAttribute(a1, v65 + 1)
     end
 end
 local function camCall(a1, ...)
     --[[
       name: camCall
-      line: 412
+      line: 439
       upvalues:
-        u1 (ref, index: 1)
+        u2 (ref, index: 1)
     ]]
-    local v59 = u1 and (u1[a1])
-    if type(v59) ~= "function" then
+    local v66 = u2 and (u2[a1])
+    if type(v66) ~= "function" then
         return nil
     end
-    local success_9, v60 = pcall(v59, ...)
-    if success_9 then
-        return v60
+    local success_8, v67 = pcall(v66, ...)
+    if success_8 then
+        return v67
     end
     return nil
 end
 function tbl_upv_1.AssistActive()
     --[[
       name: AssistActive
-      line: 422
+      line: 449
       upvalues:
-        u1 (ref,  index: 1)
+        u2 (ref,  index: 1)
         camCall (copy, index: 2)
     ]]
-    if u1 and camCall("GetAimAssistEnabled") ~= false then
-        local v61 = camCall("IsAssistedInput") == true
-        return v61
+    if u2 and camCall("GetAimAssistEnabled") ~= false then
+        local v68 = camCall("IsAssistedInput") == true
+        return v68
     end
     return false
 end
 local function rawHitsBody(a1, a2, a3, a4)
     --[[
       name: rawHitsBody
-      line: 431
+      line: 458
     ]]
-    local v62 = a3:FindFirstChild("HumanoidRootPart") or (a3:FindFirstChild("UpperTorso") or (a3:FindFirstChild("Torso")))
+    local v69 = a3:FindFirstChild("HumanoidRootPart") or (a3:FindFirstChild("UpperTorso") or (a3:FindFirstChild("Torso")))
     local Head_1 = a3:FindFirstChild("Head")
-    if v62 and v62:IsA("BasePart") then
-        local v63 = nil
+    if v69 and v69:IsA("BasePart") then
+        local v70 = nil
         if a4 then
-            v63 = Vector3.new(a2.X, 0, a2.Z)
-            if v63.Magnitude < 0.001 then
+            v70 = Vector3.new(a2.X, 0, a2.Z)
+            if v70.Magnitude < 0.001 then
                 return false
             end
-            local Unit_1 = v63.Unit
-            local v64 = Vector3.new(v62.Position.X - a1.X, 0, v62.Position.Z - a1.Z)
-            local v65 = v64:Dot(Unit_1)
-            return (v65 > 0) and ((v64 - (Unit_1 * v65)).Magnitude <= 1.1)
+            local Unit_1 = v70.Unit
+            local v71 = Vector3.new(v69.Position.X - a1.X, 0, v69.Position.Z - a1.Z)
+            local v72 = v71:Dot(Unit_1)
+            return (v72 > 0) and ((v71 - (Unit_1 * v72)).Magnitude <= 1.1)
         else
-            local v66 = v62.Position - Vector3.new(0, 2.200000047683716, 0)
-            local v67
+            local v73 = v69.Position - Vector3.new(0, 2.200000047683716, 0)
+            local v74
             if (Head_1) and (Head_1:IsA("BasePart")) then
-                v67 = Head_1.Position + Vector3.new(0, 0.4000000059604645, 0)
+                v74 = Head_1.Position + Vector3.new(0, 0.4000000059604645, 0)
             else
-                v67 = v62.Position + Vector3.new(0, 2.200000047683716, 0)
+                v74 = v69.Position + Vector3.new(0, 2.200000047683716, 0)
             end
             local Unit_2 = a2.Unit
-            local v68 = v67 - v66
-            local v69 = v66 - a1
-            local v70 = v68:Dot(v68)
-            local v71 = v68:Dot(Unit_2)
-            local v72 = v70 - v71 * v71
-            local v73 = ((not (v72 > 1e-06)) and 0) or (math.clamp((v71 * Unit_2:Dot(v69) - v68:Dot(v69)) / v72, 0, 1))
-            local v74 = v66 + v68 * v73
-            local v75 = (v74 - a1):Dot(Unit_2)
-            return (v75 > 0) and (((v74 - a1) - (Unit_2 * v75)).Magnitude <= 1.1)
+            local v75 = v74 - v73
+            local v76 = v73 - a1
+            local v77 = v75:Dot(v75)
+            local v78 = v75:Dot(Unit_2)
+            local v79 = v77 - v78 * v78
+            local v80 = ((not (v79 > 1e-06)) and 0) or (math.clamp((v78 * Unit_2:Dot(v76) - v75:Dot(v76)) / v79, 0, 1))
+            local v81 = v73 + v75 * v80
+            local v82 = (v81 - a1):Dot(Unit_2)
+            return (v82 > 0) and (((v81 - a1) - (Unit_2 * v82)).Magnitude <= 1.1)
         end
     end
     return false
@@ -756,82 +810,87 @@ end
 function tbl_upv_1.AssistDirection(a1, a2, a3)
     --[[
       name: AssistDirection
-      line: 463
+      line: 490
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        camCall (copy, index: 2)
-        rawHitsBody (copy, index: 3)
-        Combat_upv_1 (copy, index: 4)
-        RunService_upv_1 (copy, index: 5)
-        LocalPlayer_upv_1 (copy, index: 6)
+        stats (copy, index: 1)
+        tbl_upv_1 (copy, index: 2)
+        camCall (copy, index: 3)
+        rawHitsBody (copy, index: 4)
+        Combat_upv_1 (copy, index: 5)
+        RunService_upv_1 (copy, index: 6)
+        LocalPlayer_upv_1 (copy, index: 7)
     ]]
+    local v83 = stats()
+    if v83 then
+        v83.Caller(16384)
+    end
     if not tbl_upv_1.AssistActive() then
         return a2
     end
-    local v76 = camCall("GetAimAssistShot")
-    if type(v76) == "table" and v76.torsoVisible and typeof(v76.point) == "Vector3" and typeof(v76.model) == "Instance" then
-        local model_1 = v76.model
-        local point_1 = v76.point
-        local v77 = (tbl_upv_1.ASSIST_MAGNET[v76.input] or (tbl_upv_1.ASSIST_MAGNET.touch))[v76.class]
-        if type(v77) == "number" and not (rawHitsBody(a1, a2, model_1, a3)) then
+    local v84 = camCall("GetAimAssistShot")
+    if type(v84) == "table" and v84.torsoVisible and typeof(v84.point) == "Vector3" and typeof(v84.model) == "Instance" then
+        local model_1 = v84.model
+        local point_1 = v84.point
+        local v85 = (tbl_upv_1.ASSIST_MAGNET[v84.input] or (tbl_upv_1.ASSIST_MAGNET.touch))[v84.class]
+        if type(v85) == "number" and not (rawHitsBody(a1, a2, model_1, a3)) then
             if Combat_upv_1.SmokeBlocks(a1, point_1) then
                 return a2
             end
-            local v78 = workspace:Raycast(a1, point_1 - a1, tbl_upv_1.WorldParams(tbl_upv_1.Targets()))
-            if v78 and not (v78.Instance:IsDescendantOf(model_1)) then
+            local v86 = workspace:Raycast(a1, point_1 - a1, tbl_upv_1.WorldParams(tbl_upv_1.Targets()))
+            if v86 and not (v86.Instance:IsDescendantOf(model_1)) then
                 return a2
             end
             local Unit_3 = (point_1 - a1).Unit
-            local v79 = nil
+            local v87 = nil
             if a3 then
-                v79 = Vector3.new(Unit_3.X, 0, Unit_3.Z)
-                local v80 = math.sqrt((a2.X * a2.X) + (a2.Z * a2.Z))
-                if not (v79.Magnitude < 0.001) and not (v80 < 0.001) then
-                    v79 = v79.Unit * v80
-                    Unit_3 = Vector3.new(v79.X, a2.Y, v79.Z).Unit
+                v87 = Vector3.new(Unit_3.X, 0, Unit_3.Z)
+                local v88 = math.sqrt((a2.X * a2.X) + (a2.Z * a2.Z))
+                if not (v87.Magnitude < 0.001) and not (v88 < 0.001) then
+                    v87 = v87.Unit * v88
+                    Unit_3 = Vector3.new(v87.X, a2.Y, v87.Z).Unit
                     local Unit_4 = a2.Unit
-                    local v81 = math.acos(math.clamp(Unit_4:Dot(Unit_3), -1, 1))
-                    local v82 = math.rad(v77)
-                    local v83 = nil
+                    local v89 = math.acos(math.clamp(Unit_4:Dot(Unit_3), -1, 1))
+                    local v90 = math.rad(v85)
+                    local v91 = nil
                     if RunService_upv_1:IsStudio() then
-                        v83 = LocalPlayer_upv_1:GetAttribute("QA_AssistBends")
-                        local v84
-                        if type(v83) ~= "number" then
-                            v84 = 0
+                        v91 = LocalPlayer_upv_1:GetAttribute("QA_AssistBends")
+                        local v92
+                        if type(v91) ~= "number" then
+                            v92 = 0
                         else
-                            v84 = v83
+                            v92 = v91
                         end
-                        LocalPlayer_upv_1:SetAttribute("QA_AssistBends", v84 + 1)
+                        LocalPlayer_upv_1:SetAttribute("QA_AssistBends", v92 + 1)
                     end
-                    if (v81 <= v82) or (v81 < 1e-04) then
+                    if (v89 <= v90) or (v89 < 1e-04) then
                         return Unit_3
                     end
-                    local v85 = v82 / v81
-                    local v86 = math.sin(v81)
-                    return (Unit_4 * (math.sin((1 - v85) * v81) / v86) + (Unit_3 * (math.sin(v85 * v81) / v86))).Unit
+                    local v93 = v90 / v89
+                    local v94 = math.sin(v89)
+                    return (Unit_4 * (math.sin((1 - v93) * v89) / v94) + (Unit_3 * (math.sin(v93 * v89) / v94))).Unit
                 end
                 return a2
             end
             local Unit_4 = a2.Unit
-            local v81 = math.acos(math.clamp(Unit_4:Dot(Unit_3), -1, 1))
-            local v82 = math.rad(v77)
-            local v83 = nil
+            local v89 = math.acos(math.clamp(Unit_4:Dot(Unit_3), -1, 1))
+            local v90 = math.rad(v85)
+            local v91 = nil
             if RunService_upv_1:IsStudio() then
-                v83 = LocalPlayer_upv_1:GetAttribute("QA_AssistBends")
-                local v84
-                if type(v83) ~= "number" then
-                    v84 = 0
+                v91 = LocalPlayer_upv_1:GetAttribute("QA_AssistBends")
+                local v92
+                if type(v91) ~= "number" then
+                    v92 = 0
                 else
-                    v84 = v83
+                    v92 = v91
                 end
-                LocalPlayer_upv_1:SetAttribute("QA_AssistBends", v84 + 1)
+                LocalPlayer_upv_1:SetAttribute("QA_AssistBends", v92 + 1)
             end
-            if (v81 <= v82) or (v81 < 1e-04) then
+            if (v89 <= v90) or (v89 < 1e-04) then
                 return Unit_3
             end
-            local v85 = v82 / v81
-            local v86 = math.sin(v81)
-            return (Unit_4 * (math.sin((1 - v85) * v81) / v86) + (Unit_3 * (math.sin(v85 * v81) / v86))).Unit
+            local v93 = v90 / v89
+            local v94 = math.sin(v89)
+            return (Unit_4 * (math.sin((1 - v93) * v89) / v94) + (Unit_3 * (math.sin(v93 * v89) / v94))).Unit
         end
         return a2
     end
@@ -840,7 +899,7 @@ end
 function tbl_upv_1.MeleeAssist(a1, a2)
     --[[
       name: MeleeAssist
-      line: 514
+      line: 542
       upvalues:
         tbl_upv_1 (copy, index: 1)
         camCall (copy, index: 2)
@@ -851,173 +910,173 @@ function tbl_upv_1.MeleeAssist(a1, a2)
     if not tbl_upv_1.AssistActive() then
         return 0
     end
-    local v87 = tbl_upv_1.MELEE_NUDGE[camCall("GetAimAssistInput")]
-    local v88 = LocalPlayer_upv_1.Character
-    local v89 = v88 and (v88:FindFirstChild("HumanoidRootPart"))
-    if not v87 or not v89 or not v89:IsA("BasePart") then
+    local v95 = tbl_upv_1.MELEE_NUDGE[camCall("GetAimAssistInput")]
+    local v96 = LocalPlayer_upv_1.Character
+    local v97 = v96 and (v96:FindFirstChild("HumanoidRootPart"))
+    if not v95 or not v97 or not v97:IsA("BasePart") then
         return 0
     end
-    local Head_2 = v88:FindFirstChild("Head")
+    local Head_2 = v96:FindFirstChild("Head")
     if (Head_2) and (Head_2:IsA("BasePart")) then
-        v88 = Head_2.Position
+        v96 = Head_2.Position
     else
-        v88 = v89.Position
+        v96 = v97.Position
     end
-    local v90 = tbl_upv_1.GetAimRay()
-    local v91 = Vector3.new(v90.Direction.X, 0, v90.Direction.Z)
-    if v91.Magnitude < 0.05 then
+    local v98 = tbl_upv_1.GetAimRay()
+    local v99 = Vector3.new(v98.Direction.X, 0, v98.Direction.Z)
+    if v99.Magnitude < 0.05 then
         return 0
     end
-    local Unit_5 = v91.Unit
-    v90 = math.cos(math.rad(v87.cone))
-    local v92 = tbl_upv_1.Targets()
-    local v93 = nil
-    local v94 = nil
+    local Unit_5 = v99.Unit
+    v98 = math.cos(math.rad(v95.cone))
+    local v100 = tbl_upv_1.Targets()
+    local v101 = nil
+    local v102 = nil
     local Unit_6 = math.huge
-    local v95 = v93
-    for _, value_9 in v92 do
-        local v96 = tbl_upv_1.CanPredictHit(value_9)
-        if not (v96) then
+    local v103 = v101
+    for _, value_9 in v100 do
+        local v104 = tbl_upv_1.CanPredictHit(value_9)
+        if not (v104) then
             continue
         end
-        local v97 = value_9:FindFirstChildOfClass("Humanoid")
+        local v105 = value_9:FindFirstChildOfClass("Humanoid")
         local HumanoidRootPart_1 = value_9:FindFirstChild("HumanoidRootPart")
-        if not (v97) or v97.Health <= 0 or not (HumanoidRootPart_1) then
+        if not (v105) or v105.Health <= 0 or not (HumanoidRootPart_1) then
             continue
         end
-        local v98 = HumanoidRootPart_1:IsA("BasePart")
-        if not (v98) then
+        local v106 = HumanoidRootPart_1:IsA("BasePart")
+        if not (v106) then
             continue
         end
-        local v99 = HumanoidRootPart_1.Position - v88.Position
-        local v100 = Vector3.new(v99.X, 0, v99.Z)
-        local Magnitude_1 = v100.Magnitude
-        if a1 + v87.reach < Magnitude_1 or Magnitude_1 < 0.5 or math.abs(v99.Y) > 6 then
+        local v107 = HumanoidRootPart_1.Position - v96.Position
+        local v108 = Vector3.new(v107.X, 0, v107.Z)
+        local Magnitude_1 = v108.Magnitude
+        if a1 + v95.reach < Magnitude_1 or Magnitude_1 < 0.5 or math.abs(v107.Y) > 6 then
             continue
         end
-        v99 = v100.Unit:Dot(Unit_5)
-        if v99 < v90 then
+        v107 = v108.Unit:Dot(Unit_5)
+        if v107 < v98 then
             continue
         end
-        local v101 = (1 - v99) * 10 + Magnitude_1 * 0.05
-        if Unit_6 <= v101 then
+        local v109 = (1 - v107) * 10 + Magnitude_1 * 0.05
+        if Unit_6 <= v109 then
             continue
         end
-        local v102 = Combat_upv_1.SmokeBlocks(v88, HumanoidRootPart_1.Position)
-        if v102 then
+        local v110 = Combat_upv_1.SmokeBlocks(v96, HumanoidRootPart_1.Position)
+        if v110 then
             continue
         end
-        v102 = v95 or (tbl_upv_1.WorldParams(v92))
-        v102 = workspace:Raycast(v88, HumanoidRootPart_1.Position - v88, v102)
-        if not (v102) then
-            Unit_6, v94 = v101, HumanoidRootPart_1.Position
+        v110 = v103 or (tbl_upv_1.WorldParams(v100))
+        v110 = workspace:Raycast(v96, HumanoidRootPart_1.Position - v96, v110)
+        if not (v110) then
+            Unit_6, v102 = v109, HumanoidRootPart_1.Position
         end
     end
-    if not v94 then
+    if not v102 then
         return 0
     end
-    Unit_6 = Vector3.new(v94.X - v88.Position.X, 0, v94.Z - v88.Position.Z).Unit
-    local v103 = ((math.atan2(-Unit_6.X, -Unit_6.Z) - math.atan2(-Unit_5.X, -Unit_5.Z)) + math.pi) % math.tau - math.pi
-    if math.abs(v103) < 0.05235987755982989 then
+    Unit_6 = Vector3.new(v102.X - v96.Position.X, 0, v102.Z - v96.Position.Z).Unit
+    local v111 = ((math.atan2(-Unit_6.X, -Unit_6.Z) - math.atan2(-Unit_5.X, -Unit_5.Z)) + math.pi) % math.tau - math.pi
+    if math.abs(v111) < 0.05235987755982989 then
         return 0
     end
-    local v104 = math.clamp(v103, -math.rad(v87.max), math.rad(v87.max))
-    camCall("Nudge", v104, (a2 and 0) or 0.08)
+    local v112 = math.clamp(v111, -math.rad(v95.max), math.rad(v95.max))
+    camCall("Nudge", v112, (a2 and 0) or 0.08)
     if RunService_upv_1:IsStudio() then
         Unit_6 = LocalPlayer_upv_1:GetAttribute("QA_AssistMelee")
-        local v105
+        local v113
         if type(Unit_6) ~= "number" then
-            v105 = 0
+            v113 = 0
         else
-            v105 = Unit_6
+            v113 = Unit_6
         end
-        LocalPlayer_upv_1:SetAttribute("QA_AssistMelee", v105 + 1)
+        LocalPlayer_upv_1:SetAttribute("QA_AssistMelee", v113 + 1)
     end
-    return (math.deg(v104))
+    return (math.deg(v112))
 end
 tbl_upv_1.AMMO_NOUN = {arrows = "ARROWS", shot = "BULLETS", fire_arrows = "FIRE ARROWS"}
 tbl_upv_1.AMMO_OUT = {arrows = "OUT OF ARROWS", shot = "OUT OF BULLETS"}
-local u7 = nil
+local u8 = nil
 local function altAmmo(a1)
     --[[
       name: altAmmo
-      line: 590
+      line: 618
       upvalues:
-        u7 (ref,  index: 1)
+        u8 (ref,  index: 1)
         Shared_upv_1 (copy, index: 2)
     ]]
-    if u7 == nil then
-        local success_10, v106 = pcall(require, Shared_upv_1:WaitForChild("Weapons"))
-        local v107
-        if success_10 then
-            v107 = v106
+    if u8 == nil then
+        local success_9, v114 = pcall(require, Shared_upv_1:WaitForChild("Weapons"))
+        local v115
+        if success_9 then
+            v115 = v114
         else
-            v107 = false
+            v115 = false
         end
-        u7 = v107
+        u8 = v115
     end
-    if u7 and type(u7.AltAmmo) == "function" then
-        return (u7.AltAmmo(a1))
+    if u8 and type(u8.AltAmmo) == "function" then
+        return (u8.AltAmmo(a1))
     end
     return {}
 end
 local function poolOf(a1, a2)
     --[[
       name: poolOf
-      line: 599
+      line: 627
     ]]
-    local v108 = a1:GetAttribute("Ammo_" .. a2)
-    if type(v108) ~= "number" then
+    local v116 = a1:GetAttribute("Ammo_" .. a2)
+    if type(v116) ~= "number" then
         return 0
     end
-    return v108
+    return v116
 end
 function tbl_upv_1.AmmoLeft(a1, a2)
     --[[
       name: AmmoLeft
-      line: 605
+      line: 633
       upvalues:
         altAmmo (copy, index: 1)
     ]]
     if not a1 or type(a2) ~= "string" then
         return math.huge
     end
-    local v109 = a1:GetAttribute("Ammo_" .. a2)
-    local v110
-    if type(v109) ~= "number" then
-        v110 = 0
+    local v117 = a1:GetAttribute("Ammo_" .. a2)
+    local v118
+    if type(v117) ~= "number" then
+        v118 = 0
     else
-        v110 = v109
+        v118 = v117
     end
-    local v111 = nil
+    local v119 = nil
     for _, value_10 in altAmmo(a2) do
-        local v112 = a1:GetAttribute("Ammo_" .. value_10)
-        if type(v112) ~= "number" then
-            v111 = 0
+        local v120 = a1:GetAttribute("Ammo_" .. value_10)
+        if type(v120) ~= "number" then
+            v119 = 0
         else
-            v111 = v112
+            v119 = v120
         end
-        v110 = v110 + v111
+        v118 = v118 + v119
     end
-    return v110
+    return v118
 end
 function tbl_upv_1.AmmoNext(a1, a2)
     --[[
       name: AmmoNext
-      line: 617
+      line: 645
       upvalues:
         altAmmo (copy, index: 1)
     ]]
     if a1 and type(a2) == "string" then
-        local v113 = nil
+        local v121 = nil
         for _, value_11 in altAmmo(a2) do
-            local v114 = a1:GetAttribute("Ammo_" .. value_11)
-            if type(v114) ~= "number" then
-                v113 = 0
+            local v122 = a1:GetAttribute("Ammo_" .. value_11)
+            if type(v122) ~= "number" then
+                v121 = 0
             else
-                v113 = v114
+                v121 = v122
             end
-            if not (v113 >= 1) then
+            if not (v121 >= 1) then
                 continue
             end
             return value_11
@@ -1028,27 +1087,27 @@ end
 function tbl_upv_1.AmmoShown(a1, a2)
     --[[
       name: AmmoShown
-      line: 631
+      line: 659
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
-    local v115 = tbl_upv_1.AmmoNext(a1, a2)
-    if v115 and a1 then
-        local v116 = a1:GetAttribute("Ammo_" .. v115)
-        local v117
-        if type(v116) ~= "number" then
-            v117 = 0
+    local v123 = tbl_upv_1.AmmoNext(a1, a2)
+    if v123 and a1 then
+        local v124 = a1:GetAttribute("Ammo_" .. v123)
+        local v125
+        if type(v124) ~= "number" then
+            v125 = 0
         else
-            v117 = v116
+            v125 = v124
         end
-        return v117, tbl_upv_1.AMMO_NOUN[v115] or (tbl_upv_1.AMMO_NOUN[a2])
+        return v125, tbl_upv_1.AMMO_NOUN[v123] or (tbl_upv_1.AMMO_NOUN[a2])
     end
     return tbl_upv_1.AmmoLeft(a1, a2), tbl_upv_1.AMMO_NOUN[a2]
 end
 function tbl_upv_1.ShotKind(a1, a2, a3)
     --[[
       name: ShotKind
-      line: 640
+      line: 668
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -1060,7 +1119,7 @@ end
 function tbl_upv_1.WatchAmmo(a1, a2, a3)
     --[[
       name: WatchAmmo
-      line: 645
+      line: 673
       upvalues:
         altAmmo (copy, index: 1)
     ]]
@@ -1070,14 +1129,14 @@ function tbl_upv_1.WatchAmmo(a1, a2, a3)
     end
     return tbl_7
 end
-local u8 = v1:WaitForChild("Sounds", 10)
+local u9 = v5:WaitForChild("Sounds", 10)
 local tbl_upv_8 = {}
-local u9 = 0
+local u10 = 0
 local tbl_upv_9 = {}
 local function soundPos(a1)
     --[[
       name: soundPos
-      line: 683
+      line: 711
     ]]
     if typeof(a1) ~= "Vector3" then
         if typeof(a1) == "Instance" then
@@ -1094,247 +1153,247 @@ end
 local function findSound(a1)
     --[[
       name: findSound
-      line: 657
+      line: 685
       upvalues:
         tbl_upv_8 (copy, index: 1)
-        u8 (copy, index: 2)
+        u9 (copy, index: 2)
     ]]
-    local v118 = tbl_upv_8[a1]
-    if v118 ~= nil then
-        return v118 or nil
+    local v126 = tbl_upv_8[a1]
+    if v126 ~= nil then
+        return v126 or nil
     end
-    if not u8 then
+    if not u9 then
         return nil
     end
-    local v119 = u8
+    local v127 = u9
     for key_1 in string.gmatch(a1, "[^/]+") do
-        v119 = v119 and v119:FindFirstChild(key_1)
+        v127 = v127 and v127:FindFirstChild(key_1)
     end
-    v119 = v119 or (u8:FindFirstChild(a1, true))
-    local v121 = not (v119) or not (v119:IsA("Sound")) or v119
-    tbl_upv_8[a1] = v121 or false
-    return v121
+    v127 = v127 or (u9:FindFirstChild(a1, true))
+    local v129 = not (v127) or not (v127:IsA("Sound")) or v127
+    tbl_upv_8[a1] = v129 or false
+    return v129
 end
 function tbl_upv_1.Sound(a1, a2, a3)
     --[[
       name: Sound
-      line: 699
+      line: 727
       upvalues:
         findSound (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
-        u9 (ref,  index: 3)
+        u10 (ref,  index: 3)
         Quality_upv_1 (copy, index: 4)
         tbl_upv_9 (copy, index: 5)
         Metrics_upv_1 (copy, index: 6)
-        u2 (ref,  index: 7)
+        u3 (ref,  index: 7)
         SoundService_upv_1 (copy, index: 8)
     ]]
-    local v122 = findSound(a1)
-    local v123
+    local v130 = findSound(a1)
+    local v131
     if typeof(a2) == "Vector3" then
-        v123 = a2
+        v131 = a2
     elseif typeof(a2) ~= "Instance" then
-        v123 = nil
+        v131 = nil
     elseif a2:IsA("BasePart") then
-        v123 = a2.Position
+        v131 = a2.Position
     elseif a2:IsA("Attachment") then
-        v123 = a2.WorldPosition
+        v131 = a2.WorldPosition
     else
-        v123 = nil
+        v131 = nil
     end
-    local v124 = nil
-    if v123 then
+    local v132 = nil
+    if v131 then
         local CurrentCamera_2 = workspace.CurrentCamera
         local Character_10 = LocalPlayer_upv_1.Character
-        v124 = (Character_10 ~= nil) and ((typeof(a2) == "Instance") and (a2:IsDescendantOf(Character_10)))
-        local v125 = ((not CurrentCamera_2) and 0) or ((CurrentCamera_2.CFrame.Position - v123).Magnitude)
-        if not (v124) then
-            local v126 = ((not v122) and 200) or (math.clamp(v122.RollOffMaxDistance, 60, 250))
-            if v126 < v125 or Quality_upv_1.maxSounds <= u9 and v125 > 25 then
+        v132 = (Character_10 ~= nil) and ((typeof(a2) == "Instance") and (a2:IsDescendantOf(Character_10)))
+        local v133 = ((not CurrentCamera_2) and 0) or ((CurrentCamera_2.CFrame.Position - v131).Magnitude)
+        if not (v132) then
+            local v134 = ((not v130) and 200) or (math.clamp(v130.RollOffMaxDistance, 60, 250))
+            if v134 < v133 or Quality_upv_1.maxSounds <= u10 and v133 > 25 then
                 return nil
             end
-            local v127 = os.clock()
-            local v128 = tbl_upv_9[a1]
-            if v128 and v127 - v128.t < 0.035 and (v128.p - v123).Magnitude < 8 then
+            local v135 = os.clock()
+            local v136 = tbl_upv_9[a1]
+            if v136 and v135 - v136.t < 0.035 and (v136.p - v131).Magnitude < 8 then
                 return nil
             end
-            tbl_upv_9[a1] = {t = v127, p = v123}
+            tbl_upv_9[a1] = {t = v135, p = v131}
         end
     end
-    local v129 = (a3 and (a3.PlaybackSpeed)) or 1
-    local v130 = (a3 and (a3.Volume)) or 1
-    if v123 then
-        u9 = u9 + 1
-        Metrics_upv_1.sounds = u9
-        local v131
-        if (v122) and (v122.TimeLength > 0) then
-            v131 = v122.TimeLength / math.max(0.05, v129)
+    local v137 = (a3 and (a3.PlaybackSpeed)) or 1
+    local v138 = (a3 and (a3.Volume)) or 1
+    if v131 then
+        u10 = u10 + 1
+        Metrics_upv_1.sounds = u10
+        local v139
+        if (v130) and (v130.TimeLength > 0) then
+            v139 = v130.TimeLength / math.max(0.05, v137)
         else
-            v131 = 1.5
+            v139 = 1.5
         end
         task.delay(
-            math.min(v131 + 0.2, 6),
+            math.min(v139 + 0.2, 6),
             function()
                 --[[
-                  line: 729
+                  line: 757
                   upvalues:
-                    u9 (ref,  index: 1)
+                    u10 (ref,  index: 1)
                     Metrics_upv_1 (copy, index: 2)
                 ]]
-                u9 = u9 - 1
-                Metrics_upv_1.sounds = u9
+                u10 = u10 - 1
+                Metrics_upv_1.sounds = u10
             end
         )
     end
-    if u2 then
+    if u3 then
         if a3 then
-            v123 = {pitch = 0}
-            v123.volume = v130
-            local v132
+            v131 = {pitch = 0}
+            v131.volume = v138
+            local v140
             if a3.PlaybackSpeed then
-                v132 = v129
+                v140 = v137
             else
-                v132 = nil
+                v140 = nil
             end
-            v123.pitch = v132
+            v131.pitch = v140
         else
-            v123 = nil
+            v131 = nil
         end
-        local success_11, v133 = pcall(u2.Play, a1, a2, v123)
-        if success_11 then
-            if typeof(v133) == "Instance" and v133:IsA("Sound") then
-                return v133
+        local success_10, v141 = pcall(u3.Play, a1, a2, v131)
+        if success_10 then
+            if typeof(v141) == "Instance" and v141:IsA("Sound") then
+                return v141
             end
             return nil
         end
     end
-    if not v122 then
+    if not v130 then
         return nil
     end
-    local v134 = v122:GetAttribute("PitchVary")
-    local v135 = math.random() * 2 - 1
-    local v136
-    if type(v134) ~= "number" then
-        v136 = 0.05
+    local v142 = v130:GetAttribute("PitchVary")
+    local v143 = math.random() * 2 - 1
+    local v144
+    if type(v142) ~= "number" then
+        v144 = 0.05
     else
-        v136 = v134
+        v144 = v142
     end
-    local u10 = v122:Clone()
-    u10.PlaybackSpeed = u10.PlaybackSpeed * (v129 * (1 + (v135 * v136)))
-    u10.Volume = u10.Volume * v130
+    local u11 = v130:Clone()
+    u11.PlaybackSpeed = u11.PlaybackSpeed * (v137 * (1 + (v143 * v144)))
+    u11.Volume = u11.Volume * v138
     local SFX_1 = SoundService_upv_1:FindFirstChild("SFX")
     if SFX_1 and SFX_1:IsA("SoundGroup") then
-        u10.SoundGroup = SFX_1
+        u11.SoundGroup = SFX_1
     end
-    local u11 = nil
+    local u12 = nil
     if typeof(a2) ~= "Vector3" then
         if typeof(a2) ~= "Instance" or not (a2:IsA("BasePart")) and not (a2:IsA("Attachment")) then
-            u10.Parent = SoundService_upv_1
-            u10:Play()
-            local v137 = ((u10.TimeLength > 0) and (u10.TimeLength / math.max(0.05, u10.PlaybackSpeed))) or 3
+            u11.Parent = SoundService_upv_1
+            u11:Play()
+            local v145 = ((u11.TimeLength > 0) and (u11.TimeLength / math.max(0.05, u11.PlaybackSpeed))) or 3
             task.delay(
-                math.min(v137 + 0.2, 12),
+                math.min(v145 + 0.2, 12),
                 function()
                     --[[
-                      line: 768
+                      line: 796
                       upvalues:
-                        u10 (copy, index: 1)
-                        u11 (ref,  index: 2)
+                        u11 (copy, index: 1)
+                        u12 (ref,  index: 2)
                     ]]
-                    u10:Destroy()
-                    if not u11 then
+                    u11:Destroy()
+                    if not u12 then
                         return
                     end
-                    u11:Destroy()
+                    u12:Destroy()
                 end
             )
-            return u10
+            return u11
         end
-        u10.Parent = a2
+        u11.Parent = a2
     else
-        local v138 = Instance.new("Attachment")
-        v138.WorldPosition = a2
-        v138.Parent = workspace.Terrain
-        u10.Parent = v138
-        u11 = v138
+        local v146 = Instance.new("Attachment")
+        v146.WorldPosition = a2
+        v146.Parent = workspace.Terrain
+        u11.Parent = v146
+        u12 = v146
     end
-    u10:Play()
-    local v137 = ((u10.TimeLength > 0) and (u10.TimeLength / math.max(0.05, u10.PlaybackSpeed))) or 3
+    u11:Play()
+    local v145 = ((u11.TimeLength > 0) and (u11.TimeLength / math.max(0.05, u11.PlaybackSpeed))) or 3
     task.delay(
-        math.min(v137 + 0.2, 12),
+        math.min(v145 + 0.2, 12),
         function()
             --[[
-              line: 768
+              line: 796
               upvalues:
-                u10 (copy, index: 1)
-                u11 (ref,  index: 2)
+                u11 (copy, index: 1)
+                u12 (ref,  index: 2)
             ]]
-            u10:Destroy()
-            if not u11 then
+            u11:Destroy()
+            if not u12 then
                 return
             end
-            u11:Destroy()
+            u12:Destroy()
         end
     )
-    return u10
+    return u11
 end
 function tbl_upv_1.Loop(a1, a2)
     --[[
       name: Loop
-      line: 778
+      line: 806
       upvalues:
-        u2 (ref,  index: 1)
+        u3 (ref,  index: 1)
         findSound (copy, index: 2)
         SoundService_upv_1 (copy, index: 3)
     ]]
-    if u2 then
-        local u12
-        if type(u2.Loop) == "function" then
-            local success_12, u12 = pcall(u2.Loop, a1, a2)
-            if success_12 and type(u12) == "function" then
+    if u3 then
+        local u13
+        if type(u3.Loop) == "function" then
+            local success_11, u13 = pcall(u3.Loop, a1, a2)
+            if success_11 and type(u13) == "function" then
                 return function(a3)
                     --[[
-                      line: 782
+                      line: 810
                       upvalues:
-                        u12 (copy, index: 1)
+                        u13 (copy, index: 1)
                     ]]
-                    pcall(u12, a3)
+                    pcall(u13, a3)
                 end
             end
         end
     end
-    local v139 = findSound(a1)
-    if not v139 then
+    local v147 = findSound(a1)
+    if not v147 then
         return function()
             --[[
-              line: 789
+              line: 817
             ]]
         end
     end
-    local u13 = v139:Clone()
-    u13.Looped = true
-    u13.Parent = a2 or SoundService_upv_1
-    u13:Play()
+    local u14 = v147:Clone()
+    u14.Looped = true
+    u14.Parent = a2 or SoundService_upv_1
+    u14:Play()
     return function()
         --[[
-          line: 795
+          line: 823
           upvalues:
-            u13 (copy, index: 1)
+            u14 (copy, index: 1)
         ]]
-        u13:Destroy()
+        u14:Destroy()
     end
 end
-local u14 = v1:WaitForChild("Animations", 10)
+local u15 = v5:WaitForChild("Animations", 10)
 local tbl_upv_10 = {}
 function tbl_upv_1.GetTrack(a1, a2)
     --[[
       name: GetTrack
-      line: 806
+      line: 834
       upvalues:
-        u14 (copy, index: 1)
+        u15 (copy, index: 1)
         tbl_upv_10 (copy, index: 2)
     ]]
-    if a1 and u14 then
+    if a1 and u15 then
         local tbl_upv_11 = tbl_upv_10[a1]
         if not (tbl_upv_11) then
             tbl_upv_11 = {}
@@ -1342,7 +1401,7 @@ function tbl_upv_1.GetTrack(a1, a2)
             a1.Destroying:Once(
                 function()
                     --[[
-                      line: 814
+                      line: 842
                       upvalues:
                         tbl_upv_10 (copy, index: 1)
                         a1 (copy, index: 2)
@@ -1353,7 +1412,7 @@ function tbl_upv_1.GetTrack(a1, a2)
             a1.AncestryChanged:Connect(
                 function()
                     --[[
-                      line: 821
+                      line: 849
                       upvalues:
                         a1 (copy, index: 1)
                         tbl_upv_10 (copy, index: 2)
@@ -1366,7 +1425,7 @@ function tbl_upv_1.GetTrack(a1, a2)
                         20,
                         function()
                             --[[
-                              line: 825
+                              line: 853
                               upvalues:
                                 tbl_upv_10 (copy, index: 1)
                                 a1 (copy, index: 2)
@@ -1380,7 +1439,7 @@ function tbl_upv_1.GetTrack(a1, a2)
                                 pcall(
                                     function()
                                         --[[
-                                          line: 831
+                                          line: 859
                                           upvalues:
                                             value_upv_13 (copy, index: 1)
                                         ]]
@@ -1394,36 +1453,36 @@ function tbl_upv_1.GetTrack(a1, a2)
                 end
             )
         end
-        local v141 = tbl_upv_11[a2]
-        if v141 then
-            return v141
+        local v149 = tbl_upv_11[a2]
+        if v149 then
+            return v149
         end
-        local u15 = u14:FindFirstChild(a2)
-        if u15 and u15:IsA("Animation") then
-            local success_13, v142 = pcall(
+        local u16 = u15:FindFirstChild(a2)
+        if u16 and u16:IsA("Animation") then
+            local success_12, v150 = pcall(
                 function()
                     --[[
-                      line: 847
+                      line: 875
                       upvalues:
                         a1 (copy, index: 1)
-                        u15 (copy, index: 2)
+                        u16 (copy, index: 2)
                     ]]
-                    return a1:LoadAnimation(u15)
+                    return a1:LoadAnimation(u16)
                 end
             )
-            if success_13 and v142 then
-                local v143 = u15:GetAttribute("Priority")
-                if type(v143) == "string" and (Enum.AnimationPriority[v143]) then
-                    v142.Priority = Enum.AnimationPriority[v143]
+            if success_12 and v150 then
+                local v151 = u16:GetAttribute("Priority")
+                if type(v151) == "string" and (Enum.AnimationPriority[v151]) then
+                    v150.Priority = Enum.AnimationPriority[v151]
                 else
-                    v142.Priority = Enum.AnimationPriority.Action
+                    v150.Priority = Enum.AnimationPriority.Action
                 end
-                local v144 = u15:GetAttribute("Looped")
-                if type(v144) == "boolean" then
-                    v142.Looped = v144
+                local v152 = u16:GetAttribute("Looped")
+                if type(v152) == "boolean" then
+                    v150.Looped = v152
                 end
-                tbl_upv_11[a2] = v142
-                return v142
+                tbl_upv_11[a2] = v150
+                return v150
             end
             return nil
         end
@@ -1431,116 +1490,111 @@ function tbl_upv_1.GetTrack(a1, a2)
     end
     return nil
 end
-local u16 = nil
+local u17 = nil
 function tbl_upv_1.SetAnimRelay(a1)
     --[[
       name: SetAnimRelay
-      line: 870
+      line: 898
       upvalues:
-        u16 (ref, index: 1)
+        u17 (ref, index: 1)
     ]]
-    u16 = a1
-end
-local u17 = nil
-local function notes()
-    --[[
-      name: notes
-      line: 875
-      upvalues:
-        u17 (ref,  index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-    ]]
-    if not (u17) then
-        local v145 = LocalPlayer_upv_1:FindFirstChild("PlayerScripts") and (LocalPlayer_upv_1.PlayerScripts:FindFirstChild("Core"))
-        local v146 = v145 and (v145:FindFirstChild("InputStats"))
-        if v146 and v146:IsA("ModuleScript") then
-            u17 = require(v146)
-            return u17.Take()
-        end
-        return 0
-    end
-    return u17.Take()
+    u17 = a1
 end
 local function relay(a1, a2, a3, a4, a5, a6)
     --[[
       name: relay
-      line: 886
+      line: 902
       upvalues:
-        u16 (ref,  index: 1)
+        u17 (ref,  index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
-        notes (copy, index: 3)
+        stats (copy, index: 3)
     ]]
+    local v153 = u17
     local Character_11 = LocalPlayer_upv_1.Character
-    if not u16 or not a1 or not Character_11 or not a1:IsDescendantOf(Character_11) then
+    if not v153 or not a1 or not Character_11 then
         return
     end
-    u16:FireServer(a2, a3, a4 or 1, a5 or 0.08, a6 or 1, notes())
+    if a1:IsDescendantOf(Character_11) then
+        local v154 = stats()
+        local v155 = ((not v154) and 0) or (v154.Take())
+        u17:FireServer(a2, a3, a4 or 1, a5 or 0.08, a6 or 1, v155)
+    end
 end
 local function playAnim(a1, a2, a3, a4, a5)
     --[[
       name: playAnim
-      line: 894
+      line: 910
       upvalues:
         tbl_upv_1 (copy, index: 1)
-        u14 (copy, index: 2)
+        u15 (copy, index: 2)
     ]]
     if not a2 then
         return nil
     end
-    local v147 = tbl_upv_1.GetTrack(a1, a2)
-    if not v147 then
+    local v156 = tbl_upv_1.GetTrack(a1, a2)
+    if not v156 then
         return nil
     end
-    local v148 = a3 or 1
-    local v149 = u14 and (u14:FindFirstChild(a2))
-    local v150 = v149 and (v149:GetAttribute("Speed"))
-    if type(v150) == "number" then
-        v148 = v148 * v150
+    local v157 = a3 or 1
+    local v158 = u15 and (u15:FindFirstChild(a2))
+    local v159 = v158 and (v158:GetAttribute("Speed"))
+    if type(v159) == "number" then
+        v157 = v157 * v159
     end
-    v147:Play(a4 or 0.08, a5 or 1, v148)
-    return v147
+    v156:Play(a4 or 0.08, a5 or 1, v157)
+    return v156
 end
 function tbl_upv_1.PlayAnim(a1, a2, a3, a4, a5)
     --[[
       name: PlayAnim
-      line: 912
+      line: 928
       upvalues:
-        playAnim (copy, index: 1)
-        u16 (ref,  index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
-        notes (copy, index: 4)
+        stats (copy, index: 1)
+        playAnim (copy, index: 2)
+        u17 (ref,  index: 3)
+        LocalPlayer_upv_1 (copy, index: 4)
     ]]
-    local v151 = playAnim(a1, a2, a3, a4, a5)
-    if v151 and a2 then
+    local v160 = stats()
+    if v160 then
+        v160.Caller(8192)
+    end
+    local v161 = playAnim(a1, a2, a3, a4, a5)
+    if v161 and a2 then
+        local v162 = u17
         local Character_12 = LocalPlayer_upv_1.Character
-        if u16 and a1 and Character_12 and a1:IsDescendantOf(Character_12) then
-            u16:FireServer("Play", a2, a3 or 1, a4 or 0.08, a5 or 1, notes())
+        if v162 and a1 and Character_12 and a1:IsDescendantOf(Character_12) then
+            local v163 = stats()
+            local v164 = ((not v163) and 0) or (v163.Take())
+            u17:FireServer("Play", a2, a3 or 1, a4 or 0.08, a5 or 1, v164)
         end
     end
-    return v151
+    return v161
 end
 function tbl_upv_1.PlayHold(a1, a2, a3)
     --[[
       name: PlayHold
-      line: 921
+      line: 938
       upvalues:
         playAnim (copy, index: 1)
-        u16 (ref,  index: 2)
+        u17 (ref,  index: 2)
         LocalPlayer_upv_1 (copy, index: 3)
-        notes (copy, index: 4)
+        stats (copy, index: 4)
     ]]
     local u18 = playAnim(a1, a2, a3, 0.08)
     if not u18 then
         return nil
     end
+    local v165 = u17
     local Character_13 = LocalPlayer_upv_1.Character
-    if u16 and a1 and Character_13 and a1:IsDescendantOf(Character_13) then
-        u16:FireServer("Hold", a2, a3 or 1, 0.08, 1, notes())
+    if v165 and a1 and Character_13 and a1:IsDescendantOf(Character_13) then
+        local v166 = stats()
+        local v167 = ((not v166) and 0) or (v166.Take())
+        u17:FireServer("Hold", a2, a3 or 1, 0.08, 1, v167)
     end
     local function freeze()
         --[[
           name: freeze
-          line: 928
+          line: 945
           upvalues:
             u18 (copy, index: 1)
         ]]
@@ -1553,13 +1607,13 @@ function tbl_upv_1.PlayHold(a1, a2, a3)
     task.spawn(
         function()
             --[[
-              line: 934
+              line: 951
               upvalues:
                 u18 (copy, index: 1)
             ]]
-            local v152 = os.clock()
+            local v168 = os.clock()
             while u18.Length == 0 do
-                if os.clock() - v152 < 2 then
+                if os.clock() - v168 < 2 then
                     task.wait()
                     continue
                 else
@@ -1579,25 +1633,27 @@ end
 function tbl_upv_1.StopAnim(a1, a2, a3)
     --[[
       name: StopAnim
-      line: 946
+      line: 963
       upvalues:
         tbl_upv_10 (copy, index: 1)
-        u16 (ref,  index: 2)
+        u17 (ref,  index: 2)
         LocalPlayer_upv_1 (copy, index: 3)
-        notes (copy, index: 4)
+        stats (copy, index: 4)
     ]]
     if not a1 then
         return
     end
     if a2 then
-        local v153 = tbl_upv_10[a1]
-        local v154 = v153 and (v153[a2])
-        if v154 and v154.IsPlaying then
-            v154:Stop(a3 or 0.12)
-            local v155 = u16
+        local v169 = tbl_upv_10[a1]
+        local v170 = v169 and (v169[a2])
+        if v170 and v170.IsPlaying then
+            v170:Stop(a3 or 0.12)
+            local v171 = u17
             local Character_14 = LocalPlayer_upv_1.Character
-            if v155 and a1 and Character_14 and a1:IsDescendantOf(Character_14) then
-                v155:FireServer("Stop", a2, 1, (a3 or 0.12) or 0.08, 1, notes())
+            if v171 and a1 and Character_14 and a1:IsDescendantOf(Character_14) then
+                local v172 = stats()
+                local v173 = ((not v172) and 0) or (v172.Take())
+                u17:FireServer("Stop", a2, 1, (a3 or 0.12) or 0.08, 1, v173)
             end
         end
     end
@@ -1605,15 +1661,15 @@ end
 function tbl_upv_1.Preload(a1)
     --[[
       name: Preload
-      line: 958
+      line: 975
       upvalues:
-        u14 (copy, index: 1)
+        u15 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
     ]]
-    if not u14 then
+    if not u15 then
         return
     end
-    for _, value_14 in u14:GetChildren() do
+    for _, value_14 in u15:GetChildren() do
         if value_14:IsA("Animation") then
             tbl_upv_1.GetTrack(a1, value_14.Name)
         end
@@ -1622,14 +1678,14 @@ end
 function tbl_upv_1.ToolPoint(a1, a2)
     --[[
       name: ToolPoint
-      line: 972
+      line: 989
     ]]
     if not a1 then
         return nil
     end
-    local v156 = a1:FindFirstChild(a2, true)
-    if v156 and v156:IsA("Attachment") then
-        return v156.WorldPosition
+    local v174 = a1:FindFirstChild(a2, true)
+    if v174 and v174:IsA("Attachment") then
+        return v174.WorldPosition
     end
     local Handle_1 = a1:FindFirstChild("Handle")
     if Handle_1 and Handle_1:IsA("BasePart") then
@@ -1640,29 +1696,29 @@ end
 local function sightOrigin(a1, a2)
     --[[
       name: sightOrigin
-      line: 996
+      line: 1013
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
     if tbl_upv_1.InFirstPerson() then
         return a2
     end
-    local v157 = tbl_upv_1.AimPoint()
-    local v158 = v157 - a2
-    if v158.Magnitude < 3.5 then
+    local v175 = tbl_upv_1.AimPoint()
+    local v176 = v175 - a2
+    if v176.Magnitude < 3.5 then
         return a2
     end
-    local v159 = tbl_upv_1.WorldParams(tbl_upv_1.Targets())
-    if not workspace:Raycast(a2, v158.Unit * (v158.Magnitude - 1.5), v159) then
+    local v177 = tbl_upv_1.WorldParams(tbl_upv_1.Targets())
+    if not workspace:Raycast(a2, v176.Unit * (v176.Magnitude - 1.5), v177) then
         return a2
     end
-    local v160 = tbl_upv_1.GetAimRay()
-    local Unit_7 = v160.Direction.Unit
-    local v161 = v160.Origin + Unit_7 * math.max((a1 - v160.Origin):Dot(Unit_7), 0)
-    local v162 = v157 - v161
-    if not ((v161 - a1).Magnitude > 7) and not (v162.Magnitude < 3.5) and not (v162.Unit:Dot(Unit_7) < 0.9) then
-        if not (workspace:Raycast(a1, v161 - a1, v159)) and not (workspace:Raycast(v161, v162.Unit * (v162.Magnitude - 1.5), v159)) then
-            return v161
+    local v178 = tbl_upv_1.GetAimRay()
+    local Unit_7 = v178.Direction.Unit
+    local v179 = v178.Origin + Unit_7 * math.max((a1 - v178.Origin):Dot(Unit_7), 0)
+    local v180 = v175 - v179
+    if not ((v179 - a1).Magnitude > 7) and not (v180.Magnitude < 3.5) and not (v180.Unit:Dot(Unit_7) < 0.9) then
+        if not (workspace:Raycast(a1, v179 - a1, v177)) and not (workspace:Raycast(v179, v180.Unit * (v180.Magnitude - 1.5), v177)) then
+            return v179
         end
         return a2
     end
@@ -1671,27 +1727,27 @@ end
 function tbl_upv_1.ShotOrigin(a1, a2)
     --[[
       name: ShotOrigin
-      line: 1024
+      line: 1041
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
         sightOrigin (copy, index: 3)
     ]]
-    local v163 = LocalPlayer_upv_1.Character
-    local _ = v163 and (v163:FindFirstChild("Head"))
-    local v164 = v163 and (v163:FindFirstChild("HumanoidRootPart"))
-    if v163 then
-        v163 = v163.Position
+    local v181 = LocalPlayer_upv_1.Character
+    local _ = v181 and (v181:FindFirstChild("Head"))
+    local v182 = v181 and (v181:FindFirstChild("HumanoidRootPart"))
+    if v181 then
+        v181 = v181.Position
     else
-        v163 = (v164 and (v164.Position + Vector3.new(0, 1.5, 0))) or Vector3.new(0, 0, 0)
+        v181 = (v182 and (v182.Position + Vector3.new(0, 1.5, 0))) or Vector3.new(0, 0, 0)
     end
-    local v165 = tbl_upv_1.ToolPoint(a1, a2 or "Muzzle")
-    if v165 and not ((v165 - v163).Magnitude > 7) then
-        if workspace:Raycast(v163, v165 - v163, tbl_upv_1.WorldParams(tbl_upv_1.Targets())) then
-            return (sightOrigin(v163, v163))
+    local v183 = tbl_upv_1.ToolPoint(a1, a2 or "Muzzle")
+    if v183 and not ((v183 - v181).Magnitude > 7) then
+        if workspace:Raycast(v181, v183 - v181, tbl_upv_1.WorldParams(tbl_upv_1.Targets())) then
+            return (sightOrigin(v181, v181))
         end
-        return (sightOrigin(v163, v165))
+        return (sightOrigin(v181, v183))
     end
-    return v163
+    return v181
 end
 return tbl_upv_1

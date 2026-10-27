@@ -2649,7 +2649,7 @@ local function start()
         end
     )
 end
-local function SetAiming(a1, a2)
+function tbl_upv_1.SetAiming(a1, a2)
     --[[
       name: SetAiming
       line: 1655
@@ -2665,7 +2665,6 @@ local function SetAiming(a1, a2)
         u5 = v220
     end
 end
-tbl_upv_1.SetAiming = SetAiming
 function tbl_upv_1.IsAiming()
     --[[
       name: IsAiming
@@ -3238,16 +3237,39 @@ function tbl_upv_1.GetPitch()
     ]]
     return u3
 end
+local u78 = nil
+local function caller(a1)
+    --[[
+      name: caller
+      line: 2007
+      upvalues:
+        u78 (ref,  index: 1)
+        LocalPlayer_upv_1 (copy, index: 2)
+    ]]
+    if not (u78) then
+        local v242 = LocalPlayer_upv_1 and (LocalPlayer_upv_1:FindFirstChild("PlayerScripts") and (LocalPlayer_upv_1.PlayerScripts:FindFirstChild("Core")))
+        local v243 = v242 and (v242:FindFirstChild("InputStats"))
+        if v243 and v243:IsA("ModuleScript") then
+            u78 = require(v243)
+            u78.Caller(a1)
+            return
+        end
+        return
+    end
+    u78.Caller(a1)
+end
 function tbl_upv_1.SetLook(a1, a2)
     --[[
       name: SetLook
-      line: 2005
+      line: 2019
       upvalues:
-        u2 (ref, index: 1)
-        u3 (ref, index: 2)
-        u35 (ref, index: 3)
-        u34 (ref, index: 4)
+        caller (copy, index: 1)
+        u2 (ref,  index: 2)
+        u3 (ref,  index: 3)
+        u35 (ref,  index: 4)
+        u34 (ref,  index: 5)
     ]]
+    caller(32768)
     u2 = ((a1 + math.pi) % math.tau) - math.pi
     if a2 then
         u3 = math.clamp(a2, -1.3962634015954636, 1.361356816555577)
@@ -3257,7 +3279,7 @@ end
 function tbl_upv_1.SetSensitivity(a1)
     --[[
       name: SetSensitivity
-      line: 2014
+      line: 2029
       upvalues:
         u8 (ref, index: 1)
     ]]
@@ -3269,7 +3291,7 @@ end
 function tbl_upv_1.AddTouchLook(a1)
     --[[
       name: AddTouchLook
-      line: 2022
+      line: 2037
       upvalues:
         zero_upv_1 (ref, index: 1)
     ]]
@@ -3278,7 +3300,7 @@ end
 function tbl_upv_1.GetSensitivity()
     --[[
       name: GetSensitivity
-      line: 2026
+      line: 2041
       upvalues:
         u8 (ref, index: 1)
     ]]
@@ -3287,7 +3309,7 @@ end
 function tbl_upv_1.SetFOV(a1)
     --[[
       name: SetFOV
-      line: 2031
+      line: 2046
       upvalues:
         u6 (ref, index: 1)
     ]]
@@ -3299,7 +3321,7 @@ end
 function tbl_upv_1.GetFOV()
     --[[
       name: GetFOV
-      line: 2037
+      line: 2052
       upvalues:
         u6 (ref, index: 1)
     ]]
@@ -3308,7 +3330,7 @@ end
 function tbl_upv_1.SetAimZoom(a1)
     --[[
       name: SetAimZoom
-      line: 2042
+      line: 2057
       upvalues:
         tbl_upv_2 (copy, index: 1)
     ]]
@@ -3320,7 +3342,7 @@ end
 function tbl_upv_1.SetAimSensitivity(a1)
     --[[
       name: SetAimSensitivity
-      line: 2049
+      line: 2064
       upvalues:
         tbl_upv_2 (copy, index: 1)
     ]]
@@ -3332,7 +3354,7 @@ end
 function tbl_upv_1.SetZoom(a1)
     --[[
       name: SetZoom
-      line: 2056
+      line: 2071
       upvalues:
         u7 (ref, index: 1)
     ]]
@@ -3344,23 +3366,23 @@ end
 function tbl_upv_1.SpectateNext(a1)
     --[[
       name: SpectateNext
-      line: 2063
+      line: 2078
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
     local Next_1 = Spectate_upv_1.Next
-    local v242
+    local v244
     if typeof(a1) == "number" and (a1 < 0) then
-        v242 = -1
+        v244 = -1
     else
-        v242 = 1
+        v244 = 1
     end
-    Next_1(v242)
+    Next_1(v244)
 end
 function tbl_upv_1.GetSpectateTarget()
     --[[
       name: GetSpectateTarget
-      line: 2068
+      line: 2083
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
@@ -3369,7 +3391,7 @@ end
 function tbl_upv_1.GetSpectateMode()
     --[[
       name: GetSpectateMode
-      line: 2073
+      line: 2088
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
@@ -3378,7 +3400,7 @@ end
 function tbl_upv_1.GetKiller()
     --[[
       name: GetKiller
-      line: 2078
+      line: 2093
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
@@ -3388,7 +3410,7 @@ tbl_upv_1.SpectateChanged = Spectate_upv_1.Changed
 function tbl_upv_1.PlayCinematic(a1, a2, a3)
     --[[
       name: PlayCinematic
-      line: 2091
+      line: 2106
       upvalues:
         u23 (ref,  index: 1)
         u25 (ref,  index: 2)
@@ -3403,43 +3425,43 @@ function tbl_upv_1.PlayCinematic(a1, a2, a3)
     if typeof(a1) ~= "CFrame" then
         return
     end
-    local v243 = a3 or {}
+    local v245 = a3 or {}
     local tbl_23 = {untilStopped = 0, hide = 0, fov = 0}
     tbl_23.cf = a1
-    local v244
+    local v246
     if typeof(a2) ~= "number" then
-        v244 = nil
+        v246 = nil
     else
-        v244 = math.clamp(a2, 20, 100)
+        v246 = math.clamp(a2, 20, 100)
     end
-    tbl_23.fov = v244
-    if v243.hideCharacter ~= false then
-        v244 = true
+    tbl_23.fov = v246
+    if v245.hideCharacter ~= false then
+        v246 = true
     else
-        v244 = false
+        v246 = false
     end
-    tbl_23.hide = v244
-    if v243.untilStopped == true then
-        v244 = true
+    tbl_23.hide = v246
+    if v245.untilStopped == true then
+        v246 = true
     else
-        v244 = false
+        v246 = false
     end
-    tbl_23.untilStopped = v244
+    tbl_23.untilStopped = v246
     u23 = tbl_23
     u25 = 1
-    u26 = 1 / math.max(0.05, v243.duration or 0.6)
+    u26 = 1 / math.max(0.05, v245.duration or 0.6)
     u27 = os.clock()
     u28 = LocalPlayer_upv_1 and (LocalPlayer_upv_1.Character)
     if (tbl_23.fov) then
         return
     end
-    v244 = Workspace_upv_1.CurrentCamera and Workspace_upv_1.CurrentCamera.FieldOfView or u6
-    u29 = v244
+    v246 = Workspace_upv_1.CurrentCamera and Workspace_upv_1.CurrentCamera.FieldOfView or u6
+    u29 = v246
 end
 function tbl_upv_1.StopCinematic(a1)
     --[[
       name: StopCinematic
-      line: 2112
+      line: 2127
       upvalues:
         u25 (ref, index: 1)
         u26 (ref, index: 2)
@@ -3450,17 +3472,17 @@ end
 function tbl_upv_1.IsCinematic()
     --[[
       name: IsCinematic
-      line: 2117
+      line: 2132
       upvalues:
         u25 (ref, index: 1)
     ]]
-    local v245 = u25 > 0
-    return v245
+    local v247 = u25 > 0
+    return v247
 end
 function tbl_upv_1.SetEnabled(a1)
     --[[
       name: SetEnabled
-      line: 2122
+      line: 2137
       upvalues:
         u9 (ref,  index: 1)
         Workspace_upv_1 (copy, index: 2)
@@ -3489,16 +3511,16 @@ function tbl_upv_1.SetEnabled(a1)
         end
         UserInputService_upv_1.MouseBehavior = Enum.MouseBehavior.Default
         UserInputService_upv_1.MouseIconEnabled = true
-        local v246
+        local v248
         if LocalPlayer_upv_1 then
-            v246 = LocalPlayer_upv_1.Character
+            v248 = LocalPlayer_upv_1.Character
         else
-            v246 = LocalPlayer_upv_1
+            v248 = LocalPlayer_upv_1
         end
         local _
-        if v246 then
-            _ = v246:FindFirstChild("HumanoidRootPart")
-            local v247 = v246:FindFirstChildOfClass("Humanoid")
+        if v248 then
+            _ = v248:FindFirstChild("HumanoidRootPart")
+            local v249 = v248:FindFirstChildOfClass("Humanoid")
         end
         u32 = false
         if u33 then
@@ -3521,7 +3543,7 @@ end
 function tbl_upv_1.IsEnabled()
     --[[
       name: IsEnabled
-      line: 2145
+      line: 2160
       upvalues:
         u9 (ref, index: 1)
     ]]
@@ -3530,7 +3552,7 @@ end
 function tbl_upv_1.DebugOcclusion(a1)
     --[[
       name: DebugOcclusion
-      line: 2152
+      line: 2167
       upvalues:
         Occlusion_upv_1 (copy, index: 1)
     ]]
@@ -3540,7 +3562,7 @@ tbl_upv_1.FrameLog = nil
 function tbl_upv_1.DebugFrames(a1)
     --[[
       name: DebugFrames
-      line: 2160
+      line: 2175
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -3554,7 +3576,7 @@ end
 function tbl_upv_1.GetDrawnRoot()
     --[[
       name: GetDrawnRoot
-      line: 2173
+      line: 2188
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
@@ -3563,7 +3585,7 @@ end
 function tbl_upv_1.Drawn(a1)
     --[[
       name: Drawn
-      line: 2177
+      line: 2192
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
@@ -3572,7 +3594,7 @@ end
 function tbl_upv_1.GetDrawnModel()
     --[[
       name: GetDrawnModel
-      line: 2181
+      line: 2196
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
@@ -3582,20 +3604,20 @@ tbl_upv_1.DrawnChanged = Smoothing_upv_1.DrawnChanged
 function tbl_upv_1.SmoothingTrace(a1)
     --[[
       name: SmoothingTrace
-      line: 2189
+      line: 2204
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
-    local v247 = Smoothing_upv_1.Trace(a1)
-    if v247 then
-        return (game:GetService("HttpService"):JSONEncode(v247))
+    local v249 = Smoothing_upv_1.Trace(a1)
+    if v249 then
+        return (game:GetService("HttpService"):JSONEncode(v249))
     end
     return nil
 end
 function tbl_upv_1.DebugStats()
     --[[
       name: DebugStats
-      line: 2194
+      line: 2209
       upvalues:
         u20 (ref,  index: 1)
         u17 (ref,  index: 2)
@@ -3612,19 +3634,19 @@ function tbl_upv_1.DebugStats()
         Simulation_upv_1 (copy, index: 13)
         u61 (ref,  index: 14)
     ]]
-    local v248 = os.clock()
-    local v249 = math.max(0.001, v248 - u20)
+    local v250 = os.clock()
+    local v251 = math.max(0.001, v250 - u20)
     local tbl_24 = {msPerFrame = 0, touchesIgnored = 0, touchLookPx = 0, maxFrameMs = 0, fps = 0}
-    tbl_24.msPerSec = (u17 * 1000) / v249
+    tbl_24.msPerSec = (u17 * 1000) / v251
     tbl_24.msPerFrame = ((u19 > 0) and (u17 * 1000 / u19)) or 0
     tbl_24.maxFrameMs = u18 * 1000
-    tbl_24.fps = u19 / v249
+    tbl_24.fps = u19 / v251
     tbl_24.touchLookPx = u40
     tbl_24.touchesIgnored = u41
     u17 = 0
     u18 = 0
     u19 = 0
-    u20 = v248
+    u20 = v250
     for key_10, value_32 in Fades_upv_1.Stats() do
         tbl_24[key_10] = value_32
     end
@@ -3640,8 +3662,8 @@ function tbl_upv_1.DebugStats()
     for key_14, value_36 in Guards_upv_1.Stats() do
         tbl_24["guard_" .. key_14] = value_36
     end
-    local v250 = RunService_upv_1:IsStudio()
-    if v250 and Simulation_upv_1.WriteGuardStats then
+    local v252 = RunService_upv_1:IsStudio()
+    if v252 and Simulation_upv_1.WriteGuardStats then
         for key_15, value_37 in Simulation_upv_1.WriteGuardStats() do
             tbl_24["wg_" .. key_15] = value_37
         end
@@ -3653,13 +3675,13 @@ end
 if u1 and LocalPlayer_upv_1 then
     local TribesCameraBridge_upv_1 = LocalPlayer_upv_1:FindFirstChild("TribesCameraBridge")
     if TribesCameraBridge_upv_1 then
-        local v251 = TribesCameraBridge_upv_1:IsA("BindableFunction")
-        if v251 then
+        local v253 = TribesCameraBridge_upv_1:IsA("BindableFunction")
+        if v253 then
             for key_upv_16, value_38 in tbl_upv_1 do
                 if type(value_38) == "function" then
                     tbl_upv_1[key_upv_16] = function(...)
                         --[[
-                          line: 2242
+                          line: 2257
                           upvalues:
                             TribesCameraBridge_upv_1 (copy, index: 1)
                             key_upv_16 (copy, index: 2)
@@ -3669,41 +3691,41 @@ if u1 and LocalPlayer_upv_1 then
                 end
             end
         else
-            local v252 = Instance.new("BindableFunction")
-            v252.Name = "TribesCameraBridge"
-            local u78 = table.clone(tbl_upv_1)
-            v252.OnInvoke = function(a1, ...)
+            local v254 = Instance.new("BindableFunction")
+            v254.Name = "TribesCameraBridge"
+            local u79 = table.clone(tbl_upv_1)
+            v254.OnInvoke = function(a1, ...)
                 --[[
-                  line: 2251
+                  line: 2266
                   upvalues:
-                    u78 (copy, index: 1)
+                    u79 (copy, index: 1)
                 ]]
-                local v253 = u78[a1]
-                if type(v253) ~= "function" then
+                local v255 = u79[a1]
+                if type(v255) ~= "function" then
                     return nil
                 end
-                return v253(...)
+                return v255(...)
             end
-            v252.Parent = LocalPlayer_upv_1
+            v254.Parent = LocalPlayer_upv_1
             start()
         end
     else
-        local v252 = Instance.new("BindableFunction")
-        v252.Name = "TribesCameraBridge"
-        local u78 = table.clone(tbl_upv_1)
-        v252.OnInvoke = function(a1, ...)
+        local v254 = Instance.new("BindableFunction")
+        v254.Name = "TribesCameraBridge"
+        local u79 = table.clone(tbl_upv_1)
+        v254.OnInvoke = function(a1, ...)
             --[[
-              line: 2251
+              line: 2266
               upvalues:
-                u78 (copy, index: 1)
+                u79 (copy, index: 1)
             ]]
-            local v253 = u78[a1]
-            if type(v253) ~= "function" then
+            local v255 = u79[a1]
+            if type(v255) ~= "function" then
                 return nil
             end
-            return v253(...)
+            return v255(...)
         end
-        v252.Parent = LocalPlayer_upv_1
+        v254.Parent = LocalPlayer_upv_1
         start()
     end
 end
