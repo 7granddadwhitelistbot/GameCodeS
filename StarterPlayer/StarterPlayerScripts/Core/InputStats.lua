@@ -1,19 +1,15 @@
 local Players_upv_1 = game:GetService("Players")
-local UserInputService_upv_1 = game:GetService("UserInputService")
+local _ = game:GetService("UserInputService")
 local tbl_1 = {}
 local tbl_upv_2 = {BodyVelocity = 1, BodyThrust = 16, RocketPropulsion = 64, BodyForce = 8, BodyAngularVelocity = 32, BodyPosition = 4, BodyGyro = 2}
-local tbl_upv_3 = {}
-for _, note in {"ButtonA", "ButtonB", "ButtonX", "ButtonY"} do
-    tbl_upv_3[Enum.KeyCode[note]] = true
-end
 local u1 = 0
 local u2 = false
+local tbl_upv_3 = {}
 local tbl_upv_4 = {}
-local tbl_upv_5 = {}
 local function note(a1)
     --[[
       name: note
-      line: 56
+      line: 50
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -22,7 +18,7 @@ end
 local function watch(a1)
     --[[
       name: watch
-      line: 60
+      line: 54
       upvalues:
         tbl_upv_2 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -30,7 +26,7 @@ local function watch(a1)
     local function look_1(a2)
         --[[
           name: look
-          line: 61
+          line: 55
           upvalues:
             tbl_upv_2 (copy, index: 1)
             a1 (copy, index: 2)
@@ -62,7 +58,7 @@ end
 function tbl_1.Note(a1)
     --[[
       name: Note
-      line: 75
+      line: 69
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -71,24 +67,24 @@ end
 function tbl_1.Watch(a1, a2)
     --[[
       name: Watch
-      line: 80
+      line: 74
       upvalues:
-        tbl_upv_4 (copy, index: 1)
+        tbl_upv_3 (copy, index: 1)
     ]]
     for key_1, value_2 in next, a1 do
         if type(value_2) == "function" then
-            table.insert(tbl_upv_4, {t = a1, k = key_1, f = value_2, bit = a2})
+            table.insert(tbl_upv_3, {t = a1, k = key_1, f = value_2, bit = a2})
         end
     end
 end
 local function ours(a1)
     --[[
       name: ours
-      line: 89
+      line: 83
       upvalues:
-        tbl_upv_5 (copy, index: 1)
+        tbl_upv_4 (copy, index: 1)
     ]]
-    local v4 = tbl_upv_5[a1]
+    local v4 = tbl_upv_4[a1]
     local v5 = nil
     if v4 == nil then
         v5 = string.match(a1, "^([%w_]+)%.")
@@ -99,17 +95,17 @@ local function ours(a1)
             v6, v7 = success_1, v8
         end
         v4 = v6 and (v7 ~= nil)
-        tbl_upv_5[a1] = v4
+        tbl_upv_4[a1] = v4
     end
     return v4
 end
 function tbl_1.Caller(a1)
     --[[
       name: Caller
-      line: 103
+      line: 97
       upvalues:
         u1 (ref,  index: 1)
-        tbl_upv_5 (copy, index: 2)
+        tbl_upv_4 (copy, index: 2)
     ]]
     if not bit32.btest(u1, a1) then
         local v9, v10 = nil, nil
@@ -121,7 +117,7 @@ function tbl_1.Caller(a1)
             if v11 == "[C]" then
                 continue
             end
-            local v12 = tbl_upv_5[v11]
+            local v12 = tbl_upv_4[v11]
             if v12 == nil then
                 local v13 = string.match(v11, "^([%w_]+)%.")
                 v9 = false
@@ -131,7 +127,7 @@ function tbl_1.Caller(a1)
                     v9, v10 = success_2, v14
                 end
                 v12 = v9 and (v10 ~= nil)
-                tbl_upv_5[v11] = v12
+                tbl_upv_4[v11] = v12
             end
             if v12 then
                 continue
@@ -144,12 +140,12 @@ end
 function tbl_1.Take()
     --[[
       name: Take
-      line: 120
+      line: 114
       upvalues:
-        tbl_upv_4 (copy, index: 1)
+        tbl_upv_3 (copy, index: 1)
         u1 (ref,  index: 2)
     ]]
-    for _, value_3 in tbl_upv_4 do
+    for _, value_3 in tbl_upv_3 do
         if rawget(value_3.t, value_3.k) ~= value_3.f then
             u1 = bit32.bor(u1, value_3.bit)
         end
@@ -161,14 +157,12 @@ end
 function tbl_1.Start()
     --[[
       name: Start
-      line: 131
+      line: 125
       upvalues:
         u2 (ref,  index: 1)
         Players_upv_1 (copy, index: 2)
         watch (copy, index: 3)
-        UserInputService_upv_1 (copy, index: 4)
-        tbl_upv_3 (copy, index: 5)
-        u1 (ref,  index: 6)
+        u1 (ref,  index: 4)
     ]]
     if u2 then
         return
@@ -179,18 +173,25 @@ function tbl_1.Start()
         task.spawn(watch, LocalPlayer_1.Character)
     end
     LocalPlayer_1.CharacterAdded:Connect(watch)
-    UserInputService_upv_1.InputBegan:Connect(
-        function(a1)
+    local Shared_1 = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
+    require(Shared_1:WaitForChild("Simulation")).OnForeignWrite(
+        function()
             --[[
-              line: 141
+              line: 138
               upvalues:
-                tbl_upv_3 (copy, index: 1)
-                u1 (ref,  index: 2)
+                u1 (ref, index: 1)
             ]]
-            if a1.UserInputType ~= Enum.UserInputType.Keyboard or not tbl_upv_3[a1.KeyCode] then
-                return
-            end
-            u1 = bit32.bor(u1, 128)
+            u1 = bit32.bor(u1, 2048)
+        end
+    )
+    require(Shared_1:WaitForChild("Camera")).OnForeignWrite(
+        function()
+            --[[
+              line: 142
+              upvalues:
+                u1 (ref, index: 1)
+            ]]
+            u1 = bit32.bor(u1, 65536)
         end
     )
 end

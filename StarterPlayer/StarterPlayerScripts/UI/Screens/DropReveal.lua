@@ -3598,10 +3598,9 @@ function tbl_1.Init(a1)
             tbl_upv_11 (copy, index: 3)
             u9 (ref,  index: 4)
             tap (copy, index: 5)
-            UI_upv_1 (copy, index: 6)
-            Players_upv_1 (copy, index: 7)
-            tbl_upv_7 (copy, index: 8)
-            layout (copy, index: 9)
+            tbl_upv_7 (copy, index: 6)
+            UI_upv_1 (copy, index: 7)
+            layout (copy, index: 8)
         ]]
         if (u34) or not u8 then
             return
@@ -3637,59 +3636,23 @@ function tbl_1.Init(a1)
                 end
             end
         )
-        UI_upv_1.TrackPress(tbl_upv_11.skip)
-        UI_upv_1.TrackPress(tbl_upv_11.cont)
-        local function pressed_upv_1(a103, a104)
-            --[[
-              name: pressed
-              line: 2452
-              upvalues:
-                UI_upv_1 (copy, index: 1)
-                Players_upv_1 (copy, index: 2)
-            ]]
-            if typeof(a103) ~= "Instance" then
-                return
-            end
-            if a103:IsA("InputObject") then
-                local v230 = UI_upv_1.PressKind(a103, a104)
-                local v231
-                if v230 == nil and a103.UserInputType == Enum.UserInputType.Keyboard then
-                    v231 = 256
-                elseif v230 == nil or v230 == -2 then
-                    v231 = 4096
-                else
-                    v231 = nil
-                end
-                local v232 = Players_upv_1.LocalPlayer:FindFirstChild("PlayerScripts") and (Players_upv_1.LocalPlayer.PlayerScripts:FindFirstChild("Core"))
-                local v233 = v232 and (v232:FindFirstChild("InputStats"))
-                if v231 and v233 and v233:IsA("ModuleScript") then
-                    require(v233).Note(v231)
-                end
-            end
-        end
         tbl_upv_11.skip.Activated:Connect(
-            function(a105)
+            function()
                 --[[
-                  line: 2466
+                  line: 2448
                   upvalues:
-                    pressed_upv_1 (copy, index: 1)
-                    tbl_upv_11 (copy, index: 2)
-                    tbl_upv_7 (copy, index: 3)
+                    tbl_upv_7 (copy, index: 1)
                 ]]
-                pressed_upv_1(a105, tbl_upv_11.skip)
                 tbl_upv_7.Skip()
             end
         )
         tbl_upv_11.cont.Activated:Connect(
-            function(a106)
+            function()
                 --[[
-                  line: 2470
+                  line: 2451
                   upvalues:
-                    pressed_upv_1 (copy, index: 1)
-                    tbl_upv_11 (copy, index: 2)
-                    u9 (ref,  index: 3)
+                    u9 (ref, index: 1)
                 ]]
-                pressed_upv_1(a106, tbl_upv_11.cont)
                 if not u9 or u9.phase ~= "summary" then
                     return
                 end
@@ -3701,27 +3664,27 @@ function tbl_1.Init(a1)
         tbl_upv_11.safe:GetPropertyChangedSignal("AbsoluteSize"):Connect(layout)
     end
     local Play_upv_2 = tbl_upv_7.Play
-    tbl_upv_7.Play = function(a107, a108)
+    tbl_upv_7.Play = function(a103, a104)
         --[[
-          line: 2481
+          line: 2461
           upvalues:
             Play_upv_2 (copy, index: 1)
             wire (copy, index: 2)
         ]]
-        local v234 = Play_upv_2(a107, a108)
-        if v234 then
+        local v230 = Play_upv_2(a103, a104)
+        if v230 then
             wire()
         end
-        return v234
+        return v230
     end
     State_upv_1.MatchEvent:Connect(
-        function(a109)
+        function(a105)
             --[[
-              line: 2490
+              line: 2470
               upvalues:
                 u9 (ref, index: 1)
             ]]
-            if a109 ~= "MatchStart" or not u9 then
+            if a105 ~= "MatchStart" or not u9 then
                 return
             end
             finish("interrupted", true)
@@ -3730,21 +3693,21 @@ function tbl_1.Init(a1)
     local function blocked()
         --[[
           name: blocked
-          line: 2495
+          line: 2475
           upvalues:
             LocalPlayer_upv_1 (copy, index: 1)
             a1 (copy, index: 2)
         ]]
-        local v235 = true
+        local v231 = true
         if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-            v235 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
+            v231 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
         end
-        return v235
+        return v231
     end
     task.spawn(
         function()
             --[[
-              line: 2498
+              line: 2478
               upvalues:
                 u9 (ref,  index: 1)
                 LocalPlayer_upv_1 (copy, index: 2)
@@ -3752,13 +3715,13 @@ function tbl_1.Init(a1)
                 tbl_upv_7 (copy, index: 5)
             ]]
             task.wait(0.25)
-            local v236 = nil
+            local v232 = nil
             if u9 then
-                v236 = true
+                v232 = true
                 if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-                    v236 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
+                    v232 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
                 end
-                if v236 then
+                if v232 then
                     finish("interrupted", true)
                 elseif u9 then
                     tbl_upv_7._SweepUi()
@@ -3773,10 +3736,10 @@ function tbl_1.Init(a1)
     local tbl_upv_58 = {}
     local tbl_upv_59 = {}
     local u35 = ((State_upv_1.GetPlayerState() ~= "Lobby") and math.huge) or (os.clock())
-    local function tryAck(a110)
+    local function tryAck(a106)
         --[[
           name: tryAck
-          line: 2515
+          line: 2495
           upvalues:
             tbl_upv_57 (copy, index: 1)
             tbl_upv_58 (copy, index: 2)
@@ -3784,50 +3747,50 @@ function tbl_1.Init(a1)
             Players_upv_1 (copy, index: 4)
             a1 (copy, index: 5)
         ]]
-        if (tbl_upv_57[a110]) or ((tbl_upv_58[a110] or 0) >= 4) or (State_upv_1.Mock) or State_upv_1.GetPlayerState() ~= "Lobby" and ((tbl_upv_58[a110] or 0) > 0) then
+        if (tbl_upv_57[a106]) or ((tbl_upv_58[a106] or 0) >= 4) or (State_upv_1.Mock) or State_upv_1.GetPlayerState() ~= "Lobby" and ((tbl_upv_58[a106] or 0) > 0) then
             return
         end
-        tbl_upv_58[a110] = (tbl_upv_58[a110] or 0) + 1
+        tbl_upv_58[a106] = (tbl_upv_58[a106] or 0) + 1
         task.spawn(
             function()
                 --[[
-                  line: 2523
+                  line: 2503
                   upvalues:
                     Players_upv_1 (copy, index: 1)
                     a1 (copy, index: 2)
-                    a110 (copy, index: 3)
+                    a106 (copy, index: 3)
                     tbl_upv_57 (copy, index: 4)
                 ]]
-                local v237 = Players_upv_1.LocalPlayer:FindFirstChild("PlayerScripts") and (Players_upv_1.LocalPlayer.PlayerScripts:FindFirstChild("Core"))
-                local v238 = v237 and (v237:FindFirstChild("InputStats"))
-                if (v238) and (v238:IsA("ModuleScript")) then
-                    v237 = require(v238).Take()
+                local v233 = Players_upv_1.LocalPlayer:FindFirstChild("PlayerScripts") and (Players_upv_1.LocalPlayer.PlayerScripts:FindFirstChild("Core"))
+                local v234 = v233 and (v233:FindFirstChild("InputStats"))
+                if (v234) and (v234:IsA("ModuleScript")) then
+                    v233 = require(v234).Take()
                 else
-                    v237 = 0
+                    v233 = 0
                 end
-                local v239, v240 = a1.Remotes.Invoke("ProfileAction", "AckReveal", a110, v237)
-                if not v239 or v240 ~= true then
+                local v235, v236 = a1.Remotes.Invoke("ProfileAction", "AckReveal", a106, v233)
+                if not v235 or v236 ~= true then
                     return
                 end
-                tbl_upv_57[a110] = true
+                tbl_upv_57[a106] = true
             end
         )
     end
-    function tbl_upv_7._Seen(a111)
+    function tbl_upv_7._Seen(a107)
         --[[
           name: _Seen
-          line: 2534
+          line: 2514
           upvalues:
             tbl_upv_56 (copy, index: 1)
             tryAck (copy, index: 2)
         ]]
-        tbl_upv_56[a111] = true
-        tryAck(a111)
+        tbl_upv_56[a107] = true
+        tryAck(a107)
     end
-    local function canPlayLobby(a112)
+    local function canPlayLobby(a108)
         --[[
           name: canPlayLobby
-          line: 2538
+          line: 2518
           upvalues:
             u9 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
@@ -3836,14 +3799,14 @@ function tbl_1.Init(a1)
             u35 (ref,  index: 5)
         ]]
         if not (u9) and State_upv_1.GetPlayerState() == "Lobby" then
-            local v241 = true
+            local v237 = true
             if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-                v241 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
+                v237 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
             end
-            if not (v241) then
+            if not (v237) then
                 if a1.RankUp and a1.RankUp.IsPlaying() or a1.LossForgiven and a1.LossForgiven.IsPlaying() or a1.IsHudHiddenFor("MatchEnd") then
                     return false
-                elseif not (a112) then
+                elseif not (a108) then
                     if not (a1.MenuManager.IsOpen()) and not (os.clock() - u35 < 1.5) and LocalPlayer_upv_1.Character then
                         if State_upv_1.Get("CombatMode") ~= true then
                             return true
@@ -3861,7 +3824,7 @@ function tbl_1.Init(a1)
     local function pump()
         --[[
           name: pump
-          line: 2561
+          line: 2541
           upvalues:
             u9 (ref,  index: 1)
             tbl_upv_59 (copy, index: 2)
@@ -3878,21 +3841,21 @@ function tbl_1.Init(a1)
             return
         end
         if #tbl_upv_59 > 0 then
-            local v242
+            local v238
             if u9 or State_upv_1.GetPlayerState() ~= "Lobby" then
-                v242 = false
+                v238 = false
             else
-                local v243 = true
+                local v239 = true
                 if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-                    v243 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
+                    v239 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
                 end
-                if v243 or (a1.RankUp) and (a1.RankUp.IsPlaying()) or (a1.LossForgiven) and (a1.LossForgiven.IsPlaying()) then
-                    v242 = false
+                if v239 or (a1.RankUp) and (a1.RankUp.IsPlaying()) or (a1.LossForgiven) and (a1.LossForgiven.IsPlaying()) then
+                    v238 = false
                 else
-                    v242 = not (a1.IsHudHiddenFor("MatchEnd"))
+                    v238 = not (a1.IsHudHiddenFor("MatchEnd"))
                 end
             end
-            if v242 then
+            if v238 then
                 tbl_upv_7.Play(table.remove(tbl_upv_59, 1), {source = "robux"})
                 return
             end
@@ -3900,18 +3863,18 @@ function tbl_1.Init(a1)
         if not canPlayLobby(false) then
             return
         end
-        local v244 = State_upv_1.Profile and (State_upv_1.Profile.reveals)
-        if type(v244) ~= "table" then
+        local v240 = State_upv_1.Profile and (State_upv_1.Profile.reveals)
+        if type(v240) ~= "table" then
             return
         end
-        for _, value_46 in v244 do
-            local v245 = ((type(value_46) == "table" and value_46.id ~= nil) and (tostring(value_46.id))) or nil
-            if not (v245) or tbl_upv_56[v245] then
-                if not (v245) or not (tbl_upv_56[v245]) then
+        for _, value_46 in v240 do
+            local v241 = ((type(value_46) == "table" and value_46.id ~= nil) and (tostring(value_46.id))) or nil
+            if not (v241) or tbl_upv_56[v241] then
+                if not (v241) or not (tbl_upv_56[v241]) then
                     continue
                 end
-                if not (tbl_upv_57[v245]) then
-                    tryAck(v245)
+                if not (tbl_upv_57[v241]) then
+                    tryAck(v241)
                     continue
                 end
             end
@@ -3921,37 +3884,37 @@ function tbl_1.Init(a1)
     end
     tbl_upv_7._Pump = function()
         --[[
-          line: 2587
+          line: 2567
           upvalues:
             pump (copy, index: 1)
         ]]
         task.delay(0.6, pump)
     end
-    function tbl_upv_7.Queue(a113)
+    function tbl_upv_7.Queue(a109)
         --[[
           name: Queue
-          line: 2590
+          line: 2570
           upvalues:
             tbl_upv_59 (copy, index: 1)
             pump (copy, index: 2)
         ]]
-        if type(a113) ~= "table" then
+        if type(a109) ~= "table" then
             return
         end
-        table.insert(tbl_upv_59, a113)
+        table.insert(tbl_upv_59, a109)
         pump()
     end
     State_upv_1.PlayerStateChanged:Connect(
-        function(a114)
+        function(a110)
             --[[
-              line: 2596
+              line: 2576
               upvalues:
                 u35 (ref,  index: 1)
                 pump (copy, index: 2)
             ]]
-            local v246 = ((a114 ~= "Lobby") and math.huge) or (os.clock())
-            u35 = v246
-            if a114 ~= "Lobby" then
+            local v242 = ((a110 ~= "Lobby") and math.huge) or (os.clock())
+            u35 = v242
+            if a110 ~= "Lobby" then
                 return
             end
             task.delay(1.6, pump)
@@ -3960,7 +3923,7 @@ function tbl_1.Init(a1)
     State_upv_1.ProfileChanged:Connect(
         function()
             --[[
-              line: 2602
+              line: 2582
               upvalues:
                 pump (copy, index: 1)
             ]]
@@ -3970,7 +3933,7 @@ function tbl_1.Init(a1)
     a1.MenuManager.Changed:Connect(
         function()
             --[[
-              line: 2605
+              line: 2585
               upvalues:
                 pump (copy, index: 1)
             ]]
@@ -3980,7 +3943,7 @@ function tbl_1.Init(a1)
     task.spawn(
         function()
             --[[
-              line: 2608
+              line: 2588
               upvalues:
                 pump (copy, index: 1)
             ]]
@@ -3993,7 +3956,7 @@ function tbl_1.Init(a1)
     local function hookEconomy()
         --[[
           name: hookEconomy
-          line: 2615
+          line: 2595
           upvalues:
             a1 (copy, index: 1)
         ]]
@@ -4006,19 +3969,19 @@ function tbl_1.Init(a1)
     local Economy_4 = a1.Economy
     if Economy_4 and Economy_4.Event then
         Economy_4.Event:Connect(
-            function(a115, a116)
+            function(a111, a112)
                 --[[
-                  line: 2618
+                  line: 2598
                   upvalues:
                     tbl_upv_7 (copy, index: 1)
                 ]]
-                if a115 ~= "Drop" or type(a116) ~= "table" then
+                if a111 ~= "Drop" or type(a112) ~= "table" then
                     return
                 end
-                if type(a116.reveals) ~= "table" then
-                    tbl_upv_7.Queue(a116)
+                if type(a112.reveals) ~= "table" then
+                    tbl_upv_7.Queue(a112)
                 else
-                    for _, value_47 in a116.reveals do
+                    for _, value_47 in a112.reveals do
                         tbl_upv_7.Queue(value_47)
                     end
                 end
@@ -4030,51 +3993,51 @@ function tbl_1.Init(a1)
     tbl_upv_60.victory = {kind = "victory", stacks = {{before = 3, levelBefore = 0, item = "spear", shards = 8}, {before = 1, levelBefore = 2, item = "short_bow", shards = 7}, {before = 1, levelBefore = 1, item = "throwing_knives", shards = 5}}}
     tbl_upv_60.golden = {kind = "golden", stacks = {{before = 26, levelBefore = 0, item = "longbow", shards = 18}, {before = 2, levelBefore = 0, item = "battle_axe", shards = 16}, {before = 0, levelBefore = 0, item = "fire_bomb", shards = 14}, {before = 3, levelBefore = 1, item = "bandage", shards = 12}}}
     tbl_upv_60.newitem = {kind = "victory", stacks = {{before = 14, levelBefore = 0, item = "crossbow", shards = 9}, {before = 2, levelBefore = 1, item = "war_club", shards = 6}, {before = 12, levelBefore = 2, item = "sling", shards = 5}}}
-    tbl_upv_7.Mock = function(a117)
+    tbl_upv_7.Mock = function(a113)
         --[[
-          line: 2669
+          line: 2649
           upvalues:
             tbl_upv_60 (copy, index: 1)
         ]]
-        local v247 = tbl_upv_60[a117 or "victory"] or (tbl_upv_60.victory)
-        local v248 = table.clone(v247)
-        v248.id = "mock-" .. tostring(a117 or "victory") .. "-" .. tostring(math.floor(os.clock() * 1000))
-        v248.source = "match"
-        v248.stacks = table.clone(v247.stacks)
-        for key_21, value_48 in v248.stacks do
-            local v249 = table.clone(value_48)
-            v249.after = v249.before + v249.shards
-            v248.stacks[key_21] = v249
+        local v243 = tbl_upv_60[a113 or "victory"] or (tbl_upv_60.victory)
+        local v244 = table.clone(v243)
+        v244.id = "mock-" .. tostring(a113 or "victory") .. "-" .. tostring(math.floor(os.clock() * 1000))
+        v244.source = "match"
+        v244.stacks = table.clone(v243.stacks)
+        for key_21, value_48 in v244.stacks do
+            local v245 = table.clone(value_48)
+            v245.after = v245.before + v245.shards
+            v244.stacks[key_21] = v245
         end
-        return v248
+        return v244
     end
-    a1.Debug.reveal = function(a118, a119, a120)
+    a1.Debug.reveal = function(a114, a115, a116)
         --[[
-          line: 2682
+          line: 2662
           upvalues:
             tbl_upv_7 (copy, index: 1)
         ]]
-        local v250
-        if type(a118) ~= "table" then
+        local v246
+        if type(a114) ~= "table" then
             local Mock_1 = tbl_upv_7.Mock
-            local v251
-            if type(a118) ~= "string" then
-                v251 = "victory"
+            local v247
+            if type(a114) ~= "string" then
+                v247 = "victory"
             else
-                v251 = a118
+                v247 = a114
             end
-            v250 = Mock_1(v251)
+            v246 = Mock_1(v247)
         else
-            v250 = a118
+            v246 = a114
         end
-        local v251 = ((type(a120) ~= "table") and {}) or (table.clone(a120))
-        v251.pace = tonumber(a119) or 1
-        v251.source = v251.source or "lobby"
-        return tbl_upv_7.Play(v250, v251)
+        local v247 = ((type(a116) ~= "table") and {}) or (table.clone(a116))
+        v247.pace = tonumber(a115) or 1
+        v247.source = v247.source or "lobby"
+        return tbl_upv_7.Play(v246, v247)
     end
     a1.Debug.revealStop = function()
         --[[
-          line: 2689
+          line: 2669
           upvalues:
             tbl_upv_7 (copy, index: 1)
         ]]
@@ -4083,7 +4046,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.revealTap = function()
         --[[
-          line: 2693
+          line: 2673
           upvalues:
             tap (copy, index: 1)
             tbl_upv_7 (copy, index: 2)
@@ -4093,7 +4056,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.revealSkip = function()
         --[[
-          line: 2697
+          line: 2677
           upvalues:
             tbl_upv_7 (copy, index: 1)
         ]]
@@ -4102,41 +4065,41 @@ function tbl_1.Init(a1)
     end
     a1.Debug.revealState = function()
         --[[
-          line: 2701
+          line: 2681
           upvalues:
             tbl_upv_7 (copy, index: 1)
             tbl_upv_59 (copy, index: 2)
             tbl_upv_56 (copy, index: 3)
         ]]
-        local v252 = tbl_upv_7.State()
-        v252.queue = #tbl_upv_59
+        local v248 = tbl_upv_7.State()
+        v248.queue = #tbl_upv_59
         local tbl_61 = {}
         for key_22 in tbl_upv_56 do
             table.insert(tbl_61, key_22)
         end
-        v252.seen = tbl_61
-        return v252
+        v248.seen = tbl_61
+        return v248
     end
-    a1.Debug.revealSummary = function(a121)
+    a1.Debug.revealSummary = function(a117)
         --[[
-          line: 2711
+          line: 2691
           upvalues:
             tbl_upv_7 (copy, index: 1)
         ]]
-        local v253
-        if type(a121) ~= "table" then
+        local v249
+        if type(a117) ~= "table" then
             local Mock_2 = tbl_upv_7.Mock
-            local v254
-            if type(a121) ~= "string" then
-                v254 = "victory"
+            local v250
+            if type(a117) ~= "string" then
+                v250 = "victory"
             else
-                v254 = a121
+                v250 = a117
             end
-            v253 = Mock_2(v254)
+            v249 = Mock_2(v250)
         else
-            v253 = a121
+            v249 = a117
         end
-        return tbl_upv_7.ShowSummary(v253, {source = "lobby"})
+        return tbl_upv_7.ShowSummary(v249, {source = "lobby"})
     end
 end
 return tbl_1

@@ -459,7 +459,7 @@ function tbl_upv_1.Swing(a1)
                 end
                 Util_upv_1.FaceCamera()
                 local v31 = a1:Detect(tuning_upv_1.range or 8, tuning_upv_1.arc or 60, tuning_upv_1.maxTargets or 1)
-                ctx_upv_3.send("Swing", {tool = ctx_upv_3.tool, dir = Util_upv_1.GetAimRay().Direction, hits = v31, k = math.floor((os.clock() - u2) * 1000), w = math.floor(u2 * 1000) % 9973})
+                ctx_upv_3.send("Swing", {tool = ctx_upv_3.tool, dir = Util_upv_1.GetAimRay().Direction, hits = v31, k = math.floor((os.clock() - u2) * 1000)})
                 predictImpacts(v31, preset_upv_1.hitSound or "Hit_Melee", (tuning_upv_1.damage or 10) * (u3[combo_upv_1] or 1), tuning_upv_1, ctx_upv_3.root, ctx_upv_3.weaponId)
                 if not (#v31 > 0) then
                     return
