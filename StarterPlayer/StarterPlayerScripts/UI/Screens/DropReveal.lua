@@ -3637,10 +3637,12 @@ function tbl_1.Init(a1)
                 end
             end
         )
+        UI_upv_1.TrackPress(tbl_upv_11.skip)
+        UI_upv_1.TrackPress(tbl_upv_11.cont)
         local function pressed_upv_1(a103, a104)
             --[[
               name: pressed
-              line: 2450
+              line: 2452
               upvalues:
                 UI_upv_1 (copy, index: 1)
                 Players_upv_1 (copy, index: 2)
@@ -3668,7 +3670,7 @@ function tbl_1.Init(a1)
         tbl_upv_11.skip.Activated:Connect(
             function(a105)
                 --[[
-                  line: 2464
+                  line: 2466
                   upvalues:
                     pressed_upv_1 (copy, index: 1)
                     tbl_upv_11 (copy, index: 2)
@@ -3681,7 +3683,7 @@ function tbl_1.Init(a1)
         tbl_upv_11.cont.Activated:Connect(
             function(a106)
                 --[[
-                  line: 2468
+                  line: 2470
                   upvalues:
                     pressed_upv_1 (copy, index: 1)
                     tbl_upv_11 (copy, index: 2)
@@ -3701,7 +3703,7 @@ function tbl_1.Init(a1)
     local Play_upv_2 = tbl_upv_7.Play
     tbl_upv_7.Play = function(a107, a108)
         --[[
-          line: 2479
+          line: 2481
           upvalues:
             Play_upv_2 (copy, index: 1)
             wire (copy, index: 2)
@@ -3715,7 +3717,7 @@ function tbl_1.Init(a1)
     State_upv_1.MatchEvent:Connect(
         function(a109)
             --[[
-              line: 2488
+              line: 2490
               upvalues:
                 u9 (ref, index: 1)
             ]]
@@ -3728,7 +3730,7 @@ function tbl_1.Init(a1)
     local function blocked()
         --[[
           name: blocked
-          line: 2493
+          line: 2495
           upvalues:
             LocalPlayer_upv_1 (copy, index: 1)
             a1 (copy, index: 2)
@@ -3742,7 +3744,7 @@ function tbl_1.Init(a1)
     task.spawn(
         function()
             --[[
-              line: 2496
+              line: 2498
               upvalues:
                 u9 (ref,  index: 1)
                 LocalPlayer_upv_1 (copy, index: 2)
@@ -3774,7 +3776,7 @@ function tbl_1.Init(a1)
     local function tryAck(a110)
         --[[
           name: tryAck
-          line: 2513
+          line: 2515
           upvalues:
             tbl_upv_57 (copy, index: 1)
             tbl_upv_58 (copy, index: 2)
@@ -3789,7 +3791,7 @@ function tbl_1.Init(a1)
         task.spawn(
             function()
                 --[[
-                  line: 2521
+                  line: 2523
                   upvalues:
                     Players_upv_1 (copy, index: 1)
                     a1 (copy, index: 2)
@@ -3814,7 +3816,7 @@ function tbl_1.Init(a1)
     function tbl_upv_7._Seen(a111)
         --[[
           name: _Seen
-          line: 2532
+          line: 2534
           upvalues:
             tbl_upv_56 (copy, index: 1)
             tryAck (copy, index: 2)
@@ -3825,7 +3827,7 @@ function tbl_1.Init(a1)
     local function canPlayLobby(a112)
         --[[
           name: canPlayLobby
-          line: 2536
+          line: 2538
           upvalues:
             u9 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
@@ -3859,7 +3861,7 @@ function tbl_1.Init(a1)
     local function pump()
         --[[
           name: pump
-          line: 2559
+          line: 2561
           upvalues:
             u9 (ref,  index: 1)
             tbl_upv_59 (copy, index: 2)
@@ -3919,7 +3921,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_7._Pump = function()
         --[[
-          line: 2585
+          line: 2587
           upvalues:
             pump (copy, index: 1)
         ]]
@@ -3928,7 +3930,7 @@ function tbl_1.Init(a1)
     function tbl_upv_7.Queue(a113)
         --[[
           name: Queue
-          line: 2588
+          line: 2590
           upvalues:
             tbl_upv_59 (copy, index: 1)
             pump (copy, index: 2)
@@ -3942,7 +3944,7 @@ function tbl_1.Init(a1)
     State_upv_1.PlayerStateChanged:Connect(
         function(a114)
             --[[
-              line: 2594
+              line: 2596
               upvalues:
                 u35 (ref,  index: 1)
                 pump (copy, index: 2)
@@ -3958,7 +3960,7 @@ function tbl_1.Init(a1)
     State_upv_1.ProfileChanged:Connect(
         function()
             --[[
-              line: 2600
+              line: 2602
               upvalues:
                 pump (copy, index: 1)
             ]]
@@ -3968,7 +3970,7 @@ function tbl_1.Init(a1)
     a1.MenuManager.Changed:Connect(
         function()
             --[[
-              line: 2603
+              line: 2605
               upvalues:
                 pump (copy, index: 1)
             ]]
@@ -3978,7 +3980,7 @@ function tbl_1.Init(a1)
     task.spawn(
         function()
             --[[
-              line: 2606
+              line: 2608
               upvalues:
                 pump (copy, index: 1)
             ]]
@@ -3991,7 +3993,7 @@ function tbl_1.Init(a1)
     local function hookEconomy()
         --[[
           name: hookEconomy
-          line: 2613
+          line: 2615
           upvalues:
             a1 (copy, index: 1)
         ]]
@@ -4006,7 +4008,7 @@ function tbl_1.Init(a1)
         Economy_4.Event:Connect(
             function(a115, a116)
                 --[[
-                  line: 2616
+                  line: 2618
                   upvalues:
                     tbl_upv_7 (copy, index: 1)
                 ]]
@@ -4030,7 +4032,7 @@ function tbl_1.Init(a1)
     tbl_upv_60.newitem = {kind = "victory", stacks = {{before = 14, levelBefore = 0, item = "crossbow", shards = 9}, {before = 2, levelBefore = 1, item = "war_club", shards = 6}, {before = 12, levelBefore = 2, item = "sling", shards = 5}}}
     tbl_upv_7.Mock = function(a117)
         --[[
-          line: 2667
+          line: 2669
           upvalues:
             tbl_upv_60 (copy, index: 1)
         ]]
@@ -4048,7 +4050,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.reveal = function(a118, a119, a120)
         --[[
-          line: 2680
+          line: 2682
           upvalues:
             tbl_upv_7 (copy, index: 1)
         ]]
@@ -4072,7 +4074,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.revealStop = function()
         --[[
-          line: 2687
+          line: 2689
           upvalues:
             tbl_upv_7 (copy, index: 1)
         ]]
@@ -4081,7 +4083,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.revealTap = function()
         --[[
-          line: 2691
+          line: 2693
           upvalues:
             tap (copy, index: 1)
             tbl_upv_7 (copy, index: 2)
@@ -4091,7 +4093,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.revealSkip = function()
         --[[
-          line: 2695
+          line: 2697
           upvalues:
             tbl_upv_7 (copy, index: 1)
         ]]
@@ -4100,7 +4102,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.revealState = function()
         --[[
-          line: 2699
+          line: 2701
           upvalues:
             tbl_upv_7 (copy, index: 1)
             tbl_upv_59 (copy, index: 2)
@@ -4117,7 +4119,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.revealSummary = function(a121)
         --[[
-          line: 2709
+          line: 2711
           upvalues:
             tbl_upv_7 (copy, index: 1)
         ]]
