@@ -9,7 +9,7 @@ local tbl_upv_4 = {}
 local function note(a1)
     --[[
       name: note
-      line: 50
+      line: 48
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -18,7 +18,7 @@ end
 local function watch(a1)
     --[[
       name: watch
-      line: 54
+      line: 52
       upvalues:
         tbl_upv_2 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -26,7 +26,7 @@ local function watch(a1)
     local function look_1(a2)
         --[[
           name: look
-          line: 55
+          line: 53
           upvalues:
             tbl_upv_2 (copy, index: 1)
             a1 (copy, index: 2)
@@ -58,7 +58,7 @@ end
 function tbl_1.Note(a1)
     --[[
       name: Note
-      line: 69
+      line: 67
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -67,7 +67,7 @@ end
 function tbl_1.Watch(a1, a2)
     --[[
       name: Watch
-      line: 74
+      line: 72
       upvalues:
         tbl_upv_3 (copy, index: 1)
     ]]
@@ -80,7 +80,7 @@ end
 local function ours(a1)
     --[[
       name: ours
-      line: 83
+      line: 81
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
@@ -102,7 +102,7 @@ end
 function tbl_1.Caller(a1)
     --[[
       name: Caller
-      line: 97
+      line: 95
       upvalues:
         u1 (ref,  index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -140,7 +140,7 @@ end
 function tbl_1.Take()
     --[[
       name: Take
-      line: 114
+      line: 112
       upvalues:
         tbl_upv_3 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -157,7 +157,7 @@ end
 function tbl_1.Start()
     --[[
       name: Start
-      line: 125
+      line: 123
       upvalues:
         u2 (ref,  index: 1)
         Players_upv_1 (copy, index: 2)
@@ -173,25 +173,14 @@ function tbl_1.Start()
         task.spawn(watch, LocalPlayer_1.Character)
     end
     LocalPlayer_1.CharacterAdded:Connect(watch)
-    local Shared_1 = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
-    require(Shared_1:WaitForChild("Simulation")).OnForeignWrite(
+    require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Simulation")).OnForeignWrite(
         function()
             --[[
-              line: 138
+              line: 136
               upvalues:
                 u1 (ref, index: 1)
             ]]
             u1 = bit32.bor(u1, 2048)
-        end
-    )
-    require(Shared_1:WaitForChild("Camera")).OnForeignWrite(
-        function()
-            --[[
-              line: 142
-              upvalues:
-                u1 (ref, index: 1)
-            ]]
-            u1 = bit32.bor(u1, 65536)
         end
     )
 end
