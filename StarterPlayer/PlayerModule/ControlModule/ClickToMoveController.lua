@@ -25,28 +25,27 @@ local CollectionService_upv_1 = game:GetService("CollectionService")
 local GuiService_upv_1 = game:GetService("GuiService")
 local v3 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil")
 local u3 = v3.getUserFlag("UserRaycastUpdateAPI2")
-local u4 = v3.getUserFlag("UserPlayerScriptsCTMDirectPlayerData")
-local u5 = v3.getUserFlag("UserPSIASClickToMoveRelaxTeleport")
-local u6 = v3.getUserFlag("UserPlayerScriptsRefactor2")
-local u7 = v3.getUserFlag("UserDoubleJumpButtonFix")
+local u4 = v3.getUserFlag("UserPSIASClickToMoveRelaxTeleport")
+local u5 = v3.getUserFlag("UserPlayerScriptsRefactor2")
+local u6 = v3.getUserFlag("UserDoubleJumpButtonFix")
 local CharacterContext_1 = script.Parent.Parent:WaitForChild("InputContexts"):WaitForChild("CharacterContext")
 local ClickToMoveAction_upv_1 = CharacterContext_1:WaitForChild("ClickToMoveAction")
 local ClickToMovePositionAction_upv_1 = CharacterContext_1:WaitForChild("ClickToMovePositionAction")
+local u7 = true
 local u8 = true
-local u9 = true
-local u10 = false
-local u11 = 1
-local u12 = 8
+local u9 = false
+local u10 = 1
+local u11 = 8
 local LocalPlayer_upv_1 = Players_1.LocalPlayer
 local ClickToMoveDisplay_upv_1 = require(script.Parent:WaitForChild("ClickToMoveDisplay"))
-local u13 = RaycastParams.new()
-u13.FilterType = Enum.RaycastFilterType.Exclude
+local u12 = RaycastParams.new()
+u12.FilterType = Enum.RaycastFilterType.Exclude
 local tbl_upv_1 = {}
 if not (u3) then
     local function FindCharacterAncestor(a1)
         --[[
           name: FindCharacterAncestor
-          line: 64
+          line: 63
           upvalues:
             FindCharacterAncestor (copy, index: 1)
         ]]
@@ -63,7 +62,7 @@ if not (u3) then
     local function Raycast(a1, a2, a3)
         --[[
           name: Raycast
-          line: 76
+          line: 75
           upvalues:
             Workspace_upv_1 (copy, index: 1)
             FindCharacterAncestor (copy, index: 2)
@@ -100,7 +99,7 @@ local tbl_upv_2 = {}
 local function findPlayerHumanoid(a1)
     --[[
       name: findPlayerHumanoid
-      line: 98
+      line: 97
       upvalues:
         tbl_upv_2 (copy, index: 1)
     ]]
@@ -120,13 +119,13 @@ local function findPlayerHumanoid(a1)
     return v15
 end
 local tbl_upv_3 = nil
+local u13 = nil
 local u14 = nil
 local u15 = nil
-local u16 = nil
 local function GetCharacter()
     --[[
       name: GetCharacter
-      line: 122
+      line: 121
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
     ]]
@@ -141,27 +140,27 @@ end
 local function UpdateIgnoreTag(a1)
     --[[
       name: UpdateIgnoreTag
-      line: 126
+      line: 125
       upvalues:
-        u14 (ref,  index: 1)
-        u15 (ref,  index: 2)
-        u16 (ref,  index: 3)
+        u13 (ref,  index: 1)
+        u14 (ref,  index: 2)
+        u15 (ref,  index: 3)
         tbl_upv_3 (ref,  index: 4)
         LocalPlayer_upv_1 (copy, index: 5)
         CollectionService_upv_1 (copy, index: 6)
     ]]
-    if a1 == u14 then
+    if a1 == u13 then
         return
+    end
+    if u14 then
+        u14:Disconnect()
+        u14 = nil
     end
     if u15 then
         u15:Disconnect()
         u15 = nil
     end
-    if u16 then
-        u16:Disconnect()
-        u16 = nil
-    end
-    u14 = a1
+    u13 = a1
     local tbl_4 = {}
     local v17
     if LocalPlayer_upv_1 then
@@ -171,25 +170,25 @@ local function UpdateIgnoreTag(a1)
     end
     tbl_4[1] = v17
     tbl_upv_3 = tbl_4
-    if u14 ~= nil then
-        for _, value_1 in ipairs(CollectionService_upv_1:GetTagged(u14)) do
+    if u13 ~= nil then
+        for _, value_1 in ipairs(CollectionService_upv_1:GetTagged(u13)) do
             table.insert(tbl_upv_3, value_1)
         end
-        local v18 = CollectionService_upv_1:GetInstanceAddedSignal(u14):Connect(
+        local v18 = CollectionService_upv_1:GetInstanceAddedSignal(u13):Connect(
             function(a2)
                 --[[
-                  line: 146
+                  line: 145
                   upvalues:
                     tbl_upv_3 (ref, index: 1)
                 ]]
                 table.insert(tbl_upv_3, a2)
             end
         )
-        u15 = v18
-        local v19 = CollectionService_upv_1:GetInstanceRemovedSignal(u14):Connect(
+        u14 = v18
+        local v19 = CollectionService_upv_1:GetInstanceRemovedSignal(u13):Connect(
             function(a3)
                 --[[
-                  line: 150
+                  line: 149
                   upvalues:
                     tbl_upv_3 (ref, index: 1)
                 ]]
@@ -203,13 +202,13 @@ local function UpdateIgnoreTag(a1)
                 end
             end
         )
-        u16 = v19
+        u15 = v19
     end
 end
 local function getIgnoreList()
     --[[
       name: getIgnoreList
-      line: 162
+      line: 161
       upvalues:
         tbl_upv_3 (ref,  index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
@@ -224,21 +223,21 @@ end
 local function minV(a1, a2)
     --[[
       name: minV
-      line: 172
+      line: 171
     ]]
     return (Vector3.new(math.min(a1.X, a2.X), math.min(a1.Y, a2.Y), math.min(a1.Z, a2.Z)))
 end
 local function maxV(a1, a2)
     --[[
       name: maxV
-      line: 175
+      line: 174
     ]]
     return (Vector3.new(math.max(a1.X, a2.X), math.max(a1.Y, a2.Y), math.max(a1.Z, a2.Z)))
 end
 local function getCollidableExtentsSize(a1)
     --[[
       name: getCollidableExtentsSize
-      line: 178
+      line: 177
     ]]
     if a1 == nil or a1.PrimaryPart == nil then
         return
@@ -269,29 +268,29 @@ end
 local function Pather(a1, a2, a3)
     --[[
       name: Pather
-      line: 213
+      line: 212
       upvalues:
-        u10 (ref,  index: 1)
+        u9 (ref,  index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
         tbl_upv_2 (copy, index: 3)
-        u11 (ref,  index: 4)
+        u10 (ref,  index: 4)
         u1 (copy, index: 5)
         getCollidableExtentsSize (copy, index: 6)
         u2 (copy, index: 7)
         PathfindingService_upv_1 (copy, index: 8)
-        u8 (ref,  index: 9)
+        u7 (ref,  index: 9)
         ClickToMoveDisplay_upv_1 (copy, index: 10)
-        u12 (ref,  index: 11)
-        u5 (copy, index: 12)
+        u11 (ref,  index: 11)
+        u4 (copy, index: 12)
         u3 (copy, index: 13)
-        u13 (copy, index: 14)
+        u12 (copy, index: 14)
         tbl_upv_3 (ref,  index: 15)
         Workspace_upv_1 (copy, index: 16)
     ]]
     local tbl_upv_5 = {}
     local v27, v28
     if a3 == nil then
-        v27 = u10
+        v27 = u9
         v28 = true
     else
         v28, v27 = a3, a3
@@ -363,8 +362,8 @@ local function Pather(a1, a2, a3)
                     v35.PrimaryPart = v34
                     if v28 then
                         local v36 = v35:GetExtentsSize()
-                        local _ = u11 * 0.5 * math.sqrt((v36.X * v36.X) + (v36.Z * v36.Z))
-                        local v59 = u11 * v36.Y
+                        local _ = u10 * 0.5 * math.sqrt((v36.X * v36.X) + (v36.Z * v36.Z))
+                        local v59 = u10 * v36.Y
                         v31 = false
                         tbl_upv_5.AgentCanFollowPath = true
                         tbl_upv_5.DirectPath = v28
@@ -383,8 +382,8 @@ local function Pather(a1, a2, a3)
                     v37 = (LocalPlayer_upv_1 and (LocalPlayer_upv_1.Character)):GetExtentsSize()
                 end
                 assert(v37, "")
-                local v39 = u11 * 0.5 * math.sqrt((v37.X * v37.X) + (v37.Z * v37.Z))
-                local v40 = u11 * v37.Y
+                local v39 = u10 * 0.5 * math.sqrt((v37.X * v37.X) + (v37.Z * v37.Z))
+                local v40 = u10 * v37.Y
                 local v41 = tbl_upv_5.Humanoid.JumpPower > 0
                 tbl_upv_5.AgentCanFollowPath = true
                 tbl_upv_5.DirectPath = v27
@@ -403,8 +402,8 @@ local function Pather(a1, a2, a3)
                 v37 = (LocalPlayer_upv_1 and (LocalPlayer_upv_1.Character)):GetExtentsSize()
             end
             assert(v37, "")
-            local v39 = u11 * 0.5 * math.sqrt((v37.X * v37.X) + (v37.Z * v37.Z))
-            local v40 = u11 * v37.Y
+            local v39 = u10 * 0.5 * math.sqrt((v37.X * v37.X) + (v37.Z * v37.Z))
+            local v40 = u10 * v37.Y
             local v41 = tbl_upv_5.Humanoid.JumpPower > 0
             tbl_upv_5.AgentCanFollowPath = true
             tbl_upv_5.DirectPath = v27
@@ -420,7 +419,7 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.Cleanup(a4)
         --[[
           name: Cleanup
-          line: 331
+          line: 330
           upvalues:
             tbl_upv_5 (copy, index: 1)
         ]]
@@ -449,7 +448,7 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.Cancel(a5)
         --[[
           name: Cancel
-          line: 360
+          line: 359
           upvalues:
             tbl_upv_5 (copy, index: 1)
         ]]
@@ -459,7 +458,7 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.IsActive(a6)
         --[[
           name: IsActive
-          line: 365
+          line: 364
           upvalues:
             tbl_upv_5 (copy, index: 1)
         ]]
@@ -468,7 +467,7 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.OnPathInterrupted(a7)
         --[[
           name: OnPathInterrupted
-          line: 369
+          line: 368
           upvalues:
             tbl_upv_5 (copy, index: 1)
         ]]
@@ -478,7 +477,7 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.ComputePath(a8)
         --[[
           name: ComputePath
-          line: 375
+          line: 374
           upvalues:
             tbl_upv_5 (copy, index: 1)
         ]]
@@ -498,7 +497,7 @@ local function Pather(a1, a2, a3)
                     tbl_upv_5.BlockedConn = tbl_upv_5.pathResult.Blocked:Connect(
                         function(a9)
                             --[[
-                              line: 389
+                              line: 388
                               upvalues:
                                 tbl_upv_5 (copy, index: 1)
                             ]]
@@ -515,7 +514,7 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.IsValidPath(a10)
         --[[
           name: IsValidPath
-          line: 397
+          line: 396
           upvalues:
             tbl_upv_5 (copy, index: 1)
         ]]
@@ -526,10 +525,10 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.OnPathBlocked(a11, a12)
         --[[
           name: OnPathBlocked
-          line: 403
+          line: 402
           upvalues:
             tbl_upv_5 (copy, index: 1)
-            u8 (ref,  index: 2)
+            u7 (ref,  index: 2)
             ClickToMoveDisplay_upv_1 (copy, index: 3)
         ]]
         if not (tbl_upv_5.CurrentPoint <= a12) or (tbl_upv_5.Recomputing) then
@@ -547,7 +546,7 @@ local function Pather(a1, a2, a3)
             tbl_upv_5.HumanoidOffsetFromPath = tbl_upv_5.pointList[1].Position - tbl_upv_5.OriginPoint
         end
         tbl_upv_5.PathComputed = tbl_upv_5.pathResult.Status == Enum.PathStatus.Success
-        if u8 then
+        if u7 then
             local v43, v44 = ClickToMoveDisplay_upv_1.CreatePathDisplay(tbl_upv_5.pointList)
             tbl_upv_5.stopTraverseFunc = v43
             tbl_upv_5.setPointFunc = v44
@@ -564,16 +563,16 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.OnRenderStepped(a13, a14)
         --[[
           name: OnRenderStepped
-          line: 439
+          line: 438
           upvalues:
             tbl_upv_5 (copy, index: 1)
-            u12 (ref,  index: 2)
+            u11 (ref,  index: 2)
         ]]
         if not tbl_upv_5.Started or tbl_upv_5.Cancelled then
             return
         end
         tbl_upv_5.Timeout = tbl_upv_5.Timeout + a14
-        if u12 < tbl_upv_5.Timeout then
+        if u11 < tbl_upv_5.Timeout then
             tbl_upv_5:OnPointReached(false)
         else
             tbl_upv_5.CurrentHumanoidPosition = tbl_upv_5.Humanoid.RootPart.Position + tbl_upv_5.HumanoidOffsetFromPath
@@ -606,7 +605,7 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.IsCurrentWaypointReached(a15)
         --[[
           name: IsCurrentWaypointReached
-          line: 477
+          line: 476
           upvalues:
             tbl_upv_5 (copy, index: 1)
         ]]
@@ -626,7 +625,7 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.OnPointReached(a16, a17)
         --[[
           name: OnPointReached
-          line: 503
+          line: 502
           upvalues:
             tbl_upv_5 (copy, index: 1)
         ]]
@@ -678,7 +677,7 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.MoveToNextWayPoint(a18, a19, a20, a21)
         --[[
           name: MoveToNextWayPoint
-          line: 566
+          line: 565
           upvalues:
             tbl_upv_5 (copy, index: 1)
             u2 (copy, index: 2)
@@ -702,12 +701,12 @@ local function Pather(a1, a2, a3)
     function tbl_upv_5.Start(a22, a23)
         --[[
           name: Start
-          line: 598
+          line: 597
           upvalues:
             tbl_upv_5 (copy, index: 1)
             ClickToMoveDisplay_upv_1 (copy, index: 2)
-            u8 (ref,  index: 3)
-            u5 (copy, index: 4)
+            u7 (ref,  index: 3)
+            u4 (copy, index: 4)
         ]]
         if tbl_upv_5.AgentCanFollowPath then
             if tbl_upv_5.Started then
@@ -715,7 +714,7 @@ local function Pather(a1, a2, a3)
             end
             tbl_upv_5.Started = true
             ClickToMoveDisplay_upv_1.CancelFailureAnimation()
-            if u8 and (a23 == nil or a23) then
+            if u7 and (a23 == nil or a23) then
                 local v52, v53 = ClickToMoveDisplay_upv_1.CreatePathDisplay(tbl_upv_5.pointList, tbl_upv_5.OriginalTargetPoint)
                 tbl_upv_5.stopTraverseFunc = v52
                 tbl_upv_5.setPointFunc = v53
@@ -727,7 +726,7 @@ local function Pather(a1, a2, a3)
                 tbl_upv_5.SeatedConn = tbl_upv_5.Humanoid.Seated:Connect(
                     function(a24, a25)
                         --[[
-                          line: 625
+                          line: 624
                           upvalues:
                             tbl_upv_5 (copy, index: 1)
                         ]]
@@ -737,19 +736,19 @@ local function Pather(a1, a2, a3)
                 tbl_upv_5.DiedConn = tbl_upv_5.Humanoid.Died:Connect(
                     function()
                         --[[
-                          line: 626
+                          line: 625
                           upvalues:
                             tbl_upv_5 (copy, index: 1)
                         ]]
                         tbl_upv_5:OnPathInterrupted()
                     end
                 )
-                if u5 then
+                if u4 then
                     tbl_upv_5.lastPosition = tbl_upv_5.Humanoid.RootPart.CFrame.Position
                     tbl_upv_5.TeleportedConn = tbl_upv_5.Humanoid.RootPart:GetPropertyChangedSignal("CFrame"):Connect(
                         function()
                             --[[
-                              line: 629
+                              line: 628
                               upvalues:
                                 tbl_upv_5 (copy, index: 1)
                             ]]
@@ -765,7 +764,7 @@ local function Pather(a1, a2, a3)
                     tbl_upv_5.TeleportedConn = tbl_upv_5.Humanoid.RootPart:GetPropertyChangedSignal("CFrame"):Connect(
                         function()
                             --[[
-                              line: 638
+                              line: 637
                               upvalues:
                                 tbl_upv_5 (copy, index: 1)
                             ]]
@@ -793,8 +792,8 @@ local function Pather(a1, a2, a3)
             assert(tbl_upv_3, "")
             table.insert(tbl_upv_3, LocalPlayer_upv_1 and (LocalPlayer_upv_1.Character))
         end
-        u13.FilterDescendantsInstances = tbl_upv_3
-        v55 = Workspace_upv_1:Raycast(v54, Vector3.new(-0, -50, -0), u13)
+        u12.FilterDescendantsInstances = tbl_upv_3
+        v55 = Workspace_upv_1:Raycast(v54, Vector3.new(-0, -50, -0), u12)
         if v55 then
             tbl_upv_5.TargetPoint = v55.Position
         end
@@ -816,7 +815,7 @@ end
 local function CheckAlive()
     --[[
       name: CheckAlive
-      line: 675
+      line: 674
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         tbl_upv_2 (copy, index: 2)
@@ -847,7 +846,7 @@ end
 local function DisconnectEvent(a1)
     --[[
       name: DisconnectEvent
-      line: 690
+      line: 689
     ]]
     if not a1 then
         return
@@ -859,11 +858,10 @@ tbl_upv_6.__index = tbl_upv_6
 function tbl_upv_6.new(a1)
     --[[
       name: new
-      line: 715
+      line: 714
       upvalues:
         tbl_upv_6 (copy, index: 1)
-        u7 (copy, index: 2)
-        u4 (copy, index: 3)
+        u6 (copy, index: 2)
     ]]
     local v64 = setmetatable({}, tbl_upv_6)
     v64.mouse2DownTime = tick()
@@ -876,50 +874,47 @@ function tbl_upv_6.new(a1)
     v64.renderSteppedConn = nil
     v64.menuOpenedConnection = nil
     v64.preferredInputChangedConnection = nil
-    if not (u7) then
+    if not (u6) then
         v64.jumpEnabled = true
     end
     v64.clickPressedConn = nil
     v64.clickReleasedConn = nil
     v64.shouldCleanupPath = false
-    if not (u4) then
-        v64.lastPatherMoveVector = Vector2.new(0, 0)
-    end
     v64.lastPatherJumped = false
-    v64.playerData = nil
+    v64.data = nil
     v64.running = false
     return v64
 end
+local u16 = nil
 local u17 = nil
 local u18 = nil
-local u19 = nil
 function tbl_upv_6.CleanupPath(a1)
     --[[
       name: CleanupPath
-      line: 753
+      line: 749
       upvalues:
-        u17 (ref, index: 1)
-        u18 (ref, index: 2)
-        u19 (ref, index: 3)
+        u16 (ref, index: 1)
+        u17 (ref, index: 2)
+        u18 (ref, index: 3)
     ]]
+    if u16 then
+        u16:Cancel()
+        u16 = nil
+    end
     if u17 then
-        u17:Cancel()
+        u17:Disconnect()
         u17 = nil
     end
     if u18 then
         u18:Disconnect()
         u18 = nil
     end
-    if u19 then
-        u19:Disconnect()
-        u19 = nil
-    end
     a1.shouldCleanupPath = true
 end
 local function GetEquippedTool(a1)
     --[[
       name: GetEquippedTool
-      line: 680
+      line: 679
     ]]
     if a1 == nil then
         return
@@ -934,25 +929,25 @@ end
 function tbl_upv_6.HandleMoveTo(a1, a2, a3, a4, a5, a6)
     --[[
       name: HandleMoveTo
-      line: 772
+      line: 768
       upvalues:
-        u17 (ref,  index: 1)
-        u18 (ref,  index: 2)
+        u16 (ref,  index: 1)
+        u17 (ref,  index: 2)
         GetEquippedTool (copy, index: 3)
-        u19 (ref,  index: 4)
-        u9 (ref,  index: 5)
+        u18 (ref,  index: 4)
+        u8 (ref,  index: 5)
         ClickToMoveDisplay_upv_1 (copy, index: 6)
     ]]
     a1.shouldCleanupPath = false
-    if u17 then
+    if u16 then
         a1:CleanupPath()
     end
-    u17 = a2
+    u16 = a2
     a2:Start(a6)
     local v65 = a2.Finished.Event:Connect(
         function()
             --[[
-              line: 781
+              line: 777
               upvalues:
                 a1 (copy, index: 1)
                 a4 (copy, index: 2)
@@ -969,24 +964,24 @@ function tbl_upv_6.HandleMoveTo(a1, a2, a3, a4, a5, a6)
             end
         end
     )
-    u18 = v65
+    u17 = v65
     local v67 = a2.PathFailed.Event:Connect(
         function()
             --[[
-              line: 790
+              line: 786
               upvalues:
                 a1 (copy, index: 1)
                 a6 (copy, index: 2)
-                u9 (ref,  index: 3)
-                u17 (ref,  index: 4)
+                u8 (ref,  index: 3)
+                u16 (ref,  index: 4)
                 ClickToMoveDisplay_upv_1 (copy, index: 5)
                 a3 (copy, index: 6)
             ]]
             a1:CleanupPath()
             if a6 == nil or a6 then
-                local v68 = u9
+                local v68 = u8
                 if v68 then
-                    local v69 = u17 and u17:IsActive()
+                    local v69 = u16 and u16:IsActive()
                     v68 = not v69
                 end
                 if v68 then
@@ -996,21 +991,21 @@ function tbl_upv_6.HandleMoveTo(a1, a2, a3, a4, a5, a6)
             end
         end
     )
-    u19 = v67
+    u18 = v67
 end
 function tbl_upv_6.ShowPathFailedFeedback(a1, a2)
     --[[
       name: ShowPathFailedFeedback
-      line: 802
+      line: 798
       upvalues:
-        u17 (ref,  index: 1)
-        u9 (ref,  index: 2)
+        u16 (ref,  index: 1)
+        u8 (ref,  index: 2)
         ClickToMoveDisplay_upv_1 (copy, index: 3)
     ]]
-    if u17 and u17:IsActive() then
-        u17:Cancel()
+    if u16 and u16:IsActive() then
+        u16:Cancel()
     end
-    if u9 then
+    if u8 then
         ClickToMoveDisplay_upv_1.PlayFailureAnimation()
     end
     ClickToMoveDisplay_upv_1.DisplayFailureWaypoint(a2)
@@ -1018,14 +1013,14 @@ end
 function tbl_upv_6.OnTap(a1, a2, a3)
     --[[
       name: OnTap
-      line: 812
+      line: 808
       upvalues:
         Workspace_upv_1 (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
         tbl_upv_2 (copy, index: 3)
         u3 (copy, index: 4)
         tbl_upv_3 (ref,  index: 5)
-        u13 (copy, index: 6)
+        u12 (copy, index: 6)
         Pather (copy, index: 7)
         tbl_upv_1 (copy, index: 8)
         GetEquippedTool (copy, index: 9)
@@ -1081,8 +1076,8 @@ function tbl_upv_6.OnTap(a1, a2, a3)
         local v78, v79
         repeat
             v79 = true
-            u13.FilterDescendantsInstances = v77
-            v78 = Workspace_upv_1:Raycast(v74.Origin, v74.Direction * 1000, u13)
+            u12.FilterDescendantsInstances = v77
+            v78 = Workspace_upv_1:Raycast(v74.Origin, v74.Direction * 1000, u12)
             if v78 then
                 v75 = v78.Instance
                 if not v75.CanCollide then
@@ -1154,7 +1149,7 @@ end
 function tbl_upv_6.DisconnectEvents(a1)
     --[[
       name: DisconnectEvents
-      line: 907
+      line: 903
     ]]
     local humanoidDiedConn_1 = a1.humanoidDiedConn
     if humanoidDiedConn_1 then
@@ -1197,7 +1192,7 @@ end
 function tbl_upv_6.OnPreferredInputChanged(a1)
     --[[
       name: OnPreferredInputChanged
-      line: 919
+      line: 915
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         UserInputService_upv_1 (copy, index: 2)
@@ -1215,30 +1210,30 @@ end
 function tbl_upv_6.OnCharacterAdded(a1, a2)
     --[[
       name: OnCharacterAdded
-      line: 931
+      line: 927
       upvalues:
         ClickToMoveAction_upv_1 (copy, index: 1)
         GuiService_upv_1 (copy, index: 2)
         ClickToMovePositionAction_upv_1 (copy, index: 3)
-        u6 (copy, index: 4)
-        u17 (ref,  index: 5)
+        u5 (copy, index: 4)
+        u16 (ref,  index: 5)
         UserInputService_upv_1 (copy, index: 6)
     ]]
     a1:DisconnectEvents()
     a1.clickPressedConn = ClickToMoveAction_upv_1.Pressed:Connect(
         function()
             --[[
-              line: 934
+              line: 930
               upvalues:
                 GuiService_upv_1 (copy, index: 1)
                 ClickToMovePositionAction_upv_1 (copy, index: 2)
-                u6 (copy, index: 3)
+                u5 (copy, index: 3)
                 a1 (copy, index: 4)
             ]]
             local v91 = GuiService_upv_1:GetGuiInset()
             local v92 = ClickToMovePositionAction_upv_1:GetState()
             if v92.X ~= -1 or v92.Y ~= -1 then
-                if u6 then
+                if u5 then
                     local Min_1 = GuiService_upv_1:GetInsetArea(Enum.ScreenInsets.None).Min
                     v92 = Vector2.new(v92.X + Min_1.X, v92.Y + Min_1.Y)
                 else
@@ -1252,18 +1247,18 @@ function tbl_upv_6.OnCharacterAdded(a1, a2)
     a1.clickReleasedConn = ClickToMoveAction_upv_1.Released:Connect(
         function()
             --[[
-              line: 950
+              line: 946
               upvalues:
                 a1 (copy, index: 1)
-                u17 (ref,  index: 2)
+                u16 (ref,  index: 2)
             ]]
             a1.mouse2UpTime = tick()
             local mouse2DownPos_1 = a1.mouse2DownPos
-            if not a1.playerData then
+            if not a1.data then
                 return
             end
-            if a1.playerData.actions.MoveAction then
-                local v93 = u17 or (a1.playerData.actions.MoveAction:GetState().Magnitude <= 0)
+            if a1.data.actions.MoveAction then
+                local v93 = u16 or (a1.data.actions.MoveAction:GetState().Magnitude <= 0)
                 if a1.mouse2UpTime - a1.mouse2DownTime < 0.25 and v93 then
                     a1:OnTap({mouse2DownPos_1})
                 end
@@ -1273,7 +1268,7 @@ function tbl_upv_6.OnCharacterAdded(a1, a2)
     a1.menuOpenedConnection = GuiService_upv_1.MenuOpened:Connect(
         function()
             --[[
-              line: 965
+              line: 961
               upvalues:
                 a1 (copy, index: 1)
             ]]
@@ -1283,7 +1278,7 @@ function tbl_upv_6.OnCharacterAdded(a1, a2)
     local function OnCharacterChildAdded(a3)
         --[[
           name: OnCharacterChildAdded
-          line: 969
+          line: 965
           upvalues:
             UserInputService_upv_1 (copy, index: 1)
             a1 (copy, index: 2)
@@ -1298,7 +1293,7 @@ function tbl_upv_6.OnCharacterAdded(a1, a2)
             end
             a1.humanoidDiedConn = a3.Died:Connect(function()
                 --[[
-                  line: 977
+                  line: 973
                 ]]
             end)
         end
@@ -1306,7 +1301,7 @@ function tbl_upv_6.OnCharacterAdded(a1, a2)
     a1.characterChildAddedConn = a2.ChildAdded:Connect(
         function(a4)
             --[[
-              line: 985
+              line: 981
               upvalues:
                 OnCharacterChildAdded (copy, index: 1)
             ]]
@@ -1316,7 +1311,7 @@ function tbl_upv_6.OnCharacterAdded(a1, a2)
     a1.characterChildRemovedConn = a2.ChildRemoved:Connect(
         function(a5)
             --[[
-              line: 988
+              line: 984
               upvalues:
                 UserInputService_upv_1 (copy, index: 1)
             ]]
@@ -1332,7 +1327,7 @@ function tbl_upv_6.OnCharacterAdded(a1, a2)
     a1.preferredInputChangedConnection = UserInputService_upv_1:GetPropertyChangedSignal("PreferredInput"):Connect(
         function()
             --[[
-              line: 999
+              line: 995
               upvalues:
                 a1 (copy, index: 1)
             ]]
@@ -1343,24 +1338,24 @@ end
 function tbl_upv_6.Start(a1)
     --[[
       name: Start
-      line: 1004
+      line: 1000
     ]]
     a1:Enable(true)
 end
 function tbl_upv_6.Stop(a1)
     --[[
       name: Stop
-      line: 1008
+      line: 1004
     ]]
     a1:Enable(false)
 end
 function tbl_upv_6.Enable(a1, a2, a3, a4)
     --[[
       name: Enable
-      line: 1013
+      line: 1009
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
-        u7 (copy, index: 2)
+        u6 (copy, index: 2)
         UserInputService_upv_1 (copy, index: 3)
         ClickToMoveAction_upv_1 (copy, index: 4)
         ClickToMovePositionAction_upv_1 (copy, index: 5)
@@ -1373,7 +1368,7 @@ function tbl_upv_6.Enable(a1, a2, a3, a4)
             a1.onCharacterAddedConn = LocalPlayer_upv_1.CharacterAdded:Connect(
                 function(a5)
                     --[[
-                      line: 1019
+                      line: 1015
                       upvalues:
                         a1 (copy, index: 1)
                     ]]
@@ -1382,7 +1377,7 @@ function tbl_upv_6.Enable(a1, a2, a3, a4)
             )
             a1.running = true
         end
-        if not (u7) then
+        if not (u6) then
             a1.touchJumpController = a4
             if a1.touchJumpController then
                 a1.touchJumpController:Enable(a1.jumpEnabled)
@@ -1405,7 +1400,7 @@ function tbl_upv_6.Enable(a1, a2, a3, a4)
             end
             a1.running = false
         end
-        if not (u7) then
+        if not (u6) then
             if a1.touchJumpController and not (a1.jumpEnabled) then
                 a1.touchJumpController:Enable(true)
             end
@@ -1420,7 +1415,7 @@ end
 local function calculateLocalMoveVector(a1)
     --[[
       name: calculateLocalMoveVector
-      line: 696
+      line: 695
       upvalues:
         Workspace_upv_1 (copy, index: 1)
     ]]
@@ -1440,127 +1435,69 @@ end
 function tbl_upv_6.Update(a1, a2, a3)
     --[[
       name: Update
-      line: 1062
+      line: 1058
       upvalues:
-        u17 (ref,  index: 1)
-        u4 (copy, index: 2)
-        calculateLocalMoveVector (copy, index: 3)
-        ClickToMoveDisplay_upv_1 (copy, index: 4)
+        u16 (ref,  index: 1)
+        calculateLocalMoveVector (copy, index: 2)
     ]]
     assert(a2.actions.MoveAction)
     assert(a2.actions.JumpAction)
-    if not (a1.playerData) then
-        a1.playerData = a2
+    if not (a1.data) then
+        a1.data = a2
     end
-    if u17 then
-        u17:OnRenderStepped(a3)
-        if (u17) and u17 == u17 then
+    if u16 then
+        u16:OnRenderStepped(a3)
+        if u16 then
             local v98 = nil
-            if u4 then
-                local v99 = calculateLocalMoveVector(u17.NextActionMoveDirection)
+            if u16 ~= u16 then
+                local v99 = nil
+                if a1.lastPatherJumped then
+                    if a2.actions.JumpAction:GetState() == true then
+                        v99 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
+                        if v99 then
+                            v99:Fire(false)
+                        end
+                    end
+                    a1.lastPatherJumped = false
+                end
+            else
+                local v100 = calculateLocalMoveVector(u16.NextActionMoveDirection)
                 v98 = a2.actions.MoveAction:FindFirstChild("ClickToMoveScriptableBinding")
                 if v98 then
-                    v98:Fire(v99)
+                    v98:Fire(v100)
                 end
-                a2.moveVector = v99
-                local v100 = nil
-                if u17.NextActionJump then
+                a2.moveVector = v100
+                local v101 = nil
+                if u16.NextActionJump then
                     if a2.actions.JumpAction:GetState() ~= true then
-                        v100 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
-                        if v100 then
-                            v100:Fire(true)
+                        v101 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
+                        if v101 then
+                            v101:Fire(true)
                         end
                     end
                     a1.lastPatherJumped = true
                     a2.isJumping = true
                 else
-                    local v101 = nil
+                    local v102 = nil
                     if a1.lastPatherJumped then
                         if a2.actions.JumpAction:GetState() == true then
-                            v101 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
-                            if v101 then
-                                v101:Fire(false)
+                            v102 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
+                            if v102 then
+                                v102:Fire(false)
                             end
                         end
                         a1.lastPatherJumped = false
                         a2.isJumping = false
                     end
                 end
-            else
-                local v102 = a2.actions.MoveAction:GetState()
-                local u20 = calculateLocalMoveVector(u17.NextActionMoveDirection)
-                if (v102 - a1.lastPatherMoveVector).Magnitude > 1e-06 then
-                    a1:CleanupPath()
-                    ClickToMoveDisplay_upv_1.CancelFailureAnimation()
-                else
-                    a1.lastPatherMoveVector = u20
-                    local ClickToMoveScriptableBinding_upv_1 = a2.actions.MoveAction:FindFirstChild("ClickToMoveScriptableBinding")
-                    if not ClickToMoveScriptableBinding_upv_1
-                        or not (pcall(
-                            function()
-                                --[[
-                                  line: 1120
-                                  upvalues:
-                                    ClickToMoveScriptableBinding_upv_1 (copy, index: 1)
-                                    u20 (copy, index: 2)
-                                ]]
-                                ClickToMoveScriptableBinding_upv_1.Type = Enum.InputBindingType.Scriptable
-                                ClickToMoveScriptableBinding_upv_1:Fire(u20)
-                            end
-                        )) then
-                        a2.actions.MoveAction:Fire(u20)
-                    end
-                    if u17.NextActionJump then
-                        if a2.actions.JumpAction:GetState() ~= true then
-                            local ClickToMoveScriptableBinding_upv_2 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
-                            if not ClickToMoveScriptableBinding_upv_2
-                                or not (pcall(
-                                    function()
-                                        --[[
-                                          line: 1136
-                                          upvalues:
-                                            ClickToMoveScriptableBinding_upv_2 (copy, index: 1)
-                                        ]]
-                                        ClickToMoveScriptableBinding_upv_2.Type = Enum.InputBindingType.Scriptable
-                                        ClickToMoveScriptableBinding_upv_2:Fire(true)
-                                    end
-                                )) then
-                                a2.actions.JumpAction:Fire(true)
-                            end
-                            a1.lastPatherJumped = true
-                        end
-                    elseif a1.lastPatherJumped then
-                        if a2.actions.JumpAction:GetState() == true then
-                            local ClickToMoveScriptableBinding_upv_3 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
-                            if not ClickToMoveScriptableBinding_upv_3
-                                or not (pcall(
-                                    function()
-                                        --[[
-                                          line: 1152
-                                          upvalues:
-                                            ClickToMoveScriptableBinding_upv_3 (copy, index: 1)
-                                        ]]
-                                        ClickToMoveScriptableBinding_upv_3.Type = Enum.InputBindingType.Scriptable
-                                        ClickToMoveScriptableBinding_upv_3:Fire(false)
-                                    end
-                                )) then
-                                a2.actions.JumpAction:Fire(false)
-                            end
-                        end
-                        a1.lastPatherJumped = false
-                    end
-                end
             end
         else
-            if not (u4) then
-                a1.lastPatherMoveVector = Vector2.zero
-            end
-            local v103 = nil
+            local v99 = nil
             if a1.lastPatherJumped then
                 if a2.actions.JumpAction:GetState() == true then
-                    v103 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
-                    if v103 then
-                        v103:Fire(false)
+                    v99 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
+                    if v99 then
+                        v99:Fire(false)
                     end
                 end
                 a1.lastPatherJumped = false
@@ -1569,56 +1506,41 @@ function tbl_upv_6.Update(a1, a2, a3)
     end
     if a1.shouldCleanupPath then
         a1.shouldCleanupPath = false
-        local v104, v105, v106, v107 = nil, nil, nil, nil
-        if u4 then
-            v104 = a2.actions.MoveAction:FindFirstChild("ClickToMoveScriptableBinding")
-            if v104 then
-                v104:Fire(Vector2.zero)
-            end
-            a2.moveVector = Vector2.zero
-            a1.lastPatherJumped = false
-            v105 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
-            if v105 then
-                v105:Fire(false)
-            end
-            a2.isJumping = false
-        else
-            a1.lastPatherMoveVector = Vector2.zero
-            v106 = a2.actions.MoveAction:FindFirstChild("ClickToMoveScriptableBinding")
-            if v106 then
-                v106:Fire(Vector2.zero)
-            end
-            a1.lastPatherJumped = false
-            v107 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
-            if not v107 then
-                return
-            end
-            v107:Fire(false)
+        local ClickToMoveScriptableBinding_1 = a2.actions.MoveAction:FindFirstChild("ClickToMoveScriptableBinding")
+        if ClickToMoveScriptableBinding_1 then
+            ClickToMoveScriptableBinding_1:Fire(Vector2.zero)
         end
+        a2.moveVector = Vector2.zero
+        a1.lastPatherJumped = false
+        local ClickToMoveScriptableBinding_2 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
+        if ClickToMoveScriptableBinding_2 then
+            ClickToMoveScriptableBinding_2:Fire(false)
+        end
+        a2.isJumping = false
     end
 end
 function tbl_upv_6.SetShowPath(a1, a2)
     --[[
       name: SetShowPath
-      line: 1214
+      line: 1132
       upvalues:
-        u8 (ref, index: 1)
+        u7 (ref, index: 1)
     ]]
-    u8 = a2
+    u7 = a2
 end
 function tbl_upv_6.GetShowPath(a1)
     --[[
       name: GetShowPath
-      line: 1218
+      line: 1136
       upvalues:
-        u8 (ref, index: 1)
+        u7 (ref, index: 1)
     ]]
-    return u8
+    return u7
 end
 function tbl_upv_6.SetWaypointTexture(a1, a2)
     --[[
       name: SetWaypointTexture
-      line: 1222
+      line: 1140
       upvalues:
         ClickToMoveDisplay_upv_1 (copy, index: 1)
     ]]
@@ -1627,7 +1549,7 @@ end
 function tbl_upv_6.GetWaypointTexture(a1)
     --[[
       name: GetWaypointTexture
-      line: 1226
+      line: 1144
       upvalues:
         ClickToMoveDisplay_upv_1 (copy, index: 1)
     ]]
@@ -1636,7 +1558,7 @@ end
 function tbl_upv_6.SetWaypointRadius(a1, a2)
     --[[
       name: SetWaypointRadius
-      line: 1230
+      line: 1148
       upvalues:
         ClickToMoveDisplay_upv_1 (copy, index: 1)
     ]]
@@ -1645,7 +1567,7 @@ end
 function tbl_upv_6.GetWaypointRadius(a1)
     --[[
       name: GetWaypointRadius
-      line: 1234
+      line: 1152
       upvalues:
         ClickToMoveDisplay_upv_1 (copy, index: 1)
     ]]
@@ -1654,7 +1576,7 @@ end
 function tbl_upv_6.SetEndWaypointTexture(a1, a2)
     --[[
       name: SetEndWaypointTexture
-      line: 1238
+      line: 1156
       upvalues:
         ClickToMoveDisplay_upv_1 (copy, index: 1)
     ]]
@@ -1663,7 +1585,7 @@ end
 function tbl_upv_6.GetEndWaypointTexture(a1)
     --[[
       name: GetEndWaypointTexture
-      line: 1242
+      line: 1160
       upvalues:
         ClickToMoveDisplay_upv_1 (copy, index: 1)
     ]]
@@ -1672,7 +1594,7 @@ end
 function tbl_upv_6.SetWaypointsAlwaysOnTop(a1, a2)
     --[[
       name: SetWaypointsAlwaysOnTop
-      line: 1246
+      line: 1164
       upvalues:
         ClickToMoveDisplay_upv_1 (copy, index: 1)
     ]]
@@ -1681,7 +1603,7 @@ end
 function tbl_upv_6.GetWaypointsAlwaysOnTop(a1)
     --[[
       name: GetWaypointsAlwaysOnTop
-      line: 1250
+      line: 1168
       upvalues:
         ClickToMoveDisplay_upv_1 (copy, index: 1)
     ]]
@@ -1690,25 +1612,25 @@ end
 function tbl_upv_6.SetFailureAnimationEnabled(a1, a2)
     --[[
       name: SetFailureAnimationEnabled
-      line: 1254
+      line: 1172
       upvalues:
-        u9 (ref, index: 1)
+        u8 (ref, index: 1)
     ]]
-    u9 = a2
+    u8 = a2
 end
 function tbl_upv_6.GetFailureAnimationEnabled(a1)
     --[[
       name: GetFailureAnimationEnabled
-      line: 1258
+      line: 1176
       upvalues:
-        u9 (ref, index: 1)
+        u8 (ref, index: 1)
     ]]
-    return u9
+    return u8
 end
 function tbl_upv_6.SetIgnoredPartsTag(a1, a2)
     --[[
       name: SetIgnoredPartsTag
-      line: 1262
+      line: 1180
       upvalues:
         UpdateIgnoreTag (copy, index: 1)
     ]]
@@ -1717,71 +1639,71 @@ end
 function tbl_upv_6.GetIgnoredPartsTag(a1)
     --[[
       name: GetIgnoredPartsTag
-      line: 1266
+      line: 1184
       upvalues:
-        u14 (ref, index: 1)
+        u13 (ref, index: 1)
     ]]
-    return u14
+    return u13
 end
 function tbl_upv_6.SetUseDirectPath(a1, a2)
     --[[
       name: SetUseDirectPath
-      line: 1270
+      line: 1188
       upvalues:
-        u10 (ref, index: 1)
+        u9 (ref, index: 1)
     ]]
-    u10 = a2
+    u9 = a2
 end
 function tbl_upv_6.GetUseDirectPath(a1)
     --[[
       name: GetUseDirectPath
-      line: 1274
+      line: 1192
       upvalues:
-        u10 (ref, index: 1)
+        u9 (ref, index: 1)
     ]]
-    return u10
+    return u9
 end
 function tbl_upv_6.SetAgentSizeIncreaseFactor(a1, a2)
     --[[
       name: SetAgentSizeIncreaseFactor
-      line: 1278
+      line: 1196
       upvalues:
-        u11 (ref, index: 1)
+        u10 (ref, index: 1)
     ]]
-    u11 = (a2 / 100) + 1
+    u10 = (a2 / 100) + 1
 end
 function tbl_upv_6.GetAgentSizeIncreaseFactor(a1)
     --[[
       name: GetAgentSizeIncreaseFactor
-      line: 1282
+      line: 1200
       upvalues:
-        u11 (ref, index: 1)
+        u10 (ref, index: 1)
     ]]
-    return (u11 - 1) * 100
+    return (u10 - 1) * 100
 end
 function tbl_upv_6.SetUnreachableWaypointTimeout(a1, a2)
     --[[
       name: SetUnreachableWaypointTimeout
-      line: 1286
+      line: 1204
       upvalues:
-        u12 (ref, index: 1)
+        u11 (ref, index: 1)
     ]]
-    u12 = a2
+    u11 = a2
 end
 function tbl_upv_6.GetUnreachableWaypointTimeout(a1)
     --[[
       name: GetUnreachableWaypointTimeout
-      line: 1290
+      line: 1208
       upvalues:
-        u12 (ref, index: 1)
+        u11 (ref, index: 1)
     ]]
-    return u12
+    return u11
 end
-if not (u7) then
+if not (u6) then
     function tbl_upv_6.SetUserJumpEnabled(a1, a2)
         --[[
           name: SetUserJumpEnabled
-          line: 1295
+          line: 1213
         ]]
         a1.jumpEnabled = a2
         if not a1.touchJumpController then
@@ -1792,7 +1714,7 @@ if not (u7) then
     function tbl_upv_6.GetUserJumpEnabled(a1)
         --[[
           name: GetUserJumpEnabled
-          line: 1302
+          line: 1220
         ]]
         return a1.jumpEnabled
     end
@@ -1800,7 +1722,7 @@ end
 function tbl_upv_6.MoveTo(a1, a2, a3, a4)
     --[[
       name: MoveTo
-      line: 1307
+      line: 1225
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         Pather (copy, index: 2)
@@ -1809,9 +1731,9 @@ function tbl_upv_6.MoveTo(a1, a2, a3, a4)
     if Character_3 == nil then
         return false
     end
-    local v108 = Pather(a2, Vector3.new(0, 1, 0), a4)
-    if v108 and v108:IsValidPath() then
-        a1:HandleMoveTo(v108, a2, nil, Character_3, a3)
+    local v103 = Pather(a2, Vector3.new(0, 1, 0), a4)
+    if v103 and v103:IsValidPath() then
+        a1:HandleMoveTo(v103, a2, nil, Character_3, a3)
         return true
     end
     return false

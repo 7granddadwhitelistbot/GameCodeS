@@ -11,7 +11,7 @@ local tbl_upv_1 = {"rbxasset://textures/ui/Input/JumpButtonRegular.png", "rbxass
 local ActionController_upv_1 = require(script.Parent:WaitForChild("ActionController"))
 local u6 = setmetatable({}, ActionController_upv_1)
 u6.__index = u6
-function u6.new(a1, a2)
+function u6.new(a1)
     --[[
       name: new
       line: 61
@@ -22,7 +22,7 @@ function u6.new(a1, a2)
         u1 (copy, index: 4)
     ]]
     local u7 = setmetatable(ActionController_upv_1.new(), u6)
-    u7.playerData = a2
+    u7.data = a1
     a1.eventBus:subscribe("ACTIONS_RELOADED"):Connect(
         function()
             --[[
@@ -245,11 +245,11 @@ function u6.Create(a1)
         a1.avatarAbilitiesEnabledChangedConn = AvatarAbilitiesInterface_upv_1.GetEnabledChangedSignal():Connect(ResizeJumpButton)
     end
     a1.jumpButton.Parent = a1.parentUIFrame
-    if not a1.playerData.actions.JumpAction then
+    if not a1.data.actions.JumpAction then
         return
     end
-    a1.playerData.actions.JumpAction:WaitForChild("TouchBinding").UIButton = a1.jumpButton
-    a1.playerData.actions.JumpAction.Pressed:Connect(
+    a1.data.actions.JumpAction:WaitForChild("TouchBinding").UIButton = a1.jumpButton
+    a1.data.actions.JumpAction.Pressed:Connect(
         function()
             --[[
               line: 253
@@ -269,7 +269,7 @@ function u6.Create(a1)
             end
         end
     )
-    a1.playerData.actions.JumpAction.Released:Connect(
+    a1.data.actions.JumpAction.Released:Connect(
         function()
             --[[
               line: 265

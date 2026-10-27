@@ -353,7 +353,7 @@ function tbl_upv_1.writeInputToPCS(a1, a2, a3)
         AvatarAbilitiesInterface_upv_1 (copy, index: 7)
     ]]
     local v28 = nil
-    local _ = (not u2) or (a2.playerData)
+    local _ = (not u2) or (a2.data)
     local Character_4 = a1.Character
     if not Character_4 then
         return
