@@ -974,11 +974,10 @@ function tbl_1.Init(a1)
                 u72(a26.id, {quiet = true})
             end
         )
-        UI_upv_1.TrackPress(u75)
         u75.MouseEnter:Connect(
             function()
                 --[[
-                  line: 1016
+                  line: 1015
                   upvalues:
                     UI_upv_1 (copy, index: 1)
                     a1 (copy, index: 2)
@@ -992,7 +991,7 @@ function tbl_1.Init(a1)
         u75.Activated:Connect(
             function(a27)
                 --[[
-                  line: 1021
+                  line: 1020
                   upvalues:
                     u72 (ref,  index: 1)
                     a26 (copy, index: 2)
@@ -1007,7 +1006,7 @@ function tbl_1.Init(a1)
     end
     u71 = function(a28)
         --[[
-          line: 1028
+          line: 1027
           upvalues:
             stateOf (copy, index: 1)
             Economy_upv_1 (copy, index: 2)
@@ -1175,7 +1174,7 @@ function tbl_1.Init(a1)
     local function queueVisible()
         --[[
           name: queueVisible
-          line: 1131
+          line: 1130
           upvalues:
             u49 (copy, index: 1)
             u50 (ref,  index: 2)
@@ -1208,7 +1207,7 @@ function tbl_1.Init(a1)
     RunService_upv_1.Heartbeat:Connect(
         function()
             --[[
-              line: 1151
+              line: 1150
               upvalues:
                 tbl_upv_17 (copy, index: 1)
                 u5 (copy, index: 2)
@@ -1235,7 +1234,7 @@ function tbl_1.Init(a1)
     local function layoutPanel(a29, a30, a31)
         --[[
           name: layoutPanel
-          line: 1168
+          line: 1167
           upvalues:
             u8 (copy, index: 1)
             fromOffset_upv_1 (copy, index: 2)
@@ -1353,7 +1352,7 @@ function tbl_1.Init(a1)
     local u80 = nil
     local u81 = function()
         --[[
-          line: 1263
+          line: 1262
           upvalues:
             u70 (ref,  index: 1)
             stateOf (copy, index: 2)
@@ -1694,7 +1693,7 @@ function tbl_1.Init(a1)
     local function layoutWindow()
         --[[
           name: layoutWindow
-          line: 1443
+          line: 1442
           upvalues:
             UI_upv_1 (copy, index: 1)
             u5 (copy, index: 2)
@@ -1757,7 +1756,7 @@ function tbl_1.Init(a1)
     local function layoutGrid(a32)
         --[[
           name: layoutGrid
-          line: 1484
+          line: 1483
           upvalues:
             u50 (ref,  index: 1)
             UI_upv_1 (copy, index: 2)
@@ -1792,7 +1791,7 @@ function tbl_1.Init(a1)
             tbl_18.owned,
             function(a33, a34)
                 --[[
-                  line: 1499
+                  line: 1498
                   upvalues:
                     tbl_upv_19 (copy, index: 1)
                 ]]
@@ -1806,7 +1805,7 @@ function tbl_1.Init(a1)
         local function frac_1(a35)
             --[[
               name: frac
-              line: 1506
+              line: 1505
               upvalues:
                 Economy_upv_1 (copy, index: 1)
             ]]
@@ -1817,7 +1816,7 @@ function tbl_1.Init(a1)
             tbl_18.locked,
             function(a36, a37)
                 --[[
-                  line: 1510
+                  line: 1509
                   upvalues:
                     Economy_upv_1 (copy, index: 1)
                     tbl_upv_19 (copy, index: 2)
@@ -1879,7 +1878,7 @@ function tbl_1.Init(a1)
     local function paintSummary()
         --[[
           name: paintSummary
-          line: 1565
+          line: 1564
           upvalues:
             WeaponInfo_upv_1 (copy, index: 1)
             Economy_upv_1 (copy, index: 2)
@@ -1903,7 +1902,7 @@ function tbl_1.Init(a1)
     end
     local u82 = function(a38)
         --[[
-          line: 1581
+          line: 1580
           upvalues:
             layoutGrid (copy, index: 1)
             u81 (ref,  index: 2)
@@ -1919,7 +1918,7 @@ function tbl_1.Init(a1)
     end
     u72 = function(a39, a40)
         --[[
-          line: 1596
+          line: 1595
           upvalues:
             tbl_upv_11 (copy, index: 1)
             u70 (ref,  index: 2)
@@ -1947,7 +1946,7 @@ function tbl_1.Init(a1)
     local function flashCard(a41, a42)
         --[[
           name: flashCard
-          line: 1590
+          line: 1589
           upvalues:
             Colors_upv_1 (copy, index: 1)
             UI_upv_1 (copy, index: 2)
@@ -1960,7 +1959,7 @@ function tbl_1.Init(a1)
     local function shardBurst(a43)
         --[[
           name: shardBurst
-          line: 1613
+          line: 1612
           upvalues:
             UI_upv_1 (copy, index: 1)
             fromOffset_upv_1 (copy, index: 2)
@@ -1993,7 +1992,7 @@ function tbl_1.Init(a1)
                 1,
                 function()
                     --[[
-                      line: 1636
+                      line: 1635
                       upvalues:
                         u83 (copy, index: 1)
                     ]]
@@ -2005,7 +2004,7 @@ function tbl_1.Init(a1)
     local function levelUpMoment(a44, a45, a46)
         --[[
           name: levelUpMoment
-          line: 1642
+          line: 1641
           upvalues:
             u78 (ref,  index: 1)
             u77 (ref,  index: 2)
@@ -2089,7 +2088,7 @@ function tbl_1.Init(a1)
             0.12,
             function()
                 --[[
-                  line: 1683
+                  line: 1682
                   upvalues:
                     u84 (copy, index: 1)
                     u78 (ref,  index: 2)
@@ -2111,7 +2110,7 @@ function tbl_1.Init(a1)
                     0.3,
                     function()
                         --[[
-                          line: 1691
+                          line: 1690
                           upvalues:
                             u84 (copy, index: 1)
                             u78 (ref,  index: 2)
@@ -2144,7 +2143,7 @@ function tbl_1.Init(a1)
             0.25,
             function()
                 --[[
-                  line: 1706
+                  line: 1705
                   upvalues:
                     u84 (copy, index: 1)
                     u78 (ref,  index: 2)
@@ -2186,7 +2185,7 @@ function tbl_1.Init(a1)
             0.35,
             function()
                 --[[
-                  line: 1721
+                  line: 1720
                   upvalues:
                     u84 (copy, index: 1)
                     u78 (ref,  index: 2)
@@ -2224,7 +2223,7 @@ function tbl_1.Init(a1)
             1.15,
             function()
                 --[[
-                  line: 1736
+                  line: 1735
                   upvalues:
                     u84 (copy, index: 1)
                     u78 (ref,  index: 2)
@@ -2241,7 +2240,7 @@ function tbl_1.Init(a1)
             1.5,
             function()
                 --[[
-                  line: 1742
+                  line: 1741
                   upvalues:
                     u84 (copy, index: 1)
                     u78 (ref,  index: 2)
@@ -2262,7 +2261,7 @@ function tbl_1.Init(a1)
     end
     u73 = function(a47, a48, a49)
         --[[
-          line: 1754
+          line: 1753
           upvalues:
             u80 (ref,  index: 1)
             Economy_upv_1 (copy, index: 2)
@@ -2291,7 +2290,7 @@ function tbl_1.Init(a1)
             task.spawn(
                 function()
                     --[[
-                      line: 1768
+                      line: 1767
                       upvalues:
                         Economy_upv_1 (copy, index: 1)
                         a47 (copy, index: 2)
@@ -2328,7 +2327,7 @@ function tbl_1.Init(a1)
     u47.Activated:Connect(
         function(a50)
             --[[
-              line: 1784
+              line: 1783
               upvalues:
                 u70 (ref,  index: 1)
                 stateOf (copy, index: 2)
@@ -2373,7 +2372,7 @@ function tbl_1.Init(a1)
     RunService_upv_1.Heartbeat:Connect(
         function()
             --[[
-              line: 1813
+              line: 1812
               upvalues:
                 u5 (copy, index: 1)
                 tbl_upv_10 (copy, index: 2)
@@ -2413,7 +2412,7 @@ function tbl_1.Init(a1)
     local function stepAside(a51, a52)
         --[[
           name: stepAside
-          line: 1841
+          line: 1840
           upvalues:
             tbl_upv_24 (copy, index: 1)
             u5 (copy, index: 2)
@@ -2449,7 +2448,7 @@ function tbl_1.Init(a1)
     Economy_upv_1.Changed:Connect(
         function()
             --[[
-              line: 1862
+              line: 1861
               upvalues:
                 u5 (copy, index: 1)
                 u89 (ref,  index: 2)
@@ -2472,7 +2471,7 @@ function tbl_1.Init(a1)
         1,
         function()
             --[[
-              line: 1870
+              line: 1869
               upvalues:
                 u5 (copy, index: 1)
                 u89 (ref,  index: 2)
@@ -2488,7 +2487,7 @@ function tbl_1.Init(a1)
     Economy_upv_1.CelebrationChanged:Connect(
         function(a53)
             --[[
-              line: 1877
+              line: 1876
               upvalues:
                 stepAside (copy, index: 1)
             ]]
@@ -2498,7 +2497,7 @@ function tbl_1.Init(a1)
     Economy_upv_1.RevealChanged:Connect(
         function(a54)
             --[[
-              line: 1880
+              line: 1879
               upvalues:
                 stepAside (copy, index: 1)
             ]]
@@ -2508,7 +2507,7 @@ function tbl_1.Init(a1)
     Economy_upv_1.Event:Connect(
         function(a55, a56)
             --[[
-              line: 1883
+              line: 1882
               upvalues:
                 u5 (copy, index: 1)
                 tbl_upv_11 (copy, index: 2)
@@ -2523,7 +2522,7 @@ function tbl_1.Init(a1)
     local function isGamepad()
         --[[
           name: isGamepad
-          line: 1889
+          line: 1888
           upvalues:
             UI_upv_1 (copy, index: 1)
         ]]
@@ -2532,7 +2531,7 @@ function tbl_1.Init(a1)
     local function firstTarget()
         --[[
           name: firstTarget
-          line: 1892
+          line: 1891
           upvalues:
             tbl_upv_10 (copy, index: 1)
         ]]
@@ -2550,7 +2549,7 @@ function tbl_1.Init(a1)
     local function defaultSelection()
         --[[
           name: defaultSelection
-          line: 1902
+          line: 1901
           upvalues:
             Economy_upv_1 (copy, index: 1)
             tbl_upv_11 (copy, index: 2)
@@ -2571,7 +2570,7 @@ function tbl_1.Init(a1)
     function tbl_25.open(a57)
         --[[
           name: open
-          line: 1916
+          line: 1915
           upvalues:
             layoutWindow (copy, index: 1)
             u89 (ref,  index: 2)
@@ -2655,7 +2654,7 @@ function tbl_1.Init(a1)
         task.defer(
             function()
                 --[[
-                  line: 1934
+                  line: 1933
                   upvalues:
                     tbl_upv_10 (copy, index: 1)
                     layoutGrid (copy, index: 2)
@@ -2712,7 +2711,7 @@ function tbl_1.Init(a1)
                         0.25,
                         function()
                             --[[
-                              line: 1950
+                              line: 1949
                               upvalues:
                                 flashCard (copy, index: 1)
                                 u91 (copy, index: 2)
@@ -2750,7 +2749,7 @@ function tbl_1.Init(a1)
     function tbl_25.close(a58)
         --[[
           name: close
-          line: 1969
+          line: 1968
           upvalues:
             u1 (ref,  index: 1)
             TextChatService_upv_1 (copy, index: 2)
@@ -2799,7 +2798,7 @@ function tbl_1.Init(a1)
     function tbl_25.back()
         --[[
           name: back
-          line: 1979
+          line: 1978
           upvalues:
             u61 (copy, index: 1)
             GuiService_upv_1 (copy, index: 2)
@@ -2823,7 +2822,7 @@ function tbl_1.Init(a1)
     State_upv_1.PlayerStateChanged:Connect(
         function(a59)
             --[[
-              line: 1988
+              line: 1987
               upvalues:
                 a1 (copy, index: 1)
             ]]
@@ -2836,7 +2835,7 @@ function tbl_1.Init(a1)
     local function relayout()
         --[[
           name: relayout
-          line: 1993
+          line: 1992
           upvalues:
             u5 (copy, index: 1)
             layoutWindow (copy, index: 2)
@@ -2855,7 +2854,7 @@ function tbl_1.Init(a1)
     UI_upv_1.OnResize(relayout)
     a1.Debug.collection = function(a60, a61, a62, a63)
         --[[
-          line: 2008
+          line: 2007
           upvalues:
             u70 (ref,  index: 1)
             a1 (copy, index: 2)
