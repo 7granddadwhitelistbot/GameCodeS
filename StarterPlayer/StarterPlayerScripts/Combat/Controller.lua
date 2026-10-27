@@ -2348,6 +2348,7 @@ function tbl_upv_3.Start()
         enforceWant (copy, index: 38)
         drawTool (copy, index: 39)
         tbl_upv_3 (copy, index: 40)
+        tbl_upv_1 (copy, index: 41)
     ]]
     local u17 = false
     local u18 = nil
@@ -2890,24 +2891,49 @@ function tbl_upv_3.Start()
             end
         )
     end
+    task.spawn(
+        function()
+            --[[
+              line: 1431
+              upvalues:
+                LocalPlayer_upv_1 (copy, index: 1)
+                Util_upv_1 (copy, index: 2)
+                tbl_upv_3 (copy, index: 3)
+                tbl_upv_1 (copy, index: 4)
+            ]]
+            local v197 = LocalPlayer_upv_1:WaitForChild("PlayerScripts"):WaitForChild("Core", 30)
+            local v198 = v197 and (v197:WaitForChild("InputStats", 30))
+            if not v198 then
+                return
+            end
+            if v198:IsA("ModuleScript") then
+                local v199 = require(v198)
+                v199.Watch(Util_upv_1, 512)
+                v199.Watch(tbl_upv_3, 1024)
+                for _, value_16 in tbl_upv_1 do
+                    v199.Watch(value_16, 1024)
+                end
+            end
+        end
+    )
 end
 function tbl_upv_3.PlayFX(a1, a2)
     --[[
       name: PlayFX
-      line: 1433
+      line: 1447
       upvalues:
         onCombatFX (copy, index: 1)
     ]]
-    local success_7, v197 = pcall(onCombatFX, a1, a2)
+    local success_7, v200 = pcall(onCombatFX, a1, a2)
     if (success_7) then
         return
     end
-    warn("[Combat] replay FX error:", a1, v197)
+    warn("[Combat] replay FX error:", a1, v200)
 end
 function tbl_upv_3.SetReplayHud(a1)
     --[[
       name: SetReplayHud
-      line: 1443
+      line: 1457
       upvalues:
         u11 (ref,  index: 1)
         Touch_upv_1 (copy, index: 2)
@@ -2930,33 +2956,33 @@ end
 function tbl_upv_3.ReplayHitConfirm(a1)
     --[[
       name: ReplayHitConfirm
-      line: 1457
+      line: 1471
       upvalues:
         onHitConfirm (copy, index: 1)
     ]]
-    local success_8, v198 = pcall(onHitConfirm, a1)
+    local success_8, v201 = pcall(onHitConfirm, a1)
     if (success_8) then
         return
     end
-    warn("[Combat] replay HitConfirm error:", v198)
+    warn("[Combat] replay HitConfirm error:", v201)
 end
 function tbl_upv_3.ReplayDamageTaken(a1)
     --[[
       name: ReplayDamageTaken
-      line: 1464
+      line: 1478
       upvalues:
         onDamageTaken (copy, index: 1)
     ]]
-    local success_9, v199 = pcall(onDamageTaken, a1)
+    local success_9, v202 = pcall(onDamageTaken, a1)
     if (success_9) then
         return
     end
-    warn("[Combat] replay DamageTaken error:", v199)
+    warn("[Combat] replay DamageTaken error:", v202)
 end
 function tbl_upv_3.State()
     --[[
       name: State
-      line: 1472
+      line: 1486
       upvalues:
         u2 (ref,  index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -2966,39 +2992,39 @@ function tbl_upv_3.State()
         tbl_upv_5 (copy, index: 6)
         tbl_upv_15 (copy, index: 7)
     ]]
-    local v200 = u2
+    local v203 = u2
     local tbl_25 = {inputs = 0, equipStats = 0, shotId = 0, equipSeq = 0, equipPending = 0, equipAck = 0, lastInput = 0, speed = 0, tool = 0, wantSlot = 0}
     tbl_25.kind = tbl_upv_4.kind
     tbl_25.tool = ((tbl_upv_4.tool) and (tbl_upv_4.tool.Name)) or nil
-    local v201
-    if tbl_upv_4.hum then
-        v201 = tbl_upv_4.hum.WalkSpeed
-    else
-        v201 = nil
-    end
-    tbl_25.speed = v201
-    tbl_25.shotId = tbl_upv_4.shotId
-    tbl_25.wantSlot = not v200 and 0 or u2:GetAttribute("SlotIndex")
-    tbl_25.equipSeq = u3
-    local v203 = LocalPlayer_upv_1:GetAttribute("EquipAck")
     local v204
-    if type(v203) ~= "number" then
-        v204 = 0
+    if tbl_upv_4.hum then
+        v204 = tbl_upv_4.hum.WalkSpeed
     else
-        v204 = v203
+        v204 = nil
     end
-    tbl_25.equipAck = v204
-    local v205 = false
+    tbl_25.speed = v204
+    tbl_25.shotId = tbl_upv_4.shotId
+    tbl_25.wantSlot = not v203 and 0 or u2:GetAttribute("SlotIndex")
+    tbl_25.equipSeq = u3
     local v206 = LocalPlayer_upv_1:GetAttribute("EquipAck")
+    local v207
     if type(v206) ~= "number" then
-        v203 = 0
+        v207 = 0
     else
-        v203 = v206
+        v207 = v206
     end
-    if v203 < u3 then
-        v205 = os.clock() - u4 < 4
+    tbl_25.equipAck = v207
+    local v208 = false
+    local v209 = LocalPlayer_upv_1:GetAttribute("EquipAck")
+    if type(v209) ~= "number" then
+        v206 = 0
+    else
+        v206 = v209
     end
-    tbl_25.equipPending = v205
+    if v206 < u3 then
+        v208 = os.clock() - u4 < 4
+    end
+    tbl_25.equipPending = v208
     tbl_25.equipStats = table.clone(tbl_upv_5)
     tbl_25.inputs = tbl_upv_15.n
     tbl_25.lastInput = tbl_upv_15.last

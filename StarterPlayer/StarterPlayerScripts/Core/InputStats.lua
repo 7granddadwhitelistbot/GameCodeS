@@ -8,10 +8,11 @@ for _, value_1 in {"ButtonA", "ButtonB", "ButtonX", "ButtonY"} do
 end
 local u1 = 0
 local u2 = false
-local function note(a1)
+local tbl_upv_4 = {}
+local function _(a1)
     --[[
       name: note
-      line: 41
+      line: 47
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -20,7 +21,7 @@ end
 local function watch(a1)
     --[[
       name: watch
-      line: 45
+      line: 51
       upvalues:
         tbl_upv_2 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -28,7 +29,7 @@ local function watch(a1)
     local function look_1(a2)
         --[[
           name: look
-          line: 46
+          line: 52
           upvalues:
             tbl_upv_2 (copy, index: 1)
             a1 (copy, index: 2)
@@ -60,19 +61,38 @@ end
 function tbl_1.Note(a1)
     --[[
       name: Note
-      line: 60
+      line: 66
       upvalues:
         u1 (ref, index: 1)
     ]]
     u1 = bit32.bor(u1, a1)
 end
+function tbl_1.Watch(a1, a2)
+    --[[
+      name: Watch
+      line: 71
+      upvalues:
+        tbl_upv_4 (copy, index: 1)
+    ]]
+    for key_1, value_3 in next, a1 do
+        if type(value_3) == "function" then
+            table.insert(tbl_upv_4, {t = a1, k = key_1, f = value_3, bit = a2})
+        end
+    end
+end
 function tbl_1.Take()
     --[[
       name: Take
-      line: 65
+      line: 80
       upvalues:
-        u1 (ref, index: 1)
+        tbl_upv_4 (copy, index: 1)
+        u1 (ref,  index: 2)
     ]]
+    for _, value_4 in tbl_upv_4 do
+        if rawget(value_4.t, value_4.k) ~= value_4.f then
+            u1 = bit32.bor(u1, value_4.bit)
+        end
+    end
     local v4 = u1
     u1 = 0
     return v4
@@ -80,7 +100,7 @@ end
 function tbl_1.Start()
     --[[
       name: Start
-      line: 71
+      line: 91
       upvalues:
         u2 (ref,  index: 1)
         Players_upv_1 (copy, index: 2)
@@ -101,7 +121,7 @@ function tbl_1.Start()
     UserInputService_upv_1.InputBegan:Connect(
         function(a1)
             --[[
-              line: 81
+              line: 101
               upvalues:
                 tbl_upv_3 (copy, index: 1)
                 u1 (ref,  index: 2)
