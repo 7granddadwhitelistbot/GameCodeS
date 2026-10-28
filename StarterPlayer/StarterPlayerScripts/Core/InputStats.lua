@@ -1,5 +1,6 @@
+local GuiService_upv_1 = game:GetService("GuiService")
 local Players_upv_1 = game:GetService("Players")
-local _ = game:GetService("UserInputService")
+local UserInputService_upv_1 = game:GetService("UserInputService")
 local tbl_1 = {}
 local tbl_upv_2 = {BodyVelocity = 1, BodyThrust = 16, RocketPropulsion = 64, BodyForce = 8, BodyAngularVelocity = 32, BodyPosition = 4, BodyGyro = 2}
 local u1 = 0
@@ -9,7 +10,7 @@ local tbl_upv_4 = {}
 local function note(a1)
     --[[
       name: note
-      line: 51
+      line: 58
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -18,7 +19,7 @@ end
 local function watch(a1)
     --[[
       name: watch
-      line: 55
+      line: 62
       upvalues:
         tbl_upv_2 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -26,7 +27,7 @@ local function watch(a1)
     local function look_1(a2)
         --[[
           name: look
-          line: 56
+          line: 63
           upvalues:
             tbl_upv_2 (copy, index: 1)
             a1 (copy, index: 2)
@@ -58,7 +59,7 @@ end
 function tbl_1.Note(a1)
     --[[
       name: Note
-      line: 70
+      line: 77
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -67,7 +68,7 @@ end
 function tbl_1.Watch(a1, a2)
     --[[
       name: Watch
-      line: 75
+      line: 82
       upvalues:
         tbl_upv_3 (copy, index: 1)
     ]]
@@ -80,7 +81,7 @@ end
 local function ours(a1)
     --[[
       name: ours
-      line: 84
+      line: 91
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
@@ -102,7 +103,7 @@ end
 function tbl_1.Caller(a1)
     --[[
       name: Caller
-      line: 98
+      line: 105
       upvalues:
         u1 (ref,  index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -140,7 +141,7 @@ end
 function tbl_1.Take()
     --[[
       name: Take
-      line: 115
+      line: 122
       upvalues:
         tbl_upv_3 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -157,12 +158,14 @@ end
 function tbl_1.Start()
     --[[
       name: Start
-      line: 126
+      line: 133
       upvalues:
         u2 (ref,  index: 1)
         Players_upv_1 (copy, index: 2)
         watch (copy, index: 3)
         u1 (ref,  index: 4)
+        GuiService_upv_1 (copy, index: 5)
+        UserInputService_upv_1 (copy, index: 6)
     ]]
     if u2 then
         return
@@ -176,27 +179,45 @@ function tbl_1.Start()
     require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Simulation")).OnForeignWrite(
         function()
             --[[
-              line: 139
+              line: 146
               upvalues:
                 u1 (ref, index: 1)
             ]]
             u1 = bit32.bor(u1, 2048)
         end
     )
+    if (GuiService_upv_1:IsTenFootInterface()) or (UserInputService_upv_1.VREnabled) then
+        return
+    end
     task.spawn(
         function()
             --[[
-              line: 143
+              line: 153
               upvalues:
                 LocalPlayer_upv_1 (copy, index: 1)
                 u1 (ref,  index: 2)
             ]]
-            local tbl_5 = {LocalPlayer_upv_1:GetMouse(), newproxy(true)}
+            local tbl_5 = {LocalPlayer_upv_1:GetMouse()}
             local v16 = setmetatable(tbl_5, {__mode = "v"})
+            tbl_5 = 0
+            local v17 = math.huge
             repeat
-                task.wait()
-            until #v16 ~= #v16
-            if not (#v16 > 0) then
+                local v18 = setmetatable({newproxy(true)}, {__mode = "v"})
+                repeat
+                    task.wait()
+                until v18[1] == nil
+                if v16[1] ~= nil then
+                    tbl_5 = tbl_5 + 1
+                    v17 = math.min(v17, os.clock())
+                end
+                if v16[1] == nil then
+                    break
+                end
+                if not (tbl_5 >= 3) then
+                    continue
+                end
+            until os.clock() - v17 >= 20
+            if v16[1] == nil then
                 return
             end
             u1 = bit32.bor(u1, 4096)
