@@ -9,7 +9,7 @@ local tbl_upv_4 = {}
 local function note(a1)
     --[[
       name: note
-      line: 48
+      line: 51
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -18,7 +18,7 @@ end
 local function watch(a1)
     --[[
       name: watch
-      line: 52
+      line: 55
       upvalues:
         tbl_upv_2 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -26,7 +26,7 @@ local function watch(a1)
     local function look_1(a2)
         --[[
           name: look
-          line: 53
+          line: 56
           upvalues:
             tbl_upv_2 (copy, index: 1)
             a1 (copy, index: 2)
@@ -58,7 +58,7 @@ end
 function tbl_1.Note(a1)
     --[[
       name: Note
-      line: 67
+      line: 70
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -67,7 +67,7 @@ end
 function tbl_1.Watch(a1, a2)
     --[[
       name: Watch
-      line: 72
+      line: 75
       upvalues:
         tbl_upv_3 (copy, index: 1)
     ]]
@@ -80,7 +80,7 @@ end
 local function ours(a1)
     --[[
       name: ours
-      line: 81
+      line: 84
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
@@ -102,7 +102,7 @@ end
 function tbl_1.Caller(a1)
     --[[
       name: Caller
-      line: 95
+      line: 98
       upvalues:
         u1 (ref,  index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -140,7 +140,7 @@ end
 function tbl_1.Take()
     --[[
       name: Take
-      line: 112
+      line: 115
       upvalues:
         tbl_upv_3 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -157,7 +157,7 @@ end
 function tbl_1.Start()
     --[[
       name: Start
-      line: 123
+      line: 126
       upvalues:
         u2 (ref,  index: 1)
         Players_upv_1 (copy, index: 2)
@@ -168,19 +168,39 @@ function tbl_1.Start()
         return
     end
     u2 = true
-    local LocalPlayer_1 = Players_upv_1.LocalPlayer
-    if LocalPlayer_1.Character then
-        task.spawn(watch, LocalPlayer_1.Character)
+    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
+    if LocalPlayer_upv_1.Character then
+        task.spawn(watch, LocalPlayer_upv_1.Character)
     end
-    LocalPlayer_1.CharacterAdded:Connect(watch)
+    LocalPlayer_upv_1.CharacterAdded:Connect(watch)
     require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Simulation")).OnForeignWrite(
         function()
             --[[
-              line: 136
+              line: 139
               upvalues:
                 u1 (ref, index: 1)
             ]]
             u1 = bit32.bor(u1, 2048)
+        end
+    )
+    task.spawn(
+        function()
+            --[[
+              line: 143
+              upvalues:
+                LocalPlayer_upv_1 (copy, index: 1)
+                u1 (ref,  index: 2)
+            ]]
+            local tbl_5 = {LocalPlayer_upv_1:GetMouse(), newproxy(true)}
+            local v16 = setmetatable(tbl_5, {__mode = "v"})
+            repeat
+                task.wait()
+            until #v16 ~= #v16
+            if not (#v16 > 0) then
+                return
+            end
+            u1 = bit32.bor(u1, 4096)
+            task.wait(10)
         end
     )
 end
