@@ -1,11 +1,11 @@
-local Players_1 = game:GetService("Players")
+local Players_upv_1 = game:GetService("Players")
 local v1 = game:GetService("ReplicatedStorage")
 local TweenService_upv_1 = game:GetService("TweenService")
 local UserInputService_upv_1 = game:GetService("UserInputService")
 local TouchStart_upv_1 = require(v1:WaitForChild("Shared"):WaitForChild("TouchStart"))
 local Loc_upv_1 = require(v1.Shared:WaitForChild("Loc"))
 v1 = {}
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
+local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
 local u1 = nil
 local u2 = nil
 local tbl_upv_1 = {}
@@ -433,8 +433,9 @@ local function bindAttack(a1)
         u3 (ref,  index: 7)
         UserInputService_upv_1 (copy, index: 8)
         u9 (ref,  index: 9)
-        u13 (copy, index: 10)
-        u15 (copy, index: 11)
+        Players_upv_1 (copy, index: 10)
+        u13 (copy, index: 11)
+        u15 (copy, index: 12)
     ]]
     local u21 = nil
     a1.InputBegan:Connect(
@@ -484,21 +485,22 @@ local function bindAttack(a1)
     UserInputService_upv_1.TouchMoved:Connect(
         function(a3)
             --[[
-              line: 334
+              line: 336
               upvalues:
                 u21 (ref,  index: 1)
                 u9 (ref,  index: 2)
                 UserInputService_upv_1 (copy, index: 3)
+                Players_upv_1 (copy, index: 4)
             ]]
             if a3 ~= u21 or not u9 then
                 return
             end
-            if not (UserInputService_upv_1.MouseEnabled) then
+            if not (UserInputService_upv_1.MouseEnabled) and Players_upv_1.LocalPlayer:GetAttribute("TouchAttackLookOff") ~= true then
                 local Delta_upv_1 = a3.Delta
                 if not (pcall(
                     function()
                         --[[
-                          line: 339
+                          line: 344
                           upvalues:
                             u9 (ref,  index: 1)
                             Delta_upv_1 (copy, index: 2)
@@ -514,7 +516,7 @@ local function bindAttack(a1)
     UserInputService_upv_1.TouchEnded:Connect(
         function(a4)
             --[[
-              line: 346
+              line: 351
               upvalues:
                 u21 (ref,  index: 1)
                 a1 (copy, index: 2)
@@ -557,7 +559,7 @@ end
 local function bindSecondary(a1)
     --[[
       name: bindSecondary
-      line: 356
+      line: 361
       upvalues:
         TouchStart_upv_1 (copy, index: 1)
         secondaryFor (copy, index: 2)
@@ -580,7 +582,7 @@ local function bindSecondary(a1)
     a1.InputBegan:Connect(
         function(a2)
             --[[
-              line: 358
+              line: 363
               upvalues:
                 u22 (ref,  index: 1)
                 TouchStart_upv_1 (copy, index: 2)
@@ -649,7 +651,7 @@ local function bindSecondary(a1)
     UserInputService_upv_1.TouchEnded:Connect(
         function(a3)
             --[[
-              line: 377
+              line: 382
               upvalues:
                 u22 (ref,  index: 1)
                 a1 (copy, index: 2)
@@ -692,7 +694,7 @@ end
 function v1.SetWeapon(a1, a2)
     --[[
       name: SetWeapon
-      line: 388
+      line: 393
       upvalues:
         u4 (ref,  index: 1)
         u5 (ref,  index: 2)
@@ -732,7 +734,7 @@ end
 function v1.SetAltDim(a1)
     --[[
       name: SetAltDim
-      line: 399
+      line: 404
       upvalues:
         u10 (ref,  index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -752,7 +754,7 @@ end
 function v1.SetVisible(a1)
     --[[
       name: SetVisible
-      line: 410
+      line: 415
       upvalues:
         u8 (ref,  index: 1)
         refresh (copy, index: 2)
@@ -766,7 +768,7 @@ end
 function v1.IsActive()
     --[[
       name: IsActive
-      line: 417
+      line: 422
       upvalues:
         u7 (ref, index: 1)
     ]]
@@ -775,7 +777,7 @@ end
 local function updateActive(a1)
     --[[
       name: updateActive
-      line: 421
+      line: 426
       upvalues:
         UserInputService_upv_1 (copy, index: 1)
         u7 (ref,  index: 2)
@@ -799,7 +801,7 @@ end
 function v1.Start(a1)
     --[[
       name: Start
-      line: 437
+      line: 442
       upvalues:
         u1 (ref,  index: 1)
         u3 (ref,  index: 2)
@@ -830,14 +832,14 @@ function v1.Start(a1)
     task.spawn(
         function()
             --[[
-              line: 442
+              line: 447
               upvalues:
                 u9 (ref, index: 1)
             ]]
             local success_1, v69 = pcall(
                 function()
                     --[[
-                      line: 443
+                      line: 448
                     ]]
                     return require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Camera", 10))
                 end
@@ -874,7 +876,7 @@ function v1.Start(a1)
     tbl_upv_1.Reload.InputBegan:Connect(
         function(a2)
             --[[
-              line: 468
+              line: 473
               upvalues:
                 TouchStart_upv_1 (copy, index: 1)
                 tbl_upv_1 (copy, index: 2)
@@ -918,7 +920,7 @@ function v1.Start(a1)
                     0.12,
                     function()
                         --[[
-                          line: 473
+                          line: 478
                           upvalues:
                             tbl_upv_1 (copy, index: 1)
                             u10 (ref,  index: 2)
@@ -954,7 +956,7 @@ function v1.Start(a1)
     u23.AttributeChanged:Connect(
         function(a3)
             --[[
-              line: 479
+              line: 484
               upvalues:
                 refresh (copy, index: 1)
             ]]
@@ -969,7 +971,7 @@ function v1.Start(a1)
     v71:GetPropertyChangedSignal("AbsoluteSize"):Connect(
         function()
             --[[
-              line: 486
+              line: 491
               upvalues:
                 u23 (copy, index: 1)
                 layout (copy, index: 2)
@@ -983,7 +985,7 @@ function v1.Start(a1)
     LocalPlayer_upv_1.CharacterAdded:Connect(
         function(a4)
             --[[
-              line: 491
+              line: 496
               upvalues:
                 u6 (ref,  index: 1)
                 refresh (copy, index: 2)
@@ -999,7 +1001,7 @@ function v1.Start(a1)
     task.spawn(
         function()
             --[[
-              line: 500
+              line: 505
               upvalues:
                 u23 (copy, index: 1)
                 layout (copy, index: 2)

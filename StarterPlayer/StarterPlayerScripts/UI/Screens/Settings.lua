@@ -60,7 +60,7 @@ local tbl_upv_8 = {
     tbl_2,
     {title = "AUDIO", items = {{key = "music", label = "MUSIC", kind = "slider", step = 0.05, desc = "Lobby and match music", fmt = pct}, {key = "sfx", label = "SOUND EFFECTS", kind = "slider", step = 0.05, desc = "Combat, menus and ambience", fmt = pct}}},
     {title = "PARTY", items = {{desc = "Only your Roblox friends can invite you to a party", kind = "switch", key = "friendsOnlyInvites", label = "FRIENDS-ONLY INVITES"}}},
-    {title = "CONTROLS", touchOnly = true, items = {{kind = "action", desc = "Move and resize your on-screen buttons", label = "BUTTON LAYOUT"}}},
+    {title = "CONTROLS", touchOnly = true, items = {{kind = "action", desc = "Move and resize your on-screen buttons", label = "BUTTON LAYOUT"}, {desc = "Drag the attack button to turn the camera", kind = "switch", key = "attackAim", label = "AIM WITH ATTACK BUTTON"}}},
     {keyboardOnly = true, title = "CONTROLS", keybinds = true, items = {}},
     {padbinds = true, title = "CONTROLLER", items = {}},
     {
@@ -83,7 +83,7 @@ local u3 = Color3.fromRGB(142, 149, 166)
 function tbl_1.Init(a1)
     --[[
       name: Init
-      line: 164
+      line: 168
       upvalues:
         u1 (copy, index: 1)
         Players_upv_1 (copy, index: 2)
@@ -105,7 +105,7 @@ function tbl_1.Init(a1)
     local function OnCloseRequested()
         --[[
           name: OnCloseRequested
-          line: 174
+          line: 178
           upvalues:
             a1 (copy, index: 1)
         ]]
@@ -133,7 +133,7 @@ function tbl_1.Init(a1)
     local function addNav(a2, a3)
         --[[
           name: addNav
-          line: 204
+          line: 208
           upvalues:
             u19 (ref, index: 1)
         ]]
@@ -145,7 +145,7 @@ function tbl_1.Init(a1)
             pcall(
                 function()
                     --[[
-                      line: 207
+                      line: 211
                       upvalues:
                         value_upv_1 (copy, index: 1)
                         key_upv_1 (copy, index: 2)
@@ -166,7 +166,7 @@ function tbl_1.Init(a1)
     local function closeConfirm()
         --[[
           name: closeConfirm
-          line: 250
+          line: 254
           upvalues:
             tbl_upv_12 (ref, index: 1)
         ]]
@@ -178,7 +178,7 @@ function tbl_1.Init(a1)
     local function leaveCost()
         --[[
           name: leaveCost
-          line: 222
+          line: 226
           upvalues:
             State_upv_1 (copy, index: 1)
             Players_upv_1 (copy, index: 2)
@@ -230,7 +230,7 @@ function tbl_1.Init(a1)
     local function openConfirm()
         --[[
           name: openConfirm
-          line: 255
+          line: 259
           upvalues:
             tbl_upv_12 (ref,  index: 1)
             UI_upv_1 (copy, index: 2)
@@ -265,7 +265,7 @@ function tbl_1.Init(a1)
             pcall(
                 function()
                     --[[
-                      line: 281
+                      line: 285
                       upvalues:
                         u21 (copy, index: 1)
                     ]]
@@ -287,7 +287,7 @@ function tbl_1.Init(a1)
             function tbl_14.OnClick()
                 --[[
                   name: OnClick
-                  line: 332
+                  line: 336
                   upvalues:
                     tbl_upv_12 (ref,  index: 1)
                     a1 (copy, index: 2)
@@ -322,7 +322,7 @@ function tbl_1.Init(a1)
     local function showControls()
         --[[
           name: showControls
-          line: 351
+          line: 355
           upvalues:
             UI_upv_1 (copy, index: 1)
             a1 (copy, index: 2)
@@ -332,7 +332,7 @@ function tbl_1.Init(a1)
     local function lastIsGamepad()
         --[[
           name: lastIsGamepad
-          line: 354
+          line: 358
           upvalues:
             UI_upv_1 (copy, index: 1)
         ]]
@@ -341,7 +341,7 @@ function tbl_1.Init(a1)
     local function showKeybinds()
         --[[
           name: showKeybinds
-          line: 358
+          line: 362
           upvalues:
             UI_upv_1 (copy, index: 1)
             UserInputService_upv_1 (copy, index: 2)
@@ -352,7 +352,7 @@ function tbl_1.Init(a1)
     local function showAssist()
         --[[
           name: showAssist
-          line: 363
+          line: 367
           upvalues:
             UI_upv_1 (copy, index: 1)
             u22 (ref,  index: 2)
@@ -363,7 +363,7 @@ function tbl_1.Init(a1)
     local function modeKey()
         --[[
           name: modeKey
-          line: 366
+          line: 370
           upvalues:
             UI_upv_1 (copy, index: 1)
             a1 (copy, index: 2)
@@ -386,7 +386,7 @@ function tbl_1.Init(a1)
     local function setHighlight(a4, a5)
         --[[
           name: setHighlight
-          line: 380
+          line: 384
           upvalues:
             UI_upv_1 (copy, index: 1)
             Theme_upv_1 (copy, index: 2)
@@ -397,7 +397,7 @@ function tbl_1.Init(a1)
     local function hookRowFeedback(a6, a7)
         --[[
           name: hookRowFeedback
-          line: 385
+          line: 389
           upvalues:
             UI_upv_1 (copy, index: 1)
             Theme_upv_1 (copy, index: 2)
@@ -407,7 +407,7 @@ function tbl_1.Init(a1)
         a6.MouseEnter:Connect(
             function()
                 --[[
-                  line: 387
+                  line: 391
                   upvalues:
                     UI_upv_1 (copy, index: 1)
                     u25 (ref,  index: 2)
@@ -424,7 +424,7 @@ function tbl_1.Init(a1)
         a6.MouseLeave:Connect(
             function()
                 --[[
-                  line: 393
+                  line: 397
                   upvalues:
                     u25 (ref,  index: 1)
                     a7 (copy, index: 2)
@@ -442,7 +442,7 @@ function tbl_1.Init(a1)
         a6.MouseButton1Down:Connect(
             function()
                 --[[
-                  line: 398
+                  line: 402
                   upvalues:
                     a7 (copy, index: 1)
                     UI_upv_1 (copy, index: 2)
@@ -454,7 +454,7 @@ function tbl_1.Init(a1)
         a6.MouseButton1Up:Connect(
             function()
                 --[[
-                  line: 401
+                  line: 405
                   upvalues:
                     a7 (copy, index: 1)
                     u25 (ref,  index: 2)
@@ -468,7 +468,7 @@ function tbl_1.Init(a1)
     local function tick(a8)
         --[[
           name: tick
-          line: 407
+          line: 411
           upvalues:
             u16 (ref,  index: 1)
             a1 (copy, index: 2)
@@ -482,7 +482,7 @@ function tbl_1.Init(a1)
     local function textBlock(a9, a10, a11)
         --[[
           name: textBlock
-          line: 427
+          line: 431
           upvalues:
             UI_upv_1 (copy, index: 1)
             u1 (ref,  index: 2)
@@ -503,7 +503,7 @@ function tbl_1.Init(a1)
     local function rowBase(a12, a13, a14, a15)
         --[[
           name: rowBase
-          line: 472
+          line: 476
           upvalues:
             UI_upv_1 (copy, index: 1)
             u1 (ref,  index: 2)
@@ -531,7 +531,7 @@ function tbl_1.Init(a1)
     local function sliderRow(a16, a17, a18)
         --[[
           name: sliderRow
-          line: 504
+          line: 508
           upvalues:
             SettingsStore_upv_1 (copy, index: 1)
             u1 (ref,  index: 2)
@@ -587,7 +587,7 @@ function tbl_1.Init(a1)
         pcall(
             function()
                 --[[
-                  line: 567
+                  line: 571
                   upvalues:
                     u27 (copy, index: 1)
                 ]]
@@ -600,7 +600,7 @@ function tbl_1.Init(a1)
         u9 = u9 or u27
         u5[key_2] = function(a19, a20)
             --[[
-              line: 574
+              line: 578
               upvalues:
                 u26 (copy, index: 1)
                 u28 (copy, index: 2)
@@ -623,7 +623,7 @@ function tbl_1.Init(a1)
         tbl_17.MouseButton1Down:Connect(
             function()
                 --[[
-                  line: 585
+                  line: 589
                   upvalues:
                     u15 (ref,  index: 1)
                     a18 (copy, index: 2)
@@ -644,7 +644,7 @@ function tbl_1.Init(a1)
     local function sessionSwitch(a21)
         --[[
           name: sessionSwitch
-          line: 595
+          line: 599
           upvalues:
             a1 (copy, index: 1)
         ]]
@@ -662,7 +662,7 @@ function tbl_1.Init(a1)
     local function switchRow(a22, a23, a24)
         --[[
           name: switchRow
-          line: 606
+          line: 610
           upvalues:
             rowBase (copy, index: 1)
             UI_upv_1 (copy, index: 2)
@@ -683,7 +683,7 @@ function tbl_1.Init(a1)
         u9 = u9 or v29
         u5[key_upv_3] = function(a25, a26)
             --[[
-              line: 619
+              line: 623
               upvalues:
                 a24 (copy, index: 1)
                 key_upv_3 (copy, index: 2)
@@ -713,7 +713,7 @@ function tbl_1.Init(a1)
         local function flip_1()
             --[[
               name: flip
-              line: 627
+              line: 631
               upvalues:
                 a24 (copy, index: 1)
                 key_upv_3 (copy, index: 2)
@@ -772,7 +772,7 @@ function tbl_1.Init(a1)
     local function actionRow(a27, a28, a29)
         --[[
           name: actionRow
-          line: 646
+          line: 650
           upvalues:
             rowBase (copy, index: 1)
             UI_upv_1 (copy, index: 2)
@@ -795,7 +795,7 @@ function tbl_1.Init(a1)
         v38.Activated:Connect(
             function()
                 --[[
-                  line: 672
+                  line: 676
                   upvalues:
                     a1 (copy, index: 1)
                     a29 (copy, index: 2)
@@ -839,7 +839,7 @@ function tbl_1.Init(a1)
     local function paintChip(a30)
         --[[
           name: paintChip
-          line: 712
+          line: 716
           upvalues:
             Keybinds_upv_1 (copy, index: 1)
             Colors_upv_1 (copy, index: 2)
@@ -876,7 +876,7 @@ function tbl_1.Init(a1)
     local function paintKeybinds()
         --[[
           name: paintKeybinds
-          line: 722
+          line: 726
           upvalues:
             tbl_upv_23 (ref,  index: 1)
             paintChip (copy, index: 2)
@@ -896,7 +896,7 @@ function tbl_1.Init(a1)
     local function flashChips(a31)
         --[[
           name: flashChips
-          line: 732
+          line: 736
           upvalues:
             tbl_upv_23 (ref,  index: 1)
             Colors_upv_1 (copy, index: 2)
@@ -914,7 +914,7 @@ function tbl_1.Init(a1)
                 0.7,
                 function()
                     --[[
-                      line: 737
+                      line: 741
                       upvalues:
                         value_upv_6 (copy, index: 1)
                         paintChip (copy, index: 2)
@@ -931,7 +931,7 @@ function tbl_1.Init(a1)
     local function notice(a32)
         --[[
           name: notice
-          line: 745
+          line: 749
           upvalues:
             u33 (ref, index: 1)
             u34 (ref, index: 2)
@@ -949,7 +949,7 @@ function tbl_1.Init(a1)
     local function actionLabel(a33)
         --[[
           name: actionLabel
-          line: 760
+          line: 764
           upvalues:
             Keybinds_upv_1 (copy, index: 1)
         ]]
@@ -967,7 +967,7 @@ function tbl_1.Init(a1)
     local function releaseSink()
         --[[
           name: releaseSink
-          line: 782
+          line: 786
           upvalues:
             u36 (ref, index: 1)
         ]]
@@ -979,7 +979,7 @@ function tbl_1.Init(a1)
     local function closeCapture()
         --[[
           name: closeCapture
-          line: 788
+          line: 792
           upvalues:
             u37 (ref,  index: 1)
             u38 (ref,  index: 2)
@@ -1016,7 +1016,7 @@ function tbl_1.Init(a1)
     local function padIdle()
         --[[
           name: padIdle
-          line: 807
+          line: 811
           upvalues:
             u36 (ref,  index: 1)
             u37 (ref,  index: 2)
@@ -1040,7 +1040,7 @@ function tbl_1.Init(a1)
     local function refuse(a34)
         --[[
           name: refuse
-          line: 817
+          line: 821
           upvalues:
             u36 (ref,  index: 1)
             u38 (ref,  index: 2)
@@ -1071,7 +1071,7 @@ function tbl_1.Init(a1)
             1.8,
             function()
                 --[[
-                  line: 830
+                  line: 834
                   upvalues:
                     u41 (copy, index: 1)
                     u38 (ref,  index: 2)
@@ -1105,7 +1105,7 @@ function tbl_1.Init(a1)
     local function commit(a35)
         --[[
           name: commit
-          line: 836
+          line: 840
           upvalues:
             u37 (ref,  index: 1)
             closeCapture (copy, index: 2)
@@ -1174,7 +1174,7 @@ function tbl_1.Init(a1)
     local function buildCapture()
         --[[
           name: buildCapture
-          line: 860
+          line: 864
           upvalues:
             UI_upv_1 (copy, index: 1)
             Colors_upv_1 (copy, index: 2)
@@ -1222,7 +1222,7 @@ function tbl_1.Init(a1)
         local function hintText_1(a36, a37)
             --[[
               name: hintText
-              line: 986
+              line: 990
               upvalues:
                 UI_upv_1 (copy, index: 1)
                 Fonts_upv_1 (copy, index: 2)
@@ -1244,7 +1244,7 @@ function tbl_1.Init(a1)
         function tbl_25.OnClick()
             --[[
               name: OnClick
-              line: 1033
+              line: 1037
               upvalues:
                 u37 (ref,  index: 1)
                 closeCapture (copy, index: 2)
@@ -1268,7 +1268,7 @@ function tbl_1.Init(a1)
         u45.FocusLost:Connect(
             function()
                 --[[
-                  line: 1071
+                  line: 1075
                   upvalues:
                     u37 (ref,  index: 1)
                     u42 (copy, index: 2)
@@ -1277,7 +1277,7 @@ function tbl_1.Init(a1)
                 task.defer(
                     function()
                         --[[
-                          line: 1072
+                          line: 1076
                           upvalues:
                             u37 (ref,  index: 1)
                             u42 (copy, index: 2)
@@ -1294,7 +1294,7 @@ function tbl_1.Init(a1)
         u45:GetPropertyChangedSignal("Text"):Connect(
             function()
                 --[[
-                  line: 1078
+                  line: 1082
                   upvalues:
                     u45 (copy, index: 1)
                 ]]
@@ -1309,7 +1309,7 @@ function tbl_1.Init(a1)
             0.03333333333333333,
             function()
                 --[[
-                  line: 1083
+                  line: 1087
                   upvalues:
                     u42 (copy, index: 1)
                     u37 (ref,  index: 2)
@@ -1345,7 +1345,7 @@ function tbl_1.Init(a1)
     local function openCapture(a38, a39)
         --[[
           name: openCapture
-          line: 1094
+          line: 1098
           upvalues:
             u36 (ref,  index: 1)
             buildCapture (copy, index: 2)
@@ -1423,7 +1423,7 @@ function tbl_1.Init(a1)
         task.defer(
             function()
                 --[[
-                  line: 1121
+                  line: 1125
                   upvalues:
                     u37 (ref,  index: 1)
                     u46 (copy, index: 2)
@@ -1438,7 +1438,7 @@ function tbl_1.Init(a1)
     local function inside(a40, a41)
         --[[
           name: inside
-          line: 1127
+          line: 1131
         ]]
         if not a40.Visible then
             return false
@@ -1450,7 +1450,7 @@ function tbl_1.Init(a1)
     UserInputService_upv_1.InputBegan:Connect(
         function(a42)
             --[[
-              line: 1134
+              line: 1138
               upvalues:
                 u36 (ref,  index: 1)
                 u37 (ref,  index: 2)
@@ -1513,7 +1513,7 @@ function tbl_1.Init(a1)
     local function keyChip(a43, a44, a45, a46, a47, a48)
         --[[
           name: keyChip
-          line: 1164
+          line: 1168
           upvalues:
             UI_upv_1 (copy, index: 1)
             u1 (ref,  index: 2)
@@ -1542,7 +1542,7 @@ function tbl_1.Init(a1)
         u47.MouseEnter:Connect(
             function()
                 --[[
-                  line: 1193
+                  line: 1197
                   upvalues:
                     u35 (ref,  index: 1)
                     u47 (copy, index: 2)
@@ -1558,7 +1558,7 @@ function tbl_1.Init(a1)
         u47.MouseLeave:Connect(
             function()
                 --[[
-                  line: 1197
+                  line: 1201
                   upvalues:
                     u35 (ref,  index: 1)
                     u47 (copy, index: 2)
@@ -1584,7 +1584,7 @@ function tbl_1.Init(a1)
         u47.Activated:Connect(
             function()
                 --[[
-                  line: 1203
+                  line: 1207
                   upvalues:
                     openCapture (copy, index: 1)
                     a44 (copy, index: 2)
@@ -1601,7 +1601,7 @@ function tbl_1.Init(a1)
     local function keybindSection(a49, a50)
         --[[
           name: keybindSection
-          line: 1212
+          line: 1216
           upvalues:
             tbl_upv_23 (ref,  index: 1)
             u1 (ref,  index: 2)
@@ -1636,7 +1636,7 @@ function tbl_1.Init(a1)
         function tbl_30.OnClick()
             --[[
               name: OnClick
-              line: 1239
+              line: 1243
               upvalues:
                 closeCapture (copy, index: 1)
                 Keybinds_upv_1 (copy, index: 2)
@@ -1668,7 +1668,7 @@ function tbl_1.Init(a1)
                 4,
                 function()
                     --[[
-                      line: 754
+                      line: 758
                       upvalues:
                         u50 (copy, index: 1)
                         u34 (ref,  index: 2)
@@ -1757,7 +1757,7 @@ function tbl_1.Init(a1)
     local function padCode(a51)
         --[[
           name: padCode
-          line: 1353
+          line: 1357
         ]]
         if not a51 then
             return nil
@@ -1771,7 +1771,7 @@ function tbl_1.Init(a1)
     local function padLabel(a52)
         --[[
           name: padLabel
-          line: 1362
+          line: 1366
           upvalues:
             Keybinds_upv_1 (copy, index: 1)
         ]]
@@ -1784,7 +1784,7 @@ function tbl_1.Init(a1)
     local function paintPadChip(a53)
         --[[
           name: paintPadChip
-          line: 1366
+          line: 1370
           upvalues:
             Keybinds_upv_1 (copy, index: 1)
             UI_upv_1 (copy, index: 2)
@@ -1811,7 +1811,7 @@ function tbl_1.Init(a1)
     local function firstPadChip()
         --[[
           name: firstPadChip
-          line: 1373
+          line: 1377
           upvalues:
             Keybinds_upv_1 (copy, index: 1)
             u51 (ref,  index: 2)
@@ -1826,7 +1826,7 @@ function tbl_1.Init(a1)
     local function paintPadBinds()
         --[[
           name: paintPadBinds
-          line: 1378
+          line: 1382
           upvalues:
             u51 (ref,  index: 1)
             Keybinds_upv_1 (copy, index: 2)
@@ -1879,7 +1879,7 @@ function tbl_1.Init(a1)
     local function flashPadChips(a54)
         --[[
           name: flashPadChips
-          line: 1394
+          line: 1398
           upvalues:
             u51 (ref,  index: 1)
             Colors_upv_1 (copy, index: 2)
@@ -1897,7 +1897,7 @@ function tbl_1.Init(a1)
                 0.7,
                 function()
                     --[[
-                      line: 1399
+                      line: 1403
                       upvalues:
                         value_upv_12 (copy, index: 1)
                         Keybinds_upv_1 (copy, index: 2)
@@ -1931,7 +1931,7 @@ function tbl_1.Init(a1)
     local function padNote(a55, a56)
         --[[
           name: padNote
-          line: 1408
+          line: 1412
           upvalues:
             u54 (ref,  index: 1)
             u55 (ref,  index: 2)
@@ -1960,7 +1960,7 @@ function tbl_1.Init(a1)
                 4,
                 function()
                     --[[
-                      line: 1422
+                      line: 1426
                       upvalues:
                         u62 (copy, index: 1)
                         u57 (ref,  index: 2)
@@ -1980,7 +1980,7 @@ function tbl_1.Init(a1)
                         0.35,
                         function()
                             --[[
-                              line: 1427
+                              line: 1431
                               upvalues:
                                 u62 (copy, index: 1)
                                 u57 (ref,  index: 2)
@@ -1999,7 +1999,7 @@ function tbl_1.Init(a1)
     local function openPadCapture(a57, a58, a59)
         --[[
           name: openPadCapture
-          line: 1461
+          line: 1465
           upvalues:
             Keybinds_upv_1 (copy, index: 1)
             u36 (ref,  index: 2)
@@ -2080,7 +2080,7 @@ function tbl_1.Init(a1)
     local function noteMoves(a60)
         --[[
           name: noteMoves
-          line: 1437
+          line: 1441
           upvalues:
             Keybinds_upv_1 (copy, index: 1)
             padNote (copy, index: 2)
@@ -2141,7 +2141,7 @@ function tbl_1.Init(a1)
     local function padCommit(a61)
         --[[
           name: padCommit
-          line: 1497
+          line: 1501
           upvalues:
             u37 (ref,  index: 1)
             closeCapture (copy, index: 2)
@@ -2170,7 +2170,7 @@ function tbl_1.Init(a1)
     local function padUnbind(a62)
         --[[
           name: padUnbind
-          line: 1516
+          line: 1520
           upvalues:
             Keybinds_upv_1 (copy, index: 1)
             SettingsStore_upv_1 (copy, index: 2)
@@ -2228,7 +2228,7 @@ function tbl_1.Init(a1)
         "Began",
         function(a63)
             --[[
-              line: 1534
+              line: 1538
               upvalues:
                 u37 (ref,  index: 1)
                 u4 (copy, index: 2)
@@ -2270,7 +2270,7 @@ function tbl_1.Init(a1)
                                     task.spawn(
                                         function()
                                             --[[
-                                              line: 1571
+                                              line: 1575
                                               upvalues:
                                                 u37 (ref,  index: 1)
                                                 u63 (copy, index: 2)
@@ -2314,7 +2314,7 @@ function tbl_1.Init(a1)
         "Ended",
         function(a64)
             --[[
-              line: 1593
+              line: 1597
               upvalues:
                 u37 (ref,  index: 1)
                 padCommit (copy, index: 2)
@@ -2337,7 +2337,7 @@ function tbl_1.Init(a1)
     local function padChip(a65, a66, a67, a68)
         --[[
           name: padChip
-          line: 1609
+          line: 1613
           upvalues:
             UI_upv_1 (copy, index: 1)
             u1 (ref,  index: 2)
@@ -2366,7 +2366,7 @@ function tbl_1.Init(a1)
         u65.MouseEnter:Connect(
             function()
                 --[[
-                  line: 1645
+                  line: 1649
                   upvalues:
                     UI_upv_1 (copy, index: 1)
                     u66 (copy, index: 2)
@@ -2379,7 +2379,7 @@ function tbl_1.Init(a1)
         u65.MouseLeave:Connect(
             function()
                 --[[
-                  line: 1648
+                  line: 1652
                   upvalues:
                     UI_upv_1 (copy, index: 1)
                     u66 (copy, index: 2)
@@ -2400,7 +2400,7 @@ function tbl_1.Init(a1)
         u65.Activated:Connect(
             function()
                 --[[
-                  line: 1651
+                  line: 1655
                   upvalues:
                     u37 (ref,  index: 1)
                     u40 (ref,  index: 2)
@@ -2426,7 +2426,7 @@ function tbl_1.Init(a1)
             local success_7, v166 = pcall(
                 function()
                     --[[
-                      line: 1357
+                      line: 1361
                       upvalues:
                         u67 (copy, index: 1)
                     ]]
@@ -2450,7 +2450,7 @@ function tbl_1.Init(a1)
     local function padSection(a69, a70)
         --[[
           name: padSection
-          line: 1664
+          line: 1668
           upvalues:
             u51 (ref,  index: 1)
             u52 (ref,  index: 2)
@@ -2492,7 +2492,7 @@ function tbl_1.Init(a1)
         function tbl_40.OnClick()
             --[[
               name: OnClick
-              line: 1693
+              line: 1697
               upvalues:
                 u37 (ref,  index: 1)
                 closeCapture (copy, index: 2)
@@ -2550,7 +2550,7 @@ function tbl_1.Init(a1)
         local function legendText_1(a71, a72, a73)
             --[[
               name: legendText
-              line: 1776
+              line: 1780
               upvalues:
                 UI_upv_1 (copy, index: 1)
                 Fonts_upv_1 (copy, index: 2)
@@ -2597,7 +2597,7 @@ function tbl_1.Init(a1)
     local function updateFade()
         --[[
           name: updateFade
-          line: 1801
+          line: 1805
           upvalues:
             u10 (ref, index: 1)
             u11 (ref, index: 2)
@@ -2611,7 +2611,7 @@ function tbl_1.Init(a1)
     local function build()
         --[[
           name: build
-          line: 1810
+          line: 1814
           upvalues:
             Content_upv_1 (copy, index: 1)
             u5 (ref,  index: 2)
@@ -2802,7 +2802,7 @@ function tbl_1.Init(a1)
         function tbl_54.OnClick()
             --[[
               name: OnClick
-              line: 1964
+              line: 1968
               upvalues:
                 SettingsStore_upv_1 (copy, index: 1)
             ]]
@@ -2856,7 +2856,7 @@ function tbl_1.Init(a1)
         pcall(
             function()
                 --[[
-                  line: 2021
+                  line: 2025
                   upvalues:
                     u69 (copy, index: 1)
                     u12 (ref,  index: 2)
@@ -2871,7 +2871,7 @@ function tbl_1.Init(a1)
         )
         a1.Debug.leaveConfirm = function()
             --[[
-              line: 2029
+              line: 2033
               upvalues:
                 openConfirm (copy, index: 1)
                 tbl_upv_12 (ref,  index: 2)
@@ -2889,7 +2889,7 @@ function tbl_1.Init(a1)
     local function resize()
         --[[
           name: resize
-          line: 2041
+          line: 2045
           upvalues:
             UI_upv_1 (copy, index: 1)
             u14 (ref,  index: 2)
@@ -2907,7 +2907,7 @@ function tbl_1.Init(a1)
     local function relayout()
         --[[
           name: relayout
-          line: 2051
+          line: 2055
           upvalues:
             u4 (copy, index: 1)
             UI_upv_1 (copy, index: 2)
@@ -2943,7 +2943,7 @@ function tbl_1.Init(a1)
     UI_upv_1.GamepadChanged:Connect(
         function()
             --[[
-              line: 2065
+              line: 2069
               upvalues:
                 u4 (copy, index: 1)
                 u37 (ref,  index: 2)
@@ -2990,7 +2990,7 @@ function tbl_1.Init(a1)
     SettingsStore_upv_1.Changed:Connect(
         function(a74, a75)
             --[[
-              line: 2072
+              line: 2076
               upvalues:
                 u5 (ref,  index: 1)
                 u4 (copy, index: 2)
@@ -3006,7 +3006,7 @@ function tbl_1.Init(a1)
     local function endDrag()
         --[[
           name: endDrag
-          line: 2079
+          line: 2083
           upvalues:
             u15 (ref,  index: 1)
             u10 (ref,  index: 2)
@@ -3025,7 +3025,7 @@ function tbl_1.Init(a1)
     UserInputService_upv_1.InputEnded:Connect(
         function(a76)
             --[[
-              line: 2090
+              line: 2094
               upvalues:
                 u15 (ref,  index: 1)
                 u10 (ref,  index: 2)
@@ -3045,7 +3045,7 @@ function tbl_1.Init(a1)
     RunService_upv_1.RenderStepped:Connect(
         function()
             --[[
-              line: 2095
+              line: 2099
               upvalues:
                 u15 (ref,  index: 1)
                 u4 (copy, index: 2)
@@ -3083,7 +3083,7 @@ function tbl_1.Init(a1)
     local function stopNudge(a77)
         --[[
           name: stopNudge
-          line: 2125
+          line: 2129
           upvalues:
             tbl_upv_58 (copy, index: 1)
         ]]
@@ -3097,7 +3097,7 @@ function tbl_1.Init(a1)
     local function setSlider(a78, a79)
         --[[
           name: setSlider
-          line: 414
+          line: 418
           upvalues:
             SettingsStore_upv_1 (copy, index: 1)
             tick (copy, index: 2)
@@ -3115,7 +3115,7 @@ function tbl_1.Init(a1)
     local function startNudge(a80, a81)
         --[[
           name: startNudge
-          line: 2131
+          line: 2135
           upvalues:
             GuiService_upv_1 (copy, index: 1)
             u7 (ref,  index: 2)
@@ -3142,7 +3142,7 @@ function tbl_1.Init(a1)
             task.spawn(
                 function()
                     --[[
-                      line: 2147
+                      line: 2151
                       upvalues:
                         token_upv_1 (copy, index: 1)
                         tbl_upv_58 (copy, index: 2)
@@ -3173,7 +3173,7 @@ function tbl_1.Init(a1)
         "Began",
         function(a82)
             --[[
-              line: 2159
+              line: 2163
               upvalues:
                 u4 (copy, index: 1)
                 startNudge (copy, index: 2)
@@ -3189,7 +3189,7 @@ function tbl_1.Init(a1)
         "Ended",
         function(a83)
             --[[
-              line: 2165
+              line: 2169
               upvalues:
                 tbl_upv_58 (copy, index: 1)
             ]]
@@ -3213,7 +3213,7 @@ function tbl_1.Init(a1)
         "Changed",
         function(a84)
             --[[
-              line: 2172
+              line: 2176
               upvalues:
                 u4 (copy, index: 1)
                 startNudge (copy, index: 2)
@@ -3244,7 +3244,7 @@ function tbl_1.Init(a1)
     local function navUsable(a85)
         --[[
           name: navUsable
-          line: 2189
+          line: 2193
         ]]
         if not a85 or not a85.Parent or not a85.Selectable then
             return false
@@ -3262,7 +3262,7 @@ function tbl_1.Init(a1)
     local function navChain()
         --[[
           name: navChain
-          line: 2203
+          line: 2207
           upvalues:
             navUsable (copy, index: 1)
             u4 (copy, index: 2)
@@ -3273,7 +3273,7 @@ function tbl_1.Init(a1)
         local function add_1(a86)
             --[[
               name: add
-              line: 2205
+              line: 2209
               upvalues:
                 navUsable (copy, index: 1)
                 tbl_upv_59 (copy, index: 2)
@@ -3309,7 +3309,7 @@ function tbl_1.Init(a1)
     local function revealSelected(a87)
         --[[
           name: revealSelected
-          line: 2247
+          line: 2251
           upvalues:
             u10 (ref,  index: 1)
             UI_upv_1 (copy, index: 2)
@@ -3349,7 +3349,7 @@ function tbl_1.Init(a1)
     local function wireNav(a88)
         --[[
           name: wireNav
-          line: 2227
+          line: 2231
           upvalues:
             navChain (copy, index: 1)
         ]]
@@ -3365,7 +3365,7 @@ function tbl_1.Init(a1)
             pcall(
                 function()
                     --[[
-                      line: 2233
+                      line: 2237
                       upvalues:
                         a88 (copy, index: 1)
                         u73 (copy, index: 2)
@@ -3398,7 +3398,7 @@ function tbl_1.Init(a1)
     GuiService_upv_1:GetPropertyChangedSignal("SelectedObject"):Connect(
         function()
             --[[
-              line: 2273
+              line: 2277
               upvalues:
                 GuiService_upv_1 (copy, index: 1)
                 u8 (ref,  index: 2)
@@ -3428,7 +3428,7 @@ function tbl_1.Init(a1)
     State_upv_1.PlayerStateChanged:Connect(
         function()
             --[[
-              line: 2289
+              line: 2293
               upvalues:
                 u12 (ref,  index: 1)
                 State_upv_1 (copy, index: 2)
@@ -3441,7 +3441,7 @@ function tbl_1.Init(a1)
     )
     a1.Debug.aimAssistRow = function(a89, a90)
         --[[
-          line: 2298
+          line: 2302
           upvalues:
             u6 (ref,  index: 1)
             u22 (ref,  index: 2)
@@ -3515,7 +3515,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.keybinds = function(a91, a92, a93)
         --[[
-          line: 2328
+          line: 2332
           upvalues:
             openCapture (copy, index: 1)
             closeCapture (copy, index: 2)
@@ -3565,7 +3565,7 @@ function tbl_1.Init(a1)
     local function guiName(a94)
         --[[
           name: guiName
-          line: 2359
+          line: 2363
           upvalues:
             u52 (ref, index: 1)
         ]]
@@ -3580,7 +3580,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.padSettings = function(a95, a96, a97)
         --[[
-          line: 2369
+          line: 2373
           upvalues:
             u51 (ref,  index: 1)
             GuiService_upv_1 (copy, index: 2)
@@ -3748,7 +3748,7 @@ function tbl_1.Init(a1)
     function tbl_69.open()
         --[[
           name: open
-          line: 2445
+          line: 2449
           upvalues:
             UI_upv_1 (copy, index: 1)
             a1 (copy, index: 2)
@@ -3806,7 +3806,7 @@ function tbl_1.Init(a1)
     function tbl_69.close(a98)
         --[[
           name: close
-          line: 2466
+          line: 2470
           upvalues:
             tbl_upv_12 (ref,  index: 1)
             closeCapture (copy, index: 2)
@@ -3844,7 +3844,7 @@ function tbl_1.Init(a1)
     function tbl_69.select()
         --[[
           name: select
-          line: 2478
+          line: 2482
           upvalues:
             u37 (ref,  index: 1)
             u39 (ref,  index: 2)
@@ -3862,7 +3862,7 @@ function tbl_1.Init(a1)
     function tbl_69.back()
         --[[
           name: back
-          line: 2489
+          line: 2493
           upvalues:
             u37 (ref,  index: 1)
             closeCapture (copy, index: 2)
