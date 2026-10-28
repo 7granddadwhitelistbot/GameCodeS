@@ -4,7 +4,7 @@ local tbl_1 = {}
 function tbl_1.Init(a1)
     --[[
       name: Init
-      line: 22
+      line: 24
       upvalues:
         Players_upv_1 (copy, index: 1)
         TextChatService_upv_1 (copy, index: 2)
@@ -20,7 +20,7 @@ function tbl_1.Init(a1)
     local function folder()
         --[[
           name: folder
-          line: 42
+          line: 44
           upvalues:
             TextChatService_upv_1 (copy, index: 1)
         ]]
@@ -29,7 +29,7 @@ function tbl_1.Init(a1)
     local function teamChannel()
         --[[
           name: teamChannel
-          line: 45
+          line: 47
           upvalues:
             LocalPlayer_upv_1 (copy, index: 1)
             TextChatService_upv_1 (copy, index: 2)
@@ -45,7 +45,7 @@ function tbl_1.Init(a1)
     local function general()
         --[[
           name: general
-          line: 51
+          line: 53
           upvalues:
             TextChatService_upv_1 (copy, index: 1)
         ]]
@@ -59,7 +59,7 @@ function tbl_1.Init(a1)
     local function inputBar()
         --[[
           name: inputBar
-          line: 56
+          line: 58
           upvalues:
             TextChatService_upv_1 (copy, index: 1)
         ]]
@@ -69,14 +69,14 @@ function tbl_1.Init(a1)
     local function enabled()
         --[[
           name: enabled
-          line: 32
+          line: 34
           upvalues:
             TextChatService_upv_1 (copy, index: 1)
         ]]
         local success_1, v4 = pcall(
             function()
                 --[[
-                  line: 33
+                  line: 35
                   upvalues:
                     TextChatService_upv_1 (copy, index: 1)
                 ]]
@@ -93,7 +93,7 @@ function tbl_1.Init(a1)
     local function hook(a2)
         --[[
           name: hook
-          line: 62
+          line: 64
           upvalues:
             tbl_upv_2 (copy, index: 1)
             u2 (copy, index: 2)
@@ -105,7 +105,7 @@ function tbl_1.Init(a1)
         tbl_upv_2[a2] = true
         a2.OnIncomingMessage = function(a3)
             --[[
-              line: 67
+              line: 69
               upvalues:
                 u2 (copy, index: 1)
             ]]
@@ -116,7 +116,7 @@ function tbl_1.Init(a1)
         a2.AncestryChanged:Connect(
             function()
                 --[[
-                  line: 72
+                  line: 74
                   upvalues:
                     a2 (copy, index: 1)
                     TextChatService_upv_1 (copy, index: 2)
@@ -132,7 +132,7 @@ function tbl_1.Init(a1)
     local function apply()
         --[[
           name: apply
-          line: 80
+          line: 82
           upvalues:
             enabled (copy, index: 1)
             TextChatService_upv_1 (copy, index: 2)
@@ -199,7 +199,7 @@ function tbl_1.Init(a1)
     local function paintPill()
         --[[
           name: paintPill
-          line: 133
+          line: 135
           upvalues:
             u3 (ref,  index: 1)
             u1 (copy, index: 2)
@@ -225,7 +225,7 @@ function tbl_1.Init(a1)
     local function typing()
         --[[
           name: typing
-          line: 145
+          line: 147
           upvalues:
             TextChatService_upv_1 (copy, index: 1)
         ]]
@@ -236,7 +236,7 @@ function tbl_1.Init(a1)
     local function placePill()
         --[[
           name: placePill
-          line: 152
+          line: 154
           upvalues:
             enabled (copy, index: 1)
             State_upv_1 (copy, index: 2)
@@ -295,7 +295,7 @@ function tbl_1.Init(a1)
     local function setMode(a4, a5)
         --[[
           name: setMode
-          line: 174
+          line: 176
           upvalues:
             u3 (ref,  index: 1)
             apply (copy, index: 2)
@@ -328,7 +328,7 @@ function tbl_1.Init(a1)
     u5.Activated:Connect(
         function()
             --[[
-              line: 182
+              line: 184
               upvalues:
                 a1 (copy, index: 1)
                 u3 (ref,  index: 2)
@@ -361,7 +361,7 @@ function tbl_1.Init(a1)
     local function onCommand(a6, a7)
         --[[
           name: onCommand
-          line: 189
+          line: 191
           upvalues:
             LocalPlayer_upv_1 (copy, index: 1)
             TextChatService_upv_1 (copy, index: 2)
@@ -395,7 +395,7 @@ function tbl_1.Init(a1)
                         task.spawn(
                             function()
                                 --[[
-                                  line: 199
+                                  line: 201
                                   upvalues:
                                     u9 (copy, index: 1)
                                     u10 (copy, index: 2)
@@ -403,7 +403,7 @@ function tbl_1.Init(a1)
                                 pcall(
                                     function()
                                         --[[
-                                          line: 200
+                                          line: 202
                                           upvalues:
                                             u9 (copy, index: 1)
                                             u10 (copy, index: 2)
@@ -441,7 +441,7 @@ function tbl_1.Init(a1)
     local function command(a8, a9, a10, a11)
         --[[
           name: command
-          line: 210
+          line: 212
           upvalues:
             TextChatService_upv_1 (copy, index: 1)
             onCommand (copy, index: 2)
@@ -456,7 +456,7 @@ function tbl_1.Init(a1)
         v37.Triggered:Connect(
             function(a12, a13)
                 --[[
-                  line: 218
+                  line: 220
                   upvalues:
                     onCommand (copy, index: 1)
                     a11 (copy, index: 2)
@@ -469,7 +469,7 @@ function tbl_1.Init(a1)
     local function start()
         --[[
           name: start
-          line: 225
+          line: 227
           upvalues:
             u11 (ref,  index: 1)
             enabled (copy, index: 2)
@@ -486,7 +486,7 @@ function tbl_1.Init(a1)
     local function watchBar()
         --[[
           name: watchBar
-          line: 235
+          line: 237
           upvalues:
             TextChatService_upv_1 (copy, index: 1)
             u12 (ref,  index: 2)
@@ -498,28 +498,88 @@ function tbl_1.Init(a1)
         u12 = v38
         pcall(function() end)
     end
+    local Enabled_upv_1 = nil
+    local function bubbles()
+        --[[
+          name: bubbles
+          line: 256
+          upvalues:
+            TextChatService_upv_1 (copy, index: 1)
+            Enabled_upv_1 (ref,  index: 2)
+            State_upv_1 (copy, index: 3)
+        ]]
+        local v39 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
+        if not v39 then
+            return
+        end
+        if Enabled_upv_1 == nil then
+            Enabled_upv_1 = v39.Enabled
+        end
+        local v40 = (Enabled_upv_1 == true) and (not State_upv_1.SeesMatch())
+        if v39.Enabled == v40 then
+            return
+        end
+        v39.Enabled = v40
+    end
+    task.spawn(
+        function()
+            --[[
+              line: 269
+              upvalues:
+                TextChatService_upv_1 (copy, index: 1)
+                Enabled_upv_1 (ref,  index: 2)
+                State_upv_1 (copy, index: 3)
+            ]]
+            if TextChatService_upv_1:WaitForChild("BubbleChatConfiguration", 30) then
+                local v41 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
+                if not v41 then
+                    return
+                end
+                if Enabled_upv_1 == nil then
+                    Enabled_upv_1 = v41.Enabled
+                end
+                local v42 = (Enabled_upv_1 == true) and (not State_upv_1.SeesMatch())
+                if v41.Enabled == v42 then
+                    return
+                end
+                v41.Enabled = v42
+            end
+        end
+    )
     local function refresh()
         --[[
           name: refresh
-          line: 253
+          line: 276
           upvalues:
             TextChatService_upv_1 (copy, index: 1)
-            u12 (ref,  index: 2)
-            placePill (copy, index: 4)
-            u11 (ref,  index: 5)
-            enabled (copy, index: 6)
-            command (copy, index: 7)
-            apply (copy, index: 8)
-            u3 (ref,  index: 9)
-            u1 (copy, index: 10)
-            Colors_upv_1 (copy, index: 11)
-            u7 (copy, index: 12)
-            u6 (copy, index: 13)
-            Theme_upv_1 (copy, index: 14)
+            Enabled_upv_1 (ref,  index: 2)
+            State_upv_1 (copy, index: 3)
+            u12 (ref,  index: 4)
+            placePill (copy, index: 6)
+            u11 (ref,  index: 7)
+            enabled (copy, index: 8)
+            command (copy, index: 9)
+            apply (copy, index: 10)
+            u3 (ref,  index: 11)
+            u1 (copy, index: 12)
+            Colors_upv_1 (copy, index: 13)
+            u7 (copy, index: 14)
+            u6 (copy, index: 15)
+            Theme_upv_1 (copy, index: 16)
         ]]
-        local v39 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-        if v39 and v39 ~= u12 then
-            u12 = v39
+        local v43 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
+        if v43 then
+            if Enabled_upv_1 == nil then
+                Enabled_upv_1 = v43.Enabled
+            end
+            local v44 = (Enabled_upv_1 == true) and (not State_upv_1.SeesMatch())
+            if v43.Enabled ~= v44 then
+                v43.Enabled = v44
+            end
+        end
+        local v45 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
+        if v45 and v45 ~= u12 then
+            u12 = v45
             pcall(function() end)
         end
         if not (u11) and enabled() then
@@ -528,44 +588,56 @@ function tbl_1.Init(a1)
             command("TribesTeamChat_All", "/a", "/all", "all")
         end
         apply()
-        local v40 = u3 == "team"
-        local v41
-        if v40 then
-            v41 = u1
+        local v46 = u3 == "team"
+        local v47
+        if v46 then
+            v47 = u1
         else
-            v41 = Colors_upv_1.TextDim
+            v47 = Colors_upv_1.TextDim
         end
-        u7.Text = (v40 and "TEAM CHAT") or "ALL CHAT"
-        u7.TextColor3 = v41
-        u6.Text = (v40 and "three-people") or "globe-simplified"
-        u6.TextColor3 = v41
-        Theme_upv_1.Color = v41
+        u7.Text = (v46 and "TEAM CHAT") or "ALL CHAT"
+        u7.TextColor3 = v47
+        u6.Text = (v46 and "three-people") or "globe-simplified"
+        u6.TextColor3 = v47
+        Theme_upv_1.Color = v47
         placePill()
     end
     State_upv_1.PlayerStateChanged:Connect(refresh)
     State_upv_1.AttrChanged:Connect(
         function(a14)
             --[[
-              line: 261
+              line: 285
               upvalues:
                 TextChatService_upv_1 (copy, index: 1)
-                u12 (ref,  index: 2)
-                placePill (copy, index: 4)
-                u11 (ref,  index: 5)
-                enabled (copy, index: 6)
-                command (copy, index: 7)
-                apply (copy, index: 8)
-                u3 (ref,  index: 9)
-                u1 (copy, index: 10)
-                Colors_upv_1 (copy, index: 11)
-                u7 (copy, index: 12)
-                u6 (copy, index: 13)
-                Theme_upv_1 (copy, index: 14)
+                Enabled_upv_1 (ref,  index: 2)
+                State_upv_1 (copy, index: 3)
+                u12 (ref,  index: 4)
+                placePill (copy, index: 6)
+                u11 (ref,  index: 7)
+                enabled (copy, index: 8)
+                command (copy, index: 9)
+                apply (copy, index: 10)
+                u3 (ref,  index: 11)
+                u1 (copy, index: 12)
+                Colors_upv_1 (copy, index: 13)
+                u7 (copy, index: 14)
+                u6 (copy, index: 15)
+                Theme_upv_1 (copy, index: 16)
             ]]
             if a14 == "Team" or a14 == "MatchId" then
-                local v42 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                if v42 and v42 ~= u12 then
-                    u12 = v42
+                local v48 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
+                if v48 then
+                    if Enabled_upv_1 == nil then
+                        Enabled_upv_1 = v48.Enabled
+                    end
+                    local v49 = (Enabled_upv_1 == true) and (not State_upv_1.SeesMatch())
+                    if v48.Enabled ~= v49 then
+                        v48.Enabled = v49
+                    end
+                end
+                local v50 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
+                if v50 and v50 ~= u12 then
+                    u12 = v50
                     pcall(function() end)
                 end
                 if not (u11) and enabled() then
@@ -574,18 +646,18 @@ function tbl_1.Init(a1)
                     command("TribesTeamChat_All", "/a", "/all", "all")
                 end
                 apply()
-                local v43 = u3 == "team"
-                local v44
-                if v43 then
-                    v44 = u1
+                local v51 = u3 == "team"
+                local v52
+                if v51 then
+                    v52 = u1
                 else
-                    v44 = Colors_upv_1.TextDim
+                    v52 = Colors_upv_1.TextDim
                 end
-                u7.Text = (v43 and "TEAM CHAT") or "ALL CHAT"
-                u7.TextColor3 = v44
-                u6.Text = (v43 and "three-people") or "globe-simplified"
-                u6.TextColor3 = v44
-                Theme_upv_1.Color = v44
+                u7.Text = (v51 and "TEAM CHAT") or "ALL CHAT"
+                u7.TextColor3 = v52
+                u6.Text = (v51 and "three-people") or "globe-simplified"
+                u6.TextColor3 = v52
+                Theme_upv_1.Color = v52
                 placePill()
             end
         end
@@ -595,28 +667,38 @@ function tbl_1.Init(a1)
     UI_upv_1.ChatChanged:Connect(
         function()
             --[[
-              line: 268
+              line: 292
               upvalues:
                 TextChatService_upv_1 (copy, index: 1)
                 u12 (ref,  index: 2)
                 placePill (copy, index: 4)
             ]]
-            local v45 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-            if v45 and v45 ~= u12 then
-                u12 = v45
+            local v53 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
+            if v53 and v53 ~= u12 then
+                u12 = v53
                 pcall(function() end)
             end
             placePill()
         end
     )
     UI_upv_1.LayoutChanged:Connect(placePill)
+    local v54 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
+    if v54 then
+        if Enabled_upv_1 == nil then
+            Enabled_upv_1 = v54.Enabled
+        end
+        local v55 = (Enabled_upv_1 == true) and (not State_upv_1.SeesMatch())
+        if v54.Enabled ~= v55 then
+            v54.Enabled = v55
+        end
+    end
     local u13 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
     if u13 and u13 ~= u12 then
         u12 = u13
         pcall(
             function()
                 --[[
-                  line: 241
+                  line: 243
                   upvalues:
                     u13 (copy, index: 1)
                     TextChatService_upv_1 (copy, index: 2)
@@ -626,24 +708,24 @@ function tbl_1.Init(a1)
                 u13:GetPropertyChangedSignal("IsFocused"):Connect(
                     function()
                         --[[
-                          line: 242
+                          line: 244
                           upvalues:
                             TextChatService_upv_1 (copy, index: 1)
                             u8 (ref,  index: 2)
                             placePill (copy, index: 3)
                         ]]
                         local u14 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                        local success_4, v46 = pcall(
+                        local success_4, v56 = pcall(
                             function()
                                 --[[
-                                  line: 147
+                                  line: 149
                                   upvalues:
                                     u14 (copy, index: 1)
                                 ]]
                                 return u14.IsFocused
                             end
                         )
-                        if not success_4 or v46 ~= true then
+                        if not success_4 or v56 ~= true then
                             u8 = os.clock() + 2.5
                             task.delay(2.55, placePill)
                         end
@@ -659,22 +741,22 @@ function tbl_1.Init(a1)
         command("TribesTeamChat_All", "/a", "/all", "all")
     end
     apply()
-    local v47 = u3 == "team"
-    local v48
-    if v47 then
-        v48 = u1
+    local v57 = u3 == "team"
+    local v55
+    if v57 then
+        v55 = u1
     else
-        v48 = Colors_upv_1.TextDim
+        v55 = Colors_upv_1.TextDim
     end
-    u7.Text = (v47 and "TEAM CHAT") or "ALL CHAT"
-    u7.TextColor3 = v48
-    u6.Text = (v47 and "three-people") or "globe-simplified"
-    u6.TextColor3 = v48
-    Theme_upv_1.Color = v48
+    u7.Text = (v57 and "TEAM CHAT") or "ALL CHAT"
+    u7.TextColor3 = v55
+    u6.Text = (v57 and "three-people") or "globe-simplified"
+    u6.TextColor3 = v55
+    Theme_upv_1.Color = v55
     placePill()
     a1.Debug.teamChat = function(a15, a16)
         --[[
-          line: 275
+          line: 299
           upvalues:
             u3 (ref,  index: 1)
             apply (copy, index: 2)
@@ -689,50 +771,58 @@ function tbl_1.Init(a1)
             LocalPlayer_upv_1 (copy, index: 11)
             u5 (copy, index: 12)
         ]]
-        local v49 = nil
+        local v58 = nil
         if a15 == "team" or a15 == "all" then
             u3 = a15
             apply()
-            local v50 = u3 == "team"
-            local v51
-            if v50 then
-                v51 = u1
+            local v59 = u3 == "team"
+            local v60
+            if v59 then
+                v60 = u1
             else
-                v51 = Colors_upv_1.TextDim
+                v60 = Colors_upv_1.TextDim
             end
-            u7.Text = (v50 and "TEAM CHAT") or "ALL CHAT"
-            u7.TextColor3 = v51
-            u6.Text = (v50 and "three-people") or "globe-simplified"
-            u6.TextColor3 = v51
-            Theme_upv_1.Color = v51
+            u7.Text = (v59 and "TEAM CHAT") or "ALL CHAT"
+            u7.TextColor3 = v60
+            u6.Text = (v59 and "three-people") or "globe-simplified"
+            u6.TextColor3 = v60
+            Theme_upv_1.Color = v60
         elseif a15 == "cmd" then
-            local v52 = nil
+            local v61 = nil
             if type(a16) == "string" then
-                v52 = string.match(a16, "^(%S+)")
-                local v53
-                if v52 == "/a" or v52 == "/all" then
-                    v53 = "all"
+                v61 = string.match(a16, "^(%S+)")
+                local v62
+                if v61 == "/a" or v61 == "/all" then
+                    v62 = "all"
                 else
-                    v53 = "team"
+                    v62 = "team"
                 end
-                v49 = onCommand(v53, a16)
+                v58 = onCommand(v62, a16)
             end
         end
-        local v54 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-        local v55 = v54 and (v54.TargetTextChannel)
-        local tbl_3 = {target = 0, did = 0, pill = 0}
+        local v63 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
+        local v64 = v63 and (v63.TargetTextChannel)
+        local tbl_3 = {bubbles = 0, target = 0, did = 0, pill = 0}
         tbl_3.enabled = enabled()
         tbl_3.mode = u3
         tbl_3.channel = LocalPlayer_upv_1:GetAttribute("TeamChannel") or false
-        local v56
-        if v55 then
-            v56 = v55:GetFullName()
+        local v65
+        if v64 then
+            v65 = v64:GetFullName()
         else
-            v56 = false
+            v65 = false
         end
-        tbl_3.target = v56
+        tbl_3.target = v65
         tbl_3.pill = u5.Visible
-        tbl_3.did = v49 or false
+        local v66 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
+        local v67
+        if v66 then
+            v67 = v66.Enabled
+        else
+            v67 = false
+        end
+        tbl_3.bubbles = v67
+        tbl_3.did = v58 or false
         return tbl_3
     end
 end

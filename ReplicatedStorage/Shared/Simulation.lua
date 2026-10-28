@@ -46,7 +46,7 @@ local u16 = RunService_upv_1:IsServer()
 local u18 = (function()
     --[[
       name: detectClientAuthority
-      line: 270
+      line: 273
       upvalues:
         u16 (copy, index: 1)
         Workspace_upv_1 (copy, index: 2)
@@ -64,7 +64,7 @@ local u18 = (function()
         local success_1 = pcall(
             function()
                 --[[
-                  line: 279
+                  line: 282
                   upvalues:
                     u17 (copy, index: 1)
                 ]]
@@ -103,7 +103,7 @@ local u22 = nil
 function tbl_upv_1.OnForeignWrite(a1)
     --[[
       name: OnForeignWrite
-      line: 307
+      line: 310
       upvalues:
         u22 (ref, index: 1)
     ]]
@@ -118,7 +118,7 @@ local tbl_upv_5 = {}
 local function rebuildList()
     --[[
       name: rebuildList
-      line: 322
+      line: 325
       upvalues:
         tbl_upv_5 (copy, index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -131,21 +131,21 @@ end
 local function q(a1, a2)
     --[[
       name: q
-      line: 329
+      line: 332
     ]]
     return math.floor((a1 / a2) + 0.5) * a2
 end
 local function flat(a1)
     --[[
       name: flat
-      line: 333
+      line: 336
     ]]
     return (Vector3.new(a1.X, 0, a1.Z))
 end
 local function approach(a1, a2, a3)
     --[[
       name: approach
-      line: 338
+      line: 341
     ]]
     local v4 = a2 - a1
     local Magnitude_1 = v4.Magnitude
@@ -158,7 +158,7 @@ local tbl_upv_6 = {STp = true, SNoJump = true, SFrozen = true, SSlow = true}
 local function save(a1)
     --[[
       name: save
-      line: 386
+      line: 389
       upvalues:
         u18 (copy, index: 1)
         tbl_upv_3 (copy, index: 2)
@@ -191,7 +191,7 @@ local tbl_upv_8 = {Facing = true, Look = true}
 local function actionState(a1, a2)
     --[[
       name: actionState
-      line: 417
+      line: 420
       upvalues:
         u18 (copy, index: 1)
         u16 (copy, index: 2)
@@ -210,7 +210,7 @@ end
 local function held(a1, a2)
     --[[
       name: held
-      line: 428
+      line: 431
       upvalues:
         u18 (copy, index: 1)
         u16 (copy, index: 2)
@@ -239,7 +239,7 @@ end
 local function finite2(a1)
     --[[
       name: finite2
-      line: 432
+      line: 435
     ]]
     local v11 = (typeof(a1) == "Vector2") and ((a1.X == a1.X) and ((a1.Y == a1.Y) and ((math.abs(a1.X) < 1e+06) and (math.abs(a1.Y) < 1e+06))))
     return v11
@@ -247,7 +247,7 @@ end
 local function toolInSlot(a1, a2)
     --[[
       name: toolInSlot
-      line: 468
+      line: 471
     ]]
     local holdTool_1 = a1.holdTool
     local Backpack_1 = a1.player:FindFirstChild("Backpack")
@@ -276,7 +276,7 @@ local u25 = 45
 local function hipTarget(a1, a2)
     --[[
       name: hipTarget
-      line: 521
+      line: 524
     ]]
     local SHipBase_1 = a1.SHipBase
     if type(SHipBase_1) == "number" then
@@ -304,7 +304,7 @@ u26.IgnoreWater = false
 local function probeBank(a1, a2, a3, a4)
     --[[
       name: probeBank
-      line: 583
+      line: 586
       upvalues:
         Workspace_upv_1 (copy, index: 1)
     ]]
@@ -325,7 +325,7 @@ end
 local function endSlide(a1)
     --[[
       name: endSlide
-      line: 600
+      line: 603
       upvalues:
         u6 (copy, index: 1)
     ]]
@@ -342,7 +342,7 @@ end
 local function probeGround(a1, a2, a3, a4, a5, a6)
     --[[
       name: probeGround
-      line: 637
+      line: 640
       upvalues:
         Workspace_upv_1 (copy, index: 1)
     ]]
@@ -373,7 +373,7 @@ end
 local function resetMotion(a1)
     --[[
       name: resetMotion
-      line: 696
+      line: 699
       upvalues:
         BASE_SPEED_upv_1 (copy, index: 1)
     ]]
@@ -399,14 +399,14 @@ end
 local function fin(a1)
     --[[
       name: fin
-      line: 713
+      line: 716
     ]]
     return (a1 == a1) and ((a1 > -1e+07) and (a1 < 1e+07))
 end
 local function fin3(a1)
     --[[
       name: fin3
-      line: 716
+      line: 719
     ]]
     local X_1 = a1.X
     local v24 = (X_1 == X_1) and ((X_1 > -1e+07) and (X_1 < 1e+07))
@@ -424,7 +424,7 @@ local tbl_upv_9 = {}
 local function sayNaN(a1)
     --[[
       name: sayNaN
-      line: 728
+      line: 731
       upvalues:
         tbl_upv_9 (copy, index: 1)
         u18 (copy, index: 2)
@@ -439,7 +439,7 @@ end
 local function recoverRoot(a1)
     --[[
       name: recoverRoot
-      line: 735
+      line: 738
       upvalues:
         BASE_SPEED_upv_1 (copy, index: 1)
     ]]
@@ -488,7 +488,7 @@ end
 local function startKnockback(a1, a2, a3)
     --[[
       name: startKnockback
-      line: 795
+      line: 798
       upvalues:
         tbl_upv_9 (copy, index: 1)
         u18 (copy, index: 2)
@@ -543,7 +543,7 @@ end
 local function stepCollisions(a1, a2)
     --[[
       name: stepCollisions
-      line: 760
+      line: 763
       upvalues:
         u24 (copy, index: 1)
     ]]
@@ -579,7 +579,7 @@ end
 local function jumpProp(a1, a2)
     --[[
       name: jumpProp
-      line: 349
+      line: 352
       upvalues:
         u3 (copy, index: 1)
         u2 (copy, index: 2)
@@ -601,7 +601,7 @@ end
 local function lookMove(a1)
     --[[
       name: lookMove
-      line: 439
+      line: 442
       upvalues:
         u18 (copy, index: 1)
         u16 (copy, index: 2)
@@ -651,7 +651,7 @@ end
 local function probeWater(a1, a2)
     --[[
       name: probeWater
-      line: 551
+      line: 554
       upvalues:
         u23 (copy, index: 1)
         Workspace_upv_1 (copy, index: 2)
@@ -681,7 +681,7 @@ end
 local function slideCushion(a1, a2, a3, a4)
     --[[
       name: slideCushion
-      line: 677
+      line: 680
       upvalues:
         Workspace_upv_1 (copy, index: 1)
     ]]
@@ -704,7 +704,7 @@ end
 local function load(a1)
     --[[
       name: load
-      line: 368
+      line: 371
       upvalues:
         u18 (copy, index: 1)
         tbl_upv_6 (copy, index: 2)
@@ -728,7 +728,7 @@ end
 local function tryStartSlide(a1, a2, a3, a4, a5)
     --[[
       name: tryStartSlide
-      line: 612
+      line: 615
     ]]
     if a1.SSlide == nil and a1.SSlideCD == nil and a5 then
         if not (Vector3.new(a4.X, 0, a4.Z).Magnitude < 11) and not (a3.Magnitude < 0.2) then
@@ -749,7 +749,7 @@ end
 local function heldWeapon(a1)
     --[[
       name: heldWeapon
-      line: 498
+      line: 501
       upvalues:
         u18 (copy, index: 1)
         u16 (copy, index: 2)
@@ -811,7 +811,7 @@ end
 local function finCF(a1)
     --[[
       name: finCF
-      line: 722
+      line: 725
     ]]
     local Position_4 = a1.Position
     local v49 = false
@@ -850,7 +850,7 @@ end
 local function stepChar(a1, a2)
     --[[
       name: stepChar
-      line: 864
+      line: 867
       upvalues:
         load (copy, index: 1)
         finCF (copy, index: 2)
@@ -1248,33 +1248,34 @@ local function stepChar(a1, a2)
             else
                 v99 = v82
             end
+            local v103 = nil
             if v96 and (v99 or v82 and v98 + 0.05 < root_8.Position.Y) then
-                v96 = nil
+                v103 = nil
             end
             if v97 then
                 if v82 then
-                    v99 = v96
+                    v99 = v103
                 else
-                    local v103 = nil
+                    local v104 = nil
                     if s_5.SSlide ~= nil then
-                        v99 = v96
+                        v99 = v103
                     else
-                        v103 = Vector3.new(v90.X, 0, v90.Z)
-                        local v104 = nil
-                        if v103.Magnitude > 0.3 then
-                            v104 = probeBank(a1, v103.Unit, v87, v97)
-                            if v104 and (v96 == nil or v96 < v104) then
-                                v99 = v104
+                        v104 = Vector3.new(v90.X, 0, v90.Z)
+                        local v105 = nil
+                        if v104.Magnitude > 0.3 then
+                            v105 = probeBank(a1, v104.Unit, v87, v97)
+                            if v105 and (v103 == nil or v103 < v105) then
+                                v99 = v105
                             else
-                                v99 = v96
+                                v99 = v103
                             end
                         else
-                            v99 = v96
+                            v99 = v103
                         end
                     end
                 end
             else
-                v99 = v96
+                v99 = v103
             end
             if v99 then
                 s_5.SWet = u10
@@ -1287,17 +1288,17 @@ local function stepChar(a1, a2)
             v97 = v95 and (s_5.SGround ~= true)
             s_5.SGround = (v95 and true) or nil
             v87 = (v95 and 0) or (math.min((s_5.SAir or 0) + 1, 600))
-            local v105
+            local v106
             if v87 > 0 then
-                v105 = v87
+                v106 = v87
             else
-                v105 = nil
+                v106 = nil
             end
-            s_5.SAir = v105
-            v105 = v53 == Enum.HumanoidStateType.Jumping
-            v77 = v105 and (s_5.SJumping ~= true)
-            s_5.SJumping = (v105 and true) or nil
-            if v105 then
+            s_5.SAir = v106
+            v106 = v53 == Enum.HumanoidStateType.Jumping
+            v77 = v106 and (s_5.SJumping ~= true)
+            s_5.SJumping = (v106 and true) or nil
+            if v106 then
                 s_5.SJumped = true
             elseif v95 then
                 s_5.SJumped = nil
@@ -1331,39 +1332,39 @@ local function stepChar(a1, a2)
                     v73[key_2] = ((value_7 > 1) and (value_7 - 1)) or nil
                 end
             end
-            local v106 = math.max((s_5.SJumpBuf or 0) - 1, 0)
+            local v107 = math.max((s_5.SJumpBuf or 0) - 1, 0)
             if v80 then
                 if s_5.SJumpIn == true then
-                    v105 = v106
+                    v106 = v107
                 else
-                    v105 = u13
+                    v106 = u13
                 end
             else
-                v105 = v106
+                v106 = v107
             end
-            if v97 and v105 > 0 then
-                v105 = math.max(v105, u14)
+            if v97 and v106 > 0 then
+                v106 = math.max(v106, u14)
             end
             s_5.SJumpIn = (v80 and true) or nil
             if v84 then
                 s_5.SCharge = math.min((s_5.SCharge or 0) + 1, 600)
                 s_5.SChargeRel = nil
             else
-                local v107 = nil
+                local v108 = nil
                 if s_5.SCharge then
-                    v107 = (s_5.SChargeRel or 0) + 1
-                    if u15 < v107 then
+                    v108 = (s_5.SChargeRel or 0) + 1
+                    if u15 < v108 then
                         s_5.SCharge = nil
                         s_5.SChargeRel = nil
                     else
-                        s_5.SChargeRel = v107
+                        s_5.SChargeRel = v108
                     end
                 end
             end
             if v77 then
-                local v108 = 0
+                local v109 = 0
                 if s_5.SSlide == nil then
-                    v105 = v108
+                    v106 = v109
                 else
                     if s_5.SSlide ~= nil then
                         s_5.SSlide = nil
@@ -1373,18 +1374,18 @@ local function stepChar(a1, a2)
                         s_5.SSlideCD = u6
                         s_5.SSpeed = math.max(s_5.SSpeed, 17)
                     end
-                    local v109 = math.max(s_5.SSpeed, 27)
+                    local v110 = math.max(s_5.SSpeed, 27)
                     s_5.SBoost = u8
-                    v79, v105 = v109, v108
+                    v79, v106 = v110, v109
                 end
             end
             s_5.SSpeed = v79
             v77 = s_5.SDashF or 0
             if v83 then
-                local v110 = nil
+                local v111 = nil
                 if s_5.SLungeIn ~= true then
-                    v110 = Combat_upv_1.Tuning(v70).lunge
-                    if type(v110) == "table" and s_5.SDashCD == nil and (not (a1.dashCd) or not (a1.dashCd[v70])) and not v50 and v51 > 0.001 and (v110.charge or 0.6) * 0.65 <= (s_5.SCharge or 0) * 0.016666666666666666 then
+                    v111 = Combat_upv_1.Tuning(v70).lunge
+                    if type(v111) == "table" and s_5.SDashCD == nil and (not (a1.dashCd) or not (a1.dashCd[v70])) and not v50 and v51 > 0.001 and (v111.charge or 0.6) * 0.65 <= (s_5.SCharge or 0) * 0.016666666666666666 then
                         if v88 then
                             v84 = Vector3.new(v88.X, 0, v88.Y)
                         else
@@ -1393,20 +1394,20 @@ local function stepChar(a1, a2)
                         end
                         if v84.Magnitude > 0.05 then
                             v63 = v84.Unit
-                            local v111 = v110.speed or 70
-                            v77 = math.max(1, math.floor((math.clamp((v110.distance or 16) / v111, 0.12, 0.35) * 60) + 0.5))
-                            s_5.SDashV = Vector3.new(math.floor(((v63.X * v111) / 0.01) + 0.5) * 0.01, 0, math.floor(((v63.Z * v111) / 0.01) + 0.5) * 0.01)
-                            s_5.SDashB = ((v110.brake) and 2) or nil
+                            local v112 = v111.speed or 70
+                            v77 = math.max(1, math.floor((math.clamp((v111.distance or 16) / v112, 0.12, 0.35) * 60) + 0.5))
+                            s_5.SDashV = Vector3.new(math.floor(((v63.X * v112) / 0.01) + 0.5) * 0.01, 0, math.floor(((v63.Z * v112) / 0.01) + 0.5) * 0.01)
+                            s_5.SDashB = ((v111.brake) and 2) or nil
                             s_5.SDashCD = math.max(1, math.floor(((Combat_upv_1.DASH_GAP * 0.85) * 60) + 0.5))
                             a1.dashCd = a1.dashCd or {}
                             local dashCd_1 = a1.dashCd
-                            local v112
-                            if v110.refreshOnKill then
-                                v112 = math.min(v110.cooldown or 1, 0.6)
+                            local v113
+                            if v111.refreshOnKill then
+                                v113 = math.min(v111.cooldown or 1, 0.6)
                             else
-                                v112 = v110.cooldown or 1
+                                v113 = v111.cooldown or 1
                             end
-                            dashCd_1[v70] = math.max(1, math.floor(((v112 * 0.85) * 60) + 0.5))
+                            dashCd_1[v70] = math.max(1, math.floor(((v113 * 0.85) * 60) + 0.5))
                             s_5.SCharge = nil
                             s_5.SChargeRel = nil
                             if s_5.SSlide ~= nil then
@@ -1423,23 +1424,23 @@ local function stepChar(a1, a2)
             end
             s_5.SLungeIn = (v83 and true) or nil
             v74 = not v50
-            local v113 = nil
+            local v114 = nil
             if v74 then
-                v113 = not v94
-                if v113 then
-                    local v114 = false
+                v114 = not v94
+                if v114 then
+                    local v115 = false
                     if v51 > 0.001 then
-                        local v115 = false
+                        local v116 = false
                         if s_5.SDashV ~= nil then
-                            v70 = v115
+                            v70 = v116
                         else
                             v70 = v95
                         end
                     else
-                        v70 = v114
+                        v70 = v115
                     end
                 else
-                    v70 = v113
+                    v70 = v114
                 end
             else
                 v70 = v74
@@ -1453,89 +1454,89 @@ local function stepChar(a1, a2)
             end
             s_5.SSlideIn = (v81 and true) or nil
             v97 = nil
-            local v116, v117 = nil, nil
-            local v107
+            local v117, v118 = nil, nil
+            local v108
             if s_5.SSlide == nil then
-                local v118 = BASE_SPEED_upv_1
-                v116 = s_5.SBoost or 0
-                if v116 > 0 then
-                    local v119 = math.max(v118, s_5.SSpeed)
-                    s_5.SBoost = ((v116 > 1) and (v116 - 1)) or nil
-                    v118 = v119
+                local v119 = BASE_SPEED_upv_1
+                v117 = s_5.SBoost or 0
+                if v117 > 0 then
+                    local v120 = math.max(v119, s_5.SSpeed)
+                    s_5.SBoost = ((v117 > 1) and (v117 - 1)) or nil
+                    v119 = v120
                 end
-                local v120 = (v95 and 8) or 1.6
-                local v121 = s_5.SSpeed
-                if v121 < v118 then
-                    v121 = v118
+                local v121 = (v95 and 8) or 1.6
+                local v122 = s_5.SSpeed
+                if v122 < v119 then
+                    v122 = v119
                 else
-                    v121 = v121 + (v118 - v121) * (1 - math.exp(-v120 * a2))
-                    if math.abs(v121 - v118) < 0.03 then
-                        v121 = v118
+                    v122 = v122 + (v119 - v122) * (1 - math.exp(-v121 * a2))
+                    if math.abs(v122 - v119) < 0.03 then
+                        v122 = v119
                     end
                 end
-                s_5.SSpeed = v121
-                v107 = v121 * v100
+                s_5.SSpeed = v122
+                v108 = v122 * v100
             else
-                local v122 = s_5.SSlide + ((v95 and 1) or 0)
-                s_5.SSlide = v122
-                v83 = math.clamp(v122 / u5, 0, 1)
+                local v123 = s_5.SSlide + ((v95 and 1) or 0)
+                s_5.SSlide = v123
+                v83 = math.clamp(v123 / u5, 0, 1)
                 v81 = (v83 * -19) * v83 + 36
                 v51 = s_5.SSlideDir
                 v51 = v51 or Vector3.new(root_8.CFrame.LookVector.X, 0, root_8.CFrame.LookVector.Z)
-                v117 = Vector3.new(v90.X, 0, v90.Z)
-                local v123 = nil
-                if v117.Magnitude > 0.3 then
-                    v117 = v117.Unit
-                    v123 = math.acos(math.clamp(v51:Dot(v117), -1, 1))
-                    if v123 > 0.001 and v123 < 2.0943951023931953 then
-                        v51 = v51:Lerp(v117, math.min(1, (a2 * 1.6580627893946132) / v123)).Unit
+                v118 = Vector3.new(v90.X, 0, v90.Z)
+                local v124 = nil
+                if v118.Magnitude > 0.3 then
+                    v118 = v118.Unit
+                    v124 = math.acos(math.clamp(v51:Dot(v118), -1, 1))
+                    if v124 > 0.001 and v124 < 2.0943951023931953 then
+                        v51 = v51:Lerp(v118, math.min(1, (a2 * 1.6580627893946132) / v124)).Unit
                     end
                 end
                 v51 = Vector3.new(math.floor((v51.X / 1e-04) + 0.5) * 1e-04, 0, math.floor((v51.Z / 1e-04) + 0.5) * 1e-04)
                 s_5.SSlideDir = v51
                 if type(s_5.SSlope) ~= "number" then
-                    v117 = 0
+                    v118 = 0
                 else
-                    v117 = s_5.SSlope
+                    v118 = s_5.SSlope
                 end
-                local v124 = nil
+                local v125 = nil
                 if v95 then
-                    local v125
-                    if type(s_5.SHip) == "number" then
-                        v125 = s_5.SHip
-                    elseif u24 then
-                        v125 = humanoid_2.HipHeight
-                    else
-                        v125 = s_5.SHipBase
-                    end
                     local v126
-                    if type(s_5.SHipBase) ~= "number" then
-                        v126 = v125
+                    if type(s_5.SHip) == "number" then
+                        v126 = s_5.SHip
+                    elseif u24 then
+                        v126 = humanoid_2.HipHeight
                     else
                         v126 = s_5.SHipBase
                     end
                     local v127
+                    if type(s_5.SHipBase) ~= "number" then
+                        v127 = v126
+                    else
+                        v127 = s_5.SHipBase
+                    end
                     local v128
-                    v128, v127 = probeGround(a1, v51, v81, Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude, v125, v126)
-                    v124 = v127
-                    v117 = v128 and math.floor((v117 + math.clamp(v128 - v117, -(a2 * 40), a2 * 40)) / 0.01 + 0.5) * 0.01
+                    local v129
+                    v129, v128 = probeGround(a1, v51, v81, Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude, v126, v127)
+                    v125 = v128
+                    v118 = v129 and math.floor((v118 + math.clamp(v129 - v118, -(a2 * 40), a2 * 40)) / 0.01 + 0.5) * 0.01
                 end
-                local v125
-                if v117 == 0 then
-                    v125 = nil
+                local v126
+                if v118 == 0 then
+                    v126 = nil
                 else
-                    v125 = v117
+                    v126 = v118
                 end
-                s_5.SSlope = v125
-                v125 = (v124 and (math.floor((v124 / 0.01) + 0.5) * 0.01)) or nil
-                s_5.SLift = v125
-                v81 = v81 + v117
+                s_5.SSlope = v126
+                v126 = (v125 and (math.floor((v125 / 0.01) + 0.5) * 0.01)) or nil
+                s_5.SLift = v126
+                v81 = v81 + v118
                 s_5.SSpeed = v81
-                v107 = v81 * v100
+                v108 = v81 * v100
                 humanoid_2:Move(v51, false)
                 local Magnitude_2 = Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude
                 if v95 or not (u9 < v87) then
-                    if v83 >= 1 or v122 * 0.016666666666666666 > 0.2 and Magnitude_2 < 6 or v50 or v94 then
+                    if v83 >= 1 or v123 * 0.016666666666666666 > 0.2 and Magnitude_2 < 6 or v50 or v94 then
                         if s_5.SSlide ~= nil then
                             s_5.SSlide = nil
                             s_5.SSlideDir = nil
@@ -1544,68 +1545,68 @@ local function stepChar(a1, a2)
                             s_5.SSlideCD = u6
                             s_5.SSpeed = math.max(s_5.SSpeed, 17)
                         end
-                        v107, v97 = v107, v51
+                        v108, v97 = v108, v51
                         s_5.SSpeed = math.floor((s_5.SSpeed / 0.001) + 0.5) * 0.001
                         if v50 then
-                            v107 = 0
+                            v108 = 0
                             s_5.SSpeed = BASE_SPEED_upv_1
                         end
-                        v107 = math.floor((v107 / 0.01) + 0.5) * 0.01
-                        if v107 ~= v107 or not (v107 > -1e+07) or not (v107 < 1e+07) then
+                        v108 = math.floor((v108 / 0.01) + 0.5) * 0.01
+                        if v108 ~= v108 or not (v108 > -1e+07) or not (v108 < 1e+07) then
                             if not (tbl_upv_9["walk speed"]) then
                                 tbl_upv_9["walk speed"] = true
-                                local v130 = (u18 and "Client") or "Server"
-                                warn((("[SimNaN] walk speed auth=%* side=%*"):format(v130, (u16 and "server") or "client")))
+                                local v131 = (u18 and "Client") or "Server"
+                                warn((("[SimNaN] walk speed auth=%* side=%*"):format(v131, (u16 and "server") or "client")))
                             end
                             s_5.SSpeed = BASE_SPEED_upv_1
-                            v107 = BASE_SPEED_upv_1
+                            v108 = BASE_SPEED_upv_1
                         end
-                        v94 = Vector3.new(v90.X, 0, v90.Z) * v107
+                        v94 = Vector3.new(v90.X, 0, v90.Z) * v108
                         if not u1 and not u24 then
                             if s_5.SSlide == nil then
-                                local v131, v132, v133 = nil, nil, nil
-                                if v107 <= 0 then
+                                local v132, v133, v134 = nil, nil, nil
+                                if v108 <= 0 then
                                     v94 = Vector3.new(0, 0, 0)
                                 else
                                     v86 = typeof(s_5.SVel) ~= "Vector3" and Vector3.new(0, 0, 0) or s_5.SVel
                                     if not (v82) then
-                                        v117 = Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude + 16
-                                        v86 = ((v117 < v86.Magnitude) and (v86.Unit * v117)) or v86
+                                        v118 = Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude + 16
+                                        v86 = ((v118 < v86.Magnitude) and (v86.Unit * v118)) or v86
                                     end
-                                    v117 = Vector3.new(v90.X, 0, v90.Z)
-                                    local v134 = v117 * v107
-                                    local v135
+                                    v118 = Vector3.new(v90.X, 0, v90.Z)
+                                    local v135 = v118 * v108
+                                    local v136
                                     if v82 then
-                                        v135 = ((v117.Magnitude > 0.05) and 160) or 50
+                                        v136 = ((v118.Magnitude > 0.05) and 160) or 50
                                     else
-                                        v135 = ((v117.Magnitude <= 0.05) and 200) or (((v134:Dot(v86) < 0) and 500) or 300)
+                                        v136 = ((v118.Magnitude <= 0.05) and 200) or (((v135:Dot(v86) < 0) and 500) or 300)
                                     end
-                                    v131 = v135 * a2
-                                    v117 = v134 - v86
-                                    v132 = v117.Magnitude
-                                    if v132 <= v131 then
-                                        v94 = v134
+                                    v132 = v136 * a2
+                                    v118 = v135 - v86
+                                    v133 = v118.Magnitude
+                                    if v133 <= v132 then
+                                        v94 = v135
                                     else
-                                        v94 = v86 + v117 * (v131 / v132)
+                                        v94 = v86 + v118 * (v132 / v133)
                                     end
-                                    v133 = v94.Magnitude
-                                    if v133 < 0.05 then
+                                    v134 = v94.Magnitude
+                                    if v134 < 0.05 then
                                         v94 = Vector3.new(0, 0, 0)
                                         humanoid_2:Move(Vector3.new(0, 0, 0), false)
                                     else
                                         local X_3 = v94.X
-                                        local v130 = (X_3 == X_3) and ((X_3 > -1e+07) and (X_3 < 1e+07))
-                                        if v130 then
+                                        local v131 = (X_3 == X_3) and ((X_3 > -1e+07) and (X_3 < 1e+07))
+                                        if v131 then
                                             local Y_7 = v94.Y
-                                            v130 = (Y_7 == Y_7) and ((Y_7 > -1e+07) and (Y_7 < 1e+07))
-                                            if v130 then
+                                            v131 = (Y_7 == Y_7) and ((Y_7 > -1e+07) and (Y_7 < 1e+07))
+                                            if v131 then
                                                 local _ = v94.Z
-                                                v130 = v94.Z == v94.Z and v94.Z > -1e+07 and v94.Z < 1e+07
+                                                v131 = v94.Z == v94.Z and v94.Z > -1e+07 and v94.Z < 1e+07
                                             end
                                         end
-                                        if v130 then
-                                            humanoid_2:Move(v94 / v133, false)
-                                            v107 = math.floor((v133 / 0.01) + 0.5) * 0.01
+                                        if v131 then
+                                            humanoid_2:Move(v94 / v134, false)
+                                            v108 = math.floor((v134 / 0.01) + 0.5) * 0.01
                                         else
                                             v94 = Vector3.new(0, 0, 0)
                                             humanoid_2:Move(Vector3.new(0, 0, 0), false)
@@ -1614,124 +1615,125 @@ local function stepChar(a1, a2)
                                     a1.moveWrote = humanoid_2.MoveDirection
                                 end
                             else
-                                v117 = s_5.SSlideDir or (Vector3.new(v90.X, 0, v90.Z))
-                                v94 = v117 * v107
+                                v118 = s_5.SSlideDir or (Vector3.new(v90.X, 0, v90.Z))
+                                v94 = v118 * v108
                                 a1.moveWrote = humanoid_2.MoveDirection
                             end
                             if v94.Magnitude >= 0.05 then
-                                v117 = Vector3.new(math.floor((v94.X / 0.001) + 0.5) * 0.001, 0, math.floor((v94.Z / 0.001) + 0.5) * 0.001)
+                                v118 = Vector3.new(math.floor((v94.X / 0.001) + 0.5) * 0.001, 0, math.floor((v94.Z / 0.001) + 0.5) * 0.001)
                             else
-                                v117 = nil
+                                v118 = nil
                             end
-                            s_5.SVel = v117
+                            s_5.SVel = v118
                         end
                         if v61 and u22 and a1.wsWrote ~= nil and humanoid_2.WalkSpeed ~= a1.wsWrote then
                             u22("WalkSpeed")
                         end
-                        if humanoid_2.WalkSpeed ~= v107 then
-                            humanoid_2.WalkSpeed = v107
+                        if humanoid_2.WalkSpeed ~= v108 then
+                            humanoid_2.WalkSpeed = v108
                         end
                         a1.wsWrote = humanoid_2.WalkSpeed
                         v75 = s_5.SHipBase
                         if type(v75) == "number" then
-                            local v136, v137 = nil, nil
+                            local v137, v138 = nil, nil
                             if s_5.SSlide == nil then
-                                v136 = v75
+                                v137 = v75
                             else
-                                v136 = math.max(0.3, v75 - 1.4)
-                                v137 = s_5.SLift
-                                if type(v137) == "number" and v136 < v137 then
-                                    v136 = v137
+                                v137 = math.max(0.3, v75 - 1.4)
+                                v138 = s_5.SLift
+                                if type(v138) == "number" and v137 < v138 then
+                                    v137 = v138
                                 end
                             end
-                            if v99 and v136 < v99 then
-                                v136 = v99
+                            if v99 and v137 < v99 then
+                                v137 = v99
                             end
-                            v107 = v136
+                            v108 = v137
                         else
-                            v107 = nil
+                            v108 = nil
                         end
-                        if v107 then
+                        if v108 then
                             if type(s_5.SHip) ~= "number" then
-                                v117 = (u24 and (math.floor((humanoid_2.HipHeight / 0.001) + 0.5) * 0.001)) or (s_5.SHipBase)
+                                v118 = (u24 and (math.floor((humanoid_2.HipHeight / 0.001) + 0.5) * 0.001)) or (s_5.SHipBase)
                             else
-                                v117 = s_5.SHip
+                                v118 = s_5.SHip
                             end
-                            if (v96) and v107 == v96 then
-                                v117 = v107
-                            elseif s_5.SWet ~= nil and s_5.SSlide == nil and v107 < v117 then
-                                if not v82 and math.abs(v117 - v107) > 0.01 then
-                                    v117 = math.floor(((v117 + ((v107 - v117) * (1 - math.exp(-(((v107 < v117) and 30) or (((s_5.SLift ~= nil) and 45) or ((v99 and 30) or 14))) * a2)))) / 0.001) + 0.5) * 0.001
+                            if (v103) and v108 == v103 then
+                                v118 = v108
+                            elseif s_5.SWet ~= nil and s_5.SSlide == nil and v108 < v118 then
+                                if not v82 and math.abs(v118 - v108) > 0.01 then
+                                    v118 = math.floor(((v118 + ((v108 - v118) * (1 - math.exp(-(((v108 < v118) and 30) or (((s_5.SLift ~= nil) and 45) or ((v99 and 30) or 14))) * a2)))) / 0.001) + 0.5) * 0.001
                                 else
-                                    v117 = v107
+                                    v118 = v108
                                 end
-                            elseif math.abs(v117 - v107) > 0.01 then
-                                v117 = math.floor(((v117 + ((v107 - v117) * (1 - math.exp(-(((v107 < v117) and 30) or (((s_5.SLift ~= nil) and 45) or ((v99 and 30) or 14))) * a2)))) / 0.001) + 0.5) * 0.001
+                            elseif math.abs(v118 - v108) > 0.01 then
+                                v118 = math.floor(((v118 + ((v108 - v118) * (1 - math.exp(-(((v108 < v118) and 30) or (((s_5.SLift ~= nil) and 45) or ((v99 and 30) or 14))) * a2)))) / 0.001) + 0.5) * 0.001
                             else
-                                v117 = v107
+                                v118 = v108
                             end
-                            if s_5.SSlide == nil and s_5.SWet == nil and v117 == v107 then
+                            if s_5.SSlide == nil and s_5.SWet == nil and v118 == v108 then
                                 s_5.SHip = nil
                                 if u24 then
                                     s_5.SHipBase = nil
                                 end
                             else
-                                s_5.SHip = v117
+                                s_5.SHip = v118
                             end
-                            if v117 ~= v117 or not (v117 > -1e+07) or not (v117 < 1e+07) then
+                            if v118 ~= v118 or not (v118 > -1e+07) or not (v118 < 1e+07) then
                                 if not (tbl_upv_9["hip height"]) then
                                     tbl_upv_9["hip height"] = true
-                                    local v138 = (u18 and "Client") or "Server"
-                                    warn((("[SimNaN] hip height auth=%* side=%*"):format(v138, (u16 and "server") or "client")))
+                                    local v139 = (u18 and "Client") or "Server"
+                                    warn((("[SimNaN] hip height auth=%* side=%*"):format(v139, (u16 and "server") or "client")))
                                 end
-                                local v139 = nil
+                                local v140 = nil
                                 if type(s_5.SHipBase) ~= "number" then
-                                    v117 = humanoid_2.HipHeight
+                                    v118 = humanoid_2.HipHeight
                                 else
-                                    v139 = s_5.SHipBase
-                                    if (v139 == v139) and ((v139 > -1e+07) and (v139 < 1e+07)) then
-                                        v117 = s_5.SHipBase
+                                    v140 = s_5.SHipBase
+                                    if (v140 == v140) and ((v140 > -1e+07) and (v140 < 1e+07)) then
+                                        v118 = s_5.SHipBase
                                     else
-                                        v117 = humanoid_2.HipHeight
+                                        v118 = humanoid_2.HipHeight
                                     end
                                 end
                                 s_5.SHip = nil
                             end
-                            if humanoid_2.HipHeight ~= v117 then
-                                humanoid_2.HipHeight = v117
+                            if humanoid_2.HipHeight ~= v118 then
+                                humanoid_2.HipHeight = v118
                             end
-                            a1.hipWritten = v117
+                            a1.hipWritten = v118
                         end
-                        v107 = not v50 and (not v78 and (humanoid_2.SeatPart == nil))
+                        v108 = not v50 and (not v78 and (humanoid_2.SeatPart == nil))
                         v99 = 0
                         if s_5.SFloat ~= nil and (v95) then
                             v99 = s_5.SHop or 0
                         else
                             if s_5.SLandF == nil and s_5.SFloat == nil or s_5.SSlide ~= nil then
-                                v96 = (v107 and (math.floor((jumpProp((JUMP_HEIGHT_upv_1 * (1 - (v71 * 0.45))) * (0.5 ^ v99), Workspace_upv_1.Gravity) / 0.01) + 0.5) * 0.01)) or 0
+                                v96 = 0.5 ^ math.max(v99 - 1, 0)
+                                v78 = (v108 and (math.floor((jumpProp((JUMP_HEIGHT_upv_1 * (1 - (v71 * 0.45))) * v96, Workspace_upv_1.Gravity) / 0.01) + 0.5) * 0.01)) or 0
                                 if v61 and u22 and a1.jhWrote ~= nil and humanoid_2.JumpHeight ~= a1.jhWrote then
                                     u22("JumpHeight")
                                 end
-                                if humanoid_2.JumpHeight ~= v96 then
-                                    humanoid_2.JumpHeight = v96
+                                if humanoid_2.JumpHeight ~= v78 then
+                                    humanoid_2.JumpHeight = v78
                                 end
                                 a1.jhWrote = humanoid_2.JumpHeight
                                 v96 = false
-                                local v140 = false
-                                if v107 then
+                                local v141 = false
+                                if v108 then
                                     if v95 then
-                                        v117 = v80 or (v105 > 0)
-                                        v96, v71 = v117, v140
-                                    elseif s_5.SJumped ~= true and v87 <= u11 and AssemblyLinearVelocity_1.Y <= 1 and v105 > 0 then
+                                        v118 = v80 or (v106 > 0)
+                                        v96, v71 = v118, v141
+                                    elseif s_5.SJumped ~= true and v87 <= u11 and AssemblyLinearVelocity_1.Y <= 1 and v106 > 0 then
                                         s_5.SJumped = true
-                                        local v141 = 0
+                                        local v142 = 0
                                         humanoid_2:ChangeState(Enum.HumanoidStateType.Jumping)
-                                        v71, v105 = true, v141
+                                        v71, v106 = true, v142
                                     else
-                                        v71 = v140
+                                        v71 = v141
                                     end
                                 else
-                                    v71 = v140
+                                    v71 = v141
                                 end
                                 humanoid_2.Jump = v96
                                 if v96 and s_5.SFloat == nil then
@@ -1740,71 +1742,71 @@ local function stepChar(a1, a2)
                                 if v71 and not (u1) then
                                     s_5.SFloat = 1
                                     if v99 > 0 then
-                                        v117 = v99
+                                        v118 = v99
                                     else
-                                        v117 = nil
+                                        v118 = nil
                                     end
-                                    s_5.SHop = v117
+                                    s_5.SHop = v118
                                     s_5.SLandF = nil
                                 end
-                                if v105 > 0 then
-                                    v117 = v105
+                                if v106 > 0 then
+                                    v118 = v106
                                 else
-                                    v117 = nil
+                                    v118 = nil
                                 end
-                                s_5.SJumpBuf = v117
-                                v107 = a1.gravity
+                                s_5.SJumpBuf = v118
+                                v108 = a1.gravity
                                 v99 = v82 and (v53 ~= Enum.HumanoidStateType.Climbing) and (not v95 and (AssemblyLinearVelocity_1.Y < 0))
-                                v105 = (s_5.SFloat ~= nil) and ((s_5.SKb == nil) and (v53 ~= Enum.HumanoidStateType.Climbing))
+                                v106 = (s_5.SFloat ~= nil) and ((s_5.SKb == nil) and (v53 ~= Enum.HumanoidStateType.Climbing))
                                 v96 = 1
-                                if v105 and (v71 or type(s_5.SFloat) == "number") then
+                                if v106 and (v71 or type(s_5.SFloat) == "number") then
                                     v96 = u2
                                 elseif v99 then
-                                    if v105 and not u1 and AssemblyLinearVelocity_1.Y > -10 then
+                                    if v106 and not u1 and AssemblyLinearVelocity_1.Y > -10 then
                                         v96 = u3
                                     elseif s_5.SSlide == nil then
                                         v96 = u4
                                     else
                                         v96 = 1.3
                                     end
-                                elseif v105 and AssemblyLinearVelocity_1.Y >= 0 then
+                                elseif v106 and AssemblyLinearVelocity_1.Y >= 0 then
                                     if AssemblyLinearVelocity_1.Y < 10 then
                                         v96 = u3
                                     else
                                         v96 = u2
                                     end
                                 end
-                                v105 = v99 or (v96 ~= 1)
-                                if v107 then
-                                    if v105 then
-                                        local v142 = Workspace_upv_1.Gravity * (1 - v96)
+                                v106 = v99 or (v96 ~= 1)
+                                if v108 then
+                                    if v106 then
+                                        local v143 = Workspace_upv_1.Gravity * (1 - v96)
                                         if (v99) and s_5.SSlide ~= nil then
                                             v95 = slideCushion(a1, AssemblyLinearVelocity_1.Y, humanoid_2.HipHeight)
-                                            v142 = (v95 and (v95 + Workspace_upv_1.Gravity)) or v142
+                                            v143 = (v95 and (v95 + Workspace_upv_1.Gravity)) or v143
                                         elseif v99 and v96 then
-                                            local v143 = slideCushion(a1, AssemblyLinearVelocity_1.Y, v96, 4)
-                                            v142 = (v143 and (v143 + Workspace_upv_1.Gravity)) or v142
+                                            local v144 = slideCushion(a1, AssemblyLinearVelocity_1.Y, v96, 4)
+                                            v143 = (v144 and (v144 + Workspace_upv_1.Gravity)) or v143
                                         end
-                                        local v144 = v142 * root_8.AssemblyMass
-                                        if v144 ~= v144 or not (v144 > -1e+07) or not (v144 < 1e+07) then
+                                        local v145 = v143 * root_8.AssemblyMass
+                                        if v145 ~= v145 or not (v145 > -1e+07) or not (v145 < 1e+07) then
                                             if not (tbl_upv_9["fall force"]) then
                                                 tbl_upv_9["fall force"] = true
-                                                local v145 = (u18 and "Client") or "Server"
-                                                warn((("[SimNaN] fall force auth=%* side=%*"):format(v145, (u16 and "server") or "client")))
+                                                local v146 = (u18 and "Client") or "Server"
+                                                warn((("[SimNaN] fall force auth=%* side=%*"):format(v146, (u16 and "server") or "client")))
                                             end
-                                            v144 = 0
+                                            v145 = 0
                                         end
-                                        v107.Force = Vector3.new(0, v144, 0)
+                                        v108.Force = Vector3.new(0, v145, 0)
                                     end
-                                    if v107.Enabled ~= v105 then
-                                        v107.Enabled = v105
+                                    if v108.Enabled ~= v106 then
+                                        v108.Enabled = v106
                                     end
                                 end
-                                v107 = nil
+                                v108 = nil
                                 v76 = s_5.SKbF or 0
                                 if v76 > 0 and s_5.SKb then
-                                    local v146 = v76 / math.max(s_5.SKbN or v76, 1)
-                                    v107 = s_5.SKb * v146 + v94 * (1 - v146)
+                                    local v147 = v76 / math.max(s_5.SKbN or v76, 1)
+                                    v108 = s_5.SKb * v147 + v94 * (1 - v147)
                                     v76 = v76 - 1
                                     if v76 <= 0 then
                                         s_5.SKb = nil
@@ -1816,15 +1818,15 @@ local function stepChar(a1, a2)
                                 end
                                 if (v77 > 0) and (s_5.SDashV) then
                                     local SDashV_1 = s_5.SDashV
-                                    if v107 then
-                                        v107 = v107 + SDashV_1
+                                    if v108 then
+                                        v108 = v108 + SDashV_1
                                     else
-                                        v107 = SDashV_1
+                                        v108 = SDashV_1
                                     end
                                     v97 = Vector3.new(SDashV_1.X, 0, SDashV_1.Z).Unit
                                     v77 = v77 - 1
                                 elseif s_5.SDashB then
-                                    v107 = v107 or v94
+                                    v108 = v108 or v94
                                     s_5.SDashB = ((s_5.SDashB > 1) and (s_5.SDashB - 1)) or nil
                                 end
                                 if v77 <= 0 then
@@ -1833,25 +1835,25 @@ local function stepChar(a1, a2)
                                 else
                                     s_5.SDashF = v77
                                 end
-                                if v107 then
-                                    local X_4 = v107.X
-                                    v117 = (X_4 == X_4) and ((X_4 > -1e+07) and (X_4 < 1e+07))
-                                    if v117 then
-                                        local Y_8 = v107.Y
-                                        v117 = (Y_8 == Y_8) and ((Y_8 > -1e+07) and (Y_8 < 1e+07))
-                                        if v117 then
-                                            local v155 = v107.Z
-                                            v117 = v107.Z == v107.Z and v107.Z > -1e+07 and v107.Z < 1e+07
+                                if v108 then
+                                    local X_4 = v108.X
+                                    v118 = (X_4 == X_4) and ((X_4 > -1e+07) and (X_4 < 1e+07))
+                                    if v118 then
+                                        local Y_8 = v108.Y
+                                        v118 = (Y_8 == Y_8) and ((Y_8 > -1e+07) and (Y_8 < 1e+07))
+                                        if v118 then
+                                            local v156 = v108.Z
+                                            v118 = v108.Z == v108.Z and v108.Z > -1e+07 and v108.Z < 1e+07
                                         end
                                     end
-                                    if not (v117) then
-                                        v117 = s_5.SKb ~= nil and "push (knockback)" or s_5.SDashV == nil and "push" or "push (dash)"
-                                        if not (tbl_upv_9[v117]) then
-                                            tbl_upv_9[v117] = true
-                                            local v128 = (u18 and "Client") or "Server"
-                                            warn((("[SimNaN] %* auth=%* side=%*"):format(v117, v128, (u16 and "server") or "client")))
+                                    if not (v118) then
+                                        v118 = s_5.SKb ~= nil and "push (knockback)" or s_5.SDashV == nil and "push" or "push (dash)"
+                                        if not (tbl_upv_9[v118]) then
+                                            tbl_upv_9[v118] = true
+                                            local v129 = (u18 and "Client") or "Server"
+                                            warn((("[SimNaN] %* auth=%* side=%*"):format(v118, v129, (u16 and "server") or "client")))
                                         end
-                                        v107 = nil
+                                        v108 = nil
                                         s_5.SKb = nil
                                         s_5.SKbF = nil
                                         s_5.SKbN = nil
@@ -1861,10 +1863,10 @@ local function stepChar(a1, a2)
                                 end
                                 v77 = a1.push
                                 if v77 then
-                                    if v107 then
-                                        v77.PlaneVelocity = Vector2.new(v107.X, v107.Z)
+                                    if v108 then
+                                        v77.PlaneVelocity = Vector2.new(v108.X, v108.Z)
                                     end
-                                    v99 = v107 ~= nil
+                                    v99 = v108 ~= nil
                                     if v77.Enabled ~= v99 then
                                         v77.Enabled = v99
                                     end
@@ -1872,42 +1874,42 @@ local function stepChar(a1, a2)
                                 if not (v97) and v88 and not (v50) and humanoid_2.SeatPart == nil then
                                     v97 = Vector3.new(v88.X, 0, v88.Y)
                                 end
-                                v107 = a1.align
+                                v108 = a1.align
                                 if v97 then
                                     local X_5 = v97.X
-                                    v117 = (X_5 == X_5) and ((X_5 > -1e+07) and (X_5 < 1e+07))
-                                    if v117 then
+                                    v118 = (X_5 == X_5) and ((X_5 > -1e+07) and (X_5 < 1e+07))
+                                    if v118 then
                                         local Y_9 = v97.Y
-                                        v117 = (Y_9 == Y_9) and ((Y_9 > -1e+07) and (Y_9 < 1e+07))
-                                        if v117 then
-                                            local v156 = v97.Z
-                                            v117 = v97.Z == v97.Z and v97.Z > -1e+07 and v97.Z < 1e+07
+                                        v118 = (Y_9 == Y_9) and ((Y_9 > -1e+07) and (Y_9 < 1e+07))
+                                        if v118 then
+                                            local v157 = v97.Z
+                                            v118 = v97.Z == v97.Z and v97.Z > -1e+07 and v97.Z < 1e+07
                                         end
                                     end
-                                    if not (v117) then
+                                    if not (v118) then
                                         if not (tbl_upv_9.facing) then
                                             tbl_upv_9.facing = true
-                                            local v147 = (u18 and "Client") or "Server"
-                                            warn((("[SimNaN] facing auth=%* side=%*"):format(v147, (u16 and "server") or "client")))
+                                            local v148 = (u18 and "Client") or "Server"
+                                            warn((("[SimNaN] facing auth=%* side=%*"):format(v148, (u16 and "server") or "client")))
                                         end
                                         v97 = nil
                                     end
                                 end
-                                if v97 and v107 and v97.Magnitude > 0.1 then
+                                if v97 and v108 and v97.Magnitude > 0.1 then
                                     if humanoid_2.AutoRotate then
                                         humanoid_2.AutoRotate = false
                                     end
                                     v77 = v97.Unit
                                     v96 = CFrame.lookAt(Vector3.new(0, 0, 0), Vector3.new(math.floor((v77.X / 1e-04) + 0.5) * 1e-04, 0, math.floor((v77.Z / 1e-04) + 0.5) * 1e-04))
-                                    if v107.CFrame ~= v96 then
-                                        v107.CFrame = v96
+                                    if v108.CFrame ~= v96 then
+                                        v108.CFrame = v96
                                     end
-                                    if not (v107.Enabled) then
-                                        v107.Enabled = true
+                                    if not (v108.Enabled) then
+                                        v108.Enabled = true
                                     end
                                 else
-                                    if v107 and v107.Enabled then
-                                        v107.Enabled = false
+                                    if v108 and v108.Enabled then
+                                        v108.Enabled = false
                                     end
                                     if not (humanoid_2.AutoRotate) then
                                         humanoid_2.AutoRotate = true
@@ -1916,32 +1918,33 @@ local function stepChar(a1, a2)
                                 save(a1)
                                 return
                             end
-                            v99 = math.min((s_5.SHop or 0) + 1, 2)
+                            v99 = math.min((s_5.SHop or 0) + 1, 3)
                         end
-                        v96 = (v107 and (math.floor((jumpProp((JUMP_HEIGHT_upv_1 * (1 - (v71 * 0.45))) * (0.5 ^ v99), Workspace_upv_1.Gravity) / 0.01) + 0.5) * 0.01)) or 0
+                        v96 = 0.5 ^ math.max(v99 - 1, 0)
+                        v78 = (v108 and (math.floor((jumpProp((JUMP_HEIGHT_upv_1 * (1 - (v71 * 0.45))) * v96, Workspace_upv_1.Gravity) / 0.01) + 0.5) * 0.01)) or 0
                         if v61 and u22 and a1.jhWrote ~= nil and humanoid_2.JumpHeight ~= a1.jhWrote then
                             u22("JumpHeight")
                         end
-                        if humanoid_2.JumpHeight ~= v96 then
-                            humanoid_2.JumpHeight = v96
+                        if humanoid_2.JumpHeight ~= v78 then
+                            humanoid_2.JumpHeight = v78
                         end
                         a1.jhWrote = humanoid_2.JumpHeight
                         v96 = false
-                        local v140 = false
-                        if v107 then
+                        local v141 = false
+                        if v108 then
                             if v95 then
-                                v117 = v80 or (v105 > 0)
-                                v96, v71 = v117, v140
-                            elseif s_5.SJumped ~= true and v87 <= u11 and AssemblyLinearVelocity_1.Y <= 1 and v105 > 0 then
+                                v118 = v80 or (v106 > 0)
+                                v103, v71 = v118, v141
+                            elseif s_5.SJumped ~= true and v87 <= u11 and AssemblyLinearVelocity_1.Y <= 1 and v106 > 0 then
                                 s_5.SJumped = true
-                                local v141 = 0
+                                local v142 = 0
                                 humanoid_2:ChangeState(Enum.HumanoidStateType.Jumping)
-                                v71, v105 = true, v141
+                                v71, v106 = true, v142
                             else
-                                v71 = v140
+                                v71 = v141
                             end
                         else
-                            v71 = v140
+                            v71 = v141
                         end
                         humanoid_2.Jump = v96
                         if v96 and s_5.SFloat == nil then
@@ -1950,71 +1953,71 @@ local function stepChar(a1, a2)
                         if v71 and not (u1) then
                             s_5.SFloat = 1
                             if v99 > 0 then
-                                v117 = v99
+                                v118 = v99
                             else
-                                v117 = nil
+                                v118 = nil
                             end
-                            s_5.SHop = v117
+                            s_5.SHop = v118
                             s_5.SLandF = nil
                         end
-                        if v105 > 0 then
-                            v117 = v105
+                        if v106 > 0 then
+                            v118 = v106
                         else
-                            v117 = nil
+                            v118 = nil
                         end
-                        s_5.SJumpBuf = v117
-                        v107 = a1.gravity
+                        s_5.SJumpBuf = v118
+                        v108 = a1.gravity
                         v99 = v82 and (v53 ~= Enum.HumanoidStateType.Climbing) and (not v95 and (AssemblyLinearVelocity_1.Y < 0))
-                        v105 = (s_5.SFloat ~= nil) and ((s_5.SKb == nil) and (v53 ~= Enum.HumanoidStateType.Climbing))
+                        v106 = (s_5.SFloat ~= nil) and ((s_5.SKb == nil) and (v53 ~= Enum.HumanoidStateType.Climbing))
                         v96 = 1
-                        if v105 and (v71 or type(s_5.SFloat) == "number") then
-                            v96 = u2
+                        if v106 and (v71 or type(s_5.SFloat) == "number") then
+                            v103 = u2
                         elseif v99 then
-                            if v105 and not u1 and AssemblyLinearVelocity_1.Y > -10 then
-                                v96 = u3
+                            if v106 and not u1 and AssemblyLinearVelocity_1.Y > -10 then
+                                v103 = u3
                             elseif s_5.SSlide == nil then
-                                v96 = u4
+                                v103 = u4
                             else
-                                v96 = 1.3
+                                v103 = 1.3
                             end
-                        elseif v105 and AssemblyLinearVelocity_1.Y >= 0 then
+                        elseif v106 and AssemblyLinearVelocity_1.Y >= 0 then
                             if AssemblyLinearVelocity_1.Y < 10 then
-                                v96 = u3
+                                v103 = u3
                             else
-                                v96 = u2
+                                v103 = u2
                             end
                         end
-                        v105 = v99 or (v96 ~= 1)
-                        if v107 then
-                            if v105 then
-                                local v142 = Workspace_upv_1.Gravity * (1 - v96)
+                        v106 = v99 or (v96 ~= 1)
+                        if v108 then
+                            if v106 then
+                                local v143 = Workspace_upv_1.Gravity * (1 - v103)
                                 if (v99) and s_5.SSlide ~= nil then
                                     v95 = slideCushion(a1, AssemblyLinearVelocity_1.Y, humanoid_2.HipHeight)
-                                    v142 = (v95 and (v95 + Workspace_upv_1.Gravity)) or v142
-                                elseif v99 and v96 then
-                                    local v143 = slideCushion(a1, AssemblyLinearVelocity_1.Y, v96, 4)
-                                    v142 = (v143 and (v143 + Workspace_upv_1.Gravity)) or v142
+                                    v143 = (v95 and (v95 + Workspace_upv_1.Gravity)) or v143
+                                elseif v99 and v103 then
+                                    local v144 = slideCushion(a1, AssemblyLinearVelocity_1.Y, v103, 4)
+                                    v143 = (v144 and (v144 + Workspace_upv_1.Gravity)) or v143
                                 end
-                                local v144 = v142 * root_8.AssemblyMass
-                                if v144 ~= v144 or not (v144 > -1e+07) or not (v144 < 1e+07) then
+                                local v145 = v143 * root_8.AssemblyMass
+                                if v145 ~= v145 or not (v145 > -1e+07) or not (v145 < 1e+07) then
                                     if not (tbl_upv_9["fall force"]) then
                                         tbl_upv_9["fall force"] = true
-                                        local v145 = (u18 and "Client") or "Server"
-                                        warn((("[SimNaN] fall force auth=%* side=%*"):format(v145, (u16 and "server") or "client")))
+                                        local v146 = (u18 and "Client") or "Server"
+                                        warn((("[SimNaN] fall force auth=%* side=%*"):format(v146, (u16 and "server") or "client")))
                                     end
-                                    v144 = 0
+                                    v145 = 0
                                 end
-                                v107.Force = Vector3.new(0, v144, 0)
+                                v108.Force = Vector3.new(0, v145, 0)
                             end
-                            if v107.Enabled ~= v105 then
-                                v107.Enabled = v105
+                            if v108.Enabled ~= v106 then
+                                v108.Enabled = v106
                             end
                         end
-                        v107 = nil
+                        v108 = nil
                         v76 = s_5.SKbF or 0
                         if v76 > 0 and s_5.SKb then
-                            local v146 = v76 / math.max(s_5.SKbN or v76, 1)
-                            v107 = s_5.SKb * v146 + v94 * (1 - v146)
+                            local v147 = v76 / math.max(s_5.SKbN or v76, 1)
+                            v108 = s_5.SKb * v147 + v94 * (1 - v147)
                             v76 = v76 - 1
                             if v76 <= 0 then
                                 s_5.SKb = nil
@@ -2026,15 +2029,15 @@ local function stepChar(a1, a2)
                         end
                         if (v77 > 0) and (s_5.SDashV) then
                             local SDashV_1 = s_5.SDashV
-                            if v107 then
-                                v107 = v107 + SDashV_1
+                            if v108 then
+                                v108 = v108 + SDashV_1
                             else
-                                v107 = SDashV_1
+                                v108 = SDashV_1
                             end
                             v97 = Vector3.new(SDashV_1.X, 0, SDashV_1.Z).Unit
                             v77 = v77 - 1
                         elseif s_5.SDashB then
-                            v107 = v107 or v94
+                            v108 = v108 or v94
                             s_5.SDashB = ((s_5.SDashB > 1) and (s_5.SDashB - 1)) or nil
                         end
                         if v77 <= 0 then
@@ -2043,25 +2046,25 @@ local function stepChar(a1, a2)
                         else
                             s_5.SDashF = v77
                         end
-                        if v107 then
-                            local X_4 = v107.X
-                            v117 = (X_4 == X_4) and ((X_4 > -1e+07) and (X_4 < 1e+07))
-                            if v117 then
-                                local Y_8 = v107.Y
-                                v117 = (Y_8 == Y_8) and ((Y_8 > -1e+07) and (Y_8 < 1e+07))
-                                if v117 then
-                                    local v155 = v107.Z
-                                    v117 = v107.Z == v107.Z and v107.Z > -1e+07 and v107.Z < 1e+07
+                        if v108 then
+                            local X_4 = v108.X
+                            v118 = (X_4 == X_4) and ((X_4 > -1e+07) and (X_4 < 1e+07))
+                            if v118 then
+                                local Y_8 = v108.Y
+                                v118 = (Y_8 == Y_8) and ((Y_8 > -1e+07) and (Y_8 < 1e+07))
+                                if v118 then
+                                    local v156 = v108.Z
+                                    v118 = v108.Z == v108.Z and v108.Z > -1e+07 and v108.Z < 1e+07
                                 end
                             end
-                            if not (v117) then
-                                v117 = s_5.SKb ~= nil and "push (knockback)" or s_5.SDashV == nil and "push" or "push (dash)"
-                                if not (tbl_upv_9[v117]) then
-                                    tbl_upv_9[v117] = true
-                                    local v128 = (u18 and "Client") or "Server"
-                                    warn((("[SimNaN] %* auth=%* side=%*"):format(v117, v128, (u16 and "server") or "client")))
+                            if not (v118) then
+                                v118 = s_5.SKb ~= nil and "push (knockback)" or s_5.SDashV == nil and "push" or "push (dash)"
+                                if not (tbl_upv_9[v118]) then
+                                    tbl_upv_9[v118] = true
+                                    local v129 = (u18 and "Client") or "Server"
+                                    warn((("[SimNaN] %* auth=%* side=%*"):format(v118, v129, (u16 and "server") or "client")))
                                 end
-                                v107 = nil
+                                v108 = nil
                                 s_5.SKb = nil
                                 s_5.SKbF = nil
                                 s_5.SKbN = nil
@@ -2071,10 +2074,10 @@ local function stepChar(a1, a2)
                         end
                         v77 = a1.push
                         if v77 then
-                            if v107 then
-                                v77.PlaneVelocity = Vector2.new(v107.X, v107.Z)
+                            if v108 then
+                                v77.PlaneVelocity = Vector2.new(v108.X, v108.Z)
                             end
-                            v99 = v107 ~= nil
+                            v99 = v108 ~= nil
                             if v77.Enabled ~= v99 then
                                 v77.Enabled = v99
                             end
@@ -2082,42 +2085,42 @@ local function stepChar(a1, a2)
                         if not (v97) and v88 and not (v50) and humanoid_2.SeatPart == nil then
                             v97 = Vector3.new(v88.X, 0, v88.Y)
                         end
-                        v107 = a1.align
+                        v108 = a1.align
                         if v97 then
                             local X_5 = v97.X
-                            v117 = (X_5 == X_5) and ((X_5 > -1e+07) and (X_5 < 1e+07))
-                            if v117 then
+                            v118 = (X_5 == X_5) and ((X_5 > -1e+07) and (X_5 < 1e+07))
+                            if v118 then
                                 local Y_9 = v97.Y
-                                v117 = (Y_9 == Y_9) and ((Y_9 > -1e+07) and (Y_9 < 1e+07))
-                                if v117 then
-                                    local v156 = v97.Z
-                                    v117 = v97.Z == v97.Z and v97.Z > -1e+07 and v97.Z < 1e+07
+                                v118 = (Y_9 == Y_9) and ((Y_9 > -1e+07) and (Y_9 < 1e+07))
+                                if v118 then
+                                    local v157 = v97.Z
+                                    v118 = v97.Z == v97.Z and v97.Z > -1e+07 and v97.Z < 1e+07
                                 end
                             end
-                            if not (v117) then
+                            if not (v118) then
                                 if not (tbl_upv_9.facing) then
                                     tbl_upv_9.facing = true
-                                    local v147 = (u18 and "Client") or "Server"
-                                    warn((("[SimNaN] facing auth=%* side=%*"):format(v147, (u16 and "server") or "client")))
+                                    local v148 = (u18 and "Client") or "Server"
+                                    warn((("[SimNaN] facing auth=%* side=%*"):format(v148, (u16 and "server") or "client")))
                                 end
                                 v97 = nil
                             end
                         end
-                        if v97 and v107 and v97.Magnitude > 0.1 then
+                        if v97 and v108 and v97.Magnitude > 0.1 then
                             if humanoid_2.AutoRotate then
                                 humanoid_2.AutoRotate = false
                             end
                             v77 = v97.Unit
-                            v96 = CFrame.lookAt(Vector3.new(0, 0, 0), Vector3.new(math.floor((v77.X / 1e-04) + 0.5) * 1e-04, 0, math.floor((v77.Z / 1e-04) + 0.5) * 1e-04))
-                            if v107.CFrame ~= v96 then
-                                v107.CFrame = v96
+                            v103 = CFrame.lookAt(Vector3.new(0, 0, 0), Vector3.new(math.floor((v77.X / 1e-04) + 0.5) * 1e-04, 0, math.floor((v77.Z / 1e-04) + 0.5) * 1e-04))
+                            if v108.CFrame ~= v103 then
+                                v108.CFrame = v103
                             end
-                            if not (v107.Enabled) then
-                                v107.Enabled = true
+                            if not (v108.Enabled) then
+                                v108.Enabled = true
                             end
                         else
-                            if v107 and v107.Enabled then
-                                v107.Enabled = false
+                            if v108 and v108.Enabled then
+                                v108.Enabled = false
                             end
                             if not (humanoid_2.AutoRotate) then
                                 humanoid_2.AutoRotate = true
@@ -2138,70 +2141,70 @@ local function stepChar(a1, a2)
                     s_5.SSpeed = math.max(s_5.SSpeed, v81)
                     s_5.SBoost = u8
                 end
-                v107, v97 = v107, v51
+                v108, v97 = v108, v51
             end
             s_5.SSpeed = math.floor((s_5.SSpeed / 0.001) + 0.5) * 0.001
             if v50 then
-                v107 = 0
+                v108 = 0
                 s_5.SSpeed = BASE_SPEED_upv_1
             end
-            v107 = math.floor((v107 / 0.01) + 0.5) * 0.01
-            if v107 ~= v107 or not (v107 > -1e+07) or not (v107 < 1e+07) then
+            v108 = math.floor((v108 / 0.01) + 0.5) * 0.01
+            if v108 ~= v108 or not (v108 > -1e+07) or not (v108 < 1e+07) then
                 if not (tbl_upv_9["walk speed"]) then
                     tbl_upv_9["walk speed"] = true
-                    local v130 = (u18 and "Client") or "Server"
-                    warn((("[SimNaN] walk speed auth=%* side=%*"):format(v130, (u16 and "server") or "client")))
+                    local v131 = (u18 and "Client") or "Server"
+                    warn((("[SimNaN] walk speed auth=%* side=%*"):format(v131, (u16 and "server") or "client")))
                 end
                 s_5.SSpeed = BASE_SPEED_upv_1
-                v107 = BASE_SPEED_upv_1
+                v108 = BASE_SPEED_upv_1
             end
-            v94 = Vector3.new(v90.X, 0, v90.Z) * v107
+            v94 = Vector3.new(v90.X, 0, v90.Z) * v108
             if not u1 and not u24 then
-                local v151 = nil
+                local v152 = nil
                 if s_5.SSlide == nil then
-                    local v131, v132, v133 = nil, nil, nil
-                    if v107 <= 0 then
+                    local v132, v133, v134 = nil, nil, nil
+                    if v108 <= 0 then
                         v94 = Vector3.new(0, 0, 0)
                     else
                         v86 = typeof(s_5.SVel) ~= "Vector3" and Vector3.new(0, 0, 0) or s_5.SVel
                         if not (v82) then
-                            v151 = Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude + 16
-                            v86 = ((v151 < v86.Magnitude) and (v86.Unit * v151)) or v86
+                            v152 = Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude + 16
+                            v86 = ((v152 < v86.Magnitude) and (v86.Unit * v152)) or v86
                         end
-                        v151 = Vector3.new(v90.X, 0, v90.Z)
-                        local v134 = v151 * v107
-                        local v135
+                        v152 = Vector3.new(v90.X, 0, v90.Z)
+                        local v135 = v152 * v108
+                        local v136
                         if v82 then
-                            v135 = ((v151.Magnitude > 0.05) and 160) or 50
+                            v136 = ((v152.Magnitude > 0.05) and 160) or 50
                         else
-                            v135 = ((v151.Magnitude <= 0.05) and 200) or (((v134:Dot(v86) < 0) and 500) or 300)
+                            v136 = ((v152.Magnitude <= 0.05) and 200) or (((v135:Dot(v86) < 0) and 500) or 300)
                         end
-                        v131 = v135 * a2
-                        v151 = v134 - v86
-                        v132 = v151.Magnitude
-                        if v132 <= v131 then
-                            v94 = v134
+                        v132 = v136 * a2
+                        v152 = v135 - v86
+                        v133 = v152.Magnitude
+                        if v133 <= v132 then
+                            v94 = v135
                         else
-                            v94 = v86 + v151 * (v131 / v132)
+                            v94 = v86 + v152 * (v132 / v133)
                         end
-                        v133 = v94.Magnitude
-                        if v133 < 0.05 then
+                        v134 = v94.Magnitude
+                        if v134 < 0.05 then
                             v94 = Vector3.new(0, 0, 0)
                             humanoid_2:Move(Vector3.new(0, 0, 0), false)
                         else
                             local X_3 = v94.X
-                            local v130 = (X_3 == X_3) and ((X_3 > -1e+07) and (X_3 < 1e+07))
-                            if v130 then
+                            local v131 = (X_3 == X_3) and ((X_3 > -1e+07) and (X_3 < 1e+07))
+                            if v131 then
                                 local Y_7 = v94.Y
-                                v130 = (Y_7 == Y_7) and ((Y_7 > -1e+07) and (Y_7 < 1e+07))
-                                if v130 then
+                                v131 = (Y_7 == Y_7) and ((Y_7 > -1e+07) and (Y_7 < 1e+07))
+                                if v131 then
                                     local _ = v94.Z
-                                    v130 = v94.Z == v94.Z and v94.Z > -1e+07 and v94.Z < 1e+07
+                                    v131 = v94.Z == v94.Z and v94.Z > -1e+07 and v94.Z < 1e+07
                                 end
                             end
-                            if v130 then
-                                humanoid_2:Move(v94 / v133, false)
-                                v107 = math.floor((v133 / 0.01) + 0.5) * 0.01
+                            if v131 then
+                                humanoid_2:Move(v94 / v134, false)
+                                v108 = math.floor((v134 / 0.01) + 0.5) * 0.01
                             else
                                 v94 = Vector3.new(0, 0, 0)
                                 humanoid_2:Move(Vector3.new(0, 0, 0), false)
@@ -2210,199 +2213,200 @@ local function stepChar(a1, a2)
                         a1.moveWrote = humanoid_2.MoveDirection
                     end
                 else
-                    v117 = s_5.SSlideDir or (Vector3.new(v90.X, 0, v90.Z))
-                    v94 = v117 * v107
+                    v118 = s_5.SSlideDir or (Vector3.new(v90.X, 0, v90.Z))
+                    v94 = v118 * v108
                     a1.moveWrote = humanoid_2.MoveDirection
                 end
                 if v94.Magnitude >= 0.05 then
-                    v151 = Vector3.new(math.floor((v94.X / 0.001) + 0.5) * 0.001, 0, math.floor((v94.Z / 0.001) + 0.5) * 0.001)
+                    v152 = Vector3.new(math.floor((v94.X / 0.001) + 0.5) * 0.001, 0, math.floor((v94.Z / 0.001) + 0.5) * 0.001)
                 else
-                    v151 = nil
+                    v152 = nil
                 end
-                s_5.SVel = v151
+                s_5.SVel = v152
             end
             if v61 and u22 and a1.wsWrote ~= nil and humanoid_2.WalkSpeed ~= a1.wsWrote then
                 u22("WalkSpeed")
             end
-            if humanoid_2.WalkSpeed ~= v107 then
-                humanoid_2.WalkSpeed = v107
+            if humanoid_2.WalkSpeed ~= v108 then
+                humanoid_2.WalkSpeed = v108
             end
             a1.wsWrote = humanoid_2.WalkSpeed
             v75 = s_5.SHipBase
             if type(v75) == "number" then
-                local v136, v137 = nil, nil
+                local v137, v138 = nil, nil
                 if s_5.SSlide == nil then
-                    v136 = v75
+                    v137 = v75
                 else
-                    v136 = math.max(0.3, v75 - 1.4)
-                    v137 = s_5.SLift
-                    if type(v137) == "number" and v136 < v137 then
-                        v136 = v137
+                    v137 = math.max(0.3, v75 - 1.4)
+                    v138 = s_5.SLift
+                    if type(v138) == "number" and v137 < v138 then
+                        v137 = v138
                     end
                 end
-                if v99 and v136 < v99 then
-                    v136 = v99
+                if v99 and v137 < v99 then
+                    v137 = v99
                 end
-                v107 = v136
+                v108 = v137
             else
-                v107 = nil
+                v108 = nil
             end
-            if v107 then
-                local v152
+            if v108 then
+                local v153
                 if type(s_5.SHip) ~= "number" then
-                    v152 = (u24 and (math.floor((humanoid_2.HipHeight / 0.001) + 0.5) * 0.001)) or (s_5.SHipBase)
+                    v153 = (u24 and (math.floor((humanoid_2.HipHeight / 0.001) + 0.5) * 0.001)) or (s_5.SHipBase)
                 else
-                    v152 = s_5.SHip
+                    v153 = s_5.SHip
                 end
-                if (v96) and v107 == v96 then
-                    v152 = v107
-                elseif s_5.SWet ~= nil and s_5.SSlide == nil and v107 < v152 then
-                    if not v82 and math.abs(v152 - v107) > 0.01 then
-                        v152 = math.floor(((v152 + ((v107 - v152) * (1 - math.exp(-(((v107 < v152) and 30) or (((s_5.SLift ~= nil) and 45) or ((v99 and 30) or 14))) * a2)))) / 0.001) + 0.5) * 0.001
+                if (v103) and v108 == v103 then
+                    v153 = v108
+                elseif s_5.SWet ~= nil and s_5.SSlide == nil and v108 < v153 then
+                    if not v82 and math.abs(v153 - v108) > 0.01 then
+                        v153 = math.floor(((v153 + ((v108 - v153) * (1 - math.exp(-(((v108 < v153) and 30) or (((s_5.SLift ~= nil) and 45) or ((v99 and 30) or 14))) * a2)))) / 0.001) + 0.5) * 0.001
                     else
-                        v152 = v107
+                        v153 = v108
                     end
-                elseif math.abs(v152 - v107) > 0.01 then
-                    v152 = math.floor(((v152 + ((v107 - v152) * (1 - math.exp(-(((v107 < v152) and 30) or (((s_5.SLift ~= nil) and 45) or ((v99 and 30) or 14))) * a2)))) / 0.001) + 0.5) * 0.001
+                elseif math.abs(v153 - v108) > 0.01 then
+                    v153 = math.floor(((v153 + ((v108 - v153) * (1 - math.exp(-(((v108 < v153) and 30) or (((s_5.SLift ~= nil) and 45) or ((v99 and 30) or 14))) * a2)))) / 0.001) + 0.5) * 0.001
                 else
-                    v152 = v107
+                    v153 = v108
                 end
-                if s_5.SSlide == nil and s_5.SWet == nil and v152 == v107 then
+                if s_5.SSlide == nil and s_5.SWet == nil and v153 == v108 then
                     s_5.SHip = nil
                     if u24 then
                         s_5.SHipBase = nil
                     end
                 else
-                    s_5.SHip = v152
+                    s_5.SHip = v153
                 end
-                if v152 ~= v152 or not (v152 > -1e+07) or not (v152 < 1e+07) then
+                if v153 ~= v153 or not (v153 > -1e+07) or not (v153 < 1e+07) then
                     if not (tbl_upv_9["hip height"]) then
                         tbl_upv_9["hip height"] = true
-                        local v138 = (u18 and "Client") or "Server"
-                        warn((("[SimNaN] hip height auth=%* side=%*"):format(v138, (u16 and "server") or "client")))
+                        local v139 = (u18 and "Client") or "Server"
+                        warn((("[SimNaN] hip height auth=%* side=%*"):format(v139, (u16 and "server") or "client")))
                     end
-                    local v139 = nil
+                    local v140 = nil
                     if type(s_5.SHipBase) ~= "number" then
-                        v152 = humanoid_2.HipHeight
+                        v153 = humanoid_2.HipHeight
                     else
-                        v139 = s_5.SHipBase
-                        if (v139 == v139) and ((v139 > -1e+07) and (v139 < 1e+07)) then
-                            v152 = s_5.SHipBase
+                        v140 = s_5.SHipBase
+                        if (v140 == v140) and ((v140 > -1e+07) and (v140 < 1e+07)) then
+                            v153 = s_5.SHipBase
                         else
-                            v152 = humanoid_2.HipHeight
+                            v153 = humanoid_2.HipHeight
                         end
                     end
                     s_5.SHip = nil
                 end
-                if humanoid_2.HipHeight ~= v152 then
-                    humanoid_2.HipHeight = v152
+                if humanoid_2.HipHeight ~= v153 then
+                    humanoid_2.HipHeight = v153
                 end
-                a1.hipWritten = v152
+                a1.hipWritten = v153
             end
-            v107 = not v50 and (not v78 and (humanoid_2.SeatPart == nil))
+            v108 = not v50 and (not v78 and (humanoid_2.SeatPart == nil))
             v99 = 0
             if s_5.SFloat ~= nil and (v95) then
                 v99 = s_5.SHop or 0
             else
                 if s_5.SLandF == nil and s_5.SFloat == nil or s_5.SSlide ~= nil then
-                    v96 = (v107 and (math.floor((jumpProp((JUMP_HEIGHT_upv_1 * (1 - (v71 * 0.45))) * (0.5 ^ v99), Workspace_upv_1.Gravity) / 0.01) + 0.5) * 0.01)) or 0
+                    v96 = 0.5 ^ math.max(v99 - 1, 0)
+                    v78 = (v108 and (math.floor((jumpProp((JUMP_HEIGHT_upv_1 * (1 - (v71 * 0.45))) * v96, Workspace_upv_1.Gravity) / 0.01) + 0.5) * 0.01)) or 0
                     if v61 and u22 and a1.jhWrote ~= nil and humanoid_2.JumpHeight ~= a1.jhWrote then
                         u22("JumpHeight")
                     end
-                    if humanoid_2.JumpHeight ~= v96 then
-                        humanoid_2.JumpHeight = v96
+                    if humanoid_2.JumpHeight ~= v78 then
+                        humanoid_2.JumpHeight = v78
                     end
                     a1.jhWrote = humanoid_2.JumpHeight
                     v96 = false
-                    local v140 = false
-                    if v107 then
+                    local v141 = false
+                    if v108 then
                         if v95 then
-                            v117 = v80 or (v105 > 0)
-                            v96, v71 = v117, v140
-                        elseif s_5.SJumped ~= true and v87 <= u11 and AssemblyLinearVelocity_1.Y <= 1 and v105 > 0 then
+                            v118 = v80 or (v106 > 0)
+                            v96, v71 = v118, v141
+                        elseif s_5.SJumped ~= true and v87 <= u11 and AssemblyLinearVelocity_1.Y <= 1 and v106 > 0 then
                             s_5.SJumped = true
-                            local v141 = 0
+                            local v142 = 0
                             humanoid_2:ChangeState(Enum.HumanoidStateType.Jumping)
-                            v71, v105 = true, v141
+                            v71, v106 = true, v142
                         else
-                            v71 = v140
+                            v71 = v141
                         end
                     else
-                        v71 = v140
+                        v71 = v141
                     end
                     humanoid_2.Jump = v96
                     if v96 and s_5.SFloat == nil then
                         v71 = true
                     end
-                    local v154 = nil
+                    local v155 = nil
                     if v71 and not (u1) then
                         s_5.SFloat = 1
                         if v99 > 0 then
-                            v154 = v99
+                            v155 = v99
                         else
-                            v154 = nil
+                            v155 = nil
                         end
-                        s_5.SHop = v154
+                        s_5.SHop = v155
                         s_5.SLandF = nil
                     end
-                    if v105 > 0 then
-                        v154 = v105
+                    if v106 > 0 then
+                        v155 = v106
                     else
-                        v154 = nil
+                        v155 = nil
                     end
-                    s_5.SJumpBuf = v154
-                    v107 = a1.gravity
+                    s_5.SJumpBuf = v155
+                    v108 = a1.gravity
                     v99 = v82 and (v53 ~= Enum.HumanoidStateType.Climbing) and (not v95 and (AssemblyLinearVelocity_1.Y < 0))
-                    v105 = (s_5.SFloat ~= nil) and ((s_5.SKb == nil) and (v53 ~= Enum.HumanoidStateType.Climbing))
+                    v106 = (s_5.SFloat ~= nil) and ((s_5.SKb == nil) and (v53 ~= Enum.HumanoidStateType.Climbing))
                     v96 = 1
-                    if v105 and (v71 or type(s_5.SFloat) == "number") then
+                    if v106 and (v71 or type(s_5.SFloat) == "number") then
                         v96 = u2
                     elseif v99 then
-                        if v105 and not u1 and AssemblyLinearVelocity_1.Y > -10 then
+                        if v106 and not u1 and AssemblyLinearVelocity_1.Y > -10 then
                             v96 = u3
                         elseif s_5.SSlide == nil then
                             v96 = u4
                         else
                             v96 = 1.3
                         end
-                    elseif v105 and AssemblyLinearVelocity_1.Y >= 0 then
+                    elseif v106 and AssemblyLinearVelocity_1.Y >= 0 then
                         if AssemblyLinearVelocity_1.Y < 10 then
                             v96 = u3
                         else
                             v96 = u2
                         end
                     end
-                    v105 = v99 or (v96 ~= 1)
-                    if v107 then
-                        if v105 then
-                            local v142 = Workspace_upv_1.Gravity * (1 - v96)
+                    v106 = v99 or (v96 ~= 1)
+                    if v108 then
+                        if v106 then
+                            local v143 = Workspace_upv_1.Gravity * (1 - v96)
                             if (v99) and s_5.SSlide ~= nil then
                                 v95 = slideCushion(a1, AssemblyLinearVelocity_1.Y, humanoid_2.HipHeight)
-                                v142 = (v95 and (v95 + Workspace_upv_1.Gravity)) or v142
+                                v143 = (v95 and (v95 + Workspace_upv_1.Gravity)) or v143
                             elseif v99 and v96 then
-                                local v143 = slideCushion(a1, AssemblyLinearVelocity_1.Y, v96, 4)
-                                v142 = (v143 and (v143 + Workspace_upv_1.Gravity)) or v142
+                                local v144 = slideCushion(a1, AssemblyLinearVelocity_1.Y, v96, 4)
+                                v143 = (v144 and (v144 + Workspace_upv_1.Gravity)) or v143
                             end
-                            local v144 = v142 * root_8.AssemblyMass
-                            if v144 ~= v144 or not (v144 > -1e+07) or not (v144 < 1e+07) then
+                            local v145 = v143 * root_8.AssemblyMass
+                            if v145 ~= v145 or not (v145 > -1e+07) or not (v145 < 1e+07) then
                                 if not (tbl_upv_9["fall force"]) then
                                     tbl_upv_9["fall force"] = true
-                                    local v145 = (u18 and "Client") or "Server"
-                                    warn((("[SimNaN] fall force auth=%* side=%*"):format(v145, (u16 and "server") or "client")))
+                                    local v146 = (u18 and "Client") or "Server"
+                                    warn((("[SimNaN] fall force auth=%* side=%*"):format(v146, (u16 and "server") or "client")))
                                 end
-                                v144 = 0
+                                v145 = 0
                             end
-                            v107.Force = Vector3.new(0, v144, 0)
+                            v108.Force = Vector3.new(0, v145, 0)
                         end
-                        if v107.Enabled ~= v105 then
-                            v107.Enabled = v105
+                        if v108.Enabled ~= v106 then
+                            v108.Enabled = v106
                         end
                     end
-                    v107 = nil
+                    v108 = nil
                     v76 = s_5.SKbF or 0
                     if v76 > 0 and s_5.SKb then
-                        local v146 = v76 / math.max(s_5.SKbN or v76, 1)
-                        v107 = s_5.SKb * v146 + v94 * (1 - v146)
+                        local v147 = v76 / math.max(s_5.SKbN or v76, 1)
+                        v108 = s_5.SKb * v147 + v94 * (1 - v147)
                         v76 = v76 - 1
                         if v76 <= 0 then
                             s_5.SKb = nil
@@ -2414,15 +2418,15 @@ local function stepChar(a1, a2)
                     end
                     if (v77 > 0) and (s_5.SDashV) then
                         local SDashV_1 = s_5.SDashV
-                        if v107 then
-                            v107 = v107 + SDashV_1
+                        if v108 then
+                            v108 = v108 + SDashV_1
                         else
-                            v107 = SDashV_1
+                            v108 = SDashV_1
                         end
                         v97 = Vector3.new(SDashV_1.X, 0, SDashV_1.Z).Unit
                         v77 = v77 - 1
                     elseif s_5.SDashB then
-                        v107 = v107 or v94
+                        v108 = v108 or v94
                         s_5.SDashB = ((s_5.SDashB > 1) and (s_5.SDashB - 1)) or nil
                     end
                     if v77 <= 0 then
@@ -2431,25 +2435,25 @@ local function stepChar(a1, a2)
                     else
                         s_5.SDashF = v77
                     end
-                    if v107 then
-                        local X_4 = v107.X
-                        v154 = (X_4 == X_4) and ((X_4 > -1e+07) and (X_4 < 1e+07))
-                        if v154 then
-                            local Y_8 = v107.Y
-                            v154 = (Y_8 == Y_8) and ((Y_8 > -1e+07) and (Y_8 < 1e+07))
-                            if v154 then
-                                local v155 = v107.Z
-                                v154 = v107.Z == v107.Z and v107.Z > -1e+07 and v107.Z < 1e+07
+                    if v108 then
+                        local X_4 = v108.X
+                        v155 = (X_4 == X_4) and ((X_4 > -1e+07) and (X_4 < 1e+07))
+                        if v155 then
+                            local Y_8 = v108.Y
+                            v155 = (Y_8 == Y_8) and ((Y_8 > -1e+07) and (Y_8 < 1e+07))
+                            if v155 then
+                                local v156 = v108.Z
+                                v155 = v108.Z == v108.Z and v108.Z > -1e+07 and v108.Z < 1e+07
                             end
                         end
-                        if not (v154) then
-                            v154 = s_5.SKb ~= nil and "push (knockback)" or s_5.SDashV == nil and "push" or "push (dash)"
-                            if not (tbl_upv_9[v154]) then
-                                tbl_upv_9[v154] = true
-                                local v128 = (u18 and "Client") or "Server"
-                                warn((("[SimNaN] %* auth=%* side=%*"):format(v154, v128, (u16 and "server") or "client")))
+                        if not (v155) then
+                            v155 = s_5.SKb ~= nil and "push (knockback)" or s_5.SDashV == nil and "push" or "push (dash)"
+                            if not (tbl_upv_9[v155]) then
+                                tbl_upv_9[v155] = true
+                                local v129 = (u18 and "Client") or "Server"
+                                warn((("[SimNaN] %* auth=%* side=%*"):format(v155, v129, (u16 and "server") or "client")))
                             end
-                            v107 = nil
+                            v108 = nil
                             s_5.SKb = nil
                             s_5.SKbF = nil
                             s_5.SKbN = nil
@@ -2459,10 +2463,10 @@ local function stepChar(a1, a2)
                     end
                     v77 = a1.push
                     if v77 then
-                        if v107 then
-                            v77.PlaneVelocity = Vector2.new(v107.X, v107.Z)
+                        if v108 then
+                            v77.PlaneVelocity = Vector2.new(v108.X, v108.Z)
                         end
-                        v99 = v107 ~= nil
+                        v99 = v108 ~= nil
                         if v77.Enabled ~= v99 then
                             v77.Enabled = v99
                         end
@@ -2470,42 +2474,42 @@ local function stepChar(a1, a2)
                     if not (v97) and v88 and not (v50) and humanoid_2.SeatPart == nil then
                         v97 = Vector3.new(v88.X, 0, v88.Y)
                     end
-                    v107 = a1.align
+                    v108 = a1.align
                     if v97 then
                         local X_5 = v97.X
-                        v154 = (X_5 == X_5) and ((X_5 > -1e+07) and (X_5 < 1e+07))
-                        if v154 then
+                        v155 = (X_5 == X_5) and ((X_5 > -1e+07) and (X_5 < 1e+07))
+                        if v155 then
                             local Y_9 = v97.Y
-                            v154 = (Y_9 == Y_9) and ((Y_9 > -1e+07) and (Y_9 < 1e+07))
-                            if v154 then
-                                local v156 = v97.Z
-                                v154 = v97.Z == v97.Z and v97.Z > -1e+07 and v97.Z < 1e+07
+                            v155 = (Y_9 == Y_9) and ((Y_9 > -1e+07) and (Y_9 < 1e+07))
+                            if v155 then
+                                local v157 = v97.Z
+                                v155 = v97.Z == v97.Z and v97.Z > -1e+07 and v97.Z < 1e+07
                             end
                         end
-                        if not (v154) then
+                        if not (v155) then
                             if not (tbl_upv_9.facing) then
                                 tbl_upv_9.facing = true
-                                local v147 = (u18 and "Client") or "Server"
-                                warn((("[SimNaN] facing auth=%* side=%*"):format(v147, (u16 and "server") or "client")))
+                                local v148 = (u18 and "Client") or "Server"
+                                warn((("[SimNaN] facing auth=%* side=%*"):format(v148, (u16 and "server") or "client")))
                             end
                             v97 = nil
                         end
                     end
-                    if v97 and v107 and v97.Magnitude > 0.1 then
+                    if v97 and v108 and v97.Magnitude > 0.1 then
                         if humanoid_2.AutoRotate then
                             humanoid_2.AutoRotate = false
                         end
                         v77 = v97.Unit
                         v96 = CFrame.lookAt(Vector3.new(0, 0, 0), Vector3.new(math.floor((v77.X / 1e-04) + 0.5) * 1e-04, 0, math.floor((v77.Z / 1e-04) + 0.5) * 1e-04))
-                        if v107.CFrame ~= v96 then
-                            v107.CFrame = v96
+                        if v108.CFrame ~= v96 then
+                            v108.CFrame = v96
                         end
-                        if not (v107.Enabled) then
-                            v107.Enabled = true
+                        if not (v108.Enabled) then
+                            v108.Enabled = true
                         end
                     else
-                        if v107 and v107.Enabled then
-                            v107.Enabled = false
+                        if v108 and v108.Enabled then
+                            v108.Enabled = false
                         end
                         if not (humanoid_2.AutoRotate) then
                             humanoid_2.AutoRotate = true
@@ -2514,106 +2518,107 @@ local function stepChar(a1, a2)
                     save(a1)
                     return
                 end
-                v99 = math.min((s_5.SHop or 0) + 1, 2)
+                v99 = math.min((s_5.SHop or 0) + 1, 3)
             end
-            v96 = (v107 and (math.floor((jumpProp((JUMP_HEIGHT_upv_1 * (1 - (v71 * 0.45))) * (0.5 ^ v99), Workspace_upv_1.Gravity) / 0.01) + 0.5) * 0.01)) or 0
+            v96 = 0.5 ^ math.max(v99 - 1, 0)
+            v78 = (v108 and (math.floor((jumpProp((JUMP_HEIGHT_upv_1 * (1 - (v71 * 0.45))) * v96, Workspace_upv_1.Gravity) / 0.01) + 0.5) * 0.01)) or 0
             if v61 and u22 and a1.jhWrote ~= nil and humanoid_2.JumpHeight ~= a1.jhWrote then
                 u22("JumpHeight")
             end
-            if humanoid_2.JumpHeight ~= v96 then
-                humanoid_2.JumpHeight = v96
+            if humanoid_2.JumpHeight ~= v78 then
+                humanoid_2.JumpHeight = v78
             end
             a1.jhWrote = humanoid_2.JumpHeight
             v96 = false
-            local v140 = false
-            if v107 then
+            local v141 = false
+            if v108 then
                 if v95 then
-                    v117 = v80 or (v105 > 0)
-                    v96, v71 = v117, v140
-                elseif s_5.SJumped ~= true and v87 <= u11 and AssemblyLinearVelocity_1.Y <= 1 and v105 > 0 then
+                    v118 = v80 or (v106 > 0)
+                    v103, v71 = v118, v141
+                elseif s_5.SJumped ~= true and v87 <= u11 and AssemblyLinearVelocity_1.Y <= 1 and v106 > 0 then
                     s_5.SJumped = true
-                    local v141 = 0
+                    local v142 = 0
                     humanoid_2:ChangeState(Enum.HumanoidStateType.Jumping)
-                    v71, v105 = true, v141
+                    v71, v106 = true, v142
                 else
-                    v71 = v140
+                    v71 = v141
                 end
             else
-                v71 = v140
+                v71 = v141
             end
             humanoid_2.Jump = v96
             if v96 and s_5.SFloat == nil then
                 v71 = true
             end
-            local v154 = nil
+            local v155 = nil
             if v71 and not (u1) then
                 s_5.SFloat = 1
                 if v99 > 0 then
-                    v154 = v99
+                    v155 = v99
                 else
-                    v154 = nil
+                    v155 = nil
                 end
-                s_5.SHop = v154
+                s_5.SHop = v155
                 s_5.SLandF = nil
             end
-            if v105 > 0 then
-                v154 = v105
+            if v106 > 0 then
+                v155 = v106
             else
-                v154 = nil
+                v155 = nil
             end
-            s_5.SJumpBuf = v117
-            v107 = a1.gravity
+            s_5.SJumpBuf = v118
+            v108 = a1.gravity
             v99 = v82 and (v53 ~= Enum.HumanoidStateType.Climbing) and (not v95 and (AssemblyLinearVelocity_1.Y < 0))
-            v105 = (s_5.SFloat ~= nil) and ((s_5.SKb == nil) and (v53 ~= Enum.HumanoidStateType.Climbing))
+            v106 = (s_5.SFloat ~= nil) and ((s_5.SKb == nil) and (v53 ~= Enum.HumanoidStateType.Climbing))
             v96 = 1
-            if v105 and (v71 or type(s_5.SFloat) == "number") then
-                v96 = u2
+            if v106 and (v71 or type(s_5.SFloat) == "number") then
+                v103 = u2
             elseif v99 then
-                if v105 and not u1 and AssemblyLinearVelocity_1.Y > -10 then
-                    v96 = u3
+                if v106 and not u1 and AssemblyLinearVelocity_1.Y > -10 then
+                    v103 = u3
                 elseif s_5.SSlide == nil then
-                    v96 = u4
+                    v103 = u4
                 else
-                    v96 = 1.3
+                    v103 = 1.3
                 end
-            elseif v105 and AssemblyLinearVelocity_1.Y >= 0 then
+            elseif v106 and AssemblyLinearVelocity_1.Y >= 0 then
                 if AssemblyLinearVelocity_1.Y < 10 then
-                    v96 = u3
+                    v103 = u3
                 else
-                    v96 = u2
+                    v103 = u2
                 end
             end
-            v105 = v99 or (v96 ~= 1)
-            if v107 then
-                if v105 then
-                    local v142 = Workspace_upv_1.Gravity * (1 - v96)
+            v106 = v99 or (v96 ~= 1)
+            if v108 then
+                if v106 then
+                    local v143 = Workspace_upv_1.Gravity * (1 - v103)
                     if (v99) and s_5.SSlide ~= nil then
                         v95 = slideCushion(a1, AssemblyLinearVelocity_1.Y, humanoid_2.HipHeight)
-                        v142 = (v95 and (v95 + Workspace_upv_1.Gravity)) or v142
-                    elseif v99 and v96 then
-                        local v143 = slideCushion(a1, AssemblyLinearVelocity_1.Y, v96, 4)
-                        v142 = (v143 and (v143 + Workspace_upv_1.Gravity)) or v142
+                        v143 = (v95 and (v95 + Workspace_upv_1.Gravity)) or v143
+                    elseif v99 and v103 then
+                        local v144 = slideCushion(a1, AssemblyLinearVelocity_1.Y, v103, 4)
+                        v143 = (v144 and (v144 + Workspace_upv_1.Gravity)) or v143
                     end
-                    local v144 = v142 * root_8.AssemblyMass
-                    if v144 ~= v144 or not (v144 > -1e+07) or not (v144 < 1e+07) then
+                    local v145 = v143 * root_8.AssemblyMass
+                    if v145 ~= v145 or not (v145 > -1e+07) or not (v145 < 1e+07) then
                         if not (tbl_upv_9["fall force"]) then
                             tbl_upv_9["fall force"] = true
-                            local v145 = (u18 and "Client") or "Server"
-                            warn((("[SimNaN] fall force auth=%* side=%*"):format(v145, (u16 and "server") or "client")))
+                            local v146 = (u18 and "Client") or "Server"
+                            warn((("[SimNaN] fall force auth=%* side=%*"):format(v146, (u16 and "server") or "client")))
                         end
-                        v144 = 0
+                        v145 = 0
                     end
-                    v107.Force = Vector3.new(0, v144, 0)
+                    v108.Force = Vector3.new(0, v145, 0)
                 end
-                if v107.Enabled ~= v105 then
-                    v107.Enabled = v105
+                if v108.Enabled ~= v106 then
+                    v108.Enabled = v106
                 end
             end
-            v107 = nil
+            v108 = nil
             v76 = s_5.SKbF or 0
             if v76 > 0 and s_5.SKb then
-                local v146 = v76 / math.max(s_5.SKbN or v76, 1)
-                v107 = s_5.SKb * v146 + v94 * (1 - v146)
+                local v147 = v76 / math.max(s_5.SKbN or v76, 1)
+                v108 = s_5.SKb * v147 + v94 * (1 - v147)
                 v76 = v76 - 1
                 if v76 <= 0 then
                     s_5.SKb = nil
@@ -2625,15 +2630,15 @@ local function stepChar(a1, a2)
             end
             if (v77 > 0) and (s_5.SDashV) then
                 local SDashV_1 = s_5.SDashV
-                if v107 then
-                    v107 = v107 + SDashV_1
+                if v108 then
+                    v108 = v108 + SDashV_1
                 else
-                    v107 = SDashV_1
+                    v108 = SDashV_1
                 end
                 v97 = Vector3.new(SDashV_1.X, 0, SDashV_1.Z).Unit
                 v77 = v77 - 1
             elseif s_5.SDashB then
-                v107 = v107 or v94
+                v108 = v108 or v94
                 s_5.SDashB = ((s_5.SDashB > 1) and (s_5.SDashB - 1)) or nil
             end
             if v77 <= 0 then
@@ -2642,25 +2647,25 @@ local function stepChar(a1, a2)
             else
                 s_5.SDashF = v77
             end
-            if v107 then
-                local X_4 = v107.X
-                v154 = (X_4 == X_4) and ((X_4 > -1e+07) and (X_4 < 1e+07))
-                if v154 then
-                    local Y_8 = v107.Y
-                    v154 = (Y_8 == Y_8) and ((Y_8 > -1e+07) and (Y_8 < 1e+07))
-                    if v154 then
-                        local v155 = v107.Z
-                        v154 = v107.Z == v107.Z and v107.Z > -1e+07 and v107.Z < 1e+07
+            if v108 then
+                local X_4 = v108.X
+                v155 = (X_4 == X_4) and ((X_4 > -1e+07) and (X_4 < 1e+07))
+                if v155 then
+                    local Y_8 = v108.Y
+                    v155 = (Y_8 == Y_8) and ((Y_8 > -1e+07) and (Y_8 < 1e+07))
+                    if v155 then
+                        local v156 = v108.Z
+                        v155 = v108.Z == v108.Z and v108.Z > -1e+07 and v108.Z < 1e+07
                     end
                 end
-                if not (v154) then
-                    v154 = s_5.SKb ~= nil and "push (knockback)" or s_5.SDashV == nil and "push" or "push (dash)"
-                    if not (tbl_upv_9[v154]) then
-                        tbl_upv_9[v154] = true
-                        local v128 = (u18 and "Client") or "Server"
-                        warn((("[SimNaN] %* auth=%* side=%*"):format(v154, v128, (u16 and "server") or "client")))
+                if not (v155) then
+                    v155 = s_5.SKb ~= nil and "push (knockback)" or s_5.SDashV == nil and "push" or "push (dash)"
+                    if not (tbl_upv_9[v155]) then
+                        tbl_upv_9[v155] = true
+                        local v129 = (u18 and "Client") or "Server"
+                        warn((("[SimNaN] %* auth=%* side=%*"):format(v155, v129, (u16 and "server") or "client")))
                     end
-                    v107 = nil
+                    v108 = nil
                     s_5.SKb = nil
                     s_5.SKbF = nil
                     s_5.SKbN = nil
@@ -2670,10 +2675,10 @@ local function stepChar(a1, a2)
             end
             v77 = a1.push
             if v77 then
-                if v107 then
-                    v77.PlaneVelocity = Vector2.new(v107.X, v107.Z)
+                if v108 then
+                    v77.PlaneVelocity = Vector2.new(v108.X, v108.Z)
                 end
-                v99 = v107 ~= nil
+                v99 = v108 ~= nil
                 if v77.Enabled ~= v99 then
                     v77.Enabled = v99
                 end
@@ -2681,42 +2686,42 @@ local function stepChar(a1, a2)
             if not (v97) and v88 and not (v50) and humanoid_2.SeatPart == nil then
                 v97 = Vector3.new(v88.X, 0, v88.Y)
             end
-            v107 = a1.align
+            v108 = a1.align
             if v97 then
                 local X_5 = v97.X
-                v154 = (X_5 == X_5) and ((X_5 > -1e+07) and (X_5 < 1e+07))
-                if v154 then
+                v155 = (X_5 == X_5) and ((X_5 > -1e+07) and (X_5 < 1e+07))
+                if v155 then
                     local Y_9 = v97.Y
-                    v154 = (Y_9 == Y_9) and ((Y_9 > -1e+07) and (Y_9 < 1e+07))
-                    if v154 then
-                        local v156 = v97.Z
-                        v154 = v97.Z == v97.Z and v97.Z > -1e+07 and v97.Z < 1e+07
+                    v155 = (Y_9 == Y_9) and ((Y_9 > -1e+07) and (Y_9 < 1e+07))
+                    if v155 then
+                        local v157 = v97.Z
+                        v155 = v97.Z == v97.Z and v97.Z > -1e+07 and v97.Z < 1e+07
                     end
                 end
-                if not (v154) then
+                if not (v155) then
                     if not (tbl_upv_9.facing) then
                         tbl_upv_9.facing = true
-                        local v147 = (u18 and "Client") or "Server"
-                        warn((("[SimNaN] facing auth=%* side=%*"):format(v147, (u16 and "server") or "client")))
+                        local v148 = (u18 and "Client") or "Server"
+                        warn((("[SimNaN] facing auth=%* side=%*"):format(v148, (u16 and "server") or "client")))
                     end
                     v97 = nil
                 end
             end
-            if v97 and v107 and v97.Magnitude > 0.1 then
+            if v97 and v108 and v97.Magnitude > 0.1 then
                 if humanoid_2.AutoRotate then
                     humanoid_2.AutoRotate = false
                 end
                 v77 = v97.Unit
-                v96 = CFrame.lookAt(Vector3.new(0, 0, 0), Vector3.new(math.floor((v77.X / 1e-04) + 0.5) * 1e-04, 0, math.floor((v77.Z / 1e-04) + 0.5) * 1e-04))
-                if v107.CFrame ~= v96 then
-                    v107.CFrame = v96
+                v103 = CFrame.lookAt(Vector3.new(0, 0, 0), Vector3.new(math.floor((v77.X / 1e-04) + 0.5) * 1e-04, 0, math.floor((v77.Z / 1e-04) + 0.5) * 1e-04))
+                if v108.CFrame ~= v103 then
+                    v108.CFrame = v103
                 end
-                if not (v107.Enabled) then
-                    v107.Enabled = true
+                if not (v108.Enabled) then
+                    v108.Enabled = true
                 end
             else
-                if v107 and v107.Enabled then
-                    v107.Enabled = false
+                if v108 and v108.Enabled then
+                    v108.Enabled = false
                 end
                 if not (humanoid_2.AutoRotate) then
                     humanoid_2.AutoRotate = true
@@ -2805,7 +2810,7 @@ local tbl_upv_10 = {steps = 0, chars = 0, time = 0, maxStep = 0}
 function tbl_upv_1.DebugStats()
     --[[
       name: DebugStats
-      line: 1539
+      line: 1543
       upvalues:
         tbl_upv_10 (copy, index: 1)
         tbl_upv_5 (copy, index: 2)
@@ -2827,7 +2832,7 @@ local u32 = false
 local function trackCorrection(a1)
     --[[
       name: trackCorrection
-      line: 1565
+      line: 1569
       upvalues:
         RunService_upv_1 (copy, index: 1)
         u32 (ref,  index: 2)
@@ -2841,23 +2846,23 @@ local function trackCorrection(a1)
     if RunService_upv_1:IsResimulating() then
         u32 = true
     else
-        local v155 = tbl_upv_5[1]
-        if v155 then
-            local root_10 = v155.root
+        local v156 = tbl_upv_5[1]
+        if v156 then
+            local root_10 = v156.root
             local Position_5 = root_10.Position
             local AssemblyLinearVelocity_2 = root_10.AssemblyLinearVelocity
-            local v156 = root_10:GetAttribute("STp")
-            if u32 and u28 and root_10 == u30 and v156 == u31 then
-                local v157 = Position_5 - (u28 + (((u29 + AssemblyLinearVelocity_2) * 0.5) * a1))
-                local Magnitude_3 = v157.Magnitude
+            local v157 = root_10:GetAttribute("STp")
+            if u32 and u28 and root_10 == u30 and v157 == u31 then
+                local v158 = Position_5 - (u28 + (((u29 + AssemblyLinearVelocity_2) * 0.5) * a1))
+                local Magnitude_3 = v158.Magnitude
                 if Magnitude_3 > 0.02 and Magnitude_3 < 20 then
-                    u27 = u27 + v157
+                    u27 = u27 + v158
                 end
             end
             u28 = Position_5
             u29 = AssemblyLinearVelocity_2
             u30 = root_10
-            u31 = v156
+            u31 = v157
         else
             u28 = nil
             u30 = nil
@@ -2868,18 +2873,18 @@ end
 function tbl_upv_1.TakeCorrection()
     --[[
       name: TakeCorrection
-      line: 1590
+      line: 1594
       upvalues:
         u27 (ref, index: 1)
     ]]
-    local v158 = u27
+    local v159 = u27
     u27 = Vector3.new(0, 0, 0)
-    return v158
+    return v159
 end
 function tbl_upv_1.RebaseCorrection()
     --[[
       name: RebaseCorrection
-      line: 1599
+      line: 1603
       upvalues:
         tbl_upv_5 (copy, index: 1)
         u16 (copy, index: 2)
@@ -2889,69 +2894,69 @@ function tbl_upv_1.RebaseCorrection()
         u31 (ref,  index: 6)
         u32 (ref,  index: 7)
     ]]
-    local v159 = tbl_upv_5[1]
-    if (u16) or not v159 then
+    local v160 = tbl_upv_5[1]
+    if (u16) or not v160 then
         return
     end
-    local root_11 = v159.root
+    local root_11 = v160.root
     local AssemblyLinearVelocity_3 = root_11.AssemblyLinearVelocity
-    local v160 = root_11:GetAttribute("STp")
+    local v161 = root_11:GetAttribute("STp")
     u28 = root_11.Position - (AssemblyLinearVelocity_3 * 0.016666666666666666)
     u29 = AssemblyLinearVelocity_3
     u30 = root_11
-    u31 = v160
+    u31 = v161
     u32 = false
 end
 local function stepRelay(a1, a2)
     --[[
       name: stepRelay
-      line: 825
+      line: 828
       upvalues:
         stepCollisions (copy, index: 1)
     ]]
     local humanoid_3 = a1.humanoid
     local root_12 = a1.root
-    local v161 = (humanoid_3:GetState() ~= Enum.HumanoidStateType.Dead) and (humanoid_3.Health > 0)
-    stepCollisions(a1, v161)
-    local v162 = ((a1.frozen) and true) or nil
-    if root_12:GetAttribute("SFrozen") ~= v162 then
-        root_12:SetAttribute("SFrozen", v162)
+    local v162 = (humanoid_3:GetState() ~= Enum.HumanoidStateType.Dead) and (humanoid_3.Health > 0)
+    stepCollisions(a1, v162)
+    local v163 = ((a1.frozen) and true) or nil
+    if root_12:GetAttribute("SFrozen") ~= v163 then
+        root_12:SetAttribute("SFrozen", v163)
     end
-    local v163 = ((a1.slow ~= 1) and (math.floor((a1.slow / 0.001) + 0.5) * 0.001)) or nil
-    if root_12:GetAttribute("SSlow") ~= v163 then
-        root_12:SetAttribute("SSlow", v163)
+    local v164 = ((a1.slow ~= 1) and (math.floor((a1.slow / 0.001) + 0.5) * 0.001)) or nil
+    if root_12:GetAttribute("SSlow") ~= v164 then
+        root_12:SetAttribute("SSlow", v164)
     end
-    local v164 = ((a1.noJump) and true) or nil
-    if root_12:GetAttribute("SNoJump") ~= v164 then
-        root_12:SetAttribute("SNoJump", v164)
+    local v165 = ((a1.noJump) and true) or nil
+    if root_12:GetAttribute("SNoJump") ~= v165 then
+        root_12:SetAttribute("SNoJump", v165)
     end
     local pending_1 = a1.pending
-    local v165 = nil
+    local v166 = nil
     if pending_1.tp then
         local tp_2 = pending_1.tp
         pending_1.tp = nil
         a1.character:PivotTo(tp_2)
         root_12:SetAttribute("STpCF", tp_2)
-        v165 = root_12:GetAttribute("STp")
-        local v166
-        if type(v165) ~= "number" then
-            v166 = 0
+        v166 = root_12:GetAttribute("STp")
+        local v167
+        if type(v166) ~= "number" then
+            v167 = 0
         else
-            v166 = v165
+            v167 = v166
         end
-        root_12:SetAttribute("STp", v166 + 1)
+        root_12:SetAttribute("STp", v167 + 1)
     end
-    if pending_1.kb and v161 then
-        local v167 = root_12:GetAttribute("NKbSeq")
+    if pending_1.kb and v162 then
+        local v168 = root_12:GetAttribute("NKbSeq")
         root_12:SetAttribute("NKb", pending_1.kb)
         root_12:SetAttribute("NKbDur", pending_1.kbDur)
-        local v166
-        if type(v167) ~= "number" then
-            v166 = 0
+        local v167
+        if type(v168) ~= "number" then
+            v167 = 0
         else
-            v166 = v167
+            v167 = v168
         end
-        root_12:SetAttribute("NKbSeq", v166 + 1)
+        root_12:SetAttribute("NKbSeq", v167 + 1)
     end
     pending_1.kb = nil
     pending_1.kbDur = nil
@@ -2959,17 +2964,17 @@ end
 local function unregister(a1)
     --[[
       name: unregister
-      line: 1635
+      line: 1639
       upvalues:
         tbl_upv_4 (copy, index: 1)
         tbl_upv_5 (copy, index: 2)
     ]]
-    local v168 = tbl_upv_4[a1]
-    if not v168 then
+    local v169 = tbl_upv_4[a1]
+    if not v169 then
         return
     end
     tbl_upv_4[a1] = nil
-    for _, value_8 in v168.conns do
+    for _, value_8 in v169.conns do
         value_8:Disconnect()
     end
     table.clear(tbl_upv_5)
@@ -2980,13 +2985,13 @@ end
 local function moveActionOf(a1, a2)
     --[[
       name: moveActionOf
-      line: 1664
+      line: 1668
     ]]
-    local v169 = a1:FindFirstChild("InputContexts") or (a1:WaitForChild("InputContexts", a2))
-    local v170 = v169 and (v169:FindFirstChild("CharacterContext") or (v169:WaitForChild("CharacterContext", 5)))
-    local v171 = v170 and (v170:FindFirstChild("MoveAction") or (v170:WaitForChild("MoveAction", 5)))
-    if v171 and v171:IsA("InputAction") then
-        return v171
+    local v170 = a1:FindFirstChild("InputContexts") or (a1:WaitForChild("InputContexts", a2))
+    local v171 = v170 and (v170:FindFirstChild("CharacterContext") or (v170:WaitForChild("CharacterContext", 5)))
+    local v172 = v171 and (v171:FindFirstChild("MoveAction") or (v171:WaitForChild("MoveAction", 5)))
+    if v172 and v172:IsA("InputAction") then
+        return v172
     end
     warn("[Simulation] no InputContexts.CharacterContext.MoveAction: walking falls back to the PlayerModule")
     return nil
@@ -2994,76 +2999,76 @@ end
 local function ensureConstraints(a1)
     --[[
       name: ensureConstraints
-      line: 1689
+      line: 1693
     ]]
     local RootAttachment_1 = a1:FindFirstChild("RootAttachment")
     if RootAttachment_1 and RootAttachment_1:IsA("Attachment") then
-        local v172 = a1:FindFirstChild("TribesKnockback")
-        local v173 = nil
-        if not (v172) then
-            v173 = Instance.new("LinearVelocity")
-            v173.Name = "TribesKnockback"
-            v173.Attachment0 = RootAttachment_1
-            v173.RelativeTo = Enum.ActuatorRelativeTo.World
-            v173.VelocityConstraintMode = Enum.VelocityConstraintMode.Plane
-            v173.PrimaryTangentAxis = Vector3.new(1, 0, 0)
-            v173.SecondaryTangentAxis = Vector3.new(0, 0, 1)
-            v173.ForceLimitMode = Enum.ForceLimitMode.Magnitude
-            v173.MaxForce = 1e+06
-            v173.Enabled = false
-            v173.Parent = a1
-            v172 = v173
-        end
-        v173 = a1:FindFirstChild("TribesFallGravity")
+        local v173 = a1:FindFirstChild("TribesKnockback")
         local v174 = nil
         if not (v173) then
-            v174 = Instance.new("VectorForce")
-            v174.Name = "TribesFallGravity"
+            v174 = Instance.new("LinearVelocity")
+            v174.Name = "TribesKnockback"
             v174.Attachment0 = RootAttachment_1
             v174.RelativeTo = Enum.ActuatorRelativeTo.World
-            v174.ApplyAtCenterOfMass = true
-            v174.Force = Vector3.new(0, 0, 0)
+            v174.VelocityConstraintMode = Enum.VelocityConstraintMode.Plane
+            v174.PrimaryTangentAxis = Vector3.new(1, 0, 0)
+            v174.SecondaryTangentAxis = Vector3.new(0, 0, 1)
+            v174.ForceLimitMode = Enum.ForceLimitMode.Magnitude
+            v174.MaxForce = 1e+06
             v174.Enabled = false
             v174.Parent = a1
             v173 = v174
         end
-        v174 = a1:FindFirstChild("TribesFacing")
+        v174 = a1:FindFirstChild("TribesFallGravity")
+        local v175 = nil
         if not (v174) then
-            local v175 = Instance.new("AlignOrientation")
-            v175.Name = "TribesFacing"
-            v175.Mode = Enum.OrientationAlignmentMode.OneAttachment
+            v175 = Instance.new("VectorForce")
+            v175.Name = "TribesFallGravity"
             v175.Attachment0 = RootAttachment_1
-            v175.RigidityEnabled = true
-            v175.MaxTorque = math.huge
-            v175.MaxAngularVelocity = math.huge
+            v175.RelativeTo = Enum.ActuatorRelativeTo.World
+            v175.ApplyAtCenterOfMass = true
+            v175.Force = Vector3.new(0, 0, 0)
             v175.Enabled = false
             v175.Parent = a1
             v174 = v175
         end
-        local v175 = not (v172) or not (v172:IsA("LinearVelocity")) or v172
-        local v176 = not (v173) or not (v173:IsA("VectorForce")) or v173
-        if v174 and v174:IsA("AlignOrientation") then
-            return v175, v176, v174
+        v175 = a1:FindFirstChild("TribesFacing")
+        if not (v175) then
+            local v176 = Instance.new("AlignOrientation")
+            v176.Name = "TribesFacing"
+            v176.Mode = Enum.OrientationAlignmentMode.OneAttachment
+            v176.Attachment0 = RootAttachment_1
+            v176.RigidityEnabled = true
+            v176.MaxTorque = math.huge
+            v176.MaxAngularVelocity = math.huge
+            v176.Enabled = false
+            v176.Parent = a1
+            v175 = v176
         end
-        return v175, v176, nil
+        local v176 = not (v173) or not (v173:IsA("LinearVelocity")) or v173
+        local v177 = not (v174) or not (v174:IsA("VectorForce")) or v174
+        if v175 and v175:IsA("AlignOrientation") then
+            return v176, v177, v175
+        end
+        return v176, v177, nil
     end
     return nil, nil, nil
 end
 local function corpseParts(a1)
     --[[
       name: corpseParts
-      line: 1769
+      line: 1773
       upvalues:
         tbl_upv_2 (copy, index: 1)
     ]]
     local tbl_12 = {}
     for _, value_10 in tbl_upv_2 do
-        local v177 = a1:FindFirstChild(value_10)
-        if not (v177) then
+        local v178 = a1:FindFirstChild(value_10)
+        if not (v178) then
             continue
         end
-        if v177:IsA("BasePart") then
-            table.insert(tbl_12, v177)
+        if v178:IsA("BasePart") then
+            table.insert(tbl_12, v178)
         end
     end
     return tbl_12
@@ -3071,20 +3076,20 @@ end
 local function actionsOf(a1, a2)
     --[[
       name: actionsOf
-      line: 1647
+      line: 1651
       upvalues:
         Inputs_upv_1 (copy, index: 1)
     ]]
     local tbl_13 = {}
-    local v178 = a1:FindFirstChild(Inputs_upv_1.CONTEXT) or (a1:WaitForChild(Inputs_upv_1.CONTEXT, a2))
-    if v178 then
+    local v179 = a1:FindFirstChild(Inputs_upv_1.CONTEXT) or (a1:WaitForChild(Inputs_upv_1.CONTEXT, a2))
+    if v179 then
         for _, value_11 in Inputs_upv_1.ACTIONS do
-            local v179 = v178:FindFirstChild(value_11.name) or (v178:WaitForChild(value_11.name, 5))
-            if not (v179) then
+            local v180 = v179:FindFirstChild(value_11.name) or (v179:WaitForChild(value_11.name, 5))
+            if not (v180) then
                 continue
             end
-            if v179:IsA("InputAction") then
-                tbl_13[value_11.name] = v179
+            if v180:IsA("InputAction") then
+                tbl_13[value_11.name] = v180
             end
         end
     end
@@ -3093,7 +3098,7 @@ end
 local function ensureHull(a1)
     --[[
       name: ensureHull
-      line: 1740
+      line: 1744
       upvalues:
         u24 (copy, index: 1)
     ]]
@@ -3105,58 +3110,58 @@ local function ensureHull(a1)
         return nil
     end
     local Size_1 = a1.Size
-    local v180 = Instance.new("Part")
-    v180.Name = "TribesHull"
-    v180.Shape = Enum.PartType.Cylinder
-    v180.Size = Vector3.new(Size_1.Y * 1.4, Size_1.X * 0.9, Size_1.X * 0.9)
-    v180.Transparency = 1
-    v180.CastShadow = false
-    v180.Massless = true
-    v180.CanCollide = true
-    v180.CanQuery = false
-    v180.CanTouch = false
-    v180.CollisionGroup = a1.CollisionGroup
-    v180.CFrame = a1.CFrame * CFrame.new(0, Size_1.Y * 0.2, 0) * CFrame.Angles(0, 0, 1.5707963267948966)
+    local v181 = Instance.new("Part")
+    v181.Name = "TribesHull"
+    v181.Shape = Enum.PartType.Cylinder
+    v181.Size = Vector3.new(Size_1.Y * 1.4, Size_1.X * 0.9, Size_1.X * 0.9)
+    v181.Transparency = 1
+    v181.CastShadow = false
+    v181.Massless = true
+    v181.CanCollide = true
+    v181.CanQuery = false
+    v181.CanTouch = false
+    v181.CollisionGroup = a1.CollisionGroup
+    v181.CFrame = a1.CFrame * CFrame.new(0, Size_1.Y * 0.2, 0) * CFrame.Angles(0, 0, 1.5707963267948966)
     Size_1 = Instance.new("WeldConstraint")
     Size_1.Part0 = a1
-    Size_1.Part1 = v180
-    Size_1.Parent = v180
-    v180.Parent = a1
-    return v180
+    Size_1.Part1 = v181
+    Size_1.Parent = v181
+    v181.Parent = a1
+    return v181
 end
 local function recomputeMirrors(a1)
     --[[
       name: recomputeMirrors
-      line: 1676
+      line: 1680
     ]]
     local humanoid_4 = a1.humanoid
-    local v181 = 1
+    local v182 = 1
     for key_3, value_12 in humanoid_4:GetAttributes() do
         if typeof(value_12) ~= "number" or string.sub(key_3, 1, 9) ~= "SpeedMult" then
             continue
         end
         if value_12 == value_12 then
-            v181 = v181 * math.clamp(value_12, 0, 3)
+            v182 = v182 * math.clamp(value_12, 0, 3)
         end
     end
-    a1.slow = v181
+    a1.slow = v182
     a1.frozen = a1.player:GetAttribute("Frozen") == true
-    local v183 = true
-    local v184
+    local v184 = true
+    local v185
     if humanoid_4:GetAttribute("NoJump") == true then
-        v184 = v183
+        v185 = v184
     else
-        v184 = true
+        v185 = true
         if a1.character:GetAttribute("NoJump") ~= true then
-            v184 = a1.character:GetAttribute("Rooted") == true
+            v185 = a1.character:GetAttribute("Rooted") == true
         end
     end
-    a1.noJump = v184
+    a1.noJump = v185
 end
 local function bodyParts(a1)
     --[[
       name: bodyParts
-      line: 1780
+      line: 1784
     ]]
     local tbl_14 = {}
     for _, value_13 in a1:GetChildren() do
@@ -3169,7 +3174,7 @@ end
 local function register(a1, a2)
     --[[
       name: register
-      line: 1790
+      line: 1794
       upvalues:
         tbl_upv_4 (copy, index: 1)
         tbl_upv_5 (copy, index: 2)
@@ -3190,10 +3195,10 @@ local function register(a1, a2)
         corpseParts (copy, index: 17)
         recomputeMirrors (copy, index: 18)
     ]]
-    local v185 = tbl_upv_4[a2]
-    if v185 then
+    local v186 = tbl_upv_4[a2]
+    if v186 then
         tbl_upv_4[a2] = nil
-        for _, value_14 in v185.conns do
+        for _, value_14 in v186.conns do
             value_14:Disconnect()
         end
         table.clear(tbl_upv_5)
@@ -3201,27 +3206,27 @@ local function register(a1, a2)
             table.insert(tbl_upv_5, value_15)
         end
     end
-    local v186 = a2:WaitForChild("Humanoid", 10)
+    local v187 = a2:WaitForChild("Humanoid", 10)
     local u33 = a2:WaitForChild("HumanoidRootPart", 10)
-    if not v186 or not v186:IsA("Humanoid") or not u33 or not u33:IsA("BasePart") or a1.Character ~= a2 then
+    if not v187 or not v187:IsA("Humanoid") or not u33 or not u33:IsA("BasePart") or a1.Character ~= a2 then
         return
     end
-    local v187, v188, v189, v190, v191 = nil, nil, nil, nil, nil
+    local v188, v189, v190, v191, v192 = nil, nil, nil, nil, nil
     if u16 then
-        v186.UseJumpPower = false
-        v186.JumpPower = tbl_upv_1.JUMP_POWER_MARK
-        v186.JumpHeight = JUMP_HEIGHT_upv_1
-        v186.WalkSpeed = BASE_SPEED_upv_1
-        v186:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
-        v186:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
-        v186:SetStateEnabled(Enum.HumanoidStateType.Swimming, u23)
-        local _, v198, v199 = ensureConstraints(u33)
-        local v192 = ensureHull(u33)
+        v187.UseJumpPower = false
+        v187.JumpPower = tbl_upv_1.JUMP_POWER_MARK
+        v187.JumpHeight = JUMP_HEIGHT_upv_1
+        v187.WalkSpeed = BASE_SPEED_upv_1
+        v187:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+        v187:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+        v187:SetStateEnabled(Enum.HumanoidStateType.Swimming, u23)
+        local _, v199, v200 = ensureConstraints(u33)
+        local v193 = ensureHull(u33)
         if u18 then
             pcall(
                 function()
                     --[[
-                      line: 1816
+                      line: 1820
                       upvalues:
                         u33 (copy, index: 1)
                         a1 (copy, index: 2)
@@ -3230,12 +3235,12 @@ local function register(a1, a2)
                 end
             )
         end
-        v187 = v192
+        v188 = v193
     else
         pcall(
             function()
                 --[[
-                  line: 1822
+                  line: 1826
                   upvalues:
                     RunService_upv_1 (copy, index: 1)
                     u33 (copy, index: 2)
@@ -3243,42 +3248,42 @@ local function register(a1, a2)
                 RunService_upv_1:SetPredictionMode(u33, Enum.PredictionMode.On)
             end
         )
-        v186:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
-        v186:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
-        v186:SetStateEnabled(Enum.HumanoidStateType.Swimming, u23)
-        v191 = u33:WaitForChild("TribesKnockback", 10)
-        local v193 = u33:WaitForChild("TribesFallGravity", 10)
-        local v194 = u33:WaitForChild("TribesFacing", 10)
-        v188 = not (v191) or not (v191:IsA("LinearVelocity")) or v191
-        v189 = not (v193) or not (v193:IsA("VectorForce")) or v193
-        v190 = not (v194) or not (v194:IsA("AlignOrientation")) or v194
-        v194 = u24 or u33:WaitForChild("TribesHull", 10)
-        v187 = not (v194) or not (v194:IsA("BasePart")) or v194
+        v187:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+        v187:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+        v187:SetStateEnabled(Enum.HumanoidStateType.Swimming, u23)
+        v192 = u33:WaitForChild("TribesKnockback", 10)
+        local v194 = u33:WaitForChild("TribesFallGravity", 10)
+        local v195 = u33:WaitForChild("TribesFacing", 10)
+        v189 = not (v192) or not (v192:IsA("LinearVelocity")) or v192
+        v190 = not (v194) or not (v194:IsA("VectorForce")) or v194
+        v191 = not (v195) or not (v195:IsA("AlignOrientation")) or v195
+        v195 = u24 or u33:WaitForChild("TribesHull", 10)
+        v188 = not (v195) or not (v195:IsA("BasePart")) or v195
     end
-    local v195 = (u20 and {}) or (actionsOf(a1, 20))
-    local v196 = u18 or moveActionOf(a1, 10)
+    local v196 = (u20 and {}) or (actionsOf(a1, 20))
+    local v197 = u18 or moveActionOf(a1, 10)
     if a1.Character ~= a2 or not a2.Parent then
         return
     end
-    local v197 = RaycastParams.new()
-    v197.FilterType = Enum.RaycastFilterType.Exclude
-    v197.FilterDescendantsInstances = {a2}
-    v197.RespectCanCollide = true
-    v197.IgnoreWater = true
+    local v198 = RaycastParams.new()
+    v198.FilterType = Enum.RaycastFilterType.Exclude
+    v198.FilterDescendantsInstances = {a2}
+    v198.RespectCanCollide = true
+    v198.IgnoreWater = true
     local tbl_upv_15 = {moveIntent = Vector3.new(0, 0, 0), noJump = false, holdSlot = -1, slow = 1, failed = false, holdBad = 0, frozen = false}
     tbl_upv_15.player = a1
     tbl_upv_15.character = a2
-    tbl_upv_15.humanoid = v186
+    tbl_upv_15.humanoid = v187
     tbl_upv_15.root = u33
-    tbl_upv_15.push = v188
-    tbl_upv_15.gravity = v189
-    tbl_upv_15.align = v190
-    tbl_upv_15.actions = v195
-    tbl_upv_15.move = v196
-    tbl_upv_15.hull = v187
+    tbl_upv_15.push = v189
+    tbl_upv_15.gravity = v190
+    tbl_upv_15.align = v191
+    tbl_upv_15.actions = v196
+    tbl_upv_15.move = v197
+    tbl_upv_15.hull = v188
     tbl_upv_15.body = bodyParts(a2)
     tbl_upv_15.corpse = corpseParts(a2)
-    tbl_upv_15.ray = v197
+    tbl_upv_15.ray = v198
     tbl_upv_15.s = {}
     tbl_upv_15.prev = {}
     tbl_upv_15.tpSeen = u33:GetAttribute("STp")
@@ -3291,14 +3296,14 @@ local function register(a1, a2)
         local function refresh_1()
             --[[
               name: refresh
-              line: 1885
+              line: 1889
               upvalues:
                 recomputeMirrors (copy, index: 1)
                 tbl_upv_15 (copy, index: 2)
             ]]
             recomputeMirrors(tbl_upv_15)
         end
-        table.insert(tbl_upv_15.conns, v186.AttributeChanged:Connect(refresh_1))
+        table.insert(tbl_upv_15.conns, v187.AttributeChanged:Connect(refresh_1))
         table.insert(tbl_upv_15.conns, a2.AttributeChanged:Connect(refresh_1))
         table.insert(tbl_upv_15.conns, a1:GetAttributeChangedSignal("Frozen"):Connect(refresh_1))
     end
@@ -3307,7 +3312,7 @@ local function register(a1, a2)
         a2.AncestryChanged:Connect(
             function()
                 --[[
-                  line: 1892
+                  line: 1896
                   upvalues:
                     a2 (copy, index: 1)
                     tbl_upv_4 (copy, index: 2)
@@ -3316,13 +3321,13 @@ local function register(a1, a2)
                 if a2:IsDescendantOf(game) then
                     return
                 end
-                local v198 = a2
-                local v199 = tbl_upv_4[v198]
-                if not v199 then
+                local v199 = a2
+                local v200 = tbl_upv_4[v199]
+                if not v200 then
                     return
                 end
-                tbl_upv_4[v198] = nil
-                for _, value_16 in v199.conns do
+                tbl_upv_4[v199] = nil
+                for _, value_16 in v200.conns do
                     value_16:Disconnect()
                 end
                 table.clear(tbl_upv_5)
@@ -3341,21 +3346,21 @@ end
 function tbl_upv_1.Knockback(a1, a2, a3)
     --[[
       name: Knockback
-      line: 1920
+      line: 1924
       upvalues:
         tbl_upv_4 (copy, index: 1)
         u16 (copy, index: 2)
     ]]
-    local v200 = tbl_upv_4[a1]
-    if v200 and u16 and typeof(a2) == "Vector3" and a2 == a2 then
-        local pending_2 = v200.pending
-        local v201
+    local v201 = tbl_upv_4[a1]
+    if v201 and u16 and typeof(a2) == "Vector3" and a2 == a2 then
+        local pending_2 = v201.pending
+        local v202
         if pending_2.kb then
-            v201 = pending_2.kb + a2
+            v202 = pending_2.kb + a2
         else
-            v201 = a2
+            v202 = a2
         end
-        pending_2.kb = v201
+        pending_2.kb = v202
         pending_2.kbDur = a3
         return true
     end
@@ -3364,15 +3369,15 @@ end
 function tbl_upv_1.Teleport(a1, a2)
     --[[
       name: Teleport
-      line: 1935
+      line: 1939
       upvalues:
         tbl_upv_4 (copy, index: 1)
         u16 (copy, index: 2)
         finCF (copy, index: 3)
     ]]
-    local v202 = tbl_upv_4[a1]
-    if v202 and u16 and typeof(a2) == "CFrame" and finCF(a2) then
-        v202.pending.tp = a2
+    local v203 = tbl_upv_4[a1]
+    if v203 and u16 and typeof(a2) == "CFrame" and finCF(a2) then
+        v203.pending.tp = a2
         return true
     end
     return false
@@ -3383,7 +3388,7 @@ local tbl_upv_18 = {}
 local function fire(a1)
     --[[
       name: fire
-      line: 1951
+      line: 1955
       upvalues:
         tbl_upv_16 (copy, index: 1)
         tbl_upv_7 (copy, index: 2)
@@ -3400,7 +3405,7 @@ local function fire(a1)
         if pcall(
             function()
                 --[[
-                  line: 1960
+                  line: 1964
                   upvalues:
                     u34 (copy, index: 1)
                     u35 (copy, index: 2)
@@ -3416,7 +3421,7 @@ end
 function tbl_upv_1.SetInput(a1, a2)
     --[[
       name: SetInput
-      line: 1969
+      line: 1973
       upvalues:
         u16 (copy, index: 1)
         tbl_upv_18 (copy, index: 2)
@@ -3433,7 +3438,7 @@ end
 function tbl_upv_1.Pulse(a1, a2)
     --[[
       name: Pulse
-      line: 1979
+      line: 1983
       upvalues:
         tbl_upv_1 (copy, index: 1)
         tbl_upv_18 (copy, index: 2)
@@ -3444,7 +3449,7 @@ function tbl_upv_1.Pulse(a1, a2)
         a2 or 0.12,
         function()
             --[[
-              line: 1982
+              line: 1986
               upvalues:
                 tbl_upv_18 (copy, index: 1)
                 a1 (copy, index: 2)
@@ -3461,7 +3466,7 @@ end
 function tbl_upv_1.SetFacing(a1)
     --[[
       name: SetFacing
-      line: 1990
+      line: 1994
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -3474,7 +3479,7 @@ end
 function tbl_upv_1.SetLook(a1)
     --[[
       name: SetLook
-      line: 2000
+      line: 2004
       upvalues:
         u16 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -3487,7 +3492,7 @@ end
 function tbl_upv_1.WriteGuardStats()
     --[[
       name: WriteGuardStats
-      line: 2038
+      line: 2042
       upvalues:
         WriteGuard_upv_1 (copy, index: 1)
     ]]
@@ -3496,7 +3501,7 @@ end
 function tbl_upv_1.WriteGuardReset()
     --[[
       name: WriteGuardReset
-      line: 2042
+      line: 2046
       upvalues:
         WriteGuard_upv_1 (copy, index: 1)
     ]]
@@ -3505,33 +3510,33 @@ end
 function tbl_upv_1.IsSliding(a1)
     --[[
       name: IsSliding
-      line: 2047
+      line: 2051
     ]]
-    local v203 = a1 and (a1:FindFirstChild("HumanoidRootPart"))
-    local v204 = false
-    if v203 ~= nil then
-        v204 = v203:GetAttribute("SSlide") ~= nil
+    local v204 = a1 and (a1:FindFirstChild("HumanoidRootPart"))
+    local v205 = false
+    if v204 ~= nil then
+        v205 = v204:GetAttribute("SSlide") ~= nil
     end
-    return v204
+    return v205
 end
 function tbl_upv_1.IsDashing(a1)
     --[[
       name: IsDashing
-      line: 2052
+      line: 2056
     ]]
-    local v205 = a1 and (a1:FindFirstChild("HumanoidRootPart"))
-    local v206 = false
-    if v205 ~= nil then
-        v206 = v205:GetAttribute("SDashF") ~= nil
+    local v206 = a1 and (a1:FindFirstChild("HumanoidRootPart"))
+    local v207 = false
+    if v206 ~= nil then
+        v207 = v206:GetAttribute("SDashF") ~= nil
     end
-    return v206
+    return v207
 end
 local tbl_upv_19 = {}
 local u37 = false
 local function startFallback()
     --[[
       name: startFallback
-      line: 2069
+      line: 2073
       upvalues:
         u37 (ref,  index: 1)
         RunService_upv_1 (copy, index: 2)
@@ -3546,7 +3551,7 @@ end
 function tbl_upv_1.BindStep(a1, a2)
     --[[
       name: BindStep
-      line: 2088
+      line: 2092
       upvalues:
         tbl_upv_19 (copy, index: 1)
         RunService_upv_1 (copy, index: 2)
@@ -3561,7 +3566,7 @@ function tbl_upv_1.BindStep(a1, a2)
         tbl_upv_19,
         function(a3, a4)
             --[[
-              line: 2091
+              line: 2095
             ]]
             return a3.priority < a4.priority
         end
@@ -3569,7 +3574,7 @@ function tbl_upv_1.BindStep(a1, a2)
     local success_upv_2, u38 = pcall(
         function()
             --[[
-              line: 2094
+              line: 2098
               upvalues:
                 RunService_upv_1 (copy, index: 1)
                 tbl_upv_20 (copy, index: 2)
@@ -3579,7 +3584,7 @@ function tbl_upv_1.BindStep(a1, a2)
             RunService_upv_1:BindToSimulation(
                 function(a5)
                     --[[
-                      line: 2095
+                      line: 2099
                       upvalues:
                         tbl_upv_20 (copy, index: 1)
                         a1 (copy, index: 2)
@@ -3600,7 +3605,7 @@ function tbl_upv_1.BindStep(a1, a2)
         (success_upv_2 and 1.5) or 0,
         function()
             --[[
-              line: 2104
+              line: 2108
               upvalues:
                 tbl_upv_20 (copy, index: 1)
                 u37 (ref,  index: 2)
@@ -3620,7 +3625,7 @@ function tbl_upv_1.BindStep(a1, a2)
                 RunService_upv_1.PreSimulation:Connect(
                     function(a6)
                         --[[
-                          line: 2075
+                          line: 2079
                           upvalues:
                             u39 (ref,  index: 1)
                             tbl_upv_19 (copy, index: 2)
@@ -3638,8 +3643,8 @@ function tbl_upv_1.BindStep(a1, a2)
                 )
             end
             if RunService_upv_1:IsStudio() then
-                local v207 = (success_upv_2 and "never called") or (tostring(u38))
-                warn((("[Simulation] BindToSimulation isn't running the priority-%* step (%*): stepping it from PreSimulation at 60 Hz"):format(a2, v207)))
+                local v208 = (success_upv_2 and "never called") or (tostring(u38))
+                warn((("[Simulation] BindToSimulation isn't running the priority-%* step (%*): stepping it from PreSimulation at 60 Hz"):format(a2, v208)))
             end
         end
     )
@@ -3647,20 +3652,20 @@ end
 function tbl_upv_1.StepSource()
     --[[
       name: StepSource
-      line: 2116
+      line: 2120
       upvalues:
         tbl_upv_19 (copy, index: 1)
     ]]
-    local v208 = false
-    local v210 = false
+    local v209 = false
+    local v211 = false
     for _, value_20 in tbl_upv_19 do
-        local v211 = v208 or (value_20.calls > 0)
-        v211 = v210 or (value_20.fallback)
-        v208 = v211
+        local v212 = v209 or (value_20.calls > 0)
+        v212 = v211 or (value_20.fallback)
+        v209 = v212
     end
-    if v210 then
+    if v211 then
         return "fallback"
-    elseif v208 then
+    elseif v209 then
         return "engine"
     else
         return "waiting"
@@ -3669,7 +3674,7 @@ end
 local function startRemoteCollisionGuard(a1, a2)
     --[[
       name: startRemoteCollisionGuard
-      line: 2172
+      line: 2176
       upvalues:
         RunService_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -3681,7 +3686,7 @@ local function startRemoteCollisionGuard(a1, a2)
     RunService_upv_1.Heartbeat:Connect(
         function(a3)
             --[[
-              line: 2177
+              line: 2181
               upvalues:
                 u43 (ref,  index: 1)
                 a1 (copy, index: 2)
@@ -3695,9 +3700,9 @@ local function startRemoteCollisionGuard(a1, a2)
             end
             u43 = 0
             local Character_1 = a1.Character
-            local v212 = Character_1 and (Character_1:FindFirstChild("HumanoidRootPart"))
-            local v213 = not (v212) or not (v212:IsA("BasePart")) or v212
-            u41 = v213
+            local v213 = Character_1 and (Character_1:FindFirstChild("HumanoidRootPart"))
+            local v214 = not (v213) or not (v213:IsA("BasePart")) or v213
+            u41 = v214
             local tbl_21 = {}
             if u41 then
                 local Position_6 = u41.Position
@@ -3706,8 +3711,8 @@ local function startRemoteCollisionGuard(a1, a2)
                     if key_4 == Character_1 or not (HumanoidRootPart_1) or not (HumanoidRootPart_1:IsA("BasePart")) or (HumanoidRootPart_1.Position - Position_6).Magnitude > 70 then
                         continue
                     end
-                    local v214 = key_4:FindFirstChildOfClass("Humanoid")
-                    if not (v214) or v214.Health <= 0 or not (HumanoidRootPart_1:FindFirstChild("TribesHull")) then
+                    local v215 = key_4:FindFirstChildOfClass("Humanoid")
+                    if not (v215) or v215.Health <= 0 or not (HumanoidRootPart_1:FindFirstChild("TribesHull")) then
                         continue
                     end
                     local tbl_22 = {}
@@ -3725,7 +3730,7 @@ local function startRemoteCollisionGuard(a1, a2)
     tbl_upv_1.BindStep(
         function()
             --[[
-              line: 2209
+              line: 2213
               upvalues:
                 u41 (ref, index: 1)
                 u42 (ref, index: 2)
@@ -3741,9 +3746,9 @@ local function startRemoteCollisionGuard(a1, a2)
                 end
                 local parts_1 = value_22.parts
                 for n_3 = 1, #parts_1 do
-                    local v215 = parts_1[n_3]
-                    if v215.CanCollide then
-                        v215.CanCollide = false
+                    local v216 = parts_1[n_3]
+                    if v216.CanCollide then
+                        v216.CanCollide = false
                         u40 = u40 + 1
                     end
                 end
@@ -3753,7 +3758,7 @@ local function startRemoteCollisionGuard(a1, a2)
     )
     tbl_upv_1.RemoteCollisionFixes = function()
         --[[
-          line: 2229
+          line: 2233
           upvalues:
             u40 (ref, index: 1)
         ]]
@@ -3763,19 +3768,19 @@ end
 local function predictionOff(a1, a2, a3)
     --[[
       name: predictionOff
-      line: 2133
+      line: 2137
       upvalues:
         RunService_upv_1 (copy, index: 1)
     ]]
     local tbl_upv_23 = {}
     local u44 = a3 or (Enum.PredictionMode.Off)
     for _, value_upv_23 in a1:GetDescendants() do
-        local v216 = value_upv_23:IsA("BasePart")
-        if v216 then
+        local v217 = value_upv_23:IsA("BasePart")
+        if v217 then
             pcall(
                 function()
                     --[[
-                      line: 2138
+                      line: 2142
                       upvalues:
                         RunService_upv_1 (copy, index: 1)
                         value_upv_23 (copy, index: 2)
@@ -3789,7 +3794,7 @@ local function predictionOff(a1, a2, a3)
     local function off_1(a4)
         --[[
           name: off
-          line: 2136
+          line: 2140
         ]]
         if not a4:IsA("BasePart") then
             return
@@ -3802,7 +3807,7 @@ local function predictionOff(a1, a2, a3)
         a1.AncestryChanged:Connect(
             function()
                 --[[
-                  line: 2147
+                  line: 2151
                   upvalues:
                     a1 (copy, index: 1)
                     tbl_upv_23 (copy, index: 2)
@@ -3822,7 +3827,7 @@ end
 local function startArrivalGuard(a1)
     --[[
       name: startArrivalGuard
-      line: 2306
+      line: 2310
       upvalues:
         RunService_upv_1 (copy, index: 1)
         Workspace_upv_1 (copy, index: 2)
@@ -3842,7 +3847,7 @@ local function startArrivalGuard(a1)
     local function release_1()
         --[[
           name: release
-          line: 2316
+          line: 2320
           upvalues:
             u50 (ref, index: 1)
         ]]
@@ -3855,7 +3860,7 @@ local function startArrivalGuard(a1)
     RunService_upv_1.PreSimulation:Connect(
         function(a2)
             --[[
-              line: 2323
+              line: 2327
               upvalues:
                 a1 (copy, index: 1)
                 u46 (ref,  index: 2)
@@ -3869,14 +3874,14 @@ local function startArrivalGuard(a1)
                 u52 (ref,  index: 10)
             ]]
             local Character_2 = a1.Character
-            local v217 = Character_2 and (Character_2:FindFirstChild("HumanoidRootPart"))
-            if Character_2 and v217 and v217:IsA("BasePart") then
-                local Position_8 = v217.Position
-                local v218 = v217 ~= u46
-                if not (v218) and u47 then
-                    v218 = (Position_8 - u47 - (Character_2.AssemblyLinearVelocity * a2)).Magnitude > 20
+            local v218 = Character_2 and (Character_2:FindFirstChild("HumanoidRootPart"))
+            if Character_2 and v218 and v218:IsA("BasePart") then
+                local Position_8 = v218.Position
+                local v219 = v218 ~= u46
+                if not (v219) and u47 then
+                    v219 = (Position_8 - u47 - (Character_2.AssemblyLinearVelocity * a2)).Magnitude > 20
                 end
-                if v218 then
+                if v219 then
                     if u50 and u50 ~= Character_2 then
                         u50 = nil
                     end
@@ -3889,14 +3894,14 @@ local function startArrivalGuard(a1)
                     return
                 end
                 u49 = u49 + a2
-                v218 = Character_2:FindFirstChildOfClass("Humanoid")
-                if v218 then
-                    local v219 = nil
-                    if not (v218.Health <= 0) then
+                v219 = Character_2:FindFirstChildOfClass("Humanoid")
+                if v219 then
+                    local v220 = nil
+                    if not (v219.Health <= 0) then
                         u45.FilterDescendantsInstances = {Character_2}
-                        v218 = Workspace_upv_1:Raycast(Position_8, Vector3.new(0, -80, 0), u45)
+                        v219 = Workspace_upv_1:Raycast(Position_8, Vector3.new(0, -80, 0), u45)
                         local _ = false
-                        if (v218 == nil or not (Position_8.Y - v218.Position.Y <= 12)) and (v218 == nil or not (u49 >= 6)) and not (u49 >= 12) then
+                        if (v219 == nil or not (Position_8.Y - v219.Position.Y <= 12)) and (v219 == nil or not (u49 >= 6)) and not (u49 >= 12) then
                             if not (Character_2.Anchored) then
                                 Character_2.Anchored = true
                                 u50 = Character_2
@@ -3908,19 +3913,19 @@ local function startArrivalGuard(a1)
                             return
                         end
                         u48 = false
-                        v219 = u50
+                        v220 = u50
                         u50 = nil
-                        if v219 and v219.Parent and v219.Anchored then
-                            v219.Anchored = false
+                        if v220 and v220.Parent and v220.Anchored then
+                            v220.Anchored = false
                         end
                         return
                     end
                 end
                 u48 = false
-                local v220 = u50
+                local v221 = u50
                 u50 = nil
-                if v220 and v220.Parent and v220.Anchored then
-                    v220.Anchored = false
+                if v221 and v221.Parent and v221.Anchored then
+                    v221.Anchored = false
                 end
                 return
             end
@@ -3932,7 +3937,7 @@ local function startArrivalGuard(a1)
     )
     tbl_upv_1.ArrivalHolds = function()
         --[[
-          line: 2371
+          line: 2375
           upvalues:
             u51 (ref, index: 1)
             u52 (ref, index: 2)
@@ -3944,7 +3949,7 @@ local u53 = false
 local function onPlayer(a1)
     --[[
       name: onPlayer
-      line: 1901
+      line: 1905
       upvalues:
         u16 (copy, index: 1)
         Inputs_upv_1 (copy, index: 2)
@@ -3957,7 +3962,7 @@ local function onPlayer(a1)
     a1.CharacterAdded:Connect(
         function(a2)
             --[[
-              line: 1905
+              line: 1909
               upvalues:
                 register (copy, index: 1)
                 a1 (copy, index: 2)
@@ -3974,7 +3979,7 @@ end
 local function startPredictionPolicy(a1)
     --[[
       name: startPredictionPolicy
-      line: 2234
+      line: 2238
       upvalues:
         predictionOff (copy, index: 1)
         RunService_upv_1 (copy, index: 2)
@@ -3984,20 +3989,20 @@ local function startPredictionPolicy(a1)
     local CollectionService_1 = game:GetService("CollectionService")
     local u54 = setmetatable({}, {__mode = "k"})
     local u55 = nil
-    local v221 = RunService_upv_1:IsStudio()
-    local v222 = nil
-    if v221 then
-        v222 = workspace:GetAttribute("BotPredictionMode")
-        if v222 == "On" then
+    local v222 = RunService_upv_1:IsStudio()
+    local v223 = nil
+    if v222 then
+        v223 = workspace:GetAttribute("BotPredictionMode")
+        if v223 == "On" then
             u55 = Enum.PredictionMode.On
-        elseif v222 == "Automatic" then
+        elseif v223 == "Automatic" then
             u55 = Enum.PredictionMode.Automatic
         end
     end
     local function applyTagged_1(a2)
         --[[
           name: applyTagged
-          line: 2257
+          line: 2261
           upvalues:
             Players_upv_1 (copy, index: 1)
             u55 (ref,  index: 2)
@@ -4008,34 +4013,34 @@ local function startPredictionPolicy(a1)
             return
         end
         if Players_upv_1:GetPlayerFromCharacter(a2) == nil then
-            local v223 = u55
+            local v224 = u55
             if not a2:IsA("Model") or (u54[a2]) then
                 return
             end
             u54[a2] = true
-            predictionOff(a2, function() end, v223)
+            predictionOff(a2, function() end, v224)
         end
     end
     for _, value_25 in {"Combatant", "Bot"} do
         CollectionService_1:GetInstanceAddedSignal(value_25):Connect(applyTagged_1)
-        for v225, value_26 in CollectionService_1:GetTagged(value_25) do
+        for v226, value_26 in CollectionService_1:GetTagged(value_25) do
             if not (value_26:IsA("Model")) or Players_upv_1:GetPlayerFromCharacter(value_26) ~= nil then
                 continue
             end
-            local v224 = u55
+            local v225 = u55
             if not (value_26:IsA("Model")) then
                 continue
             end
             if not (u54[value_26]) then
                 u54[value_26] = true
-                predictionOff(value_26, function() end, v224)
+                predictionOff(value_26, function() end, v225)
             end
         end
     end
     local function apply_upv_1(a3, a4)
         --[[
           name: apply
-          line: 2237
+          line: 2241
           upvalues:
             u54 (copy, index: 1)
             predictionOff (copy, index: 2)
@@ -4049,7 +4054,7 @@ local function startPredictionPolicy(a1)
     local function watchPlayer_1(a5)
         --[[
           name: watchPlayer
-          line: 2268
+          line: 2272
           upvalues:
             a1 (copy, index: 1)
             apply_upv_1 (copy, index: 2)
@@ -4087,7 +4092,7 @@ local function startPredictionPolicy(a1)
                 Character_upv_4,
                 function()
                     --[[
-                      line: 2240
+                      line: 2244
                       upvalues:
                         u54 (copy, index: 1)
                         Character_upv_4 (copy, index: 2)
@@ -4106,7 +4111,7 @@ end
 local function watchHold(a1)
     --[[
       name: watchHold
-      line: 2009
+      line: 2013
       upvalues:
         Inputs_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -4115,29 +4120,29 @@ local function watchHold(a1)
     local function update_upv_1(a2)
         --[[
           name: update
-          line: 2011
+          line: 2015
           upvalues:
             Inputs_upv_1 (copy, index: 1)
             tbl_upv_1 (copy, index: 2)
         ]]
-        local v225 = a2:FindFirstChildWhichIsA("Tool")
-        local v226
-        if v225 then
-            v226 = v225:GetAttribute("SlotIndex")
+        local v226 = a2:FindFirstChildWhichIsA("Tool")
+        local v227
+        if v226 then
+            v227 = v226:GetAttribute("SlotIndex")
         else
-            v226 = nil
+            v227 = nil
         end
-        if type(v226) == "number" and v226 == v226 then
-            v225 = math.clamp(math.floor(v226 + 0.5), 0, Inputs_upv_1.HOLD_SLOTS)
+        if type(v227) == "number" and v227 == v227 then
+            v226 = math.clamp(math.floor(v227 + 0.5), 0, Inputs_upv_1.HOLD_SLOTS)
         else
-            v225 = 0
+            v226 = 0
         end
-        tbl_upv_1.SetInput("Hold", v225 / Inputs_upv_1.HOLD_SCALE)
+        tbl_upv_1.SetInput("Hold", v226 / Inputs_upv_1.HOLD_SCALE)
     end
     local function onCharacter_1(a3)
         --[[
           name: onCharacter
-          line: 2017
+          line: 2021
           upvalues:
             tbl_upv_24 (copy, index: 1)
             update_upv_1 (copy, index: 2)
@@ -4149,7 +4154,7 @@ local function watchHold(a1)
         local function changed_1(a4)
             --[[
               name: changed
-              line: 2022
+              line: 2026
               upvalues:
                 update_upv_1 (copy, index: 1)
                 a3 (copy, index: 2)
@@ -4172,7 +4177,7 @@ end
 local function step(a1)
     --[[
       name: step
-      line: 1609
+      line: 1613
       upvalues:
         u16 (copy, index: 1)
         trackCorrection (copy, index: 2)
@@ -4182,38 +4187,38 @@ local function step(a1)
         tbl_upv_5 (copy, index: 6)
         tbl_upv_10 (copy, index: 7)
     ]]
-    local v227 = os.clock()
+    local v228 = os.clock()
     if not (u16) then
         trackCorrection(a1)
     end
-    local v228
+    local v229
     if u20 then
-        v228 = stepRelay
+        v229 = stepRelay
     else
-        v228 = stepChar
+        v229 = stepChar
     end
     for _, value_29 in tbl_upv_5 do
         if value_29.failed then
             continue
         end
-        local success_3, v229 = pcall(v228, value_29, a1)
+        local success_3, v230 = pcall(v229, value_29, a1)
         if not (success_3) then
             value_29.failed = true
-            warn((("[Simulation] step failed for %*: %*"):format(value_29.character.Name, v229)))
+            warn((("[Simulation] step failed for %*: %*"):format(value_29.character.Name, v230)))
         end
     end
-    local v230 = os.clock() - v227
+    local v231 = os.clock() - v228
     tbl_upv_10.steps = tbl_upv_10.steps + 1
-    tbl_upv_10.time = tbl_upv_10.time + v230
-    if not (tbl_upv_10.maxStep < v230) then
+    tbl_upv_10.time = tbl_upv_10.time + v231
+    if not (tbl_upv_10.maxStep < v231) then
         return
     end
-    tbl_upv_10.maxStep = v230
+    tbl_upv_10.maxStep = v231
 end
 function tbl_upv_1.Initialize()
     --[[
       name: Initialize
-      line: 2380
+      line: 2384
       upvalues:
         u53 (ref,  index: 1)
         u16 (copy, index: 2)
@@ -4246,7 +4251,7 @@ function tbl_upv_1.Initialize()
         Players_upv_1.PlayerRemoving:Connect(
             function(a1)
                 --[[
-                  line: 2390
+                  line: 2394
                   upvalues:
                     tbl_upv_4 (copy, index: 1)
                     tbl_upv_5 (copy, index: 2)
@@ -4255,12 +4260,12 @@ function tbl_upv_1.Initialize()
                     return
                 end
                 local Character_5 = a1.Character
-                local v231 = tbl_upv_4[Character_5]
-                if not v231 then
+                local v232 = tbl_upv_4[Character_5]
+                if not v232 then
                     return
                 end
                 tbl_upv_4[Character_5] = nil
-                for _, value_31 in v231.conns do
+                for _, value_31 in v232.conns do
                     value_31:Disconnect()
                 end
                 table.clear(tbl_upv_5)
@@ -4270,19 +4275,19 @@ function tbl_upv_1.Initialize()
             end
         )
         if RunService_upv_1:IsStudio() then
-            local v232 = Instance.new("BindableFunction")
-            v232.Name = "SimulationDebug"
-            v232.OnInvoke = function(a2, a3, a4)
+            local v233 = Instance.new("BindableFunction")
+            v233.Name = "SimulationDebug"
+            v233.OnInvoke = function(a2, a3, a4)
                 --[[
-                  line: 2399
+                  line: 2403
                   upvalues:
                     tbl_upv_4 (copy, index: 1)
                     tbl_upv_3 (copy, index: 2)
                     tbl_upv_1 (copy, index: 3)
                     tbl_upv_5 (copy, index: 4)
                 ]]
-                local v233 = a3 and (a3.Character and (tbl_upv_4[a3.Character]))
-                if a2 == "state" and v233 then
+                local v234 = a3 and (a3.Character and (tbl_upv_4[a3.Character]))
+                if a2 == "state" and v234 then
                     local tbl_25 = {}
                     for _, value_33 in tbl_upv_3 do
                         tbl_25[value_33] = a3.root:GetAttribute(value_33)
@@ -4305,30 +4310,30 @@ function tbl_upv_1.Initialize()
                     return #tbl_upv_5
                 end
             end
-            v232.Parent = game:GetService("ServerStorage")
+            v233.Parent = game:GetService("ServerStorage")
         end
     else
         local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
         task.spawn(
             function()
                 --[[
-                  line: 2424
+                  line: 2428
                   upvalues:
                     LocalPlayer_upv_1 (copy, index: 1)
                     Inputs_upv_1 (copy, index: 2)
                     tbl_upv_16 (copy, index: 3)
                     fire (copy, index: 4)
                 ]]
-                local v234 = LocalPlayer_upv_1:WaitForChild(Inputs_upv_1.CONTEXT, 60)
-                if v234 then
+                local v235 = LocalPlayer_upv_1:WaitForChild(Inputs_upv_1.CONTEXT, 60)
+                if v235 then
                     for _, value_34 in Inputs_upv_1.ACTIONS do
-                        local v235 = v234:WaitForChild(value_34.name, 10)
-                        local v236 = v235 and (v235:WaitForChild("Script", 10))
-                        if not (v236) then
+                        local v236 = v235:WaitForChild(value_34.name, 10)
+                        local v237 = v236 and (v236:WaitForChild("Script", 10))
+                        if not (v237) then
                             continue
                         end
-                        if v236:IsA("InputBinding") then
-                            tbl_upv_16[value_34.name] = v236
+                        if v237:IsA("InputBinding") then
+                            tbl_upv_16[value_34.name] = v237
                             fire(value_34.name)
                         end
                     end
