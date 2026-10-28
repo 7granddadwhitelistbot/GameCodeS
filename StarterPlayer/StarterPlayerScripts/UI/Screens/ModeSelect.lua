@@ -160,7 +160,7 @@ function tbl_1.Init(a1)
                 end
                 return nil
             end
-            return "PLAY A 3V3 MATCH FIRST"
+            return "PLAY 3 MATCHES FIRST"
         end
         return nil
     end
@@ -922,7 +922,7 @@ function tbl_1.Init(a1)
                         v70 = nil
                     end
                 else
-                    v70 = "PLAY A 3V3 MATCH FIRST"
+                    v70 = "PLAY 3 MATCHES FIRST"
                 end
             else
                 v70 = nil
@@ -1126,7 +1126,7 @@ function tbl_1.Init(a1)
                         v93 = nil
                     end
                 else
-                    v93 = "PLAY A 3V3 MATCH FIRST"
+                    v93 = "PLAY 3 MATCHES FIRST"
                 end
             else
                 v93 = nil
@@ -1394,7 +1394,7 @@ function tbl_1.Init(a1)
                                     v110 = nil
                                 end
                             else
-                                v110 = "PLAY A 3V3 MATCH FIRST"
+                                v110 = "PLAY 3 MATCHES FIRST"
                             end
                         else
                             v110 = nil
@@ -1790,7 +1790,7 @@ function tbl_1.Init(a1)
                     v126 = nil
                 end
             else
-                v126 = "PLAY A 3V3 MATCH FIRST"
+                v126 = "PLAY 3 MATCHES FIRST"
             end
             if v126 then
                 v125 = 1
@@ -1907,7 +1907,7 @@ function tbl_1.Init(a1)
                                                     v134 = nil
                                                 end
                                             else
-                                                v134 = "PLAY A 3V3 MATCH FIRST"
+                                                v134 = "PLAY 3 MATCHES FIRST"
                                             end
                                         else
                                             v134 = nil
@@ -1930,7 +1930,7 @@ function tbl_1.Init(a1)
                         v130 = nil
                     end
                 else
-                    v130 = "PLAY A 3V3 MATCH FIRST"
+                    v130 = "PLAY 3 MATCHES FIRST"
                 end
             else
                 v130 = nil
@@ -1974,7 +1974,7 @@ function tbl_1.Init(a1)
                                         v134 = nil
                                     end
                                 else
-                                    v134 = "PLAY A 3V3 MATCH FIRST"
+                                    v134 = "PLAY 3 MATCHES FIRST"
                                 end
                             else
                                 v134 = nil
@@ -2269,7 +2269,7 @@ function tbl_1.Init(a1)
                 continue
             end
             if State_upv_1.Get("Duel") ~= true then
-                v141 = "PLAY A 3V3 MATCH FIRST"
+                v141 = "PLAY 3 MATCHES FIRST"
                 tbl_22.locked = v141 or false
                 tbl_22.scene = value_39.scene ~= nil
                 local v143 = ((value_39.scene) and (#value_39.scene.wm:GetChildren())) or 0

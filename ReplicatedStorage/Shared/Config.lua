@@ -4,6 +4,7 @@ tbl_upv_1.TEAM_SIZE = 3
 tbl_upv_1.DEFAULT_MODE = "3v3"
 tbl_upv_1.MODES = {["3v3"] = {matchHumans = 6, teamSize = 3}, ["1v1"] = {matchHumans = 2, teamSize = 1}}
 tbl_upv_1.DUEL_TROPHY_MULT = 0.65
+tbl_upv_1.DUEL_UNLOCK_MATCHES = 3
 tbl_upv_1.ROUNDS_TO_WIN = 3
 tbl_upv_1.INTRO_TIME = 3
 tbl_upv_1.INTRO_MAX_EXTRA = 4
@@ -83,7 +84,7 @@ tbl_upv_1.ENEMY_COLOR = Color3.fromRGB(255, 72, 72)
 function tbl_upv_1.Mode(a1)
     --[[
       name: Mode
-      line: 176
+      line: 179
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -95,7 +96,7 @@ end
 function tbl_upv_1.ArenaSlotCenter(a1)
     --[[
       name: ArenaSlotCenter
-      line: 180
+      line: 183
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]

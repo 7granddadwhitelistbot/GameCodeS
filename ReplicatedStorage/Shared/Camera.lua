@@ -1799,23 +1799,23 @@ local function update(a1)
                 if v164 > 0 then
                     local Head_3 = v128:FindFirstChild("Head")
                     local StepBob_1 = FirstPerson_upv_1.StepBob
-                    local v166 = (v127 ~= nil) and (v127.FloorMaterial ~= Enum.Material.Air)
-                    local v167 = v128:GetAttribute("Sliding") == true
-                    StepBob_1(a1, v160, v166, v167)
-                    v161, v162 = FirstPerson_upv_1.CameraBob()
+                    local v165 = (v127 ~= nil) and (v127.FloorMaterial ~= Enum.Material.Air)
+                    local v166 = v128:GetAttribute("Sliding") == true
+                    StepBob_1(a1, v160, v165, v166, v126.AssemblyLinearVelocity, StepBob_1)
+                    v161, v162, v177 = FirstPerson_upv_1.CameraBob()
                     local Eye_1 = FirstPerson_upv_1.Eye
                     local v170 = not (Head_3) or not (Head_3:IsA("BasePart")) or Head_3
-                    local v171 = Eye_1(a1, v160, v126, v170, v161.LookVector) + Vector3.new(0, (u15.value * 0.5) + v168, 0)
-                    local v168 = CFrame.new(v171) * v161.Rotation * CFrame.Angles(0, 0, v169)
+                    local v171 = Eye_1(a1, v160, v126, v170, v161.LookVector) + Vector3.new(0, (u15.value * 0.5) + v167, 0)
+                    local v167 = CFrame.new(v171) * v161.Rotation * CFrame.Angles(v168, 0, v177)
                     v177 = FirstPerson_upv_1.Eased()
                     if v177 >= 1 then
-                        v147 = v168
+                        v147 = v167
                     else
-                        v147 = v161:Lerp(v168, v177)
+                        v147 = v161:Lerp(v167, v177)
                     end
                     v148 = v162:Lerp(v171 + (v147.LookVector * 10), v177)
                 else
-                    v147, v148 = v161, v162
+                    v148 = v162
                 end
                 local v172 = (u61 and 0.6) or 1
                 local v173 = applyShake(v147, a1, v172)
@@ -1842,7 +1842,7 @@ local function update(a1)
                 if v177 > 0.5 then
                     v126 = false
                     if next(tbl_upv_3) == nil then
-                        local v198 = u23 and u23.untilStopped
+                        local v199 = u23 and u23.untilStopped
                         v126 = not u23 or not u23.untilStopped
                     end
                 end
@@ -1907,7 +1907,7 @@ local function update(a1)
                 local v187 = v186 + Finite_upv_1.Offset(Smoothing_upv_1)
                 local value_17 = u13.value
                 local v188 = 0
-                for v199 in tbl_upv_4 do
+                for v200 in tbl_upv_4 do
                     v188 = v188 + 1
                 end
                 local FrameLog_1 = tbl_upv_1.FrameLog
@@ -1997,7 +1997,7 @@ end
 local function countTouches()
     --[[
       name: countTouches
-      line: 1341
+      line: 1342
       upvalues:
         tbl_upv_8 (copy, index: 1)
     ]]
@@ -2011,7 +2011,7 @@ local u73 = nil
 local function inThumbstickArea(a1)
     --[[
       name: inThumbstickArea
-      line: 1355
+      line: 1356
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         Workspace_upv_1 (copy, index: 2)
@@ -2052,7 +2052,7 @@ end
 local function onInputBegan(a1, a2)
     --[[
       name: onInputBegan
-      line: 1379
+      line: 1380
       upvalues:
         u73 (ref,  index: 1)
         inThumbstickArea (copy, index: 2)
@@ -2084,7 +2084,7 @@ end
 local function onInputChanged(a1, a2)
     --[[
       name: onInputChanged
-      line: 1398
+      line: 1399
       upvalues:
         tbl_upv_8 (copy, index: 1)
         Guards_upv_1 (copy, index: 2)
@@ -2130,7 +2130,7 @@ end
 local function onInputEnded(a1, a2)
     --[[
       name: onInputEnded
-      line: 1430
+      line: 1431
       upvalues:
         u73 (ref,  index: 1)
         tbl_upv_8 (copy, index: 2)
@@ -2150,7 +2150,7 @@ end
 local function start()
     --[[
       name: start
-      line: 1442
+      line: 1443
       upvalues:
         u10 (ref,  index: 1)
         u1 (copy, index: 2)
@@ -2218,7 +2218,7 @@ local function start()
     pcall(
         function()
             --[[
-              line: 1452
+              line: 1453
               upvalues:
                 LocalPlayer_upv_1 (copy, index: 1)
             ]]
@@ -2229,7 +2229,7 @@ local function start()
     task.spawn(
         function()
             --[[
-              line: 1456
+              line: 1457
               upvalues:
                 LocalPlayer_upv_1 (copy, index: 1)
                 u65 (ref,  index: 2)
@@ -2242,7 +2242,7 @@ local function start()
             local function readLevel_1()
                 --[[
                   name: readLevel
-                  line: 1461
+                  line: 1462
                   upvalues:
                     u65 (ref,  index: 1)
                     tbl_upv_15 (copy, index: 2)
@@ -2266,7 +2266,7 @@ local function start()
     Players_upv_1.PlayerAdded:Connect(
         function(a1)
             --[[
-              line: 1474
+              line: 1475
               upvalues:
                 markIgnoreDirty (copy, index: 1)
                 u53 (ref,  index: 2)
@@ -2284,7 +2284,7 @@ local function start()
     task.spawn(
         function()
             --[[
-              line: 1484
+              line: 1485
               upvalues:
                 Guards_upv_1 (copy, index: 1)
                 tbl_upv_1 (copy, index: 2)
@@ -2298,7 +2298,7 @@ local function start()
             u75:GetPropertyChangedSignal("IsFocused"):Connect(
                 function()
                     --[[
-                      line: 1489
+                      line: 1490
                       upvalues:
                         u75 (copy, index: 1)
                         tbl_upv_1 (copy, index: 2)
@@ -2315,7 +2315,7 @@ local function start()
     UserInputService_upv_1.TextBoxFocused:Connect(
         function()
             --[[
-              line: 1498
+              line: 1499
               upvalues:
                 tbl_upv_1 (copy, index: 1)
             ]]
@@ -2325,7 +2325,7 @@ local function start()
     UserInputService_upv_1.TextBoxFocusReleased:Connect(
         function()
             --[[
-              line: 1501
+              line: 1502
               upvalues:
                 tbl_upv_1 (copy, index: 1)
             ]]
@@ -2335,7 +2335,7 @@ local function start()
     local function bindKeys_upv_1()
         --[[
           name: bindKeys
-          line: 1511
+          line: 1512
           upvalues:
             Keybinds_upv_1 (copy, index: 1)
             ContextActionService_upv_1 (copy, index: 2)
@@ -2353,7 +2353,7 @@ local function start()
                 "TribesFreeCursor",
                 function(a2, a3, a4)
                     --[[
-                      line: 1516
+                      line: 1517
                       upvalues:
                         Guards_upv_1 (copy, index: 1)
                         u34 (ref,  index: 2)
@@ -2391,7 +2391,7 @@ local function start()
         local function inputsOf_1(a5)
             --[[
               name: inputsOf
-              line: 1535
+              line: 1536
               upvalues:
                 Keybinds_upv_1 (copy, index: 1)
             ]]
@@ -2408,7 +2408,7 @@ local function start()
                 "TribesShoulderSwap",
                 function(a6, a7)
                     --[[
-                      line: 1546
+                      line: 1547
                       upvalues:
                         tbl_upv_3 (copy, index: 1)
                         GuiService_upv_1 (copy, index: 2)
@@ -2438,7 +2438,7 @@ local function start()
             "TribesFirstPerson",
             function(a8, a9)
                 --[[
-                  line: 1554
+                  line: 1555
                   upvalues:
                     tbl_upv_3 (copy, index: 1)
                     GuiService_upv_1 (copy, index: 2)
@@ -2466,7 +2466,7 @@ local function start()
     local function rebindFor_1(a10)
         --[[
           name: rebindFor
-          line: 1563
+          line: 1564
           upvalues:
             bindKeys_upv_1 (copy, index: 1)
         ]]
@@ -2483,7 +2483,7 @@ local function start()
     LocalPlayer_upv_1.CharacterAdded:Connect(
         function(a11)
             --[[
-              line: 1573
+              line: 1574
               upvalues:
                 u25 (ref,  index: 1)
                 u24 (ref,  index: 2)
@@ -2572,7 +2572,7 @@ local function start()
                 task.spawn(
                     function()
                         --[[
-                          line: 1608
+                          line: 1609
                           upvalues:
                             u77 (copy, index: 1)
                             u76 (copy, index: 2)
@@ -2600,7 +2600,7 @@ local function start()
     local function popUnlock_1(a12)
         --[[
           name: popUnlock
-          line: 1628
+          line: 1629
           upvalues:
             tbl_upv_1 (copy, index: 1)
         ]]
@@ -2609,7 +2609,7 @@ local function start()
     local function popLookLock_1(a13)
         --[[
           name: popLookLock
-          line: 1625
+          line: 1626
           upvalues:
             tbl_upv_1 (copy, index: 1)
         ]]
@@ -2618,7 +2618,7 @@ local function start()
     local function blockers_1()
         --[[
           name: blockers
-          line: 1631
+          line: 1632
           upvalues:
             tbl_upv_1 (copy, index: 1)
         ]]
@@ -2630,7 +2630,7 @@ local function start()
         Enum.RenderPriority.Camera.Value + 1,
         function(a14)
             --[[
-              line: 1635
+              line: 1636
               upvalues:
                 update (copy, index: 1)
                 Simulation_upv_1 (copy, index: 2)
@@ -2652,7 +2652,7 @@ end
 function tbl_upv_1.SetAiming(a1, a2)
     --[[
       name: SetAiming
-      line: 1655
+      line: 1656
       upvalues:
         u4 (ref, index: 1)
         u43 (ref, index: 2)
@@ -2668,7 +2668,7 @@ end
 function tbl_upv_1.IsAiming()
     --[[
       name: IsAiming
-      line: 1662
+      line: 1663
       upvalues:
         u4 (ref, index: 1)
     ]]
@@ -2677,7 +2677,7 @@ end
 function tbl_upv_1.GetAimRay()
     --[[
       name: GetAimRay
-      line: 1668
+      line: 1669
       upvalues:
         Workspace_upv_1 (copy, index: 1)
     ]]
@@ -2691,7 +2691,7 @@ end
 function tbl_upv_1.GetAimPoint(a1, a2)
     --[[
       name: GetAimPoint
-      line: 1681
+      line: 1682
       upvalues:
         tbl_upv_1 (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
@@ -2753,7 +2753,7 @@ end
 function tbl_upv_1.FovKick(a1, a2, a3)
     --[[
       name: FovKick
-      line: 1722
+      line: 1723
       upvalues:
         tbl_upv_9 (copy, index: 1)
     ]]
@@ -2768,7 +2768,7 @@ end
 function tbl_upv_1.Shake(a1, a2)
     --[[
       name: Shake
-      line: 1734
+      line: 1735
       upvalues:
         tbl_upv_7 (copy, index: 1)
     ]]
@@ -2786,7 +2786,7 @@ end
 function tbl_upv_1.Recoil(a1, a2, a3)
     --[[
       name: Recoil
-      line: 1748
+      line: 1749
       upvalues:
         u16 (copy, index: 1)
     ]]
@@ -2798,7 +2798,7 @@ tbl_upv_1.SLOW_RECOIL_FADE = 0.3
 function tbl_upv_1.RecoilSlow(a1, a2, a3, a4)
     --[[
       name: RecoilSlow
-      line: 1761
+      line: 1762
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -2810,7 +2810,7 @@ end
 function tbl_upv_1.Dip(a1)
     --[[
       name: Dip
-      line: 1770
+      line: 1771
       upvalues:
         u15 (copy, index: 1)
     ]]
@@ -2822,7 +2822,7 @@ end
 function tbl_upv_1.PushMouseUnlock(a1)
     --[[
       name: PushMouseUnlock
-      line: 1777
+      line: 1778
       upvalues:
         tbl_upv_3 (copy, index: 1)
         u10 (ref,  index: 2)
@@ -2837,7 +2837,7 @@ end
 function tbl_upv_1.PopMouseUnlock(a1)
     --[[
       name: PopMouseUnlock
-      line: 1784
+      line: 1785
       upvalues:
         tbl_upv_3 (copy, index: 1)
         u10 (ref,  index: 2)
@@ -2852,7 +2852,7 @@ end
 function tbl_upv_1.PushLookLock(a1, a2)
     --[[
       name: PushLookLock
-      line: 1797
+      line: 1798
       upvalues:
         tbl_upv_4 (copy, index: 1)
         Guards_upv_1 (copy, index: 2)
@@ -2864,7 +2864,7 @@ end
 function tbl_upv_1.PopLookLock(a1)
     --[[
       name: PopLookLock
-      line: 1803
+      line: 1804
       upvalues:
         tbl_upv_4 (copy, index: 1)
         Guards_upv_1 (copy, index: 2)
@@ -2876,7 +2876,7 @@ end
 function tbl_upv_1.IsLookLocked()
     --[[
       name: IsLookLocked
-      line: 1809
+      line: 1810
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
@@ -2886,7 +2886,7 @@ end
 function tbl_upv_1.GetLookBlockers()
     --[[
       name: GetLookBlockers
-      line: 1817
+      line: 1818
       upvalues:
         u9 (ref,  index: 1)
         u34 (ref,  index: 2)
@@ -2925,7 +2925,7 @@ end
 function tbl_upv_1.IsMouseUnlocked()
     --[[
       name: IsMouseUnlocked
-      line: 1846
+      line: 1847
       upvalues:
         tbl_upv_3 (copy, index: 1)
         GuiService_upv_1 (copy, index: 2)
@@ -2939,7 +2939,7 @@ end
 function tbl_upv_1.GetMode()
     --[[
       name: GetMode
-      line: 1852
+      line: 1853
       upvalues:
         u34 (ref, index: 1)
     ]]
@@ -2951,7 +2951,7 @@ end
 function tbl_upv_1.GetUnlockReasons()
     --[[
       name: GetUnlockReasons
-      line: 1856
+      line: 1857
       upvalues:
         tbl_upv_3 (copy, index: 1)
     ]]
@@ -2964,7 +2964,7 @@ end
 function tbl_upv_1.GetShoulderSide()
     --[[
       name: GetShoulderSide
-      line: 1865
+      line: 1866
       upvalues:
         Shoulder_upv_1 (copy, index: 1)
     ]]
@@ -2974,7 +2974,7 @@ tbl_upv_1.FirstPersonChanged = u62.Event
 function tbl_upv_1.SetFirstPerson(a1)
     --[[
       name: SetFirstPerson
-      line: 1873
+      line: 1874
       upvalues:
         FirstPerson_upv_1 (copy, index: 1)
         u62 (copy, index: 2)
@@ -2989,7 +2989,7 @@ end
 function tbl_upv_1.IsFirstPerson()
     --[[
       name: IsFirstPerson
-      line: 1881
+      line: 1882
       upvalues:
         FirstPerson_upv_1 (copy, index: 1)
     ]]
@@ -2998,7 +2998,7 @@ end
 function tbl_upv_1.ToggleFirstPerson()
     --[[
       name: ToggleFirstPerson
-      line: 1885
+      line: 1886
       upvalues:
         tbl_upv_1 (copy, index: 1)
         FirstPerson_upv_1 (copy, index: 2)
@@ -3008,7 +3008,7 @@ end
 function tbl_upv_1.InFirstPerson()
     --[[
       name: InFirstPerson
-      line: 1890
+      line: 1891
       upvalues:
         u61 (ref, index: 1)
     ]]
@@ -3017,7 +3017,7 @@ end
 function tbl_upv_1.SetViewBobbing(a1)
     --[[
       name: SetViewBobbing
-      line: 1896
+      line: 1897
       upvalues:
         FirstPerson_upv_1 (copy, index: 1)
     ]]
@@ -3026,7 +3026,7 @@ end
 function tbl_upv_1.GetViewBobbing()
     --[[
       name: GetViewBobbing
-      line: 1900
+      line: 1901
       upvalues:
         FirstPerson_upv_1 (copy, index: 1)
     ]]
@@ -3035,7 +3035,7 @@ end
 function tbl_upv_1.GetViewBob()
     --[[
       name: GetViewBob
-      line: 1906
+      line: 1907
       upvalues:
         FirstPerson_upv_1 (copy, index: 1)
     ]]
@@ -3044,7 +3044,7 @@ end
 function tbl_upv_1.SetShoulderSide(a1)
     --[[
       name: SetShoulderSide
-      line: 1912
+      line: 1913
       upvalues:
         Shoulder_upv_1 (copy, index: 1)
     ]]
@@ -3053,7 +3053,7 @@ end
 function tbl_upv_1.SetModifier(a1, a2)
     --[[
       name: SetModifier
-      line: 1917
+      line: 1918
       upvalues:
         tbl_upv_6 (copy, index: 1)
     ]]
@@ -3062,7 +3062,7 @@ end
 function tbl_upv_1.SuspendCharacterRotation(a1)
     --[[
       name: SuspendCharacterRotation
-      line: 1922
+      line: 1923
       upvalues:
         tbl_upv_5 (copy, index: 1)
     ]]
@@ -3071,7 +3071,7 @@ end
 function tbl_upv_1.ResumeCharacterRotation(a1)
     --[[
       name: ResumeCharacterRotation
-      line: 1926
+      line: 1927
       upvalues:
         tbl_upv_5 (copy, index: 1)
     ]]
@@ -3080,7 +3080,7 @@ end
 function tbl_upv_1.FaceCamera()
     --[[
       name: FaceCamera
-      line: 1932
+      line: 1933
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         u34 (ref,  index: 2)
@@ -3113,7 +3113,7 @@ end
 function tbl_upv_1.GetAimAssistShot()
     --[[
       name: GetAimAssistShot
-      line: 1950
+      line: 1951
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
@@ -3144,7 +3144,7 @@ end
 function tbl_upv_1.GetAimAssist(a1)
     --[[
       name: GetAimAssist
-      line: 1957
+      line: 1958
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -3160,7 +3160,7 @@ end
 function tbl_upv_1.IsAssistedInput()
     --[[
       name: IsAssistedInput
-      line: 1965
+      line: 1966
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
     ]]
@@ -3169,7 +3169,7 @@ end
 function tbl_upv_1.GetAimAssistInput()
     --[[
       name: GetAimAssistInput
-      line: 1969
+      line: 1970
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
     ]]
@@ -3178,7 +3178,7 @@ end
 function tbl_upv_1.Nudge(a1, a2)
     --[[
       name: Nudge
-      line: 1973
+      line: 1974
       upvalues:
         u2 (ref,  index: 1)
         AimAssist_upv_1 (copy, index: 2)
@@ -3195,7 +3195,7 @@ end
 function tbl_upv_1.SetAimAssist(a1)
     --[[
       name: SetAimAssist
-      line: 1984
+      line: 1985
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
     ]]
@@ -3204,7 +3204,7 @@ end
 function tbl_upv_1.GetAimAssistEnabled()
     --[[
       name: GetAimAssistEnabled
-      line: 1988
+      line: 1989
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
     ]]
@@ -3213,7 +3213,7 @@ end
 function tbl_upv_1.AimAssistDebug(a1, ...)
     --[[
       name: AimAssistDebug
-      line: 1992
+      line: 1993
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
     ]]
@@ -3222,7 +3222,7 @@ end
 function tbl_upv_1.GetYaw()
     --[[
       name: GetYaw
-      line: 1996
+      line: 1997
       upvalues:
         u2 (ref, index: 1)
     ]]
@@ -3231,7 +3231,7 @@ end
 function tbl_upv_1.GetPitch()
     --[[
       name: GetPitch
-      line: 2000
+      line: 2001
       upvalues:
         u3 (ref, index: 1)
     ]]
@@ -3241,7 +3241,7 @@ local u78 = nil
 local function caller(a1)
     --[[
       name: caller
-      line: 2007
+      line: 2008
       upvalues:
         u78 (ref,  index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
@@ -3261,7 +3261,7 @@ end
 function tbl_upv_1.SetLook(a1, a2)
     --[[
       name: SetLook
-      line: 2019
+      line: 2020
       upvalues:
         caller (copy, index: 1)
         u2 (ref,  index: 2)
@@ -3279,7 +3279,7 @@ end
 function tbl_upv_1.SetSensitivity(a1)
     --[[
       name: SetSensitivity
-      line: 2029
+      line: 2030
       upvalues:
         u8 (ref, index: 1)
     ]]
@@ -3291,7 +3291,7 @@ end
 function tbl_upv_1.AddTouchLook(a1)
     --[[
       name: AddTouchLook
-      line: 2037
+      line: 2038
       upvalues:
         zero_upv_1 (ref, index: 1)
     ]]
@@ -3300,7 +3300,7 @@ end
 function tbl_upv_1.GetSensitivity()
     --[[
       name: GetSensitivity
-      line: 2041
+      line: 2042
       upvalues:
         u8 (ref, index: 1)
     ]]
@@ -3309,7 +3309,7 @@ end
 function tbl_upv_1.SetFOV(a1)
     --[[
       name: SetFOV
-      line: 2046
+      line: 2047
       upvalues:
         u6 (ref, index: 1)
     ]]
@@ -3321,7 +3321,7 @@ end
 function tbl_upv_1.GetFOV()
     --[[
       name: GetFOV
-      line: 2052
+      line: 2053
       upvalues:
         u6 (ref, index: 1)
     ]]
@@ -3330,7 +3330,7 @@ end
 function tbl_upv_1.SetAimZoom(a1)
     --[[
       name: SetAimZoom
-      line: 2057
+      line: 2058
       upvalues:
         tbl_upv_2 (copy, index: 1)
     ]]
@@ -3342,7 +3342,7 @@ end
 function tbl_upv_1.SetAimSensitivity(a1)
     --[[
       name: SetAimSensitivity
-      line: 2064
+      line: 2065
       upvalues:
         tbl_upv_2 (copy, index: 1)
     ]]
@@ -3354,7 +3354,7 @@ end
 function tbl_upv_1.SetZoom(a1)
     --[[
       name: SetZoom
-      line: 2071
+      line: 2072
       upvalues:
         u7 (ref, index: 1)
     ]]
@@ -3366,7 +3366,7 @@ end
 function tbl_upv_1.SpectateNext(a1)
     --[[
       name: SpectateNext
-      line: 2078
+      line: 2079
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
@@ -3382,7 +3382,7 @@ end
 function tbl_upv_1.GetSpectateTarget()
     --[[
       name: GetSpectateTarget
-      line: 2083
+      line: 2084
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
@@ -3391,7 +3391,7 @@ end
 function tbl_upv_1.GetSpectateMode()
     --[[
       name: GetSpectateMode
-      line: 2088
+      line: 2089
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
@@ -3400,7 +3400,7 @@ end
 function tbl_upv_1.GetKiller()
     --[[
       name: GetKiller
-      line: 2093
+      line: 2094
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
@@ -3410,7 +3410,7 @@ tbl_upv_1.SpectateChanged = Spectate_upv_1.Changed
 function tbl_upv_1.PlayCinematic(a1, a2, a3)
     --[[
       name: PlayCinematic
-      line: 2106
+      line: 2107
       upvalues:
         u23 (ref,  index: 1)
         u25 (ref,  index: 2)
@@ -3461,7 +3461,7 @@ end
 function tbl_upv_1.StopCinematic(a1)
     --[[
       name: StopCinematic
-      line: 2127
+      line: 2128
       upvalues:
         u25 (ref, index: 1)
         u26 (ref, index: 2)
@@ -3472,7 +3472,7 @@ end
 function tbl_upv_1.IsCinematic()
     --[[
       name: IsCinematic
-      line: 2132
+      line: 2133
       upvalues:
         u25 (ref, index: 1)
     ]]
@@ -3482,7 +3482,7 @@ end
 function tbl_upv_1.SetEnabled(a1)
     --[[
       name: SetEnabled
-      line: 2137
+      line: 2138
       upvalues:
         u9 (ref,  index: 1)
         Workspace_upv_1 (copy, index: 2)
@@ -3543,7 +3543,7 @@ end
 function tbl_upv_1.IsEnabled()
     --[[
       name: IsEnabled
-      line: 2160
+      line: 2161
       upvalues:
         u9 (ref, index: 1)
     ]]
@@ -3552,7 +3552,7 @@ end
 function tbl_upv_1.DebugOcclusion(a1)
     --[[
       name: DebugOcclusion
-      line: 2167
+      line: 2168
       upvalues:
         Occlusion_upv_1 (copy, index: 1)
     ]]
@@ -3562,7 +3562,7 @@ tbl_upv_1.FrameLog = nil
 function tbl_upv_1.DebugFrames(a1)
     --[[
       name: DebugFrames
-      line: 2175
+      line: 2176
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -3576,7 +3576,7 @@ end
 function tbl_upv_1.GetDrawnRoot()
     --[[
       name: GetDrawnRoot
-      line: 2188
+      line: 2189
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
@@ -3585,7 +3585,7 @@ end
 function tbl_upv_1.Drawn(a1)
     --[[
       name: Drawn
-      line: 2192
+      line: 2193
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
@@ -3594,7 +3594,7 @@ end
 function tbl_upv_1.GetDrawnModel()
     --[[
       name: GetDrawnModel
-      line: 2196
+      line: 2197
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
@@ -3604,7 +3604,7 @@ tbl_upv_1.DrawnChanged = Smoothing_upv_1.DrawnChanged
 function tbl_upv_1.SmoothingTrace(a1)
     --[[
       name: SmoothingTrace
-      line: 2204
+      line: 2205
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
@@ -3617,7 +3617,7 @@ end
 function tbl_upv_1.DebugStats()
     --[[
       name: DebugStats
-      line: 2209
+      line: 2210
       upvalues:
         u20 (ref,  index: 1)
         u17 (ref,  index: 2)
@@ -3681,7 +3681,7 @@ if u1 and LocalPlayer_upv_1 then
                 if type(value_38) == "function" then
                     tbl_upv_1[key_upv_16] = function(...)
                         --[[
-                          line: 2257
+                          line: 2258
                           upvalues:
                             TribesCameraBridge_upv_1 (copy, index: 1)
                             key_upv_16 (copy, index: 2)
@@ -3696,7 +3696,7 @@ if u1 and LocalPlayer_upv_1 then
             local u79 = table.clone(tbl_upv_1)
             v254.OnInvoke = function(a1, ...)
                 --[[
-                  line: 2266
+                  line: 2267
                   upvalues:
                     u79 (copy, index: 1)
                 ]]
@@ -3715,7 +3715,7 @@ if u1 and LocalPlayer_upv_1 then
         local u79 = table.clone(tbl_upv_1)
         v254.OnInvoke = function(a1, ...)
             --[[
-              line: 2266
+              line: 2267
               upvalues:
                 u79 (copy, index: 1)
             ]]

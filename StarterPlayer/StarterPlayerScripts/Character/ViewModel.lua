@@ -42,6 +42,16 @@ tbl_upv_2.swayMax = 9
 tbl_upv_2.swayHz = 5
 tbl_upv_2.swayDamp = 0.75
 tbl_upv_2.swayShift = 0.15
+tbl_upv_2.mvX = 0.0016
+tbl_upv_2.mvZ = 8e-04
+tbl_upv_2.mvRoll = 0.2
+tbl_upv_2.mvYaw = 0.1
+tbl_upv_2.mvPitch = 0.08
+tbl_upv_2.mvMax = 1.4
+tbl_upv_2.mvRun = 21
+tbl_upv_2.mvHz = 4
+tbl_upv_2.mvDamp = 0.55
+tbl_upv_2.mvAimed = 0.35
 tbl_upv_2.kickHz = 9
 tbl_upv_2.kickDamp = 0.5
 tbl_upv_2.equipHz = 4.2
@@ -138,7 +148,7 @@ local u2 = nil
 local function cfgFor(a1)
     --[[
       name: cfgFor
-      line: 406
+      line: 412
       upvalues:
         tbl_upv_3 (copy, index: 1)
     ]]
@@ -147,7 +157,7 @@ end
 local function withStock(a1)
     --[[
       name: withStock
-      line: 500
+      line: 506
     ]]
     local stock_1 = a1.stock
     if not stock_1 then
@@ -163,7 +173,7 @@ end
 local function rodOf(a1, a2, a3)
     --[[
       name: rodOf
-      line: 533
+      line: 539
     ]]
     local v2 = a1:FindFirstChild("Ramrod", true)
     if v2 and v2:IsA("BasePart") and a3 then
@@ -182,7 +192,7 @@ end
 local function mirrorX(a1)
     --[[
       name: mirrorX
-      line: 572
+      line: 578
     ]]
     local v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14 = a1:GetComponents()
     return CFrame.new(-v3, v4, v5, v6, -v7, -v8, -v9, v10, v11, -v12, v13, v14)
@@ -190,7 +200,7 @@ end
 local function hammerOf(a1, a2, a3, a4, a5)
     --[[
       name: hammerOf
-      line: 516
+      line: 522
     ]]
     local v15 = a1:FindFirstChild(a3 or "Hammer", true)
     local v16 = a2:FindFirstChild(a4 or "HammerPivot")
@@ -208,7 +218,7 @@ end
 local function canonical(a1, a2, a3, a4, a5, a6, a7)
     --[[
       name: canonical
-      line: 423
+      line: 429
     ]]
     if a1 == "Gauntlets" then
         return CFrame.identity, nil
@@ -216,7 +226,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
     local function inGrip_1(a8)
         --[[
           name: inGrip
-          line: 427
+          line: 433
           upvalues:
             a4 (copy, index: 1)
             a3 (copy, index: 2)
@@ -226,7 +236,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
     local function axisInGrip_1(a9)
         --[[
           name: axisInGrip
-          line: 430
+          line: 436
           upvalues:
             a4 (copy, index: 1)
         ]]
@@ -245,7 +255,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
                     v21,
                     function(a10, a11)
                         --[[
-                          line: 450
+                          line: 456
                         ]]
                         return a11[1] < a10[1]
                     end
@@ -304,7 +314,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
                         v21,
                         function(a10, a11)
                             --[[
-                              line: 450
+                              line: 456
                             ]]
                             return a11[1] < a10[1]
                         end
@@ -356,7 +366,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
                     v21,
                     function(a10, a11)
                         --[[
-                          line: 450
+                          line: 456
                         ]]
                         return a11[1] < a10[1]
                     end
@@ -412,7 +422,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
                     v21,
                     function(a10, a11)
                         --[[
-                          line: 450
+                          line: 456
                         ]]
                         return a11[1] < a10[1]
                     end
@@ -471,7 +481,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
                         v21,
                         function(a10, a11)
                             --[[
-                              line: 450
+                              line: 456
                             ]]
                             return a11[1] < a10[1]
                         end
@@ -523,7 +533,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
                     v21,
                     function(a10, a11)
                         --[[
-                          line: 450
+                          line: 456
                         ]]
                         return a11[1] < a10[1]
                     end
@@ -575,7 +585,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
                 v21,
                 function(a10, a11)
                     --[[
-                      line: 450
+                      line: 456
                     ]]
                     return a11[1] < a10[1]
                 end
@@ -634,7 +644,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
                     v21,
                     function(a10, a11)
                         --[[
-                          line: 450
+                          line: 456
                         ]]
                         return a11[1] < a10[1]
                     end
@@ -686,7 +696,7 @@ local function canonical(a1, a2, a3, a4, a5, a6, a7)
                 v21,
                 function(a10, a11)
                     --[[
-                      line: 450
+                      line: 456
                     ]]
                     return a11[1] < a10[1]
                 end
@@ -753,7 +763,7 @@ end
 local function prepare(a1, a2)
     --[[
       name: prepare
-      line: 577
+      line: 583
       upvalues:
         tbl_upv_6 (copy, index: 1)
         tbl_upv_3 (copy, index: 2)
@@ -806,7 +816,7 @@ local function prepare(a1, a2)
         local function gripRelNow_1()
             --[[
               name: gripRelNow
-              line: 611
+              line: 617
               upvalues:
                 u4 (copy, index: 1)
                 PrimaryPart_upv_1 (copy, index: 2)
@@ -962,7 +972,7 @@ local function prepare(a1, a2)
         local function asOffsets_1(a3)
             --[[
               name: asOffsets
-              line: 711
+              line: 717
               upvalues:
                 BladeClips_upv_1 (copy, index: 1)
                 u7 (copy, index: 2)
@@ -1049,7 +1059,7 @@ local function prepare(a1, a2)
         pt_1 = function(a4)
             --[[
               name: pt
-              line: 773
+              line: 779
               upvalues:
                 PrimaryPart_upv_1 (copy, index: 1)
                 u6 (copy, index: 2)
@@ -1086,7 +1096,7 @@ local function prepare(a1, a2)
         pt_1 = function(a5)
             --[[
               name: pt
-              line: 783
+              line: 789
               upvalues:
                 PrimaryPart_upv_1 (copy, index: 1)
                 u6 (copy, index: 2)
@@ -1139,9 +1149,11 @@ local u10 = resetState.new(0, tbl_upv_2.airHz, tbl_upv_2.airDamp)
 local u11 = resetState.new(0, tbl_upv_2.airHz, tbl_upv_2.airDamp)
 local u12 = resetState.new(0, tbl_upv_2.landHz, tbl_upv_2.landDamp)
 local u13 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.swayHz, tbl_upv_2.swayDamp)
-local u14 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.kickHz, tbl_upv_2.kickDamp)
-local u15 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.kickHz, tbl_upv_2.kickDamp)
-local u16 = resetState.new(0, tbl_upv_2.equipHz, tbl_upv_2.equipDamp)
+local u14 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.mvHz, tbl_upv_2.mvDamp)
+local u15 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.mvHz, tbl_upv_2.mvDamp)
+local u16 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.kickHz, tbl_upv_2.kickDamp)
+local u17 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.kickHz, tbl_upv_2.kickDamp)
+local u18 = resetState.new(0, tbl_upv_2.equipHz, tbl_upv_2.equipDamp)
 local tbl_upv_15 = {}
 tbl_upv_15.shown = nil
 tbl_upv_15.wantId = nil
@@ -1246,14 +1258,14 @@ tbl_upv_15.refreshGlintAt = nil
 tbl_upv_15.refreshFF = nil
 tbl_upv_15.leftOutAt = -10
 tbl_upv_15.leftSeenOut = false
-local u17 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.retHz, tbl_upv_2.retDamp)
-local u18 = resetState.new(0, 16, 0.45)
-local u19 = resetState.new(0, 14, 0.4)
-local u20 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.retHz, tbl_upv_2.retDamp)
+local u19 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.retHz, tbl_upv_2.retDamp)
+local u20 = resetState.new(0, 16, 0.45)
+local u21 = resetState.new(0, 14, 0.4)
+local u22 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.retHz, tbl_upv_2.retDamp)
 local function startAction(a1, a2, a3)
     --[[
       name: startAction
-      line: 945
+      line: 955
       upvalues:
         tbl_upv_5 (copy, index: 1)
         tbl_upv_15 (copy, index: 2)
@@ -1270,18 +1282,18 @@ end
 local function rise()
     --[[
       name: rise
-      line: 956
+      line: 966
       upvalues:
-        u16 (copy, index: 1)
+        u18 (copy, index: 1)
     ]]
-    u16.value = -1
-    u16.velocity = 0
-    u16.target = 0
+    u18.value = -1
+    u18.velocity = 0
+    u18.target = 0
 end
 local function hasClip(a1)
     --[[
       name: hasClip
-      line: 987
+      line: 997
       upvalues:
         tbl_upv_15 (copy, index: 1)
     ]]
@@ -1291,7 +1303,7 @@ end
 local function clipTime(a1)
     --[[
       name: clipTime
-      line: 993
+      line: 1003
       upvalues:
         tbl_upv_15 (copy, index: 1)
     ]]
@@ -1300,7 +1312,7 @@ end
 local function smooth(a1)
     --[[
       name: smooth
-      line: 1000
+      line: 1010
     ]]
     local v77 = math.clamp(a1, 0, 1)
     return (v77 * v77) * (3 - (v77 * 2))
@@ -1308,11 +1320,11 @@ end
 local function startClip(a1, a2, a3, a4)
     --[[
       name: startClip
-      line: 962
+      line: 972
       upvalues:
         tbl_upv_15 (copy, index: 1)
-        u17 (copy, index: 2)
-        u20 (copy, index: 3)
+        u19 (copy, index: 2)
+        u22 (copy, index: 3)
     ]]
     local v78
     if tbl_upv_15.shown then
@@ -1353,14 +1365,14 @@ local function startClip(a1, a2, a3, a4)
         v81 = 1
     end
     tbl_upv_15.clipScale = v81
-    u17:Snap(Vector3.new(0, 0, 0))
-    u20:Snap(Vector3.new(0, 0, 0))
+    u19:Snap(Vector3.new(0, 0, 0))
+    u22:Snap(Vector3.new(0, 0, 0))
     return true
 end
 local function evalKeys(a1, a2)
     --[[
       name: evalKeys
-      line: 1270
+      line: 1281
     ]]
     local v82 = #a1
     if a2 <= a1[1][1] then
@@ -1385,14 +1397,14 @@ end
 local function wrap(a1)
     --[[
       name: wrap
-      line: 1286
+      line: 1297
     ]]
     return ((a1 + math.pi) % math.tau) - math.pi
 end
 local function evalTrack(a1, a2)
     --[[
       name: evalTrack
-      line: 552
+      line: 558
     ]]
     if a2 <= a1[1][1] then
         return a1[1][2]
@@ -1414,11 +1426,11 @@ local function evalTrack(a1, a2)
         return a1[#a1][2]
     end
 end
-local u21 = nil
-local u22 = RaycastParams.new()
-u22.FilterType = Enum.RaycastFilterType.Exclude
-u22.RespectCanCollide = true
 local u23 = nil
+local u24 = RaycastParams.new()
+u24.FilterType = Enum.RaycastFilterType.Exclude
+u24.RespectCanCollide = true
+local u25 = nil
 local tbl_upv_16 = {}
 local tbl_upv_17 = {}
 local tbl_upv_18 = {}
@@ -1426,11 +1438,11 @@ local tbl_upv_19 = {}
 local tbl_upv_20 = {}
 local tbl_upv_21 = {}
 local tbl_upv_22 = {}
-local u24 = nil
+local u26 = nil
 local function arrowFor(a1, a2)
     --[[
       name: arrowFor
-      line: 1977
+      line: 2008
       upvalues:
         tbl_upv_22 (copy, index: 1)
         ReplicatedStorage_upv_1 (copy, index: 2)
@@ -1496,7 +1508,7 @@ local tbl_upv_25 = {}
 local function stringPart(a1)
     --[[
       name: stringPart
-      line: 2054
+      line: 2085
       upvalues:
         tbl_upv_25 (copy, index: 1)
         tbl_upv_24 (copy, index: 2)
@@ -1520,7 +1532,7 @@ end
 local function hideStrings()
     --[[
       name: hideStrings
-      line: 2071
+      line: 2102
       upvalues:
         tbl_upv_25 (copy, index: 1)
     ]]
@@ -1531,7 +1543,7 @@ end
 local function drawBolt(a1, a2, a3)
     --[[
       name: drawBolt
-      line: 2029
+      line: 2060
       upvalues:
         tbl_upv_15 (copy, index: 1)
         arrowFor (copy, index: 2)
@@ -1557,13 +1569,13 @@ end
 local function drawArrow(a1, a2, a3, a4)
     --[[
       name: drawArrow
-      line: 2077
+      line: 2108
       upvalues:
         tbl_upv_15 (copy, index: 1)
         arrowFor (copy, index: 2)
         u2 (ref,  index: 3)
         drawBolt (copy, index: 4)
-        u24 (ref,  index: 5)
+        u26 (ref,  index: 5)
         tbl_upv_25 (copy, index: 6)
         tbl_upv_24 (copy, index: 7)
     ]]
@@ -1585,11 +1597,11 @@ local function drawArrow(a1, a2, a3, a4)
     else
         v106 = drawBolt(a1, a2, a4)
     end
-    if v106 ~= u24 then
-        if u24 then
-            u24.Parent = nil
+    if v106 ~= u26 then
+        if u26 then
+            u26.Parent = nil
         end
-        u24 = v106
+        u26 = v106
     end
     local frame_2 = tbl_upv_15.frame
     if frame_2 then
@@ -1712,7 +1724,7 @@ local tbl_upv_27 = {Hatchets = true, Gauntlets = true, Spear = true}
 local function itemPoint(a1, a2, a3)
     --[[
       name: itemPoint
-      line: 2177
+      line: 2208
       upvalues:
         tbl_upv_15 (copy, index: 1)
     ]]
@@ -1757,13 +1769,13 @@ end
 local function viewEffects(a1, a2, a3)
     --[[
       name: viewEffects
-      line: 2232
+      line: 2263
       upvalues:
         ViewFx_upv_1 (copy, index: 1)
         tbl_upv_15 (copy, index: 2)
         itemPoint (copy, index: 3)
         tbl_upv_2 (copy, index: 4)
-        u24 (ref,  index: 5)
+        u26 (ref,  index: 5)
         Sfx_upv_1 (copy, index: 6)
         tbl_upv_26 (copy, index: 7)
     ]]
@@ -1917,11 +1929,11 @@ local function viewEffects(a1, a2, a3)
                     v138 = v150.Position
                 end
                 v135 = v138 + v150.LookVector * (((a3.cfg.stock ~= nil) and (0.288 - a3.brace)) or (a3.cfg.len * 0.5))
-                if a3.cfg.stock == nil or not (tbl_upv_15.arrowTip) or not (u24) then
+                if a3.cfg.stock == nil or not (tbl_upv_15.arrowTip) or not (u26) then
                     ViewFx_upv_1.Play("glint", CFrame.lookAt(v135, v135 + v150.LookVector))
                     continue
                 end
-                if u24.Parent then
+                if u26.Parent then
                     v135 = tbl_upv_15.arrowTip
                 end
                 ViewFx_upv_1.Play("glint", CFrame.lookAt(v135, v135 + v150.LookVector))
@@ -1958,7 +1970,7 @@ end
 local function drawStreak(a1, a2)
     --[[
       name: drawStreak
-      line: 2198
+      line: 2229
       upvalues:
         tbl_upv_15 (copy, index: 1)
         tbl_upv_27 (copy, index: 2)
@@ -1976,41 +1988,41 @@ local function drawStreak(a1, a2)
         local clipScale_upv_1 = tbl_upv_15.clipScale
         local v155 = tbl_upv_15.now - tbl_upv_15.clipT0
         if not (v155 < v154[1] * clipScale_upv_1) and not ((v154[2] * clipScale_upv_1) + 0.035 < v155) then
-            local u25 = tbl_upv_15.layerPos + Vector3.new(0, 0, tbl_upv_15.wallPush)
+            local u27 = tbl_upv_15.layerPos + Vector3.new(0, 0, tbl_upv_15.wallPush)
             local layerRot_1 = tbl_upv_15.layerRot
-            local u26 = CFrame.fromEulerAnglesYXZ(layerRot_1.X, layerRot_1.Y, layerRot_1.Z)
+            local u28 = CFrame.fromEulerAnglesYXZ(layerRot_1.X, layerRot_1.Y, layerRot_1.Z)
             local leftClip_upv_1 = clip_upv_1.leftClip
-            local u27 = (clip_upv_1.smearLeft == true) and ((a2.leftFist ~= nil) and (leftClip_upv_1 ~= nil))
+            local u29 = (clip_upv_1.smearLeft == true) and ((a2.leftFist ~= nil) and (leftClip_upv_1 ~= nil))
             local v156 = math.min(v155, v154[2] * clipScale_upv_1)
             local v157 = math.max(v154[1] * clipScale_upv_1, v155 - 0.035)
             local Streak_1 = ViewFx_upv_1.Streak
             local function tipAt_1(a3)
                 --[[
                   name: tipAt
-                  line: 2215
+                  line: 2246
                   upvalues:
-                    u27 (copy, index: 1)
+                    u29 (copy, index: 1)
                     BladeClips_upv_1 (copy, index: 2)
                     leftClip_upv_1 (copy, index: 3)
                     tbl_upv_15 (copy, index: 4)
                     clipScale_upv_1 (copy, index: 5)
-                    u25 (copy, index: 6)
+                    u27 (copy, index: 6)
                     a2 (copy, index: 7)
                     a1 (copy, index: 8)
-                    u26 (copy, index: 9)
+                    u28 (copy, index: 9)
                     clip_upv_1 (copy, index: 10)
                 ]]
-                if u27 then
+                if u29 then
                     local v158, v159, v160 = nil, nil, nil
-                    local v161, v158, v162, v163, v159, v164, v160, v165, v166, v167, v168, v169 = BladeClips_upv_1.Eval(leftClip_upv_1, tbl_upv_15.leftFrom, a3, clipScale_upv_1, tbl_upv_15.restFrame, tbl_upv_15.leftFromVel):GetComponents()
-                    local v170 = CFrame.new(-v161, v158, v162, v163, -v159, -v164, -v160, v165, v166, -v167, v168, v169)
-                    local v171 = v170.Position + u25
+                    local v161, v162, v158, v159, v163, v164, v165, v166, v160, v167, v168, v169 = BladeClips_upv_1.Eval(leftClip_upv_1, tbl_upv_15.leftFrom, a3, clipScale_upv_1, tbl_upv_15.restFrame, tbl_upv_15.leftFromVel):GetComponents()
+                    local v170 = CFrame.new(-v161, v162, v158, v159, -v163, -v164, -v165, v166, v160, -v167, v168, v169)
+                    local v171 = v170.Position + u27
                     local tipCanon_1 = a2.tipCanon
-                    return Vector3.new(v171.X, v171.Y, v171.Z * a1) + (u26 * v170.Rotation):VectorToWorldSpace(Vector3.new(-tipCanon_1.X, tipCanon_1.Y, tipCanon_1.Z))
+                    return Vector3.new(v171.X, v171.Y, v171.Z * a1) + (u28 * v170.Rotation):VectorToWorldSpace(Vector3.new(-tipCanon_1.X, tipCanon_1.Y, tipCanon_1.Z))
                 else
                     local v172 = BladeClips_upv_1.Eval(clip_upv_1, tbl_upv_15.clipFrom, a3, clipScale_upv_1, tbl_upv_15.restFrame, tbl_upv_15.clipFromVel)
-                    local v173 = v172.Position + u25
-                    return Vector3.new(v173.X, v173.Y, v173.Z * a1) + (u26 * v172.Rotation):VectorToWorldSpace(a2.tipCanon)
+                    local v173 = v172.Position + u27
+                    return Vector3.new(v173.X, v173.Y, v173.Z * a1) + (u28 * v172.Rotation):VectorToWorldSpace(a2.tipCanon)
                 end
             end
             local v174 = tipAt_1(v157)
@@ -2026,7 +2038,7 @@ end
 local function drawBlade(a1, a2, a3, a4)
     --[[
       name: drawBlade
-      line: 1903
+      line: 1934
       upvalues:
         BladeSmear_upv_1 (copy, index: 1)
         tbl_upv_15 (copy, index: 2)
@@ -2112,17 +2124,17 @@ end
 local function place(a1, a2, a3, a4, a5, a6)
     --[[
       name: place
-      line: 2335
+      line: 2366
       upvalues:
-        u21 (ref,  index: 1)
+        u23 (ref,  index: 1)
         BladeSmear_upv_1 (copy, index: 2)
         tbl_upv_25 (copy, index: 3)
-        u24 (ref,  index: 4)
+        u26 (ref,  index: 4)
         tbl_upv_15 (copy, index: 5)
         ViewFx_upv_1 (copy, index: 6)
         tbl_upv_2 (copy, index: 7)
-        u18 (copy, index: 8)
-        u19 (copy, index: 9)
+        u20 (copy, index: 8)
+        u21 (copy, index: 9)
         drawBlade (copy, index: 10)
         drawArrow (copy, index: 11)
         viewEffects (copy, index: 12)
@@ -2134,11 +2146,11 @@ local function place(a1, a2, a3, a4, a5, a6)
     else
         v192 = nil
     end
-    if v192 ~= u21 then
-        if u21 then
-            u21.Parent = nil
+    if v192 ~= u23 then
+        if u23 then
+            u23.Parent = nil
         end
-        u21 = v192
+        u23 = v192
     end
     if a6 then
         local v193, v194, v195, v196, v197, v198 = nil, nil, nil, nil, nil, nil
@@ -2189,12 +2201,12 @@ local function place(a1, a2, a3, a4, a5, a6)
             end
             v196 = a6.hammer
             if v196 then
-                local v218 = math.clamp(u18.value, -0.2, 1.25)
+                local v218 = math.clamp(u20.value, -0.2, 1.25)
                 v196.part.CFrame = ((a6.handle.CFrame * CFrame.new(v196.pivot)) * CFrame.fromAxisAngle(v196.axis, (v218 * v196.fired) * 0.017453292519943295)) * CFrame.new(-v196.pivot) * v196.rest
             end
             v197 = a6.frizzen
             if v197 then
-                local v219 = math.clamp(u19.value, -0.1, 1.2)
+                local v219 = math.clamp(u21.value, -0.1, 1.2)
                 v197.part.CFrame = ((a6.handle.CFrame * CFrame.new(v197.pivot)) * CFrame.fromAxisAngle(v197.axis, (v219 * v197.fired) * 0.017453292519943295)) * CFrame.new(-v197.pivot) * v197.rest
             end
             v198 = a6.rod
@@ -2222,7 +2234,7 @@ local function place(a1, a2, a3, a4, a5, a6)
             local v221 = nil
             if tbl_upv_15.leftVanishAt and a6.leftFist and tbl_upv_15.leftFrame then
                 v221 = a6.leftFist.part.Position
-            elseif u24 and u24.Parent then
+            elseif u26 and u26.Parent then
                 if a6.kind ~= "Bow" then
                     if a6.kind ~= "Sling" and a6.id ~= "bolas" or not (a6.tipAtt) then
                         if a6.muzzle then
@@ -2237,7 +2249,7 @@ local function place(a1, a2, a3, a4, a5, a6)
                     end
                     v221 = a6.tipAtt.WorldPosition
                 else
-                    local v223, v224 = u24:GetBoundingBox()
+                    local v223, v224 = u26:GetBoundingBox()
                     local Position_2 = v223.Position
                     local v225
                     if tbl_upv_15.frame then
@@ -2271,9 +2283,9 @@ local function place(a1, a2, a3, a4, a5, a6)
     for _, value_20 in tbl_upv_25 do
         value_20.Parent = nil
     end
-    if u24 then
-        u24.Parent = nil
-        u24 = nil
+    if u26 then
+        u26.Parent = nil
+        u26 = nil
     end
     if tbl_upv_15.embers then
         tbl_upv_15.embers = false
@@ -2288,38 +2300,38 @@ end
 local function hide()
     --[[
       name: hide
-      line: 2458
+      line: 2489
       upvalues:
-        u21 (ref,  index: 1)
+        u23 (ref,  index: 1)
         tbl_upv_25 (copy, index: 2)
-        u24 (ref,  index: 3)
+        u26 (ref,  index: 3)
         BladeSmear_upv_1 (copy, index: 4)
         ViewFx_upv_1 (copy, index: 5)
         tbl_upv_15 (copy, index: 6)
     ]]
-    if u21 then
-        u21.Parent = nil
-        u21 = nil
+    if u23 then
+        u23.Parent = nil
+        u23 = nil
     end
     for _, value_21 in tbl_upv_25 do
         value_21.Parent = nil
     end
-    if u24 then
-        u24.Parent = nil
-        u24 = nil
+    if u26 then
+        u26.Parent = nil
+        u26 = nil
     end
     BladeSmear_upv_1.Hide()
     ViewFx_upv_1.Hide()
     tbl_upv_15.embers = false
     tbl_upv_15.fuse = 0
 end
-local u28 = false
-local u29 = false
+local u30 = false
+local u31 = false
 local UserInputService_upv_1 = game:GetService("UserInputService")
 local function touchPreferred()
     --[[
       name: touchPreferred
-      line: 2480
+      line: 2511
     ]]
     local success_1, v226 = pcall(function() end)
     local v227 = success_1 and ((typeof(v226) == "EnumItem") and (v226.Name == "Touch"))
@@ -2328,7 +2340,7 @@ end
 local function drawnRootY(a1)
     --[[
       name: drawnRootY
-      line: 2487
+      line: 2518
     ]]
     local success_2, v228 = pcall(function() end)
     if success_2 and typeof(v228) == "CFrame" then
@@ -2339,14 +2351,14 @@ end
 local function liveInput(a1)
     --[[
       name: liveInput
-      line: 2497
+      line: 2528
       upvalues:
         Workspace_upv_1 (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
         Camera_upv_1 (copy, index: 3)
         Combat_upv_1 (copy, index: 4)
-        u23 (ref,  index: 5)
-        u22 (copy, index: 6)
+        u25 (ref,  index: 5)
+        u24 (copy, index: 6)
     ]]
     local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
     local Character_1 = LocalPlayer_upv_1.Character
@@ -2377,8 +2389,8 @@ local function liveInput(a1)
     local v236 = nil
     local v237 = nil
     if v230 then
-        if u23 ~= Character_1 then
-            u23 = Character_1
+        if u25 ~= Character_1 then
+            u25 = Character_1
             local tbl_29 = {Character_1}
             for v244, value_22 in {"FX", "Projectiles"} do
                 local v238 = Workspace_upv_1:FindFirstChild(value_22)
@@ -2386,9 +2398,9 @@ local function liveInput(a1)
                     table.insert(tbl_29, v238)
                 end
             end
-            u22.FilterDescendantsInstances = tbl_29
+            u24.FilterDescendantsInstances = tbl_29
         end
-        v237 = Workspace_upv_1:Spherecast(CFrame_2.Position, 0.15, CFrame_2.LookVector * 1.8, u22)
+        v237 = Workspace_upv_1:Spherecast(CFrame_2.Position, 0.15, CFrame_2.LookVector * 1.8, u24)
         if v237 then
             v236 = v237.Distance
         else
@@ -2400,7 +2412,7 @@ local function liveInput(a1)
     if Camera_upv_1.GetViewBob then
         Camera_upv_1.GetViewBob()
     end
-    local tbl_30 = {visible = 0, sliding = 0, charges = 0, bobAmount = 0, cam = 0, id = 0, grounded = 0, touch = 0, aiming = 0, rootY = 0, fov = 0, wall = 0, kind = 0, offHandOut = 0, bobPhase = 0}
+    local tbl_30 = {visible = 0, sliding = 0, charges = 0, bobAmount = 0, cam = 0, id = 0, grounded = 0, vel = 0, touch = 0, aiming = 0, rootY = 0, fov = 0, wall = 0, kind = 0, offHandOut = 0, bobPhase = 0}
     tbl_30.dt = a1
     tbl_30.now = os.clock()
     local v241 = v230 and ((Character_1.Health > 0) and (LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true))
@@ -2419,7 +2431,7 @@ local function liveInput(a1)
     local success_3, v242 = pcall(
         function()
             --[[
-              line: 2488
+              line: 2519
               upvalues:
                 Camera_upv_1 (copy, index: 1)
             ]]
@@ -2451,39 +2463,42 @@ local function liveInput(a1)
     local success_4, v243 = pcall(function() end)
     v241 = success_4 and ((typeof(v243) == "EnumItem") and (v243.Name == "Touch"))
     tbl_30.touch = v241
+    tbl_30.vel = Character_1.AssemblyLinearVelocity
     return tbl_30, CurrentCamera_1
 end
-local u30 = 0
-local u31 = 0
 local u32 = 0
+local u33 = 0
+local u34 = 0
 local function step(a1)
     --[[
       name: step
-      line: 1292
+      line: 1303
       upvalues:
         tbl_upv_15 (copy, index: 1)
         tbl_upv_3 (copy, index: 2)
         tbl_upv_2 (copy, index: 3)
         prepare (copy, index: 4)
-        u17 (copy, index: 5)
-        u20 (copy, index: 6)
+        u19 (copy, index: 5)
+        u22 (copy, index: 6)
         ViewFx_upv_1 (copy, index: 7)
-        u18 (copy, index: 8)
-        u19 (copy, index: 9)
-        u16 (copy, index: 10)
+        u20 (copy, index: 8)
+        u21 (copy, index: 9)
+        u18 (copy, index: 10)
         u12 (copy, index: 11)
         u13 (copy, index: 12)
-        u14 (copy, index: 13)
-        u15 (copy, index: 14)
+        u16 (copy, index: 13)
+        u17 (copy, index: 14)
         u8 (copy, index: 15)
         u9 (copy, index: 16)
         u10 (copy, index: 17)
         u11 (copy, index: 18)
-        tbl_upv_5 (copy, index: 19)
-        evalKeys (copy, index: 20)
-        startClip (copy, index: 21)
-        BladeClips_upv_1 (copy, index: 22)
-        evalTrack (copy, index: 23)
+        u14 (copy, index: 19)
+        u15 (copy, index: 20)
+        tbl_upv_5 (copy, index: 21)
+        evalKeys (copy, index: 22)
+        startClip (copy, index: 23)
+        BladeClips_upv_1 (copy, index: 24)
+        evalTrack (copy, index: 25)
     ]]
     local v244 = math.clamp(a1.dt, 0.004166666666666667, 0.1)
     local now_1 = a1.now
@@ -2523,8 +2538,8 @@ local function step(a1)
         tbl_upv_15.lastFrame = nil
         tbl_upv_15.rawVel = nil
         tbl_upv_15.clipName = nil
-        u17:Snap(Vector3.new(0, 0, 0))
-        u20:Snap(Vector3.new(0, 0, 0))
+        u19:Snap(Vector3.new(0, 0, 0))
+        u22:Snap(Vector3.new(0, 0, 0))
         tbl_upv_15.block = false
         tbl_upv_15.parry = false
         tbl_upv_15.charge = false
@@ -2553,17 +2568,17 @@ local function step(a1)
         tbl_upv_15.boltIn = true
         tbl_upv_15.boltT0 = -10
         tbl_upv_15.hammerTarget = 0.5
-        u18:Snap(0.5)
+        u20:Snap(0.5)
         tbl_upv_15.frizzenTarget = 0
-        u19:Snap(0)
+        u21:Snap(0)
         if tbl_upv_15.shown then
             if tbl_upv_15.shown.drawFrom and tbl_upv_15.shown.clips and tbl_upv_15.shown.clips.draw then
-                u16:Snap(0)
+                u18:Snap(0)
                 tbl_upv_15.pendingDraw = "draw"
             else
-                u16.value = -1
-                u16.velocity = 0
-                u16.target = 0
+                u18.value = -1
+                u18.velocity = 0
+                u18.target = 0
             end
         end
     end
@@ -2640,7 +2655,7 @@ local function step(a1)
         v254 = v254 + ((v260 * 0.0028) + 0.0012)
         if v260 >= 1 and not tbl_upv_15.chargeFull then
             tbl_upv_15.chargeFull = true
-            u14:Impulse(Vector3.new(0, 1.5, 1.2000000476837158))
+            u16:Impulse(Vector3.new(0, 1.5, 1.2000000476837158))
             table.insert(tbl_upv_15.fxQueue, "headglint")
         end
         v258 = v264
@@ -2679,14 +2694,14 @@ local function step(a1)
             v259 = ((v267 >= 1) and (math.clamp(((now_1 - tbl_upv_15.drawT0) - tbl_upv_15.drawTime) / 0.5, 0.3, 1) * 7e-04)) or v259
             if (shown_2.kind == "Bow") and (v248.stock == nil) and v267 >= 0.5 and not (tbl_upv_15.drawHalf) then
                 tbl_upv_15.drawHalf = true
-                u14:Impulse(Vector3.new(0, -1.100000023841858, 0.8999999761581421))
-                u15:Impulse(Vector3.new(-3.4906585216522217, 0, 0))
+                u16:Impulse(Vector3.new(0, -1.100000023841858, 0.8999999761581421))
+                u17:Impulse(Vector3.new(-3.4906585216522217, 0, 0))
                 table.insert(tbl_upv_15.fxQueue, "sfx:Gun_Cock")
             end
             if v267 >= 1 and not tbl_upv_15.drawFull then
                 tbl_upv_15.drawFull = true
-                u14:Impulse(Vector3.new(0, -0.800000011920929, 0.6000000238418579))
-                u15:Impulse(Vector3.new(-2.268928050994873, 0, 0))
+                u16:Impulse(Vector3.new(0, -0.800000011920929, 0.6000000238418579))
+                u17:Impulse(Vector3.new(-2.268928050994873, 0, 0))
                 table.insert(tbl_upv_15.fxQueue, "fullglint")
             end
         end
@@ -2701,14 +2716,14 @@ local function step(a1)
         v254 = v254 + ((v272 * 0.003) + 0.001)
         if shown_2.id == "harpoon" and v272 >= 0.5 and not (tbl_upv_15.windHalf) then
             tbl_upv_15.windHalf = true
-            u14:Impulse(Vector3.new(0, -0.5, 0.4000000059604645))
+            u16:Impulse(Vector3.new(0, -0.5, 0.4000000059604645))
             table.insert(tbl_upv_15.fxQueue, "glint")
             table.insert(tbl_upv_15.fxQueue, "sfx:Crossbow_Crank")
         end
         if v272 >= 1 and not tbl_upv_15.windFull then
             tbl_upv_15.windFull = true
-            u14:Impulse(Vector3.new(0, -1.600000023841858, 1.2000000476837158))
-            u15:Impulse(Vector3.new(-2.7925267219543457, 0, 0))
+            u16:Impulse(Vector3.new(0, -1.600000023841858, 1.2000000476837158))
+            u17:Impulse(Vector3.new(-2.7925267219543457, 0, 0))
             table.insert(tbl_upv_15.fxQueue, "glint")
             table.insert(tbl_upv_15.fxQueue, ((shown_2.id == "harpoon") and "sfx:Crossbow_Ready") or (((shown_2.kind ~= "Bomb") and "sfx:Knife_Ready") or "sfx:Equip_Item"))
         end
@@ -2730,23 +2745,23 @@ local function step(a1)
         v258 = v278
     end
     local v279 = 0
-    local v280 = nil
+    local vel_1
     if tbl_upv_15.reload then
-        v280 = (now_1 - tbl_upv_15.reloadT0) / tbl_upv_15.reloadTime
-        if v280 >= 1.15 then
+        vel_1 = (now_1 - tbl_upv_15.reloadT0) / tbl_upv_15.reloadTime
+        if vel_1 >= 1.15 then
             tbl_upv_15.reload = false
             v248 = v279
         else
-            local v281 = math.clamp(v280 / 0.2, 0, 1)
-            local v282 = math.clamp((v280 - 0.78) / 0.22, 0, 1)
-            local v283 = (v281 * v281) * (3 - (v281 * 2)) * (1 - ((v282 * v282) * (3 - (v282 * 2))))
-            v253 = v253 + Vector3.new(-0.03999999910593033, -0.10000000149011612, 0.019999999552965164) * v283
-            local v284 = v258 + Vector3.new(0.48869219422340393, 0.41887903213500977, 0.593411922454834) * v283
-            if v280 > 0.25 then
-                v248 = v280 < 0.75 and 1 or v279
-                v258 = v284
+            local v280 = math.clamp(vel_1 / 0.2, 0, 1)
+            local v281 = math.clamp((vel_1 - 0.78) / 0.22, 0, 1)
+            local v282 = (v280 * v280) * (3 - (v280 * 2)) * (1 - ((v281 * v281) * (3 - (v281 * 2))))
+            v253 = v253 + Vector3.new(-0.03999999910593033, -0.10000000149011612, 0.019999999552965164) * v282
+            local v283 = v258 + Vector3.new(0.48869219422340393, 0.41887903213500977, 0.593411922454834) * v282
+            if vel_1 > 0.25 then
+                v248 = vel_1 < 0.75 and 1 or v279
+                v258 = v283
             else
-                v258, v248 = v284, v279
+                v258, v248 = v283, v279
             end
         end
     else
@@ -2758,97 +2773,113 @@ local function step(a1)
     end
     local wall_1 = a1.wall
     if wall_1 and wall_1 < shown_2.wallDist then
-        local v285 = math.clamp((shown_2.wallDist - wall_1) / math.max(shown_2.wallDist - tbl_upv_2.wallMin, 0.1), 0, 1)
-        v253 = v253 + tbl_upv_2.wallPos * v285
-        v258 = v258 + Vector3.new(shown_2.wallRot * v285, 0, 0)
+        local v284 = math.clamp((shown_2.wallDist - wall_1) / math.max(shown_2.wallDist - tbl_upv_2.wallMin, 0.1), 0, 1)
+        v253 = v253 + tbl_upv_2.wallPos * v284
+        v258 = v258 + Vector3.new(shown_2.wallRot * v284, 0, 0)
     end
-    local v286
+    local v285
     if (tbl_upv_15.useOutUntil) and (now_1 < tbl_upv_15.useOutUntil) then
-        v286 = 3.2
+        v285 = 3.2
     else
-        v286 = tbl_upv_2.poseHz
+        v285 = tbl_upv_2.poseHz
     end
-    u8.frequency = v286
+    u8.frequency = v285
     u9.frequency = u8.frequency
     u8.target = v253
     u9.target = v258
     u8:Update(v244)
     u9:Update(v244)
     local _ = math.clamp(-tbl_upv_15.vy * tbl_upv_2.airK, -tbl_upv_2.airMax, tbl_upv_2.airMax)
-    local v287 = math.clamp(-tbl_upv_15.vy * tbl_upv_2.airTiltK, -tbl_upv_2.airTiltMax, tbl_upv_2.airTiltMax) * 0.017453292519943295
+    local v286 = math.clamp(-tbl_upv_15.vy * tbl_upv_2.airTiltK, -tbl_upv_2.airTiltMax, tbl_upv_2.airTiltMax) * 0.017453292519943295
     if a1.grounded then
-        v280, v258 = 0, 0
-    else
-        v258 = v287
+        vel_1, v286 = 0, 0
     end
-    u10.target = v280
-    u11.target = v258
+    u10.target = vel_1
+    u11.target = v286
     u10:Update(v244)
     u11:Update(v244)
     u12:Update(v244)
     u13:Update(v244)
-    v280 = u13.value
-    local v288 = tbl_upv_2.swayMax * 0.017453292519943295
-    if v288 < v280.Magnitude then
-        u13.value = v280.Unit * v288
+    local value_23 = 0
+    local value_24 = 0
+    vel_1 = a1.vel
+    local v287 = nil
+    if vel_1 then
+        local RightVector_1 = a1.cam.RightVector
+        local LookVector_3 = a1.cam.LookVector
+        v287 = Vector3.new(RightVector_1.X, 0, RightVector_1.Z)
+        local v288 = Vector3.new(LookVector_3.X, 0, LookVector_3.Z)
+        if v287.Magnitude > 0.001 and v288.Magnitude > 0.001 then
+            value_23, value_24 = math.clamp(vel_1:Dot(v287.Unit) / tbl_upv_2.mvRun, -tbl_upv_2.mvMax, tbl_upv_2.mvMax), math.clamp(vel_1:Dot(v288.Unit) / tbl_upv_2.mvRun, -tbl_upv_2.mvMax, tbl_upv_2.mvMax)
+        end
     end
+    vel_1 = (((not (a1.aiming)) and 1) or (tbl_upv_2.mvAimed)) * tbl_upv_2.mvRun
+    u14.target = Vector3.new(-value_23 * tbl_upv_2.mvX, 0, math.abs(value_24) * tbl_upv_2.mvZ) * vel_1
+    u15.target = (Vector3.new(-value_24 * tbl_upv_2.mvPitch, value_23 * tbl_upv_2.mvYaw, -value_23 * tbl_upv_2.mvRoll) * vel_1) * 0.017453292519943295
     u14:Update(v244)
     u15:Update(v244)
-    u16:Update(v244)
-    u18.target = tbl_upv_15.hammerTarget
-    u18:Update(v244)
-    u19.target = tbl_upv_15.frizzenTarget
-    u19:Update(v244)
-    v253 = (now_1 * tbl_upv_2.idleHz) * 2 * math.pi
-    v280 = u8.value + Vector3.new((math.sin(v253 * 0.5) * tbl_upv_2.idlePos) * 0.6, math.sin(v253) * tbl_upv_2.idlePos, 0)
-    v258 = u9.value + Vector3.new(math.sin(v253 + 0.6) * tbl_upv_2.idleRot, 0, (math.sin(v253 * 0.5) * tbl_upv_2.idleRot) * 0.5) * 0.017453292519943295
-    v253 = a1.bobAmount
-    if v253 > 0 then
-        local bobPhase_1 = a1.bobPhase
-        local v289 = math.abs(math.cos(bobPhase_1)) - 0.64
-        v280, v258 = v280 + Vector3.new((math.sin(bobPhase_1) * tbl_upv_2.bobX) * v253, (-v289 * tbl_upv_2.bobY) * v253, 0), v258 + Vector3.new((v289 * tbl_upv_2.bobPitch) * v253, 0, (math.sin(bobPhase_1) * tbl_upv_2.bobRoll) * v253) * 0.017453292519943295
+    v258 = u13.value
+    v253 = tbl_upv_2.swayMax * 0.017453292519943295
+    if v253 < v258.Magnitude then
+        u13.value = v258.Unit * v253
     end
-    local v290 = v280 + Vector3.new(0, u10.value + (u12.value * tbl_upv_2.landDist), 0)
-    local v291 = v258 + Vector3.new(u11.value + (u12.value * 0.12), 0, 0)
-    v253 = u13.value
-    local v292 = v290 + Vector3.new(-v253.Y * tbl_upv_2.swayShift, v253.X * tbl_upv_2.swayShift, 0) + u14.value
-    local v293 = v291 + v253 + u15.value
+    u16:Update(v244)
+    u17:Update(v244)
+    u18:Update(v244)
+    u20.target = tbl_upv_15.hammerTarget
+    u20:Update(v244)
+    u21.target = tbl_upv_15.frizzenTarget
+    u21:Update(v244)
+    value_23 = (now_1 * tbl_upv_2.idleHz) * 2 * math.pi
+    v258 = u8.value + Vector3.new((math.sin(value_23 * 0.5) * tbl_upv_2.idlePos) * 0.6, math.sin(value_23) * tbl_upv_2.idlePos, 0)
+    v253 = u9.value + Vector3.new(math.sin(value_23 + 0.6) * tbl_upv_2.idleRot, 0, (math.sin(value_23 * 0.5) * tbl_upv_2.idleRot) * 0.5) * 0.017453292519943295
+    local bobAmount_1 = a1.bobAmount
+    if bobAmount_1 > 0 then
+        v285 = a1.bobPhase
+        local v289 = math.abs(math.cos(v285)) - 0.64
+        v258, v253 = v258 + Vector3.new((math.sin(v285) * tbl_upv_2.bobX) * bobAmount_1, (-v289 * tbl_upv_2.bobY) * bobAmount_1, 0), v253 + Vector3.new((v289 * tbl_upv_2.bobPitch) * bobAmount_1, 0, (math.sin(v285) * tbl_upv_2.bobRoll) * bobAmount_1) * 0.017453292519943295
+    end
+    local v290 = v258 + Vector3.new(0, u10.value + (u12.value * tbl_upv_2.landDist), 0)
+    local v291 = v253 + Vector3.new(u11.value + (u12.value * 0.12), 0, 0)
+    value_23 = u13.value
+    local v292 = v290 + Vector3.new(-value_23.Y * tbl_upv_2.swayShift, value_23.X * tbl_upv_2.swayShift, 0) + u14.value + u16.value
+    local v293 = (v291 + value_23) + u15.value + u17.value
     if v254 > 0 then
         v292 = v292 + Vector3.new(math.sin(now_1 * 84) * v254, math.sin((now_1 * 71) + 1) * v254, 0)
     end
-    v280 = ((v259 > 0) and (v292 + Vector3.new(math.sin(now_1 * 33) * v259, math.sin((now_1 * 27) + 1) * v259, 0))) or v292
+    v258 = ((v259 > 0) and (v292 + Vector3.new(math.sin(now_1 * 33) * v259, math.sin((now_1 * 27) + 1) * v259, 0))) or v292
     if a1.sliding then
         local slideShake_1 = tbl_upv_2.slideShake
-        local v294 = v280 + Vector3.new(math.sin(now_1 * 53) * slideShake_1, math.sin((now_1 * 71) + 2) * slideShake_1, 0)
-        v258, v280 = v293 + Vector3.new(0, 0, (math.sin(now_1 * 39) * 1.6) * 0.017453292519943295), v294
+        local v294 = v258 + Vector3.new(math.sin(now_1 * 53) * slideShake_1, math.sin((now_1 * 71) + 2) * slideShake_1, 0)
+        v253, v258 = v293 + Vector3.new(0, 0, (math.sin(now_1 * 39) * 1.6) * 0.017453292519943295), v294
     else
-        v258 = v293
+        v253 = v293
     end
     if v248 > 0 then
-        local v295 = v258 + Vector3.new(math.sin(now_1 * 42) * 5, 0, math.sin((now_1 * 33) + 1) * 7) * 0.017453292519943295
-        v280, v258 = v280 + Vector3.new(0, math.abs(math.sin(now_1 * 21)) * 0.012, 0), v295
+        local v295 = v253 + Vector3.new(math.sin(now_1 * 42) * 5, 0, math.sin((now_1 * 33) + 1) * 7) * 0.017453292519943295
+        v258, v253 = v258 + Vector3.new(0, math.abs(math.sin(now_1 * 21)) * 0.012, 0), v295
     end
     if v277 > 0 then
-        v254 = math.abs(math.sin((now_1 - tbl_upv_15.useT0) * 9))
-        v280, v258 = v280 + Vector3.new(0, v254 * 0.022, -v254 * 0.012), v258 + Vector3.new(v254 * 9, 0, 0) * 0.017453292519943295
+        local v296 = math.abs(math.sin((now_1 - tbl_upv_15.useT0) * 9))
+        v258, v253 = v258 + Vector3.new(0, v296 * 0.022, -v296 * 0.012), v253 + Vector3.new(v296 * 9, 0, 0) * 0.017453292519943295
     end
-    local v296 = nil
+    local v297 = nil
     if tbl_upv_15.action then
-        v296 = tbl_upv_5[tbl_upv_15.action]
-        local v297 = (now_1 - tbl_upv_15.actT0) / tbl_upv_15.actDur
-        if not (v296) or v297 >= 1 then
+        v297 = tbl_upv_5[tbl_upv_15.action]
+        v254 = (now_1 - tbl_upv_15.actT0) / tbl_upv_15.actDur
+        if not (v297) or v254 >= 1 then
             tbl_upv_15.action = nil
         else
-            local v298, v299 = evalKeys(v296.keys, v297)
-            if v296.mirror and tbl_upv_15.actMirror < 0 then
-                v298, v286 = Vector3.new(-v298.X, v298.Y, v298.Z), Vector3.new(v299.X, -v299.Y, -v299.Z)
+            local value_24, v299 = evalKeys(v297.keys, v254)
+            if v297.mirror and tbl_upv_15.actMirror < 0 then
+                value_24, v299 = Vector3.new(-value_24.X, value_24.Y, value_24.Z), Vector3.new(v299.X, -v299.Y, -v299.Z)
             end
-            v280, v258 = v280 + v298, v258 + v286 * 0.017453292519943295
+            v258, v253 = v258 + value_24, v253 + v299 * 0.017453292519943295
         end
     end
-    v248 = u16.value
-    local v301 = v280 + Vector3.new(0, v248 * tbl_upv_2.equipDrop, 0)
-    local v302 = v258 + Vector3.new((-v248 * tbl_upv_2.equipTilt) * 0.017453292519943295, 0, 0)
+    v248 = u18.value
+    local v301 = v258 + Vector3.new(0, v248 * tbl_upv_2.equipDrop, 0)
+    local v302 = v253 + Vector3.new((-v248 * tbl_upv_2.equipTilt) * 0.017453292519943295, 0, 0)
     if tbl_upv_15.dropAt then
         local v303 = math.clamp((now_1 - tbl_upv_15.dropAt) / tbl_upv_2.dropTime, 0, 1)
         local v304 = v303 * v303
@@ -2866,20 +2897,20 @@ local function step(a1)
             tbl_upv_15.clipName = nil
             tbl_upv_15.pendingDraw = ((shown_2.clips.redraw) and "redraw") or "draw"
         else
-            u16.value = -1
-            u16.velocity = 0
-            u16.target = 0
+            u18.value = -1
+            u18.velocity = 0
+            u18.target = 0
         end
     end
     tbl_upv_15.frame = nil
     tbl_upv_15.wallPush = 0
-    local value_23 = u8.value
+    value_24 = u8.value
     local v305 = u9.value
-    local v306 = v301 - value_23
+    local v306 = v301 - value_24
     local v307 = v302 - v305
     tbl_upv_15.layerPos = v306
     tbl_upv_15.layerRot = v307
-    local v308 = CFrame.new(value_23) * CFrame.fromEulerAnglesYXZ(v305.X, v305.Y, v305.Z) * shown_2.styleRot
+    local v308 = CFrame.new(value_24) * CFrame.fromEulerAnglesYXZ(v305.X, v305.Y, v305.Z) * shown_2.styleRot
     tbl_upv_15.restFrame = v308
     if tbl_upv_15.pendingDraw then
         local pendingDraw_1 = tbl_upv_15.pendingDraw
@@ -2900,7 +2931,7 @@ local function step(a1)
     if tbl_upv_15.refreshGlintAt and tbl_upv_15.refreshGlintAt <= now_1 then
         tbl_upv_15.refreshGlintAt = nil
         table.insert(tbl_upv_15.fxQueue, "headglint")
-        u14:Impulse(Vector3.new(0, 0.6000000238418579, 0))
+        u16:Impulse(Vector3.new(0, 0.6000000238418579, 0))
     end
     local clip_3 = tbl_upv_15.clip
     tbl_upv_15.rodV = 0
@@ -2958,188 +2989,188 @@ local function step(a1)
         if v322 and not tbl_upv_15.dropAt and tbl_upv_15.use then
             if tbl_upv_15.clipName == "use_in" then
                 if startClip("use_loop", nil, v316) then
-                    v286 = v316
+                    v305 = v316
                 elseif v322 and not tbl_upv_15.dropAt and tbl_upv_15.parry then
                     if tbl_upv_15.clipName ~= "parry_in" and tbl_upv_15.clipName ~= "parry_hold" then
                         if v322 or tbl_upv_15.dropAt then
-                            u17:Snap(v316.Position - v308.Position)
-                            u17.target = Vector3.new(0, 0, 0)
+                            u19:Snap(v316.Position - v308.Position)
+                            u19.target = Vector3.new(0, 0, 0)
                             local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                            u20:Snap(v317 * v318)
-                            u20.target = Vector3.new(0, 0, 0)
+                            u22:Snap(v317 * v318)
+                            u22.target = Vector3.new(0, 0, 0)
                             if not (tbl_upv_15.dropAt) then
                                 local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                                u17.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
+                                u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
                                 local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                                u20.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
+                                u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
                             end
                             tbl_upv_15.clip = nil
                             tbl_upv_15.clipName = nil
-                            v286 = v308
+                            v305 = v308
                         else
-                            v286 = v316
+                            v305 = v316
                         end
                     elseif not startClip("parry_hold", nil, v316) and (v322 or tbl_upv_15.dropAt) then
-                        u17:Snap(v316.Position - v308.Position)
-                        u17.target = Vector3.new(0, 0, 0)
+                        u19:Snap(v316.Position - v308.Position)
+                        u19.target = Vector3.new(0, 0, 0)
                         local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                        u20:Snap(v317 * v318)
-                        u20.target = Vector3.new(0, 0, 0)
+                        u22:Snap(v317 * v318)
+                        u22.target = Vector3.new(0, 0, 0)
                         if not (tbl_upv_15.dropAt) then
                             local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                            u17.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
+                            u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
                             local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                            u20.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
+                            u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
                         end
                         tbl_upv_15.clip = nil
                         tbl_upv_15.clipName = nil
-                        v286 = v308
+                        v305 = v308
                     else
-                        v286 = v316
+                        v305 = v316
                     end
                 elseif v322 or tbl_upv_15.dropAt then
-                    u17:Snap(v316.Position - v308.Position)
-                    u17.target = Vector3.new(0, 0, 0)
+                    u19:Snap(v316.Position - v308.Position)
+                    u19.target = Vector3.new(0, 0, 0)
                     local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                    u20:Snap(v317 * v318)
-                    u20.target = Vector3.new(0, 0, 0)
+                    u22:Snap(v317 * v318)
+                    u22.target = Vector3.new(0, 0, 0)
                     if not (tbl_upv_15.dropAt) then
                         local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                        u17.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
+                        u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
                         local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                        u20.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
+                        u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
                     end
                     tbl_upv_15.clip = nil
                     tbl_upv_15.clipName = nil
-                    v286 = v308
+                    v305 = v308
                 else
-                    v286 = v316
+                    v305 = v316
                 end
             elseif tbl_upv_15.clipName == "use_loop" and startClip("use_loop", nil, v316) then
-                v286 = v316
+                v305 = v316
             elseif v322 and not tbl_upv_15.dropAt and tbl_upv_15.parry then
                 if tbl_upv_15.clipName ~= "parry_in" and tbl_upv_15.clipName ~= "parry_hold" then
                     if v322 or tbl_upv_15.dropAt then
-                        u17:Snap(v316.Position - v308.Position)
-                        u17.target = Vector3.new(0, 0, 0)
+                        u19:Snap(v316.Position - v308.Position)
+                        u19.target = Vector3.new(0, 0, 0)
                         local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                        u20:Snap(v317 * v318)
-                        u20.target = Vector3.new(0, 0, 0)
+                        u22:Snap(v317 * v318)
+                        u22.target = Vector3.new(0, 0, 0)
                         if not (tbl_upv_15.dropAt) then
                             local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                            u17.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
+                            u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
                             local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                            u20.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
+                            u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
                         end
                         tbl_upv_15.clip = nil
                         tbl_upv_15.clipName = nil
-                        v286 = v308
+                        v305 = v308
                     else
-                        v286 = v316
+                        v305 = v316
                     end
                 elseif not startClip("parry_hold", nil, v316) and (v322 or tbl_upv_15.dropAt) then
-                    u17:Snap(v316.Position - v308.Position)
-                    u17.target = Vector3.new(0, 0, 0)
+                    u19:Snap(v316.Position - v308.Position)
+                    u19.target = Vector3.new(0, 0, 0)
                     local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                    u20:Snap(v317 * v318)
-                    u20.target = Vector3.new(0, 0, 0)
+                    u22:Snap(v317 * v318)
+                    u22.target = Vector3.new(0, 0, 0)
                     if not (tbl_upv_15.dropAt) then
                         local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                        u17.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
+                        u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
                         local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                        u20.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
+                        u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
                     end
                     tbl_upv_15.clip = nil
                     tbl_upv_15.clipName = nil
-                    v286 = v308
+                    v305 = v308
                 else
-                    v286 = v316
+                    v305 = v316
                 end
             elseif v322 or tbl_upv_15.dropAt then
-                u17:Snap(v316.Position - v308.Position)
-                u17.target = Vector3.new(0, 0, 0)
+                u19:Snap(v316.Position - v308.Position)
+                u19.target = Vector3.new(0, 0, 0)
                 local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                u20:Snap(v317 * v318)
-                u20.target = Vector3.new(0, 0, 0)
+                u22:Snap(v317 * v318)
+                u22.target = Vector3.new(0, 0, 0)
                 if not (tbl_upv_15.dropAt) then
                     local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                    u17.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
+                    u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
                     local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                    u20.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
+                    u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
                 end
                 tbl_upv_15.clip = nil
                 tbl_upv_15.clipName = nil
-                v286 = v308
+                v305 = v308
             else
-                v286 = v316
+                v305 = v316
             end
         elseif v322 and not tbl_upv_15.dropAt and tbl_upv_15.parry then
             if tbl_upv_15.clipName ~= "parry_in" and tbl_upv_15.clipName ~= "parry_hold" then
                 if v322 or tbl_upv_15.dropAt then
-                    u17:Snap(v316.Position - v308.Position)
-                    u17.target = Vector3.new(0, 0, 0)
+                    u19:Snap(v316.Position - v308.Position)
+                    u19.target = Vector3.new(0, 0, 0)
                     local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                    u20:Snap(v317 * v318)
-                    u20.target = Vector3.new(0, 0, 0)
+                    u22:Snap(v317 * v318)
+                    u22.target = Vector3.new(0, 0, 0)
                     if not (tbl_upv_15.dropAt) then
                         local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                        u17.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
+                        u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
                         local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                        u20.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
+                        u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
                     end
                     tbl_upv_15.clip = nil
                     tbl_upv_15.clipName = nil
-                    v286 = v308
+                    v305 = v308
                 else
-                    v286 = v316
+                    v305 = v316
                 end
             elseif not startClip("parry_hold", nil, v316) and (v322 or tbl_upv_15.dropAt) then
-                u17:Snap(v316.Position - v308.Position)
-                u17.target = Vector3.new(0, 0, 0)
+                u19:Snap(v316.Position - v308.Position)
+                u19.target = Vector3.new(0, 0, 0)
                 local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                u20:Snap(v317 * v318)
-                u20.target = Vector3.new(0, 0, 0)
+                u22:Snap(v317 * v318)
+                u22.target = Vector3.new(0, 0, 0)
                 if not (tbl_upv_15.dropAt) then
                     local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                    u17.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
+                    u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
                     local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                    u20.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
+                    u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
                 end
                 tbl_upv_15.clip = nil
                 tbl_upv_15.clipName = nil
-                v286 = v308
+                v305 = v308
             else
-                v286 = v316
+                v305 = v316
             end
         elseif v322 or tbl_upv_15.dropAt then
-            u17:Snap(v316.Position - v308.Position)
-            u17.target = Vector3.new(0, 0, 0)
+            u19:Snap(v316.Position - v308.Position)
+            u19.target = Vector3.new(0, 0, 0)
             local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-            u20:Snap(v317 * v318)
-            u20.target = Vector3.new(0, 0, 0)
+            u22:Snap(v317 * v318)
+            u22.target = Vector3.new(0, 0, 0)
             if not (tbl_upv_15.dropAt) then
                 local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                u17.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
+                u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
                 local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                u20.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
+                u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
             end
             tbl_upv_15.clip = nil
             tbl_upv_15.clipName = nil
-            v286 = v308
+            v305 = v308
         else
-            v286 = v316
+            v305 = v316
         end
     else
-        v286 = v308
+        v305 = v308
     end
     if not (tbl_upv_15.clip) then
-        u17:Update(v244)
-        u20:Update(v244)
-        v322 = u17.value
-        local value_24 = u20.value
-        if v322.Magnitude > 1e-05 or value_24.Magnitude > 1e-05 then
-            if value_24.Magnitude > 1e-06 then
-                v309 = CFrame.fromAxisAngle(value_24.Unit, value_24.Magnitude)
+        u19:Update(v244)
+        u22:Update(v244)
+        v322 = u19.value
+        local value_25 = u22.value
+        if v322.Magnitude > 1e-05 or value_25.Magnitude > 1e-05 then
+            if value_25.Magnitude > 1e-06 then
+                v309 = CFrame.fromAxisAngle(value_25.Unit, value_25.Magnitude)
             else
                 v309 = CFrame.identity
             end
@@ -3153,7 +3184,7 @@ local function step(a1)
             local function cap_1(a2, a3)
                 --[[
                   name: cap
-                  line: 1763
+                  line: 1794
                 ]]
                 if a3 < a2.Magnitude then
                     return a2.Unit * a3
@@ -3202,8 +3233,8 @@ local function step(a1)
     local v328 = nil
     if wall_2 then
         local v312 = 0
-        for v352, value_25 in shown_2.corners do
-            v312 = math.max(v312, -v327:PointToWorldSpace(value_25).Z)
+        for v352, value_26 in shown_2.corners do
+            v312 = math.max(v312, -v327:PointToWorldSpace(value_26).Z)
         end
         v328 = wall_2 - 0.12
         if v328 < v312 then
@@ -3250,7 +3281,7 @@ local function step(a1)
                     local function cap_2(a4, a5)
                         --[[
                           name: cap
-                          line: 1837
+                          line: 1868
                         ]]
                         if a5 < a4.Magnitude then
                             return a4.Unit * a5
@@ -3319,9 +3350,9 @@ local function step(a1)
         if shown_2.drawFrom and shown_2.clips and (shown_2.clips.redraw or shown_2.clips.draw) then
             tbl_upv_15.pendingDraw = ((shown_2.clips.redraw) and "redraw") or "draw"
         else
-            u16.value = -1
-            u16.velocity = 0
-            u16.target = 0
+            u18.value = -1
+            u18.velocity = 0
+            u18.target = 0
         end
     end
     return v301, v302, shown_2
@@ -3329,12 +3360,12 @@ end
 local function renderFrame(a1)
     --[[
       name: renderFrame
-      line: 2563
+      line: 2595
       upvalues:
         liveInput (copy, index: 1)
-        u21 (ref,  index: 2)
+        u23 (ref,  index: 2)
         tbl_upv_25 (copy, index: 3)
-        u24 (ref,  index: 4)
+        u26 (ref,  index: 4)
         BladeSmear_upv_1 (copy, index: 5)
         ViewFx_upv_1 (copy, index: 6)
         tbl_upv_15 (copy, index: 7)
@@ -3347,20 +3378,20 @@ local function renderFrame(a1)
             local v352, v353, v354 = step(v350)
             place(v351, v350.cam, v350.fov, v352, v353, v354)
         else
-            if tbl_upv_15.shown or u21 then
+            if tbl_upv_15.shown or u23 then
                 tbl_upv_15.shown = nil
                 tbl_upv_15.wantId = nil
                 tbl_upv_15.dropAt = nil
-                if u21 then
-                    u21.Parent = nil
-                    u21 = nil
+                if u23 then
+                    u23.Parent = nil
+                    u23 = nil
                 end
-                for _, value_26 in tbl_upv_25 do
-                    value_26.Parent = nil
+                for _, value_27 in tbl_upv_25 do
+                    value_27.Parent = nil
                 end
-                if u24 then
-                    u24.Parent = nil
-                    u24 = nil
+                if u26 then
+                    u26.Parent = nil
+                    u26 = nil
                 end
                 BladeSmear_upv_1.Hide()
                 ViewFx_upv_1.Hide()
@@ -3372,16 +3403,16 @@ local function renderFrame(a1)
             tbl_upv_15.lastRootY = nil
         end
     else
-        if u21 then
-            u21.Parent = nil
-            u21 = nil
+        if u23 then
+            u23.Parent = nil
+            u23 = nil
         end
-        for _, value_27 in tbl_upv_25 do
-            value_27.Parent = nil
+        for _, value_28 in tbl_upv_25 do
+            value_28.Parent = nil
         end
-        if u24 then
-            u24.Parent = nil
-            u24 = nil
+        if u26 then
+            u26.Parent = nil
+            u26 = nil
         end
         BladeSmear_upv_1.Hide()
         ViewFx_upv_1.Hide()
@@ -3392,29 +3423,29 @@ end
 local function render(a1)
     --[[
       name: render
-      line: 2582
+      line: 2614
       upvalues:
-        u28 (ref,  index: 1)
-        u29 (ref,  index: 2)
+        u30 (ref,  index: 1)
+        u31 (ref,  index: 2)
         renderFrame (copy, index: 3)
-        u30 (ref,  index: 4)
-        u31 (ref,  index: 5)
-        u32 (ref,  index: 6)
+        u32 (ref,  index: 4)
+        u33 (ref,  index: 5)
+        u34 (ref,  index: 6)
     ]]
-    if (u28) or (u29) then
+    if (u30) or (u31) then
         return
     end
     local v355 = os.clock()
     renderFrame(a1)
     local v356 = os.clock() - v355
-    u30 = u30 + v356
-    u31 = u31 + 1
-    u32 = math.max(u32, v356)
+    u32 = u32 + v356
+    u33 = u33 + 1
+    u34 = math.max(u34, v356)
 end
 resetState = function()
     --[[
       name: resetState
-      line: 909
+      line: 917
       upvalues:
         u8 (copy, index: 1)
         u9 (copy, index: 2)
@@ -3426,10 +3457,12 @@ resetState = function()
         u15 (copy, index: 8)
         u16 (copy, index: 9)
         u17 (copy, index: 10)
-        u20 (copy, index: 11)
-        tbl_upv_15 (copy, index: 12)
-        BladeSmear_upv_1 (copy, index: 13)
-        ViewFx_upv_1 (copy, index: 14)
+        u18 (copy, index: 11)
+        u19 (copy, index: 12)
+        u22 (copy, index: 13)
+        tbl_upv_15 (copy, index: 14)
+        BladeSmear_upv_1 (copy, index: 15)
+        ViewFx_upv_1 (copy, index: 16)
     ]]
     u8:Snap(Vector3.new(0, 0, 0))
     u9:Snap(Vector3.new(0, 0, 0))
@@ -3439,9 +3472,11 @@ resetState = function()
     u13:Snap(Vector3.new(0, 0, 0))
     u14:Snap(Vector3.new(0, 0, 0))
     u15:Snap(Vector3.new(0, 0, 0))
-    u16:Snap(0)
+    u16:Snap(Vector3.new(0, 0, 0))
     u17:Snap(Vector3.new(0, 0, 0))
-    u20:Snap(Vector3.new(0, 0, 0))
+    u18:Snap(0)
+    u19:Snap(Vector3.new(0, 0, 0))
+    u22:Snap(Vector3.new(0, 0, 0))
     tbl_upv_15.action = nil
     tbl_upv_15.clip = nil
     tbl_upv_15.lastFrame = nil
@@ -3507,34 +3542,34 @@ end
 function tbl_upv_1.SetExternal(a1)
     --[[
       name: SetExternal
-      line: 2604
+      line: 2636
       upvalues:
-        u29 (ref,  index: 1)
+        u31 (ref,  index: 1)
         resetState (copy, index: 2)
         tbl_upv_15 (copy, index: 3)
-        u21 (ref,  index: 4)
+        u23 (ref,  index: 4)
         tbl_upv_25 (copy, index: 5)
-        u24 (ref,  index: 6)
+        u26 (ref,  index: 6)
         BladeSmear_upv_1 (copy, index: 7)
         ViewFx_upv_1 (copy, index: 8)
     ]]
-    if u29 == a1 then
+    if u31 == a1 then
         return
     end
-    u29 = a1
+    u31 = a1
     resetState()
     tbl_upv_15.shown = nil
     tbl_upv_15.wantId = nil
-    if u21 then
-        u21.Parent = nil
-        u21 = nil
+    if u23 then
+        u23.Parent = nil
+        u23 = nil
     end
-    for _, value_28 in tbl_upv_25 do
-        value_28.Parent = nil
+    for _, value_29 in tbl_upv_25 do
+        value_29.Parent = nil
     end
-    if u24 then
-        u24.Parent = nil
-        u24 = nil
+    if u26 then
+        u26.Parent = nil
+        u26 = nil
     end
     BladeSmear_upv_1.Hide()
     ViewFx_upv_1.Hide()
@@ -3544,7 +3579,7 @@ end
 function tbl_upv_1.ReleasePoint()
     --[[
       name: ReleasePoint
-      line: 2617
+      line: 2649
       upvalues:
         tbl_upv_15 (copy, index: 1)
     ]]
@@ -3556,7 +3591,7 @@ end
 function tbl_upv_1.ReleaseDelay()
     --[[
       name: ReleaseDelay
-      line: 2623
+      line: 2655
       upvalues:
         tbl_upv_15 (copy, index: 1)
     ]]
@@ -3569,30 +3604,30 @@ end
 function tbl_upv_1.IsExternal()
     --[[
       name: IsExternal
-      line: 2628
+      line: 2660
       upvalues:
-        u29 (ref, index: 1)
+        u31 (ref, index: 1)
     ]]
-    return u29
+    return u31
 end
 function tbl_upv_1.ExternalFrame(a1)
     --[[
       name: ExternalFrame
-      line: 2633
+      line: 2665
       upvalues:
-        u29 (ref,  index: 1)
+        u31 (ref,  index: 1)
         Workspace_upv_1 (copy, index: 2)
         tbl_upv_15 (copy, index: 3)
-        u21 (ref,  index: 4)
+        u23 (ref,  index: 4)
         tbl_upv_25 (copy, index: 5)
-        u24 (ref,  index: 6)
+        u26 (ref,  index: 6)
         BladeSmear_upv_1 (copy, index: 7)
         ViewFx_upv_1 (copy, index: 8)
         step (copy, index: 9)
         UserInputService_upv_1 (copy, index: 10)
         place (copy, index: 11)
     ]]
-    if not u29 then
+    if not u31 then
         return
     end
     local CurrentCamera_2 = Workspace_upv_1.CurrentCamera
@@ -3619,7 +3654,7 @@ function tbl_upv_1.ExternalFrame(a1)
         local success_5, v358 = pcall(
             function()
                 --[[
-                  line: 2481
+                  line: 2512
                   upvalues:
                     UserInputService_upv_1 (copy, index: 1)
                 ]]
@@ -3630,20 +3665,20 @@ function tbl_upv_1.ExternalFrame(a1)
         local v360, v361, v362 = step(tbl_34)
         place(CurrentCamera_2, CFrame_3, CurrentCamera_2.FieldOfView, v360, v361, v362)
     else
-        if tbl_upv_15.shown or u21 then
+        if tbl_upv_15.shown or u23 then
             tbl_upv_15.shown = nil
             tbl_upv_15.wantId = nil
             tbl_upv_15.dropAt = nil
-            if u21 then
-                u21.Parent = nil
-                u21 = nil
+            if u23 then
+                u23.Parent = nil
+                u23 = nil
             end
-            for _, value_29 in tbl_upv_25 do
-                value_29.Parent = nil
+            for _, value_30 in tbl_upv_25 do
+                value_30.Parent = nil
             end
-            if u24 then
-                u24.Parent = nil
-                u24 = nil
+            if u26 then
+                u26.Parent = nil
+                u26 = nil
             end
             BladeSmear_upv_1.Hide()
             ViewFx_upv_1.Hide()
@@ -3658,17 +3693,17 @@ end
 local function onEvent(a1, a2)
     --[[
       name: onEvent
-      line: 1005
+      line: 1015
       upvalues:
         tbl_upv_15 (copy, index: 1)
         BladeClips_upv_1 (copy, index: 2)
         ItemClips_upv_1 (copy, index: 3)
         startClip (copy, index: 4)
         tbl_upv_5 (copy, index: 5)
-        u14 (copy, index: 6)
-        u15 (copy, index: 7)
-        u18 (copy, index: 8)
-        u19 (copy, index: 9)
+        u16 (copy, index: 6)
+        u17 (copy, index: 7)
+        u20 (copy, index: 8)
+        u21 (copy, index: 9)
         tbl_upv_2 (copy, index: 10)
     ]]
     local v363 = a2 or {}
@@ -3760,7 +3795,7 @@ local function onEvent(a1, a2)
         if (startClip("parry_hit")) then
             return
         end
-        u14:Impulse(Vector3.new(0.029999999329447746, -0.03999999910593033, 0.07999999821186066))
+        u16:Impulse(Vector3.new(0.029999999329447746, -0.03999999910593033, 0.07999999821186066))
     elseif a1 == "Hurl" then
         local v365 = not (shown_3) or not (shown_3.clips) or shown_3.clips.throw
         if v365 and startClip("throw") then
@@ -3839,17 +3874,17 @@ local function onEvent(a1, a2)
                 if (startClip("release")) then
                     return
                 end
-                u14:Impulse(Vector3.new(0, 0.20000000298023224, 1.2000000476837158) * v378)
-                u15:Impulse((Vector3.new(120, 0, 0) * v378) * 0.017453292519943295)
+                u16:Impulse(Vector3.new(0, 0.20000000298023224, 1.2000000476837158) * v378)
+                u17:Impulse((Vector3.new(120, 0, 0) * v378) * 0.017453292519943295)
             elseif a1 == "Fire" then
                 tbl_upv_15.boltIn = false
                 local now_2 = tbl_upv_15.now
                 tbl_upv_15.stringV = 1
                 tbl_upv_15.stringT0 = now_2
                 tbl_upv_15.hammerTarget = 1
-                u18.velocity = 30
+                u20.velocity = 30
                 tbl_upv_15.frizzenTarget = 1
-                u19.velocity = 22
+                u21.velocity = 22
                 local v379
                 if tbl_upv_15.clipName == "draw" then
                     v379 = (tbl_upv_15.clip ~= nil) and (tbl_upv_15.now - tbl_upv_15.clipT0 < (tbl_upv_15.clip.release * tbl_upv_15.clipScale) * 0.7)
@@ -3866,7 +3901,7 @@ local function onEvent(a1, a2)
                 if not (v379) and startClip("fire") then
                     local v380 = ({Crossbow = Vector3.new(90, 40, 60), Musket = Vector3.new(160, 80, 280), Pistol = Vector3.new(340, 60, 220), Blunderbuss = Vector3.new(220, 80, 260)})[v364 or ""] or Vector3.new(150, 60, 150)
                     local v381 = Random.new((tbl_upv_15.shotN * 7919) + 17)
-                    u15:Impulse(Vector3.new(v381:NextNumber(-1, 1) * v380.X, v381:NextNumber(-1, 1) * v380.Y, v381:NextNumber(-1, 1) * v380.Z) * 0.017453292519943295)
+                    u17:Impulse(Vector3.new(v381:NextNumber(-1, 1) * v380.X, v381:NextNumber(-1, 1) * v380.Y, v381:NextNumber(-1, 1) * v380.Z) * 0.017453292519943295)
                     return
                 end
                 local v382 = (tonumber(v363.kick) or 2) / 3
@@ -3877,8 +3912,8 @@ local function onEvent(a1, a2)
                     lunge_1 = 1
                 end
                 local v383 = math.min(v382 * lunge_1, 3.5)
-                u14:Impulse(Vector3.new(0, 0.5, 3) * v383)
-                u15:Impulse((Vector3.new(420, (math.random() - 0.5) * 40, (math.random() - 0.5) * 40) * v383) * 0.017453292519943295)
+                u16:Impulse(Vector3.new(0, 0.5, 3) * v383)
+                u17:Impulse((Vector3.new(420, (math.random() - 0.5) * 40, (math.random() - 0.5) * 40) * v383) * 0.017453292519943295)
             elseif a1 == "Reload" then
                 local v384 = math.max(0.2, tonumber(v363.time) or 1.2)
                 local v366 = not (shown_3) or not (shown_3.clips) or shown_3.clips.reload
@@ -3968,8 +4003,8 @@ local function onEvent(a1, a2)
                         end
                         local v391 = math.clamp((tonumber(v363.amount) or 10) / 40, 0.2, 1.2)
                         local v392 = v391 * (((v363.blocked) and 0.5) or 1)
-                        u15:Impulse(((Vector3.new((math.random() - 0.3) * 2, (math.random() - 0.5) * 2, (math.random() - 0.5) * 2.5) * tbl_upv_2.hurtRot) * v392) * 0.017453292519943295)
-                        u14:Impulse(Vector3.new(0, -tbl_upv_2.hurtPos, tbl_upv_2.hurtPos * 0.6) * v392)
+                        u17:Impulse(((Vector3.new((math.random() - 0.3) * 2, (math.random() - 0.5) * 2, (math.random() - 0.5) * 2.5) * tbl_upv_2.hurtRot) * v392) * 0.017453292519943295)
+                        u16:Impulse(Vector3.new(0, -tbl_upv_2.hurtPos, tbl_upv_2.hurtPos * 0.6) * v392)
                     end
                 else
                     local use_1 = tbl_upv_15.use
@@ -3982,7 +4017,7 @@ local function onEvent(a1, a2)
                             tbl_upv_15.useOutUntil = tbl_upv_15.now + 0.45
                             if v363.done then
                                 if not startClip("use_done") then
-                                    u14:Impulse(Vector3.new(0, 0.5, 0))
+                                    u16:Impulse(Vector3.new(0, 0.5, 0))
                                 end
                             else
                                 startClip("use_out")
@@ -3990,7 +4025,7 @@ local function onEvent(a1, a2)
                             return
                         end
                         if v363.done then
-                            u14:Impulse(Vector3.new(0, 0.5, 0))
+                            u16:Impulse(Vector3.new(0, 0.5, 0))
                         end
                     end
                     tbl_upv_15.bite = 0
@@ -4082,13 +4117,13 @@ end
 function tbl_upv_1.ExternalEvent(a1, a2)
     --[[
       name: ExternalEvent
-      line: 2660
+      line: 2692
       upvalues:
-        u29 (ref,  index: 1)
+        u31 (ref,  index: 1)
         tbl_upv_15 (copy, index: 2)
         onEvent (copy, index: 3)
     ]]
-    if not u29 then
+    if not u31 then
         return
     end
     tbl_upv_15.now = os.clock()
@@ -4097,10 +4132,10 @@ end
 local function simulate(a1)
     --[[
       name: simulate
-      line: 2674
+      line: 2706
       upvalues:
         Workspace_upv_1 (copy, index: 1)
-        u28 (ref,  index: 2)
+        u30 (ref,  index: 2)
         tbl_upv_15 (copy, index: 3)
         resetState (copy, index: 4)
         ViewFx_upv_1 (copy, index: 5)
@@ -4113,7 +4148,7 @@ local function simulate(a1)
     if not CurrentCamera_3 then
         return {err = "no camera"}
     end
-    u28 = true
+    u30 = true
     tbl_upv_15.sim = true
     resetState()
     ViewFx_upv_1.Freeze(true)
@@ -4135,9 +4170,9 @@ local function simulate(a1)
     while v409 <= v401 + 0.004166666666666667 do
         local v411 = true
         v410 = 0
-        for _, value_30 in a1.air or {} do
-            if value_30[1] <= v409 then
-                v410, v411 = value_30[2], value_30[3]
+        for _, value_31 in a1.air or {} do
+            if value_31[1] <= v409 then
+                v410, v411 = value_31[2], value_31[3]
             end
         end
         v405 = v405 + v410 * 0.016666666666666666
@@ -4153,13 +4188,13 @@ local function simulate(a1)
         if v401 + 0.004166666666666667 < v409 + 0.016666666666666666 then
             table.clear(tbl_upv_15.fxQueue)
         end
-        for key_6, value_31 in v402 do
+        for key_6, value_32 in v402 do
             if tbl_35[key_6] then
                 continue
             end
-            if value_31[1] <= v409 then
+            if value_32[1] <= v409 then
                 tbl_35[key_6] = true
-                onEvent(value_31[2], value_31[3])
+                onEvent(value_32[2], value_32[3])
             end
         end
         local switch_1 = a1.switch
@@ -4227,13 +4262,13 @@ local function simulate(a1)
     tbl_37.rot = {v407.X / 0.017453292519943295, v407.Y / 0.017453292519943295, v407.Z / 0.017453292519943295}
     return tbl_37
 end
-local u33 = false
+local u35 = false
 function tbl_upv_1.Start()
     --[[
       name: Start
-      line: 2744
+      line: 2776
       upvalues:
-        u33 (ref,  index: 1)
+        u35 (ref,  index: 1)
         ViewFx_upv_1 (copy, index: 2)
         ReplicatedStorage_upv_1 (copy, index: 3)
         u1 (ref,  index: 4)
@@ -4241,13 +4276,13 @@ function tbl_upv_1.Start()
         LocalPlayer_upv_1 (copy, index: 6)
         resetState (copy, index: 7)
         tbl_upv_15 (copy, index: 8)
-        u21 (ref,  index: 9)
+        u23 (ref,  index: 9)
         tbl_upv_25 (copy, index: 10)
-        u24 (ref,  index: 11)
+        u26 (ref,  index: 11)
         BladeSmear_upv_1 (copy, index: 12)
         tbl_upv_1 (copy, index: 13)
-        u28 (ref,  index: 14)
-        u29 (ref,  index: 15)
+        u30 (ref,  index: 14)
+        u31 (ref,  index: 15)
         onEvent (copy, index: 16)
         RunService_upv_1 (copy, index: 17)
         render (copy, index: 18)
@@ -4257,17 +4292,17 @@ function tbl_upv_1.Start()
         tbl_upv_6 (copy, index: 22)
         BladeClips_upv_1 (copy, index: 23)
         tbl_upv_2 (copy, index: 24)
-        u17 (copy, index: 25)
-        u20 (copy, index: 26)
+        u19 (copy, index: 25)
+        u22 (copy, index: 26)
         ItemClips_upv_1 (copy, index: 27)
-        u31 (ref,  index: 28)
-        u30 (ref,  index: 29)
-        u32 (ref,  index: 30)
+        u33 (ref,  index: 28)
+        u32 (ref,  index: 29)
+        u34 (ref,  index: 30)
     ]]
-    if u33 then
+    if u35 then
         return
     end
-    u33 = true
+    u35 = true
     ViewFx_upv_1.Preload()
     local v419 = ReplicatedStorage_upv_1:WaitForChild("Assets", 30)
     local v420 = v419 and (v419:WaitForChild("Weapons", 30))
@@ -4277,21 +4312,21 @@ function tbl_upv_1.Start()
     task.spawn(
         function()
             --[[
-              line: 2754
+              line: 2786
               upvalues:
                 u2 (ref, index: 1)
                 u1 (ref, index: 2)
             ]]
             local tbl_upv_38 = {}
-            for _, value_32 in {u2, u1} do
-                if value_32 then
-                    table.insert(tbl_upv_38, value_32)
+            for _, value_33 in {u2, u1} do
+                if value_33 then
+                    table.insert(tbl_upv_38, value_33)
                 end
             end
             pcall(
                 function()
                     --[[
-                      line: 2761
+                      line: 2793
                       upvalues:
                         tbl_upv_38 (copy, index: 1)
                     ]]
@@ -4303,29 +4338,29 @@ function tbl_upv_1.Start()
     LocalPlayer_upv_1.CharacterAdded:Connect(
         function()
             --[[
-              line: 2765
+              line: 2797
               upvalues:
                 resetState (copy, index: 1)
                 tbl_upv_15 (copy, index: 2)
-                u21 (ref,  index: 3)
+                u23 (ref,  index: 3)
                 tbl_upv_25 (copy, index: 4)
-                u24 (ref,  index: 5)
+                u26 (ref,  index: 5)
                 BladeSmear_upv_1 (copy, index: 6)
                 ViewFx_upv_1 (copy, index: 7)
             ]]
             resetState()
             tbl_upv_15.shown = nil
             tbl_upv_15.wantId = nil
-            if u21 then
-                u21.Parent = nil
-                u21 = nil
+            if u23 then
+                u23.Parent = nil
+                u23 = nil
             end
-            for _, value_33 in tbl_upv_25 do
-                value_33.Parent = nil
+            for _, value_34 in tbl_upv_25 do
+                value_34.Parent = nil
             end
-            if u24 then
-                u24.Parent = nil
-                u24 = nil
+            if u26 then
+                u26.Parent = nil
+                u26 = nil
             end
             BladeSmear_upv_1.Hide()
             ViewFx_upv_1.Hide()
@@ -4336,12 +4371,12 @@ function tbl_upv_1.Start()
     task.spawn(
         function()
             --[[
-              line: 2772
+              line: 2804
               upvalues:
                 LocalPlayer_upv_1 (copy, index: 1)
                 tbl_upv_1 (copy, index: 2)
-                u28 (ref,  index: 3)
-                u29 (ref,  index: 4)
+                u30 (ref,  index: 3)
+                u31 (ref,  index: 4)
                 tbl_upv_15 (copy, index: 5)
                 onEvent (copy, index: 6)
             ]]
@@ -4368,14 +4403,14 @@ function tbl_upv_1.Start()
                 v425.OnViewEvent(
                     function(a1, a2)
                         --[[
-                          line: 2786
+                          line: 2818
                           upvalues:
-                            u28 (ref,  index: 1)
-                            u29 (ref,  index: 2)
+                            u30 (ref,  index: 1)
+                            u31 (ref,  index: 2)
                             tbl_upv_15 (copy, index: 3)
                             onEvent (copy, index: 4)
                         ]]
-                        if (u28) or (u29) then
+                        if (u30) or (u31) then
                             return
                         end
                         tbl_upv_15.now = os.clock()
@@ -4391,49 +4426,49 @@ function tbl_upv_1.Start()
         v426.Name = "ViewModelDebug"
         v426.OnInvoke = function(a3, a4)
             --[[
-              line: 2799
+              line: 2831
               upvalues:
                 simulate (copy, index: 1)
-                u28 (ref,  index: 2)
+                u30 (ref,  index: 2)
                 tbl_upv_15 (copy, index: 3)
                 ViewFx_upv_1 (copy, index: 4)
                 resetState (copy, index: 5)
-                u21 (ref,  index: 6)
+                u23 (ref,  index: 6)
                 tbl_upv_25 (copy, index: 7)
-                u24 (ref,  index: 8)
+                u26 (ref,  index: 8)
                 BladeSmear_upv_1 (copy, index: 9)
                 tbl_upv_3 (copy, index: 10)
                 tbl_upv_4 (copy, index: 11)
                 tbl_upv_6 (copy, index: 12)
                 BladeClips_upv_1 (copy, index: 13)
                 tbl_upv_2 (copy, index: 14)
-                u17 (copy, index: 15)
-                u20 (copy, index: 16)
+                u19 (copy, index: 15)
+                u22 (copy, index: 16)
                 ItemClips_upv_1 (copy, index: 17)
-                u31 (ref,  index: 18)
-                u30 (ref,  index: 19)
-                u32 (ref,  index: 20)
+                u33 (ref,  index: 18)
+                u32 (ref,  index: 19)
+                u34 (ref,  index: 20)
             ]]
             local key_7
             if a3 == "Sim" then
                 return (simulate(a4))
             elseif a3 == "Live" then
-                u28 = false
+                u30 = false
                 tbl_upv_15.sim = false
                 ViewFx_upv_1.Freeze(false)
                 resetState()
                 tbl_upv_15.shown = nil
                 tbl_upv_15.wantId = nil
-                if u21 then
-                    u21.Parent = nil
-                    u21 = nil
+                if u23 then
+                    u23.Parent = nil
+                    u23 = nil
                 end
-                for key_7, value_34 in tbl_upv_25 do
-                    value_34.Parent = nil
+                for key_7, value_35 in tbl_upv_25 do
+                    value_35.Parent = nil
                 end
-                if u24 then
-                    u24.Parent = nil
-                    u24 = nil
+                if u26 then
+                    u26.Parent = nil
+                    u26 = nil
                 end
                 BladeSmear_upv_1.Hide()
                 ViewFx_upv_1.Hide()
@@ -4464,7 +4499,7 @@ function tbl_upv_1.Start()
                         local function v3(a5)
                             --[[
                               name: v3
-                              line: 2834
+                              line: 2866
                             ]]
                             if type(a5) == "table" and type(a5[1]) == "number" then
                                 return (Vector3.new(a5[1], a5[2], a5[3]))
@@ -4474,24 +4509,24 @@ function tbl_upv_1.Start()
                         key_7 = kind_1.stock or {}
                         local v429 = nil
                         local v430 = nil
-                        for key_8, value_35 in v427.stock do
-                            if type(value_35) ~= "table" or type(value_35[1]) ~= "table" then
-                                if type(value_35) ~= "table" then
-                                    v429 = value_35
+                        for key_8, value_36 in v427.stock do
+                            if type(value_36) ~= "table" or type(value_36[1]) ~= "table" then
+                                if type(value_36) ~= "table" then
+                                    v429 = value_36
                                     key_7[key_8] = v429
                                     continue
                                 end
-                                if type(value_35[1]) ~= "number" then
-                                    v429 = value_35
+                                if type(value_36[1]) ~= "number" then
+                                    v429 = value_36
                                 else
-                                    v429 = Vector3.new(value_35[1], value_35[2], value_35[3])
+                                    v429 = Vector3.new(value_36[1], value_36[2], value_36[3])
                                 end
                                 key_7[key_8] = v429
                             end
                             v429 = {}
-                            v430 = value_35[1]
+                            v430 = value_36[1]
                             if type(v430) ~= "table" or type(v430[1]) ~= "number" then
-                                local v431 = value_35[2]
+                                local v431 = value_36[2]
                                 if type(v431) ~= "table" then
                                     v430 = v431
                                     v429[2] = v430
@@ -4506,7 +4541,7 @@ function tbl_upv_1.Start()
                                 v429[2] = v430
                                 key_7[key_8] = v429
                             end
-                            local v431 = value_35[2]
+                            local v431 = value_36[2]
                             if type(v431) == "table" and type(v431[1]) == "number" then
                                 v430 = Vector3.new(v431[1], v431[2], v431[3])
                             else
@@ -4546,9 +4581,9 @@ function tbl_upv_1.Start()
                     tbl_39.barrel = v435
                     tbl_upv_4[id_2] = tbl_39
                 end
-                for key_9, value_36 in tbl_upv_6 do
-                    if v427.id and key_9 == v427.id or kind_1 and value_36.kind == v427.kind then
-                        value_36.model:Destroy()
+                for key_9, value_37 in tbl_upv_6 do
+                    if v427.id and key_9 == v427.id or kind_1 and value_37.kind == v427.kind then
+                        value_37.model:Destroy()
                         tbl_upv_6[key_9] = nil
                     end
                 end
@@ -4562,7 +4597,7 @@ function tbl_upv_1.Start()
                     local tbl_40 = {want = 0, charge = 0, action = 0, shown = 0, frames = 0, reload = 0, draw = 0, parent = 0, msPerFrame = 0, use = 0, wind = 0, block = 0, maxFrameMs = 0, frozen = 0}
                     tbl_40.shown = tbl_upv_15.shown and (tbl_upv_15.shown.id)
                     tbl_40.want = tbl_upv_15.wantId
-                    tbl_40.frozen = u28
+                    tbl_40.frozen = u30
                     tbl_40.action = tbl_upv_15.action
                     tbl_40.block = tbl_upv_15.block
                     tbl_40.charge = tbl_upv_15.charge
@@ -4570,19 +4605,19 @@ function tbl_upv_1.Start()
                     tbl_40.wind = tbl_upv_15.wind
                     tbl_40.use = tbl_upv_15.use
                     tbl_40.reload = tbl_upv_15.reload
-                    tbl_40.parent = u21 and (u21.Parent and (u21.Parent.Name))
-                    tbl_40.msPerFrame = ((u31 > 0) and (u30 / u31 * 1000)) or 0
-                    tbl_40.maxFrameMs = u32 * 1000
-                    tbl_40.frames = u31
+                    tbl_40.parent = u23 and (u23.Parent and (u23.Parent.Name))
+                    tbl_40.msPerFrame = ((u33 > 0) and (u32 / u33 * 1000)) or 0
+                    tbl_40.maxFrameMs = u34 * 1000
+                    tbl_40.frames = u33
                     return tbl_40
                 else
                     local v427 = a4 or {}
                     v436 = ItemClips_upv_1.SETS[v427.kind]
                     if v436 and type(v427.draw) == "table" then
                         ItemClips_upv_1.DRAW[v427.kind] = v427.draw
-                        for _, value_37 in tbl_upv_6 do
-                            if value_37.kind == v427.kind then
-                                value_37.drawFrom = v427.draw
+                        for _, value_38 in tbl_upv_6 do
+                            if value_38.kind == v427.kind then
+                                value_38.drawFrom = v427.draw
                             end
                         end
                     end
@@ -4594,22 +4629,22 @@ function tbl_upv_1.Start()
                 end
             else
                 local v427 = a4 or {}
-                for _, value_38 in {"SWORD", "DAGGER"} do
-                    if type(v427[value_38]) ~= "table" then
+                for _, value_39 in {"SWORD", "DAGGER"} do
+                    if type(v427[value_39]) ~= "table" then
                         continue
                     end
-                    for key_10, value_39 in v427[value_38] do
-                        BladeClips_upv_1[value_38][key_10] = value_39
+                    for key_10, value_40 in v427[value_39] do
+                        BladeClips_upv_1[value_39][key_10] = value_40
                     end
                 end
                 if type(v427.T) == "table" then
-                    for key_11, value_40 in v427.T do
-                        tbl_upv_2[key_11] = value_40
+                    for key_11, value_41 in v427.T do
+                        tbl_upv_2[key_11] = value_41
                     end
-                    u17.frequency = tbl_upv_2.retHz
-                    u17.damping = tbl_upv_2.retDamp
-                    u20.frequency = tbl_upv_2.retHz
-                    u20.damping = tbl_upv_2.retDamp
+                    u19.frequency = tbl_upv_2.retHz
+                    u19.damping = tbl_upv_2.retDamp
+                    u22.frequency = tbl_upv_2.retHz
+                    u22.damping = tbl_upv_2.retDamp
                 end
                 return true
             end

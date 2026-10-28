@@ -34,7 +34,7 @@ tbl_upv_4.items = {"bronze_sword", "short_bow", "bandage"}
 tbl_upv_4.ammo = {arrows = 3}
 local tbl_upv_5 = {}
 tbl_upv_5.arrows = {name = "Arrows", id = "arrows", points = 1, order = 1, perBundle = 12}
-tbl_upv_5.shot = {name = "Bullets", id = "shot", points = 1, order = 2, perBundle = 6}
+tbl_upv_5.shot = {name = "Bullets", id = "shot", points = 1, order = 2, perBundle = 5}
 local tbl_upv_6 = {crossbow = "arrows", musket = "shot", longbow = "arrows", short_bow = "arrows", blunderbuss = "shot", flintlock = "shot"}
 local u1 = nil
 local u2 = -math.huge

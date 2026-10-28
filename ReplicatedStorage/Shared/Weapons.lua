@@ -9,7 +9,7 @@ tbl_upv_1.DEFAULT_AMMO_BUNDLES = 2
 tbl_upv_1.AMMO_TYPES = {"arrows", "shot"}
 local tbl_2 = {}
 tbl_2.arrows = table.freeze({name = "Arrows", id = "arrows", points = 1, description = "12 arrows for bows and crossbows.", perBundle = 12})
-tbl_2.shot = table.freeze({name = "Bullets", id = "shot", points = 1, description = "6 bullets for the musket, flintlock and blunderbuss.", perBundle = 6})
+tbl_2.shot = table.freeze({name = "Bullets", id = "shot", points = 1, description = "5 bullets for the musket, flintlock and blunderbuss.", perBundle = 5})
 tbl_2.fire_arrows = table.freeze({description = "6 burning arrows for bows and crossbows, fired before your plain arrows. A hit sets the target on fire.", id = "fire_arrows", unlock = true, perBundle = 6, role = "Burning", name = "Fire Arrows", as = "arrows", points = 2, burn = table.freeze({interval = 0.5, ticks = 3, damage = 5}), patch = table.freeze({duration = 1.5, radius = 3.5})})
 table.insert(tbl_upv_1.AMMO_TYPES, "fire_arrows")
 tbl_upv_1.AMMO = table.freeze(tbl_2)
@@ -25,7 +25,7 @@ local u1 = table.freeze({})
 function tbl_upv_1.AltAmmo(a1)
     --[[
       name: AltAmmo
-      line: 130
+      line: 131
       upvalues:
         u1 (copy, index: 2)
     ]]
@@ -41,7 +41,7 @@ table.freeze(tbl_upv_4)
 function tbl_upv_1.UnlockAmmo()
     --[[
       name: UnlockAmmo
-      line: 143
+      line: 144
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
@@ -65,18 +65,18 @@ tbl_9.stats = {range = 8, rate = 3.5, damage = 6.5}
 tbl_9.details = {{"Damage", "50 (90 head)"}, {"Reload", "1.5 s"}, {"Ammo", "arrows"}}
 tbl_9.tuning = {radius = 0.28, aimSpeedMult = 0.85, projectile = "Bolt", ammo = "arrows", range = 500, speedMult = 0.95, magazine = 1, headshotMult = 1.8, gravity = 28, speed = 320, reloadTime = 1.5, fireInterval = 0.2, aimFov = 48, damage = 50}
 local tbl_10 = {description = "One fast, heavy shot that crosses the map. Aim to steady it. Slow reload. Uses shot.", slot = "primary", id = "musket", unlock = false, role = "Heavy", name = "Musket", category = "gun", points = 5, kind = "Musket", hotbar = true}
-tbl_10.stats = {range = 9.5, rate = 1.5, damage = 9.5}
-tbl_10.details = {{"Damage", "85 (136 head)"}, {"Reload", "2.4 s"}, {"Ammo", "shot"}}
-tbl_10.tuning = {aimSpeedMult = 0.6, ammo = "shot", range = 600, speed = 900, aimFov = 40, damage = 85, radius = 0.22, projectile = "Ball", reloadSpeedMult = 0.75, shake = 0.5, magazine = 1, climb = 3.25, kick = 11, speedMult = 0.92, spreadAim = 0.25, spreadHip = 3.2, reloadTime = 2.4, headshotMult = 1.6, gravity = 12, fireInterval = 0.3, falloff = {start = 140, minMult = 0.7, finish = 320}}
+tbl_10.stats = {range = 9.5, rate = 1.5, damage = 9.2}
+tbl_10.details = {{"Damage", "82 (131 head)"}, {"Reload", "2.4 s"}, {"Ammo", "shot"}}
+tbl_10.tuning = {aimSpeedMult = 0.6, ammo = "shot", range = 600, speed = 900, aimFov = 40, damage = 82, radius = 0.22, projectile = "Ball", reloadSpeedMult = 0.75, shake = 0.5, magazine = 1, climb = 3.25, kick = 11, speedMult = 0.92, spreadAim = 0.25, spreadHip = 3.2, reloadTime = 2.4, headshotMult = 1.6, gravity = 12, fireInterval = 0.3, falloff = {start = 140, minMult = 0.7, finish = 320}}
 local tbl_11 = {description = "A wide cone of pellets: lethal point-blank, weak at range. Uses shot.", slot = "primary", id = "blunderbuss", unlock = false, role = "Brawler", name = "Blunderbuss", category = "gun", points = 4, kind = "Blunderbuss", hotbar = true}
-tbl_11.stats = {range = 2.5, rate = 3, damage = 9}
-tbl_11.details = {{"Damage", "8 \195\151 13"}, {"Reload", "1.5 s"}, {"Ammo", "shot"}}
-tbl_11.tuning = {aimSpeedMult = 0.8, ammo = "shot", range = 90, spreadAim = 4.5, spread = 6.5, damage = 13, projectile = "Pellet", radius = 0.3, knockback = 18, shake = 0.6, climb = 3.9, magazine = 1, kick = 13, speedMult = 1, aimFov = 60, headshotMult = 1.5, gravity = 20, reloadTime = 1.5, speed = 420, fireInterval = 0.3, pellets = 8, falloff = {start = 14, minMult = 0.25, finish = 45}}
+tbl_11.stats = {range = 2.5, rate = 3, damage = 8.5}
+tbl_11.details = {{"Damage", "8 \195\151 12"}, {"Reload", "1.5 s"}, {"Ammo", "shot"}}
+tbl_11.tuning = {aimSpeedMult = 0.8, ammo = "shot", range = 90, spreadAim = 4.5, spread = 6.5, damage = 12, projectile = "Pellet", radius = 0.3, knockback = 18, shake = 0.6, climb = 3.9, magazine = 1, kick = 13, speedMult = 0.95, aimFov = 60, headshotMult = 1.5, gravity = 20, reloadTime = 1.5, speed = 420, fireInterval = 0.3, pellets = 8, falloff = {start = 14, minMult = 0.25, finish = 45}}
 local tbl_12 = {"Damage", "30 (45 head)"}
 local tbl_13 = {"Knives", "5 per round"}
-local tbl_14 = {"Damage", "42 (76 head)"}
+local tbl_14 = {"Damage", "38 (68 head)"}
 local tbl_15 = {"Reload", "1.4 s"}
-local tbl_16 = {aimSpeedMult = 0.85, ammo = "shot", range = 400, speed = 700, aimFov = 55, damage = 42, radius = 0.25, projectile = "Ball", shake = 0.35, magazine = 1, climb = 1.95, kick = 7, speedMult = 1.05, spreadAim = 0.3, spreadHip = 1.4, reloadTime = 1.4, headshotMult = 1.8, gravity = 20, fireInterval = 0.2}
+local tbl_16 = {aimSpeedMult = 0.85, ammo = "shot", range = 400, speed = 700, aimFov = 55, damage = 38, radius = 0.25, projectile = "Ball", shake = 0.35, magazine = 1, climb = 1.95, kick = 7, speedMult = 1.05, spreadAim = 0.3, spreadHip = 1.4, reloadTime = 1.4, headshotMult = 1.8, gravity = 20, fireInterval = 0.2}
 tbl_16.falloff = {start = 60, minMult = 0.6, finish = 160}
 local tbl_17 = {description = "Heavy throwing spears. Wind up for more power; hits knock enemies back. Three per round.", slot = "secondary", id = "javelins", unlock = false, role = "Impact", name = "Javelins", category = "throwable", points = 2, kind = "Javelin", hotbar = true}
 tbl_17.stats = {range = 7, rate = 2.5, damage = 8}
@@ -161,7 +161,7 @@ local tbl_upv_31 = {
         details = {tbl_12, tbl_13, {"Rate", "0.28 s"}},
         tuning = {charges = 5, gravity = 30, range = 300, projectile = "Knife", speed = 240, headshotMult = 1.5, fireInterval = 0.28, radius = 0.3, speedMult = 1.05, damage = 30}
     },
-    {description = "A single-shot pistol. Hits hard and fast; reloads after every shot. Uses shot.", slot = "secondary", id = "flintlock", unlock = false, role = "Duelist", name = "Flintlock", category = "gun", points = 3, kind = "Pistol", hotbar = true, stats = {range = 6.5, rate = 4.5, damage = 6}, details = {tbl_14, tbl_15, {"Ammo", "shot"}}, tuning = tbl_16},
+    {description = "A single-shot pistol. Hits hard and fast; reloads after every shot. Uses shot.", slot = "secondary", id = "flintlock", unlock = false, role = "Duelist", name = "Flintlock", category = "gun", points = 3, kind = "Pistol", hotbar = true, stats = {range = 6.5, rate = 4.5, damage = 5.5}, details = {tbl_14, tbl_15, {"Ammo", "shot"}}, tuning = tbl_16},
     tbl_17,
     tbl_18,
     tbl_19,
@@ -356,7 +356,7 @@ table.sort(
     tbl_upv_31,
     function(a1, a2)
         --[[
-          line: 1331
+          line: 1338
           upvalues:
             tbl_upv_65 (copy, index: 1)
             tbl_upv_67 (copy, index: 2)
@@ -393,7 +393,7 @@ end
 function tbl_upv_1.Get(a1)
     --[[
       name: Get
-      line: 1361
+      line: 1368
       upvalues:
         tbl_upv_63 (copy, index: 1)
     ]]
@@ -405,7 +405,7 @@ end
 function tbl_upv_1.All()
     --[[
       name: All
-      line: 1368
+      line: 1375
       upvalues:
         tbl_upv_31 (copy, index: 1)
     ]]
@@ -414,7 +414,7 @@ end
 function tbl_upv_1.IsStagingOnly(a1)
     --[[
       name: IsStagingOnly
-      line: 1374
+      line: 1381
       upvalues:
         tbl_upv_62 (copy, index: 1)
     ]]
@@ -424,7 +424,7 @@ end
 function tbl_upv_1.ByCategory(a1)
     --[[
       name: ByCategory
-      line: 1378
+      line: 1385
       upvalues:
         tbl_upv_64 (copy, index: 1)
     ]]
@@ -433,7 +433,7 @@ end
 function tbl_upv_1.IsValid(a1)
     --[[
       name: IsValid
-      line: 1382
+      line: 1389
       upvalues:
         tbl_upv_63 (copy, index: 1)
     ]]
@@ -443,7 +443,7 @@ end
 function tbl_upv_1.IsHotbar(a1)
     --[[
       name: IsHotbar
-      line: 1387
+      line: 1394
       upvalues:
         tbl_upv_63 (copy, index: 1)
     ]]
@@ -457,7 +457,7 @@ end
 function tbl_upv_1.IsArmor(a1)
     --[[
       name: IsArmor
-      line: 1392
+      line: 1399
       upvalues:
         tbl_upv_63 (copy, index: 1)
     ]]
@@ -471,7 +471,7 @@ end
 function tbl_upv_1.Cost(a1)
     --[[
       name: Cost
-      line: 1398
+      line: 1405
       upvalues:
         tbl_upv_63 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -508,7 +508,7 @@ end
 function tbl_upv_1.AmmoOf(a1)
     --[[
       name: AmmoOf
-      line: 1427
+      line: 1434
       upvalues:
         tbl_upv_63 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -523,7 +523,7 @@ end
 function tbl_upv_1.AmmoNeeded(a1)
     --[[
       name: AmmoNeeded
-      line: 1435
+      line: 1442
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -545,7 +545,7 @@ end
 function tbl_upv_1.MissingAmmo(a1)
     --[[
       name: MissingAmmo
-      line: 1452
+      line: 1459
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -554,7 +554,7 @@ function tbl_upv_1.MissingAmmo(a1)
     local function has(a2)
         --[[
           name: has
-          line: 1455
+          line: 1462
           upvalues:
             u2 (copy, index: 1)
         ]]
@@ -583,7 +583,7 @@ end
 function tbl_upv_1.AmmoRounds(a1, a2)
     --[[
       name: AmmoRounds
-      line: 1474
+      line: 1481
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -597,7 +597,7 @@ end
 function tbl_upv_1.FromSlots(a1)
     --[[
       name: FromSlots
-      line: 1482
+      line: 1489
       upvalues:
         tbl_upv_1 (copy, index: 1)
         tbl_upv_63 (copy, index: 2)
@@ -621,7 +621,7 @@ end
 local function defaultCopy()
     --[[
       name: defaultCopy
-      line: 1496
+      line: 1503
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -634,7 +634,7 @@ end
 function tbl_upv_1.Validate(a1)
     --[[
       name: Validate
-      line: 1519
+      line: 1526
       upvalues:
         defaultCopy (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -647,7 +647,7 @@ function tbl_upv_1.Validate(a1)
     local function fail(a2)
         --[[
           name: fail
-          line: 1524
+          line: 1531
           upvalues:
             u3 (ref, index: 1)
         ]]
@@ -767,7 +767,7 @@ function tbl_upv_1.Validate(a1)
             over = function()
                 --[[
                   name: over
-                  line: 1603
+                  line: 1610
                   upvalues:
                     tbl_upv_1 (copy, index: 1)
                     tbl_upv_73 (copy, index: 2)
@@ -778,7 +778,7 @@ function tbl_upv_1.Validate(a1)
             local function dropUnusedAmmo()
                 --[[
                   name: dropUnusedAmmo
-                  line: 1606
+                  line: 1613
                   upvalues:
                     tbl_upv_1 (copy, index: 1)
                     tbl_upv_73 (copy, index: 2)
@@ -854,7 +854,7 @@ end
 function tbl_upv_1.BySlot(a1)
     --[[
       name: BySlot
-      line: 1646
+      line: 1653
       upvalues:
         tbl_upv_66 (copy, index: 1)
     ]]
@@ -863,7 +863,7 @@ end
 function tbl_upv_1.SlotOf(a1)
     --[[
       name: SlotOf
-      line: 1650
+      line: 1657
       upvalues:
         tbl_upv_63 (copy, index: 1)
     ]]
@@ -873,7 +873,7 @@ end
 function tbl_upv_1.IsStarter(a1)
     --[[
       name: IsStarter
-      line: 1656
+      line: 1663
       upvalues:
         tbl_upv_63 (copy, index: 1)
     ]]
@@ -882,7 +882,7 @@ end
 function tbl_upv_1.SanitizeLoadout(a1)
     --[[
       name: SanitizeLoadout
-      line: 1661
+      line: 1668
       upvalues:
         tbl_upv_1 (copy, index: 1)
         tbl_upv_63 (copy, index: 2)
