@@ -18,7 +18,7 @@ function tbl_1.Init(a1)
     local function member(a2, a3, a4, a5, a6, a7, a8, a9)
         --[[
           name: member
-          line: 54
+          line: 52
         ]]
         local tbl_3 = {connected = true, alive = true, assists = 1}
         tbl_3.id = a2
@@ -35,7 +35,7 @@ function tbl_1.Init(a1)
     local function newSnapshot()
         --[[
           name: newSnapshot
-          line: 71
+          line: 69
           upvalues:
             u3 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
@@ -53,7 +53,7 @@ function tbl_1.Init(a1)
     local function push()
         --[[
           name: push
-          line: 106
+          line: 104
           upvalues:
             State_upv_1 (copy, index: 1)
             u3 (ref,  index: 2)
@@ -63,7 +63,7 @@ function tbl_1.Init(a1)
     local function setPhase(a10, a11)
         --[[
           name: setPhase
-          line: 109
+          line: 107
           upvalues:
             u3 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
@@ -75,7 +75,7 @@ function tbl_1.Init(a1)
     local function find(a12)
         --[[
           name: find
-          line: 114
+          line: 112
           upvalues:
             u3 (ref, index: 1)
         ]]
@@ -92,7 +92,7 @@ function tbl_1.Init(a1)
     local function eliminate(a13, a14, a15, a16)
         --[[
           name: eliminate
-          line: 124
+          line: 122
           upvalues:
             find (copy, index: 1)
             State_upv_1 (copy, index: 2)
@@ -141,7 +141,7 @@ function tbl_1.Init(a1)
     local function resetAlive()
         --[[
           name: resetAlive
-          line: 152
+          line: 150
           upvalues:
             u3 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
@@ -158,7 +158,7 @@ function tbl_1.Init(a1)
     local tbl_upv_6 = {}
     tbl_upv_6.intro = function()
         --[[
-          line: 163
+          line: 161
           upvalues:
             newSnapshot (copy, index: 1)
             State_upv_1 (copy, index: 2)
@@ -174,7 +174,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.preround = function()
         --[[
-          line: 172
+          line: 170
           upvalues:
             u3 (ref,  index: 1)
             tbl_upv_6 (copy, index: 2)
@@ -192,7 +192,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.live = function()
         --[[
-          line: 180
+          line: 178
           upvalues:
             u3 (ref,  index: 1)
             tbl_upv_6 (copy, index: 2)
@@ -207,7 +207,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.feed = function()
         --[[
-          line: 186
+          line: 184
           upvalues:
             eliminate (copy, index: 1)
         ]]
@@ -219,7 +219,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.mykill = function(a17)
         --[[
-          line: 193
+          line: 191
           upvalues:
             eliminate (copy, index: 1)
             u1 (copy, index: 2)
@@ -228,7 +228,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.death = function()
         --[[
-          line: 196
+          line: 194
           upvalues:
             eliminate (copy, index: 1)
             u1 (copy, index: 2)
@@ -239,7 +239,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.follow = function()
         --[[
-          line: 200
+          line: 198
           upvalues:
             State_upv_1 (copy, index: 1)
             tbl_upv_2 (copy, index: 2)
@@ -250,7 +250,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.roundend = function(a18)
         --[[
-          line: 205
+          line: 203
           upvalues:
             u3 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
@@ -266,7 +266,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.overtime = function()
         --[[
-          line: 211
+          line: 209
           upvalues:
             u3 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
@@ -279,7 +279,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.matchend = function(a19)
         --[[
-          line: 216
+          line: 214
           upvalues:
             u3 (ref,  index: 1)
             tbl_upv_6 (copy, index: 2)
@@ -318,7 +318,7 @@ function tbl_1.Init(a1)
         local tbl_7 = {winnerTeam = 0, you = 0, mvpId = 0}
         tbl_7.winnerTeam = (v7 and 1) or 2
         tbl_7.mvpId = u1
-        local tbl_8 = {streak = 0, xpBefore = 340, xpToNextAfter = 605, tribe = 0, trophies = 0, kills = 9, xpToNextBefore = 505, damage = 1240, deaths = 3, won = 0, assists = 2, levelShells = 25, levelAfter = 8, lines = 0, xpAfter = 255, levelBefore = 7, xp = 420, shells = 95}
+        local tbl_8 = {streak = 0, deaths = 3, xpToNextAfter = 605, lines = 0, levelBefore = 7, won = 0, assists = 2, tribe = 0, trophies = 0, kills = 9, levelAfter = 8, xpAfter = 255, xpBefore = 340, xpToNextBefore = 505, xp = 420, damage = 1240}
         tbl_8.streak = (v7 and 3) or 0
         tbl_8.won = v7
         local tbl_9 = {before = 0, after = 0, rankBefore = 1, rankAfter = 1, delta = 0, floor = false}
@@ -326,14 +326,14 @@ function tbl_1.Init(a1)
         tbl_9.delta = (v7 and 30) or 0
         tbl_8.trophies = tbl_9
         tbl_8.tribe = {mates = 1, renown = 3, tag = "SURF"}
-        tbl_8.lines = {{shells = 20, xp = 40, label = "Match played"}, {shells = 40, xp = 60, label = "Victory"}, {shells = 45, xp = 120, label = "Eliminations"}, {shells = 0, xp = 5, label = "Assists"}, {shells = 0, xp = 45, label = "Rounds won"}, {shells = 15, xp = 25, label = "MVP"}, {shells = 0, xp = 24, label = "Win streak"}, {shells = 0, xp = 159, label = "Rookie bonus"}}
+        tbl_8.lines = {{xp = 40, label = "Match played"}, {xp = 60, label = "Victory"}, {xp = 120, label = "Eliminations"}, {xp = 5, label = "Assists"}, {xp = 45, label = "Rounds won"}, {xp = 25, label = "MVP"}, {xp = 24, label = "Win streak"}, {xp = 159, label = "Rookie bonus"}}
         tbl_7.you = tbl_8
         InjectEvent_2("MatchEnd", tbl_7)
     end
     local u4 = 0
     tbl_upv_6.unqueue = function()
         --[[
-          line: 273
+          line: 269
           upvalues:
             u4 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
@@ -345,7 +345,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.found = function()
         --[[
-          line: 279
+          line: 275
           upvalues:
             State_upv_1 (copy, index: 1)
         ]]
@@ -353,7 +353,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.queue = function(a20)
         --[[
-          line: 282
+          line: 278
           upvalues:
             u4 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
@@ -371,7 +371,7 @@ function tbl_1.Init(a1)
             a20,
             function()
                 --[[
-                  line: 289
+                  line: 285
                   upvalues:
                     u5 (copy, index: 1)
                     u4 (ref,  index: 2)
@@ -387,7 +387,7 @@ function tbl_1.Init(a1)
     end
     tbl_upv_6.lowhp = function(a21)
         --[[
-          line: 296
+          line: 292
           upvalues:
             LocalPlayer_upv_1 (copy, index: 1)
         ]]
@@ -401,7 +401,7 @@ function tbl_1.Init(a1)
     local function stop()
         --[[
           name: stop
-          line: 304
+          line: 300
           upvalues:
             u2 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
@@ -431,10 +431,9 @@ function tbl_1.Init(a1)
         State_upv_1.SetProfile(
             {
                 xp = 340,
+                xpToNext = 505,
                 activeLoadout = 1,
                 level = 7,
-                xpToNext = 505,
-                shells = 1250,
                 owned = {},
                 loadout = tbl_10,
                 loadouts = {{armor = false, items = {"longbow", "obsidian_dagger", "bandage", "smoke_bomb"}, ammo = {arrows = 2}}, {armor = false, items = {"short_bow", "bronze_sword", "throwing_knives", "bandage", "smoke_bomb"}, ammo = {arrows = 1}}, {armor = "hide_armor", items = {"battle_axe", "throwing_knives", "fire_bomb"}}, {armor = "bronze_armor", items = {"war_club", "bandage"}}, {armor = false, items = {"short_bow", "healing_tonic", "smoke_bomb", "bear_trap"}, ammo = {arrows = 1}}},
@@ -445,12 +444,11 @@ function tbl_1.Init(a1)
         )
         State_upv_1.SetMockAttr("Level", 7)
         State_upv_1.SetMockAttr("XP", 340)
-        State_upv_1.SetMockAttr("Shells", 1250)
     end
     local function run(a22)
         --[[
           name: run
-          line: 315
+          line: 311
           upvalues:
             State_upv_1 (copy, index: 1)
             u2 (ref,  index: 2)
@@ -473,7 +471,7 @@ function tbl_1.Init(a1)
                 local function board_1(a23)
                     --[[
                       name: board
-                      line: 330
+                      line: 326
                       upvalues:
                         LocalPlayer_upv_1 (copy, index: 1)
                         tbl_upv_2 (copy, index: 2)
@@ -525,7 +523,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug._mockProfileAction = function(a24, a25, a26)
         --[[
-          line: 392
+          line: 388
           upvalues:
             State_upv_1 (copy, index: 1)
         ]]
@@ -539,7 +537,7 @@ function tbl_1.Init(a1)
                     task.defer(
                         function()
                             --[[
-                              line: 420
+                              line: 416
                               upvalues:
                                 State_upv_1 (copy, index: 1)
                                 Profile_upv_1 (copy, index: 2)
@@ -558,7 +556,7 @@ function tbl_1.Init(a1)
                     task.defer(
                         function()
                             --[[
-                              line: 420
+                              line: 416
                               upvalues:
                                 State_upv_1 (copy, index: 1)
                                 Profile_upv_1 (copy, index: 2)
@@ -596,7 +594,7 @@ function tbl_1.Init(a1)
         task.defer(
             function()
                 --[[
-                  line: 420
+                  line: 416
                   upvalues:
                     State_upv_1 (copy, index: 1)
                     Profile_upv_1 (copy, index: 2)
@@ -608,7 +606,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug._mockQueueAction = function(a27)
         --[[
-          line: 427
+          line: 423
           upvalues:
             tbl_upv_6 (copy, index: 1)
             u4 (ref,  index: 2)
@@ -626,7 +624,7 @@ function tbl_1.Init(a1)
                 3.7,
                 function()
                     --[[
-                      line: 431
+                      line: 427
                       upvalues:
                         u6 (copy, index: 1)
                         u4 (ref,  index: 2)
@@ -651,7 +649,7 @@ function tbl_1.Init(a1)
                         task.spawn(
                             function()
                                 --[[
-                                  line: 339
+                                  line: 335
                                   upvalues:
                                     tbl_upv_6 (copy, index: 1)
                                     u7 (copy, index: 2)
@@ -714,7 +712,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.mock = function(a28)
         --[[
-          line: 445
+          line: 441
           upvalues:
             run (copy, index: 1)
             State_upv_1 (copy, index: 2)
@@ -724,7 +722,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.mockStep = function(a29, ...)
         --[[
-          line: 449
+          line: 445
           upvalues:
             tbl_upv_6 (copy, index: 1)
             State_upv_1 (copy, index: 2)
@@ -748,7 +746,7 @@ function tbl_1.Init(a1)
     local function fromAttr()
         --[[
           name: fromAttr
-          line: 464
+          line: 460
           upvalues:
             Workspace_upv_1 (copy, index: 1)
             run (copy, index: 2)

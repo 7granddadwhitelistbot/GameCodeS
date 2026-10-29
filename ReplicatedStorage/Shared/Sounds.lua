@@ -151,7 +151,7 @@ tbl_upv_4.Cast_Frost = {id = 77519143061231, src = "Out Alive (Creator Store)", 
 tbl_upv_4.Cast_Lightning = {pitch = 1.1, src = "Out Alive (PSE)", id = 9114277757, vol = 0.7, roll = tbl_2.bow}
 tbl_upv_4.Charge_Full = {pitch = 1.6, src = "Out Alive (Roblox UI)", id = 15675032796, vol = 0.5, roll = tbl_2.melee}
 tbl_upv_4.Charge_Up = {id = 131969177643108, src = "Out Alive (Creator Store)", vol = 0.5, roll = tbl_2.melee}
-tbl_upv_4.Crossbow_Fire = {pitch = 1.05, src = "Out Alive (PSE Crossbow Fire 12)", id = 9114001369, vol = 1, use = "combat: crossbow shot", roll = tbl_2.bow}
+tbl_upv_4.Crossbow_Fire = {pitch = 1.05, id = 9114001369, vol = 1, src = "Out Alive (PSE Crossbow Fire 12) + Longbow_Fire + Impact_Wood", use = "combat: crossbow shot", roll = tbl_2.bow, layers = {{"Longbow_Fire", 0.55}, {"Impact_Wood", 0.3}}}
 tbl_upv_4.Crossbow_Reload = {src = "Out Alive (Creator Store)", id = 609345653, vol = 0.5, use = "combat: crossbow reload", roll = tbl_2.melee}
 tbl_upv_4.Death_Poof = {pitch = 0.9, src = "Out Alive (PSE)", id = 9113263647, vol = 0.7, roll = tbl_2.hit}
 tbl_upv_4.Denied = {id = 87519554692663, src = "Out Alive (Creator Store)", group = "UI", vol = 0.5}
@@ -205,7 +205,7 @@ tbl_upv_4["Character/Footstep_Stone"] = {throttle = 0.02, src = "Out Alive (Crea
 tbl_upv_4["Character/Footstep_Wood"] = {throttle = 0.02, src = "Out Alive (Creator Store)", vol = 0.4, jitter = 0.06, use = "character", variants = {{"Footstep_Wood_1", 87921439933530}, {"Footstep_Wood_2", 89597871459985}, {"Footstep_Wood_3", 139932856876296}, {"Footstep_Wood_4", 75643573822739}}, roll = tbl_2.foot}
 tbl_upv_4["UI/Click"] = {id = 15675059323, src = "Out Alive (Roblox UI)", vol = 0.5, use = "ui"}
 tbl_upv_4["UI/Close"] = {id = 10066914500, src = "Out Alive (Roblox UI)", vol = 0.5, use = "ui"}
-tbl_upv_4["UI/Coin"] = {id = 135483737426662, src = "Out Alive (Creator Store)", vol = 0.5, use = "ui: shells gained"}
+tbl_upv_4["UI/Coin"] = {id = 135483737426662, src = "Out Alive (Creator Store)", vol = 0.5, use = "ui: coin chime (results, rank-up, ban announcement)"}
 tbl_upv_4["UI/Defeat"] = {id = 125909120236588, src = "Out Alive (APM sting)", vol = 0.5}
 tbl_upv_4["UI/Error"] = {id = 87519554692663, src = "Out Alive (Creator Store)", vol = 0.5, use = "ui"}
 tbl_upv_4["UI/Fanfare"] = {id = 9045751375, src = "Out Alive (APM sting)", vol = 0.5}
@@ -359,7 +359,7 @@ tbl_upv_4["UI/XP_Tick"] = {throttle = 0.08, id = 122058924626639, vol = 0.35, sr
 tbl_upv_4["Firework/Launch"] = {id = 120634345651113, src = "BW events/lunar/firework_launch.ogg", vol = 0.3, use = "lobby: countdown rocket launch"}
 tbl_upv_4["Firework/Explode"] = {src = "BW events/lunar/firework_explode_1/2/3.ogg", vol = 0.5, jitter = 0.05, use = "lobby: countdown firework burst", variants = {{"Firework_Explode_1", 97323434808015}, {"Firework_Explode_2", 77254794364876}, {"Firework_Explode_3", 130012491228201}}}
 tbl_upv_4["Firework/Crackle"] = {src = "BW events/lunar/firework_crackle_1/2/3.ogg", vol = 0.35, jitter = 0.04, use = "lobby: countdown firework crackle tail", variants = {{"Firework_Crackle_1", 113104508017107}, {"Firework_Crackle_2", 89277184195679}, {"Firework_Crackle_3", 103851344884842}}}
-tbl_upv_4["UI/Reward"] = {id = 139391495215873, src = "BW ui/rewards/reward_claim.ogg", vol = 0.5, use = "ui: shells reward on results"}
+tbl_upv_4["UI/Reward"] = {id = 139391495215873, src = "BW ui/rewards/reward_claim.ogg", vol = 0.5, use = "ui: reward claim (drop reveal, ban announcement)"}
 tbl_upv_4["UI/Armory_Open"] = {id = 126064401477583, src = "AB UI/b_UI_Shop_Items_Open.wav", vol = 0.5, use = "ui: armory / loadout opened"}
 tbl_upv_4["UI/Drop_Land"] = {id = 131304880023328, src = "BW gameplay/lucky_blocks/lucky_block_slam.ogg", vol = 0.5, use = "ui: the drop chest lands"}
 tbl_upv_4["UI/Rank_Land"] = {src = "BW lucky_block_slam.ogg (the drop's landing), its first 0.32 s", use = "ui: a rank emblem landed on the road (the ranked news takeover) until 2026-10-16: UI/Rank_Pop", id = 131304880023328, jitter = 0, vol = 0.42, fade = 0.14, region = {0, 0.32}}
@@ -423,7 +423,7 @@ local tbl_upv_5 = {UI = "UI", Music = "Music", Ambience = "Ambient"}
 function tbl_1.Get(a1)
     --[[
       name: Get
-      line: 613
+      line: 615
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
@@ -432,7 +432,7 @@ end
 function tbl_1.All()
     --[[
       name: All
-      line: 617
+      line: 619
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
@@ -441,7 +441,7 @@ end
 function tbl_1.groupOf(a1)
     --[[
       name: groupOf
-      line: 622
+      line: 624
       upvalues:
         tbl_upv_4 (copy, index: 1)
         tbl_upv_5 (copy, index: 2)

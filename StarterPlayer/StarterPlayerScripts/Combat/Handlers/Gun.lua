@@ -404,6 +404,9 @@ function tbl_upv_1.Fire(a1)
                     Util_upv_1.RecoilSlow(v15, ((math.random() - 0.5) * v15) * 0.25, climb_1, ((math.random() - 0.5) * climb_1) * 0.5)
                 end
                 Util_upv_1.Shake(tuning_2.shake or (preset_1.shake or 0.25), 0.14)
+                if preset_1.fovPunch then
+                    Util_upv_1.FovKick(-preset_1.fovPunch, 0.025, 0.22)
+                end
                 Hud_upv_1.Kick(v16 * 3)
                 Poses_upv_1.Kick(ctx_upv_4.char, v16 * 5)
                 if a1.ammo <= 0 and (not (tuning_2.ammo) or Util_upv_1.AmmoLeft(ctx_upv_4.char, tuning_2.ammo) > 1) then
@@ -411,7 +414,7 @@ function tbl_upv_1.Fire(a1)
                         0.25,
                         function()
                             --[[
-                              line: 293
+                              line: 297
                               upvalues:
                                 ctx_upv_4 (copy, index: 1)
                                 a1 (copy, index: 2)
@@ -434,7 +437,7 @@ end
 function tbl_upv_1.Seed(a1, a2)
     --[[
       name: Seed
-      line: 303
+      line: 307
       upvalues:
         Combat_upv_1 (copy, index: 1)
     ]]
@@ -451,7 +454,7 @@ end
 function tbl_upv_1.SetAim(a1, a2)
     --[[
       name: SetAim
-      line: 308
+      line: 312
       upvalues:
         Util_upv_1 (copy, index: 1)
     ]]
@@ -481,7 +484,7 @@ end
 function tbl_upv_1.Input(a1, a2, a3)
     --[[
       name: Input
-      line: 327
+      line: 331
     ]]
     if a2 == "Primary" then
         a1.holding = a3
@@ -498,7 +501,7 @@ end
 function tbl_upv_1.Update(a1, a2)
     --[[
       name: Update
-      line: 340
+      line: 344
       upvalues:
         Hud_upv_1 (copy, index: 1)
     ]]
@@ -515,13 +518,13 @@ end
 function tbl_upv_1.Interrupt(a1)
     --[[
       name: Interrupt
-      line: 358
+      line: 362
     ]]
 end
 function tbl_upv_1.OnDenied(a1, a2)
     --[[
       name: OnDenied
-      line: 361
+      line: 365
     ]]
     if a2 ~= "NoAmmo" then
         return

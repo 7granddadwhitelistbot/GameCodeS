@@ -51,7 +51,6 @@ tbl_1.Colors = {
     HealthLow = fromRGB_1(245, 64, 72),
     HealthTrail = fromRGB_1(255, 214, 140),
     Armor = fromRGB_1(150, 200, 255),
-    Shell = fromRGB_1(255, 176, 120),
     Xp = fromRGB_1(40, 150, 255),
     Gold = fromRGB_1(255, 200, 60),
     White = fromRGB_1(255, 255, 255),
@@ -77,18 +76,17 @@ tbl_1.Tween = {
     Slam = TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 0, false, 0)
 }
 tbl_1.DesignSize = Vector2.new(1600, 900)
-tbl_1.ShowCurrency = false
 function tbl_1.Lighten(a1, a2)
     --[[
       name: Lighten
-      line: 113
+      line: 108
     ]]
     return a1:Lerp(Color3.new(1, 1, 1), a2)
 end
 function tbl_1.Darken(a1, a2)
     --[[
       name: Darken
-      line: 117
+      line: 112
     ]]
     return a1:Lerp(Color3.new(0, 0, 0), a2)
 end

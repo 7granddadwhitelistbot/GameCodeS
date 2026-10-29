@@ -58,7 +58,6 @@ tbl_upv_1.WINS_STORE_NAME = "TribesWins_v1"
 tbl_upv_1.TROPHIES_STORE_NAME = "TribesTrophies_v1"
 tbl_upv_1.AUTOSAVE_INTERVAL = 90
 tbl_upv_1.SAVE_CONCURRENCY = 8
-tbl_upv_1.STARTING_SHELLS = 200
 tbl_upv_1.STARTING_MMR = 1000
 tbl_upv_1.UPDATE_COUNTDOWN = {
     at = 1792252800,
@@ -84,7 +83,7 @@ tbl_upv_1.ENEMY_COLOR = Color3.fromRGB(255, 72, 72)
 function tbl_upv_1.Mode(a1)
     --[[
       name: Mode
-      line: 179
+      line: 178
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -96,7 +95,7 @@ end
 function tbl_upv_1.ArenaSlotCenter(a1)
     --[[
       name: ArenaSlotCenter
-      line: 183
+      line: 182
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]

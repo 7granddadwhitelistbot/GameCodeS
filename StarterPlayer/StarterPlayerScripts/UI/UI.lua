@@ -3417,216 +3417,175 @@ function tbl_upv_1.Pill(a1, a2, a3)
     new_18("TextLabel", tbl_43)
     return v202
 end
-function tbl_upv_1.ShellAmount(a1, a2)
-    --[[
-      name: ShellAmount
-      line: 1994
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
-        Fonts_upv_1 (copy, index: 3)
-        Colors_upv_1 (copy, index: 4)
-    ]]
-    local v203 = a2 or {}
-    local v204 = v203.TextSize or 22
-    local new_19 = tbl_upv_1.new
-    local tbl_44 = {}
-    tbl_44.Name = "Shells"
-    tbl_44.AutomaticSize = Enum.AutomaticSize.X
-    tbl_44.Size = UDim2.fromOffset(0, v204 + 6)
-    tbl_44.LayoutOrder = v203.LayoutOrder or 0
-    tbl_44.Position = v203.Position or UDim2.new()
-    tbl_44.AnchorPoint = v203.AnchorPoint or (Vector2.zero)
-    tbl_44.ZIndex = v203.ZIndex or 1
-    tbl_44[1] = tbl_upv_1.List(Enum.FillDirection.Horizontal, 5, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)
-    tbl_44.Parent = v203.Parent
-    local v206 = new_19("Frame", tbl_44)
-    tbl_upv_1.Image(u1.Icons.Shell, {LayoutOrder = 0, Name = "Icon", Size = UDim2.fromOffset(math.floor(v204 * 1.15), math.floor(v204 * 1.15)), ZIndex = v203.ZIndex or 1, Parent = v206})
-    local new_20 = tbl_upv_1.new
-    local tbl_45 = {LayoutOrder = 1, FontFace = 0, TextColor3 = 0, Parent = 0, Name = "Amount", AutomaticSize = 0, ZIndex = 0, TextSize = 0, Size = 0}
-    tbl_45.Text = tbl_upv_1.FormatNumber(a1)
-    tbl_45.FontFace = v203.Font or (Fonts_upv_1.Display)
-    tbl_45.TextSize = v204
-    tbl_45.TextColor3 = v203.Color or (Colors_upv_1.Shell)
-    tbl_45.AutomaticSize = Enum.AutomaticSize.X
-    tbl_45.Size = UDim2.fromScale(0, 1)
-    tbl_45.ZIndex = v203.ZIndex or 1
-    tbl_45.Parent = v206
-    local v207 = new_20("TextLabel", tbl_45)
-    if v203.Stroke ~= false then
-        tbl_upv_1.TextStroke(Colors_upv_1.Void, 2, 0.2).Parent = v207
-    end
-    return v206, v207
-end
 function tbl_upv_1.LevelBadge(a1, a2, a3)
     --[[
       name: LevelBadge
-      line: 2034
+      line: 1994
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Theme_upv_1 (copy, index: 2)
         Colors_upv_1 (copy, index: 3)
         Fonts_upv_1 (copy, index: 4)
     ]]
-    local v208 = a3 or {}
-    local new_21 = tbl_upv_1.new
-    local tbl_46 = {AnchorPoint = 0, Name = "LevelBadge", Position = 0, Parent = 0, ZIndex = 0, LayoutOrder = 0}
-    tbl_46.Size = UDim2.fromOffset(a2, a2)
-    tbl_46.Position = v208.Position or UDim2.new()
-    tbl_46.AnchorPoint = v208.AnchorPoint or (Vector2.zero)
-    tbl_46.LayoutOrder = v208.LayoutOrder or 0
-    tbl_46.ZIndex = v208.ZIndex or 1
-    tbl_46.Parent = v208.Parent
-    local v210 = new_21("Frame", tbl_46)
-    local tbl_47 = {}
-    tbl_47.Name = "Disc"
-    tbl_47.AnchorPoint = Vector2.new(0.5, 0.5)
-    tbl_47.Position = UDim2.fromScale(0.5, 0.5)
-    tbl_47.Size = UDim2.fromScale(0.86, 0.86)
-    tbl_47.BackgroundColor3 = Color3.new(1, 1, 1)
-    tbl_47.ZIndex = v208.ZIndex or 1
-    tbl_47[1], tbl_47[2], tbl_47[3] = tbl_upv_1.Corner(Theme_upv_1.Radius.Pill), tbl_upv_1.Gradient(Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.12), Colors_upv_1.AccentDark, 90), tbl_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.75)
-    tbl_47.Parent = v210
-    tbl_upv_1.new("Frame", tbl_47)
-    local new_22 = tbl_upv_1.new
-    local tbl_48 = {ZIndex = 0, Name = "Level", TextColor3 = 0, Parent = 0, TextSize = 0}
-    tbl_48.Size = UDim2.fromScale(1, 1)
-    tbl_48.Text = tostring(a1)
-    tbl_48.FontFace = Fonts_upv_1.Display
-    tbl_48.TextSize = math.floor(a2 * (((a1 >= 100) and 0.34) or 0.42))
-    tbl_48.TextColor3 = Colors_upv_1.Text
-    tbl_48.ZIndex = (v208.ZIndex or 1) + 1
-    tbl_48.Parent = v210
-    return v210, (new_22("TextLabel", tbl_48))
+    local v203 = a3 or {}
+    local new_19 = tbl_upv_1.new
+    local tbl_44 = {AnchorPoint = 0, Name = "LevelBadge", Position = 0, Parent = 0, ZIndex = 0, LayoutOrder = 0}
+    tbl_44.Size = UDim2.fromOffset(a2, a2)
+    tbl_44.Position = v203.Position or UDim2.new()
+    tbl_44.AnchorPoint = v203.AnchorPoint or (Vector2.zero)
+    tbl_44.LayoutOrder = v203.LayoutOrder or 0
+    tbl_44.ZIndex = v203.ZIndex or 1
+    tbl_44.Parent = v203.Parent
+    local v205 = new_19("Frame", tbl_44)
+    local tbl_45 = {}
+    tbl_45.Name = "Disc"
+    tbl_45.AnchorPoint = Vector2.new(0.5, 0.5)
+    tbl_45.Position = UDim2.fromScale(0.5, 0.5)
+    tbl_45.Size = UDim2.fromScale(0.86, 0.86)
+    tbl_45.BackgroundColor3 = Color3.new(1, 1, 1)
+    tbl_45.ZIndex = v203.ZIndex or 1
+    tbl_45[1], tbl_45[2], tbl_45[3] = tbl_upv_1.Corner(Theme_upv_1.Radius.Pill), tbl_upv_1.Gradient(Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.12), Colors_upv_1.AccentDark, 90), tbl_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.75)
+    tbl_45.Parent = v205
+    tbl_upv_1.new("Frame", tbl_45)
+    local new_20 = tbl_upv_1.new
+    local tbl_46 = {ZIndex = 0, Name = "Level", TextColor3 = 0, Parent = 0, TextSize = 0}
+    tbl_46.Size = UDim2.fromScale(1, 1)
+    tbl_46.Text = tostring(a1)
+    tbl_46.FontFace = Fonts_upv_1.Display
+    tbl_46.TextSize = math.floor(a2 * (((a1 >= 100) and 0.34) or 0.42))
+    tbl_46.TextColor3 = Colors_upv_1.Text
+    tbl_46.ZIndex = (v203.ZIndex or 1) + 1
+    tbl_46.Parent = v205
+    return v205, (new_20("TextLabel", tbl_46))
 end
 local function line(a1, a2, a3, a4, a5, a6, a7)
     --[[
       name: line
-      line: 2075
+      line: 2035
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Theme_upv_1 (copy, index: 2)
     ]]
-    local v211 = a3 * a2
-    local v212 = a4 * a2
-    local v213 = (v211 + v212) / 2
-    local v214 = v212 - v211
-    local tbl_49 = {}
-    tbl_49.AnchorPoint = Vector2.new(0.5, 0.5)
-    tbl_49.Position = UDim2.fromOffset(v213.X, v213.Y)
-    tbl_49.Size = UDim2.fromOffset(v214.Magnitude + a5, a5)
-    tbl_49.Rotation = math.deg(math.atan2(v214.Y, v214.X))
-    tbl_49.BackgroundColor3 = a6
-    tbl_49.ZIndex = a7 or 1
-    tbl_49[1] = tbl_upv_1.Corner(Theme_upv_1.Radius.Pill)
-    tbl_49.Parent = a1
-    tbl_upv_1.new("Frame", tbl_49)
+    local v206 = a3 * a2
+    local v207 = a4 * a2
+    local v208 = (v206 + v207) / 2
+    local v209 = v207 - v206
+    local tbl_47 = {}
+    tbl_47.AnchorPoint = Vector2.new(0.5, 0.5)
+    tbl_47.Position = UDim2.fromOffset(v208.X, v208.Y)
+    tbl_47.Size = UDim2.fromOffset(v209.Magnitude + a5, a5)
+    tbl_47.Rotation = math.deg(math.atan2(v209.Y, v209.X))
+    tbl_47.BackgroundColor3 = a6
+    tbl_47.ZIndex = a7 or 1
+    tbl_47[1] = tbl_upv_1.Corner(Theme_upv_1.Radius.Pill)
+    tbl_47.Parent = a1
+    tbl_upv_1.new("Frame", tbl_47)
 end
 function tbl_upv_1.Icon(a1, a2, a3, a4)
     --[[
       name: Icon
-      line: 2092
+      line: 2052
       upvalues:
         Colors_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
         line (copy, index: 3)
         Theme_upv_1 (copy, index: 4)
     ]]
-    local v215 = a4 or {}
-    local v216 = a3 or (Colors_upv_1.Text)
-    local v217 = v215.Thickness or (math.max(2, math.floor(a2 * 0.16 + 0.5)))
-    local v218 = v215.ZIndex or 1
-    local new_23 = tbl_upv_1.new
-    local tbl_50 = {AnchorPoint = 0, Position = 0, Parent = 0, ZIndex = 0, LayoutOrder = 0}
-    tbl_50.Name = "Icon_" .. a1
-    tbl_50.Size = UDim2.fromOffset(a2, a2)
-    tbl_50.Position = v215.Position or UDim2.new()
-    tbl_50.AnchorPoint = v215.AnchorPoint or (Vector2.zero)
-    tbl_50.LayoutOrder = v215.LayoutOrder or 0
-    tbl_50.ZIndex = v218
-    tbl_50.Parent = v215.Parent
-    local v220 = new_23("Frame", tbl_50)
-    local new_24 = Vector2.new
+    local v210 = a4 or {}
+    local v211 = a3 or (Colors_upv_1.Text)
+    local v212 = v210.Thickness or (math.max(2, math.floor(a2 * 0.16 + 0.5)))
+    local v213 = v210.ZIndex or 1
+    local new_21 = tbl_upv_1.new
+    local tbl_48 = {AnchorPoint = 0, Position = 0, Parent = 0, ZIndex = 0, LayoutOrder = 0}
+    tbl_48.Name = "Icon_" .. a1
+    tbl_48.Size = UDim2.fromOffset(a2, a2)
+    tbl_48.Position = v210.Position or UDim2.new()
+    tbl_48.AnchorPoint = v210.AnchorPoint or (Vector2.zero)
+    tbl_48.LayoutOrder = v210.LayoutOrder or 0
+    tbl_48.ZIndex = v213
+    tbl_48.Parent = v210.Parent
+    local v215 = new_21("Frame", tbl_48)
+    local new_22 = Vector2.new
     if a1 == "cross" then
-        line(v220, a2, new_24(0.2, 0.2), new_24(0.8, 0.8), v217, v216, v218)
-        line(v220, a2, new_24(0.8, 0.2), new_24(0.2, 0.8), v217, v216, v218)
+        line(v215, a2, new_22(0.2, 0.2), new_22(0.8, 0.8), v212, v211, v213)
+        line(v215, a2, new_22(0.8, 0.2), new_22(0.2, 0.8), v212, v211, v213)
     elseif a1 == "check" then
-        line(v220, a2, new_24(0.18, 0.52), new_24(0.42, 0.76), v217, v216, v218)
-        line(v220, a2, new_24(0.42, 0.76), new_24(0.84, 0.26), v217, v216, v218)
+        line(v215, a2, new_22(0.18, 0.52), new_22(0.42, 0.76), v212, v211, v213)
+        line(v215, a2, new_22(0.42, 0.76), new_22(0.84, 0.26), v212, v211, v213)
     elseif a1 == "minus" then
-        line(v220, a2, new_24(0.18, 0.5), new_24(0.82, 0.5), v217, v216, v218)
+        line(v215, a2, new_22(0.18, 0.5), new_22(0.82, 0.5), v212, v211, v213)
     elseif a1 == "plus" then
-        line(v220, a2, new_24(0.5, 0.16), new_24(0.5, 0.84), v217, v216, v218)
-        line(v220, a2, new_24(0.16, 0.5), new_24(0.84, 0.5), v217, v216, v218)
+        line(v215, a2, new_22(0.5, 0.16), new_22(0.5, 0.84), v212, v211, v213)
+        line(v215, a2, new_22(0.16, 0.5), new_22(0.84, 0.5), v212, v211, v213)
     elseif a1 == "chevLeft" then
-        line(v220, a2, new_24(0.64, 0.2), new_24(0.34, 0.5), v217, v216, v218)
-        line(v220, a2, new_24(0.34, 0.5), new_24(0.64, 0.8), v217, v216, v218)
+        line(v215, a2, new_22(0.64, 0.2), new_22(0.34, 0.5), v212, v211, v213)
+        line(v215, a2, new_22(0.34, 0.5), new_22(0.64, 0.8), v212, v211, v213)
     elseif a1 == "chevRight" then
-        line(v220, a2, new_24(0.36, 0.2), new_24(0.66, 0.5), v217, v216, v218)
-        line(v220, a2, new_24(0.66, 0.5), new_24(0.36, 0.8), v217, v216, v218)
+        line(v215, a2, new_22(0.36, 0.2), new_22(0.66, 0.5), v212, v211, v213)
+        line(v215, a2, new_22(0.66, 0.5), new_22(0.36, 0.8), v212, v211, v213)
     elseif a1 == "chevUp" then
-        line(v220, a2, new_24(0.22, 0.64), new_24(0.5, 0.34), v217, v216, v218)
-        line(v220, a2, new_24(0.5, 0.34), new_24(0.78, 0.64), v217, v216, v218)
+        line(v215, a2, new_22(0.22, 0.64), new_22(0.5, 0.34), v212, v211, v213)
+        line(v215, a2, new_22(0.5, 0.34), new_22(0.78, 0.64), v212, v211, v213)
     elseif a1 == "chevDown" then
-        line(v220, a2, new_24(0.22, 0.36), new_24(0.5, 0.66), v217, v216, v218)
-        line(v220, a2, new_24(0.5, 0.66), new_24(0.78, 0.36), v217, v216, v218)
+        line(v215, a2, new_22(0.22, 0.36), new_22(0.5, 0.66), v212, v211, v213)
+        line(v215, a2, new_22(0.5, 0.66), new_22(0.78, 0.36), v212, v211, v213)
     elseif a1 == "pencil" then
-        line(v220, a2, new_24(0.3, 0.7), new_24(0.76, 0.24), v217 * 1.25, v216, v218)
-        line(v220, a2, new_24(0.22, 0.78), new_24(0.3, 0.7), math.max(1, v217 * 0.7), v216, v218)
-        line(v220, a2, new_24(0.16, 0.9), new_24(0.84, 0.9), math.max(1, v217 * 0.6), v216, v218)
+        line(v215, a2, new_22(0.3, 0.7), new_22(0.76, 0.24), v212 * 1.25, v211, v213)
+        line(v215, a2, new_22(0.22, 0.78), new_22(0.3, 0.7), math.max(1, v212 * 0.7), v211, v213)
+        line(v215, a2, new_22(0.16, 0.9), new_22(0.84, 0.9), math.max(1, v212 * 0.6), v211, v213)
     elseif a1 == "gear" then
         for n_1 = 0, 3 do
-            local v221 = math.rad(n_1 * 45)
-            local v222 = new_24(math.cos(v221), math.sin(v221)) * 0.4
-            line(v220, a2, new_24(0.5, 0.5) - v222, new_24(0.5, 0.5) + v222, math.max(3, math.floor(a2 * 0.2)), v216, v218)
+            local v216 = math.rad(n_1 * 45)
+            local v217 = new_22(math.cos(v216), math.sin(v216)) * 0.4
+            line(v215, a2, new_22(0.5, 0.5) - v217, new_22(0.5, 0.5) + v217, math.max(3, math.floor(a2 * 0.2)), v211, v213)
         end
-        tbl_upv_1.new("Frame", {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.62, 0.62), BackgroundColor3 = v216, ZIndex = v218, [1] = tbl_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v220})
-        local new_25 = tbl_upv_1.new
-        local tbl_51 = {}
-        tbl_51.AnchorPoint = Vector2.new(0.5, 0.5)
-        tbl_51.Position = UDim2.fromScale(0.5, 0.5)
-        tbl_51.Size = UDim2.fromScale(0.26, 0.26)
-        tbl_51.BackgroundColor3 = v215.HoleColor or (Colors_upv_1.Panel)
-        tbl_51.ZIndex = v218
-        tbl_51[1] = tbl_upv_1.Corner(Theme_upv_1.Radius.Pill)
-        tbl_51.Parent = v220
-        new_25("Frame", tbl_51)
+        tbl_upv_1.new("Frame", {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.62, 0.62), BackgroundColor3 = v211, ZIndex = v213, [1] = tbl_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v215})
+        local new_23 = tbl_upv_1.new
+        local tbl_49 = {}
+        tbl_49.AnchorPoint = Vector2.new(0.5, 0.5)
+        tbl_49.Position = UDim2.fromScale(0.5, 0.5)
+        tbl_49.Size = UDim2.fromScale(0.26, 0.26)
+        tbl_49.BackgroundColor3 = v210.HoleColor or (Colors_upv_1.Panel)
+        tbl_49.ZIndex = v213
+        tbl_49[1] = tbl_upv_1.Corner(Theme_upv_1.Radius.Pill)
+        tbl_49.Parent = v215
+        new_23("Frame", tbl_49)
     elseif a1 == "person" then
-        tbl_upv_1.new("Frame", {AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.06), Size = UDim2.fromScale(0.42, 0.42), BackgroundColor3 = v216, ZIndex = v218, [1] = tbl_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v220})
-        tbl_upv_1.new("Frame", {AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1), Size = UDim2.fromScale(0.8, 0.44), BackgroundColor3 = v216, ZIndex = v218, [1] = tbl_upv_1.Corner(UDim.new(0.45, 0)), Parent = v220})
+        tbl_upv_1.new("Frame", {AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0.06), Size = UDim2.fromScale(0.42, 0.42), BackgroundColor3 = v211, ZIndex = v213, [1] = tbl_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v215})
+        tbl_upv_1.new("Frame", {AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1), Size = UDim2.fromScale(0.8, 0.44), BackgroundColor3 = v211, ZIndex = v213, [1] = tbl_upv_1.Corner(UDim.new(0.45, 0)), Parent = v215})
     end
-    return v220
+    return v215
 end
 local u61 = Font.new("rbxasset://LuaPackages/Packages/_Index/BuilderIcons/BuilderIcons/BuilderIcons.json", Enum.FontWeight.Regular)
 function tbl_upv_1.Glyph(a1, a2, a3, a4)
     --[[
       name: Glyph
-      line: 2187
+      line: 2147
       upvalues:
         tbl_upv_1 (copy, index: 1)
         u61 (copy, index: 2)
         Colors_upv_1 (copy, index: 3)
     ]]
-    local v223 = a4 or {}
-    local new_26 = tbl_upv_1.new
-    local tbl_52 = {LayoutOrder = 0, FontFace = 0, AutoLocalize = false, TextColor3 = 0, Parent = 0, Text = 0, AnchorPoint = 0, Name = 0, Position = 0, ZIndex = 0, TextSize = 0, Size = 0}
-    tbl_52.Name = v223.Name or ("Glyph_" .. a1)
-    tbl_52.Text = a1
-    tbl_52.FontFace = u61
-    tbl_52.TextSize = a2
-    tbl_52.TextColor3 = a3 or (Colors_upv_1.Text)
-    tbl_52.Size = UDim2.fromOffset(a2, a2)
-    tbl_52.Position = v223.Position or UDim2.new()
-    tbl_52.AnchorPoint = v223.AnchorPoint or (Vector2.zero)
-    tbl_52.LayoutOrder = v223.LayoutOrder or 0
-    tbl_52.ZIndex = v223.ZIndex or 1
-    tbl_52.Parent = v223.Parent
-    local u62 = new_26("TextLabel", tbl_52)
+    local v218 = a4 or {}
+    local new_24 = tbl_upv_1.new
+    local tbl_50 = {LayoutOrder = 0, FontFace = 0, AutoLocalize = false, TextColor3 = 0, Parent = 0, Text = 0, AnchorPoint = 0, Name = 0, Position = 0, ZIndex = 0, TextSize = 0, Size = 0}
+    tbl_50.Name = v218.Name or ("Glyph_" .. a1)
+    tbl_50.Text = a1
+    tbl_50.FontFace = u61
+    tbl_50.TextSize = a2
+    tbl_50.TextColor3 = a3 or (Colors_upv_1.Text)
+    tbl_50.Size = UDim2.fromOffset(a2, a2)
+    tbl_50.Position = v218.Position or UDim2.new()
+    tbl_50.AnchorPoint = v218.AnchorPoint or (Vector2.zero)
+    tbl_50.LayoutOrder = v218.LayoutOrder or 0
+    tbl_50.ZIndex = v218.ZIndex or 1
+    tbl_50.Parent = v218.Parent
+    local u62 = new_24("TextLabel", tbl_50)
     task.delay(
         2,
         function()
             --[[
-              line: 2205
+              line: 2165
               upvalues:
                 u62 (copy, index: 1)
                 a2 (copy, index: 2)
@@ -3643,15 +3602,15 @@ end
 function tbl_upv_1.SelectionRing(a1, a2)
     --[[
       name: SelectionRing
-      line: 2217
+      line: 2177
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Colors_upv_1 (copy, index: 2)
     ]]
     local u63 = tbl_upv_1.new("Frame", {Name = "SelectionRing", Position = UDim2.fromOffset(-4, -4), Size = UDim2.new(1, 8, 1, 8), BackgroundTransparency = 1, tbl_upv_1.Corner((a2 or 12) + 4), tbl_upv_1.Stroke(Colors_upv_1.Text, 3, 0)})
     for _, value_21 in a1:GetDescendants() do
-        local v225 = value_21:IsA("GuiButton")
-        if not (v225) or not (value_21.Selectable) then
+        local v220 = value_21:IsA("GuiButton")
+        if not (v220) or not (value_21.Selectable) then
             continue
         end
         if value_21.SelectionImageObject == nil then
@@ -3661,7 +3620,7 @@ function tbl_upv_1.SelectionRing(a1, a2)
     local function apply(a3)
         --[[
           name: apply
-          line: 2227
+          line: 2187
           upvalues:
             u63 (copy, index: 1)
         ]]
@@ -3677,7 +3636,7 @@ local u64 = TweenInfo.new(0.34, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
 function tbl_upv_1.WindowCloseSize()
     --[[
       name: WindowCloseSize
-      line: 2262
+      line: 2222
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -3689,7 +3648,7 @@ end
 function tbl_upv_1.Window(a1)
     --[[
       name: Window
-      line: 2266
+      line: 2226
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Colors_upv_1 (copy, index: 2)
@@ -3700,19 +3659,19 @@ function tbl_upv_1.Window(a1)
         u64 (copy, index: 7)
     ]]
     local u65 = tbl_upv_1.new("Frame", {Visible = false, Name = a1.Name or "Window", Size = UDim2.fromScale(1, 1), Parent = a1.Parent})
-    local new_27 = tbl_upv_1.new
-    local tbl_53 = {Visible = 0, Parent = 0, Modal = true, Selectable = false, BackgroundTransparency = 1}
-    tbl_53.Name = (a1.Name or "Window") .. "Backdrop"
-    tbl_53.Size = UDim2.fromScale(1, 1)
-    tbl_53.BackgroundColor3 = Colors_upv_1.Void
-    tbl_53.Visible = tbl_upv_1.BackdropCanvas == nil
-    tbl_53.Parent = tbl_upv_1.BackdropCanvas or u65
-    local u66 = new_27("TextButton", tbl_53)
+    local new_25 = tbl_upv_1.new
+    local tbl_51 = {Visible = 0, Parent = 0, Modal = true, Selectable = false, BackgroundTransparency = 1}
+    tbl_51.Name = (a1.Name or "Window") .. "Backdrop"
+    tbl_51.Size = UDim2.fromScale(1, 1)
+    tbl_51.BackgroundColor3 = Colors_upv_1.Void
+    tbl_51.Visible = tbl_upv_1.BackdropCanvas == nil
+    tbl_51.Parent = tbl_upv_1.BackdropCanvas or u65
+    local u66 = new_25("TextButton", tbl_51)
     if tbl_upv_1.BackdropCanvas then
         u65:GetPropertyChangedSignal("Visible"):Connect(
             function()
                 --[[
-                  line: 2284
+                  line: 2244
                   upvalues:
                     u66 (copy, index: 1)
                     u65 (copy, index: 2)
@@ -3721,18 +3680,18 @@ function tbl_upv_1.Window(a1)
             end
         )
     end
-    local new_28 = tbl_upv_1.new
-    local tbl_54 = {Name = "Holder", Parent = 0, Size = 0}
-    tbl_54.AnchorPoint = Vector2.new(0.5, 0.5)
-    tbl_54.Position = UDim2.fromScale(0.5, 0.5)
-    tbl_54.Size = a1.Size or UDim2.fromOffset(1000, 640)
-    tbl_54.Parent = u65
-    local u67 = new_28("Frame", tbl_54)
+    local new_26 = tbl_upv_1.new
+    local tbl_52 = {Name = "Holder", Parent = 0, Size = 0}
+    tbl_52.AnchorPoint = Vector2.new(0.5, 0.5)
+    tbl_52.Position = UDim2.fromScale(0.5, 0.5)
+    tbl_52.Size = a1.Size or UDim2.fromOffset(1000, 640)
+    tbl_52.Parent = u65
+    local u67 = new_26("Frame", tbl_52)
     tbl_upv_1.DropShadow(u67, 16, 8, 0.55)
     pcall(
         function()
             --[[
-              line: 2297
+              line: 2257
               upvalues:
                 u67 (copy, index: 1)
             ]]
@@ -3748,28 +3707,28 @@ function tbl_upv_1.Window(a1)
     if (FitScale_1) and (FitScale_1:IsA("UIScale")) then
         u68 = FitScale_1
     else
-        local v227 = Instance.new("UIScale")
-        v227.Name = "FitScale"
-        v227.Parent = u67
-        u68 = v227
+        local v222 = Instance.new("UIScale")
+        v222.Name = "FitScale"
+        v222.Parent = u67
+        u68 = v222
     end
     local function applyFit()
         --[[
           name: applyFit
-          line: 2304
+          line: 2264
           upvalues:
             tbl_upv_1 (copy, index: 1)
             u67 (copy, index: 2)
             u68 (copy, index: 3)
         ]]
-        local v228 = tbl_upv_1.CanvasSize()
+        local v223 = tbl_upv_1.CanvasSize()
         local Size_1 = u67.Size
         local Offset_3 = Size_1.X.Offset
         local Offset_4 = Size_1.Y.Offset
         if not (Offset_3 <= 0) and not (Offset_4 <= 0) then
-            local v229 = tbl_upv_1.TopInset()
-            u68.Scale = math.min(1, (v228.X - 24) / Offset_3, ((v228.Y - v229) - 12) / Offset_4)
-            Offset_4 = math.max(v228.Y / 2, v229 + ((Offset_4 * u68.Scale) / 2))
+            local v224 = tbl_upv_1.TopInset()
+            u68.Scale = math.min(1, (v223.X - 24) / Offset_3, ((v223.Y - v224) - 12) / Offset_4)
+            Offset_4 = math.max(v223.Y / 2, v224 + ((Offset_4 * u68.Scale) / 2))
             u67:SetAttribute("_base", UDim2.new(0.5, 0, 0, Offset_4))
             if not (u67:GetAttribute("_slideTarget")) then
                 u67.Position = UDim2.new(0.5, 0, 0, Offset_4)
@@ -3779,37 +3738,37 @@ function tbl_upv_1.Window(a1)
         u68.Scale = 1
     end
     tbl_upv_1.ScaleChanged:Connect(applyFit)
-    local v230 = tbl_upv_1.Panel({Name = "Body", Active = true, StrokeTransparency = 0.88, BackgroundTransparency = 0.04, Size = UDim2.fromScale(1, 1), Radius = UDim.new(0, 16), Parent = u67})
-    local v231 = a1.HeaderHeight or 78
-    local u69 = tbl_upv_1.new("Frame", {Name = "Header", Size = UDim2.new(1, 0, 0, v231), Parent = v230})
-    local v232 = tbl_upv_1.DisplayText({StrokeThickness = 0, Name = "Title", TextSize = 36, Text = a1.Title or "", TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, Position = UDim2.fromOffset(28, 14), Size = UDim2.new(1, -150, 0, 40), Parent = u69})
-    local v233 = tbl_upv_1.new("TextLabel", {Name = "Subtitle", TextSize = 17, Text = a1.Subtitle or "", FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Position = UDim2.fromOffset(30, 52), Size = UDim2.new(1, -150, 0, 20), Parent = u69})
+    local v225 = tbl_upv_1.Panel({Name = "Body", Active = true, StrokeTransparency = 0.88, BackgroundTransparency = 0.04, Size = UDim2.fromScale(1, 1), Radius = UDim.new(0, 16), Parent = u67})
+    local v226 = a1.HeaderHeight or 78
+    local u69 = tbl_upv_1.new("Frame", {Name = "Header", Size = UDim2.new(1, 0, 0, v226), Parent = v225})
+    local v227 = tbl_upv_1.DisplayText({StrokeThickness = 0, Name = "Title", TextSize = 36, Text = a1.Title or "", TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, Position = UDim2.fromOffset(28, 14), Size = UDim2.new(1, -150, 0, 40), Parent = u69})
+    local v228 = tbl_upv_1.new("TextLabel", {Name = "Subtitle", TextSize = 17, Text = a1.Subtitle or "", FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Position = UDim2.fromOffset(30, 52), Size = UDim2.new(1, -150, 0, 20), Parent = u69})
     tbl_upv_1.new("Frame", {Name = "Divider", BackgroundColor3 = Colors_upv_1.Divider, BackgroundTransparency = 0.2, Size = UDim2.new(1, -48, 0, 2), Position = UDim2.new(0, 24, 1, -2), [1] = tbl_upv_1.Gradient(Color3.new(1, 1, 1), Color3.new(1, 1, 1), 0, NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.7, 0.4), NumberSequenceKeypoint.new(1, 1)})), Parent = u69})
-    local tbl_upv_55 = {IsOpen = false}
-    tbl_upv_55.Root = u65
-    tbl_upv_55.Holder = u67
-    tbl_upv_55.Body = v230
-    tbl_upv_55.Header = u69
-    tbl_upv_55.Title = v232
-    tbl_upv_55.Subtitle = v233
-    tbl_upv_55.Opened = Signal_upv_1.new()
-    tbl_upv_55.Closed = Signal_upv_1.new()
-    tbl_upv_55.Refit = applyFit
+    local tbl_upv_53 = {IsOpen = false}
+    tbl_upv_53.Root = u65
+    tbl_upv_53.Holder = u67
+    tbl_upv_53.Body = v225
+    tbl_upv_53.Header = u69
+    tbl_upv_53.Title = v227
+    tbl_upv_53.Subtitle = v228
+    tbl_upv_53.Opened = Signal_upv_1.new()
+    tbl_upv_53.Closed = Signal_upv_1.new()
+    tbl_upv_53.Refit = applyFit
     local function makeClose()
         --[[
           name: makeClose
-          line: 2388
+          line: 2348
           upvalues:
             tbl_upv_1 (copy, index: 1)
             Colors_upv_1 (copy, index: 2)
             u69 (copy, index: 3)
             a1 (copy, index: 4)
         ]]
-        local v234 = tbl_upv_1.WindowCloseSize()
+        local v229 = tbl_upv_1.WindowCloseSize()
         local function OnClick_1()
             --[[
               name: OnClick
-              line: 2400
+              line: 2360
               upvalues:
                 a1 (copy, index: 1)
             ]]
@@ -3818,33 +3777,33 @@ function tbl_upv_1.Window(a1)
             end
             a1.OnCloseRequested()
         end
-        return (tbl_upv_1.IconButton({IconName = "cross", Name = "Close", Sound = "Close", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 12), Size = UDim2.fromOffset(v234, v234), Color = Colors_upv_1.Raised, HoverColor = Colors_upv_1.Danger, Parent = u69, OnClick = OnClick_1}))
+        return (tbl_upv_1.IconButton({IconName = "cross", Name = "Close", Sound = "Close", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 12), Size = UDim2.fromOffset(v229, v229), Color = Colors_upv_1.Raised, HoverColor = Colors_upv_1.Danger, Parent = u69, OnClick = OnClick_1}))
     end
     if not (a1.NoClose) then
         local u70 = makeClose()
-        tbl_upv_55.CloseButton = u70
+        tbl_upv_53.CloseButton = u70
         tbl_upv_1.TouchChanged:Connect(
             function()
                 --[[
-                  line: 2412
+                  line: 2372
                   upvalues:
                     u70 (ref,  index: 1)
                     makeClose (copy, index: 2)
-                    tbl_upv_55 (copy, index: 3)
+                    tbl_upv_53 (copy, index: 3)
                 ]]
                 u70:Destroy()
                 u70 = makeClose()
-                tbl_upv_55.CloseButton = u70
+                tbl_upv_53.CloseButton = u70
             end
         )
     end
-    tbl_upv_55.Content = tbl_upv_1.new("Frame", {Name = "Content", Position = UDim2.fromOffset(0, v231), Size = UDim2.new(1, 0, 1, -v231), [1] = tbl_upv_1.Padding(14, 22, 18, 22), Parent = v230})
+    tbl_upv_53.Content = tbl_upv_1.new("Frame", {Name = "Content", Position = UDim2.fromOffset(0, v226), Size = UDim2.new(1, 0, 1, -v226), [1] = tbl_upv_1.Padding(14, 22, 18, 22), Parent = v225})
     local u71 = 0
     local u72 = false
     u66.InputBegan:Connect(
         function(a2)
             --[[
-              line: 2432
+              line: 2392
               upvalues:
                 u72 (ref, index: 1)
             ]]
@@ -3858,7 +3817,7 @@ function tbl_upv_1.Window(a1)
     u66.Activated:Connect(
         function()
             --[[
-              line: 2438
+              line: 2398
               upvalues:
                 u71 (ref,  index: 1)
                 u72 (ref,  index: 2)
@@ -3875,10 +3834,10 @@ function tbl_upv_1.Window(a1)
         end
     )
     local u73 = 0
-    function tbl_upv_55.Open(a3)
+    function tbl_upv_53.Open(a3)
         --[[
           name: Open
-          line: 2450
+          line: 2410
           upvalues:
             u71 (ref,  index: 1)
             u72 (ref,  index: 2)
@@ -3904,23 +3863,23 @@ function tbl_upv_1.Window(a1)
         u66.BackgroundTransparency = 1
         tbl_upv_1.Tween(u66, Theme_upv_1.Tween.Smooth, {BackgroundTransparency = a1.DimTransparency or 0.4})
         applyFit()
-        local v235 = u67:GetAttribute("_base")
+        local v230 = u67:GetAttribute("_base")
         local SlideIn_1 = tbl_upv_1.SlideIn
-        local v236 = Vector2.new(0, 50)
-        local v237
-        if typeof(v235) ~= "UDim2" then
-            v237 = UDim2.fromScale(0.5, 0.5)
+        local v231 = Vector2.new(0, 50)
+        local v232
+        if typeof(v230) ~= "UDim2" then
+            v232 = UDim2.fromScale(0.5, 0.5)
         else
-            v237 = v235
+            v232 = v230
         end
-        SlideIn_1(u67, v236, u64, v237)
+        SlideIn_1(u67, v231, u64, v232)
         Sounds_upv_1.Play(a1.OpenSound or "Open")
         a3.Opened:Fire()
     end
-    function tbl_upv_55.Close(a4, a5)
+    function tbl_upv_53.Close(a4, a5)
         --[[
           name: Close
-          line: 2467
+          line: 2427
           upvalues:
             u73 (ref,  index: 1)
             u65 (copy, index: 2)
@@ -3940,19 +3899,19 @@ function tbl_upv_1.Window(a1)
             u65.Visible = false
         else
             tbl_upv_1.Tween(u66, Theme_upv_1.Tween.Close, {BackgroundTransparency = 1})
-            local v238 = u67:GetAttribute("_base")
-            local v239
-            if typeof(v238) ~= "UDim2" then
-                v239 = UDim2.fromScale(0.5, 0.5)
+            local v233 = u67:GetAttribute("_base")
+            local v234
+            if typeof(v233) ~= "UDim2" then
+                v234 = UDim2.fromScale(0.5, 0.5)
             else
-                v239 = v238
+                v234 = v233
             end
-            tbl_upv_1.Tween(u67, Theme_upv_1.Tween.Close, {Position = v239 + UDim2.fromOffset(0, 30)})
+            tbl_upv_1.Tween(u67, Theme_upv_1.Tween.Close, {Position = v234 + UDim2.fromOffset(0, 30)})
             task.delay(
                 0.15,
                 function()
                     --[[
-                      line: 2483
+                      line: 2443
                       upvalues:
                         u73 (ref,  index: 1)
                         u74 (copy, index: 2)
@@ -3966,61 +3925,61 @@ function tbl_upv_1.Window(a1)
             )
         end
     end
-    return tbl_upv_55
+    return tbl_upv_53
 end
 function tbl_upv_1.SectionTitle(a1, a2)
     --[[
       name: SectionTitle
-      line: 2496
+      line: 2456
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Colors_upv_1 (copy, index: 2)
         Fonts_upv_1 (copy, index: 3)
     ]]
-    local v240 = a2 or {}
+    local v235 = a2 or {}
+    local new_27 = tbl_upv_1.new
+    local tbl_54 = {LayoutOrder = 0, Name = "Section", Position = 0, Parent = 0, Size = 0}
+    local v236 = v235.Size or (UDim2.new(1, 0, 0, 24))
+    tbl_54.Size = v236
+    v236 = v235.Position or (UDim2.new())
+    tbl_54.Position = v236
+    tbl_54.LayoutOrder = v235.LayoutOrder or 0
+    tbl_54.Parent = v235.Parent
+    local v237 = new_27("Frame", tbl_54)
+    local new_28 = tbl_upv_1.new
+    local tbl_55 = {}
+    tbl_55.BackgroundColor3 = v235.Color or (Colors_upv_1.Accent)
+    tbl_55.Size = UDim2.fromOffset(4, 16)
+    tbl_55.Position = UDim2.fromOffset(0, 4)
+    tbl_55[1] = tbl_upv_1.Corner(2)
+    tbl_55.Parent = v237
+    new_28("Frame", tbl_55)
     local new_29 = tbl_upv_1.new
-    local tbl_56 = {LayoutOrder = 0, Name = "Section", Position = 0, Parent = 0, Size = 0}
-    local v241 = v240.Size or (UDim2.new(1, 0, 0, 24))
-    tbl_56.Size = v241
-    v241 = v240.Position or (UDim2.new())
-    tbl_56.Position = v241
-    tbl_56.LayoutOrder = v240.LayoutOrder or 0
-    tbl_56.Parent = v240.Parent
-    local v242 = new_29("Frame", tbl_56)
-    local new_30 = tbl_upv_1.new
-    local tbl_57 = {}
-    tbl_57.BackgroundColor3 = v240.Color or (Colors_upv_1.Accent)
-    tbl_57.Size = UDim2.fromOffset(4, 16)
-    tbl_57.Position = UDim2.fromOffset(0, 4)
-    tbl_57[1] = tbl_upv_1.Corner(2)
-    tbl_57.Parent = v242
-    new_30("Frame", tbl_57)
-    local new_31 = tbl_upv_1.new
-    local tbl_58 = {TextColor3 = 0, Parent = 0, Name = "Text", TextXAlignment = 0, Position = 0, Size = 0}
-    tbl_58.Text = string.upper(a1)
-    tbl_58.FontFace = Fonts_upv_1.Heavy
-    tbl_58.TextSize = v240.TextSize or 16
-    tbl_58.TextColor3 = v240.TextColor or (Colors_upv_1.TextDim)
-    tbl_58.TextXAlignment = Enum.TextXAlignment.Left
-    tbl_58.Position = UDim2.fromOffset(12, 0)
-    tbl_58.Size = UDim2.new(1, -12, 1, 0)
-    tbl_58.Parent = v242
-    new_31("TextLabel", tbl_58)
-    return v242
+    local tbl_56 = {TextColor3 = 0, Parent = 0, Name = "Text", TextXAlignment = 0, Position = 0, Size = 0}
+    tbl_56.Text = string.upper(a1)
+    tbl_56.FontFace = Fonts_upv_1.Heavy
+    tbl_56.TextSize = v235.TextSize or 16
+    tbl_56.TextColor3 = v235.TextColor or (Colors_upv_1.TextDim)
+    tbl_56.TextXAlignment = Enum.TextXAlignment.Left
+    tbl_56.Position = UDim2.fromOffset(12, 0)
+    tbl_56.Size = UDim2.new(1, -12, 1, 0)
+    tbl_56.Parent = v237
+    new_29("TextLabel", tbl_56)
+    return v237
 end
 function tbl_upv_1.Every(a1, a2, a3)
     --[[
       name: Every
-      line: 2527
+      line: 2487
       upvalues:
         RunService_upv_1 (copy, index: 1)
     ]]
     local u75 = 0
     local u76 = nil
-    local v243 = RunService_upv_1.Heartbeat:Connect(
+    local v238 = RunService_upv_1.Heartbeat:Connect(
         function(a4)
             --[[
-              line: 2530
+              line: 2490
               upvalues:
                 a1 (copy, index: 1)
                 u76 (ref,  index: 2)
@@ -4039,7 +3998,7 @@ function tbl_upv_1.Every(a1, a2, a3)
             end
         end
     )
-    u76 = v243
+    u76 = v238
     return u76
 end
 return tbl_upv_1

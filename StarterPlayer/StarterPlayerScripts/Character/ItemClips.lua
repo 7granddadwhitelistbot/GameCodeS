@@ -194,12 +194,12 @@ local tbl_8 = {}
 tbl_8.fire = {
     contact = 0,
     release = 0.36,
-    fx = {{0, "twang"}},
+    fx = {{0, "snap"}},
     keys = {
-        {t = 0.016, rest = Vector3.new(0, 0.009999999776482582, 0.05999999865889549), rot = Vector3.new(8, -1, -3)},
-        {t = 0.05, rest = Vector3.new(0, 0.007000000216066837, 0.03500000014901161), rot = Vector3.new(4.5, -0.5, -1.5)},
-        {t = 0.1, rest = Vector3.new(0, -0.003000000026077032, -0.006000000052154064), rot = Vector3.new(-1.399999976158142, 0, 0.5)},
-        {t = 0.2, rest = Vector3.new(0, 0.0005000000237487257, 0.0010000000474974513), rot = Vector3.new(0.20000000298023224, 0, 0)},
+        {t = 0.016, rest = Vector3.new(0, 0.01600000075995922, 0.10000000149011612), rot = Vector3.new(12, -1.5, -5)},
+        {t = 0.04, rest = Vector3.new(0, 0.012000000104308128, 0.08500000089406967), rot = Vector3.new(10, -1.2000000476837158, -4)},
+        {t = 0.085, rest = Vector3.new(0, -0.004000000189989805, -0.012000000104308128), rot = Vector3.new(-2.5, 0.30000001192092896, 1)},
+        {t = 0.15, rest = Vector3.new(0, 0.0020000000949949026, 0.004000000189989805), rot = Vector3.new(0.800000011920929, 0, -0.30000001192092896)},
         {rest = Vector3.new(0, 0, 0), t = 0.36}
     }
 }
@@ -280,7 +280,7 @@ tbl_10.draw = tbl_9.draw
 local function RESTUP(a1, a2)
     --[[
       name: RESTUP
-      line: 291
+      line: 293
     ]]
     local tbl_11 = {}
     tbl_11.t = a1
@@ -292,7 +292,7 @@ local tbl_13 = {rest = Vector3.new(0, 0, 0), t = 0.76}
 local function A(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
     --[[
       name: A
-      line: 288
+      line: 290
     ]]
     local tbl_14 = {}
     tbl_14.t = a1
@@ -424,7 +424,7 @@ tbl_21.draw = {contact = 0, release = 0.38, keys = {{t = 0.09, rest = Vector3.ne
 local function tuck(a1)
     --[[
       name: tuck
-      line: 513
+      line: 515
     ]]
     return {{t = 0.06, rest = Vector3.new(0.019999999552965164, 0.009999999776482582, 0.04500000178813934), rot = Vector3.new(7, -3, -4)}, {t = 0.2, rest = Vector3.new(0.02199999988079071, 0.012000000104308128, 0.04800000041723251), rot = Vector3.new(7, -3, -4)}, {rest = Vector3.new(0, 0, 0), t = a1}}
 end
@@ -432,7 +432,7 @@ local tbl_22 = {}
 local function straight(a1)
     --[[
       name: straight
-      line: 497
+      line: 499
     ]]
     local v1 = a1 or 1
     return {
@@ -521,7 +521,7 @@ local Unit_upv_3 = Unit_1:Cross(Unit_upv_2).Unit
 local function arc(a1, a2, a3, a4, a5, a6)
     --[[
       name: arc
-      line: 594
+      line: 596
       upvalues:
         Unit_upv_2 (copy, index: 1)
         Unit_upv_3 (copy, index: 2)
@@ -538,7 +538,7 @@ end
 local function arcR(a1, a2, a3, a4, a5, a6, a7)
     --[[
       name: arcR
-      line: 614
+      line: 616
       upvalues:
         arc (copy, index: 1)
     ]]
@@ -825,7 +825,7 @@ v125 = require(script.Parent:WaitForChild("BladeClips"))
 local function lift(a1, a2, a3, a4)
     --[[
       name: lift
-      line: 917
+      line: 919
     ]]
     local tbl_35 = {}
     for key_2, value_2 in a1 do
@@ -847,7 +847,7 @@ tbl_30.slash_r = {contact = v137.slash_r.contact, release = v137.slash_r.release
 local function B(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
     --[[
       name: B
-      line: 910
+      line: 912
     ]]
     local tbl_36 = {}
     tbl_36.t = a1
@@ -965,7 +965,7 @@ tbl_26.draw = tbl_41.draw
 local function hold(a1)
     --[[
       name: hold
-      line: 1045
+      line: 1047
     ]]
     return {{t = 0.05, rest = Vector3.new(0.019999999552965164, 0.014999999664723873, 0.03999999910593033), rot = Vector3.new(8, -2, -4)}, {t = 0.16, rest = Vector3.new(0.02199999988079071, 0.01600000075995922, 0.041999999433755875), rot = Vector3.new(8, -2, -4)}, {rest = Vector3.new(0, 0, 0), t = a1}}
 end
@@ -1171,7 +1171,7 @@ end
 function tbl_upv_1.Pick(a1, a2, a3, a4)
     --[[
       name: Pick
-      line: 1333
+      line: 1335
     ]]
     local v148 = a2 % 2 == 0
     if a1 ~= "Katana" then
@@ -1221,7 +1221,7 @@ end
 function tbl_upv_1.For(a1, a2)
     --[[
       name: For
-      line: 1360
+      line: 1362
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]

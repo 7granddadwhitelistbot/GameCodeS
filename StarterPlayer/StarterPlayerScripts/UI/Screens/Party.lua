@@ -1440,13 +1440,12 @@ function tbl_1.Init(a1)
           upvalues:
             UI_upv_1 (copy, index: 1)
             u5 (copy, index: 2)
-            Theme_upv_1 (copy, index: 3)
-            u17 (copy, index: 4)
+            u17 (copy, index: 3)
         ]]
         local v113 = UI_upv_1.TopInset()
         if UI_upv_1.Compact then
             u5.AnchorPoint = Vector2.new(1, 0)
-            u5.Position = UDim2.new(1, -16, 0, (v113 + (((Theme_upv_1.ShowCurrency) and 60) or 0)) + 160)
+            u5.Position = UDim2.new(1, -16, 0, v113 + 160)
             u17.Position = UDim2.new(0.5, 0, 1, -18)
             u17.Size = UDim2.fromOffset(420, 0)
         else

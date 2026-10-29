@@ -1864,6 +1864,10 @@ local function viewEffects(a1, a2, a3)
                             ViewFx_upv_1.Play(value_18, itemPoint(a2, a3, "muzzle"))
                             continue
                         end
+                        if value_18 == "snap" then
+                            ViewFx_upv_1.Play(value_18, itemPoint(a2, a3, "muzzle"))
+                            continue
+                        end
                         if value_18 == "powder" then
                             ViewFx_upv_1.Play(value_18, itemPoint(a2, a3, "muzzle"))
                             continue
@@ -2013,9 +2017,8 @@ local function drawStreak(a1, a2)
                     clip_upv_1 (copy, index: 10)
                 ]]
                 if u29 then
-                    local v158, v159, v160 = nil, nil, nil
-                    local v161, v162, v158, v159, v163, v164, v165, v166, v160, v167, v168, v169 = BladeClips_upv_1.Eval(leftClip_upv_1, tbl_upv_15.leftFrom, a3, clipScale_upv_1, tbl_upv_15.restFrame, tbl_upv_15.leftFromVel):GetComponents()
-                    local v170 = CFrame.new(-v161, v162, v158, v159, -v163, -v164, -v165, v166, v160, -v167, v168, v169)
+                    local v158, v159, v160, v161, v162, v163, v164, v165, v166, v167, v168, v169 = BladeClips_upv_1.Eval(leftClip_upv_1, tbl_upv_15.leftFrom, a3, clipScale_upv_1, tbl_upv_15.restFrame, tbl_upv_15.leftFromVel):GetComponents()
+                    local v170 = CFrame.new(-v158, v159, v160, v161, -v162, -v163, -v164, v165, v166, -v167, v168, v169)
                     local v171 = v170.Position + u27
                     local tipCanon_1 = a2.tipCanon
                     return Vector3.new(v171.X, v171.Y, v171.Z * a1) + (u28 * v170.Rotation):VectorToWorldSpace(Vector3.new(-tipCanon_1.X, tipCanon_1.Y, tipCanon_1.Z))
@@ -2165,8 +2168,9 @@ local function place(a1, a2, a3, a4, a5, a6)
                 v201 = tbl_upv_15.leftFrame
                 if v201 then
                     local v202 = a2 * CFrame.new(v201.X, v201.Y, v201.Z * v199)
-                    local v203, v204, v205, v206, v207, v208, v209, v210, v211, v212, v213, v214 = a6.norm:GetComponents()
-                    v193.part.CFrame = (v202 * v201.Rotation) * CFrame.new(-v203, v204, v205, v206, -v207, -v208, -v209, v210, v211, -v212, v213, v214) * v193.rel
+                    local v203, v204 = nil, nil
+                    local v205, v206, v203, v207, v208, v209, v210, v211, v212, v213, v214, v204 = a6.norm:GetComponents()
+                    v193.part.CFrame = (v202 * v201.Rotation) * CFrame.new(-v205, v206, v203, v207, -v208, -v209, -v210, v211, v212, -v213, v214, v204) * v193.rel
                     v193.part.LocalTransparencyModifier = 0
                 else
                     v193.part.LocalTransparencyModifier = 1
@@ -3899,7 +3903,7 @@ local function onEvent(a1, a2)
                 end
                 tbl_upv_15.shotN = tbl_upv_15.shotN + 1
                 if not (v379) and startClip("fire") then
-                    local v380 = ({Crossbow = Vector3.new(90, 40, 60), Musket = Vector3.new(160, 80, 280), Pistol = Vector3.new(340, 60, 220), Blunderbuss = Vector3.new(220, 80, 260)})[v364 or ""] or Vector3.new(150, 60, 150)
+                    local v380 = ({Crossbow = Vector3.new(130, 50, 90), Musket = Vector3.new(160, 80, 280), Pistol = Vector3.new(340, 60, 220), Blunderbuss = Vector3.new(220, 80, 260)})[v364 or ""] or Vector3.new(150, 60, 150)
                     local v381 = Random.new((tbl_upv_15.shotN * 7919) + 17)
                     u17:Impulse(Vector3.new(v381:NextNumber(-1, 1) * v380.X, v381:NextNumber(-1, 1) * v380.Y, v381:NextNumber(-1, 1) * v380.Z) * 0.017453292519943295)
                     return

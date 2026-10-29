@@ -14,7 +14,7 @@ tbl_upv_1.Spear = {lunge = "Spear_Stab", noSlash = true, lungeCharge = "Spear_Ch
 tbl_upv_1.Dagger = {swingSound = "Dagger_Swing", critSound = "Backstab", trail = 0.18, hold = "Hold_Sword", equip = "Equip_Blade", hitDelay = 0.06, hitSound = "Dagger_Hit", crosshair = "Melee", swings = {"Dagger_Swing1", "Dagger_Swing2"}, slashColor = v2}
 tbl_upv_1.Club = {swingSound = "Club_Swing", shake = 0.35, trail = 0.35, hold = "Hold_Heavy", swingSpeed = 1.1, equip = "Equip_Heavy", hitDelay = 0.17, hitSound = "Club_Hit", crosshair = "Melee", swings = {"Axe_Swing1", "Axe_Swing2"}, slashColor = v3}
 tbl_upv_1.Bow = {fullSound = "Bow_Full", fireSound = "ShortBow_Fire", draw = "Bow_Draw", drawSound = "ShortBow_Draw", aim = "Bow_Aim", hold = "Hold_Bow", worldSound = "Arrow_Thunk", equip = "Equip_Bow", fire = "Bow_Fire", bodySound = "Arrow_Flesh", crosshair = "Bow", glow = Color3.fromRGB(255, 196, 110)}
-tbl_upv_1.Crossbow = {shake = 0.25, fireSound = "Crossbow_Fire", reloadSound = "Crossbow_Crank", worldSound = "Arrow_Thunk", reloadSound2 = "Crossbow_Reload", fireAnimSpeed = 1, reload = "Crossbow_Reload", kick = 2.2, emptySound = "Dry_Fire", hold = "Crossbow_Aim", reloadDoneSound = "Crossbow_Ready", equip = "Equip_Crossbow", fire = "Crossbow_Fire", bodySound = "Arrow_Flesh", crosshair = "Gun"}
+tbl_upv_1.Crossbow = {fovPunch = 2.2, shake = 0.5, fireSound = "Crossbow_Fire", reloadSound = "Crossbow_Crank", worldSound = "Arrow_Thunk", reloadSound2 = "Crossbow_Reload", fireAnimSpeed = 1, reload = "Crossbow_Reload", kick = 4.6, emptySound = "Dry_Fire", hold = "Crossbow_Aim", reloadDoneSound = "Crossbow_Ready", equip = "Equip_Crossbow", fire = "Crossbow_Fire", bodySound = "Arrow_Flesh", crosshair = "Gun"}
 tbl_upv_1.Musket = {puff = true, fireSound = "Musket_Fire", reloadSound = "Musket_Reload", worldSound = "Impact_Dirt", flash = true, reloadDoneSound = "Gun_Cock", reload = "Crossbow_Reload", shake = 0.55, kick = 11, hold = "Crossbow_Aim", emptySound = "Dry_Fire", equip = "Equip_Gun", fire = "Crossbow_Fire", bodySound = "Hit_Melee_Heavy", crosshair = "Gun"}
 tbl_upv_1.Pistol = {fireSound = "Flintlock_Fire", flash = true, hold = "Pistol_Hold", equip = "Equip_Gun", puff = true, reloadSound = "Flintlock_Reload", worldSound = "Impact_Dirt", fireAnimSpeed = 1, aim = "Pistol_Aim", shake = 0.35, reloadDoneSound = "Gun_Cock", reload = "Pistol_Reload", emptySound = "Dry_Fire", kick = 7, fire = "Pistol_Fire", bodySound = "Hit_Melee_Heavy", crosshair = "Gun"}
 tbl_upv_1.Blunderbuss = {puff = true, fireSound = "Blunderbuss_Fire", reloadSound = "Blunderbuss_Reload", worldSound = "Impact_Dirt", flash = true, reloadDoneSound = "Gun_Cock", reload = "Crossbow_Reload", shake = 0.7, kick = 13, hold = "Crossbow_Aim", emptySound = "Dry_Fire", equip = "Equip_Gun", fire = "Crossbow_Fire", bodySound = "Hit_Melee", crosshair = "Spread"}
@@ -39,7 +39,7 @@ local tbl_4 = {}
 function tbl_4.For(a1, a2)
     --[[
       name: For
-      line: 388
+      line: 392
       upvalues:
         tbl_upv_1 (copy, index: 1)
         tbl_upv_2 (copy, index: 2)
@@ -69,7 +69,7 @@ end
 function tbl_4.Kind(a1)
     --[[
       name: Kind
-      line: 411
+      line: 415
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]

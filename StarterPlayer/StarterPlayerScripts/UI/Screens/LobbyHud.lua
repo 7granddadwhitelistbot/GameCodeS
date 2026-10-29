@@ -463,63 +463,54 @@ function tbl_1.Init(a1)
         end
     )
     State_upv_1.ProfileChanged:Connect(refreshRank)
-    local u23 = UI_upv_1.Panel({Name = "ShellsPill", BackgroundTransparency = 0.22, AnchorPoint = Vector2.new(1, 0), Size = UDim2.fromOffset(0, 48), AutomaticSize = Enum.AutomaticSize.X, Radius = Theme_upv_1.Radius.Pill, Parent = u1})
-    UI_upv_1.Padding(0, 18, 0, 10).Parent = u23
-    local u24, v35 = UI_upv_1.ShellAmount(State_upv_1.Shells(), {TextSize = 28, Parent = u23})
-    u24.AnchorPoint = Vector2.new(0, 0.5)
-    u24.Position = UDim2.fromScale(0, 0.5)
-    local u25 = UI_upv_1.CountUp(v35)
-    u25(State_upv_1.Shells(), true)
-    u23.Visible = Theme_upv_1.ShowCurrency
-    local u26 = State_upv_1.Shells()
-    local u27 = UI_upv_1.Button({Radius = 16, Text = "PLAY", Name = "Play", Style = "Primary", TextSize = 46, Size = UDim2.fromOffset(300, 96), AnchorPoint = Vector2.new(1, 1), Icon = UI_upv_1.Image(UI_upv_1.Assets.Icons.CrossedArrows, {Size = UDim2.fromOffset(36, 34), ImageColor3 = Colors_upv_1.Text}), Parent = u1})
-    local u28 = UI_upv_1.new("TextLabel", {Text = "3V3  \194\183  BEST OF 5", Name = "Sub", TextSize = 15, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, 2), Size = UDim2.new(1, 0, 0, 18), FontFace = Fonts_1.Heavy, TextColor3 = Colors_upv_1.TextDim, Parent = u27.Instance})
-    UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.3).Parent = u28
-    local u29 = 2
+    local u23 = UI_upv_1.Button({Radius = 16, Text = "PLAY", Name = "Play", Style = "Primary", TextSize = 46, Size = UDim2.fromOffset(300, 96), AnchorPoint = Vector2.new(1, 1), Icon = UI_upv_1.Image(UI_upv_1.Assets.Icons.CrossedArrows, {Size = UDim2.fromOffset(36, 34), ImageColor3 = Colors_upv_1.Text}), Parent = u1})
+    local u24 = UI_upv_1.new("TextLabel", {Text = "3V3  \194\183  BEST OF 5", Name = "Sub", TextSize = 15, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, 2), Size = UDim2.new(1, 0, 0, 18), FontFace = Fonts_1.Heavy, TextColor3 = Colors_upv_1.TextDim, Parent = u23.Instance})
+    UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.3).Parent = u24
+    local u25 = 2
     pcall(
         function()
             --[[
-              line: 405
+              line: 386
               upvalues:
-                u29 (ref, index: 1)
+                u25 (ref, index: 1)
             ]]
-            local v36 = tonumber(require(game:GetService("ReplicatedStorage").Shared.Config).FIRST_MATCH_ROUNDS_TO_WIN) or u29
-            u29 = v36
+            local v35 = tonumber(require(game:GetService("ReplicatedStorage").Shared.Config).FIRST_MATCH_ROUNDS_TO_WIN) or u25
+            u25 = v35
         end
     )
-    local u30 = UI_upv_1.new("Frame", {ZIndex = 4, Name = "Pad", Size = UDim2.fromScale(1, 1), Parent = u27.Face})
-    UI_upv_1.PadActionCap("Play", {Height = 28, ZIndex = 4, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 8), Parent = u30})
+    local u26 = UI_upv_1.new("Frame", {ZIndex = 4, Name = "Pad", Size = UDim2.fromScale(1, 1), Parent = u23.Face})
+    UI_upv_1.PadActionCap("Play", {Height = 28, ZIndex = 4, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 8), Parent = u26})
     local function refreshPlaySub()
         --[[
           name: refreshPlaySub
-          line: 418
+          line: 399
           upvalues:
             State_upv_1 (copy, index: 1)
-            u29 (ref,  index: 2)
-            u28 (copy, index: 3)
+            u25 (ref,  index: 2)
+            u24 (copy, index: 3)
         ]]
-        local v37 = State_upv_1.Profile
-        local v38 = State_upv_1.HasProfile and ((type(v37) == "table") and ((type(v37.stats) == "table") and (v37.stats.matches == 0)))
+        local v36 = State_upv_1.Profile
+        local v37 = State_upv_1.HasProfile and ((type(v36) == "table") and ((type(v36.stats) == "table") and (v36.stats.matches == 0)))
+        if v37 then
+            v36 = u25
+        else
+            v36 = State_upv_1.DEFAULT_ROUNDS_TO_WIN
+        end
+        local v38 = State_upv_1.Get("Duel") == true
+        local v39
         if v38 then
-            v37 = u29
+            v39 = "3V3  \194\183  1V1"
         else
-            v37 = State_upv_1.DEFAULT_ROUNDS_TO_WIN
+            v39 = string.format("3V3  \194\183  BEST OF %d", (v36 * 2) - 1)
         end
-        local v39 = State_upv_1.Get("Duel") == true
-        local v40
-        if v39 then
-            v40 = "3V3  \194\183  1V1"
-        else
-            v40 = string.format("3V3  \194\183  BEST OF %d", (v37 * 2) - 1)
-        end
-        u28.Text = v40
+        u24.Text = v39
     end
     refreshPlaySub()
     State_upv_1.ProfileChanged:Connect(refreshPlaySub)
     State_upv_1.AttrChanged:Connect(
         function(a8)
             --[[
-              line: 426
+              line: 407
               upvalues:
                 refreshPlaySub (copy, index: 1)
             ]]
@@ -537,7 +528,7 @@ function tbl_1.Init(a1)
     function tbl_5.OnClick()
         --[[
           name: OnClick
-          line: 442
+          line: 423
           upvalues:
             a1 (copy, index: 1)
         ]]
@@ -553,15 +544,15 @@ function tbl_1.Init(a1)
     local function refreshLoadoutLabel()
         --[[
           name: refreshLoadoutLabel
-          line: 454
+          line: 435
           upvalues:
             State_upv_1 (copy, index: 1)
             Loc_upv_1 (copy, index: 2)
             Label_upv_1 (copy, index: 3)
         ]]
         if State_upv_1.HasLoadoutSlots() and State_upv_1.LoadoutSlotCount() > 1 then
-            local v41 = string.gsub(string.gsub(string.gsub(Loc_upv_1.T(string.upper(State_upv_1.LoadoutName(State_upv_1.ActiveLoadout()))), "&", "&amp;"), "<", "&lt;"), ">", "&gt;")
-            Label_upv_1.Text = string.format("%s\n<font size=\"14\" color=\"#BAC0CE\">%s</font>", Loc_upv_1.T("LOADOUT"), v41)
+            local v40 = string.gsub(string.gsub(string.gsub(Loc_upv_1.T(string.upper(State_upv_1.LoadoutName(State_upv_1.ActiveLoadout()))), "&", "&amp;"), "<", "&lt;"), ">", "&gt;")
+            Label_upv_1.Text = string.format("%s\n<font size=\"14\" color=\"#BAC0CE\">%s</font>", Loc_upv_1.T("LOADOUT"), v40)
         else
             Label_upv_1.Text = Loc_upv_1.T("LOADOUT")
         end
@@ -570,157 +561,157 @@ function tbl_1.Init(a1)
     State_upv_1.ProfileChanged:Connect(refreshLoadoutLabel)
     Loc_upv_1.Changed:Connect(refreshLoadoutLabel)
     local GuiService_upv_2 = game:GetService("GuiService")
-    local u31 = Instance.new("ScreenGui")
-    u31.Name = "TR_TopbarSettings"
-    u31.ResetOnSpawn = false
-    u31.IgnoreGuiInset = true
-    u31.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
-    u31.DisplayOrder = 8
-    u31.Parent = a1.PlayerGui
-    local u32 = Instance.new("TextButton")
-    u32.Name = "Settings"
-    u32.Text = ""
-    u32.AutoButtonColor = false
-    u32.BackgroundColor3 = Color3.fromRGB(18, 18, 21)
-    u32.BackgroundTransparency = 0.08
-    u32.Size = UDim2.fromOffset(44, 44)
-    u32.Parent = u31
-    UI_upv_1.Corner(Theme_upv_1.Radius.Pill).Parent = u32
-    local u33 = UI_upv_1.new("Frame", {Name = "State", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u32})
-    local u34 = UI_upv_1.new("TextLabel", {AutoLocalize = false, Text = "gear", Name = "Icon", TextSize = 24, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(24, 24), FontFace = Font.new("rbxasset://LuaPackages/Packages/_Index/BuilderIcons/BuilderIcons/BuilderIcons.json", Enum.FontWeight.Regular), TextColor3 = Color3.fromRGB(247, 247, 248), Parent = u32})
+    local u27 = Instance.new("ScreenGui")
+    u27.Name = "TR_TopbarSettings"
+    u27.ResetOnSpawn = false
+    u27.IgnoreGuiInset = true
+    u27.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+    u27.DisplayOrder = 8
+    u27.Parent = a1.PlayerGui
+    local u28 = Instance.new("TextButton")
+    u28.Name = "Settings"
+    u28.Text = ""
+    u28.AutoButtonColor = false
+    u28.BackgroundColor3 = Color3.fromRGB(18, 18, 21)
+    u28.BackgroundTransparency = 0.08
+    u28.Size = UDim2.fromOffset(44, 44)
+    u28.Parent = u27
+    UI_upv_1.Corner(Theme_upv_1.Radius.Pill).Parent = u28
+    local u29 = UI_upv_1.new("Frame", {Name = "State", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u28})
+    local u30 = UI_upv_1.new("TextLabel", {AutoLocalize = false, Text = "gear", Name = "Icon", TextSize = 24, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(24, 24), FontFace = Font.new("rbxasset://LuaPackages/Packages/_Index/BuilderIcons/BuilderIcons/BuilderIcons.json", Enum.FontWeight.Regular), TextColor3 = Color3.fromRGB(247, 247, 248), Parent = u28})
     task.delay(
         3,
         function()
             --[[
-              line: 518
+              line: 499
               upvalues:
-                u34 (copy, index: 1)
+                u30 (copy, index: 1)
                 UI_upv_1 (copy, index: 2)
-                u32 (copy, index: 3)
+                u28 (copy, index: 3)
             ]]
-            local X_1 = u34.TextBounds.X
+            local X_1 = u30.TextBounds.X
             if not (X_1 < 1) and not (X_1 > 32) then
                 return
             end
-            u34.Visible = false
-            UI_upv_1.Icon("gear", 24, Color3.fromRGB(247, 247, 248), {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), HoleColor = Color3.fromRGB(18, 18, 21), Parent = u32})
+            u30.Visible = false
+            UI_upv_1.Icon("gear", 24, Color3.fromRGB(247, 247, 248), {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), HoleColor = Color3.fromRGB(18, 18, 21), Parent = u28})
         end
     )
-    UI_upv_1.KeyCap("M", {Transparency = 0.05, Height = 17, TextSize = 11, ZIndex = 3, Gamepad = Enum.KeyCode.ButtonSelect, Color = Color3.fromRGB(18, 18, 21), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 5, 1, 1), Parent = u32})
+    UI_upv_1.KeyCap("M", {Transparency = 0.05, Height = 17, TextSize = 11, ZIndex = 3, Gamepad = Enum.KeyCode.ButtonSelect, Color = Color3.fromRGB(18, 18, 21), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 5, 1, 1), Parent = u28})
+    local u31 = Instance.new("TextButton")
+    u31.Name = "News"
+    u31.Text = ""
+    u31.AutoButtonColor = false
+    u31.BackgroundColor3 = Color3.fromRGB(18, 18, 21)
+    u31.BackgroundTransparency = 0.08
+    u31.Size = UDim2.fromOffset(44, 44)
+    u31.Parent = u27
+    UI_upv_1.Corner(Theme_upv_1.Radius.Pill).Parent = u31
+    local u32 = UI_upv_1.new("Frame", {Name = "State", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u31})
+    UI_upv_1.Glyph("megaphone", 24, Color3.fromRGB(247, 247, 248), {Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = u31})
+    local u33 = false
+    local u34 = false
     local u35 = Instance.new("TextButton")
-    u35.Name = "News"
+    u35.Name = "CustomHost"
     u35.Text = ""
     u35.AutoButtonColor = false
     u35.BackgroundColor3 = Color3.fromRGB(18, 18, 21)
     u35.BackgroundTransparency = 0.08
     u35.Size = UDim2.fromOffset(44, 44)
-    u35.Parent = u31
+    u35.Visible = false
+    u35.Parent = u27
     UI_upv_1.Corner(Theme_upv_1.Radius.Pill).Parent = u35
     local u36 = UI_upv_1.new("Frame", {Name = "State", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u35})
-    UI_upv_1.Glyph("megaphone", 24, Color3.fromRGB(247, 247, 248), {Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = u35})
-    local u37 = false
+    local v184 = UI_upv_1.Glyph("crown", 24, Color3.fromRGB(247, 247, 248), {Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = u35})
+    UI_upv_1.ActionCap("CustomMenu", {Transparency = 0.05, Height = 17, TextSize = 11, ZIndex = 3, Gamepad = Enum.KeyCode.DPadDown, Color = Color3.fromRGB(18, 18, 21), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 5, 1, 1), Parent = u35})
+    local u37 = Signal_upv_1.new()
     local u38 = false
-    local u39 = Instance.new("TextButton")
-    u39.Name = "CustomHost"
-    u39.Text = ""
-    u39.AutoButtonColor = false
-    u39.BackgroundColor3 = Color3.fromRGB(18, 18, 21)
-    u39.BackgroundTransparency = 0.08
-    u39.Size = UDim2.fromOffset(44, 44)
-    u39.Visible = false
-    u39.Parent = u31
-    UI_upv_1.Corner(Theme_upv_1.Radius.Pill).Parent = u39
-    local u40 = UI_upv_1.new("Frame", {Name = "State", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u39})
-    local v184 = UI_upv_1.Glyph("crown", 24, Color3.fromRGB(247, 247, 248), {Name = "Icon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = u39})
-    UI_upv_1.ActionCap("CustomMenu", {Transparency = 0.05, Height = 17, TextSize = 11, ZIndex = 3, Gamepad = Enum.KeyCode.DPadDown, Color = Color3.fromRGB(18, 18, 21), AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 5, 1, 1), Parent = u39})
-    local u41 = Signal_upv_1.new()
-    local u42 = false
-    local u43 = false
-    local u44 = false
-    local u45 = false
+    local u39 = false
+    local u40 = false
+    local u41 = false
     local tbl_upv_6 = {}
     local UserInputService_upv_2 = game:GetService("UserInputService")
     local function paint()
         --[[
           name: paint
-          line: 593
+          line: 574
           upvalues:
             UserInputService_upv_2 (copy, index: 1)
-            u42 (ref,  index: 2)
-            u43 (ref,  index: 3)
-            u44 (ref,  index: 4)
-            u45 (ref,  index: 5)
-            u37 (ref,  index: 6)
-            u38 (ref,  index: 7)
+            u38 (ref,  index: 2)
+            u39 (ref,  index: 3)
+            u40 (ref,  index: 4)
+            u41 (ref,  index: 5)
+            u33 (ref,  index: 6)
+            u34 (ref,  index: 7)
             a1 (copy, index: 8)
-            u33 (copy, index: 9)
-            u40 (copy, index: 10)
-            u36 (copy, index: 11)
+            u29 (copy, index: 9)
+            u36 (copy, index: 10)
+            u32 (copy, index: 11)
         ]]
         if UserInputService_upv_2.MouseBehavior ~= Enum.MouseBehavior.Default then
-            u42 = false
-            u43 = false
-            u44 = false
-            u45 = false
-            u37 = false
             u38 = false
+            u39 = false
+            u40 = false
+            u41 = false
+            u33 = false
+            u34 = false
         end
-        local v42 = a1.MenuManager.IsOpen("Settings")
-        local v43
-        if u43 then
-            v43 = 0.8
-        elseif u42 or v42 then
-            v43 = 0.9
+        local v41 = a1.MenuManager.IsOpen("Settings")
+        local v42
+        if u39 then
+            v42 = 0.8
+        elseif u38 or v41 then
+            v42 = 0.9
         else
-            v43 = 1
+            v42 = 1
         end
-        u33.BackgroundTransparency = v43
-        local v44 = a1.MenuManager.IsOpen("CustomHost")
-        if u45 then
-            v43 = 0.8
-        elseif u44 or v44 then
-            v43 = 0.9
+        u29.BackgroundTransparency = v42
+        local v43 = a1.MenuManager.IsOpen("CustomHost")
+        if u41 then
+            v42 = 0.8
+        elseif u40 or v43 then
+            v42 = 0.9
         else
-            v43 = 1
+            v42 = 1
         end
-        u40.BackgroundTransparency = v43
-        v43 = (u38 and 0.8) or ((u37 and 0.9) or 1)
-        u36.BackgroundTransparency = v43
+        u36.BackgroundTransparency = v42
+        v42 = (u34 and 0.8) or ((u33 and 0.9) or 1)
+        u32.BackgroundTransparency = v42
     end
     UserInputService_upv_2:GetPropertyChangedSignal("MouseBehavior"):Connect(paint)
     local function place()
         --[[
           name: place
-          line: 607
+          line: 588
           upvalues:
             GuiService_upv_2 (copy, index: 1)
-            u32 (copy, index: 2)
-            u35 (copy, index: 3)
-            u39 (copy, index: 4)
+            u28 (copy, index: 2)
+            u31 (copy, index: 3)
+            u35 (copy, index: 4)
             UI_upv_1 (copy, index: 5)
         ]]
         local TopbarInset_1 = GuiService_upv_2.TopbarInset
         local Height_1 = TopbarInset_1.Height
-        local v45 = math.clamp(Height_1 - 14, 28, 44)
-        u32.Size = UDim2.fromOffset(v45, v45)
-        u32.Position = UDim2.fromOffset(TopbarInset_1.Min.X + 8, math.max(0, (Height_1 - 2) - v45))
-        local v46 = (TopbarInset_1.Min.X + 8) + v45 + 12
-        u35.Size = UDim2.fromOffset(v45, v45)
-        u35.Position = UDim2.fromOffset(v46, math.max(0, (Height_1 - 2) - v45))
-        local v47 = ((u35.Visible) and (v46 + (v45 + 12))) or v46
-        u39.Size = UDim2.fromOffset(v45, v45)
-        u39.Position = UDim2.fromOffset(v47, math.max(0, (Height_1 - 2) - v45))
-        local v48 = ((u35.Visible) and (v45 + 12)) or 0
-        local v49 = v45 + 8 + v48 + (((u39.Visible) and (v45 + 12)) or 0)
-        if UI_upv_1.TopbarReserved == v49 then
+        local v44 = math.clamp(Height_1 - 14, 28, 44)
+        u28.Size = UDim2.fromOffset(v44, v44)
+        u28.Position = UDim2.fromOffset(TopbarInset_1.Min.X + 8, math.max(0, (Height_1 - 2) - v44))
+        local v45 = (TopbarInset_1.Min.X + 8) + v44 + 12
+        u31.Size = UDim2.fromOffset(v44, v44)
+        u31.Position = UDim2.fromOffset(v45, math.max(0, (Height_1 - 2) - v44))
+        local v46 = ((u31.Visible) and (v45 + (v44 + 12))) or v45
+        u35.Size = UDim2.fromOffset(v44, v44)
+        u35.Position = UDim2.fromOffset(v46, math.max(0, (Height_1 - 2) - v44))
+        local v47 = ((u31.Visible) and (v44 + 12)) or 0
+        local v48 = v44 + 8 + v47 + (((u35.Visible) and (v44 + 12)) or 0)
+        if UI_upv_1.TopbarReserved == v48 then
             return
         end
-        UI_upv_1.TopbarReserved = v49
+        UI_upv_1.TopbarReserved = v48
         UI_upv_1.TopInsetChanged:Fire()
     end
     place()
     GuiService_upv_2:GetPropertyChangedSignal("TopbarInset"):Connect(place)
-    local u46 = UI_upv_1.new("TextLabel", {Name = "Text", TextSize = 14, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromScale(0, 1), FontFace = Fonts_1.SemiBold, TextColor3 = Color3.fromRGB(247, 247, 248)})
+    local u42 = UI_upv_1.new("TextLabel", {Name = "Text", TextSize = 14, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromScale(0, 1), FontFace = Fonts_1.SemiBold, TextColor3 = Color3.fromRGB(247, 247, 248)})
     local tbl_7 = {}
     tbl_7.Name = "Tooltip"
     tbl_7.AnchorPoint = Vector2.new(0.5, 0)
@@ -730,356 +721,269 @@ function tbl_1.Init(a1)
     tbl_7.BackgroundTransparency = 0.08
     tbl_7.Visible = false
     tbl_7.ZIndex = 10
-    tbl_7[1], tbl_7[2], tbl_7[3] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.new("UIPadding", {PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12)}), u46
-    tbl_7.Parent = u31
-    local u47 = UI_upv_1.new("Frame", tbl_7)
-    u46.ZIndex = 11
+    tbl_7[1], tbl_7[2], tbl_7[3] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.new("UIPadding", {PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12)}), u42
+    tbl_7.Parent = u27
+    local u43 = UI_upv_1.new("Frame", tbl_7)
+    u42.ZIndex = 11
     local tbl_upv_8 = {}
-    local u48 = nil
-    local u49 = false
-    local u50 = 0
+    local u44 = nil
+    local u45 = false
+    local u46 = 0
     local function hideTip(a9)
         --[[
           name: hideTip
-          line: 663
+          line: 644
           upvalues:
-            u48 (ref,  index: 1)
-            u50 (ref,  index: 2)
-            u49 (ref,  index: 3)
-            u47 (copy, index: 4)
+            u44 (ref,  index: 1)
+            u46 (ref,  index: 2)
+            u45 (ref,  index: 3)
+            u43 (copy, index: 4)
         ]]
-        if a9 and u48 ~= a9 then
+        if a9 and u44 ~= a9 then
             return
         end
-        u50 = u50 + 1
-        u48 = nil
-        u49 = false
-        u47.Visible = false
+        u46 = u46 + 1
+        u44 = nil
+        u45 = false
+        u43.Visible = false
     end
     local function showTip(a10, a11, a12)
         --[[
           name: showTip
-          line: 671
+          line: 652
           upvalues:
-            u50 (ref, index: 1)
-            u48 (ref, index: 2)
-            u49 (ref, index: 3)
+            u46 (ref, index: 1)
+            u44 (ref, index: 2)
+            u45 (ref, index: 3)
         ]]
-        u50 = u50 + 1
-        local _ = u50
-        local v50 = a12 == true
-        u48 = a10
-        u49 = v50
+        u46 = u46 + 1
+        local _ = u46
+        local v49 = a12 == true
+        u44 = a10
+        u45 = v49
         task.delay(a11, function() end)
     end
     local function tooltip(a13, a14)
         --[[
           name: tooltip
-          line: 690
+          line: 671
           upvalues:
             tbl_upv_8 (copy, index: 1)
             UI_upv_1 (copy, index: 2)
             UserInputService_upv_2 (copy, index: 3)
-            u50 (ref,  index: 4)
-            u48 (ref,  index: 5)
-            u49 (ref,  index: 6)
-            u47 (copy, index: 9)
+            u46 (ref,  index: 4)
+            u44 (ref,  index: 5)
+            u45 (ref,  index: 6)
+            u43 (copy, index: 9)
         ]]
         tbl_upv_8[a13] = a14
         a13.MouseEnter:Connect(
             function()
                 --[[
-                  line: 692
+                  line: 673
                   upvalues:
                     UI_upv_1 (copy, index: 1)
                     UserInputService_upv_2 (copy, index: 2)
                     a13 (copy, index: 3)
-                    u50 (ref,  index: 4)
-                    u48 (ref,  index: 5)
-                    u49 (ref,  index: 6)
+                    u46 (ref,  index: 4)
+                    u44 (ref,  index: 5)
+                    u45 (ref,  index: 6)
                 ]]
                 if (UI_upv_1.Touch) or UserInputService_upv_2.MouseBehavior ~= Enum.MouseBehavior.Default then
                     return
                 end
-                local v51 = a13
-                u50 = u50 + 1
-                local _ = u50
-                u48 = v51
-                u49 = false
+                local v50 = a13
+                u46 = u46 + 1
+                local _ = u46
+                u44 = v50
+                u45 = false
                 task.delay(0.3, function() end)
             end
         )
         a13.MouseLeave:Connect(
             function()
                 --[[
-                  line: 698
+                  line: 679
                   upvalues:
                     a13 (copy, index: 1)
-                    u48 (ref,  index: 2)
-                    u50 (ref,  index: 3)
-                    u49 (ref,  index: 4)
-                    u47 (copy, index: 5)
+                    u44 (ref,  index: 2)
+                    u46 (ref,  index: 3)
+                    u45 (ref,  index: 4)
+                    u43 (copy, index: 5)
                 ]]
-                if a13 and u48 ~= a13 then
+                if a13 and u44 ~= a13 then
                     return
                 end
-                u50 = u50 + 1
-                u48 = nil
-                u49 = false
-                u47.Visible = false
+                u46 = u46 + 1
+                u44 = nil
+                u45 = false
+                u43.Visible = false
             end
         )
         a13.MouseButton1Down:Connect(
             function()
                 --[[
-                  line: 701
+                  line: 682
                   upvalues:
-                    u50 (ref,  index: 1)
-                    u48 (ref,  index: 2)
-                    u49 (ref,  index: 3)
-                    u47 (copy, index: 4)
+                    u46 (ref,  index: 1)
+                    u44 (ref,  index: 2)
+                    u45 (ref,  index: 3)
+                    u43 (copy, index: 4)
                 ]]
-                u50 = u50 + 1
-                u48 = nil
-                u49 = false
-                u47.Visible = false
+                u46 = u46 + 1
+                u44 = nil
+                u45 = false
+                u43.Visible = false
             end
         )
         a13.Activated:Connect(
             function()
                 --[[
-                  line: 704
+                  line: 685
                   upvalues:
-                    u50 (ref,  index: 1)
-                    u48 (ref,  index: 2)
-                    u49 (ref,  index: 3)
-                    u47 (copy, index: 4)
+                    u46 (ref,  index: 1)
+                    u44 (ref,  index: 2)
+                    u45 (ref,  index: 3)
+                    u43 (copy, index: 4)
                 ]]
-                u50 = u50 + 1
-                u48 = nil
-                u49 = false
-                u47.Visible = false
+                u46 = u46 + 1
+                u44 = nil
+                u45 = false
+                u43.Visible = false
             end
         )
         a13:GetPropertyChangedSignal("Visible"):Connect(
             function()
                 --[[
-                  line: 707
+                  line: 688
                   upvalues:
                     a13 (copy, index: 1)
-                    u48 (ref,  index: 2)
-                    u50 (ref,  index: 3)
-                    u49 (ref,  index: 4)
-                    u47 (copy, index: 5)
+                    u44 (ref,  index: 2)
+                    u46 (ref,  index: 3)
+                    u45 (ref,  index: 4)
+                    u43 (copy, index: 5)
                 ]]
                 if not (a13.Visible) then
-                    local v52 = a13
-                    if not v52 or u48 == v52 then
-                        u50 = u50 + 1
-                        u48 = nil
-                        u49 = false
-                        u47.Visible = false
+                    local v51 = a13
+                    if not v51 or u44 == v51 then
+                        u46 = u46 + 1
+                        u44 = nil
+                        u45 = false
+                        u43.Visible = false
                     end
                 end
             end
         )
     end
-    tooltip(u32, "Settings")
-    tooltip(u35, "What's New")
-    tooltip(u39, "Host Menu")
+    tooltip(u28, "Settings")
+    tooltip(u31, "What's New")
+    tooltip(u35, "Host Menu")
     GuiService_upv_2:GetPropertyChangedSignal("SelectedObject"):Connect(
         function()
             --[[
-              line: 716
+              line: 697
               upvalues:
                 GuiService_upv_2 (copy, index: 1)
                 tbl_upv_8 (copy, index: 2)
-                u50 (ref,  index: 3)
-                u48 (ref,  index: 4)
-                u49 (ref,  index: 5)
-                u31 (copy, index: 6)
-                u46 (copy, index: 7)
-                u47 (copy, index: 8)
+                u46 (ref,  index: 3)
+                u44 (ref,  index: 4)
+                u45 (ref,  index: 5)
+                u27 (copy, index: 6)
+                u42 (copy, index: 7)
+                u43 (copy, index: 8)
                 TweenService_upv_1 (copy, index: 9)
             ]]
             local SelectedObject_upv_1 = GuiService_upv_2.SelectedObject
             if SelectedObject_upv_1 and tbl_upv_8[SelectedObject_upv_1] then
-                u50 = u50 + 1
-                local u51 = u50
-                u48 = SelectedObject_upv_1
-                u49 = true
+                u46 = u46 + 1
+                local u47 = u46
+                u44 = SelectedObject_upv_1
+                u45 = true
                 task.delay(
                     0.1,
                     function()
                         --[[
-                          line: 675
+                          line: 656
                           upvalues:
-                            u51 (copy, index: 1)
-                            u50 (ref,  index: 2)
+                            u47 (copy, index: 1)
+                            u46 (ref,  index: 2)
                             SelectedObject_upv_1 (copy, index: 3)
-                            u31 (copy, index: 4)
-                            u46 (copy, index: 5)
+                            u27 (copy, index: 4)
+                            u42 (copy, index: 5)
                             tbl_upv_8 (copy, index: 6)
-                            u47 (copy, index: 7)
+                            u43 (copy, index: 7)
                             TweenService_upv_1 (copy, index: 8)
                         ]]
-                        if u51 ~= u50 or not SelectedObject_upv_1.Visible then
+                        if u47 ~= u46 or not SelectedObject_upv_1.Visible then
                             return
                         end
-                        if u31.Enabled then
-                            u46.Text = tbl_upv_8[SelectedObject_upv_1]
-                            local v53 = SelectedObject_upv_1.Position.X.Offset + SelectedObject_upv_1.Size.X.Offset / 2
-                            local v54 = SelectedObject_upv_1.Position.Y.Offset + SelectedObject_upv_1.Size.Y.Offset + 8
-                            u47.Position = UDim2.fromOffset(v53, v54 - 4)
-                            u47.BackgroundTransparency = 1
-                            u46.TextTransparency = 1
-                            u47.Visible = true
-                            local v55 = TweenInfo.new(0.14, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                        if u27.Enabled then
+                            u42.Text = tbl_upv_8[SelectedObject_upv_1]
+                            local v52 = SelectedObject_upv_1.Position.X.Offset + SelectedObject_upv_1.Size.X.Offset / 2
+                            local v53 = SelectedObject_upv_1.Position.Y.Offset + SelectedObject_upv_1.Size.Y.Offset + 8
+                            u43.Position = UDim2.fromOffset(v52, v53 - 4)
+                            u43.BackgroundTransparency = 1
+                            u42.TextTransparency = 1
+                            u43.Visible = true
+                            local v54 = TweenInfo.new(0.14, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
                             local tbl_9 = {BackgroundTransparency = 0.08}
-                            tbl_9.Position = UDim2.fromOffset(v53, v54)
-                            TweenService_upv_1:Create(u47, v55, tbl_9):Play()
-                            TweenService_upv_1:Create(u46, v55, {TextTransparency = 0}):Play()
+                            tbl_9.Position = UDim2.fromOffset(v52, v53)
+                            TweenService_upv_1:Create(u43, v54, tbl_9):Play()
+                            TweenService_upv_1:Create(u42, v54, {TextTransparency = 0}):Play()
                         end
                     end
                 )
                 return
             end
-            if not u49 then
+            if not u45 then
                 return
             end
-            u50 = u50 + 1
-            u48 = nil
-            u49 = false
-            u47.Visible = false
+            u46 = u46 + 1
+            u44 = nil
+            u45 = false
+            u43.Visible = false
         end
     )
     UserInputService_upv_2:GetPropertyChangedSignal("MouseBehavior"):Connect(
         function()
             --[[
-              line: 724
+              line: 705
               upvalues:
                 UserInputService_upv_2 (copy, index: 1)
-                u50 (ref,  index: 2)
-                u48 (ref,  index: 3)
-                u49 (ref,  index: 4)
-                u47 (copy, index: 5)
+                u46 (ref,  index: 2)
+                u44 (ref,  index: 3)
+                u45 (ref,  index: 4)
+                u43 (copy, index: 5)
             ]]
             if UserInputService_upv_2.MouseBehavior == Enum.MouseBehavior.Default then
                 return
             end
-            u50 = u50 + 1
-            u48 = nil
-            u49 = false
-            u47.Visible = false
+            u46 = u46 + 1
+            u44 = nil
+            u45 = false
+            u43.Visible = false
         end
     )
     a1.MenuManager.Changed:Connect(
         function()
             --[[
-              line: 729
+              line: 710
               upvalues:
-                u50 (ref,  index: 1)
-                u48 (ref,  index: 2)
-                u49 (ref,  index: 3)
-                u47 (copy, index: 4)
+                u46 (ref,  index: 1)
+                u44 (ref,  index: 2)
+                u45 (ref,  index: 3)
+                u43 (copy, index: 4)
             ]]
-            u50 = u50 + 1
-            u48 = nil
-            u49 = false
-            u47.Visible = false
+            u46 = u46 + 1
+            u44 = nil
+            u45 = false
+            u43.Visible = false
         end
     )
-    u32.MouseEnter:Connect(
+    u28.MouseEnter:Connect(
         function()
             --[[
-              line: 733
-              upvalues:
-                u42 (ref,  index: 1)
-                paint (copy, index: 2)
-            ]]
-            u42 = true
-            paint()
-        end
-    )
-    u32.MouseLeave:Connect(
-        function()
-            --[[
-              line: 737
-              upvalues:
-                u42 (ref,  index: 1)
-                u43 (ref,  index: 2)
-                paint (copy, index: 3)
-            ]]
-            u42 = false
-            u43 = false
-            paint()
-        end
-    )
-    u32.MouseButton1Down:Connect(
-        function()
-            --[[
-              line: 741
-              upvalues:
-                u43 (ref,  index: 1)
-                paint (copy, index: 2)
-            ]]
-            u43 = true
-            paint()
-        end
-    )
-    u32.MouseButton1Up:Connect(
-        function()
-            --[[
-              line: 745
-              upvalues:
-                u43 (ref,  index: 1)
-                paint (copy, index: 2)
-            ]]
-            u43 = false
-            paint()
-        end
-    )
-    u32.Activated:Connect(
-        function()
-            --[[
-              line: 749
-              upvalues:
-                a1 (copy, index: 1)
-            ]]
-            a1.Sounds.Play("Click")
-            a1.MenuManager.Toggle("Settings")
-        end
-    )
-    u35.MouseEnter:Connect(
-        function()
-            --[[
-              line: 753
-              upvalues:
-                u37 (ref,  index: 1)
-                paint (copy, index: 2)
-            ]]
-            u37 = true
-            paint()
-        end
-    )
-    u35.MouseLeave:Connect(
-        function()
-            --[[
-              line: 757
-              upvalues:
-                u37 (ref,  index: 1)
-                u38 (ref,  index: 2)
-                paint (copy, index: 3)
-            ]]
-            u37 = false
-            u38 = false
-            paint()
-        end
-    )
-    u35.MouseButton1Down:Connect(
-        function()
-            --[[
-              line: 761
+              line: 714
               upvalues:
                 u38 (ref,  index: 1)
                 paint (copy, index: 2)
@@ -1088,22 +992,109 @@ function tbl_1.Init(a1)
             paint()
         end
     )
-    u35.MouseButton1Up:Connect(
+    u28.MouseLeave:Connect(
         function()
             --[[
-              line: 765
+              line: 718
               upvalues:
                 u38 (ref,  index: 1)
-                paint (copy, index: 2)
+                u39 (ref,  index: 2)
+                paint (copy, index: 3)
             ]]
             u38 = false
+            u39 = false
             paint()
         end
     )
-    u35.Activated:Connect(
+    u28.MouseButton1Down:Connect(
         function()
             --[[
-              line: 769
+              line: 722
+              upvalues:
+                u39 (ref,  index: 1)
+                paint (copy, index: 2)
+            ]]
+            u39 = true
+            paint()
+        end
+    )
+    u28.MouseButton1Up:Connect(
+        function()
+            --[[
+              line: 726
+              upvalues:
+                u39 (ref,  index: 1)
+                paint (copy, index: 2)
+            ]]
+            u39 = false
+            paint()
+        end
+    )
+    u28.Activated:Connect(
+        function()
+            --[[
+              line: 730
+              upvalues:
+                a1 (copy, index: 1)
+            ]]
+            a1.Sounds.Play("Click")
+            a1.MenuManager.Toggle("Settings")
+        end
+    )
+    u31.MouseEnter:Connect(
+        function()
+            --[[
+              line: 734
+              upvalues:
+                u33 (ref,  index: 1)
+                paint (copy, index: 2)
+            ]]
+            u33 = true
+            paint()
+        end
+    )
+    u31.MouseLeave:Connect(
+        function()
+            --[[
+              line: 738
+              upvalues:
+                u33 (ref,  index: 1)
+                u34 (ref,  index: 2)
+                paint (copy, index: 3)
+            ]]
+            u33 = false
+            u34 = false
+            paint()
+        end
+    )
+    u31.MouseButton1Down:Connect(
+        function()
+            --[[
+              line: 742
+              upvalues:
+                u34 (ref,  index: 1)
+                paint (copy, index: 2)
+            ]]
+            u34 = true
+            paint()
+        end
+    )
+    u31.MouseButton1Up:Connect(
+        function()
+            --[[
+              line: 746
+              upvalues:
+                u34 (ref,  index: 1)
+                paint (copy, index: 2)
+            ]]
+            u34 = false
+            paint()
+        end
+    )
+    u31.Activated:Connect(
+        function()
+            --[[
+              line: 750
               upvalues:
                 a1 (copy, index: 1)
             ]]
@@ -1111,644 +1102,635 @@ function tbl_1.Init(a1)
             a1.MenuManager.Open("News")
         end
     )
-    u39.MouseEnter:Connect(
+    u35.MouseEnter:Connect(
         function()
             --[[
-              line: 773
+              line: 754
               upvalues:
-                u44 (ref,  index: 1)
+                u40 (ref,  index: 1)
                 paint (copy, index: 2)
             ]]
-            u44 = true
+            u40 = true
             paint()
         end
     )
-    u39.MouseLeave:Connect(
+    u35.MouseLeave:Connect(
         function()
             --[[
-              line: 777
+              line: 758
               upvalues:
-                u44 (ref,  index: 1)
-                u45 (ref,  index: 2)
+                u40 (ref,  index: 1)
+                u41 (ref,  index: 2)
                 paint (copy, index: 3)
             ]]
-            u44 = false
-            u45 = false
+            u40 = false
+            u41 = false
             paint()
         end
     )
-    u39.MouseButton1Down:Connect(
+    u35.MouseButton1Down:Connect(
         function()
             --[[
-              line: 781
+              line: 762
               upvalues:
-                u45 (ref,  index: 1)
+                u41 (ref,  index: 1)
                 paint (copy, index: 2)
             ]]
-            u45 = true
+            u41 = true
             paint()
         end
     )
-    u39.MouseButton1Up:Connect(
+    u35.MouseButton1Up:Connect(
         function()
             --[[
-              line: 785
+              line: 766
               upvalues:
-                u45 (ref,  index: 1)
+                u41 (ref,  index: 1)
                 paint (copy, index: 2)
             ]]
-            u45 = false
+            u41 = false
             paint()
         end
     )
-    u39.Activated:Connect(
+    u35.Activated:Connect(
         function()
             --[[
-              line: 789
+              line: 770
               upvalues:
                 a1 (copy, index: 1)
-                u41 (copy, index: 2)
+                u37 (copy, index: 2)
             ]]
             a1.Sounds.Play("Click")
-            u41:Fire()
+            u37:Fire()
         end
     )
     a1.MenuManager.Changed:Connect(paint)
     local tbl_upv_10 = {}
-    tbl_upv_10.Button = u32
-    tbl_upv_10.HostButton = u39
-    tbl_upv_10.HostActivated = u41
+    tbl_upv_10.Button = u28
+    tbl_upv_10.HostButton = u35
+    tbl_upv_10.HostActivated = u37
     function tbl_upv_10.SetHostVisible(a15)
         --[[
           name: SetHostVisible
-          line: 799
+          line: 780
           upvalues:
-            u39 (copy, index: 1)
+            u35 (copy, index: 1)
             place (copy, index: 2)
             UI_upv_1 (copy, index: 3)
         ]]
-        if u39.Visible == a15 then
+        if u35.Visible == a15 then
             return
         end
-        u39.Visible = a15
+        u35.Visible = a15
         place()
         if not a15 then
             return
         end
-        UI_upv_1.Pop(u39, 0.6)
+        UI_upv_1.Pop(u35, 0.6)
     end
-    tbl_upv_10.NewsButton = u35
+    tbl_upv_10.NewsButton = u31
     function tbl_upv_10.SetNewsVisible(a16)
         --[[
           name: SetNewsVisible
-          line: 810
+          line: 791
           upvalues:
-            u35 (copy, index: 1)
+            u31 (copy, index: 1)
             place (copy, index: 2)
         ]]
-        if u35.Visible == a16 then
+        if u31.Visible == a16 then
             return
         end
-        u35.Visible = a16
+        u31.Visible = a16
         place()
     end
     function tbl_upv_10.Last()
         --[[
           name: Last
-          line: 817
+          line: 798
           upvalues:
-            u39 (copy, index: 1)
-            u35 (copy, index: 2)
-            u32 (copy, index: 3)
+            u35 (copy, index: 1)
+            u31 (copy, index: 2)
+            u28 (copy, index: 3)
         ]]
-        if u39.Visible then
-            return u39
-        elseif u35.Visible then
+        if u35.Visible then
             return u35
+        elseif u31.Visible then
+            return u31
         else
-            return u32
+            return u28
         end
     end
     function tbl_upv_10.SetHidden(a17, a18)
         --[[
           name: SetHidden
-          line: 821
+          line: 802
           upvalues:
             tbl_upv_6 (copy, index: 1)
-            u31 (copy, index: 2)
+            u27 (copy, index: 2)
         ]]
         tbl_upv_6[a17] = (a18 and true) or nil
-        u31.Enabled = next(tbl_upv_6) == nil
+        u27.Enabled = next(tbl_upv_6) == nil
     end
     a1.TopbarSettings = tbl_upv_10
-    local u52 = UI_upv_1.Panel({Name = "TrainingBanner", Visible = false, BackgroundTransparency = 0.15, AnchorPoint = Vector2.new(0.5, 0), Size = UDim2.fromOffset(440, 64), Trim = Colors_upv_1.Accent, Parent = u1})
-    local u53 = UI_upv_1.Image(UI_upv_1.Assets.Icons.Sword, {Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 18, 0.5, 2), Size = UDim2.fromOffset(34, 34), ImageColor3 = Colors_upv_1.Accent, Parent = u52})
-    local u54 = UI_upv_1.new("TextLabel", {Text = "TRAINING", Name = "Title", TextSize = 28, Position = UDim2.fromOffset(66, 8), Size = UDim2.new(1, -82, 0, 30), FontFace = Fonts_1.Display, TextColor3 = Colors_upv_1.Accent, TextXAlignment = Enum.TextXAlignment.Left, Parent = u52})
-    UI_upv_1.TextStroke(Colors_upv_1.Void, 2, 0.2).Parent = u54
-    local u55 = UI_upv_1.new("TextLabel", {Text = "", Name = "Sub", TextSize = 15, Position = UDim2.fromOffset(66, 38), Size = UDim2.new(1, -82, 0, 18), FontFace = Fonts_1.Bold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = u52})
-    local u56 = UI_upv_1.Panel({StrokeThickness = 2, StrokeTransparency = 0.3, Name = "Matchmaking", Visible = false, BackgroundTransparency = 0.06, Size = UDim2.fromOffset(300, 96), Radius = UDim.new(0, 16), StrokeColor = Colors_upv_1.Accent, Parent = u1})
-    local u57 = u56:FindFirstChildOfClass("UIGradient")
-    local u58 = u56:FindFirstChildOfClass("UIStroke")
-    local u59 = UI_upv_1.new("TextLabel", {Text = "FINDING MATCH", Name = "Title", TextSize = 24, Position = UDim2.fromOffset(18, 12), Size = UDim2.new(1, -120, 0, 28), FontFace = Fonts_1.Heavy, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = u56})
-    local u60 = UI_upv_1.new("TextLabel", {Text = "0:00", Name = "Timer", TextSize = 30, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -18, 0, 9), Size = UDim2.fromOffset(96, 34), FontFace = Fonts_1.Display, TextColor3 = Colors_upv_1.Accent, TextXAlignment = Enum.TextXAlignment.Right, Parent = u56})
-    local u61 = UI_upv_1.new("TextLabel", {Visible = false, Text = "MATCH FOUND", Name = "Found", TextSize = 36, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 8), Size = UDim2.new(1, -24, 0, 40), FontFace = Fonts_1.Display, TextColor3 = Colors_upv_1.Text, Parent = u56})
-    local u62 = UI_upv_1.new("Frame", {Name = "Seats", AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 18, 1, -20), Size = UDim2.fromOffset(0, 16), AutomaticSize = Enum.AutomaticSize.X, [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center), Parent = u56})
-    local u63 = Color3.fromRGB(58, 63, 78)
+    local u48 = UI_upv_1.Panel({Name = "TrainingBanner", Visible = false, BackgroundTransparency = 0.15, AnchorPoint = Vector2.new(0.5, 0), Size = UDim2.fromOffset(440, 64), Trim = Colors_upv_1.Accent, Parent = u1})
+    local u49 = UI_upv_1.Image(UI_upv_1.Assets.Icons.Sword, {Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 18, 0.5, 2), Size = UDim2.fromOffset(34, 34), ImageColor3 = Colors_upv_1.Accent, Parent = u48})
+    local u50 = UI_upv_1.new("TextLabel", {Text = "TRAINING", Name = "Title", TextSize = 28, Position = UDim2.fromOffset(66, 8), Size = UDim2.new(1, -82, 0, 30), FontFace = Fonts_1.Display, TextColor3 = Colors_upv_1.Accent, TextXAlignment = Enum.TextXAlignment.Left, Parent = u48})
+    UI_upv_1.TextStroke(Colors_upv_1.Void, 2, 0.2).Parent = u50
+    local u51 = UI_upv_1.new("TextLabel", {Text = "", Name = "Sub", TextSize = 15, Position = UDim2.fromOffset(66, 38), Size = UDim2.new(1, -82, 0, 18), FontFace = Fonts_1.Bold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = u48})
+    local u52 = UI_upv_1.Panel({StrokeThickness = 2, StrokeTransparency = 0.3, Name = "Matchmaking", Visible = false, BackgroundTransparency = 0.06, Size = UDim2.fromOffset(300, 96), Radius = UDim.new(0, 16), StrokeColor = Colors_upv_1.Accent, Parent = u1})
+    local u53 = u52:FindFirstChildOfClass("UIGradient")
+    local u54 = u52:FindFirstChildOfClass("UIStroke")
+    local u55 = UI_upv_1.new("TextLabel", {Text = "FINDING MATCH", Name = "Title", TextSize = 24, Position = UDim2.fromOffset(18, 12), Size = UDim2.new(1, -120, 0, 28), FontFace = Fonts_1.Heavy, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = u52})
+    local u56 = UI_upv_1.new("TextLabel", {Text = "0:00", Name = "Timer", TextSize = 30, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -18, 0, 9), Size = UDim2.fromOffset(96, 34), FontFace = Fonts_1.Display, TextColor3 = Colors_upv_1.Accent, TextXAlignment = Enum.TextXAlignment.Right, Parent = u52})
+    local u57 = UI_upv_1.new("TextLabel", {Visible = false, Text = "MATCH FOUND", Name = "Found", TextSize = 36, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 8), Size = UDim2.new(1, -24, 0, 40), FontFace = Fonts_1.Display, TextColor3 = Colors_upv_1.Text, Parent = u52})
+    local u58 = UI_upv_1.new("Frame", {Name = "Seats", AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 18, 1, -20), Size = UDim2.fromOffset(0, 16), AutomaticSize = Enum.AutomaticSize.X, [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center), Parent = u52})
+    local u59 = Color3.fromRGB(58, 63, 78)
     local tbl_upv_11 = {}
     for n_1 = 1, 6 do
-        tbl_upv_11[n_1] = UI_upv_1.new("Frame", {Name = "Seat" .. n_1, Size = UDim2.fromOffset(16, 16), BackgroundColor3 = u63, LayoutOrder = n_1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u62})
+        tbl_upv_11[n_1] = UI_upv_1.new("Frame", {Name = "Seat" .. n_1, Size = UDim2.fromOffset(16, 16), BackgroundColor3 = u59, LayoutOrder = n_1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u58})
     end
-    local u64 = UI_upv_1.Pill("1V1", Colors_upv_1.Accent, {LayoutOrder = 7, Name = "Mode", PadX = 9, Height = 22, TextSize = 15, Parent = u62})
-    u64.Visible = false
-    local u65 = UI_upv_1.new("TextLabel", {Text = "1/6 PLAYERS", Name = "Count", TextSize = 18, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -18, 1, -16), Size = UDim2.fromOffset(140, 24), FontFace = Fonts_1.Bold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = u56})
-    local u66 = UI_upv_1.new("Frame", {Name = "Scan", ClipsDescendants = true, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -5), Size = UDim2.new(1, -32, 0, 3), Parent = u56})
-    local u67 = UI_upv_1.new("Frame", {Name = "Bar", BackgroundColor3 = Colors_upv_1.Accent, Size = UDim2.fromScale(0.3, 1), Position = UDim2.fromScale(-0.3, 0), [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u66})
-    local u68 = UI_upv_1.Button({Visible = false, Text = "CANCEL", Name = "Cancel", Sound = false, Style = "Dark", TextSize = 22, Size = UDim2.fromOffset(300, 54), Icon = UI_upv_1.Icon("cross", 18, Colors_upv_1.TextDim), Parent = u1})
-    local u69 = UI_upv_1.new("Frame", {ZIndex = 4, Name = "Pad", Size = UDim2.fromScale(1, 1), Parent = u68.Face})
-    UI_upv_1.PadActionCap("Play", {Height = 24, ZIndex = 4, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Parent = u69})
+    local u60 = UI_upv_1.Pill("1V1", Colors_upv_1.Accent, {LayoutOrder = 7, Name = "Mode", PadX = 9, Height = 22, TextSize = 15, Parent = u58})
+    u60.Visible = false
+    local u61 = UI_upv_1.new("TextLabel", {Text = "1/6 PLAYERS", Name = "Count", TextSize = 18, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -18, 1, -16), Size = UDim2.fromOffset(140, 24), FontFace = Fonts_1.Bold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = u52})
+    local u62 = UI_upv_1.new("Frame", {Name = "Scan", ClipsDescendants = true, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -5), Size = UDim2.new(1, -32, 0, 3), Parent = u52})
+    local u63 = UI_upv_1.new("Frame", {Name = "Bar", BackgroundColor3 = Colors_upv_1.Accent, Size = UDim2.fromScale(0.3, 1), Position = UDim2.fromScale(-0.3, 0), [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u62})
+    local u64 = UI_upv_1.Button({Visible = false, Text = "CANCEL", Name = "Cancel", Sound = false, Style = "Dark", TextSize = 22, Size = UDim2.fromOffset(300, 54), Icon = UI_upv_1.Icon("cross", 18, Colors_upv_1.TextDim), Parent = u1})
+    local u65 = UI_upv_1.new("Frame", {ZIndex = 4, Name = "Pad", Size = UDim2.fromScale(1, 1), Parent = u64.Face})
+    UI_upv_1.PadActionCap("Play", {Height = 24, ZIndex = 4, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Parent = u65})
     local tbl_upv_12 = {}
     local tbl_upv_13 = {}
-    local u70 = Vector2.zero
-    local u71 = TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+    local u66 = Vector2.zero
+    local u67 = TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
     local function homeRect(a19, a20, a21, a22)
         --[[
           name: homeRect
-          line: 1010
+          line: 991
         ]]
-        local v57 = a19.AbsoluteSize / a21
-        local v58 = (a20.X.Scale * a22.X) + a20.X.Offset - a19.AnchorPoint.X * v57.X
-        local v59 = (a20.Y.Scale * a22.Y) + a20.Y.Offset - a19.AnchorPoint.Y * v57.Y
-        return Rect.new(v58, v59, v58 + v57.X, v59 + v57.Y)
+        local v56 = a19.AbsoluteSize / a21
+        local v57 = (a20.X.Scale * a22.X) + a20.X.Offset - a19.AnchorPoint.X * v56.X
+        local v58 = (a20.Y.Scale * a22.Y) + a20.Y.Offset - a19.AnchorPoint.Y * v56.Y
+        return Rect.new(v57, v58, v57 + v56.X, v58 + v56.Y)
     end
     local function applyShift(a23)
         --[[
           name: applyShift
-          line: 1060
+          line: 1041
           upvalues:
             tbl_upv_12 (copy, index: 1)
-            u70 (ref,  index: 2)
+            u66 (ref,  index: 2)
             tbl_upv_13 (copy, index: 3)
             u1 (copy, index: 4)
             TweenService_upv_1 (copy, index: 5)
-            u71 (copy, index: 6)
+            u67 (copy, index: 6)
         ]]
         for key_1, value_3 in tbl_upv_12 do
-            local v60 = value_3 + UDim2.fromOffset(u70.X, u70.Y)
-            local v61 = tbl_upv_13[key_1]
-            if v61 then
-                v61:Cancel()
+            local v59 = value_3 + UDim2.fromOffset(u66.X, u66.Y)
+            local v60 = tbl_upv_13[key_1]
+            if v60 then
+                v60:Cancel()
                 tbl_upv_13[key_1] = nil
             end
             if not (a23) or not (key_1.Visible) then
-                key_1.Position = v60
+                key_1.Position = v59
                 continue
             end
             if u1.Visible then
-                local v62 = TweenService_upv_1:Create(key_1, u71, {Position = v60})
-                tbl_upv_13[key_1] = v62
-                v62:Play()
+                local v61 = TweenService_upv_1:Create(key_1, u67, {Position = v59})
+                tbl_upv_13[key_1] = v61
+                v61:Play()
             else
-                key_1.Position = v60
+                key_1.Position = v59
             end
         end
     end
     local function computeShift()
         --[[
           name: computeShift
-          line: 1017
+          line: 998
           upvalues:
             UI_upv_1 (copy, index: 1)
             u1 (copy, index: 2)
             tbl_upv_12 (copy, index: 3)
             homeRect (copy, index: 4)
-            u27 (copy, index: 5)
-            u56 (copy, index: 6)
-            u68 (copy, index: 7)
+            u23 (copy, index: 5)
+            u52 (copy, index: 6)
+            u64 (copy, index: 7)
         ]]
-        local v63 = UI_upv_1.ChatRectIn(u1)
-        if not v63 or not u1.Visible or UI_upv_1.Compact then
+        local v62 = UI_upv_1.ChatRectIn(u1)
+        if not v62 or not u1.Visible or UI_upv_1.Compact then
             return Vector2.zero
         end
-        local v64 = math.max(UI_upv_1.Scale, 0.01)
-        local v65 = u1.AbsoluteSize / v64
-        local v66 = nil
+        local v63 = math.max(UI_upv_1.Scale, 0.01)
+        local v64 = u1.AbsoluteSize / v63
+        local v65 = nil
         for key_2, value_4 in tbl_upv_12 do
             if not (key_2.Visible) or not (key_2.Parent) then
                 continue
             end
-            local v67 = homeRect(key_2, value_4, v64, v65)
-            if v66 then
-                v66 = Rect.new(math.min(v66.Min.X, v67.Min.X), math.min(v66.Min.Y, v67.Min.Y), math.max(v66.Max.X, v67.Max.X), math.max(v66.Max.Y, v67.Max.Y))
+            local v66 = homeRect(key_2, value_4, v63, v64)
+            if v65 then
+                v65 = Rect.new(math.min(v65.Min.X, v66.Min.X), math.min(v65.Min.Y, v66.Min.Y), math.max(v65.Max.X, v66.Max.X), math.max(v65.Max.Y, v66.Max.Y))
             else
-                v66 = v67
+                v65 = v66
             end
         end
-        if not v66 or v63.Max.X + 12 <= v66.Min.X or v66.Max.X + 12 <= v63.Min.X or v63.Max.Y + 12 <= v66.Min.Y or v66.Max.Y + 12 <= v63.Min.Y then
+        if not v65 or v62.Max.X + 12 <= v65.Min.X or v65.Max.X + 12 <= v62.Min.X or v62.Max.Y + 12 <= v65.Min.Y or v65.Max.Y + 12 <= v62.Min.Y then
             return Vector2.zero
         end
-        local v69 = v65.X - 16
-        for _, value_5 in {u27.Instance, u56, u68.Instance} do
+        local v68 = v64.X - 16
+        for _, value_5 in {u23.Instance, u52, u64.Instance} do
             if value_5.Visible then
-                v69 = math.min(v69, ((value_5.AbsolutePosition.X - u1.AbsolutePosition.X) / v64) - 12)
+                v68 = math.min(v68, ((value_5.AbsolutePosition.X - u1.AbsolutePosition.X) / v63) - 12)
             end
         end
-        local v70 = v63.Max.X + 12 - v66.Min.X
-        if v66.Max.X + v70 <= v69 then
-            return Vector2.new(v70, 0)
+        local v69 = v62.Max.X + 12 - v65.Min.X
+        if v65.Max.X + v69 <= v68 then
+            return Vector2.new(v69, 0)
         end
-        local v71 = ((UI_upv_1.Touch) and (v65.Y * 0.62)) or (v65.Y - 16)
-        local v72 = v63.Max.Y + 12 - v66.Min.Y
-        if v66.Max.Y + v72 <= v71 then
-            return Vector2.new(0, v72)
+        local v70 = ((UI_upv_1.Touch) and (v64.Y * 0.62)) or (v64.Y - 16)
+        local v71 = v62.Max.Y + 12 - v65.Min.Y
+        if v65.Max.Y + v71 <= v70 then
+            return Vector2.new(0, v71)
         end
-        return Vector2.new(math.max(0, v69 - v66.Max.X), 0)
+        return Vector2.new(math.max(0, v68 - v65.Max.X), 0)
     end
     local function redodge(a24)
         --[[
           name: redodge
-          line: 1078
+          line: 1059
           upvalues:
             computeShift (copy, index: 1)
-            u70 (ref,  index: 2)
+            u66 (ref,  index: 2)
             applyShift (copy, index: 3)
         ]]
-        local v73 = computeShift()
-        if not ((v73 - u70).Magnitude > 1) then
+        local v72 = computeShift()
+        if not ((v72 - u66).Magnitude > 1) then
             return
         end
-        u70 = v73
+        u66 = v72
         applyShift(a24)
     end
-    local u72 = false
+    local u68 = false
     local function queueRedodge()
         --[[
           name: queueRedodge
-          line: 1087
+          line: 1068
           upvalues:
-            u72 (ref, index: 1)
+            u68 (ref, index: 1)
         ]]
-        if u72 then
+        if u68 then
             return
         end
-        u72 = true
+        u68 = true
         task.defer(function() end)
     end
     local function place_2(a25, a26)
         --[[
           name: place
-          line: 1099
+          line: 1080
           upvalues:
             tbl_upv_12 (copy, index: 1)
             tbl_upv_13 (copy, index: 2)
-            u70 (ref,  index: 3)
-            u72 (ref,  index: 4)
+            u66 (ref,  index: 3)
+            u68 (ref,  index: 4)
         ]]
         tbl_upv_12[a25] = a26
-        local v74 = tbl_upv_13[a25]
-        if v74 then
-            v74:Cancel()
+        local v73 = tbl_upv_13[a25]
+        if v73 then
+            v73:Cancel()
             tbl_upv_13[a25] = nil
         end
-        a25.Position = a26 + UDim2.fromOffset(u70.X, u70.Y)
-        if u72 then
+        a25.Position = a26 + UDim2.fromOffset(u66.X, u66.Y)
+        if u68 then
             return
         end
-        u72 = true
+        u68 = true
         task.defer(function() end)
     end
-    local u73 = nil
-    local u74 = Signal_upv_1.new()
+    local u69 = nil
+    local u70 = Signal_upv_1.new()
     local function Shift()
         --[[
           name: Shift
-          line: 1171
+          line: 1152
           upvalues:
-            u70 (ref, index: 1)
+            u66 (ref, index: 1)
         ]]
-        return u70
+        return u66
     end
     local function Row()
         --[[
           name: Row
-          line: 1174
+          line: 1155
           upvalues:
-            u73 (ref, index: 1)
+            u69 (ref, index: 1)
         ]]
-        return u73
+        return u69
     end
-    a1.LobbyColumn = {Place = place_2, Shift = Shift, Row = Row, RowChanged = u74}
+    a1.LobbyColumn = {Place = place_2, Shift = Shift, Row = Row, RowChanged = u70}
     UI_upv_1.ChatChanged:Connect(queueRedodge)
     u1:GetPropertyChangedSignal("Visible"):Connect(
         function()
             --[[
-              line: 1180
+              line: 1161
               upvalues:
                 computeShift (copy, index: 1)
-                u70 (ref,  index: 2)
+                u66 (ref,  index: 2)
                 tbl_upv_12 (copy, index: 3)
                 tbl_upv_13 (copy, index: 4)
             ]]
-            local v75 = computeShift()
-            if not ((v75 - u70).Magnitude > 1) then
+            local v74 = computeShift()
+            if not ((v74 - u66).Magnitude > 1) then
                 return
             end
-            u70 = v75
+            u66 = v74
             for key_3, value_6 in tbl_upv_12 do
-                local v76 = value_6 + UDim2.fromOffset(u70.X, u70.Y)
-                local v77 = tbl_upv_13[key_3]
-                if v77 then
-                    v77:Cancel()
+                local v75 = value_6 + UDim2.fromOffset(u66.X, u66.Y)
+                local v76 = tbl_upv_13[key_3]
+                if v76 then
+                    v76:Cancel()
                     tbl_upv_13[key_3] = nil
                 end
-                key_3.Position = v76
+                key_3.Position = v75
             end
         end
     )
-    local u75 = "idle"
+    local u71 = "idle"
     local function phoneRow()
         --[[
           name: phoneRow
-          line: 1121
+          line: 1102
           upvalues:
             UI_upv_1 (copy, index: 1)
             u1 (copy, index: 2)
             tbl_upv_10 (copy, index: 3)
             GuiService_upv_1 (copy, index: 4)
         ]]
-        local v78 = math.max(UI_upv_1.Scale, 0.01)
-        local v79 = u1.AbsoluteSize / v78
+        local v77 = math.max(UI_upv_1.Scale, 0.01)
+        local v78 = u1.AbsoluteSize / v77
         local AbsolutePosition_1 = u1.AbsolutePosition
-        local v80 = tbl_upv_10.Last()
-        local v81 = v80:FindFirstAncestorOfClass("ScreenGui")
-        local v82, v83, v84
-        if UI_upv_1.DebugDevice or not v81 then
-            local v85 = UI_upv_1.TopInset() - 4
+        local v79 = tbl_upv_10.Last()
+        local v80 = v79:FindFirstAncestorOfClass("ScreenGui")
+        local v81, v82, v83
+        if UI_upv_1.DebugDevice or not v80 then
+            local v84 = UI_upv_1.TopInset() - 4
             local Button_2 = tbl_upv_10.Button
-            local v86
-            if v80 ~= Button_2 and v80.AbsoluteSize.X > 0 and Button_2.AbsoluteSize.X > 0 then
-                v86 = math.max(0, (v80.AbsolutePosition.X + v80.AbsoluteSize.X) - (Button_2.AbsolutePosition.X + Button_2.AbsoluteSize.X)) / v78
+            local v85
+            if v79 ~= Button_2 and v79.AbsoluteSize.X > 0 and Button_2.AbsoluteSize.X > 0 then
+                v85 = math.max(0, (v79.AbsolutePosition.X + v79.AbsoluteSize.X) - (Button_2.AbsolutePosition.X + Button_2.AbsoluteSize.X)) / v77
             else
-                v86 = 0
+                v85 = 0
             end
-            v82, v83, v84 = math.floor((v85 * 6) + v86), math.floor(v85 / 2), v79.X - 16
-        elseif v80.AbsoluteSize.X < 1 then
-            local v85 = UI_upv_1.TopInset() - 4
+            v81, v82, v83 = math.floor((v84 * 6) + v85), math.floor(v84 / 2), v78.X - 16
+        elseif v79.AbsoluteSize.X < 1 then
+            local v84 = UI_upv_1.TopInset() - 4
             local Button_2 = tbl_upv_10.Button
-            local v86
-            if v80 ~= Button_2 and v80.AbsoluteSize.X > 0 and Button_2.AbsoluteSize.X > 0 then
-                v86 = math.max(0, (v80.AbsolutePosition.X + v80.AbsoluteSize.X) - (Button_2.AbsolutePosition.X + Button_2.AbsoluteSize.X)) / v78
+            local v85
+            if v79 ~= Button_2 and v79.AbsoluteSize.X > 0 and Button_2.AbsoluteSize.X > 0 then
+                v85 = math.max(0, (v79.AbsolutePosition.X + v79.AbsoluteSize.X) - (Button_2.AbsolutePosition.X + Button_2.AbsoluteSize.X)) / v77
             else
-                v86 = 0
+                v85 = 0
             end
-            v82, v83, v84 = math.floor((v85 * 6) + v86), math.floor(v85 / 2), v79.X - 16
+            v81, v82, v83 = math.floor((v84 * 6) + v85), math.floor(v84 / 2), v78.X - 16
         else
-            v82 = (v80.AbsolutePosition.X + v80.AbsoluteSize.X - AbsolutePosition_1.X) / v78 + 10
-            v83 = (v80.AbsolutePosition.Y + v80.AbsoluteSize.Y / 2 - AbsolutePosition_1.Y) / v78
+            v81 = (v79.AbsolutePosition.X + v79.AbsoluteSize.X - AbsolutePosition_1.X) / v77 + 10
+            v82 = (v79.AbsolutePosition.Y + v79.AbsoluteSize.Y / 2 - AbsolutePosition_1.Y) / v77
             local _ = GuiService_upv_1.TopbarInset
-            v84 = GuiService_upv_1.TopbarInset.Width > 0 and (v81.AbsolutePosition.X + GuiService_upv_1.TopbarInset.Max.X - AbsolutePosition_1.X) / v78 - 8 or v79.X - 16
+            v83 = GuiService_upv_1.TopbarInset.Width > 0 and (v80.AbsolutePosition.X + GuiService_upv_1.TopbarInset.Max.X - AbsolutePosition_1.X) / v77 - 8 or v78.X - 16
         end
-        local v87 = math.floor(v82)
-        local v88 = math.floor(math.max(v83, 38))
-        local v89 = math.clamp((((math.min(v84, v79.X - 16) - v87) - 280) - 20) / 440, 0.7, 1)
-        local v90 = v87 + 280 + 10
-        local v91 = math.floor(v89 * 196)
+        local v86 = math.floor(v81)
+        local v87 = math.floor(math.max(v82, 38))
+        local v88 = math.clamp((((math.min(v83, v78.X - 16) - v86) - 280) - 20) / 440, 0.7, 1)
+        local v89 = v86 + 280 + 10
+        local v90 = math.floor(v88 * 196)
         local tbl_14 = {chipW = 280, restoreW = 254, h = 72}
-        tbl_14.x = v87
-        tbl_14.y = v88
-        tbl_14.loadoutX = v90
-        tbl_14.loadoutW = v91
-        tbl_14.cardX = (v90 + v91) + 10
-        tbl_14.cardW = math.floor(v89 * 244)
-        tbl_14.restoreX = math.max(v87, math.min(v90, ((((v79.X - 16) - 272) - 44) - 10) - 254))
-        tbl_14.restoreY = (v88 + 36) + 8
+        tbl_14.x = v86
+        tbl_14.y = v87
+        tbl_14.loadoutX = v89
+        tbl_14.loadoutW = v90
+        tbl_14.cardX = (v89 + v90) + 10
+        tbl_14.cardW = math.floor(v88 * 244)
+        tbl_14.restoreX = math.max(v86, math.min(v89, ((((v78.X - 16) - 272) - 44) - 10) - 254))
+        tbl_14.restoreY = (v87 + 36) + 8
         return tbl_14
     end
     local function layout()
         --[[
           name: layout
-          line: 1186
+          line: 1167
           upvalues:
             UI_upv_1 (copy, index: 1)
             phoneRow (copy, index: 2)
-            u73 (ref,  index: 3)
+            u69 (ref,  index: 3)
             u2 (copy, index: 4)
             u15 (ref,  index: 5)
             layoutChip (copy, index: 6)
             tbl_upv_12 (copy, index: 7)
             tbl_upv_13 (copy, index: 8)
-            u70 (ref,  index: 9)
-            u72 (ref,  index: 10)
+            u66 (ref,  index: 9)
+            u68 (ref,  index: 10)
             computeShift (copy, index: 11)
             applyShift (copy, index: 12)
             Button_upv_1 (copy, index: 13)
             u23 (copy, index: 14)
-            Theme_upv_1 (copy, index: 15)
-            u27 (copy, index: 16)
-            u52 (copy, index: 17)
-            u56 (copy, index: 18)
-            u68 (copy, index: 19)
-            u59 (copy, index: 20)
-            u60 (copy, index: 21)
-            u61 (copy, index: 22)
-            u65 (copy, index: 23)
-            u62 (copy, index: 24)
-            tbl_upv_11 (copy, index: 25)
-            u75 (ref,  index: 26)
+            u48 (copy, index: 15)
+            u52 (copy, index: 16)
+            u64 (copy, index: 17)
+            u55 (copy, index: 18)
+            u56 (copy, index: 19)
+            u57 (copy, index: 20)
+            u61 (copy, index: 21)
+            u58 (copy, index: 22)
+            tbl_upv_11 (copy, index: 23)
+            u71 (ref,  index: 24)
         ]]
-        local v92 = UI_upv_1.TopInset()
-        local v93, v94, v95, v96 = nil, nil, nil, nil
+        local v91 = UI_upv_1.TopInset()
+        local v92, v93, v94, v95 = nil, nil, nil, nil
         if UI_upv_1.Compact then
-            local v97 = phoneRow()
-            u73 = v97
+            local v96 = phoneRow()
+            u69 = v96
             u2.AnchorPoint = Vector2.new(0, 0.5)
-            u2.Size = UDim2.fromOffset(v97.chipW, v97.h)
+            u2.Size = UDim2.fromOffset(v96.chipW, v96.h)
             u15 = true
             layoutChip(true)
-            local v98 = u2
-            local v99 = UDim2.fromOffset(v97.x, v97.y)
-            tbl_upv_12[v98] = v99
-            v93 = tbl_upv_13[v98]
-            if v93 then
-                v93:Cancel()
-                tbl_upv_13[v98] = nil
+            local v97 = u2
+            local v98 = UDim2.fromOffset(v96.x, v96.y)
+            tbl_upv_12[v97] = v98
+            v92 = tbl_upv_13[v97]
+            if v92 then
+                v92:Cancel()
+                tbl_upv_13[v97] = nil
             end
-            v98.Position = v99 + UDim2.fromOffset(u70.X, u70.Y)
-            if not (u72) then
-                u72 = true
+            v97.Position = v98 + UDim2.fromOffset(u66.X, u66.Y)
+            if not (u68) then
+                u68 = true
                 task.defer(function() end)
             end
             Button_upv_1.Instance.AnchorPoint = Vector2.new(0, 0.5)
-            Button_upv_1.Instance.Size = UDim2.fromOffset(v97.loadoutW, v97.h)
+            Button_upv_1.Instance.Size = UDim2.fromOffset(v96.loadoutW, v96.h)
             local Instance_1 = Button_upv_1.Instance
-            v95 = UDim2.fromOffset(v97.loadoutX, v97.y)
-            tbl_upv_12[Instance_1] = v95
-            v94 = tbl_upv_13[Instance_1]
-            if v94 then
-                v94:Cancel()
+            local v99 = UDim2.fromOffset(v96.loadoutX, v96.y)
+            tbl_upv_12[Instance_1] = v99
+            v93 = tbl_upv_13[Instance_1]
+            if v93 then
+                v93:Cancel()
                 tbl_upv_13[Instance_1] = nil
             end
-            Instance_1.Position = v95 + UDim2.fromOffset(u70.X, u70.Y)
-            if not (u72) then
-                u72 = true
+            Instance_1.Position = v99 + UDim2.fromOffset(u66.X, u66.Y)
+            if not (u68) then
+                u68 = true
                 task.defer(function() end)
             end
-            u23.Position = UDim2.new(1, -16, 0, v92)
-            if Theme_upv_1.ShowCurrency then
-                v95 = v92 + 60
-            else
-                v95 = v92
-            end
-            local v100 = math.max(v95, (v97.y + (v97.h / 2)) + 8)
-            u27.Instance.AnchorPoint = Vector2.new(1, 0)
-            u27.Instance.Position = UDim2.new(1, -16, 0, v100)
-            u27.Instance.Size = UDim2.fromOffset(240, 84)
-            u52.Position = UDim2.new(0.5, 0, 0, v92)
-            u56.AnchorPoint = Vector2.new(1, 0)
-            u56.Position = UDim2.new(1, -16, 0, v100)
-            u56.Size = UDim2.fromOffset(272, 84)
-            u68.Instance.AnchorPoint = Vector2.new(1, 0)
-            u68.Instance.Position = UDim2.new(1, -16, 0, v100 + 94)
-            u68.Instance.Size = UDim2.fromOffset(272, 52)
-            u59.TextSize = 20
-            u60.TextSize = 26
-            u61.TextSize = 30
-            u65.TextSize = 17
-            u59.Position = UDim2.fromOffset(16, 11)
-            u59.Size = UDim2.new(1, -96, 0, 28)
-            u60.Position = UDim2.new(1, -16, 0, 7)
-            u60.Size = UDim2.fromOffset(76, 34)
-            u62.Position = UDim2.new(0, 16, 1, -18)
-            u65.Position = UDim2.new(1, -16, 1, -14)
+            local v100 = math.max(v91, (v96.y + (v96.h / 2)) + 8)
+            u23.Instance.AnchorPoint = Vector2.new(1, 0)
+            u23.Instance.Position = UDim2.new(1, -16, 0, v100)
+            u23.Instance.Size = UDim2.fromOffset(240, 84)
+            u48.Position = UDim2.new(0.5, 0, 0, v91)
+            u52.AnchorPoint = Vector2.new(1, 0)
+            u52.Position = UDim2.new(1, -16, 0, v100)
+            u52.Size = UDim2.fromOffset(272, 84)
+            u64.Instance.AnchorPoint = Vector2.new(1, 0)
+            u64.Instance.Position = UDim2.new(1, -16, 0, v100 + 94)
+            u64.Instance.Size = UDim2.fromOffset(272, 52)
+            u55.TextSize = 20
+            u56.TextSize = 26
+            u57.TextSize = 30
+            u61.TextSize = 17
+            u55.Position = UDim2.fromOffset(16, 11)
+            u55.Size = UDim2.new(1, -96, 0, 28)
+            u56.Position = UDim2.new(1, -16, 0, 7)
+            u56.Size = UDim2.fromOffset(76, 34)
+            u58.Position = UDim2.new(0, 16, 1, -18)
+            u61.Position = UDim2.new(1, -16, 1, -14)
             for _, value_7 in tbl_upv_11 do
                 value_7.Size = UDim2.fromOffset(14, 14)
             end
-            v95 = u62:FindFirstChildOfClass("UIListLayout")
-            v95.Padding = UDim.new(0, 5)
+            local v101 = u58:FindFirstChildOfClass("UIListLayout")
+            v101.Padding = UDim.new(0, 5)
         else
-            u73 = nil
+            u69 = nil
             u2.AnchorPoint = Vector2.new(0, 1)
             u2.Size = UDim2.fromOffset(340, 78)
             u15 = false
             layoutChip(false)
-            local v101 = u2
-            local v102 = UDim2.new(0, 24, 1, -24)
-            tbl_upv_12[v101] = v102
-            v95 = tbl_upv_13[v101]
-            if v95 then
-                v95:Cancel()
-                tbl_upv_13[v101] = nil
+            local v102 = u2
+            local v103 = UDim2.new(0, 24, 1, -24)
+            tbl_upv_12[v102] = v103
+            v94 = tbl_upv_13[v102]
+            if v94 then
+                v94:Cancel()
+                tbl_upv_13[v102] = nil
             end
-            v101.Position = v102 + UDim2.fromOffset(u70.X, u70.Y)
-            if not (u72) then
-                u72 = true
+            v102.Position = v103 + UDim2.fromOffset(u66.X, u66.Y)
+            if not (u68) then
+                u68 = true
                 task.defer(function() end)
             end
             Button_upv_1.Instance.AnchorPoint = Vector2.new(0, 1)
             Button_upv_1.Instance.Size = UDim2.fromOffset(340, 66)
             local Instance_2 = Button_upv_1.Instance
-            local v103 = UDim2.new(0, 24, 1, -114)
-            tbl_upv_12[Instance_2] = v103
-            v96 = tbl_upv_13[Instance_2]
-            if v96 then
-                v96:Cancel()
+            local v104 = UDim2.new(0, 24, 1, -114)
+            tbl_upv_12[Instance_2] = v104
+            v95 = tbl_upv_13[Instance_2]
+            if v95 then
+                v95:Cancel()
                 tbl_upv_13[Instance_2] = nil
             end
-            Instance_2.Position = v103 + UDim2.fromOffset(u70.X, u70.Y)
-            if not (u72) then
-                u72 = true
+            Instance_2.Position = v104 + UDim2.fromOffset(u66.X, u66.Y)
+            if not (u68) then
+                u68 = true
                 task.defer(
                     function()
                         --[[
-                          line: 1092
+                          line: 1073
                           upvalues:
-                            u72 (ref,  index: 1)
+                            u68 (ref,  index: 1)
                             computeShift (copy, index: 2)
-                            u70 (ref,  index: 3)
+                            u66 (ref,  index: 3)
                             applyShift (copy, index: 4)
                         ]]
-                        u72 = false
-                        local v104 = computeShift()
-                        if not ((v104 - u70).Magnitude > 1) then
+                        u68 = false
+                        local v105 = computeShift()
+                        if not ((v105 - u66).Magnitude > 1) then
                             return
                         end
-                        u70 = v104
+                        u66 = v105
                         applyShift(true)
                     end
                 )
             end
-            u23.Position = UDim2.new(1, -24, 0, v92)
-            u27.Instance.AnchorPoint = Vector2.new(1, 1)
-            u27.Instance.Position = UDim2.new(1, -28, 1, -44)
-            u27.Instance.Size = UDim2.fromOffset(300, 96)
-            u52.Position = UDim2.new(0.5, 0, 0, v92)
-            u56.AnchorPoint = Vector2.new(1, 1)
-            u56.Position = UDim2.new(1, -28, 1, ((u75 ~= "search") and -44) or -104)
-            u56.Size = UDim2.fromOffset(300, 96)
-            u68.Instance.AnchorPoint = Vector2.new(1, 1)
-            u68.Instance.Position = UDim2.new(1, -28, 1, -40)
-            u68.Instance.Size = UDim2.fromOffset(300, 54)
-            u59.TextSize = 24
-            u60.TextSize = 30
-            u61.TextSize = 36
-            u65.TextSize = 18
-            u59.Position = UDim2.fromOffset(18, 12)
-            u59.Size = UDim2.new(1, -120, 0, 28)
-            u60.Position = UDim2.new(1, -18, 0, 9)
-            u60.Size = UDim2.fromOffset(96, 34)
-            u62.Position = UDim2.new(0, 18, 1, -20)
-            u65.Position = UDim2.new(1, -18, 1, -16)
+            u23.Instance.AnchorPoint = Vector2.new(1, 1)
+            u23.Instance.Position = UDim2.new(1, -28, 1, -44)
+            u23.Instance.Size = UDim2.fromOffset(300, 96)
+            u48.Position = UDim2.new(0.5, 0, 0, v91)
+            u52.AnchorPoint = Vector2.new(1, 1)
+            u52.Position = UDim2.new(1, -28, 1, ((u71 ~= "search") and -44) or -104)
+            u52.Size = UDim2.fromOffset(300, 96)
+            u64.Instance.AnchorPoint = Vector2.new(1, 1)
+            u64.Instance.Position = UDim2.new(1, -28, 1, -40)
+            u64.Instance.Size = UDim2.fromOffset(300, 54)
+            u55.TextSize = 24
+            u56.TextSize = 30
+            u57.TextSize = 36
+            u61.TextSize = 18
+            u55.Position = UDim2.fromOffset(18, 12)
+            u55.Size = UDim2.new(1, -120, 0, 28)
+            u56.Position = UDim2.new(1, -18, 0, 9)
+            u56.Size = UDim2.fromOffset(96, 34)
+            u58.Position = UDim2.new(0, 18, 1, -20)
+            u61.Position = UDim2.new(1, -18, 1, -16)
             for _, value_8 in tbl_upv_11 do
                 value_8.Size = UDim2.fromOffset(16, 16)
             end
-            local v105 = u62:FindFirstChildOfClass("UIListLayout")
-            v105.Padding = UDim.new(0, 6)
+            local v106 = u58:FindFirstChildOfClass("UIListLayout")
+            v106.Padding = UDim.new(0, 6)
         end
     end
-    local u76 = false
+    local u72 = false
     local function relayout()
         --[[
           name: relayout
-          line: 1259
+          line: 1238
           upvalues:
             layout (copy, index: 1)
-            u74 (copy, index: 2)
-            u73 (ref,  index: 3)
+            u70 (copy, index: 2)
+            u69 (ref,  index: 3)
         ]]
         layout()
-        u74:Fire(u73)
+        u70:Fire(u69)
     end
     local function queueLayout()
         --[[
           name: queueLayout
-          line: 1263
+          line: 1242
           upvalues:
-            u76 (ref,  index: 1)
+            u72 (ref,  index: 1)
             layout (copy, index: 2)
-            u74 (copy, index: 3)
-            u73 (ref,  index: 4)
+            u70 (copy, index: 3)
+            u69 (ref,  index: 4)
         ]]
-        if u76 then
+        if u72 then
             return
         end
-        u76 = true
+        u72 = true
         task.defer(
             function()
                 --[[
-                  line: 1268
+                  line: 1247
                   upvalues:
-                    u76 (ref,  index: 1)
+                    u72 (ref,  index: 1)
                     layout (copy, index: 2)
-                    u74 (copy, index: 3)
-                    u73 (ref,  index: 4)
+                    u70 (copy, index: 3)
+                    u69 (ref,  index: 4)
                 ]]
-                u76 = false
+                u72 = false
                 layout()
-                u74:Fire(u73)
+                u70:Fire(u69)
             end
         )
     end
     layout()
-    u74:Fire(u73)
+    u70:Fire(u69)
     UI_upv_1.LayoutChanged:Connect(relayout)
     UI_upv_1.TopInsetChanged:Connect(relayout)
     UI_upv_1.ScaleChanged:Connect(queueLayout)
@@ -1759,78 +1741,65 @@ function tbl_1.Init(a1)
     tbl_upv_10.HostButton:GetPropertyChangedSignal("AbsolutePosition"):Connect(queueLayout)
     u1:GetPropertyChangedSignal("AbsoluteSize"):Connect(queueLayout)
     if a1.ToastAvoid then
-        a1.ToastAvoid("TrainingBanner", u52)
+        a1.ToastAvoid("TrainingBanner", u48)
     end
-    local u77 = State_upv_1.Level()
+    local u73 = State_upv_1.Level()
     local function refreshProfile()
         --[[
           name: refreshProfile
-          line: 1290
+          line: 1269
           upvalues:
             State_upv_1 (copy, index: 1)
             u11 (copy, index: 2)
-            u77 (ref,  index: 3)
+            u73 (ref,  index: 3)
             UI_upv_1 (copy, index: 4)
             u8 (copy, index: 5)
             a1 (copy, index: 6)
             u10 (copy, index: 7)
             Theme_upv_1 (copy, index: 8)
-            u26 (ref,  index: 9)
-            u25 (copy, index: 10)
-            u24 (copy, index: 11)
         ]]
-        local v106 = State_upv_1.Level()
-        local v107 = State_upv_1.Xp()
-        local v108 = State_upv_1.XpToNext()
-        u11.Text = "LV " .. tostring(v106)
-        if u77 < v106 then
+        local v107 = State_upv_1.Level()
+        local v108 = State_upv_1.Xp()
+        local v109 = State_upv_1.XpToNext()
+        u11.Text = "LV " .. tostring(v107)
+        if u73 < v107 then
             UI_upv_1.Pop(u8, 1.5)
             a1.Sounds.Play("LevelUp")
         end
-        u77 = v106
+        u73 = v107
         local Tween_3 = UI_upv_1.Tween
         local Slow_1 = Theme_upv_1.Tween.Slow
         local tbl_15 = {Value = 0}
-        tbl_15.Value = not (v108 > 0) and 0 or math.clamp(v107 / v108, 0, 1)
+        tbl_15.Value = not (v109 > 0) and 0 or math.clamp(v108 / v109, 0, 1)
         Tween_3(u10, Slow_1, tbl_15)
-        local v110 = State_upv_1.Shells()
-        if v110 == u26 or not Theme_upv_1.ShowCurrency then
-            return
-        end
-        u25(v110)
-        UI_upv_1.Bump(u24, 0.12)
-        if u26 < v110 then
-            a1.Sounds.Play("Coin")
-        end
-        u26 = v110
     end
     refreshProfile()
     State_upv_1.ProfileChanged:Connect(refreshProfile)
     State_upv_1.AttrChanged:Connect(
         function(a27)
             --[[
-              line: 1313
+              line: 1283
               upvalues:
                 refreshProfile (copy, index: 1)
             ]]
-            if a27 ~= "Level" and a27 ~= "XP" and a27 ~= "Shells" then
+            if a27 ~= "Level" and a27 ~= "XP" then
                 return
             end
             refreshProfile()
         end
     )
     local tbl_upv_16 = {}
+    local u74 = false
+    local u75 = "3v3"
+    local u76 = 0
+    local u77 = 0
     local u78 = false
-    local u79 = "3v3"
-    local u80 = 0
-    local u81 = 0
-    local u82 = false
-    local u83 = 0
-    local u84 = false
+    local u79 = 0
+    local u80 = false
     local function attrQueued()
         --[[
           name: attrQueued
-          line: 1332
+          line: 1302
           upvalues:
             State_upv_1 (copy, index: 1)
         ]]
@@ -1840,20 +1809,20 @@ function tbl_1.Init(a1)
     local function wantMode()
         --[[
           name: wantMode
-          line: 1335
+          line: 1305
           upvalues:
             State_upv_1 (copy, index: 1)
-            u82 (ref,  index: 2)
-            u78 (ref,  index: 3)
+            u78 (ref,  index: 2)
+            u74 (ref,  index: 3)
         ]]
-        if State_upv_1.InMatch() or u82 then
+        if State_upv_1.InMatch() or u78 then
             return "idle"
         end
         if State_upv_1.Get("QueueFound") == true then
             local v112 = State_upv_1.Get("Queued") == true
-            if not (v112) and not (u78) then
+            if not (v112) and not (u74) then
                 local v113 = State_upv_1.Get("Queued") == true
-                if not (v113) and not (u78) then
+                if not (v113) and not (u74) then
                     return "idle"
                 end
                 return "search"
@@ -1861,7 +1830,7 @@ function tbl_1.Init(a1)
             return "found"
         end
         local v113 = State_upv_1.Get("Queued") == true
-        if not (v113) and not (u78) then
+        if not (v113) and not (u74) then
             return "idle"
         end
         return "search"
@@ -1869,40 +1838,40 @@ function tbl_1.Init(a1)
     local function searchMode()
         --[[
           name: searchMode
-          line: 1351
+          line: 1321
           upvalues:
             State_upv_1 (copy, index: 1)
-            u79 (ref,  index: 2)
+            u75 (ref,  index: 2)
         ]]
         local v114 = State_upv_1.Get("QueueMode")
         local v115 = State_upv_1.Get("Queued") == true
         if v115 then
             if v114 ~= "1v1" and v114 ~= "3v3" then
-                return u79
+                return u75
             end
             return v114
         end
-        return u79
+        return u75
     end
     local function seatCount()
         --[[
           name: seatCount
-          line: 1358
+          line: 1328
           upvalues:
             State_upv_1 (copy, index: 1)
-            u79 (ref,  index: 2)
+            u75 (ref,  index: 2)
         ]]
         local v116 = State_upv_1.Get("QueueMode")
         local v117 = State_upv_1.Get("Queued") == true
         local v118
         if v117 then
             if v116 ~= "1v1" and v116 ~= "3v3" then
-                v118 = u79
+                v118 = u75
             else
                 v118 = v116
             end
         else
-            v118 = u79
+            v118 = u75
         end
         if v118 ~= "1v1" then
             return 6
@@ -1912,25 +1881,25 @@ function tbl_1.Init(a1)
     local function queuedAt()
         --[[
           name: queuedAt
-          line: 1361
+          line: 1331
           upvalues:
             State_upv_1 (copy, index: 1)
-            u80 (ref,  index: 2)
+            u76 (ref,  index: 2)
         ]]
         local v119 = State_upv_1.Get("QueuedAt")
         local v120 = State_upv_1.Get("Queued") == true
         if v120 and type(v119) == "number" and v119 > 0 then
             return v119
         end
-        return u80
+        return u76
     end
     local function seatsFilled(a28, a29)
         --[[
           name: seatsFilled
-          line: 1373
+          line: 1343
           upvalues:
             State_upv_1 (copy, index: 1)
-            u79 (ref,  index: 2)
+            u75 (ref,  index: 2)
         ]]
         local v127, v129
         local v121 = State_upv_1.Get("QueueFilled")
@@ -1939,12 +1908,12 @@ function tbl_1.Init(a1)
         local v124
         if v123 then
             if v122 ~= "1v1" and v122 ~= "3v3" then
-                v124 = u79
+                v124 = u75
             else
                 v124 = v122
             end
         else
-            v124 = u79
+            v124 = u75
         end
         local v125
         if v124 ~= "1v1" then
@@ -1983,36 +1952,36 @@ function tbl_1.Init(a1)
         end
         return v129
     end
-    local u85 = 0
+    local u81 = 0
     local function paintSeats(a30, a31)
         --[[
           name: paintSeats
-          line: 1392
+          line: 1362
           upvalues:
             State_upv_1 (copy, index: 1)
-            u79 (ref,  index: 2)
-            u64 (copy, index: 3)
+            u75 (ref,  index: 2)
+            u60 (copy, index: 3)
             tbl_upv_11 (copy, index: 4)
-            u75 (ref,  index: 5)
+            u71 (ref,  index: 5)
             Colors_upv_1 (copy, index: 6)
-            u63 (copy, index: 7)
-            u85 (ref,  index: 8)
+            u59 (copy, index: 7)
+            u81 (ref,  index: 8)
             UI_upv_1 (copy, index: 9)
             Theme_upv_1 (copy, index: 10)
             a1 (copy, index: 11)
-            u65 (copy, index: 12)
+            u61 (copy, index: 12)
         ]]
         local v130 = State_upv_1.Get("QueueMode")
         local v131 = State_upv_1.Get("Queued") == true
         local v132
         if v131 then
             if v130 ~= "1v1" and v130 ~= "3v3" then
-                v132 = u79
+                v132 = u75
             else
                 v132 = v130
             end
         else
-            v132 = u79
+            v132 = u75
         end
         local v133
         if v132 ~= "1v1" then
@@ -2025,23 +1994,23 @@ function tbl_1.Init(a1)
         else
             v130 = false
         end
-        u64.Visible = v130
+        u60.Visible = v130
         local v134 = nil
         for key_4, value_9 in tbl_upv_11 do
             value_9.Visible = key_4 <= v133
             local v135 = key_4 <= a30
-            if u75 == "found" then
+            if u71 == "found" then
                 v134 = Colors_upv_1.Text
             elseif v135 then
                 v134 = Colors_upv_1.Accent
             else
-                v134 = u63
+                v134 = u59
             end
             if not (a31) or not (v135) then
                 value_9.BackgroundColor3 = v134
                 continue
             end
-            if u85 < key_4 then
+            if u81 < key_4 then
                 value_9.BackgroundColor3 = Colors_upv_1.Text
                 UI_upv_1.Tween(value_9, Theme_upv_1.Tween.Smooth, {BackgroundColor3 = v134})
                 UI_upv_1.Pop(value_9, 1.8)
@@ -2049,95 +2018,95 @@ function tbl_1.Init(a1)
                 value_9.BackgroundColor3 = v134
             end
         end
-        if a31 and u85 < a30 and u75 == "search" then
+        if a31 and u81 < a30 and u71 == "search" then
             a1.Sounds.Play("Tick", {pitch = (a30 * 0.06) + 0.9})
         end
-        u85 = a30
+        u81 = a30
         if UI_upv_1.Compact then
             v130 = string.format("%d/%d", a30, v133)
         else
             v130 = string.format("%d/%d PLAYERS", a30, v133)
         end
-        u65.Text = v130
+        u61.Text = v130
     end
-    local u86 = nil
+    local u82 = nil
     local function setScan(a32)
         --[[
           name: setScan
-          line: 1415
+          line: 1385
           upvalues:
-            u86 (ref,  index: 1)
-            u67 (copy, index: 2)
-            u66 (copy, index: 3)
+            u82 (ref,  index: 1)
+            u63 (copy, index: 2)
+            u62 (copy, index: 3)
         ]]
-        if not (a32) or u86 then
-            if not (a32) and u86 then
-                u86:Cancel()
-                u86 = nil
+        if not (a32) or u82 then
+            if not (a32) and u82 then
+                u82:Cancel()
+                u82 = nil
             end
         else
-            u67.Position = UDim2.fromScale(-0.3, 0)
-            local v136 = game:GetService("TweenService"):Create(u67, TweenInfo.new(1.1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, false, 0.15), {Position = UDim2.fromScale(1, 0)})
+            u63.Position = UDim2.fromScale(-0.3, 0)
+            local v136 = game:GetService("TweenService"):Create(u63, TweenInfo.new(1.1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, false, 0.15), {Position = UDim2.fromScale(1, 0)})
             v136:Play()
-            u86 = v136
+            u82 = v136
         end
-        u66.Visible = a32
+        u62.Visible = a32
     end
     local function paintCard()
         --[[
           name: paintCard
-          line: 1432
+          line: 1402
           upvalues:
-            u75 (ref,  index: 1)
-            u57 (copy, index: 2)
+            u71 (ref,  index: 1)
+            u53 (copy, index: 2)
             Colors_upv_1 (copy, index: 3)
-            u58 (copy, index: 4)
-            u59 (copy, index: 5)
-            u60 (copy, index: 6)
-            u61 (copy, index: 7)
-            u65 (copy, index: 8)
+            u54 (copy, index: 4)
+            u55 (copy, index: 5)
+            u56 (copy, index: 6)
+            u57 (copy, index: 7)
+            u61 (copy, index: 8)
         ]]
-        local v137 = u75 == "found"
+        local v137 = u71 == "found"
         local v138
         if v137 then
             v138 = ColorSequence.new(Color3.fromRGB(64, 168, 255), Color3.fromRGB(28, 132, 246))
         else
             v138 = ColorSequence.new(Colors_upv_1.Panel, Colors_upv_1.PanelLo)
         end
-        u57.Color = v138
+        u53.Color = v138
         local v139
         if v137 then
             v139 = Color3.fromRGB(150, 210, 255)
         else
             v139 = Colors_upv_1.Accent
         end
-        u58.Color = v139
-        u58.Transparency = (v137 and 0.4) or 0.3
-        u59.Visible = not v137
-        u60.Visible = not v137
-        u61.Visible = v137
+        u54.Color = v139
+        u54.Transparency = (v137 and 0.4) or 0.3
+        u55.Visible = not v137
+        u56.Visible = not v137
+        u57.Visible = v137
         local v140
         if v137 then
             v140 = Colors_upv_1.Text
         else
             v140 = Colors_upv_1.TextDim
         end
-        u65.TextColor3 = v140
+        u61.TextColor3 = v140
     end
     local function tick()
         --[[
           name: tick
-          line: 1445
+          line: 1415
           upvalues:
-            u75 (ref,  index: 1)
+            u71 (ref,  index: 1)
             State_upv_1 (copy, index: 2)
-            u80 (ref,  index: 3)
-            u60 (copy, index: 4)
+            u76 (ref,  index: 3)
+            u56 (copy, index: 4)
             seatsFilled (copy, index: 5)
-            u85 (ref,  index: 6)
+            u81 (ref,  index: 6)
             paintSeats (copy, index: 7)
         ]]
-        if u75 == "idle" then
+        if u71 == "idle" then
             return
         end
         local v141 = State_upv_1.Get("QueuedAt")
@@ -2146,13 +2115,13 @@ function tbl_1.Init(a1)
         if v142 and type(v141) == "number" and v141 > 0 then
             v143 = v141
         else
-            v143 = u80
+            v143 = u76
         end
         local v144 = math.max(0, State_upv_1.Now() - v143)
-        u60.Text = string.format("%d:%02d", v144 // 60, math.floor(v144) % 60)
-        if u75 == "search" then
+        u56.Text = string.format("%d:%02d", v144 // 60, math.floor(v144) % 60)
+        if u71 == "search" then
             local v145 = seatsFilled(v144, math.floor(v143 * 1000) % 2147483647)
-            if v145 ~= u85 then
+            if v145 ~= u81 then
                 paintSeats(v145, true)
             end
         end
@@ -2160,131 +2129,131 @@ function tbl_1.Init(a1)
     local function applyMode(a33)
         --[[
           name: applyMode
-          line: 1460
+          line: 1430
           upvalues:
             State_upv_1 (copy, index: 1)
-            u82 (ref,  index: 2)
-            u78 (ref,  index: 3)
-            u75 (ref,  index: 4)
+            u78 (ref,  index: 2)
+            u74 (ref,  index: 3)
+            u71 (ref,  index: 4)
             layout (copy, index: 5)
-            u27 (copy, index: 6)
+            u23 (copy, index: 6)
             tbl_upv_16 (copy, index: 7)
-            u56 (copy, index: 8)
-            u68 (copy, index: 9)
+            u52 (copy, index: 8)
+            u64 (copy, index: 9)
             setScan (copy, index: 10)
             paintCard (copy, index: 11)
-            u85 (ref,  index: 12)
+            u81 (ref,  index: 12)
             paintSeats (copy, index: 13)
             UI_upv_1 (copy, index: 14)
             Theme_upv_1 (copy, index: 15)
             tick (copy, index: 16)
-            u79 (ref,  index: 17)
-            u64 (copy, index: 18)
+            u75 (ref,  index: 17)
+            u60 (copy, index: 18)
             tbl_upv_11 (copy, index: 19)
-            u63 (copy, index: 20)
+            u59 (copy, index: 20)
             Colors_upv_1 (copy, index: 21)
-            u65 (copy, index: 22)
-            u61 (copy, index: 23)
+            u61 (copy, index: 22)
+            u57 (copy, index: 23)
             a1 (copy, index: 24)
         ]]
         local v146
-        if State_upv_1.InMatch() or u82 then
+        if State_upv_1.InMatch() or u78 then
             v146 = "idle"
         elseif State_upv_1.Get("QueueFound") ~= true then
             local v147 = State_upv_1.Get("Queued") == true
-            if v147 or u78 then
+            if v147 or u74 then
                 v146 = "search"
             else
                 v146 = "idle"
             end
         else
             local v148 = State_upv_1.Get("Queued") == true
-            if v148 or u78 then
+            if v148 or u74 then
                 v146 = "found"
             else
                 local v147 = State_upv_1.Get("Queued") == true
-                if v147 or u78 then
+                if v147 or u74 then
                     v146 = "search"
                 else
                     v146 = "idle"
                 end
             end
         end
-        if v146 == u75 then
+        if v146 == u71 then
             return
         end
-        local v149 = u75
-        u75 = v146
+        local v149 = u71
+        u71 = v146
         layout()
-        local Instance_3 = u27.Instance
-        local v150 = (u75 == "idle") and (next(tbl_upv_16) == nil)
+        local Instance_3 = u23.Instance
+        local v150 = (u71 == "idle") and (next(tbl_upv_16) == nil)
         Instance_3.Visible = v150
-        u56.Visible = u75 ~= "idle"
-        u68.Instance.Visible = u75 == "search"
-        local v150 = u75 == "search"
+        u52.Visible = u71 ~= "idle"
+        u64.Instance.Visible = u71 == "search"
+        local v150 = u71 == "search"
         setScan(v150)
         paintCard()
-        if u75 == "search" then
+        if u71 == "search" then
             if v149 == "idle" then
-                u85 = 0
+                u81 = 0
                 paintSeats(1, false)
                 if a33 then
-                    local Position_1 = u56.Position
+                    local Position_1 = u52.Position
                     if not (UI_upv_1.Compact) then
-                        u56.Position = u27.Instance.Position
+                        u52.Position = u23.Instance.Position
                     end
-                    UI_upv_1.Pop(u56, 0.92)
-                    UI_upv_1.Tween(u56, Theme_upv_1.Tween.Smooth, {Position = Position_1})
-                    UI_upv_1.Enter(u68.Instance, Vector2.new(0, 16), 0.08, u68.Instance.Position)
+                    UI_upv_1.Pop(u52, 0.92)
+                    UI_upv_1.Tween(u52, Theme_upv_1.Tween.Smooth, {Position = Position_1})
+                    UI_upv_1.Enter(u64.Instance, Vector2.new(0, 16), 0.08, u64.Instance.Position)
                 end
             end
             tick()
-        elseif u75 == "found" then
+        elseif u71 == "found" then
             tick()
             if not (UI_upv_1.Compact) and v149 == "search" then
-                u56.Position = UDim2.new(1, -28, 1, -104)
-                UI_upv_1.Tween(u56, Theme_upv_1.Tween.Smooth, {Position = u56.Position})
+                u52.Position = UDim2.new(1, -28, 1, -104)
+                UI_upv_1.Tween(u52, Theme_upv_1.Tween.Smooth, {Position = u52.Position})
             end
             local v151 = State_upv_1.Get("QueueMode")
             local v152 = State_upv_1.Get("Queued") == true
             local v153
             if v152 then
                 if v151 ~= "1v1" and v151 ~= "3v3" then
-                    v153 = u79
+                    v153 = u75
                 else
                     v153 = v151
                 end
             else
-                v153 = u79
+                v153 = u75
             end
             if v153 ~= "1v1" then
                 v150 = 6
             else
                 v150 = 2
             end
-            u85 = v150
+            u81 = v150
             if v150 == 2 then
                 v151 = true
             else
                 v151 = false
             end
-            u64.Visible = v151
+            u60.Visible = v151
             for key_5, value_upv_10 in tbl_upv_11 do
                 value_upv_10.Visible = key_5 <= v150
-                if u85 < key_5 then
-                    value_upv_10.BackgroundColor3 = u63
+                if u81 < key_5 then
+                    value_upv_10.BackgroundColor3 = u59
                     task.delay(
-                        (key_5 - u85) * 0.06,
+                        (key_5 - u81) * 0.06,
                         function()
                             --[[
-                              line: 1505
+                              line: 1475
                               upvalues:
-                                u75 (ref,  index: 1)
+                                u71 (ref,  index: 1)
                                 value_upv_10 (copy, index: 2)
                                 Colors_upv_1 (copy, index: 3)
                                 UI_upv_1 (copy, index: 4)
                             ]]
-                            if u75 ~= "found" then
+                            if u71 ~= "found" then
                                 return
                             end
                             value_upv_10.BackgroundColor3 = Colors_upv_1.Text
@@ -2300,53 +2269,53 @@ function tbl_1.Init(a1)
             else
                 v151 = string.format("%d/%d PLAYERS", v150, v150)
             end
-            u65.Text = v151
-            UI_upv_1.Pop(u56, 1.12)
-            UI_upv_1.Pop(u61, 1.3)
+            u61.Text = v151
+            UI_upv_1.Pop(u52, 1.12)
+            UI_upv_1.Pop(u57, 1.3)
             a1.Sounds.Play("Match_Found")
             if a1.MenuManager.IsOpen() then
                 a1.MenuManager.CloseAll()
             end
             a1.MenuManager.EndHudFocus()
         elseif v149 ~= "idle" and a33 and not State_upv_1.InMatch() then
-            UI_upv_1.Pop(u27.Instance, 0.92)
+            UI_upv_1.Pop(u23.Instance, 0.92)
         end
     end
     local function queue(a34)
         --[[
           name: queue
-          line: 1531
+          line: 1501
           upvalues:
-            u84 (ref,  index: 1)
-            u75 (ref,  index: 2)
+            u80 (ref,  index: 1)
+            u71 (ref,  index: 2)
             tbl_upv_16 (copy, index: 3)
-            u79 (ref,  index: 4)
-            u78 (ref,  index: 5)
-            u80 (ref,  index: 6)
-            u81 (ref,  index: 7)
+            u75 (ref,  index: 4)
+            u74 (ref,  index: 5)
+            u76 (ref,  index: 6)
+            u77 (ref,  index: 7)
             State_upv_1 (copy, index: 8)
-            u82 (ref,  index: 9)
+            u78 (ref,  index: 9)
             a1 (copy, index: 10)
             applyMode (copy, index: 11)
         ]]
-        if (u84) or u75 ~= "idle" then
+        if (u80) or u71 ~= "idle" then
             return
         end
         if next(tbl_upv_16) == nil then
-            u84 = true
-            u79 = ((a34 ~= "1v1") and "3v3") or "1v1"
+            u80 = true
+            u75 = ((a34 ~= "1v1") and "3v3") or "1v1"
             local v154 = State_upv_1.Now()
             local v155 = os.clock()
-            u78 = true
-            u80 = v154
-            u81 = v155
-            u82 = false
+            u74 = true
+            u76 = v154
+            u77 = v155
+            u78 = false
             a1.Sounds.Play("Queue_Join")
             applyMode(true)
-            local v156 = a1.QueueAction("Queue", nil, nil, u79)
-            u84 = false
+            local v156 = a1.QueueAction("Queue", nil, nil, u75)
+            u80 = false
             if not (v156) then
-                u78 = false
+                u74 = false
                 applyMode(true)
             end
         end
@@ -2354,42 +2323,42 @@ function tbl_1.Init(a1)
     local function cancel()
         --[[
           name: cancel
-          line: 1548
+          line: 1518
           upvalues:
-            u75 (ref,  index: 1)
-            u82 (ref,  index: 2)
-            u83 (ref,  index: 3)
-            u78 (ref,  index: 4)
+            u71 (ref,  index: 1)
+            u78 (ref,  index: 2)
+            u79 (ref,  index: 3)
+            u74 (ref,  index: 4)
             a1 (copy, index: 5)
             applyMode (copy, index: 6)
         ]]
-        if u75 ~= "search" then
+        if u71 ~= "search" then
             return
         end
         local v157 = os.clock()
-        u82 = true
-        u83 = v157
-        u78 = false
+        u78 = true
+        u79 = v157
+        u74 = false
         a1.Sounds.Play("Queue_Leave")
         applyMode(true)
         if (a1.QueueAction("Cancel")) then
             return
         end
-        u82 = false
+        u78 = false
         applyMode(true)
     end
     local function onPlay()
         --[[
           name: onPlay
-          line: 1564
+          line: 1534
           upvalues:
-            u75 (ref,  index: 1)
+            u71 (ref,  index: 1)
             tbl_upv_16 (copy, index: 2)
             State_upv_1 (copy, index: 3)
             a1 (copy, index: 4)
             queue (copy, index: 5)
         ]]
-        if u75 ~= "idle" then
+        if u71 ~= "idle" then
             return
         end
         if next(tbl_upv_16) == nil then
@@ -2401,12 +2370,12 @@ function tbl_1.Init(a1)
             end
         end
     end
-    u27.Activated:Connect(onPlay)
-    u68.Activated:Connect(cancel)
+    u23.Activated:Connect(onPlay)
+    u64.Activated:Connect(cancel)
     local function padY()
         --[[
           name: padY
-          line: 1578
+          line: 1548
           upvalues:
             State_upv_1 (copy, index: 1)
         ]]
@@ -2417,19 +2386,19 @@ function tbl_1.Init(a1)
         "Began",
         function(a35)
             --[[
-              line: 1581
+              line: 1551
               upvalues:
                 Keybinds_upv_1 (copy, index: 1)
                 a1 (copy, index: 2)
                 u1 (copy, index: 3)
                 UserInputService_upv_1 (copy, index: 4)
                 State_upv_1 (copy, index: 5)
-                u75 (ref,  index: 6)
+                u71 (ref,  index: 6)
                 cancel (copy, index: 7)
-                u27 (copy, index: 8)
+                u23 (copy, index: 8)
                 tbl_upv_16 (copy, index: 9)
                 queue (copy, index: 10)
-                u68 (copy, index: 11)
+                u64 (copy, index: 11)
                 Button_upv_1 (copy, index: 12)
             ]]
             local KeyCode_1 = a35.KeyCode
@@ -2448,9 +2417,9 @@ function tbl_1.Init(a1)
                     if v161 then
                         if MenuManager_1.HudFocused() then
                             if KeyCode_1 ~= Enum.KeyCode.ButtonA and KeyCode_1 ~= Enum.KeyCode.ButtonB and string.sub(KeyCode_1.Name, 1, 4) ~= "DPad" then
-                                if u75 == "search" then
+                                if u71 == "search" then
                                     task.spawn(cancel)
-                                elseif u75 == "idle" and u27.Instance.Visible and u75 == "idle" then
+                                elseif u71 == "idle" and u23.Instance.Visible and u71 == "idle" then
                                     if next(tbl_upv_16) ~= nil then
                                         return
                                     end
@@ -2465,9 +2434,9 @@ function tbl_1.Init(a1)
                             end
                             return
                         end
-                        if u75 == "search" then
+                        if u71 == "search" then
                             task.spawn(cancel)
-                        elseif u75 == "idle" and u27.Instance.Visible and u75 == "idle" then
+                        elseif u71 == "idle" and u23.Instance.Visible and u71 == "idle" then
                             if next(tbl_upv_16) ~= nil then
                                 return
                             end
@@ -2490,10 +2459,10 @@ function tbl_1.Init(a1)
                     return
                 end
                 local v164
-                if u68.Instance.Visible then
-                    v164 = u68.Instance
-                elseif u27.Instance.Visible then
-                    v164 = u27.Instance
+                if u64.Instance.Visible then
+                    v164 = u64.Instance
+                elseif u23.Instance.Visible then
+                    v164 = u23.Instance
                 else
                     v164 = Button_upv_1.Instance
                 end
@@ -2511,36 +2480,36 @@ function tbl_1.Init(a1)
     local function refreshPadY()
         --[[
           name: refreshPadY
-          line: 1618
+          line: 1588
           upvalues:
             State_upv_1 (copy, index: 1)
-            u30 (copy, index: 2)
-            u69 (copy, index: 3)
+            u26 (copy, index: 2)
+            u65 (copy, index: 3)
         ]]
         local v166 = State_upv_1.Get("CombatMode") ~= true
-        u30.Visible = v166
-        u69.Visible = v166
+        u26.Visible = v166
+        u65.Visible = v166
     end
     local v167 = State_upv_1.Get("CombatMode") ~= true
-    u30.Visible = v167
-    u69.Visible = v167
+    u26.Visible = v167
+    u65.Visible = v167
     State_upv_1.AttrChanged:Connect(
         function(a36)
             --[[
-              line: 1624
+              line: 1594
               upvalues:
                 State_upv_1 (copy, index: 1)
-                u78 (ref,  index: 2)
-                u82 (ref,  index: 3)
+                u74 (ref,  index: 2)
+                u78 (ref,  index: 3)
                 applyMode (copy, index: 4)
                 tick (copy, index: 5)
             ]]
             if a36 == "Queued" then
                 local v168 = State_upv_1.Get("Queued") == true
                 if v168 then
-                    u78 = false
+                    u74 = false
                 else
-                    u82 = false
+                    u78 = false
                 end
             elseif a36 ~= "QueueFound" and a36 ~= "QueuedAt" and a36 ~= "QueueFilled" and a36 ~= "State" then
                 return
@@ -2552,12 +2521,12 @@ function tbl_1.Init(a1)
     UI_upv_1.LayoutChanged:Connect(
         function()
             --[[
-              line: 1637
+              line: 1607
               upvalues:
                 paintSeats (copy, index: 1)
-                u85 (ref,  index: 2)
+                u81 (ref,  index: 2)
             ]]
-            paintSeats(u85, false)
+            paintSeats(u81, false)
         end
     )
     UI_upv_1.Every(
@@ -2565,26 +2534,26 @@ function tbl_1.Init(a1)
         0.1,
         function()
             --[[
-              line: 1640
+              line: 1610
               upvalues:
-                u78 (ref,  index: 1)
+                u74 (ref,  index: 1)
                 State_upv_1 (copy, index: 2)
-                u84 (ref,  index: 3)
-                u81 (ref,  index: 4)
-                u82 (ref,  index: 5)
-                u83 (ref,  index: 6)
+                u80 (ref,  index: 3)
+                u77 (ref,  index: 4)
+                u78 (ref,  index: 5)
+                u79 (ref,  index: 6)
                 applyMode (copy, index: 7)
                 tick (copy, index: 8)
             ]]
             local v169 = nil
-            if u78 then
+            if u74 then
                 v169 = State_upv_1.Get("Queued") == true
-                if not (v169) and not (u84) and os.clock() - u81 > 3 then
-                    u78 = false
+                if not (v169) and not (u80) and os.clock() - u77 > 3 then
+                    u74 = false
                 end
             end
-            if u82 and os.clock() - u83 > 2 then
-                u82 = false
+            if u78 and os.clock() - u79 > 2 then
+                u78 = false
             end
             applyMode(true)
             tick()
@@ -2592,18 +2561,18 @@ function tbl_1.Init(a1)
     )
     a1.Debug.queue = function(a37, a38)
         --[[
-          line: 1652
+          line: 1622
           upvalues:
             queue (copy, index: 1)
-            u75 (ref,  index: 2)
+            u71 (ref,  index: 2)
             tbl_upv_16 (copy, index: 3)
             State_upv_1 (copy, index: 4)
             a1 (copy, index: 5)
             cancel (copy, index: 6)
-            u85 (ref,  index: 7)
-            u79 (ref,  index: 8)
-            u78 (ref,  index: 9)
-            u82 (ref,  index: 10)
+            u81 (ref,  index: 7)
+            u75 (ref,  index: 8)
+            u74 (ref,  index: 9)
+            u78 (ref,  index: 10)
         ]]
         if a37 ~= "play" then
             if a37 == "cancel" then
@@ -2611,7 +2580,7 @@ function tbl_1.Init(a1)
             end
         elseif a38 == "1v1" or a38 == "3v3" then
             task.spawn(queue, a38)
-        elseif u75 == "idle" and next(tbl_upv_16) == nil then
+        elseif u71 == "idle" and next(tbl_upv_16) == nil then
             local v170 = State_upv_1.Get("Duel") == true
             if v170 then
                 a1.MenuManager.Open("Mode")
@@ -2620,22 +2589,22 @@ function tbl_1.Init(a1)
             end
         end
         local tbl_17 = {cancelling = 0, seatCount = 0, searchMode = 0, localQueued = 0}
-        tbl_17.mode = u75
+        tbl_17.mode = u71
         tbl_17.queued = State_upv_1.Get("Queued")
         tbl_17.queuedAt = State_upv_1.Get("QueuedAt")
         tbl_17.found = State_upv_1.Get("QueueFound")
-        tbl_17.seats = u85
+        tbl_17.seats = u81
         local v171 = State_upv_1.Get("QueueMode")
         local v172 = State_upv_1.Get("Queued") == true
         local v173
         if v172 then
             if v171 ~= "1v1" and v171 ~= "3v3" then
-                v173 = u79
+                v173 = u75
             else
                 v173 = v171
             end
         else
-            v173 = u79
+            v173 = u75
         end
         local v174
         if v173 ~= "1v1" then
@@ -2648,98 +2617,98 @@ function tbl_1.Init(a1)
         local v176 = State_upv_1.Get("Queued") == true
         if v176 then
             if v175 ~= "1v1" and v175 ~= "3v3" then
-                v174 = u79
+                v174 = u75
             else
                 v174 = v175
             end
         else
-            v174 = u79
+            v174 = u75
         end
         tbl_17.searchMode = v174
-        tbl_17.localQueued = u78
-        tbl_17.cancelling = u82
+        tbl_17.localQueued = u74
+        tbl_17.cancelling = u78
         return tbl_17
     end
     local function inTraining()
         --[[
           name: inTraining
-          line: 1669
+          line: 1639
           upvalues:
             State_upv_1 (copy, index: 1)
         ]]
         local v177 = (State_upv_1.Get("CombatMode") == true) and (not State_upv_1.InMatch())
         return v177
     end
-    local u87 = (State_upv_1.Get("CombatMode") == true) and (not State_upv_1.InMatch())
-    local u88 = 0
+    local u83 = (State_upv_1.Get("CombatMode") == true) and (not State_upv_1.InMatch())
+    local u84 = 0
     local function showZoneBanner(a39)
         --[[
           name: showZoneBanner
-          line: 1674
+          line: 1644
           upvalues:
-            u88 (ref,  index: 1)
-            u54 (copy, index: 2)
+            u84 (ref,  index: 1)
+            u50 (copy, index: 2)
             Colors_upv_1 (copy, index: 3)
-            u55 (copy, index: 4)
-            u53 (copy, index: 5)
+            u51 (copy, index: 4)
+            u49 (copy, index: 5)
             UI_upv_1 (copy, index: 6)
-            u52 (copy, index: 7)
+            u48 (copy, index: 7)
             a1 (copy, index: 8)
         ]]
-        u88 = u88 + 1
-        local u89 = u88
-        u54.Text = (a39 and "TRAINING") or "LEFT TRAINING"
+        u84 = u84 + 1
+        local u85 = u84
+        u50.Text = (a39 and "TRAINING") or "LEFT TRAINING"
         local v178
         if a39 then
             v178 = Colors_upv_1.Accent
         else
             v178 = Colors_upv_1.Text
         end
-        u54.TextColor3 = v178
-        u55.Text = (a39 and "COMBAT MODE  \194\183  WEAPONS OUT") or "WEAPONS STOWED"
+        u50.TextColor3 = v178
+        u51.Text = (a39 and "COMBAT MODE  \194\183  WEAPONS OUT") or "WEAPONS STOWED"
         local v179
         if a39 then
             v179 = Colors_upv_1.Accent
         else
             v179 = Colors_upv_1.TextDim
         end
-        u53.ImageColor3 = v179
-        UI_upv_1.Unfade(u52)
-        u52.Visible = true
-        UI_upv_1.Enter(u52, Vector2.new(0, -16))
-        UI_upv_1.Pop(u53, 0.5)
+        u49.ImageColor3 = v179
+        UI_upv_1.Unfade(u48)
+        u48.Visible = true
+        UI_upv_1.Enter(u48, Vector2.new(0, -16))
+        UI_upv_1.Pop(u49, 0.5)
         a1.Sounds.Play((a39 and "Select") or "Close")
         task.delay(
             (a39 and 2.6) or 1.8,
             function()
                 --[[
-                  line: 1686
+                  line: 1656
                   upvalues:
-                    u89 (copy, index: 1)
-                    u88 (ref,  index: 2)
+                    u85 (copy, index: 1)
+                    u84 (ref,  index: 2)
                     UI_upv_1 (copy, index: 3)
-                    u52 (copy, index: 4)
+                    u48 (copy, index: 4)
                 ]]
-                if u89 ~= u88 then
+                if u85 ~= u84 then
                     return
                 end
-                UI_upv_1.FadeOut(u52)
+                UI_upv_1.FadeOut(u48)
                 task.delay(
                     0.3,
                     function()
                         --[[
-                          line: 1691
+                          line: 1661
                           upvalues:
-                            u89 (copy, index: 1)
-                            u88 (ref,  index: 2)
-                            u52 (copy, index: 3)
+                            u85 (copy, index: 1)
+                            u84 (ref,  index: 2)
+                            u48 (copy, index: 3)
                             UI_upv_1 (copy, index: 4)
                         ]]
-                        if u89 ~= u88 then
+                        if u85 ~= u84 then
                             return
                         end
-                        u52.Visible = false
-                        UI_upv_1.Unfade(u52)
+                        u48.Visible = false
+                        UI_upv_1.Unfade(u48)
                     end
                 )
             end
@@ -2747,7 +2716,7 @@ function tbl_1.Init(a1)
     end
     a1.Debug.trainingBanner = function(a40)
         --[[
-          line: 1699
+          line: 1669
           upvalues:
             showZoneBanner (copy, index: 1)
         ]]
@@ -2757,25 +2726,25 @@ function tbl_1.Init(a1)
     State_upv_1.AttrChanged:Connect(
         function(a41)
             --[[
-              line: 1703
+              line: 1673
               upvalues:
                 State_upv_1 (copy, index: 1)
-                u30 (copy, index: 2)
-                u69 (copy, index: 3)
-                u87 (ref,  index: 4)
+                u26 (copy, index: 2)
+                u65 (copy, index: 3)
+                u83 (ref,  index: 4)
                 showZoneBanner (copy, index: 5)
             ]]
             if a41 ~= "CombatMode" and a41 ~= "State" then
                 return
             end
             local v180 = State_upv_1.Get("CombatMode") ~= true
-            u30.Visible = v180
-            u69.Visible = v180
+            u26.Visible = v180
+            u65.Visible = v180
             local v181 = (State_upv_1.Get("CombatMode") == true) and (not State_upv_1.InMatch())
-            if v181 == u87 then
+            if v181 == u83 then
                 return
             end
-            u87 = v181
+            u83 = v181
             if not State_upv_1.InMatch() then
                 showZoneBanner(v181)
             end
@@ -2789,7 +2758,7 @@ function tbl_1.Init(a1)
     local function refreshVisible()
         --[[
           name: refreshVisible
-          line: 1718
+          line: 1688
           upvalues:
             u1 (copy, index: 1)
             State_upv_1 (copy, index: 2)
@@ -2809,31 +2778,31 @@ function tbl_1.Init(a1)
     local function SetPlayHidden(a42, a43)
         --[[
           name: SetPlayHidden
-          line: 1739
+          line: 1709
           upvalues:
             tbl_upv_16 (copy, index: 1)
-            u27 (copy, index: 2)
-            u75 (ref,  index: 3)
+            u23 (copy, index: 2)
+            u71 (ref,  index: 3)
         ]]
         tbl_upv_16[a42] = (a43 and true) or nil
-        local Instance_4 = u27.Instance
-        Instance_4.Visible = u75 == "idle" and next(tbl_upv_16) == nil
+        local Instance_4 = u23.Instance
+        Instance_4.Visible = u71 == "idle" and next(tbl_upv_16) == nil
     end
     local function CanPlay()
         --[[
           name: CanPlay
-          line: 1749
+          line: 1719
           upvalues:
-            u75 (ref,  index: 1)
+            u71 (ref,  index: 1)
             tbl_upv_16 (copy, index: 2)
         ]]
-        local v185 = (u75 == "idle") and (next(tbl_upv_16) == nil)
+        local v185 = (u71 == "idle") and (next(tbl_upv_16) == nil)
         return v185
     end
     local function Queue(a44)
         --[[
           name: Queue
-          line: 1745
+          line: 1715
           upvalues:
             queue (copy, index: 1)
         ]]
@@ -2842,13 +2811,13 @@ function tbl_1.Init(a1)
     local function duelOn()
         --[[
           name: duelOn
-          line: 415
+          line: 396
           upvalues:
             State_upv_1 (copy, index: 1)
         ]]
         local v186 = State_upv_1.Get("Duel") == true
         return v186
     end
-    a1.LobbyHud = {Root = u1, PlayButton = u27, Chip = u2, StreakSlot = u4, SetPlayHidden = SetPlayHidden, Queue = Queue, DuelOn = duelOn, CanPlay = CanPlay}
+    a1.LobbyHud = {Root = u1, PlayButton = u23, Chip = u2, StreakSlot = u4, SetPlayHidden = SetPlayHidden, Queue = Queue, DuelOn = duelOn, CanPlay = CanPlay}
 end
 return tbl_1
