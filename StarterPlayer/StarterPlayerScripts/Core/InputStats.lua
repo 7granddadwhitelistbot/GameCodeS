@@ -10,7 +10,7 @@ local tbl_upv_4 = {}
 local function note(a1)
     --[[
       name: note
-      line: 58
+      line: 60
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -19,7 +19,7 @@ end
 local function watch(a1)
     --[[
       name: watch
-      line: 62
+      line: 64
       upvalues:
         tbl_upv_2 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -27,7 +27,7 @@ local function watch(a1)
     local function look_1(a2)
         --[[
           name: look
-          line: 63
+          line: 65
           upvalues:
             tbl_upv_2 (copy, index: 1)
             a1 (copy, index: 2)
@@ -59,7 +59,7 @@ end
 function tbl_1.Note(a1)
     --[[
       name: Note
-      line: 77
+      line: 79
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -68,7 +68,7 @@ end
 function tbl_1.Watch(a1, a2)
     --[[
       name: Watch
-      line: 82
+      line: 84
       upvalues:
         tbl_upv_3 (copy, index: 1)
     ]]
@@ -81,7 +81,7 @@ end
 local function ours(a1)
     --[[
       name: ours
-      line: 91
+      line: 93
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
@@ -103,7 +103,7 @@ end
 function tbl_1.Caller(a1)
     --[[
       name: Caller
-      line: 105
+      line: 107
       upvalues:
         u1 (ref,  index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -141,7 +141,7 @@ end
 function tbl_1.Take()
     --[[
       name: Take
-      line: 122
+      line: 124
       upvalues:
         tbl_upv_3 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -158,7 +158,7 @@ end
 function tbl_1.Start()
     --[[
       name: Start
-      line: 133
+      line: 135
       upvalues:
         u2 (ref,  index: 1)
         Players_upv_1 (copy, index: 2)
@@ -179,7 +179,7 @@ function tbl_1.Start()
     require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Simulation")).OnForeignWrite(
         function()
             --[[
-              line: 146
+              line: 148
               upvalues:
                 u1 (ref, index: 1)
             ]]
@@ -192,7 +192,7 @@ function tbl_1.Start()
     task.spawn(
         function()
             --[[
-              line: 153
+              line: 155
               upvalues:
                 LocalPlayer_upv_1 (copy, index: 1)
                 u1 (ref,  index: 2)
