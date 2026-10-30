@@ -1,16 +1,17 @@
 local GuiService_upv_1 = game:GetService("GuiService")
 local Players_upv_1 = game:GetService("Players")
 local UserInputService_upv_1 = game:GetService("UserInputService")
-local tbl_1 = {}
+local tbl_upv_1 = {}
 local tbl_upv_2 = {BodyVelocity = 1, BodyThrust = 16, RocketPropulsion = 64, BodyForce = 8, BodyAngularVelocity = 32, BodyPosition = 4, BodyGyro = 2}
 local u1 = 0
 local u2 = false
 local tbl_upv_3 = {}
 local tbl_upv_4 = {}
+local tbl_upv_5 = {}
 local function note(a1)
     --[[
       name: note
-      line: 62
+      line: 65
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -19,7 +20,7 @@ end
 local function watch(a1)
     --[[
       name: watch
-      line: 66
+      line: 69
       upvalues:
         tbl_upv_2 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -27,7 +28,7 @@ local function watch(a1)
     local function look_1(a2)
         --[[
           name: look
-          line: 67
+          line: 70
           upvalues:
             tbl_upv_2 (copy, index: 1)
             a1 (copy, index: 2)
@@ -56,19 +57,19 @@ local function watch(a1)
     end
     a1.DescendantAdded:Connect(look_1)
 end
-function tbl_1.Note(a1)
+function tbl_upv_1.Note(a1)
     --[[
       name: Note
-      line: 81
+      line: 84
       upvalues:
         u1 (ref, index: 1)
     ]]
     u1 = bit32.bor(u1, a1)
 end
-function tbl_1.Watch(a1, a2)
+function tbl_upv_1.Watch(a1, a2)
     --[[
       name: Watch
-      line: 86
+      line: 89
       upvalues:
         tbl_upv_3 (copy, index: 1)
     ]]
@@ -78,14 +79,24 @@ function tbl_1.Watch(a1, a2)
         end
     end
 end
-local function ours(a1)
+tbl_upv_1.PROBE = newproxy(false)
+function tbl_upv_1.Hooked(a1)
     --[[
-      name: ours
-      line: 95
+      name: Hooked
+      line: 99
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
-    local v4 = tbl_upv_4[a1]
+    table.insert(tbl_upv_4, a1)
+end
+local function ours(a1)
+    --[[
+      name: ours
+      line: 104
+      upvalues:
+        tbl_upv_5 (copy, index: 1)
+    ]]
+    local v4 = tbl_upv_5[a1]
     local v5 = nil
     if v4 == nil then
         v5 = string.match(a1, "^([%w_]+)%.")
@@ -96,17 +107,17 @@ local function ours(a1)
             v6, v7 = success_1, v8
         end
         v4 = v6 and (v7 ~= nil)
-        tbl_upv_4[a1] = v4
+        tbl_upv_5[a1] = v4
     end
     return v4
 end
-function tbl_1.Caller(a1)
+function tbl_upv_1.Caller(a1)
     --[[
       name: Caller
-      line: 109
+      line: 118
       upvalues:
         u1 (ref,  index: 1)
-        tbl_upv_4 (copy, index: 2)
+        tbl_upv_5 (copy, index: 2)
     ]]
     if not bit32.btest(u1, a1) then
         local v9, v10 = nil, nil
@@ -118,7 +129,7 @@ function tbl_1.Caller(a1)
             if v11 == "[C]" then
                 continue
             end
-            local v12 = tbl_upv_4[v11]
+            local v12 = tbl_upv_5[v11]
             if v12 == nil then
                 local v13 = string.match(v11, "^([%w_]+)%.")
                 v9 = false
@@ -128,7 +139,7 @@ function tbl_1.Caller(a1)
                     v9, v10 = success_2, v14
                 end
                 v12 = v9 and (v10 ~= nil)
-                tbl_upv_4[v11] = v12
+                tbl_upv_5[v11] = v12
             end
             if v12 then
                 continue
@@ -138,27 +149,35 @@ function tbl_1.Caller(a1)
         end
     end
 end
-function tbl_1.Take()
+function tbl_upv_1.Take()
     --[[
       name: Take
-      line: 126
+      line: 135
       upvalues:
         tbl_upv_3 (copy, index: 1)
         u1 (ref,  index: 2)
+        tbl_upv_4 (copy, index: 3)
+        tbl_upv_1 (copy, index: 4)
     ]]
     for _, value_3 in tbl_upv_3 do
         if rawget(value_3.t, value_3.k) ~= value_3.f then
             u1 = bit32.bor(u1, value_3.bit)
         end
     end
-    local v15 = u1
+    for _, value_4 in tbl_upv_4 do
+        local success_3, v15 = pcall(value_4, tbl_upv_1.PROBE, 1)
+        if not (success_3) or v15 ~= tbl_upv_1.PROBE then
+            u1 = bit32.bor(u1, 256)
+        end
+    end
+    local v16 = u1
     u1 = 0
-    return v15
+    return v16
 end
-function tbl_1.Start()
+function tbl_upv_1.Start()
     --[[
       name: Start
-      line: 137
+      line: 152
       upvalues:
         u2 (ref,  index: 1)
         Players_upv_1 (copy, index: 2)
@@ -179,7 +198,7 @@ function tbl_1.Start()
     require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Simulation")).OnForeignWrite(
         function()
             --[[
-              line: 150
+              line: 165
               upvalues:
                 u1 (ref, index: 1)
             ]]
@@ -192,32 +211,32 @@ function tbl_1.Start()
     task.spawn(
         function()
             --[[
-              line: 157
+              line: 172
               upvalues:
                 LocalPlayer_upv_1 (copy, index: 1)
                 u1 (ref,  index: 2)
             ]]
-            local tbl_5 = {LocalPlayer_upv_1:GetMouse()}
-            local v16 = setmetatable(tbl_5, {__mode = "v"})
-            tbl_5 = 0
-            local v17 = math.huge
+            local tbl_6 = {LocalPlayer_upv_1:GetMouse()}
+            local v17 = setmetatable(tbl_6, {__mode = "v"})
+            tbl_6 = 0
+            local v18 = math.huge
             repeat
-                local v18 = setmetatable({newproxy(true)}, {__mode = "v"})
+                local v19 = setmetatable({newproxy(true)}, {__mode = "v"})
                 repeat
                     task.wait()
-                until v18[1] == nil
-                if v16[1] ~= nil then
-                    tbl_5 = tbl_5 + 1
-                    v17 = math.min(v17, os.clock())
+                until v19[1] == nil
+                if v17[1] ~= nil then
+                    tbl_6 = tbl_6 + 1
+                    v18 = math.min(v18, os.clock())
                 end
-                if v16[1] == nil then
+                if v17[1] == nil then
                     break
                 end
-                if not (tbl_5 >= 3) then
+                if not (tbl_6 >= 3) then
                     continue
                 end
-            until os.clock() - v17 >= 20
-            if v16[1] == nil then
+            until os.clock() - v18 >= 20
+            if v17[1] == nil then
                 return
             end
             u1 = bit32.bor(u1, 4096)
@@ -225,4 +244,4 @@ function tbl_1.Start()
         end
     )
 end
-return tbl_1
+return tbl_upv_1
