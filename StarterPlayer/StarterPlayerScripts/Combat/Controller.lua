@@ -95,23 +95,25 @@ local tbl_12 = {shotId = 0}
 tbl_12.speed = {[tbl_upv_9] = true}
 local tbl_13 = {shotId = 0}
 tbl_13.speed = {[tbl_upv_9] = true}
-local tbl_upv_14 = {tbl_11, tbl_13, tbl_12, tbl_10}
-local tbl_upv_15 = {shotId = 0}
+local tbl_14 = {shotId = 0}
+tbl_14.speed = {[tbl_upv_9] = true}
+local tbl_upv_15 = {tbl_13, tbl_10, tbl_14, tbl_11, tbl_12}
+local tbl_upv_16 = {shotId = 0}
 local function copyDecoy()
     --[[
       name: copyDecoy
-      line: 176
+      line: 177
       upvalues:
         tbl_upv_8 (copy, index: 1)
-        tbl_upv_15 (copy, index: 2)
+        tbl_upv_16 (copy, index: 2)
         tbl_upv_4 (copy, index: 3)
-        tbl_upv_14 (copy, index: 4)
+        tbl_upv_15 (copy, index: 4)
         tbl_upv_9 (copy, index: 5)
         u8 (ref,  index: 6)
     ]]
     local v3 = true
-    if tbl_upv_8.lastSwing == tbl_upv_15.lastSwing then
-        v3 = tbl_upv_8.holding ~= tbl_upv_15.holding
+    if tbl_upv_8.lastSwing == tbl_upv_16.lastSwing then
+        v3 = tbl_upv_8.holding ~= tbl_upv_16.holding
     end
     local handler_1 = tbl_upv_4.handler
     local v4
@@ -129,8 +131,8 @@ local function copyDecoy()
     end
     tbl_upv_8.holding = v5
     local v6 = nil
-    for _, value_1 in tbl_upv_14 do
-        if value_1.handler ~= tbl_upv_15.handler or value_1.shotId ~= tbl_upv_15.shotId or value_1.speed[tbl_upv_9] ~= true then
+    for _, value_1 in tbl_upv_15 do
+        if value_1.handler ~= tbl_upv_16.handler or value_1.shotId ~= tbl_upv_16.shotId or value_1.speed[tbl_upv_9] ~= true then
             v3 = true
             value_1.speed[tbl_upv_9] = true
         end
@@ -151,15 +153,15 @@ local function copyDecoy()
     else
         v7 = nil
     end
-    tbl_upv_15.handler = v7
-    tbl_upv_15.shotId = tbl_upv_4.shotId
-    tbl_upv_15.lastSwing = tbl_upv_8.lastSwing
-    tbl_upv_15.holding = tbl_upv_8.holding
+    tbl_upv_16.handler = v7
+    tbl_upv_16.shotId = tbl_upv_4.shotId
+    tbl_upv_16.lastSwing = tbl_upv_8.lastSwing
+    tbl_upv_16.holding = tbl_upv_8.holding
 end
 local function send(a1, a2)
     --[[
       name: send
-      line: 198
+      line: 199
       upvalues:
         u8 (ref,  index: 1)
         u6 (copy, index: 2)
@@ -179,54 +181,54 @@ local function send(a1, a2)
     end
     u1:FireServer(a1, a2)
 end
-local tbl_upv_16 = {Charge = "Charge", Use = "Use", Throw = "Charge", Draw = "Charge", Block = "Block", Reload = "Reload", Aim = "Aim"}
+local tbl_upv_17 = {Charge = "Charge", Use = "Use", Throw = "Charge", Draw = "Charge", Block = "Block", Reload = "Reload", Aim = "Aim"}
 local function applySpeed()
     --[[
       name: applySpeed
-      line: 229
+      line: 230
       upvalues:
         tbl_upv_4 (copy, index: 1)
-        tbl_upv_16 (copy, index: 2)
+        tbl_upv_17 (copy, index: 2)
         Simulation_upv_1 (copy, index: 3)
     ]]
-    local tbl_17 = {Charge = false, Use = false, Block = false, Reload = false, Aim = false}
+    local tbl_18 = {Charge = false, Use = false, Block = false, Reload = false, Aim = false}
     for key_1 in tbl_upv_4.speed do
-        local v8 = tbl_upv_16[key_1]
+        local v8 = tbl_upv_17[key_1]
         if v8 then
-            tbl_17[v8] = true
+            tbl_18[v8] = true
         end
     end
-    for key_2, value_2 in tbl_17 do
+    for key_2, value_2 in tbl_18 do
         Simulation_upv_1.SetInput(key_2, value_2)
     end
 end
-local tbl_upv_18 = {}
+local tbl_upv_19 = {}
 function tbl_upv_3.OnViewEvent(a1)
     --[[
       name: OnViewEvent
-      line: 264
+      line: 265
       upvalues:
-        tbl_upv_18 (copy, index: 1)
+        tbl_upv_19 (copy, index: 1)
     ]]
-    table.insert(tbl_upv_18, a1)
+    table.insert(tbl_upv_19, a1)
     return function()
         --[[
-          line: 266
+          line: 267
           upvalues:
-            tbl_upv_18 (copy, index: 1)
+            tbl_upv_19 (copy, index: 1)
             a1 (copy, index: 2)
         ]]
-        local v9 = table.find(tbl_upv_18, a1)
+        local v9 = table.find(tbl_upv_19, a1)
         if not v9 then
             return
         end
-        table.remove(tbl_upv_18, v9)
+        table.remove(tbl_upv_19, v9)
     end
 end
 local function presetFor(a1, a2)
     --[[
       name: presetFor
-      line: 274
+      line: 275
       upvalues:
         Presentation_upv_1 (copy, index: 1)
     ]]
@@ -235,7 +237,7 @@ end
 local function modelOf(a1)
     --[[
       name: modelOf
-      line: 278
+      line: 279
     ]]
     if typeof(a1) == "Instance" then
         if a1:IsA("Player") then
@@ -250,7 +252,7 @@ end
 local function rootOf(a1)
     --[[
       name: rootOf
-      line: 291
+      line: 292
     ]]
     local v10
     if typeof(a1) == "Instance" then
@@ -273,7 +275,7 @@ end
 local function toolOf(a1)
     --[[
       name: toolOf
-      line: 297
+      line: 298
     ]]
     local v12 = (a1 and (a1:FindFirstChildOfClass("Tool"))) or nil
     return v12
@@ -281,7 +283,7 @@ end
 local function isFar(a1)
     --[[
       name: isFar
-      line: 301
+      line: 302
       upvalues:
         Effects_upv_1 (copy, index: 1)
     ]]
@@ -291,7 +293,7 @@ end
 local function dropHandler()
     --[[
       name: dropHandler
-      line: 322
+      line: 323
       upvalues:
         tbl_upv_4 (copy, index: 1)
         applySpeed (copy, index: 2)
@@ -302,7 +304,7 @@ local function dropHandler()
         pcall(
             function()
                 --[[
-                  line: 326
+                  line: 327
                   upvalues:
                     handler_upv_2 (copy, index: 1)
                 ]]
@@ -317,7 +319,7 @@ end
 local function nextId()
     --[[
       name: nextId
-      line: 218
+      line: 219
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
@@ -327,11 +329,11 @@ end
 local function emitView(a1, a2)
     --[[
       name: emitView
-      line: 254
+      line: 255
       upvalues:
-        tbl_upv_18 (copy, index: 1)
+        tbl_upv_19 (copy, index: 1)
     ]]
-    for _, value_3 in tbl_upv_18 do
+    for _, value_3 in tbl_upv_19 do
         local success_1, v14 = pcall(value_3, a1, a2)
         if not (success_1) then
             warn("[Combat] view event listener error:", v14)
@@ -341,7 +343,7 @@ end
 local function setSpeed(a1, a2)
     --[[
       name: setSpeed
-      line: 242
+      line: 243
       upvalues:
         Util_upv_1 (copy, index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -367,7 +369,7 @@ end
 local function refreshEquipped()
     --[[
       name: refreshEquipped
-      line: 335
+      line: 336
       upvalues:
         tbl_upv_4 (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
@@ -438,7 +440,7 @@ local function refreshEquipped()
                         local success_2, v25 = pcall(
                             function()
                                 --[[
-                                  line: 397
+                                  line: 398
                                   upvalues:
                                     u9 (copy, index: 1)
                                 ]]
@@ -483,7 +485,7 @@ local function refreshEquipped()
                 local success_2, v25 = pcall(
                     function()
                         --[[
-                          line: 397
+                          line: 398
                           upvalues:
                             u9 (copy, index: 1)
                         ]]
@@ -515,7 +517,7 @@ end
 local function isWeaponTool(a1)
     --[[
       name: isWeaponTool
-      line: 412
+      line: 413
     ]]
     local v27 = (a1 ~= nil) and (a1:IsA("Tool") and (type(a1:GetAttribute("WeaponId")) == "string"))
     return v27
@@ -523,7 +525,7 @@ end
 local function acked()
     --[[
       name: acked
-      line: 435
+      line: 436
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
     ]]
@@ -536,7 +538,7 @@ end
 local function equipPending()
     --[[
       name: equipPending
-      line: 441
+      line: 442
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         u3 (ref,  index: 2)
@@ -558,7 +560,7 @@ end
 local function backpack()
     --[[
       name: backpack
-      line: 419
+      line: 420
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
     ]]
@@ -582,7 +584,7 @@ end
 local function enforceWant()
     --[[
       name: enforceWant
-      line: 459
+      line: 460
       upvalues:
         tbl_upv_4 (copy, index: 1)
         u2 (ref,  index: 2)
@@ -617,7 +619,7 @@ end
 local function sendEquip()
     --[[
       name: sendEquip
-      line: 481
+      line: 482
       upvalues:
         u2 (ref,  index: 1)
         u1 (ref,  index: 2)
@@ -635,7 +637,7 @@ end
 local function requestEquip(a1)
     --[[
       name: requestEquip
-      line: 490
+      line: 491
       upvalues:
         u2 (ref,  index: 1)
         u3 (ref,  index: 2)
@@ -663,13 +665,13 @@ end
 local function toolInSlot(a1)
     --[[
       name: toolInSlot
-      line: 445
+      line: 446
       upvalues:
         tbl_upv_4 (copy, index: 1)
         backpack (copy, index: 2)
     ]]
-    local tbl_19 = {tbl_upv_4.char, backpack()}
-    for _, value_7 in tbl_19 do
+    local tbl_20 = {tbl_upv_4.char, backpack()}
+    for _, value_7 in tbl_20 do
         if not (value_7) then
             continue
         end
@@ -686,7 +688,7 @@ end
 local function reconcileEquip()
     --[[
       name: reconcileEquip
-      line: 501
+      line: 502
       upvalues:
         tbl_upv_4 (copy, index: 1)
         backpack (copy, index: 2)
@@ -765,7 +767,7 @@ local u10 = false
 local function queueReconcile()
     --[[
       name: queueReconcile
-      line: 535
+      line: 536
       upvalues:
         u10 (ref, index: 1)
     ]]
@@ -778,7 +780,7 @@ end
 local function onToolAdded(a1)
     --[[
       name: onToolAdded
-      line: 551
+      line: 552
       upvalues:
         u2 (ref,  index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -804,7 +806,7 @@ end
 function tbl_upv_3.Equip(a1)
     --[[
       name: Equip
-      line: 561
+      line: 562
       upvalues:
         tbl_upv_4 (copy, index: 1)
         backpack (copy, index: 2)
@@ -851,7 +853,7 @@ end
 function tbl_upv_3.Wanted()
     --[[
       name: Wanted
-      line: 579
+      line: 580
       upvalues:
         u2 (ref, index: 1)
     ]]
@@ -860,7 +862,7 @@ end
 local function onCharacter(a1)
     --[[
       name: onCharacter
-      line: 583
+      line: 584
       upvalues:
         tbl_upv_4 (copy, index: 1)
         dropHandler (copy, index: 2)
@@ -903,7 +905,7 @@ local function onCharacter(a1)
             a1.ChildAdded:Connect(
                 function(a2)
                     --[[
-                      line: 609
+                      line: 610
                       upvalues:
                         Combat_upv_1 (copy, index: 1)
                         a1 (copy, index: 2)
@@ -940,7 +942,7 @@ local function onCharacter(a1)
             a1.ChildRemoved:Connect(
                 function(a3)
                     --[[
-                      line: 618
+                      line: 619
                       upvalues:
                         u2 (ref,  index: 1)
                         u10 (ref,  index: 2)
@@ -962,7 +964,7 @@ local function onCharacter(a1)
             v52.Died:Connect(
                 function()
                     --[[
-                      line: 626
+                      line: 627
                       upvalues:
                         dropHandler (copy, index: 1)
                         Hud_upv_1 (copy, index: 2)
@@ -998,7 +1000,7 @@ local u11 = nil
 local function autoDraw()
     --[[
       name: autoDraw
-      line: 673
+      line: 674
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         u11 (ref,  index: 2)
@@ -1010,19 +1012,19 @@ local function autoDraw()
     u11 = v59
     task.spawn(function() end)
 end
-local tbl_upv_20 = {Reload = "Reload", Aim = "Secondary", Attack = "Primary"}
-local tbl_upv_21 = {last = "", n = 0}
+local tbl_upv_21 = {Reload = "Reload", Aim = "Secondary", Attack = "Primary"}
+local tbl_upv_22 = {last = "", n = 0}
 local function mapInput(a1)
     --[[
       name: mapInput
-      line: 721
+      line: 722
       upvalues:
         Keybinds_upv_1 (copy, index: 1)
-        tbl_upv_20 (copy, index: 2)
+        tbl_upv_21 (copy, index: 2)
     ]]
     local v60 = nil
     for _, value_10 in Keybinds_upv_1.PadActionsOf(a1) do
-        v60 = tbl_upv_20[value_10]
+        v60 = tbl_upv_21[value_10]
         if not (v60) then
             continue
         end
@@ -1034,28 +1036,28 @@ local function mapInput(a1)
     end
     local v61 = Keybinds_upv_1.ActionOf(a1)
     if v61 then
-        return tbl_upv_20[v61]
+        return tbl_upv_21[v61]
     end
     return nil
 end
 local function handlerInput(a1, a2)
     --[[
       name: handlerInput
-      line: 742
+      line: 743
       upvalues:
         tbl_upv_4 (copy, index: 1)
-        tbl_upv_21 (copy, index: 2)
+        tbl_upv_22 (copy, index: 2)
     ]]
     local handler_upv_3 = tbl_upv_4.handler
     if not handler_upv_3 then
         return
     end
-    tbl_upv_21.n = tbl_upv_21.n + 1
-    tbl_upv_21.last = a1 .. ((a2 and "+") or "-")
+    tbl_upv_22.n = tbl_upv_22.n + 1
+    tbl_upv_22.last = a1 .. ((a2 and "+") or "-")
     local success_3, v62 = pcall(
         function()
             --[[
-              line: 749
+              line: 750
               upvalues:
                 handler_upv_3 (copy, index: 1)
                 a1 (copy, index: 2)
@@ -1072,7 +1074,7 @@ end
 local function onInputEnded(a1, a2)
     --[[
       name: onInputEnded
-      line: 772
+      line: 773
       upvalues:
         mapInput (copy, index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -1088,7 +1090,7 @@ end
 local function dispatch(a1, a2)
     --[[
       name: dispatch
-      line: 782
+      line: 783
       upvalues:
         u8 (ref,  index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -1117,7 +1119,7 @@ local u12 = false
 local function interrupt()
     --[[
       name: interrupt
-      line: 805
+      line: 806
       upvalues:
         u12 (ref,  index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -1137,7 +1139,7 @@ local u13 = 0
 local function nameOf(a1)
     --[[
       name: nameOf
-      line: 305
+      line: 306
       upvalues:
         Players_upv_1 (copy, index: 1)
     ]]
@@ -1160,7 +1162,7 @@ end
 local function onHitConfirm(a1)
     --[[
       name: onHitConfirm
-      line: 821
+      line: 822
       upvalues:
         Util_upv_1 (copy, index: 1)
         Hud_upv_1 (copy, index: 2)
@@ -1273,7 +1275,7 @@ end
 local function onDamageTaken(a1)
     --[[
       name: onDamageTaken
-      line: 892
+      line: 893
       upvalues:
         Hud_upv_1 (copy, index: 1)
         RankFx_upv_1 (copy, index: 2)
@@ -1296,10 +1298,10 @@ local function onDamageTaken(a1)
                 end
                 local v83 = tonumber(a1.armor) or 0
                 if not (u12) then
-                    local tbl_22 = {blocked = 0}
-                    tbl_22.amount = v82
-                    tbl_22.blocked = a1.blocked == true
-                    emitView("Hurt", tbl_22)
+                    local tbl_23 = {blocked = 0}
+                    tbl_23.amount = v82
+                    tbl_23.blocked = a1.blocked == true
+                    emitView("Hurt", tbl_23)
                 end
                 if a1.interrupted then
                     local v84 = nil
@@ -1384,25 +1386,25 @@ local function onDamageTaken(a1)
         Hud_upv_1.Hurt(0.2, Color3.fromRGB(255, 120, 40))
     end
 end
-local tbl_upv_23 = {}
 local tbl_upv_24 = {}
+local tbl_upv_25 = {}
 task.spawn(
     function()
         --[[
-          line: 969
+          line: 970
           upvalues:
-            tbl_upv_23 (copy, index: 1)
-            tbl_upv_24 (copy, index: 2)
+            tbl_upv_24 (copy, index: 1)
+            tbl_upv_25 (copy, index: 2)
         ]]
         task.wait(10)
-        for key_3 in tbl_upv_23 do
+        for key_3 in tbl_upv_24 do
             if not (key_3.Parent) then
-                tbl_upv_23[key_3] = nil
+                tbl_upv_24[key_3] = nil
             end
         end
-        for key_4 in tbl_upv_24 do
+        for key_4 in tbl_upv_25 do
             if not (key_4.Parent) then
-                tbl_upv_24[key_4] = nil
+                tbl_upv_25[key_4] = nil
             end
         end
     end
@@ -1410,7 +1412,7 @@ task.spawn(
 local function onCombatFX(a1, a2)
     --[[
       name: onCombatFX
-      line: 985
+      line: 986
       upvalues:
         tbl_upv_4 (copy, index: 1)
         Effects_upv_1 (copy, index: 2)
@@ -1419,13 +1421,13 @@ local function onCombatFX(a1, a2)
         Util_upv_1 (copy, index: 5)
         Quality_upv_1 (copy, index: 6)
         Poses_upv_1 (copy, index: 7)
-        tbl_upv_23 (copy, index: 8)
+        tbl_upv_24 (copy, index: 8)
         Hud_upv_1 (copy, index: 9)
         RankFx_upv_1 (copy, index: 10)
         u12 (ref,  index: 11)
         emitView (copy, index: 12)
         Guard_upv_1 (copy, index: 13)
-        tbl_upv_24 (copy, index: 14)
+        tbl_upv_25 (copy, index: 14)
         tbl_upv_5 (copy, index: 15)
         u2 (ref,  index: 16)
         LocalPlayer_upv_1 (copy, index: 17)
@@ -1491,10 +1493,10 @@ local function onCombatFX(a1, a2)
                 end
                 v93 = os.clock()
                 local v99 = v91 or workspace
-                if not (v93 - (tbl_upv_23[v99] or 0) > 0.08) then
+                if not (v93 - (tbl_upv_24[v99] or 0) > 0.08) then
                     return
                 end
-                tbl_upv_23[v99] = v93
+                tbl_upv_24[v99] = v93
                 if not v96 and not v94.flash then
                     return
                 end
@@ -1590,15 +1592,15 @@ local function onCombatFX(a1, a2)
                                                             Hud_upv_1.Flash(Color3.fromRGB(150, 196, 236), 0.5, 0.25)
                                                             Hud_upv_1.Toast(((a2.ranged) and "DEFLECTED") or "PARRIED", Color3.fromRGB(170, 214, 245), 0.9)
                                                             Util_upv_1.Shake(0.25, 0.12)
-                                                            local tbl_25 = {ranged = 0}
-                                                            tbl_25.ranged = a2.ranged == true
-                                                            emitView("Parried", tbl_25)
+                                                            local tbl_26 = {ranged = 0}
+                                                            tbl_26.ranged = a2.ranged == true
+                                                            emitView("Parried", tbl_26)
                                                             handler_upv_5 = tbl_upv_4.handler
                                                             if handler_upv_5 and type(handler_upv_5.ParryUsed) == "function" then
                                                                 pcall(
                                                                     function()
                                                                         --[[
-                                                                          line: 1171
+                                                                          line: 1172
                                                                           upvalues:
                                                                             handler_upv_5 (copy, index: 1)
                                                                         ]]
@@ -1869,10 +1871,10 @@ local function onCombatFX(a1, a2)
                                                                                 return
                                                                             end
                                                                             local v136 = os.clock()
-                                                                            if not (v136 - (tbl_upv_24[v91] or -math.huge) >= 0.5) then
+                                                                            if not (v136 - (tbl_upv_25[v91] or -math.huge) >= 0.5) then
                                                                                 return
                                                                             end
-                                                                            tbl_upv_24[v91] = v136
+                                                                            tbl_upv_25[v91] = v136
                                                                             local Sound_3 = Util_upv_1.Sound
                                                                             local v137 = "Block_Up"
                                                                             local v124
@@ -1913,7 +1915,7 @@ local function onCombatFX(a1, a2)
                                                                             0.5,
                                                                             function()
                                                                                 --[[
-                                                                                  line: 1270
+                                                                                  line: 1271
                                                                                   upvalues:
                                                                                     Util_upv_1 (copy, index: 1)
                                                                                     u15 (copy, index: 2)
@@ -2236,7 +2238,7 @@ local function onCombatFX(a1, a2)
                     v152,
                     function()
                         --[[
-                          line: 1070
+                          line: 1071
                           upvalues:
                             u17 (copy, index: 1)
                             u16 (copy, index: 2)
@@ -2246,7 +2248,7 @@ local function onCombatFX(a1, a2)
                             1.2,
                             function()
                                 --[[
-                                  line: 1072
+                                  line: 1073
                                   upvalues:
                                     u16 (copy, index: 1)
                                 ]]
@@ -2323,7 +2325,7 @@ end
 local function onInputBegan(a1, a2)
     --[[
       name: onInputBegan
-      line: 757
+      line: 758
       upvalues:
         mapInput (copy, index: 1)
         tbl_upv_4 (copy, index: 2)
@@ -2346,14 +2348,14 @@ end
 local function drawTool(a1, a2)
     --[[
       name: drawTool
-      line: 648
+      line: 649
       upvalues:
         tbl_upv_4 (copy, index: 1)
         backpack (copy, index: 2)
     ]]
     local v159 = nil
-    local tbl_26 = {tbl_upv_4.char, backpack()}
-    for _, value_12 in tbl_26 do
+    local tbl_27 = {tbl_upv_4.char, backpack()}
+    for _, value_12 in tbl_27 do
         if not (value_12) then
             continue
         end
@@ -2385,7 +2387,7 @@ end
 function tbl_upv_3.Start()
     --[[
       name: Start
-      line: 1320
+      line: 1321
       upvalues:
         Net_upv_1 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -2438,7 +2440,7 @@ function tbl_upv_3.Start()
     Net_upv_1.UnreliableEvent("CombatFXU").OnClientEvent:Connect(
         function(a1, a2)
             --[[
-              line: 1326
+              line: 1327
               upvalues:
                 u18 (ref, index: 1)
                 u19 (ref, index: 2)
@@ -2463,7 +2465,7 @@ function tbl_upv_3.Start()
     v163.OnClientEvent:Connect(
         function(a3)
             --[[
-              line: 1345
+              line: 1346
               upvalues:
                 onHitConfirm (copy, index: 1)
             ]]
@@ -2477,7 +2479,7 @@ function tbl_upv_3.Start()
     v164.OnClientEvent:Connect(
         function(a4)
             --[[
-              line: 1351
+              line: 1352
               upvalues:
                 onDamageTaken (copy, index: 1)
             ]]
@@ -2491,7 +2493,7 @@ function tbl_upv_3.Start()
     local function fx(a5, a6)
         --[[
           name: fx
-          line: 1357
+          line: 1358
           upvalues:
             onCombatFX (copy, index: 1)
             Metrics_upv_1 (copy, index: 2)
@@ -2520,7 +2522,7 @@ function tbl_upv_3.Start()
     v172.OnClientEvent:Connect(
         function(a7, a8, a9, a10, a11, a12)
             --[[
-              line: 1373
+              line: 1374
               upvalues:
                 tbl_upv_4 (copy, index: 1)
                 Util_upv_1 (copy, index: 2)
@@ -2550,17 +2552,17 @@ function tbl_upv_3.Start()
             end
         end
     )
-    local tbl_upv_27 = {}
+    local tbl_upv_28 = {}
     task.spawn(
         function()
             --[[
-              line: 1394
+              line: 1395
               upvalues:
                 Players_upv_1 (copy, index: 1)
                 LocalPlayer_upv_1 (copy, index: 2)
                 Combat_upv_1 (copy, index: 3)
                 Presentation_upv_1 (copy, index: 4)
-                tbl_upv_27 (copy, index: 5)
+                tbl_upv_28 (copy, index: 5)
                 Util_upv_1 (copy, index: 6)
             ]]
             task.wait(0.5)
@@ -2586,18 +2588,18 @@ function tbl_upv_3.Start()
                 v180 = v177 and (v177:GetAttribute("WeaponId"))
                 if type(v180) ~= "string" or not (v178.Health > 0) then
                     v177 = nil
-                    v180 = tbl_upv_27[Character_1]
+                    v180 = tbl_upv_28[Character_1]
                     if v180 then
                         if v180 ~= v177 then
                             Util_upv_1.StopAnim(v178, v180, 0.15)
-                            tbl_upv_27[Character_1] = nil
+                            tbl_upv_28[Character_1] = nil
                         end
                         if not (v177) then
                             continue
                         end
                         v180 = Util_upv_1.GetTrack(v178, v177)
                         if not (v180) then
-                            tbl_upv_27[Character_1] = v177
+                            tbl_upv_28[Character_1] = v177
                             continue
                         end
                         if not (v180.IsPlaying) then
@@ -2609,37 +2611,37 @@ function tbl_upv_3.Start()
                         end
                         v180 = Util_upv_1.GetTrack(v178, v177)
                         if not (v181) then
-                            tbl_upv_27[Character_1] = v177
+                            tbl_upv_28[Character_1] = v177
                             continue
                         end
                         if not (v181.IsPlaying) then
                             Util_upv_1.PlayAnim(v178, v177, 1, 0.2)
                         end
                     end
-                    tbl_upv_27[Character_1] = v177
+                    tbl_upv_28[Character_1] = v177
                 end
                 v177 = Presentation_upv_1.For(v180, Combat_upv_1.Kind(v180)).hold
-                v180 = tbl_upv_27[Character_1]
+                v180 = tbl_upv_28[Character_1]
                 if v180 and v180 ~= v177 then
                     Util_upv_1.StopAnim(v178, v180, 0.15)
-                    tbl_upv_27[Character_1] = nil
+                    tbl_upv_28[Character_1] = nil
                 end
                 if not (v177) then
                     continue
                 end
                 v180 = Util_upv_1.GetTrack(v178, v177)
                 if not (v180) then
-                    tbl_upv_27[Character_1] = v177
+                    tbl_upv_28[Character_1] = v177
                     continue
                 end
                 if not (v180.IsPlaying) then
                     Util_upv_1.PlayAnim(v178, v177, 1, 0.2)
                 end
-                tbl_upv_27[Character_1] = v177
+                tbl_upv_28[Character_1] = v177
             end
-            for key_6 in tbl_upv_27 do
+            for key_6 in tbl_upv_28 do
                 if not (key_6.Parent) then
-                    tbl_upv_27[key_6] = nil
+                    tbl_upv_28[key_6] = nil
                 end
             end
         end
@@ -2650,7 +2652,7 @@ function tbl_upv_3.Start()
     RunService_upv_1.Heartbeat:Connect(
         function()
             --[[
-              line: 1439
+              line: 1440
               upvalues:
                 u3 (ref,  index: 1)
                 LocalPlayer_upv_1 (copy, index: 2)
@@ -2688,7 +2690,7 @@ function tbl_upv_3.Start()
                         task.defer(
                             function()
                                 --[[
-                                  line: 540
+                                  line: 541
                                   upvalues:
                                     u10 (ref,  index: 1)
                                     reconcileEquip (copy, index: 2)
@@ -2718,7 +2720,7 @@ function tbl_upv_3.Start()
     RunService_upv_1.RenderStepped:Connect(
         function(a13)
             --[[
-              line: 1457
+              line: 1458
               upvalues:
                 copyDecoy (copy, index: 1)
                 u12 (ref,  index: 2)
@@ -2738,7 +2740,7 @@ function tbl_upv_3.Start()
                 local v186, v187 = pcall(
                     function()
                         --[[
-                          line: 1466
+                          line: 1467
                           upvalues:
                             handler_upv_6 (copy, index: 1)
                             a13 (copy, index: 2)
@@ -2762,7 +2764,7 @@ function tbl_upv_3.Start()
                             pcall(
                                 function()
                                     --[[
-                                      line: 811
+                                      line: 812
                                       upvalues:
                                         v186 (copy, index: 1)
                                     ]]
@@ -2804,7 +2806,7 @@ function tbl_upv_3.Start()
         task.spawn(
             function()
                 --[[
-                  line: 679
+                  line: 680
                   upvalues:
                     LocalPlayer_upv_1 (copy, index: 1)
                     u22 (copy, index: 2)
@@ -2951,7 +2953,7 @@ function tbl_upv_3.Start()
         LocalPlayer_upv_1:GetAttributeChangedSignal(value_16):Connect(
             function()
                 --[[
-                  line: 1496
+                  line: 1497
                   upvalues:
                     refreshEquipped (copy, index: 1)
                 ]]
@@ -2962,7 +2964,7 @@ function tbl_upv_3.Start()
     task.spawn(
         function()
             --[[
-              line: 1502
+              line: 1503
               upvalues:
                 LocalPlayer_upv_1 (copy, index: 1)
                 u8 (ref,  index: 2)
@@ -2994,7 +2996,7 @@ end
 function tbl_upv_3.PlayFX(a1, a2)
     --[[
       name: PlayFX
-      line: 1523
+      line: 1524
       upvalues:
         onCombatFX (copy, index: 1)
     ]]
@@ -3007,7 +3009,7 @@ end
 function tbl_upv_3.SetReplayHud(a1)
     --[[
       name: SetReplayHud
-      line: 1533
+      line: 1534
       upvalues:
         u12 (ref,  index: 1)
         Touch_upv_1 (copy, index: 2)
@@ -3030,7 +3032,7 @@ end
 function tbl_upv_3.ReplayHitConfirm(a1)
     --[[
       name: ReplayHitConfirm
-      line: 1547
+      line: 1548
       upvalues:
         onHitConfirm (copy, index: 1)
     ]]
@@ -3043,7 +3045,7 @@ end
 function tbl_upv_3.ReplayDamageTaken(a1)
     --[[
       name: ReplayDamageTaken
-      line: 1554
+      line: 1555
       upvalues:
         onDamageTaken (copy, index: 1)
     ]]
@@ -3056,19 +3058,19 @@ end
 function tbl_upv_3.State()
     --[[
       name: State
-      line: 1562
+      line: 1563
       upvalues:
-        tbl_upv_4 (copy, index: 1)
         u2 (ref,  index: 7)
-        u3 (ref,  index: 8)
-        LocalPlayer_upv_1 (copy, index: 9)
-        u4 (ref,  index: 10)
-        tbl_upv_5 (copy, index: 11)
-        tbl_upv_21 (copy, index: 12)
+        tbl_upv_4 (copy, index: 8)
+        u3 (ref,  index: 9)
+        LocalPlayer_upv_1 (copy, index: 10)
+        u4 (ref,  index: 11)
+        tbl_upv_5 (copy, index: 12)
+        tbl_upv_22 (copy, index: 13)
     ]]
     local v209 = u2
-    local tbl_28 = {inputs = 0, equipStats = 0, shotId = 0, equipSeq = 0, equipPending = 0, equipAck = 0, lastInput = 0, speed = 0, tool = 0, wantSlot = 0}
-    tbl_28.kind = tbl_upv_4.kind
+    local tbl_29 = {inputs = 0, equipStats = 0, shotId = 0, equipSeq = 0, equipPending = 0, equipAck = 0, lastInput = 0, speed = 0, tool = 0, wantSlot = 0}
+    tbl_29.kind = tbl_upv_4.kind
     local v210, v211
     if tbl_upv_4.hum then
         v210 = tbl_upv_4.hum.WalkSpeed
@@ -3076,11 +3078,11 @@ function tbl_upv_3.State()
     else
         v210, v211 = nil, tbl_upv_4
     end
-    tbl_28.speed = v210
-    tbl_28.shotId = v211.shotId
-    tbl_28.tool = ((tbl_upv_4.tool) and (v211.tool.Name)) or nil
-    tbl_28.wantSlot = not v209 and 0 or u2:GetAttribute("SlotIndex")
-    tbl_28.equipSeq = u3
+    tbl_29.speed = v210
+    tbl_29.shotId = v211.shotId
+    tbl_29.tool = ((tbl_upv_4.tool) and (v211.tool.Name)) or nil
+    tbl_29.wantSlot = not v209 and 0 or u2:GetAttribute("SlotIndex")
+    tbl_29.equipSeq = u3
     local v213 = LocalPlayer_upv_1:GetAttribute("EquipAck")
     local v214
     if type(v213) ~= "number" then
@@ -3088,7 +3090,7 @@ function tbl_upv_3.State()
     else
         v214 = v213
     end
-    tbl_28.equipAck = v214
+    tbl_29.equipAck = v214
     local v215 = false
     local v216 = LocalPlayer_upv_1:GetAttribute("EquipAck")
     local v217
@@ -3100,10 +3102,10 @@ function tbl_upv_3.State()
     if v217 < u3 then
         v215 = os.clock() - u4 < 4
     end
-    tbl_28.equipPending = v215
-    tbl_28.equipStats = table.clone(tbl_upv_5)
-    tbl_28.inputs = tbl_upv_21.n
-    tbl_28.lastInput = tbl_upv_21.last
-    return tbl_28
+    tbl_29.equipPending = v215
+    tbl_29.equipStats = table.clone(tbl_upv_5)
+    tbl_29.inputs = tbl_upv_22.n
+    tbl_29.lastInput = tbl_upv_22.last
+    return tbl_29
 end
 return tbl_upv_3
