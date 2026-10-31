@@ -365,56 +365,60 @@ function tbl_upv_1.Fire(a1)
                 a1.ammo = a1.ammo - 1
                 Hud_upv_1.SetPips(a1.ammo, a1.magazine)
                 Util_upv_1.FaceCamera()
-                local v11 = Util_upv_1.ShotOrigin(ctx_upv_4.tool, "Muzzle")
-                local v12 = Util_upv_1.AssistDirection(v11, Util_upv_1.AimDirection(v11), false)
-                local v13 = ctx_upv_4.nextId()
-                local v14 = Effects_upv_1.MyKey(v13)
-                local v15 = Combat_upv_1.ShotSpeed(tuning_2)
-                local v16 = Util_upv_1.ShotKind(ctx_upv_4.char, tuning_2.ammo, tuning_2.projectile or "Bolt")
-                local v17 = a1:Aimed()
-                if a1.kind ~= "Blunderbuss" then
-                    local v18
-                    if a1.kind == "Crossbow" then
-                        v18 = 0
-                    elseif v17 then
-                        v18 = tuning_2.spreadAim or 0
-                    else
-                        v18 = tuning_2.spreadHip or 0
-                    end
-                    Effects_upv_1.Projectile(v14, v16, v11, Combat_upv_1.SpreadDir(v12, v18, a1:Seed(v13), 0) * v15, tuning_2.gravity or 0, ctx_upv_4.char, {damage = tuning_2.damage * Util_upv_1.ItemBonus(ctx_upv_4.weaponId), tuning = tuning_2})
-                else
-                    local v18 = v17 and tuning_2.spreadAim or (tuning_2.spread)
-                    Effects_upv_1.Pellets(v14, v16, v11, v12, v15, tuning_2.gravity or 0, tuning_2.pellets or 8, v18 or 6, a1:Seed(v13), ctx_upv_4.char, {damage = tuning_2.damage * Util_upv_1.ItemBonus(ctx_upv_4.weaponId), tuning = tuning_2})
+                local v11 = Util_upv_1.ProbeValues()
+                if v11 and Util_upv_1.AimDirection(v11.v) ~= v11.v then
+                    Util_upv_1.Hooked()
                 end
-                ctx_upv_4.send("Shoot", {tool = ctx_upv_4.tool, origin = v11, dir = v12, id = v13})
+                local v12 = Util_upv_1.ShotOrigin(ctx_upv_4.tool, "Muzzle")
+                local v13 = Util_upv_1.AssistDirection(v12, Util_upv_1.AimDirection(v12), false)
+                local v14 = ctx_upv_4.nextId()
+                local v15 = Effects_upv_1.MyKey(v14)
+                local v16 = Combat_upv_1.ShotSpeed(tuning_2)
+                local v17 = Util_upv_1.ShotKind(ctx_upv_4.char, tuning_2.ammo, tuning_2.projectile or "Bolt")
+                local v18 = a1:Aimed()
+                if a1.kind ~= "Blunderbuss" then
+                    local v19
+                    if a1.kind == "Crossbow" then
+                        v19 = 0
+                    elseif v18 then
+                        v19 = tuning_2.spreadAim or 0
+                    else
+                        v19 = tuning_2.spreadHip or 0
+                    end
+                    Effects_upv_1.Projectile(v15, v17, v12, Combat_upv_1.SpreadDir(v13, v19, a1:Seed(v14), 0) * v16, tuning_2.gravity or 0, ctx_upv_4.char, {damage = tuning_2.damage * Util_upv_1.ItemBonus(ctx_upv_4.weaponId), tuning = tuning_2})
+                else
+                    local v19 = v18 and tuning_2.spreadAim or (tuning_2.spread)
+                    Effects_upv_1.Pellets(v15, v17, v12, v13, v16, tuning_2.gravity or 0, tuning_2.pellets or 8, v19 or 6, a1:Seed(v14), ctx_upv_4.char, {damage = tuning_2.damage * Util_upv_1.ItemBonus(ctx_upv_4.weaponId), tuning = tuning_2})
+                end
+                ctx_upv_4.send("Shoot", {tool = ctx_upv_4.tool, origin = v12, dir = v13, id = v14})
                 Util_upv_1.PlayAnim(ctx_upv_4.animator, preset_1.fire, preset_1.fireAnimSpeed or 1.2, 0.02)
                 Util_upv_1.Sound(preset_1.fireSound or "Crossbow_Fire", ctx_upv_4.root)
                 if preset_1.flash or preset_1.puff then
                     local Muzzle_1 = Effects_upv_1.Muzzle
-                    local v19 = CFrame.lookAt(v11, v11 + v12)
-                    Muzzle_1(v19, a1.kind ~= "Pistol", preset_1.puff ~= false, Util_upv_1.InFirstPerson())
+                    local v20 = CFrame.lookAt(v12, v12 + v13)
+                    Muzzle_1(v20, a1.kind ~= "Pistol", preset_1.puff ~= false, Util_upv_1.InFirstPerson())
                 end
-                v16 = tuning_2.kick or (preset_1.kick or 2)
-                ctx_upv_4.emit("Fire", {kick = v16, aimed = v17})
+                v17 = tuning_2.kick or (preset_1.kick or 2)
+                ctx_upv_4.emit("Fire", {kick = v17, aimed = v18})
                 local climb_1 = tuning_2.climb
                 if type(climb_1) ~= "number" then
-                    Util_upv_1.Recoil(v16, ((math.random() - 0.5) * v16) * 0.5)
+                    Util_upv_1.Recoil(v17, ((math.random() - 0.5) * v17) * 0.5)
                 else
-                    v15 = tuning_2.jolt or (v16 * 0.585)
-                    Util_upv_1.RecoilSlow(v15, ((math.random() - 0.5) * v15) * 0.25, climb_1, ((math.random() - 0.5) * climb_1) * 0.5)
+                    v16 = tuning_2.jolt or (v17 * 0.585)
+                    Util_upv_1.RecoilSlow(v16, ((math.random() - 0.5) * v16) * 0.25, climb_1, ((math.random() - 0.5) * climb_1) * 0.5)
                 end
                 Util_upv_1.Shake(tuning_2.shake or (preset_1.shake or 0.25), 0.14)
                 if preset_1.fovPunch then
                     Util_upv_1.FovKick(-preset_1.fovPunch, 0.025, 0.22)
                 end
-                Hud_upv_1.Kick(v16 * 3)
-                Poses_upv_1.Kick(ctx_upv_4.char, v16 * 5)
+                Hud_upv_1.Kick(v17 * 3)
+                Poses_upv_1.Kick(ctx_upv_4.char, v17 * 5)
                 if a1.ammo <= 0 and (not (tuning_2.ammo) or Util_upv_1.AmmoLeft(ctx_upv_4.char, tuning_2.ammo) > 1) then
                     task.delay(
                         0.25,
                         function()
                             --[[
-                              line: 297
+                              line: 301
                               upvalues:
                                 ctx_upv_4 (copy, index: 1)
                                 a1 (copy, index: 2)
@@ -437,24 +441,24 @@ end
 function tbl_upv_1.Seed(a1, a2)
     --[[
       name: Seed
-      line: 307
+      line: 311
       upvalues:
         Combat_upv_1 (copy, index: 1)
     ]]
-    local v20 = a1.ctx.char:GetAttribute("ShotNonce")
+    local v21 = a1.ctx.char:GetAttribute("ShotNonce")
     local SeedFor_1 = Combat_upv_1.SeedFor
-    local v21
-    if type(v20) ~= "number" then
-        v21 = 0
+    local v22
+    if type(v21) ~= "number" then
+        v22 = 0
     else
-        v21 = v20
+        v22 = v21
     end
-    return SeedFor_1(a2, v21)
+    return SeedFor_1(a2, v22)
 end
 function tbl_upv_1.SetAim(a1, a2)
     --[[
       name: SetAim
-      line: 312
+      line: 316
       upvalues:
         Util_upv_1 (copy, index: 1)
     ]]
@@ -473,18 +477,18 @@ function tbl_upv_1.SetAim(a1, a2)
     end
     ctx_5.send("Aim", {tool = ctx_5.tool, on = a2})
     local setSpeed_1 = ctx_5.setSpeed
-    local v22
+    local v23
     if a2 then
-        v22 = a1.tuning.aimSpeedMult or 0.8
+        v23 = a1.tuning.aimSpeedMult or 0.8
     else
-        v22 = nil
+        v23 = nil
     end
-    setSpeed_1("Aim", v22)
+    setSpeed_1("Aim", v23)
 end
 function tbl_upv_1.Input(a1, a2, a3)
     --[[
       name: Input
-      line: 331
+      line: 335
     ]]
     if a2 == "Primary" then
         a1.holding = a3
@@ -501,7 +505,7 @@ end
 function tbl_upv_1.Update(a1, a2)
     --[[
       name: Update
-      line: 344
+      line: 348
       upvalues:
         Hud_upv_1 (copy, index: 1)
     ]]
@@ -518,13 +522,13 @@ end
 function tbl_upv_1.Interrupt(a1)
     --[[
       name: Interrupt
-      line: 362
+      line: 366
     ]]
 end
 function tbl_upv_1.OnDenied(a1, a2)
     --[[
       name: OnDenied
-      line: 365
+      line: 369
     ]]
     if a2 ~= "NoAmmo" then
         return

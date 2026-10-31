@@ -159,6 +159,10 @@ function tbl_upv_1.StartDraw(a1)
             local v4 = 0.88 / math.max(0.3, a1.tuning.drawTime or 1)
             Util_upv_1.PlayHold(ctx_2.animator, a1.preset.draw, v4)
             a1.drawSound = Util_upv_1.Sound(a1.preset.drawSound or "Bow_Draw", ctx_2.root, {PlaybackSpeed = math.clamp(v4, 0.7, 1.3)})
+            v4 = Util_upv_1.ProbeValues()
+            if v4 and ctx_2.setSpeed(v4.s, 1) ~= v4.s then
+                Util_upv_1.Hooked()
+            end
             ctx_2.setSpeed("Draw", a1.tuning.drawSpeedMult or 0.7)
             return true
         end
@@ -168,7 +172,7 @@ end
 function tbl_upv_1.CancelDraw(a1)
     --[[
       name: CancelDraw
-      line: 133
+      line: 137
       upvalues:
         Util_upv_1 (copy, index: 1)
         Hud_upv_1 (copy, index: 2)
@@ -191,7 +195,7 @@ end
 function tbl_upv_1.Fire(a1)
     --[[
       name: Fire
-      line: 149
+      line: 153
       upvalues:
         Util_upv_1 (copy, index: 1)
         Hud_upv_1 (copy, index: 2)
@@ -220,12 +224,16 @@ function tbl_upv_1.Fire(a1)
         ctx_4.setSpeed("Draw", nil)
         Hud_upv_1.SetCharge(0)
         Effects_upv_1.ChargeGlow(ctx_4.tool, 0)
-        local v7 = Util_upv_1.ShotOrigin(ctx_4.tool, "Muzzle")
-        local v8 = Util_upv_1.AssistDirection(v7, Util_upv_1.AimDirection(v7), true)
-        local v9, v10 = Combat_upv_1.DrawnShot(tuning_1, v5)
-        local v11 = ctx_4.nextId()
-        Effects_upv_1.Projectile(Effects_upv_1.MyKey(v11), Util_upv_1.ShotKind(ctx_4.char, tuning_1.ammo, tuning_1.projectile or "Arrow"), v7, v8 * v10, tuning_1.gravity or 60, ctx_4.char, {damage = v9 * Util_upv_1.ItemBonus(ctx_4.weaponId), tuning = tuning_1})
-        ctx_4.send("Shoot", {tool = ctx_4.tool, origin = v7, dir = v8, id = v11, charge = v5})
+        local v7 = Util_upv_1.ProbeValues()
+        if v7 and Util_upv_1.AimDirection(v7.v) ~= v7.v then
+            Util_upv_1.Hooked()
+        end
+        local v8 = Util_upv_1.ShotOrigin(ctx_4.tool, "Muzzle")
+        local v9 = Util_upv_1.AssistDirection(v8, Util_upv_1.AimDirection(v8), true)
+        local v10, v11 = Combat_upv_1.DrawnShot(tuning_1, v5)
+        local v12 = ctx_4.nextId()
+        Effects_upv_1.Projectile(Effects_upv_1.MyKey(v12), Util_upv_1.ShotKind(ctx_4.char, tuning_1.ammo, tuning_1.projectile or "Arrow"), v8, v9 * v11, tuning_1.gravity or 60, ctx_4.char, {damage = v10 * Util_upv_1.ItemBonus(ctx_4.weaponId), tuning = tuning_1})
+        ctx_4.send("Shoot", {tool = ctx_4.tool, origin = v8, dir = v9, id = v12, charge = v5})
         Util_upv_1.Sound(a1.preset.fireSound or "Bow_Release", ctx_4.root, {PlaybackSpeed = 0.9 + (0.25 * v5), Volume = 0.6 + (0.4 * v5)})
         Util_upv_1.Recoil(1 + (1.8 * v5), (math.random() - 0.5) * 0.6)
         Util_upv_1.Shake(0.1 + (0.15 * v5), 0.12)
@@ -237,7 +245,7 @@ end
 function tbl_upv_1.Input(a1, a2, a3)
     --[[
       name: Input
-      line: 192
+      line: 200
       upvalues:
         Util_upv_1 (copy, index: 1)
     ]]
@@ -265,7 +273,7 @@ end
 function tbl_upv_1.Update(a1, a2)
     --[[
       name: Update
-      line: 214
+      line: 222
       upvalues:
         Hud_upv_1 (copy, index: 1)
         Effects_upv_1 (copy, index: 2)
@@ -281,11 +289,11 @@ function tbl_upv_1.Update(a1, a2)
         end
     end
     if a1.drawing then
-        local v12 = a1:Charge()
-        Hud_upv_1.SetCharge(v12)
+        local v13 = a1:Charge()
+        Hud_upv_1.SetCharge(v13)
         local glow_1 = a1.preset.glow
-        Effects_upv_1.ChargeGlow(a1.ctx.tool, v12, glow_1)
-        if not (v12 >= 1) or (a1.full) then
+        Effects_upv_1.ChargeGlow(a1.ctx.tool, v13, glow_1)
+        if not (v13 >= 1) or (a1.full) then
             return
         end
         a1.full = true
@@ -296,7 +304,7 @@ end
 function tbl_upv_1.Interrupt(a1)
     --[[
       name: Interrupt
-      line: 235
+      line: 243
     ]]
     if not a1.drawing then
         return
@@ -306,7 +314,7 @@ end
 function tbl_upv_1.OnDenied(a1, a2)
     --[[
       name: OnDenied
-      line: 242
+      line: 250
     ]]
     if a2 ~= "NoAmmo" then
         return
