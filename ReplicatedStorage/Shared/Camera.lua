@@ -88,68 +88,178 @@ local function wrapAngle(a1)
     ]]
     return ((a1 + math.pi) % math.tau) - math.pi
 end
+local u45 = nil
+local u46 = function(a1, a2)
+    --[[
+      line: 203
+      upvalues:
+        u45 (ref,  index: 1)
+        LocalPlayer_upv_1 (copy, index: 2)
+    ]]
+    if not (u45) then
+        local v1 = LocalPlayer_upv_1 and (LocalPlayer_upv_1:FindFirstChild("PlayerScripts") and (LocalPlayer_upv_1.PlayerScripts:FindFirstChild("Core")))
+        local v2 = v1 and (v1:FindFirstChild("InputStats"))
+        if v2 and v2:IsA("ModuleScript") then
+            u45 = require(v2)
+            if a2 then
+                u45.Note(a1)
+            else
+                u45.Caller(a1)
+            end
+            return
+        end
+        return
+    end
+    if a2 then
+        u45.Note(a1)
+    else
+        u45.Caller(a1)
+    end
+end
+local u47 = 0
+local u48 = -0.2
+local u49 = 0
+local u50 = -0.2
+local u51 = 0
+local u52 = -0.2
+local u53 = 0
+local u54 = -0.2
+local u55 = 0
+local u56 = -0.2
+local u57 = 0
+local u58 = -0.2
+local u59 = 0
+local u60 = -0.2
+local tbl_upv_12 = {u1, u2}
+local u61 = function()
+    --[[
+      line: 233
+      upvalues:
+        u57 (ref,  index: 1)
+        u56 (ref,  index: 2)
+        u53 (ref,  index: 3)
+        u60 (ref,  index: 4)
+        u52 (ref,  index: 5)
+        u47 (ref,  index: 6)
+        u2 (ref,  index: 7)
+        tbl_upv_12 (copy, index: 8)
+        u48 (ref,  index: 9)
+        u54 (ref,  index: 10)
+        u59 (ref,  index: 11)
+        u49 (ref,  index: 12)
+        u1 (ref,  index: 13)
+        u50 (ref,  index: 14)
+        u51 (ref,  index: 15)
+        u55 (ref,  index: 16)
+        u58 (ref,  index: 17)
+        u46 (copy, index: 18)
+    ]]
+    if u57 == 0 and u56 == -0.2 and u53 == 0 and u60 == -0.2 and u52 == -0.2 and u47 == 0 and u2 == tbl_upv_12[2] and u48 == -0.2 and u54 == -0.2 and u59 == 0 and u49 == 0 and u1 == tbl_upv_12[1] and u50 == -0.2 and u51 == 0 and u55 == 0 and u58 == -0.2 then
+        return
+    end
+    u47 = 0
+    u48 = -0.2
+    u49 = 0
+    u50 = -0.2
+    u51 = 0
+    u52 = -0.2
+    u53 = 0
+    u54 = -0.2
+    u55 = 0
+    u56 = -0.2
+    u57 = 0
+    u58 = -0.2
+    u59 = 0
+    u60 = -0.2
+    u1 = tbl_upv_12[1]
+    u2 = tbl_upv_12[2]
+    u46(256, true)
+end
+function tbl_upv_1.SetLook(a1, a2)
+    --[[
+      name: SetLook
+      line: 264
+      upvalues:
+        u46 (copy, index: 1)
+        u29 (ref,  index: 4)
+        u28 (ref,  index: 5)
+        u1 (ref,  index: 10)
+        u2 (ref,  index: 11)
+        u4 (ref,  index: 20)
+        u5 (ref,  index: 21)
+    ]]
+    u46(32768)
+    u29 = u28
+    local v3 = u1
+    local v4 = u2
+    u4 = ((a1 + math.pi) % math.tau) - math.pi
+    if not a2 then
+        return
+    end
+    u5 = math.clamp(a2, v3, v4)
+end
 local function smoothstep(a1)
     --[[
       name: smoothstep
-      line: 199
+      line: 278
     ]]
-    local v1 = math.clamp(a1, 0, 1)
-    return (v1 * v1) * (3 - (v1 * 2))
+    local v5 = math.clamp(a1, 0, 1)
+    return (v5 * v5) * (3 - (v5 * 2))
 end
-local tbl_upv_12 = {rise = 0.05, fall = 0.2, t0 = 0, amount = 0}
+local tbl_upv_13 = {rise = 0.05, fall = 0.2, t0 = 0, amount = 0}
 local function isMouseUnlocked()
     --[[
       name: isMouseUnlocked
-      line: 224
+      line: 303
       upvalues:
         tbl_upv_3 (copy, index: 1)
         GuiService_upv_1 (copy, index: 2)
     ]]
-    local v2 = true
+    local v6 = true
     if next(tbl_upv_3) == nil then
-        v2 = GuiService_upv_1.MenuIsOpen
+        v6 = GuiService_upv_1.MenuIsOpen
     end
-    return v2
+    return v6
 end
 local function combatModeOn()
     --[[
       name: combatModeOn
-      line: 230
+      line: 309
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
     ]]
-    local v3 = LocalPlayer_upv_1:GetAttribute("CombatMode")
-    if v3 ~= nil then
-        return v3 == true
+    local v7 = LocalPlayer_upv_1:GetAttribute("CombatMode")
+    if v7 ~= nil then
+        return v7 == true
     end
-    local v4 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
-    return v4
+    local v8 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
+    return v8
 end
 local function getCharacterParts()
     --[[
       name: getCharacterParts
-      line: 238
+      line: 317
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
     ]]
-    local v5
+    local v9
     if LocalPlayer_upv_1 then
-        v5 = LocalPlayer_upv_1.Character
+        v9 = LocalPlayer_upv_1.Character
     else
-        v5 = LocalPlayer_upv_1
+        v9 = LocalPlayer_upv_1
     end
-    if not v5 then
+    if not v9 then
         return nil, nil, nil
     end
-    local HumanoidRootPart_1 = v5:FindFirstChild("HumanoidRootPart")
-    local v6 = v5:FindFirstChildOfClass("Humanoid")
-    local v7 = ((HumanoidRootPart_1 and (HumanoidRootPart_1:IsA("BasePart"))) and HumanoidRootPart_1) or nil
-    return v5, v7, v6
+    local HumanoidRootPart_1 = v9:FindFirstChild("HumanoidRootPart")
+    local v10 = v9:FindFirstChildOfClass("Humanoid")
+    local v11 = ((HumanoidRootPart_1 and (HumanoidRootPart_1:IsA("BasePart"))) and HumanoidRootPart_1) or nil
+    return v9, v11, v10
 end
 local function yawOf(a1)
     --[[
       name: yawOf
-      line: 248
+      line: 327
     ]]
     local LookVector_1 = a1.LookVector
     return (math.atan2(-LookVector_1.X, -LookVector_1.Z))
@@ -157,52 +267,52 @@ end
 local function drawnCharacter(a1)
     --[[
       name: drawnCharacter
-      line: 255
+      line: 334
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
     return Smoothing_upv_1.DrawnModel() or a1
 end
-local tbl_upv_13 = {}
-local u45 = true
-local u46 = nil
-local u47 = true
-local tbl_upv_14 = {"FX", "Projectiles"}
+local tbl_upv_14 = {}
+local u62 = true
+local u63 = nil
+local u64 = true
+local tbl_upv_15 = {"FX", "Projectiles"}
 local function markIgnoreDirty()
     --[[
       name: markIgnoreDirty
-      line: 268
+      line: 347
       upvalues:
-        u45 (ref, index: 1)
+        u62 (ref, index: 1)
     ]]
-    u45 = true
+    u62 = true
 end
 local function ignoreList(a1)
     --[[
       name: ignoreList
-      line: 272
+      line: 351
       upvalues:
-        u45 (ref,  index: 1)
-        u46 (ref,  index: 2)
+        u62 (ref,  index: 1)
+        u63 (ref,  index: 2)
         tbl_upv_9 (copy, index: 3)
-        tbl_upv_13 (copy, index: 4)
-        tbl_upv_14 (copy, index: 5)
+        tbl_upv_14 (copy, index: 4)
+        tbl_upv_15 (copy, index: 5)
         Workspace_upv_1 (copy, index: 6)
         Players_upv_1 (copy, index: 7)
         Fighters_upv_1 (copy, index: 8)
         Occlusion_upv_1 (copy, index: 9)
-        u47 (ref,  index: 10)
+        u64 (ref,  index: 10)
     ]]
-    local v8 = os.clock()
-    if u45 then
-        table.clear(tbl_upv_13)
+    local v12 = os.clock()
+    if u62 then
+        table.clear(tbl_upv_14)
         if a1 then
-            table.insert(tbl_upv_13, a1)
+            table.insert(tbl_upv_14, a1)
         end
-        for _, value_1 in tbl_upv_14 do
-            local v9 = Workspace_upv_1:FindFirstChild(value_1)
-            if v9 then
-                table.insert(tbl_upv_13, v9)
+        for _, value_1 in tbl_upv_15 do
+            local v13 = Workspace_upv_1:FindFirstChild(value_1)
+            if v13 then
+                table.insert(tbl_upv_14, v13)
             end
         end
         for _, value_2 in Players_upv_1:GetPlayers() do
@@ -210,37 +320,37 @@ local function ignoreList(a1)
                 continue
             end
             if value_2.Character ~= a1 then
-                table.insert(tbl_upv_13, value_2.Character)
+                table.insert(tbl_upv_14, value_2.Character)
             end
         end
         Fighters_upv_1.EachTagged(
             function(a2)
                 --[[
-                  line: 290
+                  line: 369
                   upvalues:
                     a1 (copy, index: 1)
-                    tbl_upv_13 (copy, index: 2)
+                    tbl_upv_14 (copy, index: 2)
                 ]]
                 if a2 == a1 then
                     return
                 end
-                table.insert(tbl_upv_13, a2)
+                table.insert(tbl_upv_14, a2)
             end
         )
-        u45 = false
-        u46 = a1
-        tbl_upv_9.ignoreBuilt = v8
+        u62 = false
+        u63 = a1
+        tbl_upv_9.ignoreBuilt = v12
         Occlusion_upv_1.IgnoreChanged()
-        u47 = true
-    elseif a1 ~= u46 then
-        table.clear(tbl_upv_13)
+        u64 = true
+    elseif a1 ~= u63 then
+        table.clear(tbl_upv_14)
         if a1 then
-            table.insert(tbl_upv_13, a1)
+            table.insert(tbl_upv_14, a1)
         end
-        for _, value_1 in tbl_upv_14 do
-            local v9 = Workspace_upv_1:FindFirstChild(value_1)
-            if v9 then
-                table.insert(tbl_upv_13, v9)
+        for _, value_1 in tbl_upv_15 do
+            local v13 = Workspace_upv_1:FindFirstChild(value_1)
+            if v13 then
+                table.insert(tbl_upv_14, v13)
             end
         end
         for _, value_2 in Players_upv_1:GetPlayers() do
@@ -248,37 +358,37 @@ local function ignoreList(a1)
                 continue
             end
             if value_2.Character ~= a1 then
-                table.insert(tbl_upv_13, value_2.Character)
+                table.insert(tbl_upv_14, value_2.Character)
             end
         end
         Fighters_upv_1.EachTagged(
             function(a2)
                 --[[
-                  line: 290
+                  line: 369
                   upvalues:
                     a1 (copy, index: 1)
-                    tbl_upv_13 (copy, index: 2)
+                    tbl_upv_14 (copy, index: 2)
                 ]]
                 if a2 == a1 then
                     return
                 end
-                table.insert(tbl_upv_13, a2)
+                table.insert(tbl_upv_14, a2)
             end
         )
-        u45 = false
-        u46 = a1
-        tbl_upv_9.ignoreBuilt = v8
+        u62 = false
+        u63 = a1
+        tbl_upv_9.ignoreBuilt = v12
         Occlusion_upv_1.IgnoreChanged()
-        u47 = true
-    elseif v8 - tbl_upv_9.ignoreBuilt > 2 then
-        table.clear(tbl_upv_13)
+        u64 = true
+    elseif v12 - tbl_upv_9.ignoreBuilt > 2 then
+        table.clear(tbl_upv_14)
         if a1 then
-            table.insert(tbl_upv_13, a1)
+            table.insert(tbl_upv_14, a1)
         end
-        for _, value_1 in tbl_upv_14 do
-            local v9 = Workspace_upv_1:FindFirstChild(value_1)
-            if v9 then
-                table.insert(tbl_upv_13, v9)
+        for _, value_1 in tbl_upv_15 do
+            local v13 = Workspace_upv_1:FindFirstChild(value_1)
+            if v13 then
+                table.insert(tbl_upv_14, v13)
             end
         end
         for _, value_2 in Players_upv_1:GetPlayers() do
@@ -286,35 +396,35 @@ local function ignoreList(a1)
                 continue
             end
             if value_2.Character ~= a1 then
-                table.insert(tbl_upv_13, value_2.Character)
+                table.insert(tbl_upv_14, value_2.Character)
             end
         end
         Fighters_upv_1.EachTagged(
             function(a2)
                 --[[
-                  line: 290
+                  line: 369
                   upvalues:
                     a1 (copy, index: 1)
-                    tbl_upv_13 (copy, index: 2)
+                    tbl_upv_14 (copy, index: 2)
                 ]]
                 if a2 == a1 then
                     return
                 end
-                table.insert(tbl_upv_13, a2)
+                table.insert(tbl_upv_14, a2)
             end
         )
-        u45 = false
-        u46 = a1
-        tbl_upv_9.ignoreBuilt = v8
+        u62 = false
+        u63 = a1
+        tbl_upv_9.ignoreBuilt = v12
         Occlusion_upv_1.IgnoreChanged()
-        u47 = true
+        u64 = true
     end
-    return tbl_upv_13
+    return tbl_upv_14
 end
 local function watchPlayerForIgnore(a1)
     --[[
       name: watchPlayerForIgnore
-      line: 304
+      line: 383
       upvalues:
         markIgnoreDirty (copy, index: 1)
     ]]
@@ -324,25 +434,25 @@ end
 local function castDistance(a1, a2, a3)
     --[[
       name: castDistance
-      line: 311
+      line: 390
       upvalues:
         Occlusion_upv_1 (copy, index: 1)
     ]]
     return Occlusion_upv_1.Cast(a1, a2, a3)
 end
-local tbl_upv_15 = {}
-local u48 = true
 local tbl_upv_16 = {}
-local u49 = -1
-local u50 = -1
-local u51 = false
-local u52 = false
-local u53 = Instance.new("BindableEvent")
-local u54 = nil
+local u65 = true
+local tbl_upv_17 = {}
+local u66 = -1
+local u67 = -1
+local u68 = false
+local u69 = false
+local u70 = Instance.new("BindableEvent")
+local u71 = nil
 local function isHeadAccessoryPart(a1, a2)
     --[[
       name: isHeadAccessoryPart
-      line: 328
+      line: 407
     ]]
     for _, value_3 in a1:GetChildren() do
         if not (value_3:IsA("Attachment")) or not (a2:FindFirstChild(value_3.Name)) then
@@ -355,50 +465,50 @@ end
 local function rebuildFadeEntries(a1)
     --[[
       name: rebuildFadeEntries
-      line: 338
+      line: 417
       upvalues:
-        tbl_upv_15 (copy, index: 1)
+        tbl_upv_16 (copy, index: 1)
         isHeadAccessoryPart (copy, index: 2)
-        u48 (ref,  index: 3)
+        u65 (ref,  index: 3)
     ]]
-    table.clear(tbl_upv_15)
+    table.clear(tbl_upv_16)
     local Head_1 = a1:FindFirstChild("Head")
-    local v10 = nil
+    local v14 = nil
     for _, value_4 in a1:GetDescendants() do
         if value_4:IsA("BasePart") or value_4:IsA("Decal") then
-            v10 = false
+            v14 = false
             if not (Head_1) then
-                table.insert(tbl_upv_15, {inst = value_4, head = v10})
+                table.insert(tbl_upv_16, {inst = value_4, head = v14})
                 continue
             end
-            local v11 = Head_1:IsA("BasePart")
-            if not (v11) then
-                table.insert(tbl_upv_15, {inst = value_4, head = v10})
+            local v15 = Head_1:IsA("BasePart")
+            if not (v15) then
+                table.insert(tbl_upv_16, {inst = value_4, head = v14})
                 continue
             end
             if value_4 == Head_1 or value_4.Parent == Head_1 then
-                v10 = true
-                table.insert(tbl_upv_15, {inst = value_4, head = v10})
+                v14 = true
+                table.insert(tbl_upv_16, {inst = value_4, head = v14})
                 continue
             end
-            local v12 = value_4:IsA("BasePart")
-            if not (v12) or not (value_4.Parent) then
-                table.insert(tbl_upv_15, {inst = value_4, head = v10})
+            local v16 = value_4:IsA("BasePart")
+            if not (v16) or not (value_4.Parent) then
+                table.insert(tbl_upv_16, {inst = value_4, head = v14})
                 continue
             end
-            local v13 = value_4.Parent:IsA("Accessory")
-            if v13 then
-                v10 = isHeadAccessoryPart(value_4, Head_1)
+            local v17 = value_4.Parent:IsA("Accessory")
+            if v17 then
+                v14 = isHeadAccessoryPart(value_4, Head_1)
             end
-            table.insert(tbl_upv_15, {inst = value_4, head = v10})
+            table.insert(tbl_upv_16, {inst = value_4, head = v14})
         end
     end
-    u48 = false
+    u65 = false
 end
 local function restoreAll(a1)
     --[[
       name: restoreAll
-      line: 357
+      line: 436
     ]]
     for _, value_5 in a1 do
         local inst_1 = value_5.inst
@@ -413,23 +523,23 @@ end
 local function setCharacterFade(a1, a2, a3, a4)
     --[[
       name: setCharacterFade
-      line: 372
+      line: 451
       upvalues:
-        u54 (ref,  index: 1)
-        tbl_upv_15 (copy, index: 2)
-        tbl_upv_16 (copy, index: 3)
-        u48 (ref,  index: 4)
-        u49 (ref,  index: 5)
-        u50 (ref,  index: 6)
-        u51 (ref,  index: 7)
+        u71 (ref,  index: 1)
+        tbl_upv_16 (copy, index: 2)
+        tbl_upv_17 (copy, index: 3)
+        u65 (ref,  index: 4)
+        u66 (ref,  index: 5)
+        u67 (ref,  index: 6)
+        u68 (ref,  index: 7)
         rebuildFadeEntries (copy, index: 8)
         tbl_upv_9 (copy, index: 9)
     ]]
     a2 = ((a2 < 0.01) and 0) or a2
-    local v14 = math.max(a2, a3 or 0)
-    local v15 = ((v14 < 0.01) and 0) or v14
-    if a1 ~= u54 then
-        for _, value_6 in tbl_upv_15 do
+    local v18 = math.max(a2, a3 or 0)
+    local v19 = ((v18 < 0.01) and 0) or v18
+    if a1 ~= u71 then
+        for _, value_6 in tbl_upv_16 do
             local inst_2 = value_6.inst
             if not (inst_2.Parent) then
                 continue
@@ -438,45 +548,45 @@ local function setCharacterFade(a1, a2, a3, a4)
                 inst_2.LocalTransparencyModifier = 0
             end
         end
-        for _, value_7 in tbl_upv_16 do
+        for _, value_7 in tbl_upv_17 do
             value_7:Disconnect()
         end
+        table.clear(tbl_upv_17)
         table.clear(tbl_upv_16)
-        table.clear(tbl_upv_15)
-        u54 = a1
-        u48 = true
-        u49 = -1
-        u50 = -1
-        u51 = false
+        u71 = a1
+        u65 = true
+        u66 = -1
+        u67 = -1
+        u68 = false
         if a1 then
             table.insert(
-                tbl_upv_16,
+                tbl_upv_17,
                 a1.DescendantAdded:Connect(
                     function(a5)
                         --[[
-                          line: 392
+                          line: 471
                           upvalues:
-                            u48 (ref, index: 1)
-                            u51 (ref, index: 2)
-                            u49 (ref, index: 3)
+                            u65 (ref, index: 1)
+                            u68 (ref, index: 2)
+                            u66 (ref, index: 3)
                         ]]
-                        u48 = true
+                        u65 = true
                         if a5:IsA("BasePart") or a5:IsA("Decal") then
-                            a5.LocalTransparencyModifier = u51 and 1 or math.max(u49, 0)
+                            a5.LocalTransparencyModifier = u68 and 1 or math.max(u66, 0)
                         end
                     end
                 )
             )
             table.insert(
-                tbl_upv_16,
+                tbl_upv_17,
                 a1.DescendantRemoving:Connect(
                     function()
                         --[[
-                          line: 399
+                          line: 478
                           upvalues:
-                            u48 (ref, index: 1)
+                            u65 (ref, index: 1)
                         ]]
-                        u48 = true
+                        u65 = true
                     end
                 )
             )
@@ -485,89 +595,89 @@ local function setCharacterFade(a1, a2, a3, a4)
     if not a1 then
         return
     end
-    local v17 = u48
-    if u48 then
+    local v21 = u65
+    if u65 then
         rebuildFadeEntries(a1)
     end
-    local v18 = os.clock()
-    local v19 = v17 or (v18 - tbl_upv_9.reconcile > 0.25)
-    local v20 = true
-    if not (math.abs(a2 - u49) >= 0.02) then
-        local v21 = true
-        if math.abs(v15 - u50) >= 0.02 then
-            v20 = v21
+    local v22 = os.clock()
+    local v23 = v21 or (v22 - tbl_upv_9.reconcile > 0.25)
+    local v24 = true
+    if not (math.abs(a2 - u66) >= 0.02) then
+        local v25 = true
+        if math.abs(v19 - u67) >= 0.02 then
+            v24 = v25
         elseif a2 == 0 then
-            local v22 = true
-            if u49 ~= 0 then
-                v20 = v22
-            elseif v15 ~= 0 then
-                v20 = a4 == true ~= u51
+            local v26 = true
+            if u66 ~= 0 then
+                v24 = v26
+            elseif v19 ~= 0 then
+                v24 = a4 == true ~= u68
             else
-                local v23 = true
-                if u50 ~= 0 then
-                    v20 = v23
+                local v27 = true
+                if u67 ~= 0 then
+                    v24 = v27
                 else
-                    v20 = a4 == true ~= u51
+                    v24 = a4 == true ~= u68
                 end
             end
-        elseif v15 ~= 0 then
-            v20 = a4 == true ~= u51
+        elseif v19 ~= 0 then
+            v24 = a4 == true ~= u68
         else
-            local v23 = true
-            if u50 ~= 0 then
-                v20 = v23
+            local v27 = true
+            if u67 ~= 0 then
+                v24 = v27
             else
-                v20 = a4 == true ~= u51
+                v24 = a4 == true ~= u68
             end
         end
     end
-    if (v19) or (v20) then
-        tbl_upv_9.reconcile = v18
-        u49 = a2
-        u50 = v15
-        u51 = a4 == true
-        for _, value_8 in tbl_upv_15 do
+    if (v23) or (v24) then
+        tbl_upv_9.reconcile = v22
+        u66 = a2
+        u67 = v19
+        u68 = a4 == true
+        for _, value_8 in tbl_upv_16 do
             local inst_3 = value_8.inst
             if not (inst_3.Parent) then
                 continue
             end
-            if u51 then
-                v18 = 1
+            if u68 then
+                v22 = 1
             elseif value_8.head then
-                v18 = v15
+                v22 = v19
             else
-                v18 = a2
+                v22 = a2
             end
-            if math.abs(inst_3.LocalTransparencyModifier - v18) > 0.001 then
-                inst_3.LocalTransparencyModifier = v18
+            if math.abs(inst_3.LocalTransparencyModifier - v22) > 0.001 then
+                inst_3.LocalTransparencyModifier = v22
             end
         end
     end
 end
-local tbl_upv_17 = {}
-local tbl_upv_18 = {Low = 4, High = 1, Medium = 2}
-local u55 = 1
-local tbl_upv_19 = {}
-local u56 = OverlapParams.new()
-u56.FilterType = Enum.RaycastFilterType.Exclude
+local tbl_upv_18 = {}
+local tbl_upv_19 = {Low = 4, High = 1, Medium = 2}
+local u72 = 1
+local tbl_upv_20 = {}
+local u73 = OverlapParams.new()
+u73.FilterType = Enum.RaycastFilterType.Exclude
 local function clearPropFade()
     --[[
       name: clearPropFade
-      line: 445
+      line: 524
       upvalues:
-        tbl_upv_17 (copy, index: 1)
+        tbl_upv_18 (copy, index: 1)
     ]]
-    for key_1 in tbl_upv_17 do
+    for key_1 in tbl_upv_18 do
         if key_1.Parent then
             key_1.LocalTransparencyModifier = 0
         end
     end
-    table.clear(tbl_upv_17)
+    table.clear(tbl_upv_18)
 end
 local function propFadeable(a1)
     --[[
       name: propFadeable
-      line: 463
+      line: 542
     ]]
     if a1.Transparency >= 1 or a1:HasTag("Foliage") or a1.Size.Magnitude >= 80 then
         return false
@@ -576,123 +686,123 @@ local function propFadeable(a1)
     if math.max(math.min(Size_1.X, Size_1.Y), math.min(math.max(Size_1.X, Size_1.Y), Size_1.Z)) >= 6 then
         return false
     end
-    local v24 = a1:FindFirstAncestorWhichIsA("Model")
-    while v24 do
-        if v24:FindFirstChildOfClass("Humanoid") or v24:HasTag("BearTrap") then
+    local v28 = a1:FindFirstAncestorWhichIsA("Model")
+    while v28 do
+        if v28:FindFirstChildOfClass("Humanoid") or v28:HasTag("BearTrap") then
             return false
         end
-        v24 = v24:FindFirstAncestorWhichIsA("Model")
+        v28 = v28:FindFirstAncestorWhichIsA("Model")
     end
     return true
 end
 local function markProp(a1)
     --[[
       name: markProp
-      line: 482
+      line: 561
       upvalues:
-        tbl_upv_19 (copy, index: 1)
-        tbl_upv_17 (copy, index: 2)
+        tbl_upv_20 (copy, index: 1)
+        tbl_upv_18 (copy, index: 2)
     ]]
-    tbl_upv_19[a1] = true
-    if (tbl_upv_17[a1]) then
+    tbl_upv_20[a1] = true
+    if (tbl_upv_18[a1]) then
         return
     end
-    tbl_upv_17[a1] = true
+    tbl_upv_18[a1] = true
     a1.LocalTransparencyModifier = 0.7
 end
-local u57 = RaycastParams.new()
-u57.FilterType = Enum.RaycastFilterType.Exclude
+local u74 = RaycastParams.new()
+u74.FilterType = Enum.RaycastFilterType.Exclude
 local function boxDistance(a1, a2)
     --[[
       name: boxDistance
-      line: 454
+      line: 533
     ]]
-    local v25 = a1.CFrame:PointToObjectSpace(a2)
-    local v26 = a1.Size * 0.5
-    return Vector3.new(math.max(math.abs(v25.X) - v26.X, 0), math.max(math.abs(v25.Y) - v26.Y, 0), math.max(math.abs(v25.Z) - v26.Z, 0)).Magnitude
+    local v29 = a1.CFrame:PointToObjectSpace(a2)
+    local v30 = a1.Size * 0.5
+    return Vector3.new(math.max(math.abs(v29.X) - v30.X, 0), math.max(math.abs(v29.Y) - v30.Y, 0), math.max(math.abs(v29.Z) - v30.Z, 0)).Magnitude
 end
 local function updatePropFade(a1, a2, a3)
     --[[
       name: updatePropFade
-      line: 495
+      line: 574
       upvalues:
-        u47 (ref,  index: 1)
-        u56 (copy, index: 2)
-        tbl_upv_19 (copy, index: 3)
+        u64 (ref,  index: 1)
+        u73 (copy, index: 2)
+        tbl_upv_20 (copy, index: 3)
         Workspace_upv_1 (copy, index: 4)
         propFadeable (copy, index: 5)
         boxDistance (copy, index: 6)
-        tbl_upv_17 (copy, index: 7)
-        u57 (copy, index: 8)
+        tbl_upv_18 (copy, index: 7)
+        u74 (copy, index: 8)
         Occlusion_upv_1 (copy, index: 9)
     ]]
-    if u47 then
-        u56.FilterDescendantsInstances = a3
-        u47 = false
+    if u64 then
+        u73.FilterDescendantsInstances = a3
+        u64 = false
     end
-    table.clear(tbl_upv_19)
-    local success_1, v27 = pcall(
+    table.clear(tbl_upv_20)
+    local success_1, v31 = pcall(
         function()
             --[[
-              line: 501
+              line: 580
               upvalues:
                 Workspace_upv_1 (copy, index: 1)
                 a1 (copy, index: 2)
-                u56 (copy, index: 3)
+                u73 (copy, index: 3)
             ]]
-            return Workspace_upv_1:GetPartBoundsInRadius(a1, 4.2, u56)
+            return Workspace_upv_1:GetPartBoundsInRadius(a1, 4.2, u73)
         end
     )
     if success_1 then
-        for _, value_9 in v27 do
+        for _, value_9 in v31 do
             if not (a1.Y - 1 < value_9.Position.Y + (value_9.Size.Y / 2)) or not (propFadeable(value_9)) then
                 continue
             end
-            local v28 = boxDistance(value_9, a1)
-            if not (v28 <= (((tbl_upv_17[value_9]) and 0.7) or 0) + 3.5) then
+            local v32 = boxDistance(value_9, a1)
+            if not (v32 <= (((tbl_upv_18[value_9]) and 0.7) or 0) + 3.5) then
                 continue
             end
-            tbl_upv_19[value_9] = true
-            if not (tbl_upv_17[value_9]) then
-                tbl_upv_17[value_9] = true
+            tbl_upv_20[value_9] = true
+            if not (tbl_upv_18[value_9]) then
+                tbl_upv_18[value_9] = true
                 value_9.LocalTransparencyModifier = 0.7
             end
         end
     end
     if a2 then
-        u57.FilterDescendantsInstances = a3
-        v27 = a1
+        u74.FilterDescendantsInstances = a3
+        v31 = a1
         for _ = 1, 4 do
-            local v29 = a2 - v27
-            local v30
-            if v29.Magnitude < 0.05 then
+            local v33 = a2 - v31
+            local v34
+            if v33.Magnitude < 0.05 then
                 break
             end
-            v30 = Workspace_upv_1:Raycast(v27, v29, u57)
-            local v31
-            if not (v30) then
+            v34 = Workspace_upv_1:Raycast(v31, v33, u74)
+            local v35
+            if not (v34) then
                 break
             end
-            v31 = v30.Instance
-            if not (v31:IsA("BasePart")) or Occlusion_upv_1.Classify(v31) ~= 2 or not (propFadeable(v31)) then
-                u57:AddToFilter(v31)
-                v27 = v30.Position
+            v35 = v34.Instance
+            if not (v35:IsA("BasePart")) or Occlusion_upv_1.Classify(v35) ~= 2 or not (propFadeable(v35)) then
+                u74:AddToFilter(v35)
+                v31 = v34.Position
                 continue
             end
-            tbl_upv_19[v31] = true
-            if not (tbl_upv_17[v31]) then
-                tbl_upv_17[v31] = true
-                v31.LocalTransparencyModifier = 0.7
+            tbl_upv_20[v35] = true
+            if not (tbl_upv_18[v35]) then
+                tbl_upv_18[v35] = true
+                v35.LocalTransparencyModifier = 0.7
             end
-            u57:AddToFilter(v31)
-            v27 = v30.Position
+            u74:AddToFilter(v35)
+            v31 = v34.Position
         end
     end
-    for key_2 in tbl_upv_17 do
-        if tbl_upv_19[key_2] then
+    for key_2 in tbl_upv_18 do
+        if tbl_upv_20[key_2] then
             continue
         end
-        tbl_upv_17[key_2] = nil
+        tbl_upv_18[key_2] = nil
         if key_2.Parent then
             key_2.LocalTransparencyModifier = 0
         end
@@ -701,7 +811,7 @@ end
 local function applyMouseBehavior()
     --[[
       name: applyMouseBehavior
-      line: 555
+      line: 634
       upvalues:
         u11 (ref,  index: 1)
         u28 (ref,  index: 2)
@@ -713,11 +823,11 @@ local function applyMouseBehavior()
         return
     end
     if not (u28) then
-        local v32 = true
+        local v36 = true
         if next(tbl_upv_3) == nil then
-            v32 = GuiService_upv_1.MenuIsOpen
+            v36 = GuiService_upv_1.MenuIsOpen
         end
-        if v32 then
+        if v36 then
             if UserInputService_upv_1.MouseBehavior ~= Enum.MouseBehavior.Default then
                 UserInputService_upv_1.MouseBehavior = Enum.MouseBehavior.Default
             end
@@ -735,17 +845,17 @@ local function applyMouseBehavior()
         end
     end
 end
-local tbl_upv_20 = {}
-tbl_upv_20[Enum.HumanoidStateType.Running] = true
-tbl_upv_20[Enum.HumanoidStateType.RunningNoPhysics] = true
-tbl_upv_20[Enum.HumanoidStateType.Jumping] = true
-tbl_upv_20[Enum.HumanoidStateType.Freefall] = true
-tbl_upv_20[Enum.HumanoidStateType.Landed] = true
-tbl_upv_20[Enum.HumanoidStateType.GettingUp] = true
+local tbl_upv_21 = {}
+tbl_upv_21[Enum.HumanoidStateType.Running] = true
+tbl_upv_21[Enum.HumanoidStateType.RunningNoPhysics] = true
+tbl_upv_21[Enum.HumanoidStateType.Jumping] = true
+tbl_upv_21[Enum.HumanoidStateType.Freefall] = true
+tbl_upv_21[Enum.HumanoidStateType.Landed] = true
+tbl_upv_21[Enum.HumanoidStateType.GettingUp] = true
 local function releaseAutoRotate(a1)
     --[[
       name: releaseAutoRotate
-      line: 589
+      line: 668
       upvalues:
         u26 (ref,  index: 1)
         u27 (ref,  index: 2)
@@ -761,48 +871,48 @@ end
 local function updateCharacterRotation(a1, a2, a3, a4)
     --[[
       name: updateCharacterRotation
-      line: 597
+      line: 676
       upvalues:
         tbl_upv_5 (copy, index: 1)
-        tbl_upv_20 (copy, index: 2)
+        tbl_upv_21 (copy, index: 2)
         u26 (ref,  index: 3)
         u27 (ref,  index: 4)
         Simulation_upv_1 (copy, index: 5)
         Smoothing_upv_1 (copy, index: 6)
         u4 (ref,  index: 7)
         u6 (ref,  index: 8)
-        u52 (ref,  index: 9)
+        u69 (ref,  index: 9)
     ]]
-    local v33 = not a4 and ((next(tbl_upv_5) == nil) and ((a3.Health > 0) and (not a2.Anchored and ((tbl_upv_20[a3:GetState()] == true) and ((a3.Sit == false) and (a3.PlatformStand == false))))))
-    if v33 then
+    local v37 = not a4 and ((next(tbl_upv_5) == nil) and ((a3.Health > 0) and (not a2.Anchored and ((tbl_upv_21[a3:GetState()] == true) and ((a3.Sit == false) and (a3.PlatformStand == false))))))
+    if v37 then
         u27 = true
-        local _, v34 = Smoothing_upv_1.SimCFrame(a2):ToEulerAnglesYXZ()
-        local v35 = ((u4 - v34) + math.pi) % math.tau - math.pi
-        local v36 = a3.MoveDirection.Magnitude > 0.05
-        local v37 = (a2.Parent ~= nil) and (a2.Parent:FindFirstChildOfClass("Tool") ~= nil)
-        local v38 = v36 or (v37 or (u6 or u52))
-        if v38 then
+        local _, v38 = Smoothing_upv_1.SimCFrame(a2):ToEulerAnglesYXZ()
+        local v39 = ((u4 - v38) + math.pi) % math.tau - math.pi
+        local v40 = a3.MoveDirection.Magnitude > 0.05
+        local v41 = (a2.Parent ~= nil) and (a2.Parent:FindFirstChildOfClass("Tool") ~= nil)
+        local v42 = v40 or (v41 or (u6 or u69))
+        if v42 then
             u26 = false
         else
-            if math.abs(v35) > 1.7453292519943295 then
+            if math.abs(v39) > 1.7453292519943295 then
                 u26 = true
             end
-            if u26 and math.abs(v35) < 0.06981317007977318 then
+            if u26 and math.abs(v39) < 0.06981317007977318 then
                 u26 = false
             end
-            v38 = u26
+            v42 = u26
         end
-        if v38 then
-            if u52 then
-                v38 = 40
-            elseif u6 or v37 then
-                v38 = 30
+        if v42 then
+            if u69 then
+                v42 = 40
+            elseif u6 or v41 then
+                v42 = 30
             else
-                v38 = (v36 and 18) or 12
+                v42 = (v40 and 18) or 12
             end
-            Simulation_upv_1.SetFacing(v34 + (v35 * (1 - math.exp(-v38 * math.max(a1, 0.016666666666666666)))))
+            Simulation_upv_1.SetFacing(v38 + (v39 * (1 - math.exp(-v42 * math.max(a1, 0.016666666666666666)))))
         else
-            Simulation_upv_1.SetFacing(v34)
+            Simulation_upv_1.SetFacing(v38)
         end
     else
         u26 = false
@@ -812,11 +922,11 @@ local function updateCharacterRotation(a1, a2, a3, a4)
         end
     end
 end
-local tbl_upv_21 = {Vector3.new(-1, -1, -1), Vector3.new(-1, -1, 1), Vector3.new(-1, 1, -1), Vector3.new(-1, 1, 1), Vector3.new(1, -1, -1), Vector3.new(1, -1, 1), Vector3.new(1, 1, -1), Vector3.new(1, 1, 1)}
+local tbl_upv_22 = {Vector3.new(-1, -1, -1), Vector3.new(-1, -1, 1), Vector3.new(-1, 1, -1), Vector3.new(-1, 1, 1), Vector3.new(1, -1, -1), Vector3.new(1, -1, 1), Vector3.new(1, 1, -1), Vector3.new(1, 1, 1)}
 local function frameSubject(a1, a2, a3, a4)
     --[[
       name: frameSubject
-      line: 682
+      line: 761
       upvalues:
         Finite_upv_1 (copy, index: 1)
         u42 (ref,  index: 2)
@@ -845,26 +955,26 @@ local function frameSubject(a1, a2, a3, a4)
     u24 = a3
     u16.target = a3.Y
     u16:Update(a1)
-    local v39 = math.clamp(u16.value, a3.Y - 1.5, a3.Y + 1.5)
-    u16.value = v39
-    local v40 = CFrame.fromEulerAnglesYXZ(0, u4, 0)
-    local v41 = u18.value + tbl_upv_1.SlowRecoil.value
-    local v42 = CFrame.fromEulerAnglesYXZ(u5 + v41.X, u4 + v41.Y, v41.Z)
-    local v43 = Vector3.new(a3.X, (v39 + 3.1) + u17.value, a3.Z) + v40:VectorToWorldSpace(u15.value)
-    local v44 = Vector3.new(a3.X, a3.Y + 0.5, a3.Z)
+    local v43 = math.clamp(u16.value, a3.Y - 1.5, a3.Y + 1.5)
+    u16.value = v43
+    local v44 = CFrame.fromEulerAnglesYXZ(0, u4, 0)
+    local v45 = u18.value + tbl_upv_1.SlowRecoil.value
+    local v46 = CFrame.fromEulerAnglesYXZ(u5 + v45.X, u4 + v45.Y, v45.Z)
+    local v47 = Vector3.new(a3.X, (v43 + 3.1) + u17.value, a3.Z) + v44:VectorToWorldSpace(u15.value)
+    local v48 = Vector3.new(a3.X, a3.Y + 0.5, a3.Z)
     local Frame_1 = Occlusion_upv_1.Frame
-    local RightVector_1 = v40.RightVector
-    local LookVector_2 = v42.LookVector
-    local v45 = Shoulder_upv_1.Value()
-    local v46 = (u6 and 2.8) or 2.9
-    local v47, v48, v49 = Frame_1(a1, v44, v43, RightVector_1, LookVector_2, v45, u14.value, a4, v46)
-    Shoulder_upv_1.Update(v49, v40.RightVector, 2.9, a4)
-    return CFrame.new(v47) * v42.Rotation, v48
+    local RightVector_1 = v44.RightVector
+    local LookVector_2 = v46.LookVector
+    local v49 = Shoulder_upv_1.Value()
+    local v50 = (u6 and 2.8) or 2.9
+    local v51, v52, v53 = Frame_1(a1, v48, v47, RightVector_1, LookVector_2, v49, u14.value, a4, v50)
+    Shoulder_upv_1.Update(v53, v44.RightVector, 2.9, a4)
+    return CFrame.new(v51) * v46.Rotation, v52
 end
 local function focusPointOf(a1)
     --[[
       name: focusPointOf
-      line: 742
+      line: 821
     ]]
     local Head_2 = a1:FindFirstChild("Head")
     if Head_2 and Head_2:IsA("BasePart") then
@@ -876,72 +986,72 @@ local function focusPointOf(a1)
     end
     return nil
 end
-local u58 = OverlapParams.new()
-u58.FilterType = Enum.RaycastFilterType.Exclude
-u58.RespectCanCollide = true
+local u75 = OverlapParams.new()
+u75.FilterType = Enum.RaycastFilterType.Exclude
+u75.RespectCanCollide = true
 local function spotIsFree(a1, a2)
     --[[
       name: spotIsFree
-      line: 758
+      line: 837
       upvalues:
-        u58 (copy, index: 1)
+        u75 (copy, index: 1)
     ]]
-    u58.FilterDescendantsInstances = a2
-    local success_2, v50 = pcall(function() end)
-    return success_2 and (#v50 == 0)
+    u75.FilterDescendantsInstances = a2
+    local success_2, v54 = pcall(function() end)
+    return success_2 and (#v54 == 0)
 end
-local u59 = nil
-local u60 = nil
+local u76 = nil
+local u77 = nil
 local function sees(a1, a2, a3)
     --[[
       name: sees
-      line: 772
+      line: 851
       upvalues:
         Occlusion_upv_1 (copy, index: 1)
     ]]
-    local v51 = (a2 - a1).Magnitude - 0.5 <= Occlusion_upv_1.Cast(a1, a2, a3)
-    return v51
+    local v55 = (a2 - a1).Magnitude - 0.5 <= Occlusion_upv_1.Cast(a1, a2, a3)
+    return v55
 end
 local function pickDeathSpot(a1, a2, a3)
     --[[
       name: pickDeathSpot
-      line: 776
+      line: 855
       upvalues:
-        u60 (ref,  index: 1)
+        u77 (ref,  index: 1)
         Occlusion_upv_1 (copy, index: 2)
-        u58 (copy, index: 3)
+        u75 (copy, index: 3)
         Workspace_upv_1 (copy, index: 4)
     ]]
-    local v52 = u60
-    local v53 = nil
-    if v52 then
-        v53 = (a2 - v52).Magnitude - 0.5 <= Occlusion_upv_1.Cast(v52, a2, a3)
-        if v53 then
-            return u60
+    local v56 = u77
+    local v57 = nil
+    if v56 then
+        v57 = (a2 - v56).Magnitude - 0.5 <= Occlusion_upv_1.Cast(v56, a2, a3)
+        if v57 then
+            return u77
         end
     end
-    local v54 = Vector3.new(a1.X - a2.X, 0, a1.Z - a2.Z)
-    local v55 = ((not (v54.Magnitude > 0.1)) and Vector3.new(0, 0, 1)) or (v54.Unit)
-    for key_3, value_upv_10 in {a1, a1 + Vector3.new(0, 7, 0), a1 + Vector3.new(0, 14, 0), (a2 + (v55 * 16)) + Vector3.new(0, 8, 0), (a2 + (v55 * 11)) + Vector3.new(0, 4, 0), (a2 + (v55 * 14)) + Vector3.new(0, 18, 0)} do
-        local v56 = (a2 - value_upv_10).Magnitude - 0.5 <= Occlusion_upv_1.Cast(value_upv_10, a2, a3)
-        if not (v56) then
+    local v58 = Vector3.new(a1.X - a2.X, 0, a1.Z - a2.Z)
+    local v59 = ((not (v58.Magnitude > 0.1)) and Vector3.new(0, 0, 1)) or (v58.Unit)
+    for key_3, value_upv_10 in {a1, a1 + Vector3.new(0, 7, 0), a1 + Vector3.new(0, 14, 0), (a2 + (v59 * 16)) + Vector3.new(0, 8, 0), (a2 + (v59 * 11)) + Vector3.new(0, 4, 0), (a2 + (v59 * 14)) + Vector3.new(0, 18, 0)} do
+        local v60 = (a2 - value_upv_10).Magnitude - 0.5 <= Occlusion_upv_1.Cast(value_upv_10, a2, a3)
+        if not (v60) then
             continue
         end
         if key_3 ~= 1 then
-            u58.FilterDescendantsInstances = a3
-            local success_3, v57 = pcall(
+            u75.FilterDescendantsInstances = a3
+            local success_3, v61 = pcall(
                 function()
                     --[[
-                      line: 760
+                      line: 839
                       upvalues:
                         Workspace_upv_1 (copy, index: 1)
                         value_upv_10 (copy, index: 2)
-                        u58 (copy, index: 3)
+                        u75 (copy, index: 3)
                     ]]
-                    return Workspace_upv_1:GetPartBoundsInRadius(value_upv_10, 0.6, u58)
+                    return Workspace_upv_1:GetPartBoundsInRadius(value_upv_10, 0.6, u75)
                 end
             )
-            if not success_3 or #v57 ~= 0 then
+            if not success_3 or #v61 ~= 0 then
                 continue
             end
         end
@@ -952,60 +1062,60 @@ end
 local function deathView(a1)
     --[[
       name: deathView
-      line: 802
+      line: 881
       upvalues:
         Spectate_upv_1 (copy, index: 1)
         u36 (ref,  index: 2)
         focusPointOf (copy, index: 3)
         u8 (ref,  index: 4)
-        u60 (ref,  index: 5)
+        u77 (ref,  index: 5)
         tbl_upv_9 (copy, index: 6)
         pickDeathSpot (copy, index: 7)
         ignoreList (copy, index: 8)
         LocalPlayer_upv_1 (copy, index: 9)
         u37 (ref,  index: 12)
     ]]
-    local v58 = math.clamp(Spectate_upv_1.DeathElapsed() / 0.35, 0, 1)
-    local v59 = v58 * v58 * (3 - (v58 * 2))
-    local v60 = Spectate_upv_1.GetKiller()
-    local v61 = not (v60) or not (v60.Parent) or focusPointOf(v60)
-    local v62
-    if v61 then
-        local v63 = os.clock()
-        if u60 == nil or v63 - tbl_upv_9.deathSpot > 0.25 then
-            tbl_upv_9.deathSpot = v63
-            u60 = pickDeathSpot(u36.Position, v61, ignoreList(LocalPlayer_upv_1.Character))
+    local v62 = math.clamp(Spectate_upv_1.DeathElapsed() / 0.35, 0, 1)
+    local v63 = v62 * v62 * (3 - (v62 * 2))
+    local v64 = Spectate_upv_1.GetKiller()
+    local v65 = not (v64) or not (v64.Parent) or focusPointOf(v64)
+    local v66
+    if v65 then
+        local v67 = os.clock()
+        if u77 == nil or v67 - tbl_upv_9.deathSpot > 0.25 then
+            tbl_upv_9.deathSpot = v67
+            u77 = pickDeathSpot(u36.Position, v65, ignoreList(LocalPlayer_upv_1.Character))
         end
-        v62 = u60
+        v66 = u77
     else
-        local v64 = u36.Position + Vector3.new(0, 3, 0)
-        local v65 = Spectate_upv_1.GetDeathPosition() or (u36.Position + u36.LookVector * 10)
-        v62, v61 = v64, v65
+        local v68 = u36.Position + Vector3.new(0, 3, 0)
+        local v69 = Spectate_upv_1.GetDeathPosition() or (u36.Position + u36.LookVector * 10)
+        v66, v65 = v68, v69
     end
-    if v66 == nil then
-        v66 = u36.Position
+    if v70 == nil then
+        v70 = u36.Position
     end
-    v66 = v66:Lerp(v62, 1 - math.exp(a1 * -5))
-    local v67 = v66
-    local v68
-    if v60 and v60.Parent then
-        v68 = math.clamp(math.deg(math.atan(9 / math.max((v61 - v67).Magnitude, 1))) * 2, 35, u8)
+    v70 = v70:Lerp(v66, 1 - math.exp(a1 * -5))
+    local v71 = v70
+    local v72
+    if v64 and v64.Parent then
+        v72 = math.clamp(math.deg(math.atan(9 / math.max((v65 - v71).Magnitude, 1))) * 2, 35, u8)
     else
-        v68 = u8
+        v72 = u8
     end
-    if v69 ~= nil then
-        v69 = v69:Lerp(v61, 1 - math.exp(a1 * -8))
+    if v73 ~= nil then
+        v73 = v73:Lerp(v65, 1 - math.exp(a1 * -8))
     else
-        v69 = v61
+        v73 = v65
     end
-    local v70 = v69
-    local v71 = ((not ((v70 - v67).Magnitude > 0.1)) and (CFrame.new(v66) * u36.Rotation)) or (CFrame.lookAt(v66, v70))
-    return u36.Rotation:Lerp(v71.Rotation, v59) + v66, u37 + ((v68 - u37) * v59)
+    local v74 = v73
+    local v75 = ((not ((v74 - v71).Magnitude > 0.1)) and (CFrame.new(v70) * u36.Rotation)) or (CFrame.lookAt(v70, v74))
+    return u36.Rotation:Lerp(v75.Rotation, v63) + v70, u37 + ((v72 - u37) * v63)
 end
 function tbl_upv_2.fovNow()
     --[[
       name: fovNow
-      line: 846
+      line: 925
       upvalues:
         u7 (ref,  index: 1)
         u8 (ref,  index: 2)
@@ -1019,7 +1129,7 @@ end
 local function readLookInput(a1, a2, a3)
     --[[
       name: readLookInput
-      line: 853
+      line: 932
       upvalues:
         u10 (ref,  index: 1)
         u6 (ref,  index: 2)
@@ -1039,59 +1149,59 @@ local function readLookInput(a1, a2, a3)
         u2 (ref,  index: 16)
         u1 (ref,  index: 17)
     ]]
-    local v72 = u10 * a3
-    v72 = (u6 and (v72 * (math.clamp(tbl_upv_2.fovNow() / u8, 0.35, 1) * tbl_upv_2.sens))) or v72
-    local v73, v74 = nil, nil
+    local v76 = u10 * a3
+    v76 = (u6 and (v76 * (math.clamp(tbl_upv_2.fovNow() / u8, 0.35, 1) * tbl_upv_2.sens))) or v76
+    local v77, v78 = nil, nil
     if not (a2) then
         if UserInputService_upv_1.MouseBehavior == Enum.MouseBehavior.LockCenter and UserInputService_upv_1:GetLastInputType() ~= Enum.UserInputType.Touch then
-            local v75 = UserInputService_upv_1:GetMouseDelta()
-            local v76 = 0.006283185307179587 * v72
-            u4 = u4 - (v75.X * v76)
-            u5 = u5 - (v75.Y * v76)
+            local v79 = UserInputService_upv_1:GetMouseDelta()
+            local v80 = 0.006283185307179587 * v76
+            u4 = u4 - (v79.X * v80)
+            u5 = u5 - (v79.Y * v80)
         end
         zero_upv_1 = zero_upv_1 + AimAssist_upv_1.TakeInjected()
-        local v77, v78 = tbl_upv_1.PadLook.Step(u33, a1, u6)
-        local v79 = v78 * (v72 / u10)
-        local v80 = v77 * (v72 / u10) - (zero_upv_1.X * 0.01745) * v72
-        v73 = (-zero_upv_1.Y * 0.01745) * 0.66 * v72
-        if v73 * u5 > 0 then
-            v73 = v73 * (((1 - ((math.min(math.abs(u5), 1.5707963267948966) * 2 / math.pi) ^ 0.75)) * 0.75) + 0.25)
+        local v81, v82 = tbl_upv_1.PadLook.Step(u33, a1, u6)
+        local v83 = v82 * (v76 / u10)
+        local v84 = v81 * (v76 / u10) - (zero_upv_1.X * 0.01745) * v76
+        v77 = (-zero_upv_1.Y * 0.01745) * 0.66 * v76
+        if v77 * u5 > 0 then
+            v77 = v77 * (((1 - ((math.min(math.abs(u5), 1.5707963267948966) * 2 / math.pi) ^ 0.75)) * 0.75) + 0.25)
         end
         local Apply_1 = AimAssist_upv_1.Apply
-        v74 = LocalPlayer_upv_1:GetAttribute("CombatMode")
-        local v81
-        if v74 ~= nil then
-            v81 = v74 == true
+        v78 = LocalPlayer_upv_1:GetAttribute("CombatMode")
+        local v85
+        if v78 ~= nil then
+            v85 = v78 == true
         else
-            v81 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
+            v85 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
         end
-        local v82 = ignoreList(LocalPlayer_upv_1.Character)
-        local v83 = tbl_upv_2.fovNow()
-        local v84, v85 = Apply_1(a1, v80, v79 + v73, u4, u5, v81, v82, u6, v83, tbl_upv_6.CombatDraw ~= nil)
-        u4 = u4 + v84
-        u5 = u5 + v85
+        local v86 = ignoreList(LocalPlayer_upv_1.Character)
+        local v87 = tbl_upv_2.fovNow()
+        local v88, v89 = Apply_1(a1, v84, v83 + v77, u4, u5, v85, v86, u6, v87, tbl_upv_6.CombatDraw ~= nil)
+        u4 = u4 + v88
+        u5 = u5 + v89
         tbl_upv_8.touchLookPx = tbl_upv_8.touchLookPx + (math.abs(zero_upv_1.X) + math.abs(zero_upv_1.Y))
     end
     zero_upv_1 = Vector2.zero
     u4 = ((u4 + math.pi) % math.tau) - math.pi
-    local v86 = u2
+    local v90 = u2
     for _, value_11 in tbl_upv_6 do
         if not (value_11.maxPitch) then
             continue
         end
-        if value_11.maxPitch < v86 then
-            v86 = value_11.maxPitch
+        if value_11.maxPitch < v90 then
+            v90 = value_11.maxPitch
         end
     end
-    if v86 < u5 then
-        u5 = u5 + (v86 - u5) * (1 - math.exp(a1 * -5))
+    if v90 < u5 then
+        u5 = u5 + (v90 - u5) * (1 - math.exp(a1 * -5))
     end
     u5 = math.clamp(u5, u1, u2)
 end
 local function resetToOwnCharacter()
     --[[
       name: resetToOwnCharacter
-      line: 903
+      line: 982
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         u4 (ref,  index: 2)
@@ -1103,23 +1213,23 @@ local function resetToOwnCharacter()
         u41 (ref,  index: 8)
         u44 (ref,  index: 9)
     ]]
-    local v87
+    local v91
     if LocalPlayer_upv_1 then
-        v87 = LocalPlayer_upv_1.Character
+        v91 = LocalPlayer_upv_1.Character
     else
-        v87 = LocalPlayer_upv_1
+        v91 = LocalPlayer_upv_1
     end
-    local v88
-    if v87 then
-        local HumanoidRootPart_3 = v87:FindFirstChild("HumanoidRootPart")
-        local _ = v87:FindFirstChildOfClass("Humanoid")
-        v88 = ((HumanoidRootPart_3 and (HumanoidRootPart_3:IsA("BasePart"))) and HumanoidRootPart_3) or nil
+    local v92
+    if v91 then
+        local HumanoidRootPart_3 = v91:FindFirstChild("HumanoidRootPart")
+        local _ = v91:FindFirstChildOfClass("Humanoid")
+        v92 = ((HumanoidRootPart_3 and (HumanoidRootPart_3:IsA("BasePart"))) and HumanoidRootPart_3) or nil
     else
-        v88 = nil
+        v92 = nil
     end
-    if v88 then
-        local _ = v88.CFrame.LookVector
-        u4 = math.atan2(-v88.CFrame.LookVector.X, -v88.CFrame.LookVector.Z)
+    if v92 then
+        local _ = v92.CFrame.LookVector
+        u4 = math.atan2(-v92.CFrame.LookVector.X, -v92.CFrame.LookVector.Z)
         u5 = -0.20943951023931956
     end
     u24 = nil
@@ -1132,7 +1242,7 @@ end
 local function setLobby(a1, a2, a3)
     --[[
       name: setLobby
-      line: 920
+      line: 999
       upvalues:
         u28 (ref,  index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
@@ -1149,14 +1259,14 @@ local function setLobby(a1, a2, a3)
         u26 (ref,  index: 13)
         u27 (ref,  index: 14)
         Simulation_upv_1 (copy, index: 15)
-        u54 (ref,  index: 16)
-        tbl_upv_15 (copy, index: 17)
-        tbl_upv_16 (copy, index: 18)
-        u48 (ref,  index: 19)
-        u49 (ref,  index: 20)
-        u50 (ref,  index: 21)
-        u51 (ref,  index: 22)
-        tbl_upv_17 (copy, index: 23)
+        u71 (ref,  index: 16)
+        tbl_upv_16 (copy, index: 17)
+        tbl_upv_17 (copy, index: 18)
+        u65 (ref,  index: 19)
+        u66 (ref,  index: 20)
+        u67 (ref,  index: 21)
+        u68 (ref,  index: 22)
+        tbl_upv_18 (copy, index: 23)
         UserInputService_upv_1 (copy, index: 24)
         u4 (ref,  index: 25)
         u5 (ref,  index: 26)
@@ -1164,25 +1274,25 @@ local function setLobby(a1, a2, a3)
         u25 (ref,  index: 28)
     ]]
     u28 = a1
-    local v89
+    local v93
     if LocalPlayer_upv_1 then
-        v89 = LocalPlayer_upv_1.Character
+        v93 = LocalPlayer_upv_1.Character
     else
-        v89 = LocalPlayer_upv_1
+        v93 = LocalPlayer_upv_1
     end
-    local v90
-    if v89 then
-        local HumanoidRootPart_4 = v89:FindFirstChild("HumanoidRootPart")
-        local _ = v89:FindFirstChildOfClass("Humanoid")
-        v90 = ((HumanoidRootPart_4 and (HumanoidRootPart_4:IsA("BasePart"))) and HumanoidRootPart_4) or nil
+    local v94
+    if v93 then
+        local HumanoidRootPart_4 = v93:FindFirstChild("HumanoidRootPart")
+        local _ = v93:FindFirstChildOfClass("Humanoid")
+        v94 = ((HumanoidRootPart_4 and (HumanoidRootPart_4:IsA("BasePart"))) and HumanoidRootPart_4) or nil
     else
-        v90 = nil
+        v94 = nil
     end
     if u32 then
         CFrame_upv_1 = a2.CFrame
         FieldOfView_upv_1 = a2.FieldOfView
         u30 = 0
-        u31 = v90 and v90.Position
+        u31 = v94 and v94.Position
     end
     tbl_upv_1.PopMouseUnlock("FreeCursor")
     if a1 then
@@ -1198,8 +1308,8 @@ local function setLobby(a1, a2, a3)
             u27 = false
         end
         local _ = 0
-        if u54 ~= nil then
-            for v91, value_12 in tbl_upv_15 do
+        if u71 ~= nil then
+            for v95, value_12 in tbl_upv_16 do
                 local inst_4 = value_12.inst
                 if not (inst_4.Parent) then
                     continue
@@ -1208,23 +1318,23 @@ local function setLobby(a1, a2, a3)
                     inst_4.LocalTransparencyModifier = 0
                 end
             end
-            for v92, value_13 in tbl_upv_16 do
+            for v96, value_13 in tbl_upv_17 do
                 value_13:Disconnect()
             end
+            table.clear(tbl_upv_17)
             table.clear(tbl_upv_16)
-            table.clear(tbl_upv_15)
-            u54 = nil
-            u48 = true
-            u49 = -1
-            u50 = -1
-            u51 = false
+            u71 = nil
+            u65 = true
+            u66 = -1
+            u67 = -1
+            u68 = false
         end
-        for key_4 in tbl_upv_17 do
+        for key_4 in tbl_upv_18 do
             if key_4.Parent then
                 key_4.LocalTransparencyModifier = 0
             end
         end
-        table.clear(tbl_upv_17)
+        table.clear(tbl_upv_18)
         if a3 and a2.CameraSubject ~= a3 then
             a2.CameraSubject = a3
         end
@@ -1243,26 +1353,26 @@ end
 local function totalModifier()
     --[[
       name: totalModifier
-      line: 544
+      line: 623
       upvalues:
         tbl_upv_6 (copy, index: 1)
     ]]
-    local v91 = 0
-    local v92 = 0
-    local v93 = Vector3.new(0, 0, 0)
-    local v94 = 1
+    local v95 = 0
+    local v96 = 0
+    local v97 = Vector3.new(0, 0, 0)
+    local v98 = 1
     for _, value_14 in tbl_upv_6 do
-        v91 = v91 + (value_14.fov or 0)
-        v92 = v92 + (value_14.distance or 0)
-        v93 = v93 + (value_14.pivot or Vector3.new(0, 0, 0))
-        v94 = v94 * (value_14.sensitivity or 1)
+        v95 = v95 + (value_14.fov or 0)
+        v96 = v96 + (value_14.distance or 0)
+        v97 = v97 + (value_14.pivot or Vector3.new(0, 0, 0))
+        v98 = v98 * (value_14.sensitivity or 1)
     end
-    return v91, v92, v93, v94
+    return v95, v96, v97, v98
 end
 local function updateLobby(a1, a2, a3, a4)
     --[[
       name: updateLobby
-      line: 956
+      line: 1035
       upvalues:
         tbl_upv_4 (copy, index: 1)
         zero_upv_1 (ref,  index: 2)
@@ -1290,21 +1400,21 @@ local function updateLobby(a1, a2, a3, a4)
             a2.CameraType = Enum.CameraType.Custom
         end
         zero_upv_1 = Vector2.zero
-        local v95 = totalModifier()
-        u13.target = u8 + v95
+        local v99 = totalModifier()
+        u13.target = u8 + v99
         u13:Update(a1)
-        local v96 = math.clamp(u13.value, 20, 110)
-        local v97 = a2.CFrame
+        local v100 = math.clamp(u13.value, 20, 110)
+        local v101 = a2.CFrame
         if u29 then
             u29 = false
             local Position_1 = a2.Focus.Position
-            local v98 = math.clamp((v97.Position - a2.Focus.Position).Magnitude, 6, 40)
-            local v99 = CFrame.new(Position_1) * CFrame.fromEulerAnglesYXZ(u5, u4, 0) * CFrame.new(0, 0, v98)
-            a2.CFrame = v99
-            v97 = v99
+            local v102 = math.clamp((v101.Position - a2.Focus.Position).Magnitude, 6, 40)
+            local v103 = CFrame.new(Position_1) * CFrame.fromEulerAnglesYXZ(u5, u4, 0) * CFrame.new(0, 0, v102)
+            a2.CFrame = v103
+            v101 = v103
         else
-            local LookVector_4 = v97.LookVector
-            u4 = math.atan2(-v97.LookVector.X, -v97.LookVector.Z)
+            local LookVector_4 = v101.LookVector
+            u4 = math.atan2(-v101.LookVector.X, -v101.LookVector.Z)
             u5 = math.asin(math.clamp(LookVector_4.Y, -1, 1))
         end
         if u30 < 1 and CFrame_upv_1 then
@@ -1312,25 +1422,25 @@ local function updateLobby(a1, a2, a3, a4)
                 u30 = 1
             else
                 u30 = math.min(1, u30 + (a1 / 0.5))
-                local v100 = math.clamp(u30, 0, 1)
-                local v101 = v100 * v100 * (3 - (v100 * 2))
-                local v102 = CFrame_upv_1:Lerp(v97, v101)
-                v96 = FieldOfView_upv_1 + (v96 - FieldOfView_upv_1) * v101
-                a2.CFrame = v102
+                local v104 = math.clamp(u30, 0, 1)
+                local v105 = v104 * v104 * (3 - (v104 * 2))
+                local v106 = CFrame_upv_1:Lerp(v101, v105)
+                v100 = FieldOfView_upv_1 + (v100 - FieldOfView_upv_1) * v105
+                a2.CFrame = v106
             end
         end
-        local v103 = Smoothing_upv_1.CameraOffset()
-        if v103 ~= Vector3.new(0, 0, 0) then
-            a2.CFrame = a2.CFrame + v103
-            a2.Focus = a2.Focus + v103
+        local v107 = Smoothing_upv_1.CameraOffset()
+        if v107 ~= Vector3.new(0, 0, 0) then
+            a2.CFrame = a2.CFrame + v107
+            a2.Focus = a2.Focus + v107
         end
-        local v104 = Occlusion_upv_1.AboveWater(a2.CFrame)
-        if v104 ~= a2.CFrame then
-            a2.CFrame = v104
+        local v108 = Occlusion_upv_1.AboveWater(a2.CFrame)
+        if v108 ~= a2.CFrame then
+            a2.CFrame = v108
         end
-        a2.FieldOfView = v96
-        u42 = v104
-        u43 = v96
+        a2.FieldOfView = v100
+        u42 = v108
+        u43 = v100
         u32 = true
     else
         a2.CameraType = Enum.CameraType.Scriptable
@@ -1340,35 +1450,35 @@ end
 local function headCrowdsCrosshair(a1, a2)
     --[[
       name: headCrowdsCrosshair
-      line: 650
+      line: 729
       upvalues:
-        tbl_upv_15 (copy, index: 1)
-        tbl_upv_21 (copy, index: 2)
+        tbl_upv_16 (copy, index: 1)
+        tbl_upv_22 (copy, index: 2)
     ]]
-    local v105 = a1.ViewportSize / 2
-    local v106 = ((a2 and 40) or 16) * math.max(a1.ViewportSize.Y, 200) / 768
-    for _, value_15 in tbl_upv_15 do
+    local v109 = a1.ViewportSize / 2
+    local v110 = ((a2 and 40) or 16) * math.max(a1.ViewportSize.Y, 200) / 768
+    for _, value_15 in tbl_upv_16 do
         local inst_5 = value_15.inst
         if not (value_15.head) or not (inst_5:IsA("BasePart")) or not (inst_5.Parent) then
             continue
         end
         local CFrame_2 = inst_5.CFrame
-        local v107 = math.huge
-        local v108 = math.huge
-        local v109 = -math.huge
-        local v110 = -math.huge
-        for v114, value_16 in tbl_upv_21 do
-            local v111 = a1:WorldToViewportPoint(CFrame_2:PointToWorldSpace(inst_5.Size / 2 * value_16))
-            if v111.Z > 0 then
-                v107, v109, v108, v110 = math.min(v107, v111.X), math.max(v109, v111.X), math.min(v108, v111.Y), math.max(v110, v111.Y)
+        local v111 = math.huge
+        local v112 = math.huge
+        local v113 = -math.huge
+        local v114 = -math.huge
+        for v118, value_16 in tbl_upv_22 do
+            local v115 = a1:WorldToViewportPoint(CFrame_2:PointToWorldSpace(inst_5.Size / 2 * value_16))
+            if v115.Z > 0 then
+                v111, v113, v112, v114 = math.min(v111, v115.X), math.max(v113, v115.X), math.min(v112, v115.Y), math.max(v114, v115.Y)
             end
         end
-        if not (v107 <= v109) then
+        if not (v111 <= v113) then
             continue
         end
-        local v112 = math.max(v107 - v105.X, 0, v105.X - v109)
-        local v113 = math.max(v108 - v105.Y, 0, v105.Y - v110)
-        if not ((v112 * v112) + (v113 * v113) < v106 * v106) then
+        local v116 = math.max(v111 - v109.X, 0, v109.X - v113)
+        local v117 = math.max(v112 - v109.Y, 0, v109.Y - v114)
+        if not ((v116 * v116) + (v117 * v117) < v110 * v110) then
             continue
         end
         return true
@@ -1378,65 +1488,65 @@ end
 local function fovKickNow()
     --[[
       name: fovKickNow
-      line: 207
+      line: 286
       upvalues:
-        tbl_upv_12 (copy, index: 1)
+        tbl_upv_13 (copy, index: 1)
     ]]
-    if tbl_upv_12.amount == 0 then
+    if tbl_upv_13.amount == 0 then
         return 0
     end
-    local v114 = os.clock() - tbl_upv_12.t0
-    if v114 < tbl_upv_12.rise then
-        local v115 = math.clamp(v114 / tbl_upv_12.rise, 0, 1)
-        return tbl_upv_12.amount * ((v115 * v115) * (3 - (v115 * 2)))
+    local v118 = os.clock() - tbl_upv_13.t0
+    if v118 < tbl_upv_13.rise then
+        local v119 = math.clamp(v118 / tbl_upv_13.rise, 0, 1)
+        return tbl_upv_13.amount * ((v119 * v119) * (3 - (v119 * 2)))
     else
-        local v116 = (v114 - tbl_upv_12.rise) / tbl_upv_12.fall
-        if v116 >= 1 then
-            tbl_upv_12.amount = 0
+        local v120 = (v118 - tbl_upv_13.rise) / tbl_upv_13.fall
+        if v120 >= 1 then
+            tbl_upv_13.amount = 0
             return 0
         else
-            local v117 = math.clamp(v116, 0, 1)
-            return tbl_upv_12.amount * (1 - ((v117 * v117) * (3 - (v117 * 2))))
+            local v121 = math.clamp(v120, 0, 1)
+            return tbl_upv_13.amount * (1 - ((v121 * v121) * (3 - (v121 * 2))))
         end
     end
 end
 local function applyShake(a1, a2, a3)
     --[[
       name: applyShake
-      line: 716
+      line: 795
       upvalues:
         tbl_upv_7 (copy, index: 1)
     ]]
-    local v118 = 0
+    local v122 = 0
     for n_1 = #tbl_upv_7, 1, -1 do
-        local v119 = tbl_upv_7[n_1]
-        v119.t = v119.t + a2
-        if v119.duration <= v119.t then
+        local v123 = tbl_upv_7[n_1]
+        v123.t = v123.t + a2
+        if v123.duration <= v123.t then
             table.remove(tbl_upv_7, n_1)
         else
-            local _ = 1 - v119.t / v119.duration
-            v118 = v118 + v119.intensity * (1 - v119.t / v119.duration) * (1 - v119.t / v119.duration)
+            local _ = 1 - v123.t / v123.duration
+            v122 = v122 + v123.intensity * (1 - v123.t / v123.duration) * (1 - v123.t / v123.duration)
         end
     end
-    if v118 <= 0 then
+    if v122 <= 0 then
         return a1
     end
-    v118 = math.min(v118, 3) * (a3 or 1)
-    local v120 = os.clock() * 17
-    local v121 = v118 * 0.022689280275926284
-    local v122 = math.noise(v120, 0.37, 1.1) * 2 * v121
-    local v123 = math.noise(3.1, v120, 7.3) * 2 * v121
-    local v124 = math.noise(9.2, 4.4, v120) * 1.2 * v121
-    return a1 * CFrame.new((math.noise(v120, 11.3, 2.9) * 0.12) * v118, (math.noise(5.5, v120, 13.7) * 0.12) * v118, 0) * CFrame.Angles(v122, v123, v124)
+    v122 = math.min(v122, 3) * (a3 or 1)
+    local v124 = os.clock() * 17
+    local v125 = v122 * 0.022689280275926284
+    local v126 = math.noise(v124, 0.37, 1.1) * 2 * v125
+    local v127 = math.noise(3.1, v124, 7.3) * 2 * v125
+    local v128 = math.noise(9.2, 4.4, v124) * 1.2 * v125
+    return a1 * CFrame.new((math.noise(v124, 11.3, 2.9) * 0.12) * v122, (math.noise(5.5, v124, 13.7) * 0.12) * v122, 0) * CFrame.Angles(v126, v127, v128)
 end
 local function update(a1)
     --[[
       name: update
-      line: 1019
+      line: 1098
       upvalues:
         Guards_upv_1 (copy, index: 1)
         u11 (ref,  index: 2)
-        u52 (ref,  index: 3)
+        u69 (ref,  index: 3)
         Workspace_upv_1 (copy, index: 4)
         LocalPlayer_upv_1 (copy, index: 5)
         Finite_upv_1 (copy, index: 6)
@@ -1448,8 +1558,8 @@ local function update(a1)
         u37 (ref,  index: 12)
         u43 (ref,  index: 13)
         u38 (ref,  index: 14)
-        u59 (ref,  index: 15)
-        u60 (ref,  index: 16)
+        u76 (ref,  index: 15)
+        u77 (ref,  index: 16)
         u6 (ref,  index: 17)
         tbl_upv_7 (copy, index: 18)
         u39 (ref,  index: 19)
@@ -1509,7 +1619,7 @@ local function update(a1)
         fovKickNow (copy, index: 73)
         u32 (ref,  index: 74)
         tbl_upv_9 (copy, index: 75)
-        u55 (ref,  index: 76)
+        u72 (ref,  index: 76)
         updatePropFade (copy, index: 77)
         headCrowdsCrosshair (copy, index: 78)
         u19 (ref,  index: 79)
@@ -1525,58 +1635,58 @@ local function update(a1)
         if not CurrentCamera_1 then
             return
         end
-        local v125
+        local v129
         if LocalPlayer_upv_1 then
-            v125 = LocalPlayer_upv_1.Character
+            v129 = LocalPlayer_upv_1.Character
         else
-            v125 = LocalPlayer_upv_1
+            v129 = LocalPlayer_upv_1
         end
-        local v126, v127, v128
-        if v125 then
-            local HumanoidRootPart_5 = v125:FindFirstChild("HumanoidRootPart")
-            local v129 = v125:FindFirstChildOfClass("Humanoid")
-            v126 = ((HumanoidRootPart_5 and (HumanoidRootPart_5:IsA("BasePart"))) and HumanoidRootPart_5) or nil
-            v127, v128 = v129, v125
+        local v130, v131, v132
+        if v129 then
+            local HumanoidRootPart_5 = v129:FindFirstChild("HumanoidRootPart")
+            local v133 = v129:FindFirstChildOfClass("Humanoid")
+            v130 = ((HumanoidRootPart_5 and (HumanoidRootPart_5:IsA("BasePart"))) and HumanoidRootPart_5) or nil
+            v131, v132 = v133, v129
         else
-            v128 = nil
-            v126 = nil
-            v127 = nil
+            v132 = nil
+            v130 = nil
+            v131 = nil
         end
-        u52 = false
-        if v126 then
-            v125 = v126.Position
+        u69 = false
+        if v130 then
+            v129 = v130.Position
         else
-            v125 = nil
+            v129 = nil
         end
-        if v125 then
-            local v130 = Finite_upv_1.Vector(v125)
-            if not (v130) then
+        if v129 then
+            local v134 = Finite_upv_1.Vector(v129)
+            if not (v134) then
                 Finite_upv_1.Say("own root")
-                v125 = nil
+                v129 = nil
             end
         end
-        local v131 = v125 or u24
-        u35 = Spectate_upv_1.Step(v131)
-        local v135 = nil
-        local v137 = nil
+        local v135 = v129 or u24
+        u35 = Spectate_upv_1.Step(v135)
+        local v139 = nil
+        local v141 = nil
         if u35 ~= u35 then
             if u35 ~= "death" then
                 if u35 ~= "follow" then
                     if LocalPlayer_upv_1 then
-                        v135 = LocalPlayer_upv_1.Character
+                        v139 = LocalPlayer_upv_1.Character
                     else
-                        v135 = LocalPlayer_upv_1
+                        v139 = LocalPlayer_upv_1
+                    end
+                    if v139 then
+                        local HumanoidRootPart_6 = v139:FindFirstChild("HumanoidRootPart")
+                        v141 = v139:FindFirstChildOfClass("Humanoid")
+                        v135 = ((HumanoidRootPart_6 and (HumanoidRootPart_6:IsA("BasePart"))) and HumanoidRootPart_6) or nil
+                    else
+                        v135 = nil
                     end
                     if v135 then
-                        local HumanoidRootPart_6 = v135:FindFirstChild("HumanoidRootPart")
-                        v137 = v135:FindFirstChildOfClass("Humanoid")
-                        v131 = ((HumanoidRootPart_6 and (HumanoidRootPart_6:IsA("BasePart"))) and HumanoidRootPart_6) or nil
-                    else
-                        v131 = nil
-                    end
-                    if v131 then
-                        local _ = v131.CFrame.LookVector
-                        u4 = math.atan2(-v131.CFrame.LookVector.X, -v131.CFrame.LookVector.Z)
+                        local _ = v135.CFrame.LookVector
+                        u4 = math.atan2(-v135.CFrame.LookVector.X, -v135.CFrame.LookVector.Z)
                         u5 = -0.20943951023931956
                     end
                     u24 = nil
@@ -1594,8 +1704,8 @@ local function update(a1)
                 u36 = u42
                 u37 = u43
                 u38 = nil
-                u59 = nil
-                u60 = nil
+                u76 = nil
+                u77 = nil
                 u6 = false
                 table.clear(tbl_upv_7)
             end
@@ -1607,40 +1717,40 @@ local function update(a1)
             SpectateKeys_upv_1.SetActive(u35 == "follow", tbl_upv_1.SpectateNext)
             u30 = 1
         end
-        local v134 = false
+        local v138 = false
         if u35 == "none" then
-            v135 = LocalPlayer_upv_1:GetAttribute("CombatMode")
-            if v135 ~= nil then
-                v137 = v135 == true
+            v139 = LocalPlayer_upv_1:GetAttribute("CombatMode")
+            if v139 ~= nil then
+                v141 = v139 == true
             else
-                v137 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
+                v141 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
             end
-            v134 = not v137 and ((tbl_upv_10.target == 0) and (tbl_upv_10.blend == 0))
+            v138 = not v141 and ((tbl_upv_10.target == 0) and (tbl_upv_10.blend == 0))
         end
-        if v134 ~= u28 then
-            setLobby(v134, CurrentCamera_1, v127)
+        if v138 ~= u28 then
+            setLobby(v138, CurrentCamera_1, v131)
         end
         if u28 then
-            updateLobby(a1, CurrentCamera_1, v126, v127)
+            updateLobby(a1, CurrentCamera_1, v130, v131)
             Fades_upv_1.ClearAllies()
-            local v138 = Smoothing_upv_1.DrawnModel() or v128
-            local v139 = v138 and (v138:FindFirstChild("Head"))
+            local v142 = Smoothing_upv_1.DrawnModel() or v132
+            local v143 = v142 and (v142:FindFirstChild("Head"))
             local UpdateDecor_1 = Fades_upv_1.UpdateDecor
             local Position_2 = CurrentCamera_1.CFrame.Position
-            local HumanoidRootPart_6 = not (v139) or not (v139:IsA("BasePart")) or v139.Position
+            local HumanoidRootPart_6 = not (v143) or not (v143:IsA("BasePart")) or v143.Position
             UpdateDecor_1(Position_2, HumanoidRootPart_6)
         else
             if CurrentCamera_1.CameraType ~= Enum.CameraType.Scriptable then
                 CurrentCamera_1.CameraType = Enum.CameraType.Scriptable
             end
             applyMouseBehavior()
-            local v140 = true
+            local v144 = true
             if next(tbl_upv_3) == nil then
-                v140 = GuiService_upv_1.MenuIsOpen
+                v144 = GuiService_upv_1.MenuIsOpen
             end
-            local v141, v142, v143, v144 = totalModifier()
+            local v145, v146, v147, v148 = totalModifier()
             if u35 == "none" and next(tbl_upv_4) == nil then
-                readLookInput(a1, v140, v144)
+                readLookInput(a1, v144, v148)
             else
                 zero_upv_1 = Vector2.zero
             end
@@ -1655,26 +1765,26 @@ local function update(a1)
             Finite_upv_1.HealSpring(u13, 70, "fov")
             Finite_upv_1.HealSpring(u14, 10.5, "distance")
             Finite_upv_1.HealSpring(u15, Vector3.new(0, 0, 0), "pivot")
-            Finite_upv_1.HealSpring(u16, ((not v125) and 0) or (v125.Y), "height")
+            Finite_upv_1.HealSpring(u16, ((not v129) and 0) or (v129.Y), "height")
             Finite_upv_1.HealSpring(u17, 0, "dip")
             Finite_upv_1.HealSpring(u18, Vector3.new(0, 0, 0), "recoil")
             Finite_upv_1.HealSpring(tbl_upv_1.SlowRecoil, Vector3.new(0, 0, 0), "slow recoil")
-            local v133 = u35 ~= "none"
-            local v145
+            local v137 = u35 ~= "none"
+            local v149
             if u6 then
-                v145 = tbl_upv_2.fovNow()
+                v149 = tbl_upv_2.fovNow()
             else
-                v145 = ((not v133) and (u8 + v141)) or u8
+                v149 = ((not v137) and (u8 + v145)) or u8
             end
-            u13.target = v145
-            v145 = (u6 and (math.clamp(50 / tbl_upv_2.fovNow(), 1, 1.6) * 8 + v142)) or ((v133 and 10.5) or (u9 + v142))
-            u14.target = v145
-            if v133 then
-                v145 = Vector3.new(0, 0, 0)
+            u13.target = v149
+            v149 = (u6 and (math.clamp(50 / tbl_upv_2.fovNow(), 1, 1.6) * 8 + v146)) or ((v137 and 10.5) or (u9 + v146))
+            u14.target = v149
+            if v137 then
+                v149 = Vector3.new(0, 0, 0)
             else
-                v145 = v143
+                v149 = v147
             end
-            u15.target = v145
+            u15.target = v149
             u13:Update(a1)
             u14:Update(a1)
             Shoulder_upv_1.Step(a1, (u6 and 2.8) or 2.9)
@@ -1684,164 +1794,164 @@ local function update(a1)
             local SlowRecoil_1 = tbl_upv_1.SlowRecoil
             SlowRecoil_1.target = SlowRecoil_1.target * math.exp(-a1 / tbl_upv_1.SLOW_RECOIL_FADE)
             SlowRecoil_1:Update(a1)
-            v137 = tbl_upv_1.SlowRecoilStay
-            if v137.Magnitude > 1e-05 then
-                local v146 = v137 * (1 - math.exp(-a1 * 14))
-                u5 = math.clamp(u5 + v146.X, u1, u2)
-                u4 = (((u4 + v146.Y) + math.pi) % math.tau) - math.pi
-                tbl_upv_1.SlowRecoilStay = v137 - v146
+            v141 = tbl_upv_1.SlowRecoilStay
+            if v141.Magnitude > 1e-05 then
+                local v150 = v141 * (1 - math.exp(-a1 * 14))
+                u5 = math.clamp(u5 + v150.X, u1, u2)
+                u4 = (((u4 + v150.Y) + math.pi) % math.tau) - math.pi
+                tbl_upv_1.SlowRecoilStay = v141 - v150
             else
                 tbl_upv_1.SlowRecoilStay = Vector3.new(0, 0, 0)
             end
-            local v147, v148, _ = nil, nil, nil
-            local v176 = nil
+            local v151, v152, _ = nil, nil, nil
+            local v180 = nil
             if u35 == "death" then
-                local v149, v150 = deathView(a1)
-                v148 = v149.Position + v149.LookVector * 10
+                local v153, v154 = deathView(a1)
+                v152 = v153.Position + v153.LookVector * 10
                 u26 = false
                 if u27 then
                     Simulation_upv_1.SetFacing(nil)
                     u27 = false
                 end
-                setCharacterFade(Smoothing_upv_1.DrawnModel() or v128, 0, 0)
-                v145 = v150
+                setCharacterFade(Smoothing_upv_1.DrawnModel() or v132, 0, 0)
+                v149 = v154
             elseif u35 == "follow" then
-                local v151 = Spectate_upv_1.GetTarget()
-                local v152 = v151
-                local v196 = v152 and (v151:FindFirstChild("HumanoidRootPart"))
+                local v155 = Spectate_upv_1.GetTarget()
+                local v156 = v155
+                local v200 = v156 and (v155:FindFirstChild("HumanoidRootPart"))
                 u26 = false
                 if u27 then
                     Simulation_upv_1.SetFacing(nil)
                     u27 = false
                 end
-                setCharacterFade(Smoothing_upv_1.DrawnModel() or v128, 0, 0)
-                if v151 and v152 and v152:IsA("BasePart") then
-                    if Finite_upv_1.Vector(v152.Position) then
-                        if Finite_upv_1.Vector(v152.CFrame.LookVector) or Finite_upv_1.Say("follow root") then
-                            if v151 ~= u44 then
+                setCharacterFade(Smoothing_upv_1.DrawnModel() or v132, 0, 0)
+                if v155 and v156 and v156:IsA("BasePart") then
+                    if Finite_upv_1.Vector(v156.Position) then
+                        if Finite_upv_1.Vector(v156.CFrame.LookVector) or Finite_upv_1.Say("follow root") then
+                            if v155 ~= u44 then
                                 if u44 ~= nil then
                                     u39 = u42
                                     u40 = u43
                                     u41 = 0
                                 end
-                                u44 = v151
-                                local LookVector_5 = v152.CFrame.LookVector
+                                u44 = v155
+                                local LookVector_5 = v156.CFrame.LookVector
                                 u4 = math.atan2(-LookVector_5.X, -LookVector_5.Z)
                                 u5 = -0.17453292519943295
                             end
-                            local v153 = u4
-                            local LookVector_6 = v151.CFrame.LookVector
-                            u4 = ((v153 + (((((math.atan2(-LookVector_6.X, -LookVector_6.Z) - u4) + math.pi) % math.tau) - math.pi) * (1 - math.exp(a1 * -4)))) + math.pi) % math.tau - math.pi
+                            local v157 = u4
+                            local LookVector_6 = v155.CFrame.LookVector
+                            u4 = ((v157 + (((((math.atan2(-LookVector_6.X, -LookVector_6.Z) - u4) + math.pi) % math.tau) - math.pi) * (1 - math.exp(a1 * -4)))) + math.pi) % math.tau - math.pi
                             u5 = u5 + (-0.17453292519943295 - u5) * (1 - math.exp(a1 * -3))
-                            local v154, v155 = frameSubject(a1, v151, v151.Position, ignoreList(v151))
-                            v145 = math.clamp(u13.value, 20, 110)
-                            v147, v148 = v154, v155
+                            local v158, v159 = frameSubject(a1, v155, v155.Position, ignoreList(v155))
+                            v149 = math.clamp(u13.value, 20, 110)
+                            v151, v152 = v158, v159
                         else
-                            v147 = u42
-                            v145 = u43
-                            v148 = v147.Position + v147.LookVector * 10
+                            v151 = u42
+                            v149 = u43
+                            v152 = v151.Position + v151.LookVector * 10
                         end
                     elseif Finite_upv_1.Say("follow root") then
-                        if v151 ~= u44 then
+                        if v155 ~= u44 then
                             if u44 ~= nil then
                                 u39 = u42
                                 u40 = u43
                                 u41 = 0
                             end
-                            u44 = v151
-                            local LookVector_5 = v152.CFrame.LookVector
+                            u44 = v155
+                            local LookVector_5 = v156.CFrame.LookVector
                             u4 = math.atan2(-LookVector_5.X, -LookVector_5.Z)
                             u5 = -0.17453292519943295
                         end
-                        local v153 = u4
-                        local LookVector_6 = v151.CFrame.LookVector
-                        u4 = ((v153 + (((((math.atan2(-LookVector_6.X, -LookVector_6.Z) - u4) + math.pi) % math.tau) - math.pi) * (1 - math.exp(a1 * -4)))) + math.pi) % math.tau - math.pi
+                        local v157 = u4
+                        local LookVector_6 = v155.CFrame.LookVector
+                        u4 = ((v157 + (((((math.atan2(-LookVector_6.X, -LookVector_6.Z) - u4) + math.pi) % math.tau) - math.pi) * (1 - math.exp(a1 * -4)))) + math.pi) % math.tau - math.pi
                         u5 = u5 + (-0.17453292519943295 - u5) * (1 - math.exp(a1 * -3))
-                        local v154, v155 = frameSubject(a1, v151, v151.Position, ignoreList(v151))
-                        v145 = math.clamp(u13.value, 20, 110)
-                        v147, v148 = v154, v155
+                        local v158, v159 = frameSubject(a1, v155, v155.Position, ignoreList(v155))
+                        v149 = math.clamp(u13.value, 20, 110)
+                        v151, v152 = v158, v159
                     else
-                        v147 = u42
-                        v145 = u43
-                        v148 = v147.Position + v147.LookVector * 10
+                        v151 = u42
+                        v149 = u43
+                        v152 = v151.Position + v151.LookVector * 10
                     end
                 else
-                    v147 = u42
-                    v145 = u43
-                    v148 = v147.Position + v147.LookVector * 10
+                    v151 = u42
+                    v149 = u43
+                    v152 = v151.Position + v151.LookVector * 10
                 end
                 if u41 < 1 and u39 then
                     u41 = math.min(1, u41 + (a1 / 0.45))
-                    local v156 = math.clamp(u41, 0, 1)
-                    local v157 = v156 * v156 * (3 - (v156 * 2))
-                    local v158 = u39:Lerp(v147, v157)
-                    v145 = u40 + (v145 - u40) * v157
-                    v147, v147 = v158, v158
+                    local v160 = math.clamp(u41, 0, 1)
+                    local v161 = v160 * v160 * (3 - (v160 * 2))
+                    local v162 = u39:Lerp(v151, v161)
+                    v149 = u40 + (v149 - u40) * v161
+                    v151, v151 = v162, v162
                 end
-            elseif v126 and v128 and v125 then
-                if v127 then
-                    updateCharacterRotation(a1, v126, v127, v140)
+            elseif v130 and v132 and v129 then
+                if v131 then
+                    updateCharacterRotation(a1, v130, v131, v144)
                 end
-                local v159 = ignoreList(v128)
-                local v160 = v125 + Finite_upv_1.Offset(Smoothing_upv_1)
-                local v161, v162 = frameSubject(a1, v128, v160, v159)
-                local v163 = FirstPerson_upv_1.Step(a1, (tbl_upv_10.target == 0) and ((tbl_upv_10.blend == 0) and ((v127 ~= nil) and (v127.Health > 0))))
-                u52 = v163 >= 0.5
-                if v163 > 0 then
-                    local Head_3 = v128:FindFirstChild("Head")
+                local v163 = ignoreList(v132)
+                local v164 = v129 + Finite_upv_1.Offset(Smoothing_upv_1)
+                local v165, v166 = frameSubject(a1, v132, v164, v163)
+                local v167 = FirstPerson_upv_1.Step(a1, (tbl_upv_10.target == 0) and ((tbl_upv_10.blend == 0) and ((v131 ~= nil) and (v131.Health > 0))))
+                u69 = v167 >= 0.5
+                if v167 > 0 then
+                    local Head_3 = v132:FindFirstChild("Head")
                     local StepBob_1 = FirstPerson_upv_1.StepBob
-                    local v164 = (v127 ~= nil) and (v127.FloorMaterial ~= Enum.Material.Air)
-                    local v165 = v128:GetAttribute("Sliding") == true
-                    StepBob_1(a1, v160, v164, v165, v126.AssemblyLinearVelocity, StepBob_1)
-                    v161, v162, v176 = FirstPerson_upv_1.CameraBob()
+                    local v168 = (v131 ~= nil) and (v131.FloorMaterial ~= Enum.Material.Air)
+                    local v169 = v132:GetAttribute("Sliding") == true
+                    StepBob_1(a1, v164, v168, v169, v130.AssemblyLinearVelocity, StepBob_1)
+                    v165, v166, v180 = FirstPerson_upv_1.CameraBob()
                     local Eye_1 = FirstPerson_upv_1.Eye
-                    local v169 = not (Head_3) or not (Head_3:IsA("BasePart")) or Head_3
-                    local v170 = Eye_1(a1, v160, v126, v169, v161.LookVector) + Vector3.new(0, (u17.value * 0.5) + v166, 0)
-                    local v166 = CFrame.new(v170) * v161.Rotation * CFrame.Angles(v167, 0, v176)
-                    v176 = FirstPerson_upv_1.Eased()
-                    if v176 >= 1 then
-                        v147 = v166
+                    local v173 = not (Head_3) or not (Head_3:IsA("BasePart")) or Head_3
+                    local v174 = Eye_1(a1, v164, v130, v173, v165.LookVector) + Vector3.new(0, (u17.value * 0.5) + v170, 0)
+                    local v170 = CFrame.new(v174) * v165.Rotation * CFrame.Angles(v171, 0, v180)
+                    v180 = FirstPerson_upv_1.Eased()
+                    if v180 >= 1 then
+                        v151 = v170
                     else
-                        v147 = v161:Lerp(v166, v176)
+                        v151 = v165:Lerp(v170, v180)
                     end
-                    v148 = v162:Lerp(v170 + (v147.LookVector * 10), v176)
+                    v152 = v166:Lerp(v174 + (v151.LookVector * 10), v180)
                 else
-                    v148 = v162
+                    v152 = v166
                 end
-                local v171 = (u52 and 0.6) or 1
-                local v172 = applyShake(v147, a1, v171)
-                v145 = math.clamp(u13.value, 20, 110)
+                local v175 = (u69 and 0.6) or 1
+                local v176 = applyShake(v151, a1, v175)
+                v149 = math.clamp(u13.value, 20, 110)
                 if u30 < 1 and CFrame_upv_1 then
-                    if (u31) and ((v126.Position - u31).Magnitude > 40) then
+                    if (u31) and ((v130.Position - u31).Magnitude > 40) then
                         u30 = 1
-                        v147, v147 = v172, v172
+                        v151, v151 = v176, v176
                     else
                         u30 = math.min(1, u30 + (a1 / 0.5))
-                        local v173 = math.clamp(u30, 0, 1)
-                        local v174 = v173 * v173 * (3 - (v173 * 2))
-                        local v175 = CFrame_upv_1:Lerp(v172, v174)
-                        v145 = FieldOfView_upv_1 + (v145 - FieldOfView_upv_1) * v174
-                        v147, v147 = v175, v175
+                        local v177 = math.clamp(u30, 0, 1)
+                        local v178 = v177 * v177 * (3 - (v177 * 2))
+                        local v179 = CFrame_upv_1:Lerp(v176, v178)
+                        v149 = FieldOfView_upv_1 + (v149 - FieldOfView_upv_1) * v178
+                        v151, v151 = v179, v179
                     end
                 else
-                    v147, v147 = v172, v172
+                    v151, v151 = v176, v176
                 end
             end
             if tbl_upv_10.target > 0 then
-                v176 = os.clock() - tbl_upv_10.startedAt
-                v126 = false
-                if v176 > 0.5 then
-                    v126 = false
+                v180 = os.clock() - tbl_upv_10.startedAt
+                v130 = false
+                if v180 > 0.5 then
+                    v130 = false
                     if next(tbl_upv_3) == nil then
-                        local v198 = u20 and u20.untilStopped
-                        v126 = not u20 or not u20.untilStopped
+                        local v202 = u20 and u20.untilStopped
+                        v130 = not u20 or not u20.untilStopped
                     end
                 end
-                local v177 = true
-                if u22 == v128 then
-                    v177 = (v127 ~= nil) and (v127.Health <= 0)
+                local v181 = true
+                if u22 == v132 then
+                    v181 = (v131 ~= nil) and (v131.Health <= 0)
                 end
-                if v126 or v177 or v176 > 120 then
+                if v130 or v181 or v180 > 120 then
                     tbl_upv_10.target = 0
                     u21 = 2.5
                 end
@@ -1853,188 +1963,188 @@ local function update(a1)
             end
             if u20 then
                 cf_upv_1 = u20.cf
-                local v178 = u20.fov or u23
-                u23 = v178
+                local v182 = u20.fov or u23
+                u23 = v182
             end
             if tbl_upv_10.blend > 0 then
-                local v179 = math.clamp(tbl_upv_10.blend, 0, 1)
-                local v180 = v179 * v179 * (3 - (v179 * 2))
-                local v181 = v147:Lerp(cf_upv_1, v180)
-                v145 = v145 + (u23 - v145) * v180
-                v147, v147 = v181, v181
+                local v183 = math.clamp(tbl_upv_10.blend, 0, 1)
+                local v184 = v183 * v183 * (3 - (v183 * 2))
+                local v185 = v151:Lerp(cf_upv_1, v184)
+                v149 = v149 + (u23 - v149) * v184
+                v151, v151 = v185, v185
             elseif tbl_upv_10.target == 0 then
                 u20 = nil
             end
             if tbl_upv_10.blend <= 0 then
-                local v182 = Occlusion_upv_1.AboveWater(v147)
-                v147, v147 = v182, v182
+                local v186 = Occlusion_upv_1.AboveWater(v151)
+                v151, v151 = v186, v186
             end
-            v145 = math.clamp(v145 + fovKickNow(), 20, 110)
-            if Finite_upv_1.Vector(v147.Position) and Finite_upv_1.Vector(v147.LookVector) and Finite_upv_1.Number(v145) then
-                local v183 = Finite_upv_1.Vector(v148)
-                if not v183 then
-                    v148 = v147.Position + v147.LookVector * 10
+            v149 = math.clamp(v149 + fovKickNow(), 20, 110)
+            if Finite_upv_1.Vector(v151.Position) and Finite_upv_1.Vector(v151.LookVector) and Finite_upv_1.Number(v149) then
+                local v187 = Finite_upv_1.Vector(v152)
+                if not v187 then
+                    v152 = v151.Position + v151.LookVector * 10
                 end
             else
                 Finite_upv_1.Say("view " .. u35)
-                v147 = u42
-                v145 = u43
-                v148 = v147.Position + v147.LookVector * 10
+                v151 = u42
+                v149 = u43
+                v152 = v151.Position + v151.LookVector * 10
             end
-            CurrentCamera_1.CFrame = v147
-            local v184
+            CurrentCamera_1.CFrame = v151
+            local v188
             if tbl_upv_10.blend > 0.5 then
-                v184 = cf_upv_1.Position
+                v188 = cf_upv_1.Position
             else
-                v184 = v148
+                v188 = v152
             end
-            CurrentCamera_1.Focus = CFrame.new(v184)
-            CurrentCamera_1.FieldOfView = v145
-            u42 = v147
-            u43 = v145
+            CurrentCamera_1.Focus = CFrame.new(v188)
+            CurrentCamera_1.FieldOfView = v149
+            u42 = v151
+            u43 = v149
             u32 = true
             if tbl_upv_1.FrameLog then
-                local v185 = v125 or Vector3.new(0, 0, 0)
-                local v186 = v185 + Finite_upv_1.Offset(Smoothing_upv_1)
+                local v189 = v129 or Vector3.new(0, 0, 0)
+                local v190 = v189 + Finite_upv_1.Offset(Smoothing_upv_1)
                 local value_17 = u15.value
-                local v187 = 0
-                for v199 in tbl_upv_4 do
-                    v187 = v187 + 1
+                local v191 = 0
+                for v203 in tbl_upv_4 do
+                    v191 = v191 + 1
                 end
                 local FrameLog_1 = tbl_upv_1.FrameLog
-                local tbl_22 = {os.clock(), a1, v147.X, v147.Y, v147.Z, u4, u5, v145, v185.X, v185.Y, v185.Z, v186.X, v186.Y, v186.Z, u14.value, Shoulder_upv_1.Value()}
+                local tbl_23 = {os.clock(), a1, v151.X, v151.Y, v151.Z, u4, u5, v149, v189.X, v189.Y, v189.Z, v190.X, v190.Y, v190.Z, u14.value, Shoulder_upv_1.Value()}
                 local X_1 = value_17.X
                 local Y_1 = value_17.Y
                 local Z_1 = value_17.Z
                 local value_18 = u16.value
                 local value_19 = u17.value
                 local value_20 = u13.value
-                local v188 = u30
-                local v189 = ((u35 == "none") and 0) or (((u35 ~= "death") and 2) or 1)
-                local v190 = Shoulder_upv_1.Get()
-                local v191 = ((LocalPlayer_upv_1:GetAttribute("Frozen") ~= true) and 0) or 1
-                tbl_22[17], tbl_22[18], tbl_22[19], tbl_22[20], tbl_22[21], tbl_22[22], tbl_22[23], tbl_22[24], tbl_22[25], tbl_22[26], tbl_22[27], tbl_22[28] = X_1, Y_1, Z_1, value_18, value_19, value_20, v188, v189, v187, v190, v191, u18.value.Magnitude
-                table.insert(FrameLog_1, tbl_22)
+                local v192 = u30
+                local v193 = ((u35 == "none") and 0) or (((u35 ~= "death") and 2) or 1)
+                local v194 = Shoulder_upv_1.Get()
+                local v195 = ((LocalPlayer_upv_1:GetAttribute("Frozen") ~= true) and 0) or 1
+                tbl_23[17], tbl_23[18], tbl_23[19], tbl_23[20], tbl_23[21], tbl_23[22], tbl_23[23], tbl_23[24], tbl_23[25], tbl_23[26], tbl_23[27], tbl_23[28] = X_1, Y_1, Z_1, value_18, value_19, value_20, v192, v193, v191, v194, v195, u18.value.Magnitude
+                table.insert(FrameLog_1, tbl_23)
             end
             if u35 == "none" then
-                v148 = Smoothing_upv_1.DrawnModel() or v128
-                v145 = (v125 or (v147.Position)) + Finite_upv_1.Offset(Smoothing_upv_1)
-                v125 = v148 and (v148:FindFirstChild("Head"))
-                local v192
-                if (v125) and (v125:IsA("BasePart")) then
-                    v192 = v125.Position
+                v152 = Smoothing_upv_1.DrawnModel() or v132
+                v149 = (v129 or (v151.Position)) + Finite_upv_1.Offset(Smoothing_upv_1)
+                v129 = v152 and (v152:FindFirstChild("Head"))
+                local v196
+                if (v129) and (v129:IsA("BasePart")) then
+                    v196 = v129.Position
                 else
-                    v192 = v145 + Vector3.new(0, 1.5, 0)
+                    v196 = v149 + Vector3.new(0, 1.5, 0)
                 end
-                v145 = (v147.Position - v192).Magnitude
-                local v193 = 0
-                if v145 < 2.6 then
-                    v125 = math.clamp((2.6 - v145) / 1.6, 0, 0.85)
+                v149 = (v151.Position - v196).Magnitude
+                local v197 = 0
+                if v149 < 2.6 then
+                    v129 = math.clamp((2.6 - v149) / 1.6, 0, 0.85)
                 else
-                    v125 = v193
+                    v129 = v197
                 end
                 if u20 and u20.hide then
-                    v125 = math.max(v125, tbl_upv_10.blend)
+                    v129 = math.max(v129, tbl_upv_10.blend)
                 end
-                local v194 = 0
-                if v128 and tbl_upv_10.blend < 0.5 then
-                    if u52 then
-                        v145 = v194
+                local v198 = 0
+                if v132 and tbl_upv_10.blend < 0.5 then
+                    if u69 then
+                        v149 = v198
                     else
-                        v145 = (headCrowdsCrosshair(CurrentCamera_1, u19) and 0.6) or v194
+                        v149 = (headCrowdsCrosshair(CurrentCamera_1, u19) and 0.6) or v198
                     end
                 else
-                    v145 = v194
+                    v149 = v198
                 end
-                if v145 > 0 then
-                    v184 = true
+                if v149 > 0 then
+                    v188 = true
                 else
-                    v184 = false
+                    v188 = false
                 end
-                u19 = v184
-                tbl_upv_9.headFade = tbl_upv_9.headFade + ((v145 - tbl_upv_9.headFade) * (1 - math.exp(a1 * -12)))
-                if v145 == 0 and tbl_upv_9.headFade < 0.02 then
+                u19 = v188
+                tbl_upv_9.headFade = tbl_upv_9.headFade + ((v149 - tbl_upv_9.headFade) * (1 - math.exp(a1 * -12)))
+                if v149 == 0 and tbl_upv_9.headFade < 0.02 then
                     tbl_upv_9.headFade = 0
                 end
-                local v195
-                if u52 then
-                    v195 = 0
+                local v199
+                if u69 then
+                    v199 = 0
                 else
-                    v195 = v125
+                    v199 = v129
                 end
-                setCharacterFade(v148, v195, tbl_upv_9.headFade, u52)
-                Fades_upv_1.UpdateAllies(v147.Position, v192, v128)
-                Fades_upv_1.UpdateDecor(v147.Position, v192)
+                setCharacterFade(v152, v199, tbl_upv_9.headFade, u69)
+                Fades_upv_1.UpdateAllies(v151.Position, v196, v132)
+                Fades_upv_1.UpdateDecor(v151.Position, v196)
                 tbl_upv_9.propFadeFrame = tbl_upv_9.propFadeFrame + 1
-                if not (u55 <= tbl_upv_9.propFadeFrame) then
+                if not (u72 <= tbl_upv_9.propFadeFrame) then
                     return
                 end
                 tbl_upv_9.propFadeFrame = 0
-                updatePropFade(v147.Position, v192, (ignoreList(v128)))
+                updatePropFade(v151.Position, v196, (ignoreList(v132)))
             else
                 tbl_upv_9.propFadeFrame = tbl_upv_9.propFadeFrame + 1
-                if u55 <= tbl_upv_9.propFadeFrame then
+                if u72 <= tbl_upv_9.propFadeFrame then
                     tbl_upv_9.propFadeFrame = 0
-                    updatePropFade(v147.Position, v148, (ignoreList(v128)))
+                    updatePropFade(v151.Position, v152, (ignoreList(v132)))
                 end
                 Fades_upv_1.ClearAllies()
-                Fades_upv_1.UpdateDecor(v147.Position, v148)
+                Fades_upv_1.UpdateDecor(v151.Position, v152)
             end
         end
     else
-        u52 = false
+        u69 = false
     end
 end
 local function countTouches()
     --[[
       name: countTouches
-      line: 1340
+      line: 1419
       upvalues:
         tbl_upv_11 (copy, index: 1)
     ]]
-    local v196 = 0
+    local v200 = 0
     for _ in tbl_upv_11 do
-        v196 = v196 + 1
+        v200 = v200 + 1
     end
-    return v196
+    return v200
 end
-local u61 = nil
+local u78 = nil
 local function inThumbstickArea(a1)
     --[[
       name: inThumbstickArea
-      line: 1354
+      line: 1433
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         Workspace_upv_1 (copy, index: 2)
     ]]
-    local v197 = LocalPlayer_upv_1:FindFirstChildOfClass("PlayerGui")
-    local v198 = v197 and (v197:FindFirstChild("TouchGui"))
-    if v198 and v198:IsA("ScreenGui") and v198.Enabled then
-        v197 = v198:FindFirstChild("TouchControlFrame")
+    local v201 = LocalPlayer_upv_1:FindFirstChildOfClass("PlayerGui")
+    local v202 = v201 and (v201:FindFirstChild("TouchGui"))
+    if v202 and v202:IsA("ScreenGui") and v202.Enabled then
+        v201 = v202:FindFirstChild("TouchControlFrame")
     else
-        v197 = nil
+        v201 = nil
     end
-    local v199 = false
-    v198 = v199
+    local v203 = false
+    v202 = v203
     for _, value_21 in {"DynamicThumbstickFrame", "ThumbstickFrame"} do
-        local v200 = v197 and (v197:FindFirstChild(value_21))
-        if not (v200) then
+        local v204 = v201 and (v201:FindFirstChild(value_21))
+        if not (v204) then
             continue
         end
-        local v201 = v200:IsA("GuiObject")
-        if not (v201) or not (v200.Visible) then
+        local v205 = v204:IsA("GuiObject")
+        if not (v205) or not (v204.Visible) then
             continue
         end
-        local v202 = true
-        local AbsolutePosition_1 = v200.AbsolutePosition
-        local v203 = AbsolutePosition_1 + v200.AbsoluteSize
-        if not (AbsolutePosition_1.X <= a1.X) or not (AbsolutePosition_1.Y <= a1.Y) or not (a1.X <= v203.X) or not (a1.Y <= v203.Y) then
-            v198 = v202
+        local v206 = true
+        local AbsolutePosition_1 = v204.AbsolutePosition
+        local v207 = AbsolutePosition_1 + v204.AbsoluteSize
+        if not (AbsolutePosition_1.X <= a1.X) or not (AbsolutePosition_1.Y <= a1.Y) or not (a1.X <= v207.X) or not (a1.Y <= v207.Y) then
+            v202 = v206
             continue
         end
         return true
     end
-    if v198 then
+    if v202 then
         return false
     end
     local CurrentCamera_2 = Workspace_upv_1.CurrentCamera
@@ -2043,9 +2153,9 @@ end
 local function onInputBegan(a1, a2)
     --[[
       name: onInputBegan
-      line: 1378
+      line: 1457
       upvalues:
-        u61 (ref,  index: 1)
+        u78 (ref,  index: 1)
         inThumbstickArea (copy, index: 2)
         tbl_upv_8 (copy, index: 3)
         tbl_upv_11 (copy, index: 4)
@@ -2055,27 +2165,27 @@ local function onInputBegan(a1, a2)
         return
     end
     if not (a2) then
-        local v204
-        if u61 then
-            v204 = u61.UserInputState
+        local v208
+        if u78 then
+            v208 = u78.UserInputState
         else
-            v204 = nil
+            v208 = nil
         end
-        if v204 == Enum.UserInputState.End or v204 == Enum.UserInputState.Cancel then
-            u61 = nil
+        if v208 == Enum.UserInputState.End or v208 == Enum.UserInputState.Cancel then
+            u78 = nil
         end
-        if (u61) or not inThumbstickArea(a1.Position) then
+        if (u78) or not inThumbstickArea(a1.Position) then
             tbl_upv_11[a1] = true
             u34 = nil
         end
-        u61 = a1
+        u78 = a1
         tbl_upv_8.touchesIgnored = tbl_upv_8.touchesIgnored + 1
     end
 end
 local function onInputChanged(a1, a2)
     --[[
       name: onInputChanged
-      line: 1397
+      line: 1476
       upvalues:
         tbl_upv_11 (copy, index: 1)
         Guards_upv_1 (copy, index: 2)
@@ -2090,27 +2200,27 @@ local function onInputChanged(a1, a2)
         end
     elseif tbl_upv_11[a1] then
         Guards_upv_1.PruneTouches(tbl_upv_11)
-        local v205 = 0
+        local v209 = 0
         for _ in tbl_upv_11 do
-            v205 = v205 + 1
+            v209 = v209 + 1
         end
-        if v205 == 1 then
+        if v209 == 1 then
             zero_upv_1 = zero_upv_1 + Vector2.new(a1.Delta.X, a1.Delta.Y)
-        elseif v205 == 2 then
-            local v206 = nil
-            local v207 = nil
-            local v208 = v206
+        elseif v209 == 2 then
+            local v210 = nil
+            local v211 = nil
+            local v212 = v210
             for key_5 in tbl_upv_11 do
-                if v208 then
-                    v207 = key_5
+                if v212 then
+                    v211 = key_5
                 else
-                    v208 = key_5
+                    v212 = key_5
                 end
             end
-            if not v208 or not v207 then
+            if not v212 or not v211 then
                 return
             end
-            local Magnitude_1 = (Vector2.new(v208.Position.X, v208.Position.Y) - Vector2.new(v207.Position.X, v207.Position.Y)).Magnitude
+            local Magnitude_1 = (Vector2.new(v212.Position.X, v212.Position.Y) - Vector2.new(v211.Position.X, v211.Position.Y)).Magnitude
             if u34 then
                 u9 = math.clamp(u9 - ((Magnitude_1 - u34) * 0.03), 7, 14)
             end
@@ -2121,16 +2231,16 @@ end
 local function onInputEnded(a1, a2)
     --[[
       name: onInputEnded
-      line: 1429
+      line: 1508
       upvalues:
-        u61 (ref,  index: 1)
+        u78 (ref,  index: 1)
         tbl_upv_11 (copy, index: 2)
         u34 (ref,  index: 3)
         u33 (ref,  index: 4)
     ]]
     if a1.UserInputType == Enum.UserInputType.Touch then
-        if a1 == u61 then
-            u61 = nil
+        if a1 == u78 then
+            u78 = nil
         end
         tbl_upv_11[a1] = nil
         u34 = nil
@@ -2138,71 +2248,23 @@ local function onInputEnded(a1, a2)
         u33 = Vector2.zero
     end
 end
-local u62 = (function()
-    --[[
-      line: 1443
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-    ]]
-    local u63 = nil
-    local v209 = function(a1, a2)
-        --[[
-          line: 1445
-          upvalues:
-            u63 (ref,  index: 1)
-            LocalPlayer_upv_1 (copy, index: 2)
-        ]]
-        if not (u63) then
-            local v210 = LocalPlayer_upv_1 and (LocalPlayer_upv_1:FindFirstChild("PlayerScripts") and (LocalPlayer_upv_1.PlayerScripts:FindFirstChild("Core")))
-            local v211 = v210 and (v210:FindFirstChild("InputStats"))
-            if v211 and v211:IsA("ModuleScript") then
-                u63 = require(v211)
-                if a2 then
-                    u63.Note(a1)
-                else
-                    u63.Caller(a1)
-                end
-                return
-            end
-            return
-        end
-        if a2 then
-            u63.Note(a1)
-        else
-            u63.Caller(a1)
-        end
-    end
-    return v209
-end)()
-local u64 = 0
-local u65 = -0.2
-local u66 = 0
-local u67 = -0.2
-local u68 = 0
-local u69 = -0.2
-local u70 = 0
-local u71 = -0.2
-local u72 = 0
-local u73 = -0.2
-local u74 = 0
-local u75 = -0.2
 local function start()
     --[[
       name: start
-      line: 1471
+      line: 1520
       upvalues:
         u12 (ref,  index: 1)
         u3 (copy, index: 2)
         Spectate_upv_1 (copy, index: 3)
         Smoothing_upv_1 (copy, index: 4)
         LocalPlayer_upv_1 (copy, index: 5)
-        u55 (ref,  index: 6)
-        tbl_upv_18 (copy, index: 7)
+        u72 (ref,  index: 6)
+        tbl_upv_19 (copy, index: 7)
         Workspace_upv_1 (copy, index: 8)
         u4 (ref,  index: 9)
         Players_upv_1 (copy, index: 10)
         markIgnoreDirty (copy, index: 11)
-        u45 (ref,  index: 12)
+        u62 (ref,  index: 12)
         Fighters_upv_1 (copy, index: 13)
         UserInputService_upv_1 (copy, index: 14)
         onInputBegan (copy, index: 15)
@@ -2220,13 +2282,13 @@ local function start()
         tbl_upv_10 (copy, index: 27)
         u20 (ref,  index: 28)
         tbl_upv_9 (copy, index: 29)
-        u54 (ref,  index: 30)
-        tbl_upv_15 (copy, index: 31)
-        tbl_upv_16 (copy, index: 32)
-        u48 (ref,  index: 33)
-        u49 (ref,  index: 34)
-        u50 (ref,  index: 35)
-        u51 (ref,  index: 36)
+        u71 (ref,  index: 30)
+        tbl_upv_16 (copy, index: 31)
+        tbl_upv_17 (copy, index: 32)
+        u65 (ref,  index: 33)
+        u66 (ref,  index: 34)
+        u67 (ref,  index: 35)
+        u68 (ref,  index: 36)
         u24 (ref,  index: 37)
         u25 (ref,  index: 38)
         u26 (ref,  index: 39)
@@ -2241,24 +2303,10 @@ local function start()
         u29 (ref,  index: 48)
         tbl_upv_4 (copy, index: 49)
         tbl_upv_11 (copy, index: 50)
-        u1 (ref,  index: 51)
-        u2 (ref,  index: 52)
-        RunService_upv_1 (copy, index: 53)
-        u74 (ref,  index: 54)
-        u73 (ref,  index: 55)
-        u70 (ref,  index: 56)
-        u69 (ref,  index: 57)
-        u64 (ref,  index: 58)
-        u65 (ref,  index: 59)
-        u71 (ref,  index: 60)
-        u66 (ref,  index: 61)
-        u67 (ref,  index: 62)
-        u68 (ref,  index: 63)
-        u72 (ref,  index: 64)
-        u75 (ref,  index: 65)
-        u62 (copy, index: 66)
-        update (copy, index: 67)
-        tbl_upv_8 (copy, index: 68)
+        RunService_upv_1 (copy, index: 51)
+        u61 (ref,  index: 52)
+        update (copy, index: 53)
+        tbl_upv_8 (copy, index: 54)
     ]]
     if u12 or not u3 then
         return
@@ -2269,7 +2317,7 @@ local function start()
     pcall(
         function()
             --[[
-              line: 1481
+              line: 1530
               upvalues:
                 LocalPlayer_upv_1 (copy, index: 1)
             ]]
@@ -2280,29 +2328,29 @@ local function start()
     task.spawn(
         function()
             --[[
-              line: 1485
+              line: 1534
               upvalues:
                 LocalPlayer_upv_1 (copy, index: 1)
-                u55 (ref,  index: 2)
-                tbl_upv_18 (copy, index: 3)
+                u72 (ref,  index: 2)
+                tbl_upv_19 (copy, index: 3)
             ]]
-            local u76 = LocalPlayer_upv_1:WaitForChild("PlayerScripts", 30)
-            if not u76 then
+            local u79 = LocalPlayer_upv_1:WaitForChild("PlayerScripts", 30)
+            if not u79 then
                 return
             end
             local function readLevel_1()
                 --[[
                   name: readLevel
-                  line: 1490
+                  line: 1539
                   upvalues:
-                    u55 (ref,  index: 1)
-                    tbl_upv_18 (copy, index: 2)
-                    u76 (copy, index: 3)
+                    u72 (ref,  index: 1)
+                    tbl_upv_19 (copy, index: 2)
+                    u79 (copy, index: 3)
                 ]]
-                u55 = tbl_upv_18[u76:GetAttribute("CharacterQualityLevel")] or 1
+                u72 = tbl_upv_19[u79:GetAttribute("CharacterQualityLevel")] or 1
             end
-            u55 = tbl_upv_18[u76:GetAttribute("CharacterQualityLevel")] or 1
-            u76:GetAttributeChangedSignal("CharacterQualityLevel"):Connect(readLevel_1)
+            u72 = tbl_upv_19[u79:GetAttribute("CharacterQualityLevel")] or 1
+            u79:GetAttributeChangedSignal("CharacterQualityLevel"):Connect(readLevel_1)
         end
     )
     local CurrentCamera_3 = Workspace_upv_1.CurrentCamera
@@ -2317,14 +2365,14 @@ local function start()
     Players_upv_1.PlayerAdded:Connect(
         function(a1)
             --[[
-              line: 1503
+              line: 1552
               upvalues:
                 markIgnoreDirty (copy, index: 1)
-                u45 (ref,  index: 2)
+                u62 (ref,  index: 2)
             ]]
             a1.CharacterAdded:Connect(markIgnoreDirty)
             a1.CharacterRemoving:Connect(markIgnoreDirty)
-            u45 = true
+            u62 = true
         end
     )
     Players_upv_1.PlayerRemoving:Connect(markIgnoreDirty)
@@ -2335,26 +2383,26 @@ local function start()
     task.spawn(
         function()
             --[[
-              line: 1513
+              line: 1562
               upvalues:
                 Guards_upv_1 (copy, index: 1)
                 tbl_upv_1 (copy, index: 2)
             ]]
             local TextChatService_1 = game:GetService("TextChatService")
-            local u77 = TextChatService_1:FindFirstChildOfClass("ChatInputBarConfiguration") or (TextChatService_1:WaitForChild("ChatInputBarConfiguration", 10))
-            if not u77 or not u77:IsA("ChatInputBarConfiguration") then
+            local u80 = TextChatService_1:FindFirstChildOfClass("ChatInputBarConfiguration") or (TextChatService_1:WaitForChild("ChatInputBarConfiguration", 10))
+            if not u80 or not u80:IsA("ChatInputBarConfiguration") then
                 return
             end
-            Guards_upv_1.SetChatConfig(u77)
-            u77:GetPropertyChangedSignal("IsFocused"):Connect(
+            Guards_upv_1.SetChatConfig(u80)
+            u80:GetPropertyChangedSignal("IsFocused"):Connect(
                 function()
                     --[[
-                      line: 1518
+                      line: 1567
                       upvalues:
-                        u77 (copy, index: 1)
+                        u80 (copy, index: 1)
                         tbl_upv_1 (copy, index: 2)
                     ]]
-                    if u77.IsFocused then
+                    if u80.IsFocused then
                         tbl_upv_1.PushMouseUnlock("ChatFocus")
                     else
                         tbl_upv_1.PopMouseUnlock("ChatFocus")
@@ -2366,7 +2414,7 @@ local function start()
     UserInputService_upv_1.TextBoxFocused:Connect(
         function()
             --[[
-              line: 1527
+              line: 1576
               upvalues:
                 tbl_upv_1 (copy, index: 1)
             ]]
@@ -2376,7 +2424,7 @@ local function start()
     UserInputService_upv_1.TextBoxFocusReleased:Connect(
         function()
             --[[
-              line: 1530
+              line: 1579
               upvalues:
                 tbl_upv_1 (copy, index: 1)
             ]]
@@ -2386,7 +2434,7 @@ local function start()
     local function bindKeys_upv_1()
         --[[
           name: bindKeys
-          line: 1540
+          line: 1589
           upvalues:
             Keybinds_upv_1 (copy, index: 1)
             ContextActionService_upv_1 (copy, index: 2)
@@ -2398,13 +2446,13 @@ local function start()
             Shoulder_upv_1 (copy, index: 8)
             u35 (ref,  index: 9)
         ]]
-        local v212 = Keybinds_upv_1.Inputs("FreeCursor")
-        if #v212 ~= 0 then
+        local v213 = Keybinds_upv_1.Inputs("FreeCursor")
+        if #v213 ~= 0 then
             ContextActionService_upv_1:BindActionAtPriority(
                 "TribesFreeCursor",
                 function(a2, a3, a4)
                     --[[
-                      line: 1545
+                      line: 1594
                       upvalues:
                         Guards_upv_1 (copy, index: 1)
                         u28 (ref,  index: 2)
@@ -2426,40 +2474,40 @@ local function start()
                 end,
                 false,
                 Enum.ContextActionPriority.Low.Value,
-                table.unpack(v212)
+                table.unpack(v213)
             )
         else
             ContextActionService_upv_1:UnbindAction("TribesFreeCursor")
         end
-        local v213 = Keybinds_upv_1.Inputs("Shoulder")
+        local v214 = Keybinds_upv_1.Inputs("Shoulder")
         for _, value_23 in Keybinds_upv_1.PadInputs("Shoulder") do
-            table.insert(v213, value_23)
+            table.insert(v214, value_23)
         end
-        local v214 = Keybinds_upv_1.Inputs("View")
+        local v215 = Keybinds_upv_1.Inputs("View")
         for _, value_24 in Keybinds_upv_1.PadInputs("View") do
-            table.insert(v214, value_24)
+            table.insert(v215, value_24)
         end
         local function inputsOf_1(a5)
             --[[
               name: inputsOf
-              line: 1564
+              line: 1613
               upvalues:
                 Keybinds_upv_1 (copy, index: 1)
             ]]
-            local v215 = Keybinds_upv_1.Inputs(a5)
+            local v216 = Keybinds_upv_1.Inputs(a5)
             for _, value_25 in Keybinds_upv_1.PadInputs(a5) do
-                table.insert(v215, value_25)
+                table.insert(v216, value_25)
             end
-            return v215
+            return v216
         end
         ContextActionService_upv_1:UnbindAction("TribesShoulderSwap")
         ContextActionService_upv_1:UnbindAction("TribesFirstPerson")
-        if #v213 > 0 then
+        if #v214 > 0 then
             ContextActionService_upv_1:BindActionAtPriority(
                 "TribesShoulderSwap",
                 function(a6, a7)
                     --[[
-                      line: 1575
+                      line: 1624
                       upvalues:
                         tbl_upv_3 (copy, index: 1)
                         GuiService_upv_1 (copy, index: 2)
@@ -2467,11 +2515,11 @@ local function start()
                         Shoulder_upv_1 (copy, index: 4)
                     ]]
                     if a7 == Enum.UserInputState.Begin then
-                        local v216 = true
+                        local v217 = true
                         if next(tbl_upv_3) == nil then
-                            v216 = GuiService_upv_1.MenuIsOpen
+                            v217 = GuiService_upv_1.MenuIsOpen
                         end
-                        if not (v216) and not (u28) then
+                        if not (v217) and not (u28) then
                             Shoulder_upv_1.Toggle()
                         end
                     end
@@ -2479,17 +2527,17 @@ local function start()
                 end,
                 false,
                 Enum.ContextActionPriority.Low.Value,
-                table.unpack(v213)
+                table.unpack(v214)
             )
         end
-        if not (#v214 > 0) then
+        if not (#v215 > 0) then
             return
         end
         ContextActionService_upv_1:BindActionAtPriority(
             "TribesFirstPerson",
             function(a8, a9)
                 --[[
-                  line: 1583
+                  line: 1632
                   upvalues:
                     tbl_upv_3 (copy, index: 1)
                     GuiService_upv_1 (copy, index: 2)
@@ -2498,11 +2546,11 @@ local function start()
                     tbl_upv_1 (copy, index: 5)
                 ]]
                 if a9 == Enum.UserInputState.Begin then
-                    local v217 = true
+                    local v218 = true
                     if next(tbl_upv_3) == nil then
-                        v217 = GuiService_upv_1.MenuIsOpen
+                        v218 = GuiService_upv_1.MenuIsOpen
                     end
-                    if not (v217) and not (u28) and u35 == "none" then
+                    if not (v218) and not (u28) and u35 == "none" then
                         tbl_upv_1.ToggleFirstPerson()
                     end
                 end
@@ -2510,14 +2558,14 @@ local function start()
             end,
             false,
             Enum.ContextActionPriority.Low.Value,
-            table.unpack(v214)
+            table.unpack(v215)
         )
     end
     bindKeys_upv_1()
     local function rebindFor_1(a10)
         --[[
           name: rebindFor
-          line: 1592
+          line: 1641
           upvalues:
             bindKeys_upv_1 (copy, index: 1)
         ]]
@@ -2534,18 +2582,18 @@ local function start()
     LocalPlayer_upv_1.CharacterAdded:Connect(
         function(a11)
             --[[
-              line: 1602
+              line: 1651
               upvalues:
                 tbl_upv_10 (copy, index: 1)
                 u20 (ref,  index: 2)
                 tbl_upv_9 (copy, index: 3)
-                u54 (ref,  index: 4)
-                tbl_upv_15 (copy, index: 5)
-                tbl_upv_16 (copy, index: 6)
-                u48 (ref,  index: 7)
-                u49 (ref,  index: 8)
-                u50 (ref,  index: 9)
-                u51 (ref,  index: 10)
+                u71 (ref,  index: 4)
+                tbl_upv_16 (copy, index: 5)
+                tbl_upv_17 (copy, index: 6)
+                u65 (ref,  index: 7)
+                u66 (ref,  index: 8)
+                u67 (ref,  index: 9)
+                u68 (ref,  index: 10)
                 u24 (ref,  index: 11)
                 u25 (ref,  index: 12)
                 u26 (ref,  index: 13)
@@ -2567,8 +2615,8 @@ local function start()
             u20 = nil
             tbl_upv_9.headFade = 0
             local _ = 0
-            if u54 ~= nil then
-                for v219, value_27 in tbl_upv_15 do
+            if u71 ~= nil then
+                for v220, value_27 in tbl_upv_16 do
                     local inst_6 = value_27.inst
                     if not (inst_6.Parent) then
                         continue
@@ -2577,18 +2625,18 @@ local function start()
                         inst_6.LocalTransparencyModifier = 0
                     end
                 end
-                for v220, value_28 in tbl_upv_16 do
+                for v221, value_28 in tbl_upv_17 do
                     value_28:Disconnect()
                 end
+                table.clear(tbl_upv_17)
                 table.clear(tbl_upv_16)
-                table.clear(tbl_upv_15)
-                u54 = nil
-                u48 = true
-                u49 = -1
-                u50 = -1
-                u51 = false
+                u71 = nil
+                u65 = true
+                u66 = -1
+                u67 = -1
+                u68 = false
             end
-            for v221, value_29 in a11:GetDescendants() do
+            for v222, value_29 in a11:GetDescendants() do
                 if value_29:IsA("BasePart") or value_29:IsA("Decal") then
                     value_29.LocalTransparencyModifier = 0
                 end
@@ -2598,7 +2646,7 @@ local function start()
             u26 = false
             u27 = false
             Simulation_upv_1.SetFacing(nil)
-            u54 = nil
+            u71 = nil
             u6 = false
             table.clear(tbl_upv_7)
             u18:Snap(Vector3.new(0, 0, 0))
@@ -2607,40 +2655,40 @@ local function start()
             u17:Snap(0)
             u30 = 1
             tbl_upv_1.PopMouseUnlock("FreeCursor")
-            local u78 = a11:WaitForChild("HumanoidRootPart", 5)
-            if not u78 then
+            local u81 = a11:WaitForChild("HumanoidRootPart", 5)
+            if not u81 then
                 return
             end
-            if u78:IsA("BasePart") then
-                local LookVector_7 = u78.CFrame.LookVector
-                local v218 = math.atan2(-LookVector_7.X, -LookVector_7.Z)
-                u4 = v218
+            if u81:IsA("BasePart") then
+                local LookVector_7 = u81.CFrame.LookVector
+                local v219 = math.atan2(-LookVector_7.X, -LookVector_7.Z)
+                u4 = v219
                 u5 = -0.20943951023931956
                 u29 = u28
-                local u79 = os.clock()
-                local Position_upv_3 = u78.Position
+                local u82 = os.clock()
+                local Position_upv_3 = u81.Position
                 task.spawn(
                     function()
                         --[[
-                          line: 1637
+                          line: 1686
                           upvalues:
-                            u79 (copy, index: 1)
-                            u78 (copy, index: 2)
+                            u82 (copy, index: 1)
+                            u81 (copy, index: 2)
                             Position_upv_3 (ref,  index: 3)
                             u4 (ref,  index: 4)
                             u5 (ref,  index: 5)
                             u29 (ref,  index: 6)
                             u28 (ref,  index: 7)
                         ]]
-                        while os.clock() - u79 < 1.5 and (u78.Parent) do
+                        while os.clock() - u82 < 1.5 and (u81.Parent) do
                             task.wait(0.05)
-                            if (u78.Position - Position_upv_3).Magnitude > 40 then
-                                local _ = u78.CFrame.LookVector
-                                u4 = math.atan2(-u78.CFrame.LookVector.X, -u78.CFrame.LookVector.Z)
+                            if (u81.Position - Position_upv_3).Magnitude > 40 then
+                                local _ = u81.CFrame.LookVector
+                                u4 = math.atan2(-u81.CFrame.LookVector.X, -u81.CFrame.LookVector.Z)
                                 u5 = -0.20943951023931956
                                 u29 = u28
                             end
-                            Position_upv_3 = u78.Position
+                            Position_upv_3 = u81.Position
                         end
                     end
                 )
@@ -2650,7 +2698,7 @@ local function start()
     local function popUnlock_1(a12)
         --[[
           name: popUnlock
-          line: 1657
+          line: 1706
           upvalues:
             tbl_upv_1 (copy, index: 1)
         ]]
@@ -2659,7 +2707,7 @@ local function start()
     local function popLookLock_1(a13)
         --[[
           name: popLookLock
-          line: 1654
+          line: 1703
           upvalues:
             tbl_upv_1 (copy, index: 1)
         ]]
@@ -2668,90 +2716,58 @@ local function start()
     local function blockers_1()
         --[[
           name: blockers
-          line: 1660
+          line: 1709
           upvalues:
             tbl_upv_1 (copy, index: 1)
         ]]
         return tbl_upv_1.GetLookBlockers()
     end
     Guards_upv_1.Start({lookLocks = tbl_upv_4, unlockReasons = tbl_upv_3, touches = tbl_upv_11, popLookLock = popLookLock_1, popUnlock = popUnlock_1, blockers = blockers_1})
-    local tbl_upv_23 = {u1, u2}
     RunService_upv_1:BindToRenderStep(
         "TribesCamera",
         Enum.RenderPriority.Camera.Value + 1,
         function(a14)
             --[[
-              line: 1665
+              line: 1713
               upvalues:
-                u74 (ref,  index: 1)
-                u73 (ref,  index: 2)
-                u70 (ref,  index: 3)
-                u69 (ref,  index: 4)
-                u64 (ref,  index: 5)
-                u2 (ref,  index: 6)
-                tbl_upv_23 (copy, index: 7)
-                u65 (ref,  index: 8)
-                u71 (ref,  index: 9)
-                u66 (ref,  index: 10)
-                u1 (ref,  index: 11)
-                u67 (ref,  index: 12)
-                u68 (ref,  index: 13)
-                u72 (ref,  index: 14)
-                u75 (ref,  index: 15)
-                u62 (copy, index: 16)
-                update (copy, index: 17)
-                Simulation_upv_1 (copy, index: 18)
-                u4 (ref,  index: 19)
-                tbl_upv_8 (copy, index: 20)
+                u61 (ref,  index: 1)
+                update (copy, index: 2)
+                Simulation_upv_1 (copy, index: 3)
+                u4 (ref,  index: 4)
+                tbl_upv_8 (copy, index: 5)
             ]]
-            local v219 = os.clock()
-            if u74 ~= 0 or u73 ~= -0.2 or u70 ~= 0 or u69 ~= -0.2 or u64 ~= 0 or u2 ~= tbl_upv_23[2] or u65 ~= -0.2 or u71 ~= -0.2 or u66 ~= 0 or u1 ~= tbl_upv_23[1] or u67 ~= -0.2 or u68 ~= 0 or u72 ~= 0 or u75 ~= -0.2 then
-                u64 = 0
-                u65 = -0.2
-                u66 = 0
-                u67 = -0.2
-                u68 = 0
-                u69 = -0.2
-                u70 = 0
-                u71 = -0.2
-                u72 = 0
-                u73 = -0.2
-                u74 = 0
-                u75 = -0.2
-                u1 = tbl_upv_23[1]
-                u2 = tbl_upv_23[2]
-                u62(256, true)
-            end
+            local v220 = os.clock()
+            u61()
             update(a14)
             Simulation_upv_1.SetLook(u4)
-            local v220 = os.clock() - v219
-            tbl_upv_8.time = tbl_upv_8.time + v220
+            local v221 = os.clock() - v220
+            tbl_upv_8.time = tbl_upv_8.time + v221
             tbl_upv_8.frames = tbl_upv_8.frames + 1
-            tbl_upv_8.max = math.max(tbl_upv_8.max, v220)
+            tbl_upv_8.max = math.max(tbl_upv_8.max, v221)
         end
     )
 end
 local function SetAiming(a1, a2)
     --[[
       name: SetAiming
-      line: 1707
+      line: 1734
       upvalues:
         u6 (ref, index: 1)
         u35 (ref, index: 2)
         u7 (ref, index: 3)
     ]]
-    local v221 = (a1 == true) and (u35 == "none")
-    u6 = v221
+    local v222 = (a1 == true) and (u35 == "none")
+    u6 = v222
     if u6 then
-        local v222 = typeof(a2) ~= "number" and 50 or math.clamp(a2, 20, 90)
-        u7 = v222
+        local v223 = typeof(a2) ~= "number" and 50 or math.clamp(a2, 20, 90)
+        u7 = v223
     end
 end
 tbl_upv_1.SetAiming = SetAiming
 function tbl_upv_1.IsAiming()
     --[[
       name: IsAiming
-      line: 1714
+      line: 1741
       upvalues:
         u6 (ref, index: 1)
     ]]
@@ -2760,7 +2776,7 @@ end
 function tbl_upv_1.GetAimRay()
     --[[
       name: GetAimRay
-      line: 1720
+      line: 1747
       upvalues:
         Workspace_upv_1 (copy, index: 1)
     ]]
@@ -2774,47 +2790,47 @@ end
 function tbl_upv_1.GetAimPoint(a1, a2)
     --[[
       name: GetAimPoint
-      line: 1733
+      line: 1760
       upvalues:
         tbl_upv_1 (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
-        tbl_upv_14 (copy, index: 3)
+        tbl_upv_15 (copy, index: 3)
         Workspace_upv_1 (copy, index: 4)
     ]]
-    local v223 = tbl_upv_1.GetAimRay()
-    local v224
-    if LocalPlayer_upv_1 then
-        v224 = LocalPlayer_upv_1.Character
-    else
-        v224 = LocalPlayer_upv_1
-    end
-    local Origin_1 = v223.Origin
+    local v224 = tbl_upv_1.GetAimRay()
     local v225
     if LocalPlayer_upv_1 then
         v225 = LocalPlayer_upv_1.Character
     else
         v225 = LocalPlayer_upv_1
     end
+    local Origin_1 = v224.Origin
     local v226
-    if v225 then
-        local HumanoidRootPart_7 = v225:FindFirstChild("HumanoidRootPart")
-        local _ = v225:FindFirstChildOfClass("Humanoid")
-        v226 = ((HumanoidRootPart_7 and (HumanoidRootPart_7:IsA("BasePart"))) and HumanoidRootPart_7) or nil
+    if LocalPlayer_upv_1 then
+        v226 = LocalPlayer_upv_1.Character
     else
-        v226 = nil
+        v226 = LocalPlayer_upv_1
     end
+    local v227
     if v226 then
-        local v227 = (v226.Position - Origin_1):Dot(v223.Direction)
-        Origin_1 = ((v227 > 0) and (Origin_1 + v223.Direction * math.max(0, v227 - 1.5))) or Origin_1
+        local HumanoidRootPart_7 = v226:FindFirstChild("HumanoidRootPart")
+        local _ = v226:FindFirstChildOfClass("Humanoid")
+        v227 = ((HumanoidRootPart_7 and (HumanoidRootPart_7:IsA("BasePart"))) and HumanoidRootPart_7) or nil
+    else
+        v227 = nil
+    end
+    if v227 then
+        local v228 = (v227.Position - Origin_1):Dot(v224.Direction)
+        Origin_1 = ((v228 > 0) and (Origin_1 + v224.Direction * math.max(0, v228 - 1.5))) or Origin_1
     end
     local tbl_24 = {}
-    if v224 then
-        table.insert(tbl_24, v224)
+    if v225 then
+        table.insert(tbl_24, v225)
     end
-    for _, value_30 in tbl_upv_14 do
-        local v228 = Workspace_upv_1:FindFirstChild(value_30)
-        if v228 then
-            table.insert(tbl_24, v228)
+    for _, value_30 in tbl_upv_15 do
+        local v229 = Workspace_upv_1:FindFirstChild(value_30)
+        if v229 then
+            table.insert(tbl_24, v229)
         end
     end
     if a2 then
@@ -2822,36 +2838,36 @@ function tbl_upv_1.GetAimPoint(a1, a2)
             table.insert(tbl_24, value_31)
         end
     end
-    local v229 = RaycastParams.new()
-    v229.FilterType = Enum.RaycastFilterType.Exclude
-    v229.FilterDescendantsInstances = tbl_24
-    v229.IgnoreWater = true
-    local v230 = (a1 or 1000) - (Origin_1 - v223.Origin).Magnitude
-    local v231 = Workspace_upv_1:Raycast(Origin_1, v223.Direction * v230, v229)
-    if v231 then
-        return v231.Position, v231
+    local v230 = RaycastParams.new()
+    v230.FilterType = Enum.RaycastFilterType.Exclude
+    v230.FilterDescendantsInstances = tbl_24
+    v230.IgnoreWater = true
+    local v231 = (a1 or 1000) - (Origin_1 - v224.Origin).Magnitude
+    local v232 = Workspace_upv_1:Raycast(Origin_1, v224.Direction * v231, v230)
+    if v232 then
+        return v232.Position, v232
     end
-    return Origin_1 + (v223.Direction * v230), nil
+    return Origin_1 + (v224.Direction * v231), nil
 end
 function tbl_upv_1.FovKick(a1, a2, a3)
     --[[
       name: FovKick
-      line: 1774
+      line: 1801
       upvalues:
-        tbl_upv_12 (copy, index: 1)
+        tbl_upv_13 (copy, index: 1)
     ]]
     if typeof(a1) ~= "number" or a1 ~= a1 then
         return
     end
-    tbl_upv_12.amount = math.clamp(a1, -20, 20)
-    tbl_upv_12.t0 = os.clock()
-    tbl_upv_12.rise = math.max(a2 or 0.05, 0.01)
-    tbl_upv_12.fall = math.max(a3 or 0.2, 0.01)
+    tbl_upv_13.amount = math.clamp(a1, -20, 20)
+    tbl_upv_13.t0 = os.clock()
+    tbl_upv_13.rise = math.max(a2 or 0.05, 0.01)
+    tbl_upv_13.fall = math.max(a3 or 0.2, 0.01)
 end
 function tbl_upv_1.Shake(a1, a2)
     --[[
       name: Shake
-      line: 1786
+      line: 1813
       upvalues:
         tbl_upv_7 (copy, index: 1)
     ]]
@@ -2869,7 +2885,7 @@ end
 function tbl_upv_1.Recoil(a1, a2, a3)
     --[[
       name: Recoil
-      line: 1800
+      line: 1827
       upvalues:
         u18 (copy, index: 1)
     ]]
@@ -2881,19 +2897,19 @@ tbl_upv_1.SLOW_RECOIL_FADE = 0.3
 function tbl_upv_1.RecoilSlow(a1, a2, a3, a4)
     --[[
       name: RecoilSlow
-      line: 1813
+      line: 1840
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
     local SlowRecoil_2 = tbl_upv_1.SlowRecoil
-    local v232 = SlowRecoil_2.target + Vector3.new(math.rad(a1), math.rad(a2 or 0), 0)
-    SlowRecoil_2.target = Vector3.new(math.clamp(v232.X, -0.4363323129985824, 0.4363323129985824), math.clamp(v232.Y, -0.4363323129985824, 0.4363323129985824), 0)
+    local v233 = SlowRecoil_2.target + Vector3.new(math.rad(a1), math.rad(a2 or 0), 0)
+    SlowRecoil_2.target = Vector3.new(math.clamp(v233.X, -0.4363323129985824, 0.4363323129985824), math.clamp(v233.Y, -0.4363323129985824, 0.4363323129985824), 0)
     tbl_upv_1.SlowRecoilStay = tbl_upv_1.SlowRecoilStay + Vector3.new(math.rad(a3 or 0), math.rad(a4 or 0), 0)
 end
 function tbl_upv_1.Dip(a1)
     --[[
       name: Dip
-      line: 1822
+      line: 1849
       upvalues:
         u17 (copy, index: 1)
     ]]
@@ -2905,7 +2921,7 @@ end
 function tbl_upv_1.PushMouseUnlock(a1)
     --[[
       name: PushMouseUnlock
-      line: 1829
+      line: 1856
       upvalues:
         tbl_upv_3 (copy, index: 1)
         u12 (ref,  index: 2)
@@ -2920,7 +2936,7 @@ end
 function tbl_upv_1.PopMouseUnlock(a1)
     --[[
       name: PopMouseUnlock
-      line: 1836
+      line: 1863
       upvalues:
         tbl_upv_3 (copy, index: 1)
         u12 (ref,  index: 2)
@@ -2935,7 +2951,7 @@ end
 function tbl_upv_1.PushLookLock(a1, a2)
     --[[
       name: PushLookLock
-      line: 1849
+      line: 1876
       upvalues:
         tbl_upv_4 (copy, index: 1)
         Guards_upv_1 (copy, index: 2)
@@ -2947,7 +2963,7 @@ end
 function tbl_upv_1.PopLookLock(a1)
     --[[
       name: PopLookLock
-      line: 1855
+      line: 1882
       upvalues:
         tbl_upv_4 (copy, index: 1)
         Guards_upv_1 (copy, index: 2)
@@ -2959,17 +2975,17 @@ end
 function tbl_upv_1.IsLookLocked()
     --[[
       name: IsLookLocked
-      line: 1861
+      line: 1888
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
-    local v233 = next(tbl_upv_4) ~= nil
-    return v233
+    local v234 = next(tbl_upv_4) ~= nil
+    return v234
 end
 function tbl_upv_1.GetLookBlockers()
     --[[
       name: GetLookBlockers
-      line: 1869
+      line: 1896
       upvalues:
         u11 (ref,  index: 1)
         u28 (ref,  index: 2)
@@ -3007,21 +3023,21 @@ end
 function tbl_upv_1.IsMouseUnlocked()
     --[[
       name: IsMouseUnlocked
-      line: 1898
+      line: 1925
       upvalues:
         tbl_upv_3 (copy, index: 1)
         GuiService_upv_1 (copy, index: 2)
     ]]
-    local v234 = true
+    local v235 = true
     if next(tbl_upv_3) == nil then
-        v234 = GuiService_upv_1.MenuIsOpen
+        v235 = GuiService_upv_1.MenuIsOpen
     end
-    return v234
+    return v235
 end
 function tbl_upv_1.GetMode()
     --[[
       name: GetMode
-      line: 1904
+      line: 1931
       upvalues:
         u28 (ref, index: 1)
     ]]
@@ -3033,7 +3049,7 @@ end
 function tbl_upv_1.GetUnlockReasons()
     --[[
       name: GetUnlockReasons
-      line: 1908
+      line: 1935
       upvalues:
         tbl_upv_3 (copy, index: 1)
     ]]
@@ -3046,32 +3062,32 @@ end
 function tbl_upv_1.GetShoulderSide()
     --[[
       name: GetShoulderSide
-      line: 1917
+      line: 1944
       upvalues:
         Shoulder_upv_1 (copy, index: 1)
     ]]
     return Shoulder_upv_1.Get()
 end
-tbl_upv_1.FirstPersonChanged = u53.Event
+tbl_upv_1.FirstPersonChanged = u70.Event
 function tbl_upv_1.SetFirstPerson(a1)
     --[[
       name: SetFirstPerson
-      line: 1925
+      line: 1952
       upvalues:
         FirstPerson_upv_1 (copy, index: 1)
-        u53 (copy, index: 2)
+        u70 (copy, index: 2)
     ]]
     a1 = a1 == true
     if FirstPerson_upv_1.Get() == a1 then
         return
     end
     FirstPerson_upv_1.Set(a1)
-    u53:Fire(a1)
+    u70:Fire(a1)
 end
 function tbl_upv_1.IsFirstPerson()
     --[[
       name: IsFirstPerson
-      line: 1933
+      line: 1960
       upvalues:
         FirstPerson_upv_1 (copy, index: 1)
     ]]
@@ -3080,7 +3096,7 @@ end
 function tbl_upv_1.ToggleFirstPerson()
     --[[
       name: ToggleFirstPerson
-      line: 1937
+      line: 1964
       upvalues:
         tbl_upv_1 (copy, index: 1)
         FirstPerson_upv_1 (copy, index: 2)
@@ -3090,16 +3106,16 @@ end
 function tbl_upv_1.InFirstPerson()
     --[[
       name: InFirstPerson
-      line: 1942
+      line: 1969
       upvalues:
-        u52 (ref, index: 1)
+        u69 (ref, index: 1)
     ]]
-    return u52
+    return u69
 end
 function tbl_upv_1.SetViewBobbing(a1)
     --[[
       name: SetViewBobbing
-      line: 1948
+      line: 1975
       upvalues:
         FirstPerson_upv_1 (copy, index: 1)
     ]]
@@ -3108,7 +3124,7 @@ end
 function tbl_upv_1.GetViewBobbing()
     --[[
       name: GetViewBobbing
-      line: 1952
+      line: 1979
       upvalues:
         FirstPerson_upv_1 (copy, index: 1)
     ]]
@@ -3117,7 +3133,7 @@ end
 function tbl_upv_1.GetViewBob()
     --[[
       name: GetViewBob
-      line: 1958
+      line: 1985
       upvalues:
         FirstPerson_upv_1 (copy, index: 1)
     ]]
@@ -3126,7 +3142,7 @@ end
 function tbl_upv_1.SetShoulderSide(a1)
     --[[
       name: SetShoulderSide
-      line: 1964
+      line: 1991
       upvalues:
         Shoulder_upv_1 (copy, index: 1)
     ]]
@@ -3135,7 +3151,7 @@ end
 function tbl_upv_1.SetModifier(a1, a2)
     --[[
       name: SetModifier
-      line: 1969
+      line: 1996
       upvalues:
         tbl_upv_6 (copy, index: 1)
     ]]
@@ -3144,7 +3160,7 @@ end
 function tbl_upv_1.SuspendCharacterRotation(a1)
     --[[
       name: SuspendCharacterRotation
-      line: 1974
+      line: 2001
       upvalues:
         tbl_upv_5 (copy, index: 1)
     ]]
@@ -3153,7 +3169,7 @@ end
 function tbl_upv_1.ResumeCharacterRotation(a1)
     --[[
       name: ResumeCharacterRotation
-      line: 1978
+      line: 2005
       upvalues:
         tbl_upv_5 (copy, index: 1)
     ]]
@@ -3162,7 +3178,7 @@ end
 function tbl_upv_1.FaceCamera()
     --[[
       name: FaceCamera
-      line: 1984
+      line: 2011
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         u28 (ref,  index: 2)
@@ -3170,23 +3186,23 @@ function tbl_upv_1.FaceCamera()
         Simulation_upv_1 (copy, index: 4)
         u4 (ref,  index: 5)
     ]]
-    local v235
+    local v236
     if LocalPlayer_upv_1 then
-        v235 = LocalPlayer_upv_1.Character
+        v236 = LocalPlayer_upv_1.Character
     else
-        v235 = LocalPlayer_upv_1
+        v236 = LocalPlayer_upv_1
     end
-    local v236, v237
-    if v235 then
-        local HumanoidRootPart_8 = v235:FindFirstChild("HumanoidRootPart")
-        local v238 = v235:FindFirstChildOfClass("Humanoid")
-        v236 = ((HumanoidRootPart_8 and (HumanoidRootPart_8:IsA("BasePart"))) and HumanoidRootPart_8) or nil
-        v237 = v238
+    local v237, v238
+    if v236 then
+        local HumanoidRootPart_8 = v236:FindFirstChild("HumanoidRootPart")
+        local v239 = v236:FindFirstChildOfClass("Humanoid")
+        v237 = ((HumanoidRootPart_8 and (HumanoidRootPart_8:IsA("BasePart"))) and HumanoidRootPart_8) or nil
+        v238 = v239
     else
-        v236 = nil
         v237 = nil
+        v238 = nil
     end
-    if not v236 or not v237 or not (v237.Health > 0) or u28 ~= false then
+    if not v237 or not v238 or not (v238.Health > 0) or u28 ~= false then
         return
     end
     u27 = true
@@ -3195,7 +3211,7 @@ end
 function tbl_upv_1.GetAimAssistShot()
     --[[
       name: GetAimAssistShot
-      line: 2002
+      line: 2029
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
@@ -3207,18 +3223,18 @@ function tbl_upv_1.GetAimAssistShot()
         tbl_upv_6 (copy, index: 8)
     ]]
     if AimAssist_upv_1.IsEnabled() then
-        local v239 = LocalPlayer_upv_1:GetAttribute("CombatMode")
-        local v240
-        if v239 ~= nil then
-            v240 = v239 == true
+        local v240 = LocalPlayer_upv_1:GetAttribute("CombatMode")
+        local v241
+        if v240 ~= nil then
+            v241 = v240 == true
         else
-            v240 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
+            v241 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
         end
-        if v240 then
+        if v241 then
             local Shot_1 = AimAssist_upv_1.Shot
-            local v241 = ignoreList(LocalPlayer_upv_1.Character)
-            local v242 = tbl_upv_2.fovNow()
-            return Shot_1(v241, u4, u5, u6, v242, tbl_upv_6.CombatDraw ~= nil)
+            local v242 = ignoreList(LocalPlayer_upv_1.Character)
+            local v243 = tbl_upv_2.fovNow()
+            return Shot_1(v242, u4, u5, u6, v243, tbl_upv_6.CombatDraw ~= nil)
         end
     end
     return nil
@@ -3226,23 +3242,23 @@ end
 function tbl_upv_1.GetAimAssist(a1)
     --[[
       name: GetAimAssist
-      line: 2009
+      line: 2036
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
-    local v243 = tbl_upv_1.GetAimAssistShot()
-    if v243 then
-        if a1 ~= nil and a1 < v243.deg then
+    local v244 = tbl_upv_1.GetAimAssistShot()
+    if v244 then
+        if a1 ~= nil and a1 < v244.deg then
             return nil, nil, nil
         end
-        return v243.model, v243.part, v243.deg
+        return v244.model, v244.part, v244.deg
     end
     return nil, nil, nil
 end
 function tbl_upv_1.IsAssistedInput()
     --[[
       name: IsAssistedInput
-      line: 2017
+      line: 2044
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
     ]]
@@ -3251,7 +3267,7 @@ end
 function tbl_upv_1.GetAimAssistInput()
     --[[
       name: GetAimAssistInput
-      line: 2021
+      line: 2048
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
     ]]
@@ -3260,7 +3276,7 @@ end
 function tbl_upv_1.Nudge(a1, a2)
     --[[
       name: Nudge
-      line: 2025
+      line: 2052
       upvalues:
         u4 (ref,  index: 1)
         AimAssist_upv_1 (copy, index: 2)
@@ -3277,7 +3293,7 @@ end
 function tbl_upv_1.SetAimAssist(a1)
     --[[
       name: SetAimAssist
-      line: 2036
+      line: 2063
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
     ]]
@@ -3286,7 +3302,7 @@ end
 function tbl_upv_1.GetAimAssistEnabled()
     --[[
       name: GetAimAssistEnabled
-      line: 2040
+      line: 2067
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
     ]]
@@ -3295,7 +3311,7 @@ end
 function tbl_upv_1.AimAssistDebug(a1, ...)
     --[[
       name: AimAssistDebug
-      line: 2044
+      line: 2071
       upvalues:
         AimAssist_upv_1 (copy, index: 1)
     ]]
@@ -3304,7 +3320,7 @@ end
 function tbl_upv_1.GetYaw()
     --[[
       name: GetYaw
-      line: 2048
+      line: 2075
       upvalues:
         u4 (ref, index: 1)
     ]]
@@ -3313,7 +3329,7 @@ end
 function tbl_upv_1.GetPitch()
     --[[
       name: GetPitch
-      line: 2052
+      line: 2079
       upvalues:
         u5 (ref, index: 1)
     ]]
@@ -3322,7 +3338,7 @@ end
 function tbl_upv_1.SetSensitivity(a1)
     --[[
       name: SetSensitivity
-      line: 2058
+      line: 2085
       upvalues:
         u10 (ref, index: 1)
     ]]
@@ -3334,7 +3350,7 @@ end
 function tbl_upv_1.AddTouchLook(a1)
     --[[
       name: AddTouchLook
-      line: 2066
+      line: 2093
       upvalues:
         zero_upv_1 (ref, index: 1)
     ]]
@@ -3343,7 +3359,7 @@ end
 function tbl_upv_1.GetSensitivity()
     --[[
       name: GetSensitivity
-      line: 2070
+      line: 2097
       upvalues:
         u10 (ref, index: 1)
     ]]
@@ -3352,7 +3368,7 @@ end
 function tbl_upv_1.SetFOV(a1)
     --[[
       name: SetFOV
-      line: 2075
+      line: 2102
       upvalues:
         u8 (ref, index: 1)
     ]]
@@ -3364,7 +3380,7 @@ end
 function tbl_upv_1.GetFOV()
     --[[
       name: GetFOV
-      line: 2081
+      line: 2108
       upvalues:
         u8 (ref, index: 1)
     ]]
@@ -3373,7 +3389,7 @@ end
 function tbl_upv_1.SetAimZoom(a1)
     --[[
       name: SetAimZoom
-      line: 2086
+      line: 2113
       upvalues:
         tbl_upv_2 (copy, index: 1)
     ]]
@@ -3385,7 +3401,7 @@ end
 function tbl_upv_1.SetAimSensitivity(a1)
     --[[
       name: SetAimSensitivity
-      line: 2093
+      line: 2120
       upvalues:
         tbl_upv_2 (copy, index: 1)
     ]]
@@ -3397,7 +3413,7 @@ end
 function tbl_upv_1.SetZoom(a1)
     --[[
       name: SetZoom
-      line: 2100
+      line: 2127
       upvalues:
         u9 (ref, index: 1)
     ]]
@@ -3409,23 +3425,23 @@ end
 function tbl_upv_1.SpectateNext(a1)
     --[[
       name: SpectateNext
-      line: 2107
+      line: 2134
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
     local Next_1 = Spectate_upv_1.Next
-    local v244
+    local v245
     if typeof(a1) == "number" and (a1 < 0) then
-        v244 = -1
+        v245 = -1
     else
-        v244 = 1
+        v245 = 1
     end
-    Next_1(v244)
+    Next_1(v245)
 end
 function tbl_upv_1.GetSpectateTarget()
     --[[
       name: GetSpectateTarget
-      line: 2112
+      line: 2139
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
@@ -3434,7 +3450,7 @@ end
 function tbl_upv_1.GetSpectateMode()
     --[[
       name: GetSpectateMode
-      line: 2117
+      line: 2144
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
@@ -3443,7 +3459,7 @@ end
 function tbl_upv_1.GetKiller()
     --[[
       name: GetKiller
-      line: 2122
+      line: 2149
       upvalues:
         Spectate_upv_1 (copy, index: 1)
     ]]
@@ -3453,7 +3469,7 @@ tbl_upv_1.SpectateChanged = Spectate_upv_1.Changed
 function tbl_upv_1.PlayCinematic(a1, a2, a3)
     --[[
       name: PlayCinematic
-      line: 2135
+      line: 2162
       upvalues:
         u20 (ref,  index: 1)
         tbl_upv_10 (copy, index: 2)
@@ -3467,43 +3483,43 @@ function tbl_upv_1.PlayCinematic(a1, a2, a3)
     if typeof(a1) ~= "CFrame" then
         return
     end
-    local v245 = a3 or {}
+    local v246 = a3 or {}
     local tbl_27 = {untilStopped = 0, hide = 0, fov = 0}
     tbl_27.cf = a1
-    local v246
+    local v247
     if typeof(a2) ~= "number" then
-        v246 = nil
+        v247 = nil
     else
-        v246 = math.clamp(a2, 20, 100)
+        v247 = math.clamp(a2, 20, 100)
     end
-    tbl_27.fov = v246
-    if v245.hideCharacter ~= false then
-        v246 = true
+    tbl_27.fov = v247
+    if v246.hideCharacter ~= false then
+        v247 = true
     else
-        v246 = false
+        v247 = false
     end
-    tbl_27.hide = v246
-    if v245.untilStopped == true then
-        v246 = true
+    tbl_27.hide = v247
+    if v246.untilStopped == true then
+        v247 = true
     else
-        v246 = false
+        v247 = false
     end
-    tbl_27.untilStopped = v246
+    tbl_27.untilStopped = v247
     u20 = tbl_27
     tbl_upv_10.target = 1
-    u21 = 1 / math.max(0.05, v245.duration or 0.6)
+    u21 = 1 / math.max(0.05, v246.duration or 0.6)
     tbl_upv_10.startedAt = os.clock()
     u22 = LocalPlayer_upv_1 and (LocalPlayer_upv_1.Character)
     if (tbl_27.fov) then
         return
     end
-    v246 = Workspace_upv_1.CurrentCamera and Workspace_upv_1.CurrentCamera.FieldOfView or u8
-    u23 = v246
+    v247 = Workspace_upv_1.CurrentCamera and Workspace_upv_1.CurrentCamera.FieldOfView or u8
+    u23 = v247
 end
 function tbl_upv_1.StopCinematic(a1)
     --[[
       name: StopCinematic
-      line: 2156
+      line: 2183
       upvalues:
         tbl_upv_10 (copy, index: 1)
         u21 (ref,  index: 2)
@@ -3514,7 +3530,7 @@ end
 function tbl_upv_1.IsCinematic()
     --[[
       name: IsCinematic
-      line: 2161
+      line: 2188
       upvalues:
         tbl_upv_10 (copy, index: 1)
     ]]
@@ -3523,7 +3539,7 @@ end
 function tbl_upv_1.SetEnabled(a1)
     --[[
       name: SetEnabled
-      line: 2166
+      line: 2193
       upvalues:
         u11 (ref,  index: 1)
         Workspace_upv_1 (copy, index: 2)
@@ -3533,11 +3549,11 @@ function tbl_upv_1.SetEnabled(a1)
         u26 (ref,  index: 6)
         u27 (ref,  index: 7)
         Simulation_upv_1 (copy, index: 8)
-        u52 (ref,  index: 9)
+        u69 (ref,  index: 9)
         FirstPerson_upv_1 (copy, index: 10)
         setCharacterFade (copy, index: 11)
-        u54 (ref,  index: 12)
-        tbl_upv_17 (copy, index: 13)
+        u71 (ref,  index: 12)
+        tbl_upv_18 (copy, index: 13)
         Fades_upv_1 (copy, index: 14)
         u24 (ref,  index: 15)
     ]]
@@ -3552,31 +3568,31 @@ function tbl_upv_1.SetEnabled(a1)
         end
         UserInputService_upv_1.MouseBehavior = Enum.MouseBehavior.Default
         UserInputService_upv_1.MouseIconEnabled = true
-        local v247
+        local v248
         if LocalPlayer_upv_1 then
-            v247 = LocalPlayer_upv_1.Character
+            v248 = LocalPlayer_upv_1.Character
         else
-            v247 = LocalPlayer_upv_1
+            v248 = LocalPlayer_upv_1
         end
         local _
-        if v247 then
-            _ = v247:FindFirstChild("HumanoidRootPart")
-            local v248 = v247:FindFirstChildOfClass("Humanoid")
+        if v248 then
+            _ = v248:FindFirstChild("HumanoidRootPart")
+            local v249 = v248:FindFirstChildOfClass("Humanoid")
         end
         u26 = false
         if u27 then
             Simulation_upv_1.SetFacing(nil)
             u27 = false
         end
-        u52 = false
+        u69 = false
         FirstPerson_upv_1.Step(0, false)
-        setCharacterFade(u54, 0, 0)
-        for key_9 in tbl_upv_17 do
+        setCharacterFade(u71, 0, 0)
+        for key_9 in tbl_upv_18 do
             if key_9.Parent then
                 key_9.LocalTransparencyModifier = 0
             end
         end
-        table.clear(tbl_upv_17)
+        table.clear(tbl_upv_18)
         Fades_upv_1.ClearAllies()
         Fades_upv_1.ClearDecor()
     end
@@ -3584,7 +3600,7 @@ end
 function tbl_upv_1.IsEnabled()
     --[[
       name: IsEnabled
-      line: 2189
+      line: 2216
       upvalues:
         u11 (ref, index: 1)
     ]]
@@ -3593,7 +3609,7 @@ end
 function tbl_upv_1.DebugOcclusion(a1)
     --[[
       name: DebugOcclusion
-      line: 2196
+      line: 2223
       upvalues:
         Occlusion_upv_1 (copy, index: 1)
     ]]
@@ -3603,7 +3619,7 @@ tbl_upv_1.FrameLog = nil
 function tbl_upv_1.DebugFrames(a1)
     --[[
       name: DebugFrames
-      line: 2204
+      line: 2231
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -3617,7 +3633,7 @@ end
 function tbl_upv_1.GetDrawnRoot()
     --[[
       name: GetDrawnRoot
-      line: 2217
+      line: 2244
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
@@ -3626,7 +3642,7 @@ end
 function tbl_upv_1.Drawn(a1)
     --[[
       name: Drawn
-      line: 2221
+      line: 2248
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
@@ -3635,7 +3651,7 @@ end
 function tbl_upv_1.GetDrawnModel()
     --[[
       name: GetDrawnModel
-      line: 2225
+      line: 2252
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
@@ -3645,20 +3661,20 @@ tbl_upv_1.DrawnChanged = Smoothing_upv_1.DrawnChanged
 function tbl_upv_1.SmoothingTrace(a1)
     --[[
       name: SmoothingTrace
-      line: 2233
+      line: 2260
       upvalues:
         Smoothing_upv_1 (copy, index: 1)
     ]]
-    local v248 = Smoothing_upv_1.Trace(a1)
-    if v248 then
-        return (game:GetService("HttpService"):JSONEncode(v248))
+    local v249 = Smoothing_upv_1.Trace(a1)
+    if v249 then
+        return (game:GetService("HttpService"):JSONEncode(v249))
     end
     return nil
 end
 function tbl_upv_1.DebugStats()
     --[[
       name: DebugStats
-      line: 2238
+      line: 2265
       upvalues:
         tbl_upv_8 (copy, index: 1)
         Fades_upv_1 (copy, index: 2)
@@ -3668,21 +3684,21 @@ function tbl_upv_1.DebugStats()
         Guards_upv_1 (copy, index: 6)
         RunService_upv_1 (copy, index: 7)
         Simulation_upv_1 (copy, index: 8)
-        u52 (ref,  index: 9)
+        u69 (ref,  index: 9)
     ]]
-    local v249 = os.clock()
-    local v250 = math.max(0.001, v249 - tbl_upv_8.since)
+    local v250 = os.clock()
+    local v251 = math.max(0.001, v250 - tbl_upv_8.since)
     local tbl_28 = {msPerFrame = 0, touchesIgnored = 0, touchLookPx = 0, maxFrameMs = 0, fps = 0}
-    tbl_28.msPerSec = (tbl_upv_8.time * 1000) / v250
+    tbl_28.msPerSec = (tbl_upv_8.time * 1000) / v251
     tbl_28.msPerFrame = ((tbl_upv_8.frames > 0) and (tbl_upv_8.time * 1000 / tbl_upv_8.frames)) or 0
     tbl_28.maxFrameMs = tbl_upv_8.max * 1000
-    tbl_28.fps = tbl_upv_8.frames / v250
+    tbl_28.fps = tbl_upv_8.frames / v251
     tbl_28.touchLookPx = tbl_upv_8.touchLookPx
     tbl_28.touchesIgnored = tbl_upv_8.touchesIgnored
     tbl_upv_8.time = 0
     tbl_upv_8.max = 0
     tbl_upv_8.frames = 0
-    tbl_upv_8.since = v249
+    tbl_upv_8.since = v250
     for key_10, value_32 in Fades_upv_1.Stats() do
         tbl_28[key_10] = value_32
     end
@@ -3703,43 +3719,20 @@ function tbl_upv_1.DebugStats()
             tbl_28["wg_" .. key_15] = value_37
         end
     end
-    tbl_28.firstPerson = u52
+    tbl_28.firstPerson = u69
     tbl_28.waterLifts = Occlusion_upv_1.WaterLifts()
     return tbl_28
-end
-function tbl_upv_1.SetLook(a1, a2)
-    --[[
-      name: SetLook
-      line: 2279
-      upvalues:
-        u62 (copy, index: 1)
-        u29 (ref,  index: 4)
-        u28 (ref,  index: 5)
-        u1 (ref,  index: 10)
-        u2 (ref,  index: 11)
-        u4 (ref,  index: 18)
-        u5 (ref,  index: 19)
-    ]]
-    u62(32768)
-    u29 = u28
-    local v251 = u1
-    local v252 = u2
-    u4 = ((a1 + math.pi) % math.tau) - math.pi
-    if not a2 then
-        return
-    end
-    u5 = math.clamp(a2, v251, v252)
 end
 if u3 and LocalPlayer_upv_1 then
     local TribesCameraBridge_upv_1 = LocalPlayer_upv_1:FindFirstChild("TribesCameraBridge")
     if TribesCameraBridge_upv_1 then
-        local v253 = TribesCameraBridge_upv_1:IsA("BindableFunction")
-        if v253 then
+        local v252 = TribesCameraBridge_upv_1:IsA("BindableFunction")
+        if v252 then
             for key_upv_16, value_38 in tbl_upv_1 do
                 if type(value_38) == "function" then
                     tbl_upv_1[key_upv_16] = function(...)
                         --[[
-                          line: 2303
+                          line: 2313
                           upvalues:
                             TribesCameraBridge_upv_1 (copy, index: 1)
                             key_upv_16 (copy, index: 2)
@@ -3749,41 +3742,41 @@ if u3 and LocalPlayer_upv_1 then
                 end
             end
         else
-            local v254 = Instance.new("BindableFunction")
-            v254.Name = "TribesCameraBridge"
-            local u80 = table.clone(tbl_upv_1)
-            v254.OnInvoke = function(a1, ...)
+            local v253 = Instance.new("BindableFunction")
+            v253.Name = "TribesCameraBridge"
+            local u83 = table.clone(tbl_upv_1)
+            v253.OnInvoke = function(a1, ...)
                 --[[
-                  line: 2312
+                  line: 2322
                   upvalues:
-                    u80 (copy, index: 1)
+                    u83 (copy, index: 1)
                 ]]
-                local v255 = u80[a1]
-                if type(v255) ~= "function" then
+                local v254 = u83[a1]
+                if type(v254) ~= "function" then
                     return nil
                 end
-                return v255(...)
+                return v254(...)
             end
-            v254.Parent = LocalPlayer_upv_1
+            v253.Parent = LocalPlayer_upv_1
             start()
         end
     else
-        local v254 = Instance.new("BindableFunction")
-        v254.Name = "TribesCameraBridge"
-        local u80 = table.clone(tbl_upv_1)
-        v254.OnInvoke = function(a1, ...)
+        local v253 = Instance.new("BindableFunction")
+        v253.Name = "TribesCameraBridge"
+        local u83 = table.clone(tbl_upv_1)
+        v253.OnInvoke = function(a1, ...)
             --[[
-              line: 2312
+              line: 2322
               upvalues:
-                u80 (copy, index: 1)
+                u83 (copy, index: 1)
             ]]
-            local v255 = u80[a1]
-            if type(v255) ~= "function" then
+            local v254 = u83[a1]
+            if type(v254) ~= "function" then
                 return nil
             end
-            return v255(...)
+            return v254(...)
         end
-        v254.Parent = LocalPlayer_upv_1
+        v253.Parent = LocalPlayer_upv_1
         start()
     end
 end
