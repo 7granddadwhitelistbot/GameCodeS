@@ -1221,7 +1221,7 @@ local u32 = nil
 function tbl_upv_1.SetViewHandOff(a1, a2)
     --[[
       name: SetViewHandOff
-      line: 809
+      line: 812
       upvalues:
         u31 (ref, index: 1)
         u32 (ref, index: 2)
@@ -1232,7 +1232,7 @@ end
 local function setModelCFrame(a1, a2)
     --[[
       name: setModelCFrame
-      line: 813
+      line: 816
     ]]
     if a1:IsA("Model") then
         a1:PivotTo(a2)
@@ -1243,7 +1243,7 @@ end
 local function lowDetail(a1)
     --[[
       name: lowDetail
-      line: 834
+      line: 837
     ]]
     for _, value_10 in a1:GetDescendants() do
         if value_10:IsA("ParticleEmitter") or value_10:IsA("Trail") or value_10:IsA("Beam") or value_10:IsA("PointLight") then
@@ -1254,7 +1254,7 @@ end
 function tbl_upv_1.MyKey(a1)
     --[[
       name: MyKey
-      line: 854
+      line: 857
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
     ]]
@@ -1265,7 +1265,7 @@ local tbl_upv_24 = {}
 task.spawn(
     function()
         --[[
-          line: 901
+          line: 904
           upvalues:
             tbl_upv_23 (copy, index: 1)
         ]]
@@ -1284,7 +1284,7 @@ local u34 = 0
 local function dropLine(a1, a2)
     --[[
       name: dropLine
-      line: 931
+      line: 934
       upvalues:
         tbl_upv_25 (copy, index: 1)
     ]]
@@ -1300,7 +1300,7 @@ local u36 = nil
 local function viewLineHand()
     --[[
       name: viewLineHand
-      line: 956
+      line: 959
       upvalues:
         u35 (ref,  index: 1)
         u36 (ref,  index: 2)
@@ -1329,7 +1329,7 @@ local function viewLineHand()
         local v105 = RunService_upv_1.RenderStepped:Connect(
             function()
                 --[[
-                  line: 977
+                  line: 980
                   upvalues:
                     u35 (ref, index: 1)
                 ]]
@@ -1347,7 +1347,7 @@ end
 local function addLine(a1, a2, a3)
     --[[
       name: addLine
-      line: 988
+      line: 991
       upvalues:
         Util_upv_1 (copy, index: 1)
         LocalPlayer_upv_1 (copy, index: 2)
@@ -1428,7 +1428,7 @@ tbl_upv_1.ParamsOverride = nil
 local function fallbackModel(a1)
     --[[
       name: fallbackModel
-      line: 915
+      line: 918
       upvalues:
         prep (copy, index: 1)
     ]]
@@ -1448,7 +1448,7 @@ end
 local function paramsFor(a1)
     --[[
       name: paramsFor
-      line: 860
+      line: 863
       upvalues:
         tbl_upv_24 (copy, index: 1)
         tbl_upv_23 (copy, index: 2)
@@ -1505,7 +1505,7 @@ end
 function tbl_upv_1.Projectile(a1, a2, a3, a4, a5, a6, a7)
     --[[
       name: Projectile
-      line: 1041
+      line: 1044
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -1620,7 +1620,7 @@ end
 function tbl_upv_1.Pellets(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
     --[[
       name: Pellets
-      line: 1109
+      line: 1112
       upvalues:
         Combat_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -1629,11 +1629,12 @@ function tbl_upv_1.Pellets(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
         tbl_upv_1.Projectile(("%*/%*"):format(a1, key_4), a2, a3, value_16 * a5, a6, a10, a11)
     end
 end
-local tbl_upv_30 = {}
+local tbl_upv_30 = {Beehive = true, Caltrops = true, SmokeBomb = true, Flask = true, FireBomb = true}
+local tbl_upv_31 = {}
 local function fadeOut(a1, a2, a3)
     --[[
       name: fadeOut
-      line: 821
+      line: 824
       upvalues:
         TweenService_upv_1 (copy, index: 1)
         release (copy, index: 2)
@@ -1644,15 +1645,15 @@ local function fadeOut(a1, a2, a3)
             continue
         end
         if value_17:IsA("PointLight") then
-            local tbl_31 = {Brightness = 0}
-            TweenService_upv_1:Create(value_17, TweenInfo.new(a2), tbl_31):Play()
+            local tbl_32 = {Brightness = 0}
+            TweenService_upv_1:Create(value_17, TweenInfo.new(a2), tbl_32):Play()
         end
     end
     task.delay(
         a3 or (a2 + 0.6),
         function()
             --[[
-              line: 829
+              line: 832
               upvalues:
                 release (copy, index: 1)
                 a1 (copy, index: 2)
@@ -1664,10 +1665,10 @@ end
 local function hitSound(a1, a2, a3)
     --[[
       name: hitSound
-      line: 1117
+      line: 1124
       upvalues:
         tbl_upv_18 (copy, index: 1)
-        tbl_upv_30 (copy, index: 2)
+        tbl_upv_31 (copy, index: 2)
         Util_upv_1 (copy, index: 3)
     ]]
     local v133 = tbl_upv_18[a1]
@@ -1676,10 +1677,10 @@ local function hitSound(a1, a2, a3)
     end
     local v134 = a1 .. ((a2 and "b") or "w")
     local v135 = os.clock()
-    if a1 == "Pellet" and v135 - (tbl_upv_30[v134] or 0) < 0.06 then
+    if a1 == "Pellet" and v135 - (tbl_upv_31[v134] or 0) < 0.06 then
         return
     end
-    tbl_upv_30[v134] = v135
+    tbl_upv_31[v134] = v135
     local Sound_2 = Util_upv_1.Sound
     local v136
     if a2 then
@@ -1692,7 +1693,7 @@ end
 local function hideBody(a1)
     --[[
       name: hideBody
-      line: 842
+      line: 845
     ]]
     for _, value_18 in a1:GetDescendants() do
         if value_18:IsA("BasePart") then
@@ -1707,7 +1708,7 @@ end
 local function landCosmetic(a1, a2, a3, a4, a5, a6, a7)
     --[[
       name: landCosmetic
-      line: 1132
+      line: 1139
       upvalues:
         u33 (ref,  index: 1)
         tbl_upv_25 (copy, index: 2)
@@ -1744,7 +1745,7 @@ local function landCosmetic(a1, a2, a3, a4, a5, a6, a7)
                     v137,
                     function()
                         --[[
-                          line: 937
+                          line: 940
                           upvalues:
                             tbl_upv_25 (copy, index: 1)
                             v144 (copy, index: 2)
@@ -1758,8 +1759,8 @@ local function landCosmetic(a1, a2, a3, a4, a5, a6, a7)
                             tbl_upv_25[v144] = nil
                         end
                         if u37.beam.Parent then
-                            local tbl_32 = {Width0 = 0, Width1 = 0}
-                            TweenService_upv_1:Create(u37.beam, TweenInfo.new(0.15), tbl_32):Play()
+                            local tbl_33 = {Width0 = 0, Width1 = 0}
+                            TweenService_upv_1:Create(u37.beam, TweenInfo.new(0.15), tbl_33):Play()
                         end
                         Debris_upv_1:AddItem(u37.beam, 0.2)
                         Debris_upv_1:AddItem(u37.a0, 0.2)
@@ -1834,8 +1835,8 @@ local function landCosmetic(a1, a2, a3, a4, a5, a6, a7)
     end
 end
 local u38 = false
-local tbl_upv_33 = {}
 local tbl_upv_34 = {}
+local tbl_upv_35 = {}
 local function bodyOf(a1)
     --[[
       name: bodyOf
@@ -1855,46 +1856,48 @@ local function bodyOf(a1)
     else
         v150 = CFrame.identity
     end
-    local tbl_35 = {}
     local tbl_36 = {}
+    local tbl_37 = {}
     local v151 = a1:GetDescendants()
     table.insert(v151, a1)
     for _, value_19 in v151 do
         if value_19:IsA("BasePart") then
-            table.insert(tbl_35, value_19)
-            table.insert(tbl_36, v150:ToObjectSpace(value_19.CFrame))
+            table.insert(tbl_36, value_19)
+            table.insert(tbl_37, v150:ToObjectSpace(value_19.CFrame))
         end
     end
-    local tbl_37 = {}
-    tbl_37.parts = tbl_35
-    tbl_37.rels = tbl_36
-    u4[a1] = tbl_37
-    return tbl_37
+    local tbl_38 = {}
+    tbl_38.parts = tbl_36
+    tbl_38.rels = tbl_37
+    u4[a1] = tbl_38
+    return tbl_38
 end
 RunService_upv_1.Heartbeat:Connect(
     function(a1)
         --[[
-          line: 1191
+          line: 1198
           upvalues:
             u38 (ref,  index: 1)
-            tbl_upv_33 (copy, index: 2)
-            tbl_upv_34 (copy, index: 3)
+            tbl_upv_34 (copy, index: 2)
+            tbl_upv_35 (copy, index: 3)
             tbl_upv_21 (copy, index: 4)
-            u33 (ref,  index: 5)
-            Ballistics_upv_1 (copy, index: 6)
-            Combat_upv_1 (copy, index: 7)
-            landCosmetic (copy, index: 8)
-            release (copy, index: 9)
-            u31 (ref,  index: 10)
-            tbl_upv_22 (copy, index: 11)
-            tbl_upv_20 (copy, index: 12)
-            bodyOf (copy, index: 13)
-            Metrics_upv_1 (copy, index: 14)
+            release (copy, index: 5)
+            u33 (ref,  index: 6)
+            Ballistics_upv_1 (copy, index: 7)
+            Combat_upv_1 (copy, index: 8)
+            tbl_upv_30 (copy, index: 9)
+            Util_upv_1 (copy, index: 10)
+            landCosmetic (copy, index: 11)
+            u31 (ref,  index: 12)
+            tbl_upv_22 (copy, index: 13)
+            tbl_upv_20 (copy, index: 14)
+            bodyOf (copy, index: 15)
+            Metrics_upv_1 (copy, index: 16)
         ]]
         local v152 = os.clock()
         u38 = not u38
-        table.clear(tbl_upv_33)
         table.clear(tbl_upv_34)
+        table.clear(tbl_upv_35)
         local v153, v154 = nil, nil
         local v155 = nil
         for key_6, value_20 in tbl_upv_21 do
@@ -1902,6 +1905,17 @@ RunService_upv_1.Heartbeat:Connect(
                 if os.clock() - value_20.born > 10 then
                     tbl_upv_21[key_6] = nil
                 end
+            elseif value_20.pending then
+                if not (os.clock() - value_20.pending > 1.5) then
+                    continue
+                end
+                if value_20.stopLoop then
+                    value_20.stopLoop(0)
+                    value_20.stopLoop = nil
+                end
+                release(value_20.model)
+                tbl_upv_21[key_6] = nil
+                u33 = u33 - 1
             else
                 if not (value_20.model.Parent) then
                     tbl_upv_21[key_6] = nil
@@ -1925,10 +1939,22 @@ RunService_upv_1.Heartbeat:Connect(
                 end
                 if v153 then
                     local v159 = Combat_upv_1.FindCharacter(v153.Instance)
-                    landCosmetic(value_20, v153.Position, v153.Normal, v153.Material.Name, v159 ~= nil, v159, v153.Instance)
-                    continue
-                end
-                if Ballistics_upv_1.Expired(value_20.shot) then
+                    if not (v159) or tbl_upv_30[value_20.kind] or not (Util_upv_1.ParryFacing(v159, value_20.shot.vel)) then
+                        landCosmetic(value_20, v153.Position, v153.Normal, v153.Material.Name, v159 ~= nil, v159, v153.Instance)
+                        continue
+                    end
+                    value_20.pending = os.clock()
+                    v156 = ((not (value_20.shot.vel.Magnitude > 0)) and Vector3.new(0, 0, 1)) or (value_20.shot.vel.Unit)
+                    local model_1 = value_20.model
+                    local v160 = CFrame.lookAt(v153.Position - (v156 * 0.6), (v153.Position - (v156 * 0.6)) + v156)
+                    if model_1:IsA("Model") then
+                        model_1:PivotTo(v160)
+                        continue
+                    end
+                    if model_1:IsA("BasePart") then
+                        model_1.CFrame = v160
+                    end
+                elseif Ballistics_upv_1.Expired(value_20.shot) then
                     if value_20.stopLoop then
                         value_20.stopLoop(0)
                         value_20.stopLoop = nil
@@ -1944,38 +1970,38 @@ RunService_upv_1.Heartbeat:Connect(
                     v154 = value_20.shot.pos
                     local view_2 = value_20.view
                     if view_2 then
-                        local v160 = os.clock()
+                        local v161 = os.clock()
                         local CurrentCamera_6 = workspace.CurrentCamera
-                        if v160 < view_2.at then
+                        if v161 < view_2.at then
                             v154 = value_20.shot.pos - Vector3.new(0, 10000, 0)
                         else
                             if view_2.t0 == 0 then
-                                view_2.t0 = v160
-                                value_20.spinT0 = v160
-                                local v161 = u31 and (u31())
-                                if v161 and CurrentCamera_6 then
+                                view_2.t0 = v161
+                                value_20.spinT0 = v161
+                                local v162 = u31 and (u31())
+                                if v162 and CurrentCamera_6 then
                                     local CFrame_1 = CurrentCamera_6.CFrame
-                                    view_2.p0 = CFrame_1:PointToObjectSpace(CFrame_1.Position + ((v161 - CFrame_1.Position) * (tbl_upv_22[value_20.kind] or 4)))
+                                    view_2.p0 = CFrame_1:PointToObjectSpace(CFrame_1.Position + ((v162 - CFrame_1.Position) * (tbl_upv_22[value_20.kind] or 4)))
                                 end
                                 for _, value_21 in view_2.trails do
                                     value_21:Clear()
                                     value_21.Enabled = true
                                 end
                             end
-                            local v162 = math.clamp((v160 - view_2.t0) / view_2.dur, 0, 1)
-                            local v163 = 1 - (1 - v162) * (1 - v162)
+                            local v163 = math.clamp((v161 - view_2.t0) / view_2.dur, 0, 1)
+                            local v164 = 1 - (1 - v163) * (1 - v163)
                             local p0_1 = view_2.p0
                             if p0_1 and CurrentCamera_6 then
                                 local CFrame_2 = CurrentCamera_6.CFrame
-                                local v164 = CFrame_2:PointToObjectSpace(value_20.shot.pos)
-                                if v164.Z < -0.05 and p0_1.Z < -0.05 then
+                                local v165 = CFrame_2:PointToObjectSpace(value_20.shot.pos)
+                                if v165.Z < -0.05 and p0_1.Z < -0.05 then
                                     local _ = -p0_1.Z
-                                    local v169 = -v164.Z
-                                    local v170 = -p0_1.Z + (-v164.Z - -p0_1.Z) * v163
-                                    v154 = CFrame_2:PointToWorldSpace(Vector3.new((p0_1.X / -p0_1.Z + (v164.X / -v164.Z - p0_1.X / -p0_1.Z) * v163) * (-p0_1.Z + (-v164.Z - -p0_1.Z) * v163), (p0_1.Y / -p0_1.Z + (v164.Y / -v164.Z - p0_1.Y / -p0_1.Z) * v163) * (-p0_1.Z + (-v164.Z - -p0_1.Z) * v163), -(-p0_1.Z + (-v164.Z - -p0_1.Z) * v163)))
+                                    local v170 = -v165.Z
+                                    local v171 = -p0_1.Z + (-v165.Z - -p0_1.Z) * v164
+                                    v154 = CFrame_2:PointToWorldSpace(Vector3.new((p0_1.X / -p0_1.Z + (v165.X / -v165.Z - p0_1.X / -p0_1.Z) * v164) * (-p0_1.Z + (-v165.Z - -p0_1.Z) * v164), (p0_1.Y / -p0_1.Z + (v165.Y / -v165.Z - p0_1.Y / -p0_1.Z) * v164) * (-p0_1.Z + (-v165.Z - -p0_1.Z) * v164), -(-p0_1.Z + (-v165.Z - -p0_1.Z) * v164)))
                                 end
                             end
-                            if v162 >= 1 then
+                            if v163 >= 1 then
                                 value_20.view = nil
                             end
                         end
@@ -1983,59 +2009,59 @@ RunService_upv_1.Heartbeat:Connect(
                     if not (vel_1.Magnitude > 0.01) then
                         continue
                     end
-                    local v165 = CFrame.lookAt(v154, v154 + vel_1)
+                    local v166 = CFrame.lookAt(v154, v154 + vel_1)
                     if value_20.spin > 0 then
-                        local v166 = os.clock()
-                        local v167 = (v166 - (value_20.spinT0 or (value_20.born))) * value_20.spin
+                        local v167 = os.clock()
+                        local v168 = (v167 - (value_20.spinT0 or (value_20.born))) * value_20.spin
                         if tbl_upv_20[value_20.kind] then
-                            v155 = CFrame.Angles(0, v167, 0)
+                            v155 = CFrame.Angles(0, v168, 0)
                         else
-                            v155 = CFrame.Angles(-v167, 0, 0)
+                            v155 = CFrame.Angles(-v168, 0, 0)
                         end
-                        v165 = v165 * v155
+                        v166 = v166 * v155
                     end
-                    local v168 = bodyOf(value_20.model)
-                    for key_7, value_22 in v168.parts do
-                        table.insert(tbl_upv_33, value_22)
-                        table.insert(tbl_upv_34, v165 * v168.rels[key_7])
+                    local v169 = bodyOf(value_20.model)
+                    for key_7, value_22 in v169.parts do
+                        table.insert(tbl_upv_34, value_22)
+                        table.insert(tbl_upv_35, v166 * v169.rels[key_7])
                     end
                 else
                     local vel_1 = value_20.shot.vel
                     v154 = value_20.shot.pos
                     local view_2 = value_20.view
                     if view_2 then
-                        local v160 = os.clock()
+                        local v161 = os.clock()
                         local CurrentCamera_6 = workspace.CurrentCamera
-                        if v160 < view_2.at then
+                        if v161 < view_2.at then
                             v154 = value_20.shot.pos - Vector3.new(0, 10000, 0)
                         else
                             if view_2.t0 == 0 then
-                                view_2.t0 = v160
-                                value_20.spinT0 = v160
-                                local v161 = u31 and (u31())
-                                if v161 and CurrentCamera_6 then
+                                view_2.t0 = v161
+                                value_20.spinT0 = v161
+                                local v162 = u31 and (u31())
+                                if v162 and CurrentCamera_6 then
                                     local CFrame_1 = CurrentCamera_6.CFrame
-                                    view_2.p0 = CFrame_1:PointToObjectSpace(CFrame_1.Position + ((v161 - CFrame_1.Position) * (tbl_upv_22[value_20.kind] or 4)))
+                                    view_2.p0 = CFrame_1:PointToObjectSpace(CFrame_1.Position + ((v162 - CFrame_1.Position) * (tbl_upv_22[value_20.kind] or 4)))
                                 end
                                 for _, value_21 in view_2.trails do
                                     value_21:Clear()
                                     value_21.Enabled = true
                                 end
                             end
-                            local v162 = math.clamp((v160 - view_2.t0) / view_2.dur, 0, 1)
-                            local v163 = 1 - (1 - v162) * (1 - v162)
+                            local v163 = math.clamp((v161 - view_2.t0) / view_2.dur, 0, 1)
+                            local v164 = 1 - (1 - v163) * (1 - v163)
                             local p0_1 = view_2.p0
                             if p0_1 and CurrentCamera_6 then
                                 local CFrame_2 = CurrentCamera_6.CFrame
-                                local v164 = CFrame_2:PointToObjectSpace(value_20.shot.pos)
-                                if v164.Z < -0.05 and p0_1.Z < -0.05 then
+                                local v165 = CFrame_2:PointToObjectSpace(value_20.shot.pos)
+                                if v165.Z < -0.05 and p0_1.Z < -0.05 then
                                     local _ = -p0_1.Z
-                                    local v169 = -v164.Z
-                                    local v170 = -p0_1.Z + (-v164.Z - -p0_1.Z) * v163
-                                    v154 = CFrame_2:PointToWorldSpace(Vector3.new((p0_1.X / -p0_1.Z + (v164.X / -v164.Z - p0_1.X / -p0_1.Z) * v163) * (-p0_1.Z + (-v164.Z - -p0_1.Z) * v163), (p0_1.Y / -p0_1.Z + (v164.Y / -v164.Z - p0_1.Y / -p0_1.Z) * v163) * (-p0_1.Z + (-v164.Z - -p0_1.Z) * v163), -(-p0_1.Z + (-v164.Z - -p0_1.Z) * v163)))
+                                    local v170 = -v165.Z
+                                    local v171 = -p0_1.Z + (-v165.Z - -p0_1.Z) * v164
+                                    v154 = CFrame_2:PointToWorldSpace(Vector3.new((p0_1.X / -p0_1.Z + (v165.X / -v165.Z - p0_1.X / -p0_1.Z) * v164) * (-p0_1.Z + (-v165.Z - -p0_1.Z) * v164), (p0_1.Y / -p0_1.Z + (v165.Y / -v165.Z - p0_1.Y / -p0_1.Z) * v164) * (-p0_1.Z + (-v165.Z - -p0_1.Z) * v164), -(-p0_1.Z + (-v165.Z - -p0_1.Z) * v164)))
                                 end
                             end
-                            if v162 >= 1 then
+                            if v163 >= 1 then
                                 value_20.view = nil
                             end
                         end
@@ -2043,27 +2069,27 @@ RunService_upv_1.Heartbeat:Connect(
                     if not (vel_1.Magnitude > 0.01) then
                         continue
                     end
-                    local v165 = CFrame.lookAt(v154, v154 + vel_1)
+                    local v166 = CFrame.lookAt(v154, v154 + vel_1)
                     if value_20.spin > 0 then
-                        local v166 = os.clock()
-                        local v167 = (v166 - (value_20.spinT0 or (value_20.born))) * value_20.spin
+                        local v167 = os.clock()
+                        local v168 = (v167 - (value_20.spinT0 or (value_20.born))) * value_20.spin
                         if tbl_upv_20[value_20.kind] then
-                            v155 = CFrame.Angles(0, v167, 0)
+                            v155 = CFrame.Angles(0, v168, 0)
                         else
-                            v155 = CFrame.Angles(-v167, 0, 0)
+                            v155 = CFrame.Angles(-v168, 0, 0)
                         end
-                        v165 = v165 * v155
+                        v166 = v166 * v155
                     end
-                    local v168 = bodyOf(value_20.model)
-                    for key_7, value_22 in v168.parts do
-                        table.insert(tbl_upv_33, value_22)
-                        table.insert(tbl_upv_34, v165 * v168.rels[key_7])
+                    local v169 = bodyOf(value_20.model)
+                    for key_7, value_22 in v169.parts do
+                        table.insert(tbl_upv_34, value_22)
+                        table.insert(tbl_upv_35, v166 * v169.rels[key_7])
                     end
                 end
             end
         end
-        if #tbl_upv_33 > 0 then
-            workspace:BulkMoveTo(tbl_upv_33, tbl_upv_34, Enum.BulkMoveMode.FireCFrameChanged)
+        if #tbl_upv_34 > 0 then
+            workspace:BulkMoveTo(tbl_upv_34, tbl_upv_35, Enum.BulkMoveMode.FireCFrameChanged)
         end
         Metrics_upv_1.AddProj(os.clock() - v152, u33)
     end
@@ -2071,7 +2097,7 @@ RunService_upv_1.Heartbeat:Connect(
 function tbl_upv_1.ResolveProjectile(a1)
     --[[
       name: ResolveProjectile
-      line: 1296
+      line: 1326
       upvalues:
         tbl_upv_21 (copy, index: 1)
         release (copy, index: 2)
@@ -2084,79 +2110,84 @@ function tbl_upv_1.ResolveProjectile(a1)
     if type(key_8) ~= "string" then
         return
     end
-    local v169 = tbl_upv_21[key_8]
-    local v170 = nil
+    local v170 = tbl_upv_21[key_8]
+    local v171 = nil
     if a1.expired then
-        if not v169 or (v169.landed) then
+        if v170 and not (v170.landed) then
+            if v170.stopLoop then
+                v170.stopLoop(0)
+                v170.stopLoop = nil
+            end
+            release(v170.model)
+            tbl_upv_21[key_8] = nil
+            u33 = u33 - 1
             return
         end
-        if v169.stopLoop then
-            v169.stopLoop(0)
-            v169.stopLoop = nil
+        if not v170 or not a1.deflected then
+            return
         end
-        release(v169.model)
+        v170.model.Parent = nil
         tbl_upv_21[key_8] = nil
-        u33 = u33 - 1
     else
-        v170 = a1.position
-        if typeof(v170) ~= "Vector3" then
+        v171 = a1.position
+        if typeof(v171) ~= "Vector3" then
             return
         end
-        local v171 = a1.character ~= nil
-        if v169 then
-            if not (v169.landed) then
-                landCosmetic(v169, v170, a1.normal, a1.material, v171)
+        local v172 = a1.character ~= nil
+        if v170 then
+            if not (v170.landed) then
+                landCosmetic(v170, v171, a1.normal, a1.material, v172)
             end
             local part_1 = a1.part
             local rel_1 = a1.rel
-            local v172 = v169.model:GetAttribute("CosKey") == key_8
-            if not v172 or not tbl_upv_17[v169.kind] or typeof(part_1) ~= "Instance" or not part_1:IsA("BasePart") or typeof(rel_1) ~= "CFrame" or not v169.model.Parent then
+            local v173 = v170.model:GetAttribute("CosKey") == key_8
+            if not v173 or not tbl_upv_17[v170.kind] or typeof(part_1) ~= "Instance" or not part_1:IsA("BasePart") or typeof(rel_1) ~= "CFrame" or not v170.model.Parent then
                 return
             end
-            local model_1 = v169.model
-            local v173 = part_1.CFrame * rel_1
-            if model_1:IsA("Model") then
-                model_1:PivotTo(v173)
-            elseif model_1:IsA("BasePart") then
-                model_1.CFrame = v173
+            local model_2 = v170.model
+            local v174 = part_1.CFrame * rel_1
+            if model_2:IsA("Model") then
+                model_2:PivotTo(v174)
+            elseif model_2:IsA("BasePart") then
+                model_2.CFrame = v174
             end
-            local v174
-            if v169.model:IsA("Model") then
-                v174 = v169.model.PrimaryPart
-            elseif v169.model:IsA("BasePart") then
-                v174 = v169.model
+            local v175
+            if v170.model:IsA("Model") then
+                v175 = v170.model.PrimaryPart
+            elseif v170.model:IsA("BasePart") then
+                v175 = v170.model
             else
-                v174 = nil
+                v175 = nil
             end
-            if not v174 or part_1.Anchored then
+            if not v175 or part_1.Anchored then
                 return
             end
-            for _, value_23 in v169.model:GetDescendants() do
+            for _, value_23 in v170.model:GetDescendants() do
                 if value_23:IsA("BasePart") then
                     value_23.Anchored = false
                     value_23.Massless = true
                 end
             end
-            if v169.model:IsA("BasePart") then
-                v169.model.Anchored = false
+            if v170.model:IsA("BasePart") then
+                v170.model.Anchored = false
             end
-            local v175 = Instance.new("WeldConstraint")
-            v175.Name = "StickWeld"
-            v175.Part0 = part_1
-            v175.Part1 = v174
-            v175.Parent = v174
+            local v176 = Instance.new("WeldConstraint")
+            v176.Name = "StickWeld"
+            v176.Part0 = part_1
+            v176.Part1 = v175
+            v176.Parent = v175
         else
             local CurrentCamera_7 = workspace.CurrentCamera
-            if ((((not CurrentCamera_7) and 0) or ((CurrentCamera_7.CFrame.Position - v170).Magnitude)) <= tbl_upv_1.NEAR) then
-                if v171 then
-                    tbl_upv_1.CharacterImpact(v170, nil, false)
+            if ((((not CurrentCamera_7) and 0) or ((CurrentCamera_7.CFrame.Position - v171).Magnitude)) <= tbl_upv_1.NEAR) then
+                if v172 then
+                    tbl_upv_1.CharacterImpact(v171, nil, false)
                 elseif a1.kind ~= "FireBomb" and a1.kind ~= "SmokeBomb" and a1.kind ~= "Flask" and a1.kind ~= "Caltrops" then
                     if a1.kind ~= "Beehive" then
                         local Impact_1 = tbl_upv_1.Impact
                         local normal_1 = a1.normal
                         local material_1 = a1.material
-                        local v176 = a1.kind ~= "Pellet"
-                        Impact_1(v170, normal_1, material_1, v176, ((a1.kind ~= "Pellet") and 0.8) or 0.45)
+                        local v177 = a1.kind ~= "Pellet"
+                        Impact_1(v171, normal_1, material_1, v177, ((a1.kind ~= "Pellet") and 0.8) or 0.45)
                     end
                 end
             end
@@ -2166,7 +2197,7 @@ end
 function tbl_upv_1.Explosion(a1, a2, a3, a4)
     --[[
       name: Explosion
-      line: 1362
+      line: 1397
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Util_upv_1 (copy, index: 2)
@@ -2178,128 +2209,128 @@ function tbl_upv_1.Explosion(a1, a2, a3, a4)
         LocalPlayer_upv_1 (copy, index: 8)
     ]]
     local CurrentCamera_8 = workspace.CurrentCamera
-    local v177 = tbl_upv_1.NEAR < (((not CurrentCamera_8) and 0) or ((CurrentCamera_8.CFrame.Position - a1).Magnitude))
+    local v178 = tbl_upv_1.NEAR < (((not CurrentCamera_8) and 0) or ((CurrentCamera_8.CFrame.Position - a1).Magnitude))
     local Burst_2 = tbl_upv_1.Burst
-    local v178 = CFrame.new(a1)
-    local v179 = a2 / 9
-    local v180
-    if v177 then
-        v180 = 0.5
-    else
-        v180 = 1
-    end
-    Burst_2("Explosion_Fire", v178, v179 * v180, Color3.fromRGB(245, 140, 50), true)
-    Util_upv_1.Sound("FireBomb_Explode", a1)
-    local v181 = a3 or (a2 * 0.8)
-    local v182 = a4 or 2.2
-    local v183 = Util_upv_1.WorldParams(Util_upv_1.Targets())
-    local v184 = workspace:Raycast(a1 + Vector3.new(0, 1.5, 0), Vector3.new(0, -(a2 + 1.5), 0), v183)
-    local v185
-    if v184 then
-        v178 = v184.Position
-        v185 = v184.Normal
-    else
-        v178, v185 = nil, nil
-    end
-    local v186 = nil
-    if not (v177) then
-        local v187 = CFrame.new(a1)
-        local v188, v189, v190 = Color3.fromRGB(245, 125, 40)
-        v183 = Instance.new("Part")
-        v183.Name = "ExplosionCore"
-        v183.Anchored = true
-        v183.CanCollide = false
-        v183.CanQuery = false
-        v183.CanTouch = false
-        v183.CastShadow = false
-        v183.Size = Vector3.new(1.5, 1.5, 1.5)
-        v183.CFrame = v187
-        v183.Color = v188
-        v183.Material = v189 or (Enum.Material.SmoothPlastic)
-        v183.Transparency = v190 or 0
-        v186 = workspace:FindFirstChild("FX")
-        if v186 then
-            u2 = v186
-        end
-        v183.Parent = u2
-        v183.Shape = Enum.PartType.Ball
-        v183.Transparency = 0.3
-        local v191 = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local tbl_38 = {Transparency = 1}
-        tbl_38.Size = (Vector3.new(1, 1, 1) * a2) * 0.7
-        tbl_38.Color = Color3.fromRGB(200, 70, 25)
-        TweenService_upv_1:Create(v183, v191, tbl_38):Play()
-        Debris_upv_1:AddItem(v183, 0.25)
-        local v192 = Instance.new("PointLight")
-        v192.Color = Color3.fromRGB(255, 140, 60)
-        v192.Range = 16
-        v192.Brightness = 1
-        v192.Parent = v183
-        local v193 = CFrame.new(a1)
-        local v194 = Color3.new()
-        local v195 = Instance.new("Part")
-        v195.Name = "PuffFX"
-        v195.Anchored = true
-        v195.CanCollide = false
-        v195.CanQuery = false
-        v195.CanTouch = false
-        v195.CastShadow = false
-        v195.Size = Vector3.new(1, 1, 1)
-        v195.CFrame = v193
-        v195.Color = v194
-        v195.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-        v195.Transparency = 1
-        v183 = workspace:FindFirstChild("FX")
-        if v183 then
-            u2 = v183
-        end
-        v195.Parent = u2
-        local v196 = Instance.new("ParticleEmitter")
-        v196.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-        v196.Color = ColorSequence.new(Color3.fromRGB(255, 170, 70), Color3.fromRGB(230, 90, 30))
-        v196.LightEmission = 0.35
-        v196.LightInfluence = 0.4
-        v196.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 0)})
-        v196.Lifetime = NumberRange.new(0.6, 1.1)
-        v196.Speed = NumberRange.new(10, 22)
-        v196.SpreadAngle = Vector2.new(70, 70)
-        v196.EmissionDirection = Enum.NormalId.Top
-        v196.Acceleration = Vector3.new(0, -24, 0)
-        v196.Rate = 0
-        v196.Parent = v195
-        v196:Emit((math.floor((20 * Quality_upv_1.particleScale) + 0.5)))
-        Debris_upv_1:AddItem(v195, 1.3)
-    end
+    local v179 = CFrame.new(a1)
+    local v180 = a2 / 9
+    local v181
     if v178 then
-        local v197 = nil
-        if v185 then
-            if not (v177) then
-                groundDecal(v178, v185, "rbxassetid://10871117278", Color3.fromRGB(235, 140, 70), 2, a2 * 2.4, 0.26, 0.3)
+        v181 = 0.5
+    else
+        v181 = 1
+    end
+    Burst_2("Explosion_Fire", v179, v180 * v181, Color3.fromRGB(245, 140, 50), true)
+    Util_upv_1.Sound("FireBomb_Explode", a1)
+    local v182 = a3 or (a2 * 0.8)
+    local v183 = a4 or 2.2
+    local v184 = Util_upv_1.WorldParams(Util_upv_1.Targets())
+    local v185 = workspace:Raycast(a1 + Vector3.new(0, 1.5, 0), Vector3.new(0, -(a2 + 1.5), 0), v184)
+    local v186
+    if v185 then
+        v179 = v185.Position
+        v186 = v185.Normal
+    else
+        v179, v186 = nil, nil
+    end
+    local v187 = nil
+    if not (v178) then
+        local v188 = CFrame.new(a1)
+        local v189, v190, v191 = Color3.fromRGB(245, 125, 40)
+        v184 = Instance.new("Part")
+        v184.Name = "ExplosionCore"
+        v184.Anchored = true
+        v184.CanCollide = false
+        v184.CanQuery = false
+        v184.CanTouch = false
+        v184.CastShadow = false
+        v184.Size = Vector3.new(1.5, 1.5, 1.5)
+        v184.CFrame = v188
+        v184.Color = v189
+        v184.Material = v190 or (Enum.Material.SmoothPlastic)
+        v184.Transparency = v191 or 0
+        v187 = workspace:FindFirstChild("FX")
+        if v187 then
+            u2 = v187
+        end
+        v184.Parent = u2
+        v184.Shape = Enum.PartType.Ball
+        v184.Transparency = 0.3
+        local v192 = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        local tbl_39 = {Transparency = 1}
+        tbl_39.Size = (Vector3.new(1, 1, 1) * a2) * 0.7
+        tbl_39.Color = Color3.fromRGB(200, 70, 25)
+        TweenService_upv_1:Create(v184, v192, tbl_39):Play()
+        Debris_upv_1:AddItem(v184, 0.25)
+        local v193 = Instance.new("PointLight")
+        v193.Color = Color3.fromRGB(255, 140, 60)
+        v193.Range = 16
+        v193.Brightness = 1
+        v193.Parent = v184
+        local v194 = CFrame.new(a1)
+        local v195 = Color3.new()
+        local v196 = Instance.new("Part")
+        v196.Name = "PuffFX"
+        v196.Anchored = true
+        v196.CanCollide = false
+        v196.CanQuery = false
+        v196.CanTouch = false
+        v196.CastShadow = false
+        v196.Size = Vector3.new(1, 1, 1)
+        v196.CFrame = v194
+        v196.Color = v195
+        v196.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+        v196.Transparency = 1
+        v184 = workspace:FindFirstChild("FX")
+        if v184 then
+            u2 = v184
+        end
+        v196.Parent = u2
+        local v197 = Instance.new("ParticleEmitter")
+        v197.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+        v197.Color = ColorSequence.new(Color3.fromRGB(255, 170, 70), Color3.fromRGB(230, 90, 30))
+        v197.LightEmission = 0.35
+        v197.LightInfluence = 0.4
+        v197.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 0)})
+        v197.Lifetime = NumberRange.new(0.6, 1.1)
+        v197.Speed = NumberRange.new(10, 22)
+        v197.SpreadAngle = Vector2.new(70, 70)
+        v197.EmissionDirection = Enum.NormalId.Top
+        v197.Acceleration = Vector3.new(0, -24, 0)
+        v197.Rate = 0
+        v197.Parent = v196
+        v197:Emit((math.floor((20 * Quality_upv_1.particleScale) + 0.5)))
+        Debris_upv_1:AddItem(v196, 1.3)
+    end
+    if v179 then
+        local v198 = nil
+        if v186 then
+            if not (v178) then
+                groundDecal(v179, v186, "rbxassetid://10871117278", Color3.fromRGB(235, 140, 70), 2, a2 * 2.4, 0.26, 0.3)
             end
-            groundDecal(v178, v185, "rbxassetid://10430755572", Color3.fromRGB(60, 32, 22), v181 * 2, v181 * 2.1, 0.15, 0.25, v182)
-            v179 = (v177 and 5) or 10
-            for n_2 = 1, v179 do
-                local v198 = ((n_2 / v179) * math.pi) * 2 + math.random() * 0.5
-                local v199 = ((n_2 ~= 1) and (v181 * ((math.sqrt(math.random()) * 0.65) + 0.25))) or 0
-                local v200 = CFrame.new(v178 + Vector3.new(math.cos(v198) * v199, 0.4, math.sin(v198) * v199))
-                local v201 = Color3.new()
-                local v202 = Instance.new("Part")
-                v202.Name = "PuffFX"
-                v202.Anchored = true
-                v202.CanCollide = false
-                v202.CanQuery = false
-                v202.CanTouch = false
-                v202.CastShadow = false
-                v202.Size = Vector3.new(2, 0.5, 2)
-                v202.CFrame = v200
-                v202.Color = v201
-                v202.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-                v202.Transparency = 1
+            groundDecal(v179, v186, "rbxassetid://10430755572", Color3.fromRGB(60, 32, 22), v182 * 2, v182 * 2.1, 0.15, 0.25, v183)
+            v180 = (v178 and 5) or 10
+            for n_2 = 1, v180 do
+                local v199 = ((n_2 / v180) * math.pi) * 2 + math.random() * 0.5
+                local v200 = ((n_2 ~= 1) and (v182 * ((math.sqrt(math.random()) * 0.65) + 0.25))) or 0
+                local v201 = CFrame.new(v179 + Vector3.new(math.cos(v199) * v200, 0.4, math.sin(v199) * v200))
+                local v202 = Color3.new()
+                local v203 = Instance.new("Part")
+                v203.Name = "PuffFX"
+                v203.Anchored = true
+                v203.CanCollide = false
+                v203.CanQuery = false
+                v203.CanTouch = false
+                v203.CastShadow = false
+                v203.Size = Vector3.new(2, 0.5, 2)
+                v203.CFrame = v201
+                v203.Color = v202
+                v203.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+                v203.Transparency = 1
                 local FX_9 = workspace:FindFirstChild("FX")
                 if FX_9 then
                     u2 = FX_9
                 end
-                v202.Parent = u2
+                v203.Parent = u2
                 local u39 = Instance.new("ParticleEmitter")
                 u39.Texture = "rbxasset://textures/particles/fire_main.dds"
                 u39.Color = ColorSequence.new(Color3.fromRGB(255, 190, 80), Color3.fromRGB(235, 90, 30))
@@ -2312,43 +2343,43 @@ function tbl_upv_1.Explosion(a1, a2, a3, a4)
                 u39.SpreadAngle = Vector2.new(10, 10)
                 u39.EmissionDirection = Enum.NormalId.Top
                 u39.Rotation = NumberRange.new(-20, 20)
-                u39.Rate = ((v177 and 0.6) or 1) * 14
+                u39.Rate = ((v178 and 0.6) or 1) * 14
                 u39.Shape = Enum.ParticleEmitterShape.Box
-                u39.Parent = v202
+                u39.Parent = v203
                 task.delay(
-                    v182,
+                    v183,
                     function()
                         --[[
-                          line: 1436
+                          line: 1471
                           upvalues:
                             u39 (copy, index: 1)
                         ]]
                         u39.Enabled = false
                     end
                 )
-                Debris_upv_1:AddItem(v202, v182 + 1)
-                local v203 = n_2
+                Debris_upv_1:AddItem(v203, v183 + 1)
+                local v204 = n_2
             end
-            local v204 = Vector3.new(v181, 1, v181)
-            local v203 = CFrame.new(v178 + Vector3.new(0, 1.5, 0))
-            local v205 = Color3.new()
-            local v206 = Instance.new("Part")
-            v206.Name = "PuffFX"
-            v206.Anchored = true
-            v206.CanCollide = false
-            v206.CanQuery = false
-            v206.CanTouch = false
-            v206.CastShadow = false
-            v206.Size = v204
-            v206.CFrame = v203
-            v206.Color = v205
-            v206.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-            v206.Transparency = 1
-            v197 = workspace:FindFirstChild("FX")
-            if v197 then
-                u2 = v197
+            local v205 = Vector3.new(v182, 1, v182)
+            local v204 = CFrame.new(v179 + Vector3.new(0, 1.5, 0))
+            local v206 = Color3.new()
+            local v207 = Instance.new("Part")
+            v207.Name = "PuffFX"
+            v207.Anchored = true
+            v207.CanCollide = false
+            v207.CanQuery = false
+            v207.CanTouch = false
+            v207.CastShadow = false
+            v207.Size = v205
+            v207.CFrame = v204
+            v207.Color = v206
+            v207.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+            v207.Transparency = 1
+            v198 = workspace:FindFirstChild("FX")
+            if v198 then
+                u2 = v198
             end
-            v206.Parent = u2
+            v207.Parent = u2
             local u40 = Instance.new("ParticleEmitter")
             u40.Texture = "rbxasset://textures/particles/smoke_main.dds"
             u40.Color = ColorSequence.new(Color3.fromRGB(80, 55, 45))
@@ -2361,25 +2392,25 @@ function tbl_upv_1.Explosion(a1, a2, a3, a4)
             u40.EmissionDirection = Enum.NormalId.Top
             u40.SpreadAngle = Vector2.new(8, 8)
             u40.Rate = 6
-            u40.Parent = v206
+            u40.Parent = v207
             task.delay(
-                v182,
+                v183,
                 function()
                     --[[
-                      line: 1456
+                      line: 1491
                       upvalues:
                         u40 (copy, index: 1)
                     ]]
                     u40.Enabled = false
                 end
             )
-            Debris_upv_1:AddItem(v206, v182 + 2.5)
+            Debris_upv_1:AddItem(v207, v183 + 2.5)
         end
     end
     local Character_1 = LocalPlayer_upv_1.Character
-    v178 = Character_1 and (Character_1:FindFirstChild("HumanoidRootPart"))
-    if v178 then
-        local Magnitude_1 = (v178.Position - a1).Magnitude
+    v179 = Character_1 and (Character_1:FindFirstChild("HumanoidRootPart"))
+    if v179 then
+        local Magnitude_1 = (v179.Position - a1).Magnitude
         if not (Magnitude_1 < a2 * 4) then
             return
         end
@@ -2389,7 +2420,7 @@ end
 function tbl_upv_1.SmokeCloud(a1, a2, a3)
     --[[
       name: SmokeCloud
-      line: 1472
+      line: 1507
       upvalues:
         Combat_upv_1 (copy, index: 1)
         u2 (ref,  index: 2)
@@ -2397,9 +2428,9 @@ function tbl_upv_1.SmokeCloud(a1, a2, a3)
         Util_upv_1 (copy, index: 4)
     ]]
     Combat_upv_1.AddSmoke(a1, a2, a3)
-    local v207 = Vector3.new(a2 * 1.5, a2 * 0.9, a2 * 1.5)
-    local v208 = CFrame.new(a1)
-    local v209 = Color3.new()
+    local v208 = Vector3.new(a2 * 1.5, a2 * 0.9, a2 * 1.5)
+    local v209 = CFrame.new(a1)
+    local v210 = Color3.new()
     local u41 = Instance.new("Part")
     u41.Name = "PuffFX"
     u41.Anchored = true
@@ -2407,9 +2438,9 @@ function tbl_upv_1.SmokeCloud(a1, a2, a3)
     u41.CanQuery = false
     u41.CanTouch = false
     u41.CastShadow = false
-    u41.Size = v207
-    u41.CFrame = v208
-    u41.Color = v209
+    u41.Size = v208
+    u41.CFrame = v209
+    u41.Color = v210
     u41.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
     u41.Transparency = 1
     local FX_10 = workspace:FindFirstChild("FX")
@@ -2421,30 +2452,30 @@ function tbl_upv_1.SmokeCloud(a1, a2, a3)
     local function emitter(a4, a5, a6, a7, a8)
         --[[
           name: emitter
-          line: 1476
+          line: 1511
           upvalues:
             u42 (copy, index: 1)
             u41 (copy, index: 2)
         ]]
-        local v210 = Instance.new("ParticleEmitter")
-        v210.Name = a4
-        v210.Texture = "rbxasset://textures/particles/smoke_main.dds"
-        v210.Color = ColorSequence.new(u42)
-        v210.LightEmission = 0
-        v210.LightInfluence = 1
-        v210.Shape = Enum.ParticleEmitterShape.Sphere
-        v210.ShapeStyle = Enum.ParticleEmitterShapeStyle.Volume
-        v210.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, a5), NumberSequenceKeypoint.new(1, a6)})
-        v210.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.15, 0.06), NumberSequenceKeypoint.new(0.75, 0.12), NumberSequenceKeypoint.new(1, 1)})
-        v210.Lifetime = NumberRange.new(a7 * 0.8, a7)
-        v210.Rate = a8
-        v210.Speed = NumberRange.new(0.4, 1.4)
-        v210.SpreadAngle = Vector2.new(180, 180)
-        v210.Rotation = NumberRange.new(0, 360)
-        v210.RotSpeed = NumberRange.new(-12, 12)
-        v210.Drag = 1
-        v210.Parent = u41
-        return v210
+        local v211 = Instance.new("ParticleEmitter")
+        v211.Name = a4
+        v211.Texture = "rbxasset://textures/particles/smoke_main.dds"
+        v211.Color = ColorSequence.new(u42)
+        v211.LightEmission = 0
+        v211.LightInfluence = 1
+        v211.Shape = Enum.ParticleEmitterShape.Sphere
+        v211.ShapeStyle = Enum.ParticleEmitterShapeStyle.Volume
+        v211.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, a5), NumberSequenceKeypoint.new(1, a6)})
+        v211.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.15, 0.06), NumberSequenceKeypoint.new(0.75, 0.12), NumberSequenceKeypoint.new(1, 1)})
+        v211.Lifetime = NumberRange.new(a7 * 0.8, a7)
+        v211.Rate = a8
+        v211.Speed = NumberRange.new(0.4, 1.4)
+        v211.SpreadAngle = Vector2.new(180, 180)
+        v211.Rotation = NumberRange.new(0, 360)
+        v211.RotSpeed = NumberRange.new(-12, 12)
+        v211.Drag = 1
+        v211.Parent = u41
+        return v211
     end
     local u43 = emitter("Body", a2 * 0.7, a2 * 0.95, 3.2, 34)
     local u44 = emitter("Low", a2 * 0.5, a2 * 0.7, 2.6, 16)
@@ -2457,7 +2488,7 @@ function tbl_upv_1.SmokeCloud(a1, a2, a3)
         math.max(0.5, a3 - 2.6),
         function()
             --[[
-              line: 1510
+              line: 1545
               upvalues:
                 u43 (copy, index: 1)
                 u44 (copy, index: 2)
@@ -2470,7 +2501,7 @@ function tbl_upv_1.SmokeCloud(a1, a2, a3)
         a3 + 1.5,
         function()
             --[[
-              line: 1514
+              line: 1549
               upvalues:
                 u41 (copy, index: 1)
             ]]
@@ -2481,7 +2512,7 @@ end
 function tbl_upv_1.TrapSnap(a1)
     --[[
       name: TrapSnap
-      line: 1520
+      line: 1555
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Util_upv_1 (copy, index: 2)
@@ -2493,7 +2524,7 @@ end
 function tbl_upv_1.ChargeGlow(a1, a2, a3)
     --[[
       name: ChargeGlow
-      line: 1530
+      line: 1565
       upvalues:
         Util_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -2502,58 +2533,58 @@ function tbl_upv_1.ChargeGlow(a1, a2, a3)
     if not a1 then
         return
     end
-    local v211 = Util_upv_1.Drawn(a1) or a1
-    local v212 = a3 or (tbl_upv_1.WeaponColor(a1))
+    local v212 = Util_upv_1.Drawn(a1) or a1
+    local v213 = a3 or (tbl_upv_1.WeaponColor(a1))
     if a2 <= 0.01 then
-        for _, value_24 in {a1, v211} do
+        for _, value_24 in {a1, v212} do
             local CombatChargeHL_1 = value_24:FindFirstChild("CombatChargeHL")
             if CombatChargeHL_1 then
                 CombatChargeHL_1:Destroy()
             end
-            local v213 = value_24:FindFirstChild("Muzzle", true)
-            local v214 = v213 and (v213:FindFirstChild("CombatGlow"))
-            if v214 then
-                v214:Destroy()
+            local v214 = value_24:FindFirstChild("Muzzle", true)
+            local v215 = v214 and (v214:FindFirstChild("CombatGlow"))
+            if v215 then
+                v215:Destroy()
             end
         end
     else
-        local v215 = v211:FindFirstChild("CombatChargeHL")
-        local v216 = v211:FindFirstChild("Muzzle", true)
-        local v217 = v216 and (v216:FindFirstChild("CombatGlow"))
-        if not (v215) and Quality_upv_1.highlights then
-            local v218 = Instance.new("Highlight")
-            v218.Name = "CombatChargeHL"
-            v218.DepthMode = Enum.HighlightDepthMode.Occluded
-            v218.Adornee = v211
-            v218.FillTransparency = 1
-            v218.Parent = v211
-            v215 = v218
-        end
-        if v215 then
-            v215.OutlineColor = v212
-            v215.OutlineTransparency = 1 - (a2 * (((a2 >= 1) and 0.9) or 0.6))
-        end
-        if not v216 or not v216:IsA("Attachment") then
-            return
+        local v216 = v212:FindFirstChild("CombatChargeHL")
+        local v217 = v212:FindFirstChild("Muzzle", true)
+        local v218 = v217 and (v217:FindFirstChild("CombatGlow"))
+        if not (v216) and Quality_upv_1.highlights then
+            local v219 = Instance.new("Highlight")
+            v219.Name = "CombatChargeHL"
+            v219.DepthMode = Enum.HighlightDepthMode.Occluded
+            v219.Adornee = v212
+            v219.FillTransparency = 1
+            v219.Parent = v212
+            v216 = v219
         end
         if v216 then
-            v217 = v216
-        else
-            v215 = Instance.new("PointLight")
-            v215.Name = "CombatGlow"
-            v215.Range = 5
-            v215.Shadows = false
-            v215.Parent = v216
-            v217 = v215
+            v216.OutlineColor = v213
+            v216.OutlineTransparency = 1 - (a2 * (((a2 >= 1) and 0.9) or 0.6))
         end
-        v217.Color = v212
-        v217.Brightness = math.min(1, a2 * 0.8)
+        if not v217 or not v217:IsA("Attachment") then
+            return
+        end
+        if v217 then
+            v218 = v217
+        else
+            v216 = Instance.new("PointLight")
+            v216.Name = "CombatGlow"
+            v216.Range = 5
+            v216.Shadows = false
+            v216.Parent = v217
+            v218 = v216
+        end
+        v218.Color = v213
+        v218.Brightness = math.min(1, a2 * 0.8)
     end
 end
 function tbl_upv_1.ChargePing(a1, a2)
     --[[
       name: ChargePing
-      line: 1583
+      line: 1618
       upvalues:
         Util_upv_1 (copy, index: 1)
         u2 (ref,  index: 2)
@@ -2561,53 +2592,53 @@ function tbl_upv_1.ChargePing(a1, a2)
         Debris_upv_1 (copy, index: 4)
         tbl_upv_1 (copy, index: 5)
     ]]
-    local v219 = Util_upv_1.Drawn(a1)
-    local v220 = v219 and (v219:FindFirstChild("Muzzle", true) or (v219:FindFirstChild("Tip", true)))
-    if not v220 then
+    local v220 = Util_upv_1.Drawn(a1)
+    local v221 = v220 and (v220:FindFirstChild("Muzzle", true) or (v220:FindFirstChild("Tip", true)))
+    if not v221 then
         return
     end
-    if v220:IsA("Attachment") then
-        local WorldCFrame_1 = v220.WorldCFrame
-        local v221 = a2 or (Color3.fromRGB(245, 175, 60))
-        local v222 = Instance.new("Part")
-        v222.Name = "ChargePing"
-        v222.Anchored = true
-        v222.CanCollide = false
-        v222.CanQuery = false
-        v222.CanTouch = false
-        v222.CastShadow = false
-        v222.Size = Vector3.new(0.30000001192092896, 0.30000001192092896, 0.30000001192092896)
-        v222.CFrame = WorldCFrame_1
-        v222.Color = v221
-        v222.Material = Enum.Material.ForceField or (Enum.Material.SmoothPlastic)
-        v222.Transparency = 0
+    if v221:IsA("Attachment") then
+        local WorldCFrame_1 = v221.WorldCFrame
+        local v222 = a2 or (Color3.fromRGB(245, 175, 60))
+        local v223 = Instance.new("Part")
+        v223.Name = "ChargePing"
+        v223.Anchored = true
+        v223.CanCollide = false
+        v223.CanQuery = false
+        v223.CanTouch = false
+        v223.CastShadow = false
+        v223.Size = Vector3.new(0.30000001192092896, 0.30000001192092896, 0.30000001192092896)
+        v223.CFrame = WorldCFrame_1
+        v223.Color = v222
+        v223.Material = Enum.Material.ForceField or (Enum.Material.SmoothPlastic)
+        v223.Transparency = 0
         local FX_11 = workspace:FindFirstChild("FX")
         if FX_11 then
             u2 = FX_11
         end
-        v222.Parent = u2
-        v222.Shape = Enum.PartType.Ball
-        local tbl_39 = {Transparency = 1, Size = Vector3.new(1.7999999523162842, 1.7999999523162842, 1.7999999523162842)}
-        TweenService_upv_1:Create(v222, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_39):Play()
-        Debris_upv_1:AddItem(v222, 0.25)
-        tbl_upv_1.Burst("Charge_Sparkle", v220.WorldCFrame, 1, a2, a2 ~= nil)
+        v223.Parent = u2
+        v223.Shape = Enum.PartType.Ball
+        local tbl_40 = {Transparency = 1, Size = Vector3.new(1.7999999523162842, 1.7999999523162842, 1.7999999523162842)}
+        TweenService_upv_1:Create(v223, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_40):Play()
+        Debris_upv_1:AddItem(v223, 0.25)
+        tbl_upv_1.Burst("Charge_Sparkle", v221.WorldCFrame, 1, a2, a2 ~= nil)
     end
 end
 local function torso(a1)
     --[[
       name: torso
-      line: 1598
+      line: 1633
     ]]
-    local v223 = a1:FindFirstChild("UpperTorso") or (a1:FindFirstChild("Torso") or (a1:FindFirstChild("HumanoidRootPart")))
-    if v223 and v223:IsA("BasePart") then
-        return v223
+    local v224 = a1:FindFirstChild("UpperTorso") or (a1:FindFirstChild("Torso") or (a1:FindFirstChild("HumanoidRootPart")))
+    if v224 and v224:IsA("BasePart") then
+        return v224
     end
     return nil
 end
 function tbl_upv_1.Heal(a1, a2)
     --[[
       name: Heal
-      line: 1604
+      line: 1639
       upvalues:
         Util_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -2618,23 +2649,23 @@ function tbl_upv_1.Heal(a1, a2)
         return
     end
     if a1:IsA("Model") then
-        local v224 = Util_upv_1.Drawn(a1)
-        local v225
-        if (v224) and (v224:IsA("Model")) then
-            v225 = v224
+        local v225 = Util_upv_1.Drawn(a1)
+        local v226
+        if (v225) and (v225:IsA("Model")) then
+            v226 = v225
         else
-            v225 = a1
+            v226 = a1
         end
-        local v226 = v225:FindFirstChild("UpperTorso") or (v225:FindFirstChild("Torso") or (v225:FindFirstChild("HumanoidRootPart")))
-        local v227 = not (v226) or not (v226:IsA("BasePart")) or v226
-        if not v227 then
+        local v227 = v226:FindFirstChild("UpperTorso") or (v226:FindFirstChild("Torso") or (v226:FindFirstChild("HumanoidRootPart")))
+        local v228 = not (v227) or not (v227:IsA("BasePart")) or v227
+        if not v228 then
             return
         end
-        tbl_upv_1.Burst("Heal_Health", v227.CFrame)
-        Util_upv_1.Sound("Herbs_Heal", v227)
-        local v228 = Instance.new("Attachment")
-        v228.Name = "CombatHealFX"
-        v228.Parent = v227
+        tbl_upv_1.Burst("Heal_Health", v228.CFrame)
+        Util_upv_1.Sound("Herbs_Heal", v228)
+        local v229 = Instance.new("Attachment")
+        v229.Name = "CombatHealFX"
+        v229.Parent = v228
         local u45 = Instance.new("ParticleEmitter")
         u45.Texture = "rbxasset://textures/particles/sparkles_main.dds"
         u45.Color = ColorSequence.new(Color3.fromRGB(120, 220, 110))
@@ -2648,30 +2679,30 @@ function tbl_upv_1.Heal(a1, a2)
         u45.EmissionDirection = Enum.NormalId.Top
         u45.Shape = Enum.ParticleEmitterShape.Cylinder
         u45.Rate = 16 * Quality_upv_1.particleScale
-        u45.Parent = v228
+        u45.Parent = v229
         task.delay(
             a2,
             function()
                 --[[
-                  line: 1632
+                  line: 1667
                   upvalues:
                     u45 (copy, index: 1)
                 ]]
                 u45.Enabled = false
             end
         )
-        Debris_upv_1:AddItem(v228, a2 + 1.2)
+        Debris_upv_1:AddItem(v229, a2 + 1.2)
     end
 end
-local tbl_upv_40 = {}
+local tbl_upv_41 = {}
 function tbl_upv_1.Status(a1, a2, a3)
     --[[
       name: Status
-      line: 1640
+      line: 1675
       upvalues:
         Util_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
-        tbl_upv_40 (copy, index: 3)
+        tbl_upv_41 (copy, index: 3)
         template (copy, index: 4)
         Debris_upv_1 (copy, index: 5)
     ]]
@@ -2679,72 +2710,72 @@ function tbl_upv_1.Status(a1, a2, a3)
         return
     end
     if a1:IsA("Model") then
-        local v229 = Util_upv_1.Drawn(a1)
-        local tbl_upv_41
-        if (v229) and (v229:IsA("Model")) then
-            tbl_upv_41 = v229
+        local v230 = Util_upv_1.Drawn(a1)
+        local tbl_upv_42
+        if (v230) and (v230:IsA("Model")) then
+            tbl_upv_42 = v230
         else
-            tbl_upv_41 = a1
+            tbl_upv_42 = a1
         end
-        local v230 = tbl_upv_41:FindFirstChild("UpperTorso") or (tbl_upv_41:FindFirstChild("Torso") or (tbl_upv_41:FindFirstChild("HumanoidRootPart")))
-        local u46 = not (v230) or not (v230:IsA("BasePart")) or v230
+        local v231 = tbl_upv_42:FindFirstChild("UpperTorso") or (tbl_upv_42:FindFirstChild("Torso") or (tbl_upv_42:FindFirstChild("HumanoidRootPart")))
+        local u46 = not (v231) or not (v231:IsA("BasePart")) or v231
         if not u46 then
             return
         end
         if a2 == "Snare" then
             local Snare_1 = tbl_upv_1.Snare
-            if (v229) and (v229:IsA("Model")) then
-                v230 = v229
+            if (v230) and (v230:IsA("Model")) then
+                v231 = v230
             else
-                v230 = a1
+                v231 = a1
             end
-            Snare_1(v230, a3)
+            Snare_1(v231, a3)
         elseif a2 == "Burn" then
-            tbl_upv_41 = tbl_upv_40[a1]
-            if not (tbl_upv_41) then
-                tbl_upv_41 = {}
-                tbl_upv_40[a1] = tbl_upv_41
+            tbl_upv_42 = tbl_upv_41[a1]
+            if not (tbl_upv_42) then
+                tbl_upv_42 = {}
+                tbl_upv_41[a1] = tbl_upv_42
                 a1.Destroying:Once(
                     function()
                         --[[
-                          line: 1660
+                          line: 1695
                           upvalues:
-                            tbl_upv_40 (copy, index: 1)
+                            tbl_upv_41 (copy, index: 1)
                             a1 (copy, index: 2)
                         ]]
-                        tbl_upv_40[a1] = nil
+                        tbl_upv_41[a1] = nil
                     end
                 )
             end
-            local v231 = tbl_upv_41[a2]
-            if not (v231) or not (v231.inst.Parent) then
-                local v232 = template("Status_Burn")
-                if not v232 then
+            local v232 = tbl_upv_42[a2]
+            if not (v232) or not (v232.inst.Parent) then
+                local v233 = template("Status_Burn")
+                if not v233 then
                     return
                 end
-                local v233 = v232:Clone()
-                if v233:IsA("Attachment") then
-                    v233.Parent = u46
-                    v231 = {token = 0, inst = v233}
-                    tbl_upv_41[a2] = v231
+                local v234 = v233:Clone()
+                if v234:IsA("Attachment") then
+                    v234.Parent = u46
+                    v232 = {token = 0, inst = v234}
+                    tbl_upv_42[a2] = v232
                 else
-                    v233:Destroy()
+                    v234:Destroy()
                     return
                 end
             end
-            u46 = v231
+            u46 = v232
             u46.token = u46.token + 1
             local token_upv_2 = u46.token
             task.delay(
                 a3,
                 function()
                     --[[
-                      line: 1683
+                      line: 1718
                       upvalues:
                         u46 (copy, index: 1)
                         token_upv_2 (copy, index: 2)
                         Debris_upv_1 (copy, index: 3)
-                        tbl_upv_41 (ref,  index: 4)
+                        tbl_upv_42 (ref,  index: 4)
                         a2 (copy, index: 5)
                     ]]
                     if u46.token ~= token_upv_2 then
@@ -2756,25 +2787,25 @@ function tbl_upv_1.Status(a1, a2, a3)
                         end
                     end
                     Debris_upv_1:AddItem(u46.inst, 1)
-                    if tbl_upv_41[a2] == u46 then
-                        tbl_upv_41[a2] = nil
+                    if tbl_upv_42[a2] == u46 then
+                        tbl_upv_42[a2] = nil
                     end
                 end
             )
         end
     end
 end
-local tbl_upv_42 = {}
+local tbl_upv_43 = {}
 function tbl_upv_1.Snare(a1, a2)
     --[[
       name: Snare
-      line: 1701
+      line: 1736
       upvalues:
-        tbl_upv_42 (copy, index: 1)
+        tbl_upv_43 (copy, index: 1)
         Util_upv_1 (copy, index: 2)
     ]]
-    local u47 = (tbl_upv_42[a1] or 0) + 1
-    tbl_upv_42[a1] = u47
+    local u47 = (tbl_upv_43[a1] or 0) + 1
+    tbl_upv_43[a1] = u47
     local CombatSnareFX_upv_1 = a1:FindFirstChild("CombatSnareFX")
     if CombatSnareFX_upv_1 then
         CombatSnareFX_upv_1:Destroy()
@@ -2788,141 +2819,141 @@ function tbl_upv_1.Snare(a1, a2)
     end
     local u48 = Instance.new("Model")
     u48.Name = "CombatSnareFX"
-    local v234 = CombatSnareFX_upv_1.CFrame:PointToObjectSpace(LeftLowerLeg_1.Position)
-    local v235 = CFrame.new(v234 / 2)
-    local v236 = math.abs(v234.X) + CombatSnareFX_upv_1.Size.X + 0.16
-    local v237 = Color3.fromRGB(196, 164, 112)
+    local v235 = CombatSnareFX_upv_1.CFrame:PointToObjectSpace(LeftLowerLeg_1.Position)
+    local v236 = CFrame.new(v235 / 2)
+    local v237 = math.abs(v235.X) + CombatSnareFX_upv_1.Size.X + 0.16
+    local v238 = Color3.fromRGB(196, 164, 112)
     for key_9, value_26 in {0.28, 0.05, -0.2} do
-        local v238 = Vector3.new(v236, 0.1, CombatSnareFX_upv_1.Size.Z + 0.16)
-        local v239 = v235 * CFrame.new(0, value_26, 0)
-        local v240 = v239 * CFrame.Angles(0, 0, math.rad(((key_9 ~= 2) and 5) or -6))
-        local v241 = Instance.new("Part")
-        v241.Name = "Wrap" .. key_9
-        v241.Size = v238
-        v241.Color = v237
-        v241.Material = Enum.Material.SmoothPlastic
-        v241.CanCollide = false
-        v241.CanQuery = false
-        v241.CanTouch = false
-        v241.Massless = true
-        v241.CastShadow = false
-        v241.CFrame = CombatSnareFX_upv_1.CFrame * v240
-        local v242 = Instance.new("WeldConstraint")
-        v242.Part0 = CombatSnareFX_upv_1
-        v242.Part1 = v241
-        v242.Parent = v241
-        v241.Parent = u48
+        local v239 = Vector3.new(v237, 0.1, CombatSnareFX_upv_1.Size.Z + 0.16)
+        local v240 = v236 * CFrame.new(0, value_26, 0)
+        local v241 = v240 * CFrame.Angles(0, 0, math.rad(((key_9 ~= 2) and 5) or -6))
+        local v242 = Instance.new("Part")
+        v242.Name = "Wrap" .. key_9
+        v242.Size = v239
+        v242.Color = v238
+        v242.Material = Enum.Material.SmoothPlastic
+        v242.CanCollide = false
+        v242.CanQuery = false
+        v242.CanTouch = false
+        v242.Massless = true
+        v242.CastShadow = false
+        v242.CFrame = CombatSnareFX_upv_1.CFrame * v241
+        local v243 = Instance.new("WeldConstraint")
+        v243.Part0 = CombatSnareFX_upv_1
+        v243.Part1 = v242
+        v243.Parent = v242
+        v242.Parent = u48
     end
     local function piece(a3, a4, a5, a6, a7)
         --[[
           name: piece
-          line: 1717
+          line: 1752
           upvalues:
             CombatSnareFX_upv_1 (copy, index: 1)
             u48 (copy, index: 2)
         ]]
-        local v243 = Instance.new("Part")
-        v243.Name = a3
-        v243.Size = a4
-        v243.Color = a6
-        v243.Material = Enum.Material.SmoothPlastic
+        local v244 = Instance.new("Part")
+        v244.Name = a3
+        v244.Size = a4
+        v244.Color = a6
+        v244.Material = Enum.Material.SmoothPlastic
         if a7 then
-            v243.Shape = Enum.PartType.Ball
+            v244.Shape = Enum.PartType.Ball
         end
-        v243.CanCollide = false
-        v243.CanQuery = false
-        v243.CanTouch = false
-        v243.Massless = true
-        v243.CastShadow = false
-        v243.CFrame = CombatSnareFX_upv_1.CFrame * a5
-        local v244 = Instance.new("WeldConstraint")
-        v244.Part0 = CombatSnareFX_upv_1
-        v244.Part1 = v243
-        v244.Parent = v243
-        v243.Parent = u48
+        v244.CanCollide = false
+        v244.CanQuery = false
+        v244.CanTouch = false
+        v244.Massless = true
+        v244.CastShadow = false
+        v244.CFrame = CombatSnareFX_upv_1.CFrame * a5
+        local v245 = Instance.new("WeldConstraint")
+        v245.Part0 = CombatSnareFX_upv_1
+        v245.Part1 = v244
+        v245.Parent = v244
+        v244.Parent = u48
     end
-    piece("StoneA", Vector3.new(0.46000000834465027, 0.46000000834465027, 0.46000000834465027), v235 * CFrame.new((v236 / 2) + 0.05, -0.05, 0.2), Color3.fromRGB(128, 124, 118), true)
-    piece("StoneB", Vector3.new(0.46000000834465027, 0.46000000834465027, 0.46000000834465027), v235 * CFrame.new((-v236 / 2) - 0.05, 0.2, -0.2), Color3.fromRGB(96, 92, 88), true)
+    piece("StoneA", Vector3.new(0.46000000834465027, 0.46000000834465027, 0.46000000834465027), v236 * CFrame.new((v237 / 2) + 0.05, -0.05, 0.2), Color3.fromRGB(128, 124, 118), true)
+    piece("StoneB", Vector3.new(0.46000000834465027, 0.46000000834465027, 0.46000000834465027), v236 * CFrame.new((-v237 / 2) - 0.05, 0.2, -0.2), Color3.fromRGB(96, 92, 88), true)
     u48.Parent = a1
     Util_upv_1.Sound("Stone_Hit", CombatSnareFX_upv_1)
     task.delay(
         a2,
         function()
             --[[
-              line: 1751
+              line: 1786
               upvalues:
-                tbl_upv_42 (copy, index: 1)
+                tbl_upv_43 (copy, index: 1)
                 a1 (copy, index: 2)
                 u47 (copy, index: 3)
                 u48 (copy, index: 4)
             ]]
-            if tbl_upv_42[a1] ~= u47 then
+            if tbl_upv_43[a1] ~= u47 then
                 return
             end
-            tbl_upv_42[a1] = nil
+            tbl_upv_43[a1] = nil
             u48:Destroy()
         end
     )
     a1.Destroying:Once(
         function()
             --[[
-              line: 1757
+              line: 1792
               upvalues:
-                tbl_upv_42 (copy, index: 1)
+                tbl_upv_43 (copy, index: 1)
                 a1 (copy, index: 2)
             ]]
-            tbl_upv_42[a1] = nil
+            tbl_upv_43[a1] = nil
         end
     )
 end
-local tbl_upv_43 = {}
+local tbl_upv_44 = {}
 function tbl_upv_1.Reveal(a1, a2)
     --[[
       name: Reveal
-      line: 1766
+      line: 1801
       upvalues:
-        tbl_upv_43 (copy, index: 1)
+        tbl_upv_44 (copy, index: 1)
         Quality_upv_1 (copy, index: 2)
         u2 (ref,  index: 3)
     ]]
-    local u49 = (tbl_upv_43[a1] or 0) + 1
-    tbl_upv_43[a1] = u49
-    local v245 = Color3.fromRGB(240, 170, 60)
+    local u49 = (tbl_upv_44[a1] or 0) + 1
+    tbl_upv_44[a1] = u49
+    local v246 = Color3.fromRGB(240, 170, 60)
     local u50 = Instance.new("Folder")
     u50.Name = "CombatReveal"
     if Quality_upv_1.highlights then
-        local v246 = Instance.new("Highlight")
-        v246.Name = "Mark"
-        v246.Adornee = a1
-        v246.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-        v246.FillColor = v245
-        v246.FillTransparency = 0.78
-        v246.OutlineColor = v245
-        v246.OutlineTransparency = 0.1
-        v246.Parent = u50
+        local v247 = Instance.new("Highlight")
+        v247.Name = "Mark"
+        v247.Adornee = a1
+        v247.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        v247.FillColor = v246
+        v247.FillTransparency = 0.78
+        v247.OutlineColor = v246
+        v247.OutlineTransparency = 0.1
+        v247.Parent = u50
     end
     local Head_1 = a1:FindFirstChild("Head")
     if Head_1 and Head_1:IsA("BasePart") then
-        local v247 = Instance.new("BillboardGui")
-        v247.Name = "Pin"
-        v247.Adornee = Head_1
-        v247.AlwaysOnTop = true
-        v247.Size = UDim2.fromOffset(18, 18)
-        v247.StudsOffsetWorldSpace = Vector3.new(0, 2.5999999046325684, 0)
-        v247.LightInfluence = 0
-        local v248 = Instance.new("Frame")
-        v248.AnchorPoint = Vector2.new(0.5, 0.5)
-        v248.Position = UDim2.fromScale(0.5, 0.5)
-        v248.Size = UDim2.fromOffset(11, 11)
-        v248.Rotation = 45
-        v248.BackgroundColor3 = v245
-        v248.BorderSizePixel = 0
-        local v249 = Instance.new("UIStroke")
-        v249.Thickness = 1.5
-        v249.Color = Color3.fromRGB(60, 40, 10)
+        local v248 = Instance.new("BillboardGui")
+        v248.Name = "Pin"
+        v248.Adornee = Head_1
+        v248.AlwaysOnTop = true
+        v248.Size = UDim2.fromOffset(18, 18)
+        v248.StudsOffsetWorldSpace = Vector3.new(0, 2.5999999046325684, 0)
+        v248.LightInfluence = 0
+        local v249 = Instance.new("Frame")
+        v249.AnchorPoint = Vector2.new(0.5, 0.5)
+        v249.Position = UDim2.fromScale(0.5, 0.5)
+        v249.Size = UDim2.fromOffset(11, 11)
+        v249.Rotation = 45
+        v249.BackgroundColor3 = v246
+        v249.BorderSizePixel = 0
+        local v250 = Instance.new("UIStroke")
+        v250.Thickness = 1.5
+        v250.Color = Color3.fromRGB(60, 40, 10)
+        v250.Parent = v249
         v249.Parent = v248
-        v248.Parent = v247
-        v247.Parent = u50
+        v248.Parent = u50
     end
     local FX_12 = workspace:FindFirstChild("FX")
     if FX_12 then
@@ -2933,24 +2964,24 @@ function tbl_upv_1.Reveal(a1, a2)
         a2,
         function()
             --[[
-              line: 1807
+              line: 1842
               upvalues:
                 u50 (copy, index: 1)
-                tbl_upv_43 (copy, index: 2)
+                tbl_upv_44 (copy, index: 2)
                 a1 (copy, index: 3)
                 u49 (copy, index: 4)
             ]]
             u50:Destroy()
-            if tbl_upv_43[a1] ~= u49 then
+            if tbl_upv_44[a1] ~= u49 then
                 return
             end
-            tbl_upv_43[a1] = nil
+            tbl_upv_44[a1] = nil
         end
     )
     a1.Destroying:Once(
         function()
             --[[
-              line: 1813
+              line: 1848
               upvalues:
                 u50 (copy, index: 1)
             ]]
@@ -2961,7 +2992,7 @@ end
 function tbl_upv_1.HornBlast(a1)
     --[[
       name: HornBlast
-      line: 1819
+      line: 1854
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Util_upv_1 (copy, index: 2)
@@ -2973,174 +3004,188 @@ function tbl_upv_1.HornBlast(a1)
     if tbl_upv_1.NEAR < (((not CurrentCamera_9) and 0) or ((CurrentCamera_9.CFrame.Position - a1).Magnitude)) then
         return
     end
-    local v250 = workspace:Raycast(a1 + Vector3.new(0, 1.5, 0), Vector3.new(0, -9.5, 0), Util_upv_1.WorldParams(Util_upv_1.Targets()))
-    local v251, v252
-    if v250 then
-        v251 = v250.Position
-        v252 = v250.Normal
+    local v251 = workspace:Raycast(a1 + Vector3.new(0, 1.5, 0), Vector3.new(0, -9.5, 0), Util_upv_1.WorldParams(Util_upv_1.Targets()))
+    local v252, v253
+    if v251 then
+        v252 = v251.Position
+        v253 = v251.Normal
     else
-        v251, v252 = nil, nil
+        v252, v253 = nil, nil
     end
-    local v253 = v251 or (a1 - Vector3.new(0, 2.799999952316284, 0))
-    local v254 = v252 or Vector3.new(0, 1, 0)
-    local v255 = CFrame.lookAt(v253 + (v254 * 0.15), v253 + (v254 * 1.15)) * CFrame.Angles(0, 1.5707963267948966, 0)
-    local v256 = Color3.fromRGB(226, 190, 110)
-    local v257 = Instance.new("Part")
-    v257.Name = "HornRing"
-    v257.Anchored = true
-    v257.CanCollide = false
-    v257.CanQuery = false
-    v257.CanTouch = false
-    v257.CastShadow = false
-    v257.Size = Vector3.new(0.05999999865889549, 3, 3)
-    v257.CFrame = v255
-    v257.Color = v256
-    v257.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-    v257.Transparency = 0.45
+    local v254 = v252 or (a1 - Vector3.new(0, 2.799999952316284, 0))
+    local v255 = v253 or Vector3.new(0, 1, 0)
+    local v256 = CFrame.lookAt(v254 + (v255 * 0.15), v254 + (v255 * 1.15)) * CFrame.Angles(0, 1.5707963267948966, 0)
+    local v257 = Color3.fromRGB(226, 190, 110)
+    local v258 = Instance.new("Part")
+    v258.Name = "HornRing"
+    v258.Anchored = true
+    v258.CanCollide = false
+    v258.CanQuery = false
+    v258.CanTouch = false
+    v258.CastShadow = false
+    v258.Size = Vector3.new(0.05999999865889549, 3, 3)
+    v258.CFrame = v256
+    v258.Color = v257
+    v258.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+    v258.Transparency = 0.45
     local FX_13 = workspace:FindFirstChild("FX")
     if FX_13 then
         u2 = FX_13
     end
-    v257.Parent = u2
-    v257.Shape = Enum.PartType.Cylinder
-    local tbl_44 = {Transparency = 1, Size = Vector3.new(0.05999999865889549, 34, 34)}
-    TweenService_upv_1:Create(v257, TweenInfo.new(0.7, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_44):Play()
-    Debris_upv_1:AddItem(v257, 0.8)
+    v258.Parent = u2
+    v258.Shape = Enum.PartType.Cylinder
+    local tbl_45 = {Transparency = 1, Size = Vector3.new(0.05999999865889549, 34, 34)}
+    TweenService_upv_1:Create(v258, TweenInfo.new(0.7, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_45):Play()
+    Debris_upv_1:AddItem(v258, 0.8)
 end
-local tbl_upv_45 = {}
+local tbl_upv_46 = {}
 local u51 = nil
 local function stepRings(a1)
     --[[
       name: stepRings
-      line: 1878
+      line: 1913
       upvalues:
-        tbl_upv_45 (copy, index: 1)
+        tbl_upv_46 (copy, index: 1)
         Util_upv_1 (copy, index: 2)
         fadeOut (copy, index: 3)
         Debris_upv_1 (copy, index: 4)
         u31 (ref,  index: 5)
         u51 (ref,  index: 6)
     ]]
-    local v258 = os.clock()
-    local v259 = nil
+    local v259 = os.clock()
     local v260 = nil
-    for key_10, value_27 in tbl_upv_45 do
-        if not (value_27.model.Parent) or v258 - value_27.born > 9 then
-            tbl_upv_45[key_10] = nil
+    local v261 = nil
+    for key_10, value_27 in tbl_upv_46 do
+        if not (value_27.model.Parent) or v259 - value_27.born > 9 then
+            tbl_upv_46[key_10] = nil
             if value_27.model.Parent then
                 value_27.model:Destroy()
                 continue
             end
         end
-        v259 = value_27.speed * a1
+        v260 = value_27.speed * a1
         if value_27.back then
-            local v261 = value_27.shooter and (value_27.shooter:FindFirstChild("HumanoidRootPart"))
-            if not (v261) or not (v261:IsA("BasePart")) then
+            local v262 = value_27.shooter and (value_27.shooter:FindFirstChild("HumanoidRootPart"))
+            if not (v262) or not (v262:IsA("BasePart")) then
                 local pos_1 = value_27.pos
-                local v262 = tbl_upv_45[key_10]
-                if not (v262) then
+                local v263 = tbl_upv_46[key_10]
+                if not (v263) then
                     continue
                 end
-                tbl_upv_45[key_10] = nil
+                tbl_upv_46[key_10] = nil
                 if not (pos_1) then
-                    fadeOut(v262.model, 0.3, 1.2)
-                    Debris_upv_1:AddItem(v262.model, 2)
+                    fadeOut(v263.model, 0.3, 1.2)
+                    Debris_upv_1:AddItem(v263.model, 2)
                     continue
                 end
-                local model_2 = v262.model
-                local v263 = CFrame.new(pos_1)
-                if model_2:IsA("Model") then
-                    model_2:PivotTo(v263)
+                local model_3 = v263.model
+                local v264 = CFrame.new(pos_1)
+                if model_3:IsA("Model") then
+                    model_3:PivotTo(v264)
                     Util_upv_1.Sound("Knife_Thunk", pos_1)
-                    fadeOut(v262.model, 0.3, 1.2)
-                    Debris_upv_1:AddItem(v262.model, 2)
+                    fadeOut(v263.model, 0.3, 1.2)
+                    Debris_upv_1:AddItem(v263.model, 2)
                     continue
                 end
-                if model_2:IsA("BasePart") then
-                    model_2.CFrame = v263
+                if model_3:IsA("BasePart") then
+                    model_3.CFrame = v264
                 end
                 Util_upv_1.Sound("Knife_Thunk", pos_1)
-                fadeOut(v262.model, 0.3, 1.2)
-                Debris_upv_1:AddItem(v262.model, 2)
+                fadeOut(v263.model, 0.3, 1.2)
+                Debris_upv_1:AddItem(v263.model, 2)
             end
-            local v264 = v261.Position + Vector3.new(0, 0.6000000238418579, 0) - value_27.pos
-            if v264.Magnitude <= value_27.catch + v259 then
-                local Position_3 = v261.Position
-                local v265 = tbl_upv_45[key_10]
-                if not (v265) then
+            local v265 = v262.Position + Vector3.new(0, 0.6000000238418579, 0) - value_27.pos
+            if v265.Magnitude <= value_27.catch + v260 then
+                local Position_3 = v262.Position
+                local v266 = tbl_upv_46[key_10]
+                if not (v266) then
                     continue
                 end
-                tbl_upv_45[key_10] = nil
-                if not (v265.mine) then
-                    v265.model:Destroy()
+                tbl_upv_46[key_10] = nil
+                if not (v266.mine) then
+                    v266.model:Destroy()
                     continue
                 end
                 if not (Util_upv_1.InFirstPerson()) then
-                    Util_upv_1.Sound("Knife_Ready", Position_3 or (v265.pos))
+                    Util_upv_1.Sound("Knife_Ready", Position_3 or (v266.pos))
                 end
-                v265.model:Destroy()
+                v266.model:Destroy()
             else
-                value_27.pos = value_27.pos + (v264.Unit * v259)
+                value_27.pos = value_27.pos + (v265.Unit * v260)
                 local pos_2 = value_27.pos
                 local view_3 = value_27.view
                 if view_3 then
                     local CurrentCamera_10 = workspace.CurrentCamera
-                    if v258 < view_3.at then
-                        v259 = value_27.pos - Vector3.new(0, 10000, 0)
+                    if v259 < view_3.at then
+                        v260 = value_27.pos - Vector3.new(0, 10000, 0)
                     else
                         if view_3.t0 == 0 then
-                            view_3.t0 = v258
-                            value_27.spinT0 = v258
-                            local v266 = u31 and (u31())
-                            if v266 and CurrentCamera_10 then
+                            view_3.t0 = v259
+                            value_27.spinT0 = v259
+                            local v267 = u31 and (u31())
+                            if v267 and CurrentCamera_10 then
                                 local CFrame_3 = CurrentCamera_10.CFrame
-                                view_3.p0 = CFrame_3:PointToObjectSpace(CFrame_3.Position + ((v266 - CFrame_3.Position) * 4))
+                                view_3.p0 = CFrame_3:PointToObjectSpace(CFrame_3.Position + ((v267 - CFrame_3.Position) * 4))
                             end
                         end
-                        local v267 = math.clamp((v258 - view_3.t0) / 0.12, 0, 1)
-                        local v268 = 1 - (1 - v267) * (1 - v267)
+                        local v268 = math.clamp((v259 - view_3.t0) / 0.12, 0, 1)
+                        local v269 = 1 - (1 - v268) * (1 - v268)
                         local p0_2 = view_3.p0
                         if p0_2 and CurrentCamera_10 then
                             local CFrame_4 = CurrentCamera_10.CFrame
-                            local v269 = CFrame_4:PointToObjectSpace(value_27.pos)
-                            if v269.Z < -0.05 and p0_2.Z < -0.05 then
+                            local v270 = CFrame_4:PointToObjectSpace(value_27.pos)
+                            if v270.Z < -0.05 and p0_2.Z < -0.05 then
                                 local _ = -p0_2.Z
-                                local v274 = -v269.Z
-                                local v275 = -p0_2.Z + (-v269.Z - -p0_2.Z) * v268
-                                v259 = CFrame_4:PointToWorldSpace(Vector3.new((p0_2.X / -p0_2.Z + (v269.X / -v269.Z - p0_2.X / -p0_2.Z) * v268) * (-p0_2.Z + (-v269.Z - -p0_2.Z) * v268), (p0_2.Y / -p0_2.Z + (v269.Y / -v269.Z - p0_2.Y / -p0_2.Z) * v268) * (-p0_2.Z + (-v269.Z - -p0_2.Z) * v268), -(-p0_2.Z + (-v269.Z - -p0_2.Z) * v268)))
+                                local v275 = -v270.Z
+                                local v276 = -p0_2.Z + (-v270.Z - -p0_2.Z) * v269
+                                v260 = CFrame_4:PointToWorldSpace(Vector3.new((p0_2.X / -p0_2.Z + (v270.X / -v270.Z - p0_2.X / -p0_2.Z) * v269) * (-p0_2.Z + (-v270.Z - -p0_2.Z) * v269), (p0_2.Y / -p0_2.Z + (v270.Y / -v270.Z - p0_2.Y / -p0_2.Z) * v269) * (-p0_2.Z + (-v270.Z - -p0_2.Z) * v269), -(-p0_2.Z + (-v270.Z - -p0_2.Z) * v269)))
                             else
-                                v259 = pos_2
+                                v260 = pos_2
                             end
                         else
-                            v259 = pos_2
+                            v260 = pos_2
                         end
-                        if v267 >= 1 then
+                        if v268 >= 1 then
                             value_27.view = nil
                         end
                     end
                 else
-                    v259 = pos_2
+                    v260 = pos_2
                 end
                 value_27.spinA = ((value_27.spinA or 0) + math.min(a1 * 30, 0.3490658503988659)) % math.tau
-                local v270 = CFrame.Angles(0, value_27.spinA, 0)
-                local v271 = value_27.view
-                if not (v271) or not (v271.t0 > 0) then
-                    v260 = 0
-                    v271 = Vector3.new(value_27.dir.X, 0, value_27.dir.Z)
-                    if not (v260 > 0) or not (v271.Magnitude > 0.001) then
-                        local model_3 = value_27.model
-                        local v272 = CFrame.new(v259) * v270
-                        if model_3:IsA("Model") then
-                            model_3:PivotTo(v272)
+                local v271 = CFrame.Angles(0, value_27.spinA, 0)
+                local v272 = value_27.view
+                if not (v272) or not (v272.t0 > 0) then
+                    v261 = 0
+                    v272 = Vector3.new(value_27.dir.X, 0, value_27.dir.Z)
+                    if not (v261 > 0) or not (v272.Magnitude > 0.001) then
+                        local model_4 = value_27.model
+                        local v273 = CFrame.new(v260) * v271
+                        if model_4:IsA("Model") then
+                            model_4:PivotTo(v273)
                             continue
                         end
-                        if model_3:IsA("BasePart") then
-                            model_3.CFrame = v272
+                        if model_4:IsA("BasePart") then
+                            model_4.CFrame = v273
                             continue
                         end
                     end
+                    local model_5 = value_27.model
+                    local v274 = CFrame.lookAt(v260, v260 + v272) * CFrame.Angles(v261, 0, 0) * v271
+                    if model_5:IsA("Model") then
+                        model_5:PivotTo(v274)
+                        continue
+                    end
+                    if model_5:IsA("BasePart") then
+                        model_5.CFrame = v274
+                        continue
+                    end
+                end
+                v261 = (1 - math.clamp((v259 - v272.t0) / 0.12, 0, 1)) * 1.3089969389957472
+                v272 = Vector3.new(value_27.dir.X, 0, value_27.dir.Z)
+                if not (v261 > 0) or not (v272.Magnitude > 0.001) then
                     local model_4 = value_27.model
-                    local v273 = CFrame.lookAt(v259, v259 + v271) * CFrame.Angles(v260, 0, 0) * v270
+                    local v273 = CFrame.new(v260) * v271
                     if model_4:IsA("Model") then
                         model_4:PivotTo(v273)
                         continue
@@ -3150,33 +3195,19 @@ local function stepRings(a1)
                         continue
                     end
                 end
-                v260 = (1 - math.clamp((v258 - v271.t0) / 0.12, 0, 1)) * 1.3089969389957472
-                v271 = Vector3.new(value_27.dir.X, 0, value_27.dir.Z)
-                if not (v260 > 0) or not (v271.Magnitude > 0.001) then
-                    local model_3 = value_27.model
-                    local v272 = CFrame.new(v259) * v270
-                    if model_3:IsA("Model") then
-                        model_3:PivotTo(v272)
-                        continue
-                    end
-                    if model_3:IsA("BasePart") then
-                        model_3.CFrame = v272
-                        continue
-                    end
-                end
-                local model_4 = value_27.model
-                local v273 = CFrame.lookAt(v259, v259 + v271) * CFrame.Angles(v260, 0, 0) * v270
-                if model_4:IsA("Model") then
-                    model_4:PivotTo(v273)
+                local model_5 = value_27.model
+                local v274 = CFrame.lookAt(v260, v260 + v272) * CFrame.Angles(v261, 0, 0) * v271
+                if model_5:IsA("Model") then
+                    model_5:PivotTo(v274)
                     continue
                 end
-                if model_4:IsA("BasePart") then
-                    model_4.CFrame = v273
+                if model_5:IsA("BasePart") then
+                    model_5.CFrame = v274
                 end
             end
         else
-            value_27.pos = value_27.pos + (value_27.dir * v259)
-            value_27.traveled = value_27.traveled + v259
+            value_27.pos = value_27.pos + (value_27.dir * v260)
+            value_27.traveled = value_27.traveled + v260
             if value_27.range <= value_27.traveled then
                 value_27.back = true
             end
@@ -3184,62 +3215,76 @@ local function stepRings(a1)
             local view_3 = value_27.view
             if view_3 then
                 local CurrentCamera_10 = workspace.CurrentCamera
-                if v258 < view_3.at then
-                    v259 = value_27.pos - Vector3.new(0, 10000, 0)
+                if v259 < view_3.at then
+                    v260 = value_27.pos - Vector3.new(0, 10000, 0)
                 else
                     if view_3.t0 == 0 then
-                        view_3.t0 = v258
-                        value_27.spinT0 = v258
-                        local v266 = u31 and (u31())
-                        if v266 and CurrentCamera_10 then
+                        view_3.t0 = v259
+                        value_27.spinT0 = v259
+                        local v267 = u31 and (u31())
+                        if v267 and CurrentCamera_10 then
                             local CFrame_3 = CurrentCamera_10.CFrame
-                            view_3.p0 = CFrame_3:PointToObjectSpace(CFrame_3.Position + ((v266 - CFrame_3.Position) * 4))
+                            view_3.p0 = CFrame_3:PointToObjectSpace(CFrame_3.Position + ((v267 - CFrame_3.Position) * 4))
                         end
                     end
-                    local v267 = math.clamp((v258 - view_3.t0) / 0.12, 0, 1)
-                    local v268 = 1 - (1 - v267) * (1 - v267)
+                    local v268 = math.clamp((v259 - view_3.t0) / 0.12, 0, 1)
+                    local v269 = 1 - (1 - v268) * (1 - v268)
                     local p0_2 = view_3.p0
                     if p0_2 and CurrentCamera_10 then
                         local CFrame_4 = CurrentCamera_10.CFrame
-                        local v269 = CFrame_4:PointToObjectSpace(value_27.pos)
-                        if v269.Z < -0.05 and p0_2.Z < -0.05 then
+                        local v270 = CFrame_4:PointToObjectSpace(value_27.pos)
+                        if v270.Z < -0.05 and p0_2.Z < -0.05 then
                             local _ = -p0_2.Z
-                            local v274 = -v269.Z
-                            local v275 = -p0_2.Z + (-v269.Z - -p0_2.Z) * v268
-                            v259 = CFrame_4:PointToWorldSpace(Vector3.new((p0_2.X / -p0_2.Z + (v269.X / -v269.Z - p0_2.X / -p0_2.Z) * v268) * (-p0_2.Z + (-v269.Z - -p0_2.Z) * v268), (p0_2.Y / -p0_2.Z + (v269.Y / -v269.Z - p0_2.Y / -p0_2.Z) * v268) * (-p0_2.Z + (-v269.Z - -p0_2.Z) * v268), -(-p0_2.Z + (-v269.Z - -p0_2.Z) * v268)))
+                            local v275 = -v270.Z
+                            local v276 = -p0_2.Z + (-v270.Z - -p0_2.Z) * v269
+                            v260 = CFrame_4:PointToWorldSpace(Vector3.new((p0_2.X / -p0_2.Z + (v270.X / -v270.Z - p0_2.X / -p0_2.Z) * v269) * (-p0_2.Z + (-v270.Z - -p0_2.Z) * v269), (p0_2.Y / -p0_2.Z + (v270.Y / -v270.Z - p0_2.Y / -p0_2.Z) * v269) * (-p0_2.Z + (-v270.Z - -p0_2.Z) * v269), -(-p0_2.Z + (-v270.Z - -p0_2.Z) * v269)))
                         else
-                            v259 = pos_2
+                            v260 = pos_2
                         end
                     else
-                        v259 = pos_2
+                        v260 = pos_2
                     end
-                    if v267 >= 1 then
+                    if v268 >= 1 then
                         value_27.view = nil
                     end
                 end
             else
-                v259 = pos_2
+                v260 = pos_2
             end
             value_27.spinA = ((value_27.spinA or 0) + math.min(a1 * 30, 0.3490658503988659)) % math.tau
-            local v270 = CFrame.Angles(0, value_27.spinA, 0)
-            local v271 = value_27.view
-            if not (v271) or not (v271.t0 > 0) then
-                v260 = 0
-                v271 = Vector3.new(value_27.dir.X, 0, value_27.dir.Z)
-                if not (v260 > 0) or not (v271.Magnitude > 0.001) then
-                    local model_3 = value_27.model
-                    local v272 = CFrame.new(v259) * v270
-                    if model_3:IsA("Model") then
-                        model_3:PivotTo(v272)
+            local v271 = CFrame.Angles(0, value_27.spinA, 0)
+            local v272 = value_27.view
+            if not (v272) or not (v272.t0 > 0) then
+                v261 = 0
+                v272 = Vector3.new(value_27.dir.X, 0, value_27.dir.Z)
+                if not (v261 > 0) or not (v272.Magnitude > 0.001) then
+                    local model_4 = value_27.model
+                    local v273 = CFrame.new(v260) * v271
+                    if model_4:IsA("Model") then
+                        model_4:PivotTo(v273)
                         continue
                     end
-                    if model_3:IsA("BasePart") then
-                        model_3.CFrame = v272
+                    if model_4:IsA("BasePart") then
+                        model_4.CFrame = v273
                         continue
                     end
                 end
+                local model_5 = value_27.model
+                local v274 = CFrame.lookAt(v260, v260 + v272) * CFrame.Angles(v261, 0, 0) * v271
+                if model_5:IsA("Model") then
+                    model_5:PivotTo(v274)
+                    continue
+                end
+                if model_5:IsA("BasePart") then
+                    model_5.CFrame = v274
+                    continue
+                end
+            end
+            v261 = (1 - math.clamp((v259 - v272.t0) / 0.12, 0, 1)) * 1.3089969389957472
+            v272 = Vector3.new(value_27.dir.X, 0, value_27.dir.Z)
+            if not (v261 > 0) or not (v272.Magnitude > 0.001) then
                 local model_4 = value_27.model
-                local v273 = CFrame.lookAt(v259, v259 + v271) * CFrame.Angles(v260, 0, 0) * v270
+                local v273 = CFrame.new(v260) * v271
                 if model_4:IsA("Model") then
                     model_4:PivotTo(v273)
                     continue
@@ -3249,32 +3294,18 @@ local function stepRings(a1)
                     continue
                 end
             end
-            v260 = (1 - math.clamp((v258 - v271.t0) / 0.12, 0, 1)) * 1.3089969389957472
-            v271 = Vector3.new(value_27.dir.X, 0, value_27.dir.Z)
-            if not (v260 > 0) or not (v271.Magnitude > 0.001) then
-                local model_3 = value_27.model
-                local v272 = CFrame.new(v259) * v270
-                if model_3:IsA("Model") then
-                    model_3:PivotTo(v272)
-                    continue
-                end
-                if model_3:IsA("BasePart") then
-                    model_3.CFrame = v272
-                    continue
-                end
-            end
-            local model_4 = value_27.model
-            local v273 = CFrame.lookAt(v259, v259 + v271) * CFrame.Angles(v260, 0, 0) * v270
-            if model_4:IsA("Model") then
-                model_4:PivotTo(v273)
+            local model_5 = value_27.model
+            local v274 = CFrame.lookAt(v260, v260 + v272) * CFrame.Angles(v261, 0, 0) * v271
+            if model_5:IsA("Model") then
+                model_5:PivotTo(v274)
                 continue
             end
-            if model_4:IsA("BasePart") then
-                model_4.CFrame = v273
+            if model_5:IsA("BasePart") then
+                model_5.CFrame = v274
             end
         end
     end
-    if next(tbl_upv_45) ~= nil or not u51 then
+    if next(tbl_upv_46) ~= nil or not u51 then
         return
     end
     u51:Disconnect()
@@ -3283,70 +3314,70 @@ end
 function tbl_upv_1.Chakram(a1, a2, a3, a4, a5, a6, a7)
     --[[
       name: Chakram
-      line: 1963
+      line: 1998
       upvalues:
         LocalPlayer_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
         template (copy, index: 3)
         prep (copy, index: 4)
         u2 (ref,  index: 5)
-        tbl_upv_45 (copy, index: 6)
+        tbl_upv_46 (copy, index: 6)
         u31 (ref,  index: 7)
         Util_upv_1 (copy, index: 8)
         u51 (ref,  index: 10)
         RunService_upv_1 (copy, index: 11)
         stepRings (copy, index: 12)
     ]]
-    local v274 = (a7 ~= nil) and (a7 == LocalPlayer_upv_1.Character)
-    local v275 = nil
-    if not (v274) then
-        v275 = workspace.CurrentCamera
-        if tbl_upv_1.NEAR * 2 < (((not v275) and 0) or ((v275.CFrame.Position - a2).Magnitude)) then
+    local v275 = (a7 ~= nil) and (a7 == LocalPlayer_upv_1.Character)
+    local v276 = nil
+    if not (v275) then
+        v276 = workspace.CurrentCamera
+        if tbl_upv_1.NEAR * 2 < (((not v276) and 0) or ((v276.CFrame.Position - a2).Magnitude)) then
             return
         end
     end
-    local v276 = template("Projectiles/Chakram")
-    if v276 then
-        v275 = v276:Clone()
+    local v277 = template("Projectiles/Chakram")
+    if v277 then
+        v276 = v277:Clone()
     else
-        v275 = Instance.new("Part")
-        v275.Size = Vector3.new(0.20000000298023224, 0.20000000298023224, 2)
-        v275.Material = Enum.Material.SmoothPlastic
-        v275.Color = Color3.fromRGB(90, 85, 80)
+        v276 = Instance.new("Part")
+        v276.Size = Vector3.new(0.20000000298023224, 0.20000000298023224, 2)
+        v276.Material = Enum.Material.SmoothPlastic
+        v276.Color = Color3.fromRGB(90, 85, 80)
     end
-    prep(v275)
-    local v277 = CFrame.new(a2)
-    if v275:IsA("Model") then
-        v275:PivotTo(v277)
-    elseif v275:IsA("BasePart") then
-        v275.CFrame = v277
+    prep(v276)
+    local v278 = CFrame.new(a2)
+    if v276:IsA("Model") then
+        v276:PivotTo(v278)
+    elseif v276:IsA("BasePart") then
+        v276.CFrame = v278
     end
     local FX_14 = workspace:FindFirstChild("FX")
     if FX_14 then
         u2 = FX_14
     end
-    v275.Parent = u2
-    local v278 = tbl_upv_45[a1]
-    if v278 then
-        v278.model:Destroy()
+    v276.Parent = u2
+    local v279 = tbl_upv_46[a1]
+    if v279 then
+        v279.model:Destroy()
     end
-    local tbl_46 = {view = 0, back = false, traveled = 0}
-    tbl_46.model = v275
-    tbl_46.shooter = a7
-    tbl_46.pos = a2
-    tbl_46.dir = a3.Unit
-    tbl_46.speed = a4
-    tbl_46.range = a5
-    tbl_46.catch = a6
-    tbl_46.born = os.clock()
-    tbl_46.mine = v274
-    local v279
-    if v274 and u31 then
+    local tbl_47 = {view = 0, back = false, traveled = 0}
+    tbl_47.model = v276
+    tbl_47.shooter = a7
+    tbl_47.pos = a2
+    tbl_47.dir = a3.Unit
+    tbl_47.speed = a4
+    tbl_47.range = a5
+    tbl_47.catch = a6
+    tbl_47.born = os.clock()
+    tbl_47.mine = v275
+    local v280
+    if v275 and u31 then
         Util_upv_1.InFirstPerson()
     end
-    v279 = nil
-    tbl_46.view = v279
-    tbl_upv_45[a1] = tbl_46
+    v280 = nil
+    tbl_47.view = v280
+    tbl_upv_46[a1] = tbl_47
     if (u51) then
         return
     end
@@ -3355,59 +3386,59 @@ end
 function tbl_upv_1.ChakramTurn(a1, a2)
     --[[
       name: ChakramTurn
-      line: 1999
+      line: 2034
       upvalues:
-        tbl_upv_45 (copy, index: 1)
+        tbl_upv_46 (copy, index: 1)
     ]]
-    local v280 = tbl_upv_45[a1]
-    if not v280 then
+    local v281 = tbl_upv_46[a1]
+    if not v281 then
         return
     end
-    v280.back = true
-    if not ((v280.pos - a2).Magnitude > 3) then
+    v281.back = true
+    if not ((v281.pos - a2).Magnitude > 3) then
         return
     end
-    v280.pos = a2
+    v281.pos = a2
 end
 local function endRing(a1, a2, a3)
     --[[
       name: endRing
-      line: 1855
+      line: 1890
       upvalues:
-        tbl_upv_45 (copy, index: 1)
+        tbl_upv_46 (copy, index: 1)
         Util_upv_1 (copy, index: 2)
         fadeOut (copy, index: 3)
         Debris_upv_1 (copy, index: 4)
     ]]
-    local v281 = tbl_upv_45[a1]
-    if not v281 then
+    local v282 = tbl_upv_46[a1]
+    if not v282 then
         return
     end
-    tbl_upv_45[a1] = nil
+    tbl_upv_46[a1] = nil
     if a2 then
-        if v281.mine and not (Util_upv_1.InFirstPerson()) then
-            Util_upv_1.Sound("Knife_Ready", a3 or (v281.pos))
+        if v282.mine and not (Util_upv_1.InFirstPerson()) then
+            Util_upv_1.Sound("Knife_Ready", a3 or (v282.pos))
         end
-        v281.model:Destroy()
+        v282.model:Destroy()
     else
         if a3 then
-            local model_5 = v281.model
-            local v282 = CFrame.new(a3)
-            if model_5:IsA("Model") then
-                model_5:PivotTo(v282)
-            elseif model_5:IsA("BasePart") then
-                model_5.CFrame = v282
+            local model_6 = v282.model
+            local v283 = CFrame.new(a3)
+            if model_6:IsA("Model") then
+                model_6:PivotTo(v283)
+            elseif model_6:IsA("BasePart") then
+                model_6.CFrame = v283
             end
             Util_upv_1.Sound("Knife_Thunk", a3)
         end
-        fadeOut(v281.model, 0.3, 1.2)
-        Debris_upv_1:AddItem(v281.model, 2)
+        fadeOut(v282.model, 0.3, 1.2)
+        Debris_upv_1:AddItem(v282.model, 2)
     end
 end
 function tbl_upv_1.ChakramEnd(a1, a2, a3)
     --[[
       name: ChakramEnd
-      line: 2010
+      line: 2045
       upvalues:
         endRing (copy, index: 1)
     ]]
@@ -3416,7 +3447,7 @@ end
 function tbl_upv_1.FirePatch(a1, a2, a3)
     --[[
       name: FirePatch
-      line: 2016
+      line: 2051
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Quality_upv_1 (copy, index: 2)
@@ -3428,29 +3459,29 @@ function tbl_upv_1.FirePatch(a1, a2, a3)
     if tbl_upv_1.NEAR * 1.5 < (((not CurrentCamera_11) and 0) or ((CurrentCamera_11.CFrame.Position - a1).Magnitude)) then
         return
     end
-    local v283 = ((Quality_upv_1.layers) and 3) or 2
-    for n_3 = 1, v283 do
-        local v284 = ((n_3 / v283) * math.pi) * 2 + math.random()
-        local v285 = ((n_3 ~= 1) and (a2 * (0.3 + (0.4 * math.random())))) or 0
-        local v286 = CFrame.new(a1 + Vector3.new(math.cos(v284) * v285, 0.3, math.sin(v284) * v285))
-        local v287 = Color3.new()
-        local v288 = Instance.new("Part")
-        v288.Name = "PuffFX"
-        v288.Anchored = true
-        v288.CanCollide = false
-        v288.CanQuery = false
-        v288.CanTouch = false
-        v288.CastShadow = false
-        v288.Size = Vector3.new(1.2000000476837158, 0.4000000059604645, 1.2000000476837158)
-        v288.CFrame = v286
-        v288.Color = v287
-        v288.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-        v288.Transparency = 1
+    local v284 = ((Quality_upv_1.layers) and 3) or 2
+    for n_3 = 1, v284 do
+        local v285 = ((n_3 / v284) * math.pi) * 2 + math.random()
+        local v286 = ((n_3 ~= 1) and (a2 * (0.3 + (0.4 * math.random())))) or 0
+        local v287 = CFrame.new(a1 + Vector3.new(math.cos(v285) * v286, 0.3, math.sin(v285) * v286))
+        local v288 = Color3.new()
+        local v289 = Instance.new("Part")
+        v289.Name = "PuffFX"
+        v289.Anchored = true
+        v289.CanCollide = false
+        v289.CanQuery = false
+        v289.CanTouch = false
+        v289.CastShadow = false
+        v289.Size = Vector3.new(1.2000000476837158, 0.4000000059604645, 1.2000000476837158)
+        v289.CFrame = v287
+        v289.Color = v288
+        v289.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+        v289.Transparency = 1
         local FX_15 = workspace:FindFirstChild("FX")
         if FX_15 then
             u2 = FX_15
         end
-        v288.Parent = u2
+        v289.Parent = u2
         local u52 = Instance.new("ParticleEmitter")
         u52.Texture = "rbxasset://textures/particles/fire_main.dds"
         u52.Color = ColorSequence.new(Color3.fromRGB(255, 190, 80), Color3.fromRGB(235, 90, 30))
@@ -3465,26 +3496,26 @@ function tbl_upv_1.FirePatch(a1, a2, a3)
         u52.Rotation = NumberRange.new(-20, 20)
         u52.Rate = 12 * Quality_upv_1.particleScale
         u52.Shape = Enum.ParticleEmitterShape.Box
-        u52.Parent = v288
+        u52.Parent = v289
         task.delay(
             a3,
             function()
                 --[[
-                  line: 2040
+                  line: 2075
                   upvalues:
                     u52 (copy, index: 1)
                 ]]
                 u52.Enabled = false
             end
         )
-        Debris_upv_1:AddItem(v288, a3 + 1)
+        Debris_upv_1:AddItem(v289, a3 + 1)
     end
     Util_upv_1.Sound("FireBomb_Fuse", a1)
 end
 function tbl_upv_1.Wall(a1, a2, a3, a4)
     --[[
       name: Wall
-      line: 2049
+      line: 2084
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Util_upv_1 (copy, index: 2)
@@ -3493,30 +3524,30 @@ function tbl_upv_1.Wall(a1, a2, a3, a4)
     if tbl_upv_1.NEAR * 1.5 < (((not CurrentCamera_12) and 0) or ((CurrentCamera_12.CFrame.Position - a1).Magnitude)) then
         return
     end
-    local v289 = Color3.fromRGB(150, 108, 68)
+    local v290 = Color3.fromRGB(150, 108, 68)
     if a2 ~= "Hit" then
-        local v290 = a1 - Vector3.new(0, (a4 / 2) - 0.3, 0)
+        local v291 = a1 - Vector3.new(0, (a4 / 2) - 0.3, 0)
         if a2 ~= "Place" then
             Util_upv_1.Sound("Impact_Wood", a1)
             if a2 == "Break" then
                 Util_upv_1.Sound("Hit_Melee_Heavy", a1)
             end
-            tbl_upv_1.Puff(v290, Color3.fromRGB(170, 150, 120), 10, 1.2, 6, 0.7)
-            tbl_upv_1.Puff(a1, v289, ((a2 ~= "Break") and 8) or 16, 0.6, 11, 0.7)
+            tbl_upv_1.Puff(v291, Color3.fromRGB(170, 150, 120), 10, 1.2, 6, 0.7)
+            tbl_upv_1.Puff(a1, v290, ((a2 ~= "Break") and 8) or 16, 0.6, 11, 0.7)
         else
             Util_upv_1.Sound("Impact_Wood", a1)
             Util_upv_1.Sound("Trap_Set", a1)
-            tbl_upv_1.Puff(v290, Color3.fromRGB(170, 150, 120), 12, 1.1, 7, 0.6)
+            tbl_upv_1.Puff(v291, Color3.fromRGB(170, 150, 120), 12, 1.1, 7, 0.6)
         end
     else
         Util_upv_1.Sound("Impact_Wood", a1)
-        tbl_upv_1.Puff(a1, v289, 5, 0.5, 6, 0.4)
+        tbl_upv_1.Puff(a1, v290, 5, 0.5, 6, 0.4)
     end
 end
 function tbl_upv_1.HealPool(a1, a2, a3)
     --[[
       name: HealPool
-      line: 2078
+      line: 2113
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Util_upv_1 (copy, index: 2)
@@ -3526,25 +3557,25 @@ function tbl_upv_1.HealPool(a1, a2, a3)
         Quality_upv_1 (copy, index: 6)
     ]]
     local CurrentCamera_13 = workspace.CurrentCamera
-    local v291 = tbl_upv_1.NEAR < (((not CurrentCamera_13) and 0) or ((CurrentCamera_13.CFrame.Position - a1).Magnitude))
+    local v292 = tbl_upv_1.NEAR < (((not CurrentCamera_13) and 0) or ((CurrentCamera_13.CFrame.Position - a1).Magnitude))
     local u53 = Util_upv_1.WorldParams(Util_upv_1.Targets())
-    local v292 = workspace:Raycast(a1 + Vector3.new(0, 1.5, 0), Vector3.new(0, -(a2 + 1.5), 0), u53)
-    local v293, v294
-    if v292 then
-        v293 = v292.Position
-        v294 = v292.Normal
+    local v293 = workspace:Raycast(a1 + Vector3.new(0, 1.5, 0), Vector3.new(0, -(a2 + 1.5), 0), u53)
+    local v294, v295
+    if v293 then
+        v294 = v293.Position
+        v295 = v293.Normal
     else
-        v293, v294 = nil, nil
+        v294, v295 = nil, nil
     end
-    u53 = v293 or a1
+    u53 = v294 or a1
     Util_upv_1.Sound("FireBomb_Shatter", u53)
     tbl_upv_1.Burst("Heal_Health", CFrame.new(u53 + Vector3.new(0, 1, 0)), 1.6)
-    local v295 = v294 or Vector3.new(0, 1, 0)
-    local u54 = CFrame.lookAt(u53 + (v295 * 0.12), u53 + (v295 * 1.12)) * CFrame.Angles(0, 1.5707963267948966, 0)
+    local v296 = v295 or Vector3.new(0, 1, 0)
+    local u54 = CFrame.lookAt(u53 + (v296 * 0.12), u53 + (v296 * 1.12)) * CFrame.Angles(0, 1.5707963267948966, 0)
     local function disc(a4, a5, a6, a7, a8)
         --[[
           name: disc
-          line: 2087
+          line: 2122
           upvalues:
             u54 (copy, index: 1)
             u2 (ref,  index: 2)
@@ -3552,56 +3583,56 @@ function tbl_upv_1.HealPool(a1, a2, a3)
             a3 (copy, index: 4)
             Debris_upv_1 (copy, index: 5)
         ]]
-        local v296 = Vector3.new(0.08, a5, a5)
-        local v297 = u54 * CFrame.new(a8, 0, 0)
-        local v298 = Instance.new("Part")
-        v298.Name = a4
-        v298.Anchored = true
-        v298.CanCollide = false
-        v298.CanQuery = false
-        v298.CanTouch = false
-        v298.CastShadow = false
-        v298.Size = v296
-        v298.CFrame = v297
-        v298.Color = a6
-        v298.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-        v298.Transparency = a7 or 0
+        local v297 = Vector3.new(0.08, a5, a5)
+        local v298 = u54 * CFrame.new(a8, 0, 0)
+        local v299 = Instance.new("Part")
+        v299.Name = a4
+        v299.Anchored = true
+        v299.CanCollide = false
+        v299.CanQuery = false
+        v299.CanTouch = false
+        v299.CastShadow = false
+        v299.Size = v297
+        v299.CFrame = v298
+        v299.Color = a6
+        v299.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+        v299.Transparency = a7 or 0
         local FX_16 = workspace:FindFirstChild("FX")
         if FX_16 then
             u2 = FX_16
         end
-        v298.Parent = u2
-        v298.Shape = Enum.PartType.Cylinder
-        local tbl_47 = {Transparency = 1}
-        TweenService_upv_1:Create(v298, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, false, math.max(0, a3 - 0.3)), tbl_47):Play()
-        Debris_upv_1:AddItem(v298, a3 + 0.4)
-        return v298
+        v299.Parent = u2
+        v299.Shape = Enum.PartType.Cylinder
+        local tbl_48 = {Transparency = 1}
+        TweenService_upv_1:Create(v299, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0, false, math.max(0, a3 - 0.3)), tbl_48):Play()
+        Debris_upv_1:AddItem(v299, a3 + 0.4)
+        return v299
     end
     disc("HealPoolRim", a2 * 2, Color3.fromRGB(58, 132, 70), 0.55, 0)
     disc("HealPool", (a2 * 2) - 0.9, Color3.fromRGB(96, 178, 96), 0.72, 0.02)
-    if v291 then
+    if v292 then
         return
     end
-    local v299 = Vector3.new(a2 * 1.5, 0.4, a2 * 1.5)
-    local v300 = CFrame.new(u53 + Vector3.new(0, 0.6000000238418579, 0))
-    local v301 = Color3.new()
-    local v302 = Instance.new("Part")
-    v302.Name = "PuffFX"
-    v302.Anchored = true
-    v302.CanCollide = false
-    v302.CanQuery = false
-    v302.CanTouch = false
-    v302.CastShadow = false
-    v302.Size = v299
-    v302.CFrame = v300
-    v302.Color = v301
-    v302.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-    v302.Transparency = 1
+    local v300 = Vector3.new(a2 * 1.5, 0.4, a2 * 1.5)
+    local v301 = CFrame.new(u53 + Vector3.new(0, 0.6000000238418579, 0))
+    local v302 = Color3.new()
+    local v303 = Instance.new("Part")
+    v303.Name = "PuffFX"
+    v303.Anchored = true
+    v303.CanCollide = false
+    v303.CanQuery = false
+    v303.CanTouch = false
+    v303.CastShadow = false
+    v303.Size = v300
+    v303.CFrame = v301
+    v303.Color = v302
+    v303.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+    v303.Transparency = 1
     local FX_17 = workspace:FindFirstChild("FX")
     if FX_17 then
         u2 = FX_17
     end
-    v302.Parent = u2
+    v303.Parent = u2
     u53 = Instance.new("ParticleEmitter")
     u53.Texture = "rbxasset://textures/particles/sparkles_main.dds"
     u53.Color = ColorSequence.new(Color3.fromRGB(120, 220, 110))
@@ -3615,110 +3646,110 @@ function tbl_upv_1.HealPool(a1, a2, a3)
     u53.EmissionDirection = Enum.NormalId.Top
     u53.Shape = Enum.ParticleEmitterShape.Box
     u53.Rate = 34 * Quality_upv_1.particleScale
-    u53.Parent = v302
+    u53.Parent = v303
     task.delay(
         a3,
         function()
             --[[
-              line: 2114
+              line: 2149
               upvalues:
                 u53 (copy, index: 1)
             ]]
             u53.Enabled = false
         end
     )
-    Debris_upv_1:AddItem(v302, a3 + 1.5)
+    Debris_upv_1:AddItem(v303, a3 + 1.5)
 end
-local tbl_upv_48 = {}
 local tbl_upv_49 = {}
+local tbl_upv_50 = {}
 local u55 = nil
 local u56 = Color3.fromRGB(122, 104, 84)
 local function caltropModel()
     --[[
       name: caltropModel
-      line: 2132
+      line: 2167
       upvalues:
         template (copy, index: 1)
         prep (copy, index: 2)
         u2 (ref,  index: 3)
     ]]
-    local v303 = template("Caltrop")
-    if v303 then
-        local v304 = v303:Clone()
-        prep(v304)
-        return v304
+    local v304 = template("Caltrop")
+    if v304 then
+        local v305 = v304:Clone()
+        prep(v305)
+        return v305
     else
-        local v305 = Instance.new("Model")
-        local v306 = CFrame.new(0, 0.12, 0)
-        local v307 = Color3.fromRGB(70, 68, 66)
-        local v308 = Instance.new("Part")
-        v308.Name = "Root"
-        v308.Anchored = true
-        v308.CanCollide = false
-        v308.CanQuery = false
-        v308.CanTouch = false
-        v308.CastShadow = false
-        v308.Size = Vector3.new(0.20000000298023224, 0.20000000298023224, 0.20000000298023224)
-        v308.CFrame = v306
-        v308.Color = v307
-        v308.Material = Enum.Material.Metal or (Enum.Material.SmoothPlastic)
-        v308.Transparency = 0
+        local v306 = Instance.new("Model")
+        local v307 = CFrame.new(0, 0.12, 0)
+        local v308 = Color3.fromRGB(70, 68, 66)
+        local v309 = Instance.new("Part")
+        v309.Name = "Root"
+        v309.Anchored = true
+        v309.CanCollide = false
+        v309.CanQuery = false
+        v309.CanTouch = false
+        v309.CastShadow = false
+        v309.Size = Vector3.new(0.20000000298023224, 0.20000000298023224, 0.20000000298023224)
+        v309.CFrame = v307
+        v309.Color = v308
+        v309.Material = Enum.Material.Metal or (Enum.Material.SmoothPlastic)
+        v309.Transparency = 0
         local FX_18 = workspace:FindFirstChild("FX")
         if FX_18 then
             u2 = FX_18
         end
-        v308.Parent = u2
-        v308.Parent = v305
-        v305.PrimaryPart = v308
+        v309.Parent = u2
+        v309.Parent = v306
+        v306.PrimaryPart = v309
         for key_11, value_28 in {Vector3.new(0, 1, 0), Vector3.new(0.9399999976158142, -0.33000001311302185, 0), Vector3.new(-0.4699999988079071, -0.33000001311302185, 0.8199999928474426), Vector3.new(-0.4699999988079071, -0.33000001311302185, -0.8199999928474426)} do
-            local v309 = CFrame.lookAt(v308.Position + (value_28 * 0.18), v308.Position + value_28)
-            local v310 = Color3.fromRGB(86, 84, 82)
-            local v311 = Instance.new("Part")
-            v311.Name = "Point" .. key_11
-            v311.Anchored = true
-            v311.CanCollide = false
-            v311.CanQuery = false
-            v311.CanTouch = false
-            v311.CastShadow = false
-            v311.Size = Vector3.new(0.07000000029802322, 0.07000000029802322, 0.41999998688697815)
-            v311.CFrame = v309
-            v311.Color = v310
-            v311.Material = Enum.Material.Metal or (Enum.Material.SmoothPlastic)
-            v311.Transparency = 0
+            local v310 = CFrame.lookAt(v309.Position + (value_28 * 0.18), v309.Position + value_28)
+            local v311 = Color3.fromRGB(86, 84, 82)
+            local v312 = Instance.new("Part")
+            v312.Name = "Point" .. key_11
+            v312.Anchored = true
+            v312.CanCollide = false
+            v312.CanQuery = false
+            v312.CanTouch = false
+            v312.CastShadow = false
+            v312.Size = Vector3.new(0.07000000029802322, 0.07000000029802322, 0.41999998688697815)
+            v312.CFrame = v310
+            v312.Color = v311
+            v312.Material = Enum.Material.Metal or (Enum.Material.SmoothPlastic)
+            v312.Transparency = 0
             local FX_19 = workspace:FindFirstChild("FX")
             if FX_19 then
                 u2 = FX_19
             end
-            v311.Parent = u2
-            v311.Parent = v305
+            v312.Parent = u2
+            v312.Parent = v306
         end
-        return v305
+        return v306
     end
 end
 local function stepCaltrops()
     --[[
       name: stepCaltrops
-      line: 2151
+      line: 2186
       upvalues:
-        tbl_upv_49 (copy, index: 1)
+        tbl_upv_50 (copy, index: 1)
         u55 (ref,  index: 2)
     ]]
-    local v312 = os.clock()
-    for n_4 = #tbl_upv_49, 1, -1 do
-        local v313 = tbl_upv_49[n_4]
-        if not (v313.model.Parent) then
-            table.remove(tbl_upv_49, n_4)
+    local v313 = os.clock()
+    for n_4 = #tbl_upv_50, 1, -1 do
+        local v314 = tbl_upv_50[n_4]
+        if not (v314.model.Parent) then
+            table.remove(tbl_upv_50, n_4)
             continue
         end
-        local v314 = math.clamp((v312 - v313.t0) / v313.dur, 0, 1)
-        local v315 = 1 - (1 - v314) * (1 - v314)
-        local v316 = 1 - v315
-        v313.model:PivotTo((CFrame.new(v313.from:Lerp(v313.to.Position, v315) + Vector3.new(0, ((v313.hop * 4) * v314) * (1 - v314), 0)) * v313.to.Rotation) * CFrame.Angles(v313.tumble.X * v316, v313.tumble.Y * v316, v313.tumble.Z * v316))
-        if v314 >= 1 then
-            table.remove(tbl_upv_49, n_4)
+        local v315 = math.clamp((v313 - v314.t0) / v314.dur, 0, 1)
+        local v316 = 1 - (1 - v315) * (1 - v315)
+        local v317 = 1 - v316
+        v314.model:PivotTo((CFrame.new(v314.from:Lerp(v314.to.Position, v316) + Vector3.new(0, ((v314.hop * 4) * v315) * (1 - v315), 0)) * v314.to.Rotation) * CFrame.Angles(v314.tumble.X * v317, v314.tumble.Y * v317, v314.tumble.Z * v317))
+        if v315 >= 1 then
+            table.remove(tbl_upv_50, n_4)
         end
     end
-    if #tbl_upv_49 ~= 0 or not u55 then
+    if #tbl_upv_50 ~= 0 or not u55 then
         return
     end
     u55:Disconnect()
@@ -3727,28 +3758,28 @@ end
 local function caltropsGone(a1, a2)
     --[[
       name: caltropsGone
-      line: 2175
+      line: 2210
       upvalues:
-        tbl_upv_48 (copy, index: 1)
+        tbl_upv_49 (copy, index: 1)
         TweenService_upv_1 (copy, index: 2)
         Debris_upv_1 (copy, index: 3)
     ]]
-    local v317 = tbl_upv_48[a1]
-    if not v317 then
+    local v318 = tbl_upv_49[a1]
+    if not v318 then
         return
     end
-    tbl_upv_48[a1] = nil
-    for _, value_29 in v317.items do
+    tbl_upv_49[a1] = nil
+    for _, value_29 in v318.items do
         if not (value_29.Parent) then
             continue
         end
-        local v318 = ((value_29:IsA("BasePart")) and {value_29}) or (value_29:GetDescendants())
-        for v320, value_30 in v318 do
+        local v319 = ((value_29:IsA("BasePart")) and {value_29}) or (value_29:GetDescendants())
+        for v321, value_30 in v319 do
             if value_30:IsA("BasePart") then
-                local v319 = TweenInfo.new(a2, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-                local tbl_50 = {Transparency = 1}
-                tbl_50.CFrame = value_30.CFrame - Vector3.new(0, 0.25, 0)
-                TweenService_upv_1:Create(value_30, v319, tbl_50):Play()
+                local v320 = TweenInfo.new(a2, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+                local tbl_51 = {Transparency = 1}
+                tbl_51.CFrame = value_30.CFrame - Vector3.new(0, 0.25, 0)
+                TweenService_upv_1:Create(value_30, v320, tbl_51):Play()
                 continue
             end
             if value_30:IsA("SurfaceGui") then
@@ -3761,10 +3792,10 @@ end
 function tbl_upv_1.Caltrops(a1)
     --[[
       name: Caltrops
-      line: 2200
+      line: 2235
       upvalues:
         tbl_upv_1 (copy, index: 1)
-        tbl_upv_48 (copy, index: 2)
+        tbl_upv_49 (copy, index: 2)
         caltropsGone (copy, index: 3)
         Util_upv_1 (copy, index: 4)
         u2 (ref,  index: 5)
@@ -3772,7 +3803,7 @@ function tbl_upv_1.Caltrops(a1)
         u56 (copy, index: 7)
         Quality_upv_1 (copy, index: 8)
         caltropModel (copy, index: 9)
-        tbl_upv_49 (copy, index: 10)
+        tbl_upv_50 (copy, index: 10)
         u55 (ref,  index: 11)
         RunService_upv_1 (copy, index: 12)
         stepCaltrops (copy, index: 13)
@@ -3782,135 +3813,135 @@ function tbl_upv_1.Caltrops(a1)
     if not num_upv_1 or typeof(position_1) ~= "Vector3" then
         return
     end
-    local v320 = tonumber(a1.radius) or 3.5
-    local v321 = tonumber(a1.duration) or 15
-    local v322
+    local v321 = tonumber(a1.radius) or 3.5
+    local v322 = tonumber(a1.duration) or 15
+    local v323
     if typeof(a1.from) ~= "Vector3" then
-        v322 = position_1
+        v323 = position_1
     else
-        v322 = a1.from
+        v323 = a1.from
     end
-    local v323 = Random.new(tonumber(a1.seed) or num_upv_1)
+    local v324 = Random.new(tonumber(a1.seed) or num_upv_1)
     local CurrentCamera_14 = workspace.CurrentCamera
-    local v324 = tbl_upv_1.NEAR < (((not CurrentCamera_14) and 0) or ((CurrentCamera_14.CFrame.Position - position_1).Magnitude))
-    if tbl_upv_48[num_upv_1] then
+    local v325 = tbl_upv_1.NEAR < (((not CurrentCamera_14) and 0) or ((CurrentCamera_14.CFrame.Position - position_1).Magnitude))
+    if tbl_upv_49[num_upv_1] then
         caltropsGone(num_upv_1, 0)
     end
-    local tbl_upv_51 = {}
-    tbl_upv_48[num_upv_1] = {items = tbl_upv_51, token = num_upv_1}
-    local v325 = a1.attacker
-    local v326 = (typeof(v325) == "Instance") and (Util_upv_1.IsEnemy(v325))
-    if v326 then
-        v325 = Color3.fromRGB(196, 70, 64)
-    else
-        v325 = Color3.fromRGB(70, 132, 196)
-    end
-    local v327 = workspace:Raycast((position_1 + Vector3.new(0, 0.5, 0)) + Vector3.new(0, 1.5, 0), Vector3.new(0, -4.5, 0), Util_upv_1.WorldParams(Util_upv_1.Targets()))
-    local v328, v329
+    local tbl_upv_52 = {}
+    tbl_upv_49[num_upv_1] = {items = tbl_upv_52, token = num_upv_1}
+    local v326 = a1.attacker
+    local v327 = (typeof(v326) == "Instance") and (Util_upv_1.IsEnemy(v326))
     if v327 then
-        v328 = v327.Position
-        v329 = v327.Normal
+        v326 = Color3.fromRGB(196, 70, 64)
     else
-        v328, v329 = nil, nil
+        v326 = Color3.fromRGB(70, 132, 196)
     end
-    local u57 = v328 or position_1
-    local u58 = v329 or Vector3.new(0, 1, 0)
+    local v328 = workspace:Raycast((position_1 + Vector3.new(0, 0.5, 0)) + Vector3.new(0, 1.5, 0), Vector3.new(0, -4.5, 0), Util_upv_1.WorldParams(Util_upv_1.Targets()))
+    local v329, v330
+    if v328 then
+        v329 = v328.Position
+        v330 = v328.Normal
+    else
+        v329, v330 = nil, nil
+    end
+    local u57 = v329 or position_1
+    local u58 = v330 or Vector3.new(0, 1, 0)
     local u59 = CFrame.lookAt(u57 + (u58 * 0.06), u57 + (u58 * 1.06)) * CFrame.Angles(0, 1.5707963267948966, 0)
     local function disc_2(a2, a3, a4, a5, a6)
         --[[
           name: disc
-          line: 2225
+          line: 2260
           upvalues:
             u59 (copy, index: 1)
             u2 (ref,  index: 2)
             TweenService_upv_1 (copy, index: 3)
-            tbl_upv_51 (copy, index: 4)
+            tbl_upv_52 (copy, index: 4)
         ]]
-        local v330 = Vector3.new(0.05, a3, a3)
-        local v331 = u59 * CFrame.new(a6, 0, 0)
-        local v332 = Instance.new("Part")
-        v332.Name = a2
-        v332.Anchored = true
-        v332.CanCollide = false
-        v332.CanQuery = false
-        v332.CanTouch = false
-        v332.CastShadow = false
-        v332.Size = v330
-        v332.CFrame = v331
-        v332.Color = a4
-        v332.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-        v332.Transparency = 1
+        local v331 = Vector3.new(0.05, a3, a3)
+        local v332 = u59 * CFrame.new(a6, 0, 0)
+        local v333 = Instance.new("Part")
+        v333.Name = a2
+        v333.Anchored = true
+        v333.CanCollide = false
+        v333.CanQuery = false
+        v333.CanTouch = false
+        v333.CastShadow = false
+        v333.Size = v331
+        v333.CFrame = v332
+        v333.Color = a4
+        v333.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+        v333.Transparency = 1
         local FX_20 = workspace:FindFirstChild("FX")
         if FX_20 then
             u2 = FX_20
         end
-        v332.Parent = u2
-        v332.Shape = Enum.PartType.Cylinder
-        local tbl_52 = {}
-        tbl_52.Transparency = a5
-        TweenService_upv_1:Create(v332, TweenInfo.new(0.25), tbl_52):Play()
-        table.insert(tbl_upv_51, v332)
+        v333.Parent = u2
+        v333.Shape = Enum.PartType.Cylinder
+        local tbl_53 = {}
+        tbl_53.Transparency = a5
+        TweenService_upv_1:Create(v333, TweenInfo.new(0.25), tbl_53):Play()
+        table.insert(tbl_upv_52, v333)
     end
-    disc_2("CaltropsRing", v320 * 2, v325, 0.72, 0)
-    disc_2("CaltropsDirt", (v320 * 2) - 0.5, u56, 0.82, 0.01)
-    v325 = (v324 and 10) or ((Quality_upv_1.layers and 18) or 13)
-    local v333 = os.clock()
-    local v334, v335 = nil, nil
-    for n_5 = 1, v325 do
-        local v336 = n_5 * 2.39996 + v323:NextNumber(-0.35, 0.35)
-        local v337 = (v320 * 0.92) * math.sqrt((n_5 - 0.4) / v325) * v323:NextNumber(0.88, 1.04)
-        local v338 = u57 + Vector3.new(math.cos(v336) * v337, 0, math.sin(v336) * v337)
-        local v339 = workspace:Raycast((v338 + Vector3.new(0, 1, 0)) + Vector3.new(0, 1.5, 0), Vector3.new(0, -4.5, 0), Util_upv_1.WorldParams(Util_upv_1.Targets()))
-        if v339 then
-            v334 = v339.Position
-            v335 = v339.Normal
+    disc_2("CaltropsRing", v321 * 2, v326, 0.72, 0)
+    disc_2("CaltropsDirt", (v321 * 2) - 0.5, u56, 0.82, 0.01)
+    v326 = (v325 and 10) or ((Quality_upv_1.layers and 18) or 13)
+    local v334 = os.clock()
+    local v335, v336 = nil, nil
+    for n_5 = 1, v326 do
+        local v337 = n_5 * 2.39996 + v324:NextNumber(-0.35, 0.35)
+        local v338 = (v321 * 0.92) * math.sqrt((n_5 - 0.4) / v326) * v324:NextNumber(0.88, 1.04)
+        local v339 = u57 + Vector3.new(math.cos(v337) * v338, 0, math.sin(v337) * v338)
+        local v340 = workspace:Raycast((v339 + Vector3.new(0, 1, 0)) + Vector3.new(0, 1.5, 0), Vector3.new(0, -4.5, 0), Util_upv_1.WorldParams(Util_upv_1.Targets()))
+        if v340 then
+            v335 = v340.Position
+            v336 = v340.Normal
         else
-            v334, v335 = nil, nil
+            v335, v336 = nil, nil
         end
-        local v340 = v334 or v338
-        v334 = v335 or u58
-        v335 = v323:NextNumber(0, math.tau)
-        local v341 = Vector3.new(math.cos(v335), 0, math.sin(v335))
-        local v342 = v341 - v334 * v341:Dot(v334)
-        v335 = CFrame.lookAt(v340, v340 + (((v342.Magnitude < 0.05) and Vector3.new(1, 0, 0)) or v342).Unit, v334) * CFrame.Angles(0, 0, math.rad(v323:NextNumber(-8, 8)))
-        local v343 = caltropModel()
-        v334 = v323:NextNumber(0.9, 1.12)
-        if v343:IsA("Model") and v334 ~= 1 then
-            v343:ScaleTo(v334)
+        local v341 = v335 or v339
+        v335 = v336 or u58
+        v336 = v324:NextNumber(0, math.tau)
+        local v342 = Vector3.new(math.cos(v336), 0, math.sin(v336))
+        local v343 = v342 - v335 * v342:Dot(v335)
+        v336 = CFrame.lookAt(v341, v341 + (((v343.Magnitude < 0.05) and Vector3.new(1, 0, 0)) or v343).Unit, v335) * CFrame.Angles(0, 0, math.rad(v324:NextNumber(-8, 8)))
+        local v344 = caltropModel()
+        v335 = v324:NextNumber(0.9, 1.12)
+        if v344:IsA("Model") and v335 ~= 1 then
+            v344:ScaleTo(v335)
         end
-        v343:PivotTo(CFrame.new(v322) * v335.Rotation)
-        v334 = workspace:FindFirstChild("FX")
-        if v334 then
-            u2 = v334
+        v344:PivotTo(CFrame.new(v323) * v336.Rotation)
+        v335 = workspace:FindFirstChild("FX")
+        if v335 then
+            u2 = v335
         end
-        v343.Parent = u2
-        table.insert(tbl_upv_51, v343)
-        if v324 then
-            v343:PivotTo(v335)
+        v344.Parent = u2
+        table.insert(tbl_upv_52, v344)
+        if v325 then
+            v344:PivotTo(v336)
         else
-            table.insert(tbl_upv_49, {model = v343, from = v322, to = v335, t0 = v333 + v323:NextNumber(0, 0.03), dur = 0.14 + (0.16 * (v337 / math.max(v320, 0.1))) + v323:NextNumber(0, 0.04), hop = 0.5 + v323:NextNumber(0, 0.9), tumble = Vector3.new(v323:NextNumber(-7, 7), v323:NextNumber(-5, 5), v323:NextNumber(-7, 7))})
+            table.insert(tbl_upv_50, {model = v344, from = v323, to = v336, t0 = v334 + v324:NextNumber(0, 0.03), dur = 0.14 + (0.16 * (v338 / math.max(v321, 0.1))) + v324:NextNumber(0, 0.04), hop = 0.5 + v324:NextNumber(0, 0.9), tumble = Vector3.new(v324:NextNumber(-7, 7), v324:NextNumber(-5, 5), v324:NextNumber(-7, 7))})
         end
     end
-    if not (v324) then
+    if not (v325) then
         if not (u55) then
             u55 = RunService_upv_1.Heartbeat:Connect(stepCaltrops)
         end
-        Util_upv_1.Sound("Caltrops_Scatter", v322)
-        tbl_upv_1.Puff(v322, Color3.fromRGB(150, 132, 108), 7, 0.7, 7, 0.45)
+        Util_upv_1.Sound("Caltrops_Scatter", v323)
+        tbl_upv_1.Puff(v323, Color3.fromRGB(150, 132, 108), 7, 0.7, 7, 0.45)
         task.delay(
             0.22,
             function()
                 --[[
-                  line: 2278
+                  line: 2313
                   upvalues:
-                    tbl_upv_48 (copy, index: 1)
+                    tbl_upv_49 (copy, index: 1)
                     num_upv_1 (copy, index: 2)
                     num_upv_1 (copy, index: 3)
                     tbl_upv_1 (copy, index: 4)
                     u57 (copy, index: 5)
                     u58 (copy, index: 6)
                 ]]
-                if not tbl_upv_48[num_upv_1] or tbl_upv_48[num_upv_1].token ~= num_upv_1 then
+                if not tbl_upv_49[num_upv_1] or tbl_upv_49[num_upv_1].token ~= num_upv_1 then
                     return
                 end
                 tbl_upv_1.Puff(u57 + (u58 * 0.3), Color3.fromRGB(150, 132, 108), 9, 1.1, 4, 0.55)
@@ -3918,18 +3949,18 @@ function tbl_upv_1.Caltrops(a1)
         )
     end
     task.delay(
-        v321,
+        v322,
         function()
             --[[
-              line: 2284
+              line: 2319
               upvalues:
-                tbl_upv_48 (copy, index: 1)
+                tbl_upv_49 (copy, index: 1)
                 num_upv_1 (copy, index: 2)
                 num_upv_1 (copy, index: 3)
                 caltropsGone (copy, index: 4)
             ]]
-            local v344 = tbl_upv_48[num_upv_1]
-            if not v344 or v344.token ~= num_upv_1 then
+            local v345 = tbl_upv_49[num_upv_1]
+            if not v345 or v345.token ~= num_upv_1 then
                 return
             end
             caltropsGone(num_upv_1, 0.45)
@@ -3939,7 +3970,7 @@ end
 function tbl_upv_1.CaltropsEnd(a1)
     --[[
       name: CaltropsEnd
-      line: 2292
+      line: 2327
       upvalues:
         caltropsGone (copy, index: 1)
     ]]
@@ -3948,34 +3979,34 @@ end
 function tbl_upv_1.CaltropStep(a1)
     --[[
       name: CaltropStep
-      line: 2297
+      line: 2332
       upvalues:
         Util_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
     ]]
-    local v345 = Util_upv_1.Drawn(a1)
-    local v346
-    if (v345) and (v345:IsA("Model")) then
-        v346 = v345
+    local v346 = Util_upv_1.Drawn(a1)
+    local v347
+    if (v346) and (v346:IsA("Model")) then
+        v347 = v346
     else
-        v346 = a1
+        v347 = a1
     end
-    local v347 = v346:FindFirstChild("RightFoot") or (v346:FindFirstChild("LeftFoot") or (v346:FindFirstChild("HumanoidRootPart")))
-    if not v347 then
+    local v348 = v347:FindFirstChild("RightFoot") or (v347:FindFirstChild("LeftFoot") or (v347:FindFirstChild("HumanoidRootPart")))
+    if not v348 then
         return
     end
-    if v347:IsA("BasePart") then
-        Util_upv_1.Sound("Caltrops_Step", v347)
+    if v348:IsA("BasePart") then
+        Util_upv_1.Sound("Caltrops_Step", v348)
         local CurrentCamera_15 = workspace.CurrentCamera
-        if (((not CurrentCamera_15) and 0) or ((CurrentCamera_15.CFrame.Position - v347.Position).Magnitude)) <= tbl_upv_1.NEAR then
-            tbl_upv_1.Burst("Block_Spark", CFrame.new(v347.Position - Vector3.new(0, 0.30000001192092896, 0)), 0.45, Color3.fromRGB(196, 150, 110))
+        if (((not CurrentCamera_15) and 0) or ((CurrentCamera_15.CFrame.Position - v348.Position).Magnitude)) <= tbl_upv_1.NEAR then
+            tbl_upv_1.Burst("Block_Spark", CFrame.new(v348.Position - Vector3.new(0, 0.30000001192092896, 0)), 0.45, Color3.fromRGB(196, 150, 110))
         end
     end
 end
 function tbl_upv_1.Death(a1, a2, a3, a4)
     --[[
       name: Death
-      line: 2310
+      line: 2345
       upvalues:
         tbl_upv_1 (copy, index: 1)
         Util_upv_1 (copy, index: 2)
@@ -3991,15 +4022,15 @@ end
 local function fling(a1, a2, a3, a4, a5, a6)
     --[[
       name: fling
-      line: 2324
+      line: 2359
       upvalues:
         u2 (ref,  index: 1)
         RunService_upv_1 (copy, index: 2)
     ]]
-    local tbl_upv_53 = {}
+    local tbl_upv_54 = {}
     for key_12, value_31 in a2 do
-        local v348 = Vector3.new(math.random() - 0.5, 0, math.random() - 0.5)
-        tbl_upv_53[key_12] = ((((not (v348.Magnitude > 0.01)) and Vector3.new(1, 0, 0)) or (v348.Unit)) * a3) * (0.6 + (math.random() * 0.6)) + Vector3.new(0, a4 * (0.7 + (math.random() * 0.6)), 0)
+        local v349 = Vector3.new(math.random() - 0.5, 0, math.random() - 0.5)
+        tbl_upv_54[key_12] = ((((not (v349.Magnitude > 0.01)) and Vector3.new(1, 0, 0)) or (v349.Unit)) * a3) * (0.6 + (math.random() * 0.6)) + Vector3.new(0, a4 * (0.7 + (math.random() * 0.6)), 0)
         value_31.CFrame = CFrame.new(a1) * CFrame.Angles(math.random() * 6, math.random() * 6, math.random() * 6)
         local FX_21 = workspace:FindFirstChild("FX")
         if FX_21 then
@@ -4009,50 +4040,50 @@ local function fling(a1, a2, a3, a4, a5, a6)
     end
     local u60 = os.clock()
     local u61 = nil
-    local v349 = RunService_upv_1.RenderStepped:Connect(
+    local v350 = RunService_upv_1.RenderStepped:Connect(
         function()
             --[[
-              line: 2335
+              line: 2370
               upvalues:
                 u60 (copy, index: 1)
                 a5 (copy, index: 2)
                 u61 (ref,  index: 3)
                 a2 (copy, index: 4)
                 a1 (copy, index: 5)
-                tbl_upv_53 (copy, index: 6)
+                tbl_upv_54 (copy, index: 6)
                 a6 (copy, index: 7)
             ]]
-            local v350 = os.clock() - u60
-            if a5 <= v350 then
+            local v351 = os.clock() - u60
+            if a5 <= v351 then
                 u61:Disconnect()
                 for _, value_32 in a2 do
                     value_32:Destroy()
                 end
             else
-                local v351 = nil
+                local v352 = nil
                 for key_13, value_33 in a2 do
-                    local v352 = a1 + (tbl_upv_53[key_13] * v350) + Vector3.new(0, (-30 * v350) * v350, 0)
+                    local v353 = a1 + (tbl_upv_54[key_13] * v351) + Vector3.new(0, (-30 * v351) * v351, 0)
                     if a6 then
-                        v351 = CFrame.Angles((v350 * 9) + key_13, v350 * 7, 0)
+                        v352 = CFrame.Angles((v351 * 9) + key_13, v351 * 7, 0)
                     else
-                        v351 = value_33.CFrame.Rotation
+                        v352 = value_33.CFrame.Rotation
                     end
-                    value_33.CFrame = CFrame.new(v352) * v351
-                    value_33.Transparency = math.clamp((v350 / a5 - 0.5) / 0.5, 0, 1)
+                    value_33.CFrame = CFrame.new(v353) * v352
+                    value_33.Transparency = math.clamp((v351 / a5 - 0.5) / 0.5, 0, 1)
                 end
             end
         end
     )
-    u61 = v349
+    u61 = v350
 end
-local tbl_upv_54 = {Crossbow = "feathers", Axe = "stars", Sword = "slash", Spear = "slash", Knives = "feathers", Club = "stars", Gauntlets = "stars", Blunderbuss = "powder", Bow = "feathers", Musket = "powder", Fists = "stars", Katana = "slash", Javelin = "feathers", Trap = "sparks", Bomb = "embers", Sling = "chips", Scythe = "slash", Dagger = "slash", Pistol = "powder", Hatchets = "stars"}
+local tbl_upv_55 = {Crossbow = "feathers", Axe = "stars", Sword = "slash", Spear = "slash", Knives = "feathers", Club = "stars", Gauntlets = "stars", Blunderbuss = "powder", Bow = "feathers", Musket = "powder", Fists = "stars", Katana = "slash", Javelin = "feathers", Trap = "sparks", Bomb = "embers", Sling = "chips", Scythe = "slash", Dagger = "slash", Pistol = "powder", Hatchets = "stars"}
 function tbl_upv_1.KillFlourish(a1, a2, a3, a4)
     --[[
       name: KillFlourish
-      line: 2362
+      line: 2397
       upvalues:
         tbl_upv_1 (copy, index: 1)
-        tbl_upv_54 (copy, index: 2)
+        tbl_upv_55 (copy, index: 2)
         Combat_upv_1 (copy, index: 3)
         u2 (ref,  index: 4)
         fling (copy, index: 5)
@@ -4066,158 +4097,158 @@ function tbl_upv_1.KillFlourish(a1, a2, a3, a4)
     if tbl_upv_1.NEAR < (((not CurrentCamera_16) and 0) or ((CurrentCamera_16.CFrame.Position - a1).Magnitude)) then
         return
     end
-    local v353 = tbl_upv_54[Combat_upv_1.Kind(a2) or ""] or "none"
-    local v354 = a1 + Vector3.new(0, 1.5, 0)
-    local v355 = (a3 and 1.25) or 1
-    if v353 == "feathers" then
-        local tbl_55 = {}
+    local v354 = tbl_upv_55[Combat_upv_1.Kind(a2) or ""] or "none"
+    local v355 = a1 + Vector3.new(0, 1.5, 0)
+    local v356 = (a3 and 1.25) or 1
+    if v354 == "feathers" then
+        local tbl_56 = {}
         for n_6 = 1, 7 do
-            local v356
+            local v357
             if n_6 % 3 ~= 0 then
-                v356 = Color3.fromRGB(178, 58, 44)
+                v357 = Color3.fromRGB(178, 58, 44)
             else
-                v356 = Color3.fromRGB(220, 208, 186)
+                v357 = Color3.fromRGB(220, 208, 186)
             end
-            local v357 = CFrame.new(v354)
-            local v358 = Instance.new("Part")
-            v358.Name = "KillFeather"
-            v358.Anchored = true
-            v358.CanCollide = false
-            v358.CanQuery = false
-            v358.CanTouch = false
-            v358.CastShadow = false
-            v358.Size = Vector3.new(0.05999999865889549, 0.699999988079071, 0.2199999988079071) * v355
-            v358.CFrame = v357
-            v358.Color = v356
-            v358.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-            v358.Transparency = 0
+            local v358 = CFrame.new(v355)
+            local v359 = Instance.new("Part")
+            v359.Name = "KillFeather"
+            v359.Anchored = true
+            v359.CanCollide = false
+            v359.CanQuery = false
+            v359.CanTouch = false
+            v359.CastShadow = false
+            v359.Size = Vector3.new(0.05999999865889549, 0.699999988079071, 0.2199999988079071) * v356
+            v359.CFrame = v358
+            v359.Color = v357
+            v359.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+            v359.Transparency = 0
             local FX_22 = workspace:FindFirstChild("FX")
             if FX_22 then
                 u2 = FX_22
             end
-            v358.Parent = u2
-            table.insert(tbl_55, v358)
+            v359.Parent = u2
+            table.insert(tbl_56, v359)
         end
-        fling(v354, tbl_55, 9, 10, 0.9, true)
+        fling(v355, tbl_56, 9, 10, 0.9, true)
         Util_upv_1.Sound("Arrow_Flesh", a1, {PlaybackSpeed = 0.8, Volume = 0.6})
-    elseif v353 == "powder" then
-        tbl_upv_1.Puff(v354, Color3.fromRGB(70, 64, 60), 14, v355 * 1.6, 14, 1.1)
-        tbl_upv_1.Burst("Impact_Sparks", CFrame.new(v354), v355 * 1.3, Color3.fromRGB(255, 150, 60), true)
-        groundDecal(a1 - Vector3.new(0, 2.799999952316284, 0), Vector3.new(0, 1, 0), "rbxassetid://10871117278", Color3.fromRGB(60, 50, 44), 2, v355 * 9, 0.3, 0.3)
-    elseif v353 == "stars" then
-        local tbl_upv_56 = {}
+    elseif v354 == "powder" then
+        tbl_upv_1.Puff(v355, Color3.fromRGB(70, 64, 60), 14, v356 * 1.6, 14, 1.1)
+        tbl_upv_1.Burst("Impact_Sparks", CFrame.new(v355), v356 * 1.3, Color3.fromRGB(255, 150, 60), true)
+        groundDecal(a1 - Vector3.new(0, 2.799999952316284, 0), Vector3.new(0, 1, 0), "rbxassetid://10871117278", Color3.fromRGB(60, 50, 44), 2, v356 * 9, 0.3, 0.3)
+    elseif v354 == "stars" then
+        local tbl_upv_57 = {}
         for n_7 = 1, 4 do
-            local v359 = CFrame.new(v354)
-            local v360 = Color3.fromRGB(250, 205, 70)
-            local v361 = Instance.new("Part")
-            v361.Name = "BonkStar"
-            v361.Anchored = true
-            v361.CanCollide = false
-            v361.CanQuery = false
-            v361.CanTouch = false
-            v361.CastShadow = false
-            v361.Size = Vector3.new(0.5, 0.5, 0.11999999731779099) * v355
-            v361.CFrame = v359
-            v361.Color = v360
-            v361.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-            v361.Transparency = 0
+            local v360 = CFrame.new(v355)
+            local v361 = Color3.fromRGB(250, 205, 70)
+            local v362 = Instance.new("Part")
+            v362.Name = "BonkStar"
+            v362.Anchored = true
+            v362.CanCollide = false
+            v362.CanQuery = false
+            v362.CanTouch = false
+            v362.CastShadow = false
+            v362.Size = Vector3.new(0.5, 0.5, 0.11999999731779099) * v356
+            v362.CFrame = v360
+            v362.Color = v361
+            v362.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+            v362.Transparency = 0
             local FX_23 = workspace:FindFirstChild("FX")
             if FX_23 then
                 u2 = FX_23
             end
-            v361.Parent = u2
-            v361.Shape = Enum.PartType.Block
-            table.insert(tbl_upv_56, v361)
+            v362.Parent = u2
+            v362.Shape = Enum.PartType.Block
+            table.insert(tbl_upv_57, v362)
             local u62 = n_7
         end
         local u63 = a1 + Vector3.new(0, 2.5999999046325684, 0)
         local u64 = os.clock()
         local u62 = nil
-        local v362 = RunService_upv_1.RenderStepped:Connect(
+        local v363 = RunService_upv_1.RenderStepped:Connect(
             function()
                 --[[
-                  line: 2392
+                  line: 2427
                   upvalues:
                     u64 (copy, index: 1)
                     u62 (ref,  index: 2)
-                    tbl_upv_56 (copy, index: 3)
+                    tbl_upv_57 (copy, index: 3)
                     u63 (copy, index: 4)
                 ]]
-                local v363 = os.clock() - u64
-                if v363 > 0.9 then
+                local v364 = os.clock() - u64
+                if v364 > 0.9 then
                     u62:Disconnect()
-                    for _, value_34 in tbl_upv_56 do
+                    for _, value_34 in tbl_upv_57 do
                         value_34:Destroy()
                     end
                 else
-                    for key_14, value_35 in tbl_upv_56 do
-                        local v364 = v363 * 9 + (key_14 * math.pi) / 2
-                        value_35.CFrame = CFrame.new(u63 + Vector3.new(math.cos(v364) * 1.3, (math.sin((v363 * 12) + key_14) * 0.15) + 0.2, math.sin(v364) * 1.3)) * CFrame.Angles(0, 0, v364 * 2)
-                        value_35.Transparency = math.clamp((v363 - 0.6) / 0.3, 0, 1)
+                    for key_14, value_35 in tbl_upv_57 do
+                        local v365 = v364 * 9 + (key_14 * math.pi) / 2
+                        value_35.CFrame = CFrame.new(u63 + Vector3.new(math.cos(v365) * 1.3, (math.sin((v364 * 12) + key_14) * 0.15) + 0.2, math.sin(v365) * 1.3)) * CFrame.Angles(0, 0, v365 * 2)
+                        value_35.Transparency = math.clamp((v364 - 0.6) / 0.3, 0, 1)
                     end
                 end
             end
         )
-        u62 = v362
+        u62 = v363
         Util_upv_1.Sound("Hit_Punch", a1, {PlaybackSpeed = 0.75})
-    elseif v353 == "slash" then
+    elseif v354 == "slash" then
         for n_8 = -1, 1, 2 do
-            local v365 = Vector3.new(0.25, v355 * 4.5, 0.1)
-            local v366 = CFrame.lookAt(v354, workspace.CurrentCamera.CFrame.Position) * CFrame.Angles(0, 0, math.rad(n_8 * 40))
-            local v367 = Color3.fromRGB(215, 70, 50)
-            local v368 = Instance.new("Part")
-            v368.Name = "KillSlash"
-            v368.Anchored = true
-            v368.CanCollide = false
-            v368.CanQuery = false
-            v368.CanTouch = false
-            v368.CastShadow = false
-            v368.Size = v365
-            v368.CFrame = v366
-            v368.Color = v367
-            v368.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-            v368.Transparency = 0
+            local v366 = Vector3.new(0.25, v356 * 4.5, 0.1)
+            local v367 = CFrame.lookAt(v355, workspace.CurrentCamera.CFrame.Position) * CFrame.Angles(0, 0, math.rad(n_8 * 40))
+            local v368 = Color3.fromRGB(215, 70, 50)
+            local v369 = Instance.new("Part")
+            v369.Name = "KillSlash"
+            v369.Anchored = true
+            v369.CanCollide = false
+            v369.CanQuery = false
+            v369.CanTouch = false
+            v369.CastShadow = false
+            v369.Size = v366
+            v369.CFrame = v367
+            v369.Color = v368
+            v369.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
+            v369.Transparency = 0
             local FX_24 = workspace:FindFirstChild("FX")
             if FX_24 then
                 u2 = FX_24
             end
-            v368.Parent = u2
-            v368.Transparency = 0.1
-            local v369 = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-            local tbl_57 = {Transparency = 1}
-            tbl_57.Size = Vector3.new(0.05, v355 * 6, 0.1)
-            TweenService_upv_1:Create(v368, v369, tbl_57):Play()
-            Debris_upv_1:AddItem(v368, 0.4)
+            v369.Parent = u2
+            v369.Transparency = 0.1
+            local v370 = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+            local tbl_58 = {Transparency = 1}
+            tbl_58.Size = Vector3.new(0.05, v356 * 6, 0.1)
+            TweenService_upv_1:Create(v369, v370, tbl_58):Play()
+            Debris_upv_1:AddItem(v369, 0.4)
         end
-    elseif v353 == "chips" then
-        local tbl_58 = {}
+    elseif v354 == "chips" then
+        local tbl_59 = {}
         for _ = 1, 6 do
-            local v370 = CFrame.new(v354)
-            local v371 = Color3.fromRGB(128, 124, 118)
-            local v372 = Instance.new("Part")
-            v372.Name = "KillChip"
-            v372.Anchored = true
-            v372.CanCollide = false
-            v372.CanQuery = false
-            v372.CanTouch = false
-            v372.CastShadow = false
-            v372.Size = Vector3.new(0.30000001192092896, 0.30000001192092896, 0.30000001192092896) * v355
-            v372.CFrame = v370
-            v372.Color = v371
-            v372.Material = Enum.Material.Slate or (Enum.Material.SmoothPlastic)
-            v372.Transparency = 0
+            local v371 = CFrame.new(v355)
+            local v372 = Color3.fromRGB(128, 124, 118)
+            local v373 = Instance.new("Part")
+            v373.Name = "KillChip"
+            v373.Anchored = true
+            v373.CanCollide = false
+            v373.CanQuery = false
+            v373.CanTouch = false
+            v373.CastShadow = false
+            v373.Size = Vector3.new(0.30000001192092896, 0.30000001192092896, 0.30000001192092896) * v356
+            v373.CFrame = v371
+            v373.Color = v372
+            v373.Material = Enum.Material.Slate or (Enum.Material.SmoothPlastic)
+            v373.Transparency = 0
             local FX_25 = workspace:FindFirstChild("FX")
             if FX_25 then
                 u2 = FX_25
             end
-            v372.Parent = u2
-            table.insert(tbl_58, v372)
+            v373.Parent = u2
+            table.insert(tbl_59, v373)
         end
-        fling(v354, tbl_58, 8, 9, 0.8, true)
-    elseif v353 == "embers" then
-        tbl_upv_1.Burst("Impact_Sparks", CFrame.new(v354), v355 * 1.5, Color3.fromRGB(255, 140, 50), true)
-    elseif v353 == "sparks" then
-        tbl_upv_1.Burst("Impact_Sparks", CFrame.new(a1), v355 * 1.2)
+        fling(v355, tbl_59, 8, 9, 0.8, true)
+    elseif v354 == "embers" then
+        tbl_upv_1.Burst("Impact_Sparks", CFrame.new(v355), v356 * 1.5, Color3.fromRGB(255, 140, 50), true)
+    elseif v354 == "sparks" then
+        tbl_upv_1.Burst("Impact_Sparks", CFrame.new(a1), v356 * 1.2)
     end
     if not a4 then
         return
@@ -4231,23 +4262,23 @@ local u68 = nil
 local function beamProjectile(a1, a2, a3, a4)
     --[[
       name: beamProjectile
-      line: 2438
+      line: 2473
     ]]
-    local v373 = (((a1 * 0.5) * a4) * a4) + (a2 * a4) + a3
-    local v374 = v373 - (((a1 * a4) * a4) + (a2 * a4)) / 3
-    local v375 = ((((((a1 * 0.125) * a4) * a4) + ((a2 * 0.5) * a4)) + a3) - ((a3 + v373) * 0.125)) / 0.375 - v374
-    local Unit_3 = (a3 - v373).Unit
-    local Unit_4 = (v375 - a3).Unit
+    local v374 = (((a1 * 0.5) * a4) * a4) + (a2 * a4) + a3
+    local v375 = v374 - (((a1 * a4) * a4) + (a2 * a4)) / 3
+    local v376 = ((((((a1 * 0.125) * a4) * a4) + ((a2 * 0.5) * a4)) + a3) - ((a3 + v374) * 0.125)) / 0.375 - v375
+    local Unit_3 = (a3 - v374).Unit
+    local Unit_4 = (v376 - a3).Unit
     local Unit_5 = Unit_4:Cross(Unit_3).Unit
-    local Unit_6 = (v374 - v373).Unit
+    local Unit_6 = (v375 - v374).Unit
     local Unit_7 = Unit_6:Cross(Unit_3).Unit
     local Unit_8 = Unit_5:Cross(Unit_4).Unit
-    return (v375 - a3).Magnitude, -(v374 - v373).Magnitude, CFrame.fromMatrix(a3, Unit_4, Unit_5, Unit_8), (CFrame.fromMatrix(v373, Unit_6, Unit_7, Unit_8))
+    return (v376 - a3).Magnitude, -(v375 - v374).Magnitude, CFrame.fromMatrix(a3, Unit_4, Unit_5, Unit_8), (CFrame.fromMatrix(v374, Unit_6, Unit_7, Unit_8))
 end
 function tbl_upv_1.Trajectory(a1, a2, a3, a4, a5)
     --[[
       name: Trajectory
-      line: 2456
+      line: 2491
       upvalues:
         u65 (ref,  index: 1)
         u66 (ref,  index: 2)
@@ -4259,89 +4290,89 @@ function tbl_upv_1.Trajectory(a1, a2, a3, a4, a5)
         beamProjectile (copy, index: 8)
     ]]
     if a1 and a2 and a3 then
-        local v376 = nil
+        local v377 = nil
         if not (u65) then
-            local v377 = Instance.new("Attachment")
-            v377.Name = "CombatTrajA"
-            v377.Parent = workspace.Terrain
             local v378 = Instance.new("Attachment")
-            v378.Name = "CombatTrajB"
+            v378.Name = "CombatTrajA"
             v378.Parent = workspace.Terrain
-            local v379 = Instance.new("Beam")
-            v379.Attachment0 = v377
-            v379.Attachment1 = v378
-            v379.Width0 = 0.2
-            v379.Width1 = 0.2
-            v379.Segments = 48
-            v379.FaceCamera = true
-            v379.LightEmission = 0.2
-            v379.LightInfluence = 0.4
-            v379.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.9), NumberSequenceKeypoint.new(0.15, 0.3), NumberSequenceKeypoint.new(1, 0.2)})
+            local v379 = Instance.new("Attachment")
+            v379.Name = "CombatTrajB"
             v379.Parent = workspace.Terrain
-            local v380 = Instance.new("Part")
-            v380.Name = "CombatTrajLanding"
-            v380.Shape = Enum.PartType.Cylinder
-            v380.Size = Vector3.new(0.11999999731779099, 3, 3)
-            v380.Material = Enum.Material.SmoothPlastic
-            v380.Transparency = 0.5
-            v380.Anchored = true
-            v380.CanCollide = false
-            v380.CanQuery = false
-            v380.CanTouch = false
-            v380.CastShadow = false
-            v376 = workspace:FindFirstChild("FX")
-            if v376 then
-                u2 = v376
+            local v380 = Instance.new("Beam")
+            v380.Attachment0 = v378
+            v380.Attachment1 = v379
+            v380.Width0 = 0.2
+            v380.Width1 = 0.2
+            v380.Segments = 48
+            v380.FaceCamera = true
+            v380.LightEmission = 0.2
+            v380.LightInfluence = 0.4
+            v380.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.9), NumberSequenceKeypoint.new(0.15, 0.3), NumberSequenceKeypoint.new(1, 0.2)})
+            v380.Parent = workspace.Terrain
+            local v381 = Instance.new("Part")
+            v381.Name = "CombatTrajLanding"
+            v381.Shape = Enum.PartType.Cylinder
+            v381.Size = Vector3.new(0.11999999731779099, 3, 3)
+            v381.Material = Enum.Material.SmoothPlastic
+            v381.Transparency = 0.5
+            v381.Anchored = true
+            v381.CanCollide = false
+            v381.CanQuery = false
+            v381.CanTouch = false
+            v381.CastShadow = false
+            v377 = workspace:FindFirstChild("FX")
+            if v377 then
+                u2 = v377
             end
-            v380.Parent = u2
-            u66 = v380
-            u65 = v379
-            u67 = v377
-            u68 = v378
+            v381.Parent = u2
+            u66 = v381
+            u65 = v380
+            u67 = v378
+            u68 = v379
         end
-        local v381 = Ballistics_upv_1.new(a1, a2, a3, 0)
-        local v382 = Util_upv_1.WorldParams(Util_upv_1.Teammates())
-        local v383 = 3
-        local v384 = 0
-        local v385 = nil
-        local v386, v387, v388 = nil, nil, nil
+        local v382 = Ballistics_upv_1.new(a1, a2, a3, 0)
+        local v383 = Util_upv_1.WorldParams(Util_upv_1.Teammates())
+        local v384 = 3
+        local v385 = 0
+        local v386 = nil
+        local v387, v388, v389 = nil, nil, nil
         for _ = 1, 90 do
-            v386, v387 = Ballistics_upv_1.Advance(v381, 0.03333333333333333)
-            v384 = v384 + 0.03333333333333333
-            v388 = workspace:Raycast(v386, v387, v382)
-            if v388 then
-                v383, v385 = v384 - 0.03333333333333333 * (1 - ((v388.Position - v386).Magnitude / math.max(0.001, v387.Magnitude))), v388.Position
+            v387, v388 = Ballistics_upv_1.Advance(v382, 0.03333333333333333)
+            v385 = v385 + 0.03333333333333333
+            v389 = workspace:Raycast(v387, v388, v383)
+            if v389 then
+                v384, v386 = v385 - 0.03333333333333333 * (1 - ((v389.Position - v387).Magnitude / math.max(0.001, v388.Magnitude))), v389.Position
                 break
             else
                 continue
             end
         end
-        local v389, v390, v391
-        local v392, v393
-        v392, v389, v393, v390, v391 = pcall(beamProjectile, Vector3.new(0, -a3, 0), a2, a1, math.max(0.05, v383))
-        if v392 then
-            u67.WorldCFrame = v390
-            u68.WorldCFrame = v391
-            u65.CurveSize0 = v389
-            u65.CurveSize1 = v393
-            local v394 = a4 or (Color3.fromRGB(255, 190, 90))
-            u65.Color = ColorSequence.new(v394)
+        local v390, v391, v392
+        local v393, v394
+        v393, v390, v394, v391, v392 = pcall(beamProjectile, Vector3.new(0, -a3, 0), a2, a1, math.max(0.05, v384))
+        if v393 then
+            u67.WorldCFrame = v391
+            u68.WorldCFrame = v392
+            u65.CurveSize0 = v390
+            u65.CurveSize1 = v394
+            local v395 = a4 or (Color3.fromRGB(255, 190, 90))
+            u65.Color = ColorSequence.new(v395)
             u65.Enabled = true
             if u66 then
-                local v395 = nil
+                local v396 = nil
                 if not (u66.Parent) then
-                    v395 = workspace:FindFirstChild("FX")
-                    if v395 then
-                        u2 = v395
+                    v396 = workspace:FindFirstChild("FX")
+                    if v396 then
+                        u2 = v396
                     end
                     u66.Parent = u2
                 end
-                if v385 then
-                    local v396 = a5 or 3
-                    u66.Size = Vector3.new(0.12, v396, v396)
+                if v386 then
+                    local v397 = a5 or 3
+                    u66.Size = Vector3.new(0.12, v397, v397)
                     u66.Color = a4 or Color3.fromRGB(255, 190, 90)
                     u66.Transparency = 0.5
-                    u66.CFrame = CFrame.new(v385 + Vector3.new(0, 0.07999999821186066, 0)) * CFrame.Angles(0, 0, 1.5707963267948966)
+                    u66.CFrame = CFrame.new(v386 + Vector3.new(0, 0.07999999821186066, 0)) * CFrame.Angles(0, 0, 1.5707963267948966)
                     return
                 end
                 u66.Transparency = 1
