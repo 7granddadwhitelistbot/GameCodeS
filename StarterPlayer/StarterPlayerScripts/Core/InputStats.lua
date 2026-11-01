@@ -1,7 +1,7 @@
 local GuiService_upv_1 = game:GetService("GuiService")
 local Players_upv_1 = game:GetService("Players")
 local UserInputService_upv_1 = game:GetService("UserInputService")
-local tbl_1 = {}
+local tbl_upv_1 = {}
 local tbl_upv_2 = {BodyVelocity = 1, BodyThrust = 16, RocketPropulsion = 64, BodyForce = 8, BodyAngularVelocity = 32, BodyPosition = 4, BodyGyro = 2}
 local u1 = 0
 local u2 = false
@@ -11,7 +11,7 @@ local tbl_upv_5 = {}
 local function note(a1)
     --[[
       name: note
-      line: 67
+      line: 70
       upvalues:
         u1 (ref, index: 1)
     ]]
@@ -20,7 +20,7 @@ end
 local function watch(a1)
     --[[
       name: watch
-      line: 71
+      line: 74
       upvalues:
         tbl_upv_2 (copy, index: 1)
         u1 (ref,  index: 2)
@@ -28,7 +28,7 @@ local function watch(a1)
     local function look_1(a2)
         --[[
           name: look
-          line: 72
+          line: 75
           upvalues:
             tbl_upv_2 (copy, index: 1)
             a1 (copy, index: 2)
@@ -57,19 +57,19 @@ local function watch(a1)
     end
     a1.DescendantAdded:Connect(look_1)
 end
-function tbl_1.Note(a1)
+function tbl_upv_1.Note(a1)
     --[[
       name: Note
-      line: 86
+      line: 89
       upvalues:
         u1 (ref, index: 1)
     ]]
     u1 = bit32.bor(u1, a1)
 end
-function tbl_1.Watch(a1, a2)
+function tbl_upv_1.Watch(a1, a2)
     --[[
       name: Watch
-      line: 91
+      line: 94
       upvalues:
         tbl_upv_3 (copy, index: 1)
     ]]
@@ -80,11 +80,11 @@ function tbl_1.Watch(a1, a2)
     end
 end
 local v4 = Random.new()
-tbl_1.PROBE = {n = v4:NextNumber(2e+06, 9e+06), s = string.format("%x%x", v4:NextInteger(268435456, 2147483647), v4:NextInteger(268435456, 2147483647)), t = {}, v = Vector3.new(v4:NextNumber(2e+06, 9e+06), v4:NextNumber(2e+06, 9e+06), v4:NextNumber(2e+06, 9e+06))}
-function tbl_1.Hooked(a1, ...)
+tbl_upv_1.PROBE = {n = v4:NextNumber(2e+06, 9e+06), s = string.format("%x%x", v4:NextInteger(268435456, 2147483647), v4:NextInteger(268435456, 2147483647)), t = {}, v = Vector3.new(v4:NextNumber(2e+06, 9e+06), v4:NextNumber(2e+06, 9e+06), v4:NextNumber(2e+06, 9e+06)), k = v4:NextNumber(1.25, 3.75), o = Vector3.new(v4:NextNumber(-1.1, 1.1), v4:NextNumber(0.9, 2.1), v4:NextNumber(-1.1, 1.1))}
+function tbl_upv_1.Hooked(a1, ...)
     --[[
       name: Hooked
-      line: 107
+      line: 115
       upvalues:
         tbl_upv_4 (copy, index: 1)
     ]]
@@ -93,7 +93,7 @@ end
 local function ours(a1)
     --[[
       name: ours
-      line: 112
+      line: 120
       upvalues:
         tbl_upv_5 (copy, index: 1)
     ]]
@@ -112,10 +112,10 @@ local function ours(a1)
     end
     return v5
 end
-function tbl_1.Caller(a1)
+function tbl_upv_1.Caller(a1)
     --[[
       name: Caller
-      line: 126
+      line: 134
       upvalues:
         u1 (ref,  index: 1)
         tbl_upv_5 (copy, index: 2)
@@ -150,19 +150,24 @@ function tbl_1.Caller(a1)
         end
     end
 end
-function tbl_1.Take()
+function tbl_upv_1.Take()
     --[[
       name: Take
-      line: 143
+      line: 151
       upvalues:
         tbl_upv_3 (copy, index: 1)
         u1 (ref,  index: 2)
-        tbl_upv_4 (copy, index: 3)
+        tbl_upv_1 (copy, index: 3)
+        tbl_upv_4 (copy, index: 4)
     ]]
     for _, value_3 in tbl_upv_3 do
         if rawget(value_3.t, value_3.k) ~= value_3.f then
             u1 = bit32.bor(u1, value_3.bit)
         end
+    end
+    local PROBE_1 = tbl_upv_1.PROBE
+    if PROBE_1.m ~= nil and rawget(PROBE_1.m, "lastSwing") ~= PROBE_1.ml then
+        u1 = bit32.bor(u1, 256)
     end
     for _, value_4 in tbl_upv_4 do
         local success_3, v16 = pcall(value_4.f, table.unpack(value_4.args, 1, value_4.args.n))
@@ -174,10 +179,10 @@ function tbl_1.Take()
     u1 = 0
     return v17
 end
-function tbl_1.Start()
+function tbl_upv_1.Start()
     --[[
       name: Start
-      line: 160
+      line: 172
       upvalues:
         u2 (ref,  index: 1)
         Players_upv_1 (copy, index: 2)
@@ -198,7 +203,7 @@ function tbl_1.Start()
     require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Simulation")).OnForeignWrite(
         function()
             --[[
-              line: 173
+              line: 185
               upvalues:
                 u1 (ref, index: 1)
             ]]
@@ -211,7 +216,7 @@ function tbl_1.Start()
     task.spawn(
         function()
             --[[
-              line: 180
+              line: 192
               upvalues:
                 LocalPlayer_upv_1 (copy, index: 1)
                 u1 (ref,  index: 2)
@@ -244,4 +249,4 @@ function tbl_1.Start()
         end
     )
 end
-return tbl_1
+return tbl_upv_1

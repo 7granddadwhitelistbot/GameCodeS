@@ -250,7 +250,12 @@ function tbl_upv_1.Start(a1)
             Util_upv_1.PlayHold(ctx_3.animator, a1.preset.windup, 1)
             Util_upv_1.Sound(a1.preset.windupSound or "Throw_Windup", ctx_3.root)
             a1:StartLoop(a1.preset.fuseLoop)
-            ctx_3.setSpeed("Throw", a1.tuning.drawSpeedMult or 0.8)
+            local v13 = Util_upv_1.ProbeValues()
+            local v14 = a1.tuning.drawSpeedMult or 0.8
+            local v15 = ctx_3.setSpeed("Throw", v14)
+            if v15 ~= (v13 and (v13.k * (v14 or 1))) then
+                Util_upv_1.Hooked()
+            end
             return true
         end
         a1:NoneLeft()
@@ -261,7 +266,7 @@ end
 function tbl_upv_1.Cancel(a1)
     --[[
       name: Cancel
-      line: 182
+      line: 186
       upvalues:
         Util_upv_1 (copy, index: 1)
         Hud_upv_1 (copy, index: 2)
@@ -280,7 +285,7 @@ end
 function tbl_upv_1.Release(a1, a2)
     --[[
       name: Release
-      line: 194
+      line: 198
       upvalues:
         Util_upv_1 (copy, index: 1)
         Combat_upv_1 (copy, index: 2)
@@ -289,7 +294,7 @@ function tbl_upv_1.Release(a1, a2)
     ]]
     local ctx_5 = a1.ctx
     local tuning_2 = a1.tuning
-    local v13, v14, v15 = a1:Launch(a2, true)
+    local v16, v17, v18 = a1:Launch(a2, true)
     a1.lastThrow = os.clock()
     ctx_5.emit("Throw", {charge = a2})
     Util_upv_1.FaceCamera()
@@ -297,26 +302,26 @@ function tbl_upv_1.Release(a1, a2)
         Util_upv_1.StopAnim(ctx_5.animator, a1.preset.windup, 0.04)
     end
     Util_upv_1.PlayAnim(ctx_5.animator, a1.preset.throw, a1.preset.throwAnimSpeed or 1.3, 0.03)
-    local v16 = ctx_5.nextId()
-    local v17 = nil
+    local v19 = ctx_5.nextId()
+    local v20 = nil
     if not tuning_2.splash and not tuning_2.smoke and not tuning_2.caltrops then
-        local v18
+        local v21
         if a1.winds then
-            v18 = Combat_upv_1.DrawnShot(tuning_2, a2)
+            v21 = Combat_upv_1.DrawnShot(tuning_2, a2)
         else
-            v18 = tuning_2.damage
+            v21 = tuning_2.damage
         end
         local tbl_2 = {}
-        tbl_2.damage = v18 * Util_upv_1.ItemBonus(ctx_5.weaponId)
+        tbl_2.damage = v21 * Util_upv_1.ItemBonus(ctx_5.weaponId)
         tbl_2.tuning = tuning_2
-        v17 = tbl_2
+        v20 = tbl_2
     end
     if type(tuning_2.returns) ~= "table" then
-        Effects_upv_1.Projectile(Effects_upv_1.MyKey(v16), tuning_2.projectile or "Javelin", v13, v14 * v15, tuning_2.gravity or 60, ctx_5.char, v17)
+        Effects_upv_1.Projectile(Effects_upv_1.MyKey(v19), tuning_2.projectile or "Javelin", v16, v17 * v18, tuning_2.gravity or 60, ctx_5.char, v20)
     else
-        Effects_upv_1.Chakram(Effects_upv_1.MyKey(v16), v13, v14, v15, tuning_2.returns.range or 45, tuning_2.returns.catch or 4.5, ctx_5.char)
+        Effects_upv_1.Chakram(Effects_upv_1.MyKey(v19), v16, v17, v18, tuning_2.returns.range or 45, tuning_2.returns.catch or 4.5, ctx_5.char)
     end
-    ctx_5.send("Shoot", {tool = ctx_5.tool, origin = v13, dir = v14, id = v16, charge = a2})
+    ctx_5.send("Shoot", {tool = ctx_5.tool, origin = v16, dir = v17, id = v19, charge = a2})
     Util_upv_1.Sound(a1.preset.throwSound or "Throw", ctx_5.root)
     if a1.kind == "Bomb" then
         a1:StopLoop()
@@ -338,19 +343,19 @@ end
 function tbl_upv_1.Quick(a1)
     --[[
       name: Quick
-      line: 237
+      line: 241
       upvalues:
         Util_upv_1 (copy, index: 1)
     ]]
-    local v19 = os.clock()
-    if not (v19 - a1.lastThrow < (a1.tuning.fireInterval or (a1.tuning.cooldown or 0.4))) and not (Util_upv_1.GuardRecovery(a1.ctx.tool) > 0) then
+    local v22 = os.clock()
+    if not (v22 - a1.lastThrow < (a1.tuning.fireInterval or (a1.tuning.cooldown or 0.4))) and not (Util_upv_1.GuardRecovery(a1.ctx.tool) > 0) then
         if Util_upv_1.CanAct() then
             if a1:HasCharge() then
                 a1.bufferedAt = nil
                 a1:Release(1)
                 return "fired"
             end
-            a1.lastThrow = v19
+            a1.lastThrow = v22
             a1:NoneLeft()
             return "empty"
         end
@@ -361,7 +366,7 @@ end
 function tbl_upv_1.Throw(a1)
     --[[
       name: Throw
-      line: 256
+      line: 260
       upvalues:
         Util_upv_1 (copy, index: 1)
         Hud_upv_1 (copy, index: 2)
@@ -371,13 +376,13 @@ function tbl_upv_1.Throw(a1)
         return
     end
     if Util_upv_1.CanAct() then
-        local v20 = a1:Charge()
+        local v23 = a1:Charge()
         local minCharge_1 = a1.tuning.minCharge
-        if type(minCharge_1) == "number" and v20 < minCharge_1 then
+        if type(minCharge_1) == "number" and v23 < minCharge_1 then
             a1:Cancel()
-            local v21 = os.clock()
-            if v21 - (a1.lastShort or 0) > 1.5 then
-                a1.lastShort = v21
+            local v24 = os.clock()
+            if v24 - (a1.lastShort or 0) > 1.5 then
+                a1.lastShort = v24
                 Hud_upv_1.Toast("HOLD TO WIND UP", Color3.fromRGB(226, 196, 140), 1)
             end
             return
@@ -386,7 +391,7 @@ function tbl_upv_1.Throw(a1)
         a1.ctx.setSpeed("Throw", nil)
         Hud_upv_1.SetCharge(0)
         Effects_upv_1.Trajectory(nil)
-        a1:Release(v20)
+        a1:Release(v23)
     else
         a1:Cancel()
     end
@@ -394,7 +399,7 @@ end
 function tbl_upv_1.Input(a1, a2, a3)
     --[[
       name: Input
-      line: 283
+      line: 287
       upvalues:
         Util_upv_1 (copy, index: 1)
         Effects_upv_1 (copy, index: 2)
@@ -442,7 +447,7 @@ end
 function tbl_upv_1.Update(a1, a2)
     --[[
       name: Update
-      line: 323
+      line: 327
       upvalues:
         Hud_upv_1 (copy, index: 1)
         Effects_upv_1 (copy, index: 2)
@@ -468,25 +473,25 @@ function tbl_upv_1.Update(a1, a2)
     if a1.winding then
         local tuning_3 = a1:Charge()
         Hud_upv_1.SetCharge(tuning_3)
-        local v22, v23, v24 = a1:Launch(tuning_3)
+        local v25, v26, v27 = a1:Launch(tuning_3)
         tuning_3 = a1.tuning
-        local v25 = ((tuning_3.splash) and (tuning_3.splash.radius * 2)) or (((tuning_3.smoke) and (tuning_3.smoke.radius * 1.2)) or (((tuning_3.caltrops) and (tuning_3.caltrops.radius * 2)) or 3))
-        local v26
+        local v28 = ((tuning_3.splash) and (tuning_3.splash.radius * 2)) or (((tuning_3.smoke) and (tuning_3.smoke.radius * 1.2)) or (((tuning_3.caltrops) and (tuning_3.caltrops.radius * 2)) or 3))
+        local v29
         if tuning_3.smoke then
-            v26 = a1.preset.arcSmoke
+            v29 = a1.preset.arcSmoke
         else
-            v26 = a1.preset.arc
+            v29 = a1.preset.arc
         end
-        Effects_upv_1.Trajectory(v22, v23 * v24, tuning_3.gravity or 60, v26, v25)
+        Effects_upv_1.Trajectory(v25, v26 * v27, tuning_3.gravity or 60, v29, v28)
     elseif a1.preview and a1.kind == "Sling" then
-        local v27, v28, v29 = a1:Launch(1)
-        Effects_upv_1.Trajectory(v27, v28 * v29, a1.tuning.gravity or 80, Color3.fromRGB(215, 195, 160), 2)
+        local v30, v31, v32 = a1:Launch(1)
+        Effects_upv_1.Trajectory(v30, v31 * v32, a1.tuning.gravity or 80, Color3.fromRGB(215, 195, 160), 2)
     end
 end
 function tbl_upv_1.Interrupt(a1)
     --[[
       name: Interrupt
-      line: 359
+      line: 363
     ]]
     if not a1.winding then
         return

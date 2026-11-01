@@ -159,11 +159,12 @@ function tbl_upv_1.StartDraw(a1)
             local v4 = 0.88 / math.max(0.3, a1.tuning.drawTime or 1)
             Util_upv_1.PlayHold(ctx_2.animator, a1.preset.draw, v4)
             a1.drawSound = Util_upv_1.Sound(a1.preset.drawSound or "Bow_Draw", ctx_2.root, {PlaybackSpeed = math.clamp(v4, 0.7, 1.3)})
-            v4 = Util_upv_1.ProbeValues()
-            if v4 and ctx_2.setSpeed(v4.s, 1) ~= v4.s then
+            local v5 = a1.tuning.drawSpeedMult or 0.7
+            local v6 = Util_upv_1.ProbeValues()
+            local v7 = ctx_2.setSpeed("Draw", v5)
+            if v7 ~= (v6 and (v6.k * (v5 or 1))) then
                 Util_upv_1.Hooked()
             end
-            ctx_2.setSpeed("Draw", a1.tuning.drawSpeedMult or 0.7)
             return true
         end
     end
@@ -208,12 +209,12 @@ function tbl_upv_1.Fire(a1)
         return
     end
     if Util_upv_1.CanAct() then
-        local v5 = a1:Charge()
+        local v8 = a1:Charge()
         a1.drawing = false
         a1.lastShot = os.clock()
-        ctx_4.emit("Release", {charge = v5})
-        local v6 = a1.tuning.cooldown or 0.2
-        a1.nextCd = v6 + (((a1.tuning.tapCooldown or (a1.tuning.cooldown or 0.2)) - v6) * (1 - v5))
+        ctx_4.emit("Release", {charge = v8})
+        local v9 = a1.tuning.cooldown or 0.2
+        a1.nextCd = v9 + (((a1.tuning.tapCooldown or (a1.tuning.cooldown or 0.2)) - v9) * (1 - v8))
         if a1.drawSound then
             a1.drawSound:Stop()
             a1.drawSound = nil
@@ -224,20 +225,24 @@ function tbl_upv_1.Fire(a1)
         ctx_4.setSpeed("Draw", nil)
         Hud_upv_1.SetCharge(0)
         Effects_upv_1.ChargeGlow(ctx_4.tool, 0)
-        local v7 = Util_upv_1.ProbeValues()
-        if v7 and Util_upv_1.AimDirection(v7.v) ~= v7.v then
-            Util_upv_1.Hooked()
+        local v10 = Util_upv_1.ProbeValues()
+        local root_1 = ctx_4.root
+        if v10 and root_1 then
+            v10.at = root_1.Position + v10.o
+            if Util_upv_1.AimDirection(v10.at) ~= v10.at then
+                Util_upv_1.Hooked()
+            end
         end
-        local v8 = Util_upv_1.ShotOrigin(ctx_4.tool, "Muzzle")
-        local v9 = Util_upv_1.AssistDirection(v8, Util_upv_1.AimDirection(v8), true)
-        local v10, v11 = Combat_upv_1.DrawnShot(tuning_1, v5)
-        local v12 = ctx_4.nextId()
-        Effects_upv_1.Projectile(Effects_upv_1.MyKey(v12), Util_upv_1.ShotKind(ctx_4.char, tuning_1.ammo, tuning_1.projectile or "Arrow"), v8, v9 * v11, tuning_1.gravity or 60, ctx_4.char, {damage = v10 * Util_upv_1.ItemBonus(ctx_4.weaponId), tuning = tuning_1})
-        ctx_4.send("Shoot", {tool = ctx_4.tool, origin = v8, dir = v9, id = v12, charge = v5})
-        Util_upv_1.Sound(a1.preset.fireSound or "Bow_Release", ctx_4.root, {PlaybackSpeed = 0.9 + (0.25 * v5), Volume = 0.6 + (0.4 * v5)})
-        Util_upv_1.Recoil(1 + (1.8 * v5), (math.random() - 0.5) * 0.6)
-        Util_upv_1.Shake(0.1 + (0.15 * v5), 0.12)
-        Hud_upv_1.Kick(6 * v5)
+        local v11 = Util_upv_1.ShotOrigin(ctx_4.tool, "Muzzle")
+        local v12 = Util_upv_1.AssistDirection(v11, Util_upv_1.AimDirection(v11), true)
+        local v13, v14 = Combat_upv_1.DrawnShot(tuning_1, v8)
+        local v15 = ctx_4.nextId()
+        Effects_upv_1.Projectile(Effects_upv_1.MyKey(v15), Util_upv_1.ShotKind(ctx_4.char, tuning_1.ammo, tuning_1.projectile or "Arrow"), v11, v12 * v14, tuning_1.gravity or 60, ctx_4.char, {damage = v13 * Util_upv_1.ItemBonus(ctx_4.weaponId), tuning = tuning_1})
+        ctx_4.send("Shoot", {tool = ctx_4.tool, origin = v11, dir = v12, id = v15, charge = v8})
+        Util_upv_1.Sound(a1.preset.fireSound or "Bow_Release", ctx_4.root, {PlaybackSpeed = 0.9 + (0.25 * v8), Volume = 0.6 + (0.4 * v8)})
+        Util_upv_1.Recoil(1 + (1.8 * v8), (math.random() - 0.5) * 0.6)
+        Util_upv_1.Shake(0.1 + (0.15 * v8), 0.12)
+        Hud_upv_1.Kick(6 * v8)
     else
         a1:CancelDraw()
     end
@@ -245,7 +250,7 @@ end
 function tbl_upv_1.Input(a1, a2, a3)
     --[[
       name: Input
-      line: 200
+      line: 204
       upvalues:
         Util_upv_1 (copy, index: 1)
     ]]
@@ -273,7 +278,7 @@ end
 function tbl_upv_1.Update(a1, a2)
     --[[
       name: Update
-      line: 222
+      line: 226
       upvalues:
         Hud_upv_1 (copy, index: 1)
         Effects_upv_1 (copy, index: 2)
@@ -289,11 +294,11 @@ function tbl_upv_1.Update(a1, a2)
         end
     end
     if a1.drawing then
-        local v13 = a1:Charge()
-        Hud_upv_1.SetCharge(v13)
+        local v16 = a1:Charge()
+        Hud_upv_1.SetCharge(v16)
         local glow_1 = a1.preset.glow
-        Effects_upv_1.ChargeGlow(a1.ctx.tool, v13, glow_1)
-        if not (v13 >= 1) or (a1.full) then
+        Effects_upv_1.ChargeGlow(a1.ctx.tool, v16, glow_1)
+        if not (v16 >= 1) or (a1.full) then
             return
         end
         a1.full = true
@@ -304,7 +309,7 @@ end
 function tbl_upv_1.Interrupt(a1)
     --[[
       name: Interrupt
-      line: 243
+      line: 247
     ]]
     if not a1.drawing then
         return
@@ -314,7 +319,7 @@ end
 function tbl_upv_1.OnDenied(a1, a2)
     --[[
       name: OnDenied
-      line: 250
+      line: 254
     ]]
     if a2 ~= "NoAmmo" then
         return

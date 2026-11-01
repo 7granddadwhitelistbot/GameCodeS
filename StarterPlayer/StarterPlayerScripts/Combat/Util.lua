@@ -49,8 +49,8 @@ function tbl_upv_1.Probe(a1, a2)
     ]]
     local v4 = u1 or (stats())
     local v5 = v4 and (v4.PROBE)
-    if v5 then
-        if a1 ~= v5.n and a1 ~= v5.s and a1 ~= v5.t and a1 ~= v5.v then
+    if v5 and a1 ~= nil then
+        if a1 ~= v5.n and a1 ~= v5.s and a1 ~= v5.t and a1 ~= v5.v and a1 ~= v5.m and a1 ~= v5.at then
             return nil
         elseif a2 ~= nil and a2 ~= 1 then
             return false

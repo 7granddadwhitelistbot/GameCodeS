@@ -186,7 +186,7 @@ function tbl_upv_1.Activate(a1)
                         local function watch(a2)
                             --[[
                               name: watch
-                              line: 196
+                              line: 199
                               upvalues:
                                 tbl_upv_3 (copy, index: 1)
                             ]]
@@ -206,7 +206,7 @@ function tbl_upv_1.Activate(a1)
                                 v13.DescendantAdded:Connect(
                                     function(a3)
                                         --[[
-                                          line: 201
+                                          line: 204
                                           upvalues:
                                             u2 (ref,  index: 1)
                                             u3 (copy, index: 2)
@@ -218,7 +218,7 @@ function tbl_upv_1.Activate(a1)
                                         local function hide(a4)
                                             --[[
                                               name: hide
-                                              line: 205
+                                              line: 208
                                               upvalues:
                                                 u3 (copy, index: 1)
                                             ]]
@@ -230,7 +230,7 @@ function tbl_upv_1.Activate(a1)
                                                 math.max(0, u3 - os.clock()),
                                                 function()
                                                     --[[
-                                                      line: 208
+                                                      line: 211
                                                       upvalues:
                                                         a4 (copy, index: 1)
                                                     ]]
@@ -250,7 +250,7 @@ function tbl_upv_1.Activate(a1)
                             0.6,
                             function()
                                 --[[
-                                  line: 221
+                                  line: 224
                                   upvalues:
                                     tbl_upv_3 (copy, index: 1)
                                 ]]
@@ -267,7 +267,7 @@ function tbl_upv_1.Activate(a1)
                         0.45,
                         function()
                             --[[
-                              line: 231
+                              line: 234
                               upvalues:
                                 u1 (copy, index: 1)
                             ]]
@@ -297,68 +297,73 @@ function tbl_upv_1.Activate(a1)
         if not (u4) and hum_1.MaxHealth - 0.5 <= hum_1.Health then
             Util_upv_1.Sound("Denied", ctx_upv_3.root)
             Hud_upv_1.Toast(tbl_upv_2.FullHealth, Color3.fromRGB(255, 120, 90))
-        else
-            a1.lastUse = v10
-            a1.using = true
-            a1.token = a1.token + 1
-            local token_upv_1 = a1.token
-            local v15 = a1.tuning.useTime or 0.6
-            ctx_upv_3.send("Use", {on = true, tool = ctx_upv_3.tool})
-            ctx_upv_3.emit("Use", {on = true, time = v15})
-            Util_upv_1.PlayAnim(ctx_upv_3.animator, a1.preset.use, 1, 0.1)
-            Util_upv_1.Sound(a1.preset.useSound or "Bandage_Wrap", ctx_upv_3.root)
-            ctx_upv_3.setSpeed("Use", a1.tuning.useSpeedMult or 0.6)
-            Hud_upv_1.StartChannel(a1.preset.label or "USING", v15, a1.preset.color)
-            task.delay(
-                v15,
-                function()
-                    --[[
-                      line: 157
-                      upvalues:
-                        a1 (copy, index: 1)
-                        token_upv_1 (copy, index: 2)
-                        ctx_upv_3 (copy, index: 3)
-                        Util_upv_1 (copy, index: 4)
-                        Hud_upv_1 (copy, index: 5)
-                        u4 (copy, index: 6)
-                    ]]
-                    if a1.token ~= token_upv_1 or not a1.using then
-                        return
-                    end
-                    a1.using = false
-                    ctx_upv_3.emit("Use", {on = false, done = true})
-                    Util_upv_1.StopAnim(ctx_upv_3.animator, a1.preset.use, 0.15)
-                    ctx_upv_3.setSpeed("Use", nil)
-                    Hud_upv_1.StopChannel()
-                    if u4 then
-                        return
-                    end
-                    Hud_upv_1.Flash(Color3.fromRGB(110, 220, 110), 0.35, 0.4)
-                    task.delay(
-                        a1.tuning.healTime or 3,
-                        function()
-                            --[[
-                              line: 170
-                              upvalues:
-                                ctx_upv_3 (copy, index: 1)
-                                Util_upv_1 (copy, index: 2)
-                                a1 (copy, index: 3)
-                            ]]
-                            if not ctx_upv_3.alive() then
-                                return
-                            end
-                            Util_upv_1.Sound(a1.preset.doneSound or "Heal_Done", ctx_upv_3.root)
-                        end
-                    )
-                end
-            )
+            return
         end
+        a1.lastUse = v10
+        a1.using = true
+        a1.token = a1.token + 1
+        local token_upv_1 = a1.token
+        local v15 = a1.tuning.useTime or 0.6
+        ctx_upv_3.send("Use", {on = true, tool = ctx_upv_3.tool})
+        ctx_upv_3.emit("Use", {on = true, time = v15})
+        Util_upv_1.PlayAnim(ctx_upv_3.animator, a1.preset.use, 1, 0.1)
+        Util_upv_1.Sound(a1.preset.useSound or "Bandage_Wrap", ctx_upv_3.root)
+        local v16 = a1.tuning.useSpeedMult or 0.6
+        local v17 = Util_upv_1.ProbeValues()
+        local v18 = ctx_upv_3.setSpeed("Use", v16)
+        if v18 ~= (v17 and (v17.k * (v16 or 1))) then
+            Util_upv_1.Hooked()
+        end
+        Hud_upv_1.StartChannel(a1.preset.label or "USING", v15, a1.preset.color)
+        task.delay(
+            v15,
+            function()
+                --[[
+                  line: 160
+                  upvalues:
+                    a1 (copy, index: 1)
+                    token_upv_1 (copy, index: 2)
+                    ctx_upv_3 (copy, index: 3)
+                    Util_upv_1 (copy, index: 4)
+                    Hud_upv_1 (copy, index: 5)
+                    u4 (copy, index: 6)
+                ]]
+                if a1.token ~= token_upv_1 or not a1.using then
+                    return
+                end
+                a1.using = false
+                ctx_upv_3.emit("Use", {on = false, done = true})
+                Util_upv_1.StopAnim(ctx_upv_3.animator, a1.preset.use, 0.15)
+                ctx_upv_3.setSpeed("Use", nil)
+                Hud_upv_1.StopChannel()
+                if u4 then
+                    return
+                end
+                Hud_upv_1.Flash(Color3.fromRGB(110, 220, 110), 0.35, 0.4)
+                task.delay(
+                    a1.tuning.healTime or 3,
+                    function()
+                        --[[
+                          line: 173
+                          upvalues:
+                            ctx_upv_3 (copy, index: 1)
+                            Util_upv_1 (copy, index: 2)
+                            a1 (copy, index: 3)
+                        ]]
+                        if not ctx_upv_3.alive() then
+                            return
+                        end
+                        Util_upv_1.Sound(a1.preset.doneSound or "Heal_Done", ctx_upv_3.root)
+                    end
+                )
+            end
+        )
     end
 end
 function tbl_upv_1.Input(a1, a2, a3)
     --[[
       name: Input
-      line: 239
+      line: 242
     ]]
     if a2 ~= "Primary" or not a3 then
         return
@@ -368,36 +373,36 @@ end
 function tbl_upv_1.Update(a1, a2)
     --[[
       name: Update
-      line: 245
+      line: 248
     ]]
     local ghost_1 = a1.ghost
     if ghost_1 then
-        local v16
+        local v19
         if a1.charges >= 1 then
-            v16 = a1:TrapSpot()
+            v19 = a1:TrapSpot()
         else
-            v16 = nil
+            v19 = nil
         end
         local wall_2 = a1.tuning.wall
-        if v16 then
-            local v17 = nil
+        if v19 then
+            local v20 = nil
             if type(wall_2) == "table" then
                 local root_2 = a1.ctx.root
-                v17 = Vector3.new(v16.X - root_2.Position.X, 0, v16.Z - root_2.Position.Z)
-                local v18
-                if v17.Magnitude > 0.1 then
-                    v18 = v17.Unit
+                v20 = Vector3.new(v19.X - root_2.Position.X, 0, v19.Z - root_2.Position.Z)
+                local v21
+                if v20.Magnitude > 0.1 then
+                    v21 = v20.Unit
                 else
-                    v18 = Vector3.new(root_2.CFrame.LookVector.X, 0, root_2.CFrame.LookVector.Z).Unit
+                    v21 = Vector3.new(root_2.CFrame.LookVector.X, 0, root_2.CFrame.LookVector.Z).Unit
                 end
-                ghost_1.CFrame = CFrame.lookAt(v16, v16 + v18) * CFrame.new(0, (wall_2.height or 5) / 2, 0)
+                ghost_1.CFrame = CFrame.lookAt(v19, v19 + v21) * CFrame.new(0, (wall_2.height or 5) / 2, 0)
                 ghost_1.Color = Color3.fromRGB(214, 180, 130)
                 ghost_1.Transparency = 0.7
                 return
             end
         end
-        if v16 then
-            ghost_1.CFrame = CFrame.new(v16 + Vector3.new(0, 0.05999999865889549, 0)) * CFrame.Angles(0, 0, 1.5707963267948966)
+        if v19 then
+            ghost_1.CFrame = CFrame.new(v19 + Vector3.new(0, 0.05999999865889549, 0)) * CFrame.Angles(0, 0, 1.5707963267948966)
             ghost_1.Color = Color3.fromRGB(228, 232, 240)
             ghost_1.Transparency = 0.55
         else
@@ -408,7 +413,7 @@ end
 function tbl_upv_1.OnDenied(a1, a2)
     --[[
       name: OnDenied
-      line: 269
+      line: 272
       upvalues:
         Util_upv_1 (copy, index: 1)
         Hud_upv_1 (copy, index: 2)
@@ -422,21 +427,21 @@ function tbl_upv_1.OnDenied(a1, a2)
         a1.ctx.setSpeed("Use", nil)
         Hud_upv_1.StopChannel()
     end
-    local v19
+    local v22
     if a2 == "BadSpot" and (a1.tuning.wall) then
-        v19 = tbl_upv_2.BadWallSpot
+        v22 = tbl_upv_2.BadWallSpot
     else
-        v19 = tbl_upv_2[a2]
+        v22 = tbl_upv_2[a2]
     end
-    if v19 then
-        Hud_upv_1.Toast(v19, Color3.fromRGB(255, 120, 90))
+    if v22 then
+        Hud_upv_1.Toast(v22, Color3.fromRGB(255, 120, 90))
     end
     a1:Sync()
 end
 function tbl_upv_1.Interrupt(a1)
     --[[
       name: Interrupt
-      line: 285
+      line: 288
     ]]
     if not a1.using then
         return

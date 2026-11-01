@@ -425,7 +425,7 @@ function tbl_upv_1.Swing(a1)
         a1.bufferedAt = nil
         local v28 = a1:OneHanded()
         local v29 = Util_upv_1.ProbeValues()
-        if v29 and tbl_upv_1.OneHanded(v29.t) ~= v29.t then
+        if v29 and v29.m and tbl_upv_1.OneHanded(v29.m) ~= v29.m then
             Util_upv_1.Hooked()
         end
         local u3
@@ -529,7 +529,7 @@ function tbl_upv_1.Swing(a1)
                 end
                 Util_upv_1.FaceCamera()
                 local v35 = Util_upv_1.ProbeValues()
-                if v35 and tbl_upv_1.Detect(v35.t, 1, 2, 3) ~= v35.t then
+                if v35 and v35.m and tbl_upv_1.Detect(v35.m, 1, 2, 3) ~= v35.m then
                     Util_upv_1.Hooked()
                 end
                 local v36 = a1:Detect(tuning_upv_1.range or 8, tuning_upv_1.arc or 60, tuning_upv_1.maxTargets or 1)
@@ -604,41 +604,43 @@ function tbl_upv_1.SetBlock(a1, a2)
         u5 (ref,  index: 4)
     ]]
     local ctx_5 = a1.ctx
-    if a1.blocking == a2 then
-        return
-    end
-    a1.blocking = a2
-    if a2 then
-        a1.bufferedAt = nil
-    else
-        local block_3 = a1.tuning.block
-        local GuardDown_1 = Util_upv_1.GuardDown
-        local tool_3 = ctx_5.tool
-        local v44 = ((type(block_3) == "table") and (block_3.swapDelay)) or nil
-        GuardDown_1(tool_3, v44)
-    end
-    ctx_5.send("Block", {tool = ctx_5.tool, on = a2})
-    ctx_5.emit("Block", {on = a2})
-    Hud_upv_1.SetBlocking(a2)
-    Guard_upv_1.SetLocal(a2)
-    if a2 then
-        Util_upv_1.PlayAnim(ctx_5.animator, a1.preset.block, 1, 0.1)
-    else
-        Util_upv_1.StopAnim(ctx_5.animator, a1.preset.block, 0.12)
-    end
-    if a2 then
-        local v45 = os.clock()
-        if v45 - u5 >= 0.5 then
-            u5 = v45
-            Util_upv_1.Sound("Block_Up", ctx_5.root)
+    if a1.blocking ~= a2 then
+        a1.blocking = a2
+        if a2 then
+            a1.bufferedAt = nil
+        else
+            local block_3 = a1.tuning.block
+            local GuardDown_1 = Util_upv_1.GuardDown
+            local tool_3 = ctx_5.tool
+            local v44 = ((type(block_3) == "table") and (block_3.swapDelay)) or nil
+            GuardDown_1(tool_3, v44)
         end
-        local v46 = Util_upv_1.ProbeValues()
-        if v46 and ctx_5.setSpeed(v46.s, 1) ~= v46.s then
-            Util_upv_1.Hooked()
+        ctx_5.send("Block", {tool = ctx_5.tool, on = a2})
+        ctx_5.emit("Block", {on = a2})
+        Hud_upv_1.SetBlocking(a2)
+        Guard_upv_1.SetLocal(a2)
+        if a2 then
+            Util_upv_1.PlayAnim(ctx_5.animator, a1.preset.block, 1, 0.1)
+        else
+            Util_upv_1.StopAnim(ctx_5.animator, a1.preset.block, 0.12)
         end
-        ctx_5.setSpeed("Block", ((a1.tuning.block) and (a1.tuning.block.speedMult)) or 0.6)
-    else
-        ctx_5.setSpeed("Block", nil)
+        local v45, v46, v47, v48 = nil, nil, nil, nil
+        if a2 then
+            v45 = os.clock()
+            if v45 - u5 >= 0.5 then
+                u5 = v45
+                Util_upv_1.Sound("Block_Up", ctx_5.root)
+            end
+            v46 = Util_upv_1.ProbeValues()
+            v47 = ((a1.tuning.block) and (a1.tuning.block.speedMult)) or 0.6
+            v48 = ctx_5.setSpeed("Block", v47)
+            if v48 ~= (v46 and (v46.k * (v47 or 1))) then
+                Util_upv_1.Hooked()
+                return
+            end
+        else
+            ctx_5.setSpeed("Block", nil)
+        end
     end
 end
 function tbl_upv_1.SpecialInfo(a1, a2)
@@ -646,16 +648,16 @@ function tbl_upv_1.SpecialInfo(a1, a2)
       name: SpecialInfo
       line: 406
     ]]
-    local v47
+    local v49
     if a2 ~= "Heavy" then
-        v47 = a1.tuning.lunge
+        v49 = a1.tuning.lunge
     else
-        v47 = a1.tuning.heavy
+        v49 = a1.tuning.heavy
     end
-    if not (v47) then
-        v47 = {}
+    if not (v49) then
+        v49 = {}
     end
-    return v47
+    return v49
 end
 function tbl_upv_1.SpecialReady(a1, a2, a3)
     --[[
@@ -667,12 +669,12 @@ function tbl_upv_1.SpecialReady(a1, a2, a3)
     if a3 - a1.lastSpecial < (a2.cooldown or 1) or a2 == a1.tuning.lunge and not (Simulation_upv_1.DashReady(a1.ctx.char, a1.ctx.weaponId)) then
         return false
     end
-    local v48 = a1.ctx.tool and (a1.ctx.tool:GetAttribute("Cooldown"))
-    local v49 = false
-    if type(v48) == "number" then
-        v49 = workspace:GetServerTimeNow() < v48
+    local v50 = a1.ctx.tool and (a1.ctx.tool:GetAttribute("Cooldown"))
+    local v51 = false
+    if type(v50) == "number" then
+        v51 = workspace:GetServerTimeNow() < v50
     end
-    return not v49
+    return not v51
 end
 function tbl_upv_1.StartCharge(a1, a2)
     --[[
@@ -682,35 +684,40 @@ function tbl_upv_1.StartCharge(a1, a2)
         Util_upv_1 (copy, index: 1)
     ]]
     local ctx_6 = a1.ctx
-    local v50 = os.clock()
-    local v51 = a1:SpecialInfo(a2)
-    if not a1:SpecialReady(v51, v50) or (v50 < a1.busyUntil) then
+    local v52 = os.clock()
+    local v53 = a1:SpecialInfo(a2)
+    if not a1:SpecialReady(v53, v52) or (v52 < a1.busyUntil) then
         return
     end
     if Util_upv_1.CanAct() then
         a1.charging = a2
-        a1.chargeStart = v50
+        a1.chargeStart = v52
         a1.bufferedAt = nil
         a1.fullPlayed = false
         ctx_6.send("Charge", {on = true, tool = ctx_6.tool, kind = a2})
-        ctx_6.emit("Charge", {on = true, kind = a2, time = v51.charge or 0.6})
+        ctx_6.emit("Charge", {on = true, kind = a2, time = v53.charge or 0.6})
         local PlayHold_1 = Util_upv_1.PlayHold
         local animator_1 = ctx_6.animator
-        local v52
+        local v54
         if a2 ~= "Heavy" then
-            v52 = a1.preset.lungeCharge
+            v54 = a1.preset.lungeCharge
         else
-            v52 = a1.preset.heavyCharge
+            v54 = a1.preset.heavyCharge
         end
-        PlayHold_1(animator_1, v52, 1)
+        PlayHold_1(animator_1, v54, 1)
         Util_upv_1.Sound(a1.preset.chargeSound or "Charge_Up", ctx_6.root)
-        ctx_6.setSpeed("Charge", v51.speedMult or 0.55)
+        local v55 = Util_upv_1.ProbeValues()
+        local v56 = v53.speedMult or 0.55
+        local v57 = ctx_6.setSpeed("Charge", v56)
+        if v57 ~= (v55 and (v55.k * (v56 or 1))) then
+            Util_upv_1.Hooked()
+        end
     end
 end
 function tbl_upv_1.CancelCharge(a1)
     --[[
       name: CancelCharge
-      line: 444
+      line: 447
       upvalues:
         Util_upv_1 (copy, index: 1)
         Hud_upv_1 (copy, index: 2)
@@ -723,13 +730,13 @@ function tbl_upv_1.CancelCharge(a1)
         ctx_7.emit("Charge", {on = false, kind = charging_1})
         local StopAnim_1 = Util_upv_1.StopAnim
         local animator_2 = ctx_7.animator
-        local v53
+        local v58
         if charging_1 ~= "Heavy" then
-            v53 = a1.preset.lungeCharge
+            v58 = a1.preset.lungeCharge
         else
-            v53 = a1.preset.heavyCharge
+            v58 = a1.preset.heavyCharge
         end
-        StopAnim_1(animator_2, v53, 0.1)
+        StopAnim_1(animator_2, v58, 0.1)
     end
     ctx_7.setSpeed("Charge", nil)
     Hud_upv_1.SetCharge(0)
@@ -737,26 +744,26 @@ end
 function tbl_upv_1.Dash(a1)
     --[[
       name: Dash
-      line: 459
+      line: 462
       upvalues:
         Util_upv_1 (copy, index: 1)
     ]]
     local ctx_8 = a1.ctx
-    local v54 = a1:SpecialInfo("Lunge")
-    local v55 = os.clock()
-    if not a1:SpecialReady(v54, v55) or (v55 < a1.busyUntil) or not Util_upv_1.CanAct() then
+    local v59 = a1:SpecialInfo("Lunge")
+    local v60 = os.clock()
+    if not a1:SpecialReady(v59, v60) or (v60 < a1.busyUntil) or not Util_upv_1.CanAct() then
         return
     end
     a1.bufferedAt = nil
     ctx_8.send("Charge", {kind = "Lunge", on = true, tool = ctx_8.tool})
     a1.charging = "Lunge"
-    a1.chargeStart = v55 - 1
+    a1.chargeStart = v60 - 1
     a1:ReleaseCharge()
 end
 function tbl_upv_1.ReleaseCharge(a1)
     --[[
       name: ReleaseCharge
-      line: 473
+      line: 476
       upvalues:
         Util_upv_1 (copy, index: 1)
         Hud_upv_1 (copy, index: 2)
@@ -780,13 +787,13 @@ function tbl_upv_1.ReleaseCharge(a1)
         a1.lastSpecial = os.clock()
         local StopAnim_2 = Util_upv_1.StopAnim
         local animator_3 = ctx_upv_9.animator
-        local v56
+        local v61
         if charging_2 ~= "Heavy" then
-            v56 = preset_upv_2.lungeCharge
+            v61 = preset_upv_2.lungeCharge
         else
-            v56 = preset_upv_2.heavyCharge
+            v61 = preset_upv_2.heavyCharge
         end
-        StopAnim_2(animator_3, v56, 0.05)
+        StopAnim_2(animator_3, v61, 0.05)
         ctx_upv_9.setSpeed("Charge", nil)
         Hud_upv_1.SetCharge(0)
         Hud_upv_1.SetArc(u6.cooldown or 1, Color3.fromRGB(228, 232, 240))
@@ -798,8 +805,8 @@ function tbl_upv_1.ReleaseCharge(a1)
         if charging_2 ~= "Heavy" then
             a1.busyUntil = os.clock() + 0.45
             local root_4 = ctx_upv_9.root
-            local v57 = Util_upv_1.GetAimRay()
-            u7 = Vector3.new(v57.Direction.X, 0, v57.Direction.Z)
+            local v62 = Util_upv_1.GetAimRay()
+            u7 = Vector3.new(v62.Direction.X, 0, v62.Direction.Z)
             if u7.Magnitude > 0.05 then
                 u7 = u7.Unit
             else
@@ -814,7 +821,7 @@ function tbl_upv_1.ReleaseCharge(a1)
                         0.08,
                         function()
                             --[[
-                              line: 547
+                              line: 550
                               upvalues:
                                 Effects_upv_1 (copy, index: 1)
                                 ctx_upv_9 (copy, index: 2)
@@ -828,20 +835,20 @@ function tbl_upv_1.ReleaseCharge(a1)
             end
             Simulation_upv_1.Pulse("Lunge", 0.15)
             tbl_upv_2[ctx_upv_9.weaponId] = workspace:GetServerTimeNow()
-            v57 = math.clamp((u6.distance or 16) / (u6.speed or 70), 0.12, 0.35)
-            Util_upv_1.FovKick(6, 0.05, v57 + 0.05)
+            v62 = math.clamp((u6.distance or 16) / (u6.speed or 70), 0.12, 0.35)
+            Util_upv_1.FovKick(6, 0.05, v62 + 0.05)
             if preset_upv_2.lungeLines and Util_upv_1.InFirstPerson() then
-                Effects_upv_1.DashLines(v57 + 0.12)
+                Effects_upv_1.DashLines(v62 + 0.12)
             end
-            ctx_upv_9.emit("Lunge", {time = v57})
+            ctx_upv_9.emit("Lunge", {time = v62})
             local tbl_upv_8 = {}
             local tbl_upv_9 = {}
             for n_2 = 0, 3 do
                 task.delay(
-                    (v57 / 3) * n_2,
+                    (v62 / 3) * n_2,
                     function()
                         --[[
-                          line: 565
+                          line: 568
                           upvalues:
                             a1 (copy, index: 1)
                             u6 (copy, index: 2)
@@ -862,10 +869,10 @@ function tbl_upv_1.ReleaseCharge(a1)
                 )
             end
             task.delay(
-                v57,
+                v62,
                 function()
                     --[[
-                      line: 574
+                      line: 577
                       upvalues:
                         ctx_upv_9 (copy, index: 1)
                         u7 (ref,  index: 2)
@@ -891,14 +898,14 @@ function tbl_upv_1.ReleaseCharge(a1)
             ctx_upv_9.emit("Heavy", {hitDelay = preset_upv_2.heavyDelay or 0.16})
             Util_upv_1.PlayAnim(ctx_upv_9.animator, preset_upv_2.heavySwing or "Axe_Heavy", 1.15, 0.04)
             Util_upv_1.Sound(preset_upv_2.heavySound or "Swing_Heavy", ctx_upv_9.root)
-            local v58 = preset_upv_2.heavyDelay or 0.16
+            local v63 = preset_upv_2.heavyDelay or 0.16
             if not (Util_upv_1.InFirstPerson()) then
                 Effects_upv_1.Trail(ctx_upv_9.tool, 0.5)
                 task.delay(
-                    v58 * 0.6,
+                    v63 * 0.6,
                     function()
                         --[[
-                          line: 504
+                          line: 507
                           upvalues:
                             Effects_upv_1 (copy, index: 1)
                             ctx_upv_9 (copy, index: 2)
@@ -911,10 +918,10 @@ function tbl_upv_1.ReleaseCharge(a1)
                 )
             end
             task.delay(
-                v58,
+                v63,
                 function()
                     --[[
-                      line: 508
+                      line: 511
                       upvalues:
                         ctx_upv_9 (copy, index: 1)
                         Util_upv_1 (copy, index: 2)
@@ -929,22 +936,22 @@ function tbl_upv_1.ReleaseCharge(a1)
                         return
                     end
                     Util_upv_1.FaceCamera()
-                    local v59 = a1:Detect(u6.range or ((tuning_upv_2.range or 9) + 1), math.min((tuning_upv_2.arc or 60) + 10, 90), tuning_upv_2.maxTargets or 2)
-                    ctx_upv_9.send("Swing", {heavy = true, tool = ctx_upv_9.tool, dir = Util_upv_1.GetAimRay().Direction, hits = v59})
-                    predictImpacts(v59, preset_upv_2.hitSound or "Hit_Melee_Heavy", u6.damage, nil, ctx_upv_9.root, ctx_upv_9.weaponId)
+                    local v64 = a1:Detect(u6.range or ((tuning_upv_2.range or 9) + 1), math.min((tuning_upv_2.arc or 60) + 10, 90), tuning_upv_2.maxTargets or 2)
+                    ctx_upv_9.send("Swing", {heavy = true, tool = ctx_upv_9.tool, dir = Util_upv_1.GetAimRay().Direction, hits = v64})
+                    predictImpacts(v64, preset_upv_2.hitSound or "Hit_Melee_Heavy", u6.damage, nil, ctx_upv_9.root, ctx_upv_9.weaponId)
                     if preset_upv_2.slam == false then
-                        if #v59 > 0 then
+                        if #v64 > 0 then
                             Util_upv_1.Shake(0.6, 0.15)
                             Util_upv_1.Recoil(1.5, 0)
                         end
                     else
-                        Util_upv_1.Shake(((#v59 > 0) and 0.9) or 0.45, 0.25)
-                        Util_upv_1.Recoil(((#v59 > 0) and 2.5) or 1.2, 0)
+                        Util_upv_1.Shake(((#v64 > 0) and 0.9) or 0.45, 0.25)
+                        Util_upv_1.Recoil(((#v64 > 0) and 2.5) or 1.2, 0)
                     end
                     if preset_upv_2.slam ~= false then
-                        local v60 = ctx_upv_9.root.CFrame * CFrame.new(0, -2.8, -4)
-                        Effects_upv_1.Burst("Ground_Slam", v60)
-                        Effects_upv_1.GroundScuff(v60.Position)
+                        local v65 = ctx_upv_9.root.CFrame * CFrame.new(0, -2.8, -4)
+                        Effects_upv_1.Burst("Ground_Slam", v65)
+                        Effects_upv_1.GroundScuff(v65.Position)
                     end
                 end
             )
@@ -954,25 +961,25 @@ end
 function tbl_upv_1.ParryReady(a1)
     --[[
       name: ParryReady
-      line: 595
+      line: 598
       upvalues:
         Util_upv_1 (copy, index: 1)
     ]]
-    local v61 = os.clock()
-    if type(a1.tuning.parry) == "table" and not (a1.parrying) and not (v61 < a1.parryReadyAt) and not (v61 - a1.lastParryUp < 0.15) then
-        local v62 = a1.ctx.tool and (a1.ctx.tool:GetAttribute("Cooldown"))
-        if type(v62) == "number" and workspace:GetServerTimeNow() < v62 then
+    local v66 = os.clock()
+    if type(a1.tuning.parry) == "table" and not (a1.parrying) and not (v66 < a1.parryReadyAt) and not (v66 - a1.lastParryUp < 0.15) then
+        local v67 = a1.ctx.tool and (a1.ctx.tool:GetAttribute("Cooldown"))
+        if type(v67) == "number" and workspace:GetServerTimeNow() < v67 then
             return false
         end
-        local v63 = (a1.busyUntil <= v61) and ((a1:Cooldown() <= v61 - a1.lastSwing) and (Util_upv_1.CanAct()))
-        return v63
+        local v68 = (a1.busyUntil <= v66) and ((a1:Cooldown() <= v66 - a1.lastSwing) and (Util_upv_1.CanAct()))
+        return v68
     end
     return false
 end
 function tbl_upv_1.RaiseParry(a1)
     --[[
       name: RaiseParry
-      line: 610
+      line: 613
       upvalues:
         Util_upv_1 (copy, index: 1)
     ]]
@@ -990,12 +997,18 @@ function tbl_upv_1.RaiseParry(a1)
     ctx_10.emit("Parry", {on = true})
     Util_upv_1.PlayHold(ctx_10.animator, a1.preset.parryHold or (a1.preset.parry), 1)
     Util_upv_1.Sound(a1.preset.parrySound or "Katana_Flick", ctx_10.root)
-    ctx_10.setSpeed("Parry", parry_1.speedMult or 0.7)
+    local v69 = parry_1.speedMult or 0.7
+    local v70 = Util_upv_1.ProbeValues()
+    local v71 = ctx_10.setSpeed("Parry", v69)
+    if v71 == (v70 and (v70.k * (v69 or 1))) then
+        return
+    end
+    Util_upv_1.Hooked()
 end
 function tbl_upv_1.LowerParry(a1, a2, a3, a4)
     --[[
       name: LowerParry
-      line: 631
+      line: 638
       upvalues:
         Hud_upv_1 (copy, index: 1)
         Util_upv_1 (copy, index: 2)
@@ -1007,10 +1020,10 @@ function tbl_upv_1.LowerParry(a1, a2, a3, a4)
     a1.parrying = false
     local parry_2 = a1.tuning.parry
     if not (a3) and type(parry_2) == "table" then
-        local v64 = parry_2.cooldown or 1.6
-        a1.parryReadyAt = math.max(a1.parryReadyAt, os.clock() + v64)
+        local v72 = parry_2.cooldown or 1.6
+        a1.parryReadyAt = math.max(a1.parryReadyAt, os.clock() + v72)
         if not (a4) then
-            Hud_upv_1.SetArc(v64, Color3.fromRGB(150, 196, 236))
+            Hud_upv_1.SetArc(v72, Color3.fromRGB(150, 196, 236))
         end
     end
     if a2 then
@@ -1025,7 +1038,7 @@ end
 function tbl_upv_1.ParryUsed(a1)
     --[[
       name: ParryUsed
-      line: 656
+      line: 663
       upvalues:
         Hud_upv_1 (copy, index: 1)
     ]]
@@ -1033,15 +1046,15 @@ function tbl_upv_1.ParryUsed(a1)
     if type(parry_3) ~= "table" then
         return
     end
-    local v65 = parry_3.cooldown or 1.6
-    a1.parryReadyAt = os.clock() + v65
-    Hud_upv_1.SetArc(v65, Color3.fromRGB(150, 196, 236))
+    local v73 = parry_3.cooldown or 1.6
+    a1.parryReadyAt = os.clock() + v73
+    Hud_upv_1.SetArc(v73, Color3.fromRGB(150, 196, 236))
     a1:LowerParry(false, true)
 end
 function tbl_upv_1.OnDenied(a1, a2)
     --[[
       name: OnDenied
-      line: 670
+      line: 677
       upvalues:
         Hud_upv_1 (copy, index: 1)
     ]]
@@ -1059,7 +1072,7 @@ end
 function tbl_upv_1.Hurl(a1)
     --[[
       name: Hurl
-      line: 684
+      line: 691
       upvalues:
         Util_upv_1 (copy, index: 1)
         Combat_upv_1 (copy, index: 2)
@@ -1069,37 +1082,37 @@ function tbl_upv_1.Hurl(a1)
     ]]
     local ctx_upv_12 = a1.ctx
     local throw_1 = a1.tuning.throw
-    local v66 = os.clock()
-    if type(throw_1) ~= "table" or (a1:OneHanded()) or (v66 - a1.lastThrow < (throw_1.cooldown or 0.45)) or (v66 < a1.busyUntil) then
+    local v74 = os.clock()
+    if type(throw_1) ~= "table" or (a1:OneHanded()) or (v74 - a1.lastThrow < (throw_1.cooldown or 0.45)) or (v74 < a1.busyUntil) then
         return
     end
     if Util_upv_1.CanAct() then
-        local v67 = ctx_upv_12.tool and (ctx_upv_12.tool:GetAttribute("Cooldown"))
-        if type(v67) == "number" and workspace:GetServerTimeNow() < v67 then
+        local v75 = ctx_upv_12.tool and (ctx_upv_12.tool:GetAttribute("Cooldown"))
+        if type(v75) == "number" and workspace:GetServerTimeNow() < v75 then
             return
         end
-        a1.lastThrow = v66
-        a1.thrownLocalUntil = v66 + 0.8
-        a1.busyUntil = v66 + 0.2
+        a1.lastThrow = v74
+        a1.thrownLocalUntil = v74 + 0.8
+        a1.busyUntil = v74 + 0.2
         a1.bufferedAt = nil
         Util_upv_1.FaceCamera()
-        local v68 = Util_upv_1.ShotOrigin(nil)
-        local v69 = Util_upv_1.AimPoint(throw_1.range or 170)
-        local v70 = Util_upv_1.AssistDirection(v68, Util_upv_1.AimDirection(v68), true)
-        local v71 = throw_1.speed or 120
-        local v72 = throw_1.gravity or 0
-        local Magnitude_2 = (v69 - v68).Magnitude
-        if v72 > 0 and Magnitude_2 > 1 then
-            local _ = Magnitude_2 / v71
-            v70 = (v70 * Magnitude_2 + Vector3.new(0, 0.5 * v72 * (Magnitude_2 / v71) * (Magnitude_2 / v71), 0)).Unit
+        local v76 = Util_upv_1.ShotOrigin(nil)
+        local v77 = Util_upv_1.AimPoint(throw_1.range or 170)
+        local v78 = Util_upv_1.AssistDirection(v76, Util_upv_1.AimDirection(v76), true)
+        local v79 = throw_1.speed or 120
+        local v80 = throw_1.gravity or 0
+        local Magnitude_2 = (v77 - v76).Magnitude
+        if v80 > 0 and Magnitude_2 > 1 then
+            local _ = Magnitude_2 / v79
+            v78 = (v78 * Magnitude_2 + Vector3.new(0, 0.5 * v80 * (Magnitude_2 / v79) * (Magnitude_2 / v79), 0)).Unit
         end
-        local v73 = ctx_upv_12.nextId()
+        local v81 = ctx_upv_12.nextId()
         ctx_upv_12.emit("Hurl", {})
         Util_upv_1.PlayAnim(ctx_upv_12.animator, a1.preset.throw, 1.2, 0.03)
         Util_upv_1.Sound(a1.preset.throwSound or "Hatchet_Throw", ctx_upv_12.root)
         Combat_upv_1.ShowOffHand(ctx_upv_12.tool, false)
-        Effects_upv_1.Projectile(Effects_upv_1.MyKey(v73), "Hatchet", v68, v70 * v71, v72, ctx_upv_12.char, {damage = (throw_1.damage or 40) * Util_upv_1.ItemBonus(ctx_upv_12.weaponId), tuning = throw_1})
-        ctx_upv_12.send("Hurl", {tool = ctx_upv_12.tool, origin = v68, dir = v70, id = v73})
+        Effects_upv_1.Projectile(Effects_upv_1.MyKey(v81), "Hatchet", v76, v78 * v79, v80, ctx_upv_12.char, {damage = (throw_1.damage or 40) * Util_upv_1.ItemBonus(ctx_upv_12.weaponId), tuning = throw_1})
+        ctx_upv_12.send("Hurl", {tool = ctx_upv_12.tool, origin = v76, dir = v78, id = v81})
         Hud_upv_1.SetArc(throw_1.returnTime or 5, Color3.fromRGB(214, 170, 120))
         Touch_upv_1.SetAltDim(true)
         local tool_upv_4 = ctx_upv_12.tool
@@ -1107,7 +1120,7 @@ function tbl_upv_1.Hurl(a1)
             0.85,
             function()
                 --[[
-                  line: 725
+                  line: 732
                   upvalues:
                     tool_upv_4 (copy, index: 1)
                     a1 (copy, index: 2)
@@ -1132,7 +1145,7 @@ end
 function tbl_upv_1.Input(a1, a2, a3)
     --[[
       name: Input
-      line: 738
+      line: 745
     ]]
     local tuning_3 = a1.tuning
     if a2 == "Primary" then
@@ -1170,8 +1183,8 @@ function tbl_upv_1.Input(a1, a2, a3)
                 a1.guardFirst = true
                 a1.bufferedAt = nil
             end
-            local v74 = a3 and (a1:CanGuard())
-            a1:SetBlock(v74)
+            local v82 = a3 and (a1:CanGuard())
+            a1:SetBlock(v82)
         elseif tuning_3.heavy then
             if a3 then
                 a1:StartCharge("Heavy")
@@ -1199,7 +1212,7 @@ end
 function tbl_upv_1.Update(a1, a2)
     --[[
       name: Update
-      line: 793
+      line: 800
       upvalues:
         Util_upv_1 (copy, index: 1)
         Hud_upv_1 (copy, index: 2)
@@ -1234,13 +1247,13 @@ function tbl_upv_1.Update(a1, a2)
                 end
             end
             if a1.charging then
-                local v75 = a1:SpecialInfo(a1.charging)
-                local v76 = math.clamp((os.clock() - a1.chargeStart) / (v75.charge or 0.6), 0, 1)
-                if v76 >= 1 and not (a1.fullPlayed) then
+                local v83 = a1:SpecialInfo(a1.charging)
+                local v84 = math.clamp((os.clock() - a1.chargeStart) / (v83.charge or 0.6), 0, 1)
+                if v84 >= 1 and not (a1.fullPlayed) then
                     a1.fullPlayed = true
                     Util_upv_1.Sound("Charge_Full", a1.ctx.root)
                 end
-                Hud_upv_1.SetCharge(v76)
+                Hud_upv_1.SetCharge(v84)
             end
             return
         end
@@ -1267,19 +1280,19 @@ function tbl_upv_1.Update(a1, a2)
         end
     end
     if a1.charging then
-        local v75 = a1:SpecialInfo(a1.charging)
-        local v76 = math.clamp((os.clock() - a1.chargeStart) / (v75.charge or 0.6), 0, 1)
-        if v76 >= 1 and not (a1.fullPlayed) then
+        local v83 = a1:SpecialInfo(a1.charging)
+        local v84 = math.clamp((os.clock() - a1.chargeStart) / (v83.charge or 0.6), 0, 1)
+        if v84 >= 1 and not (a1.fullPlayed) then
             a1.fullPlayed = true
             Util_upv_1.Sound("Charge_Full", a1.ctx.root)
         end
-        Hud_upv_1.SetCharge(v76)
+        Hud_upv_1.SetCharge(v84)
     end
 end
 function tbl_upv_1.Interrupt(a1)
     --[[
       name: Interrupt
-      line: 832
+      line: 839
     ]]
     if a1.blocking then
         a1:SetBlock(false)
