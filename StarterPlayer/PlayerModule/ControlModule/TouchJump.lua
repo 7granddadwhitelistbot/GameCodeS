@@ -245,11 +245,11 @@ function u6.Create(a1)
         a1.avatarAbilitiesEnabledChangedConn = AvatarAbilitiesInterface_upv_1.GetEnabledChangedSignal():Connect(ResizeJumpButton)
     end
     a1.jumpButton.Parent = a1.parentUIFrame
-    if not a1.data.actions.JumpAction then
+    if not a1.data.controlModule.actions.JumpAction then
         return
     end
-    a1.data.actions.JumpAction:WaitForChild("TouchBinding").UIButton = a1.jumpButton
-    a1.data.actions.JumpAction.Pressed:Connect(
+    a1.data.controlModule.actions.JumpAction:WaitForChild("TouchBinding").UIButton = a1.jumpButton
+    a1.data.controlModule.actions.JumpAction.Pressed:Connect(
         function()
             --[[
               line: 253
@@ -269,7 +269,7 @@ function u6.Create(a1)
             end
         end
     )
-    a1.data.actions.JumpAction.Released:Connect(
+    a1.data.controlModule.actions.JumpAction.Released:Connect(
         function()
             --[[
               line: 265

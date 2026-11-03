@@ -121,7 +121,7 @@ function u7.OnInputEnded(a1)
     a1.isTouchActive = false
     a1.thumbstickFrame.Position = a1.screenPos
     a1.stickImage.Position = UDim2.new(0, (a1.thumbstickFrame.Size.X.Offset / 2) - (a1.thumbstickSize / 4), 0, (a1.thumbstickFrame.Size.Y.Offset / 2) - (a1.thumbstickSize / 4))
-    local ClassicThumbstickScriptableBinding_1 = a1.data.actions.MoveAction:FindFirstChild("ClassicThumbstickScriptableBinding")
+    local ClassicThumbstickScriptableBinding_1 = a1.data.controlModule.actions.MoveAction:FindFirstChild("ClassicThumbstickScriptableBinding")
     if ClassicThumbstickScriptableBinding_1 then
         ClassicThumbstickScriptableBinding_1:Fire(Vector2.zero)
     end
@@ -277,7 +277,7 @@ function u7.Create(a1, a2)
         local magnitude_2 = v12.magnitude
         local v13 = ((not (magnitude_2 < 0.05)) and (v12.unit * math.min(1, (magnitude_2 - 0.05) / 0.95))) or (Vector2.new())
         local v14 = Vector2.new(v13.X, -v13.Y)
-        local ClassicThumbstickScriptableBinding_2 = a1.data.actions.MoveAction:FindFirstChild("ClassicThumbstickScriptableBinding")
+        local ClassicThumbstickScriptableBinding_2 = a1.data.controlModule.actions.MoveAction:FindFirstChild("ClassicThumbstickScriptableBinding")
         if not ClassicThumbstickScriptableBinding_2 then
             return
         end

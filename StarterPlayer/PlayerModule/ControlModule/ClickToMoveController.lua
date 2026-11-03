@@ -1257,8 +1257,8 @@ function tbl_upv_6.OnCharacterAdded(a1, a2)
             if not a1.data then
                 return
             end
-            if a1.data.actions.MoveAction then
-                local v93 = u16 or (a1.data.actions.MoveAction:GetState().Magnitude <= 0)
+            if a1.data.controlModule.actions.MoveAction then
+                local v93 = u16 or (a1.data.controlModule.actions.MoveAction:GetState().Magnitude <= 0)
                 if a1.mouse2UpTime - a1.mouse2DownTime < 0.25 and v93 then
                     a1:OnTap({mouse2DownPos_1})
                 end
@@ -1440,8 +1440,8 @@ function tbl_upv_6.Update(a1, a2, a3)
         u16 (ref,  index: 1)
         calculateLocalMoveVector (copy, index: 2)
     ]]
-    assert(a2.actions.MoveAction)
-    assert(a2.actions.JumpAction)
+    assert(a2.controlModule.actions.MoveAction)
+    assert(a2.controlModule.actions.JumpAction)
     if not (a1.data) then
         a1.data = a2
     end
@@ -1452,8 +1452,8 @@ function tbl_upv_6.Update(a1, a2, a3)
             if u16 ~= u16 then
                 local v99 = nil
                 if a1.lastPatherJumped then
-                    if a2.actions.JumpAction:GetState() == true then
-                        v99 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
+                    if a2.controlModule.actions.JumpAction:GetState() == true then
+                        v99 = a2.controlModule.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
                         if v99 then
                             v99:Fire(false)
                         end
@@ -1462,40 +1462,40 @@ function tbl_upv_6.Update(a1, a2, a3)
                 end
             else
                 local v100 = calculateLocalMoveVector(u16.NextActionMoveDirection)
-                v98 = a2.actions.MoveAction:FindFirstChild("ClickToMoveScriptableBinding")
+                v98 = a2.controlModule.actions.MoveAction:FindFirstChild("ClickToMoveScriptableBinding")
                 if v98 then
                     v98:Fire(v100)
                 end
-                a2.moveVector = v100
+                a2.controlModule.moveVector = v100
                 local v101 = nil
                 if u16.NextActionJump then
-                    if a2.actions.JumpAction:GetState() ~= true then
-                        v101 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
+                    if a2.controlModule.actions.JumpAction:GetState() ~= true then
+                        v101 = a2.controlModule.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
                         if v101 then
                             v101:Fire(true)
                         end
                     end
                     a1.lastPatherJumped = true
-                    a2.isJumping = true
+                    a2.controlModule.isJumping = true
                 else
                     local v102 = nil
                     if a1.lastPatherJumped then
-                        if a2.actions.JumpAction:GetState() == true then
-                            v102 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
+                        if a2.controlModule.actions.JumpAction:GetState() == true then
+                            v102 = a2.controlModule.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
                             if v102 then
                                 v102:Fire(false)
                             end
                         end
                         a1.lastPatherJumped = false
-                        a2.isJumping = false
+                        a2.controlModule.isJumping = false
                     end
                 end
             end
         else
             local v99 = nil
             if a1.lastPatherJumped then
-                if a2.actions.JumpAction:GetState() == true then
-                    v99 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
+                if a2.controlModule.actions.JumpAction:GetState() == true then
+                    v99 = a2.controlModule.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
                     if v99 then
                         v99:Fire(false)
                     end
@@ -1506,17 +1506,17 @@ function tbl_upv_6.Update(a1, a2, a3)
     end
     if a1.shouldCleanupPath then
         a1.shouldCleanupPath = false
-        local ClickToMoveScriptableBinding_1 = a2.actions.MoveAction:FindFirstChild("ClickToMoveScriptableBinding")
+        local ClickToMoveScriptableBinding_1 = a2.controlModule.actions.MoveAction:FindFirstChild("ClickToMoveScriptableBinding")
         if ClickToMoveScriptableBinding_1 then
             ClickToMoveScriptableBinding_1:Fire(Vector2.zero)
         end
-        a2.moveVector = Vector2.zero
+        a2.controlModule.moveVector = Vector2.zero
         a1.lastPatherJumped = false
-        local ClickToMoveScriptableBinding_2 = a2.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
+        local ClickToMoveScriptableBinding_2 = a2.controlModule.actions.JumpAction:FindFirstChild("ClickToMoveScriptableBinding")
         if ClickToMoveScriptableBinding_2 then
             ClickToMoveScriptableBinding_2:Fire(false)
         end
-        a2.isJumping = false
+        a2.controlModule.isJumping = false
     end
 end
 function tbl_upv_6.SetShowPath(a1, a2)

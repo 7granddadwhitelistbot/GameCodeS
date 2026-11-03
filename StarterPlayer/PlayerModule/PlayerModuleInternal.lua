@@ -1,5 +1,6 @@
 local RunService_upv_1 = game:GetService("RunService")
 local CommonUtils_1 = require(script.Parent:WaitForChild("CommonUtils"))
+local _ = require(script.Parent.Types)
 local u1 = CommonUtils_1.get("CharacterUtil")
 local u2 = CommonUtils_1.get("ConnectionUtil")
 local u3 = CommonUtils_1.get("EventBus")
@@ -12,19 +13,19 @@ tbl_upv_1.__index = tbl_upv_1
 function tbl_upv_1.new()
     --[[
       name: new
-      line: 63
+      line: 38
       upvalues:
         Parent_upv_1 (copy, index: 1)
         u2 (copy, index: 2)
         u3 (copy, index: 3)
         tbl_upv_1 (copy, index: 4)
     ]]
-    return (setmetatable({data = {isJumping = false, isServerAuthority = false, playerModule = Parent_upv_1, moveVector = Vector2.new(), worldMoveVector = Vector3.new(), actions = {}, connectionUtil = u2.new(), eventBus = u3.new()}}, tbl_upv_1))
+    return (setmetatable({data = {isServerAuthority = false, playerModule = Parent_upv_1, controlModule = {isJumping = false, moveVector = Vector2.new(), worldMoveVector = Vector3.new(), actions = {}}, connectionUtil = u2.new(), eventBus = u3.new()}}, tbl_upv_1))
 end
 function tbl_upv_1.start(a1)
     --[[
       name: start
-      line: 82
+      line: 59
       upvalues:
         u1 (copy, index: 1)
         ServerAuthority_upv_1 (copy, index: 2)
@@ -37,7 +38,7 @@ function tbl_upv_1.start(a1)
         u1.onLocalPlayer(
             function(a2)
                 --[[
-                  line: 84
+                  line: 63
                   upvalues:
                     a1 (copy, index: 1)
                     ServerAuthority_upv_1 (copy, index: 2)
@@ -54,7 +55,7 @@ function tbl_upv_1.start(a1)
                     Enum.RenderPriority.Input.Value,
                     function(a3)
                         --[[
-                          line: 91
+                          line: 70
                           upvalues:
                             a1 (copy, index: 1)
                             u1 (copy, index: 2)
@@ -71,7 +72,7 @@ function tbl_upv_1.start(a1)
                     "PLAYERMODULE_RENDERSTEPPED_INPUT",
                     function()
                         --[[
-                          line: 99
+                          line: 78
                           upvalues:
                             RunService_upv_1 (copy, index: 1)
                         ]]
@@ -83,7 +84,7 @@ function tbl_upv_1.start(a1)
                     Enum.RenderPriority.Camera.Value,
                     function(a4)
                         --[[
-                          line: 104
+                          line: 83
                           upvalues:
                             CameraModule_upv_1 (copy, index: 1)
                             a1 (copy, index: 2)
@@ -95,7 +96,7 @@ function tbl_upv_1.start(a1)
                     "PLAYERMODULE_RENDERSTEPPED_CAMERA",
                     function()
                         --[[
-                          line: 107
+                          line: 86
                           upvalues:
                             RunService_upv_1 (copy, index: 1)
                         ]]
@@ -109,7 +110,7 @@ end
 function tbl_upv_1.stop(a1)
     --[[
       name: stop
-      line: 113
+      line: 93
     ]]
     a1.data.connectionUtil:disconnectAll()
 end

@@ -19,9 +19,8 @@ local u5 = v1.getUserFlag("UserPlayerScriptsTaskDeferSimulation")
 local u6 = v1.getUserFlag("UserPlayerScriptsFixSAuthRenderStepMove")
 local u7 = v1.getUserFlag("UserPlayerScriptsSupportMicroGamepad")
 local u8 = v1.getUserFlag("UserAbilitiesUserInterfaceC")
-local u9 = v1.getUserFlag("UserControlModuleEnabledAPI")
-local u10 = v1.getUserFlag("UserPSUseBindToAnimation")
-local u11 = v1.getUserFlag("UserServerAuthorityDontSetAutoRotate")
+local u9 = v1.getUserFlag("UserPSUseBindToAnimation")
+local u10 = v1.getUserFlag("UserServerAuthorityDontSetAutoRotate")
 local ActionController_upv_1 = require(script:WaitForChild("ActionController"))
 if u2 or u4 then
     local InputReplication_upv_1 = require(script:WaitForChild("InputReplication"))
@@ -31,10 +30,10 @@ end
 if u2 then
     local _ = require(script:WaitForChild("InputSlots"))
 else
-    local u12 = nil
+    local u11 = nil
 end
-local u13 = nil
-u13 = (not RunService_upv_1:IsClient()) or (require(script:WaitForChild("DynamicThumbstick")))
+local u12 = nil
+u12 = (not RunService_upv_1:IsClient()) or (require(script:WaitForChild("DynamicThumbstick")))
 local ClassicThumbstick_upv_1 = require(script:WaitForChild("ClassicThumbstick"))
 local ClickToMoveController_upv_1 = require(script:WaitForChild("ClickToMoveController"))
 local TouchJump_upv_1 = require(script:WaitForChild("TouchJump"))
@@ -45,25 +44,25 @@ else
 end
 local VehicleController_upv_1 = require(script:WaitForChild("VehicleController"))
 local AvatarAbilitiesInterface_upv_1 = nil
-local u14 = nil
+local u13 = nil
 if u2 then
     AvatarAbilitiesInterface_upv_1 = require(script:WaitForChild("AvatarAbilitiesInterface"))
-    u14 = AvatarAbilitiesInterface_upv_1.get(Players_upv_1.LocalPlayer)
+    u13 = AvatarAbilitiesInterface_upv_1.get(Players_upv_1.LocalPlayer)
 end
 local CameraRotationAction_upv_1 = script.Parent:WaitForChild("InputContexts"):WaitForChild("CameraContext"):WaitForChild("CameraRotationAction")
-local u15 = CommonUtils_1.get("VRFirstPersonState")
+local u14 = CommonUtils_1.get("VRFirstPersonState")
 local tbl_upv_2 = {}
-tbl_upv_2[Enum.TouchMovementMode.DPad] = u13
-tbl_upv_2[Enum.DevTouchMovementMode.DPad] = u13
-tbl_upv_2[Enum.TouchMovementMode.Thumbpad] = u13
-tbl_upv_2[Enum.DevTouchMovementMode.Thumbpad] = u13
+tbl_upv_2[Enum.TouchMovementMode.DPad] = u12
+tbl_upv_2[Enum.DevTouchMovementMode.DPad] = u12
+tbl_upv_2[Enum.TouchMovementMode.Thumbpad] = u12
+tbl_upv_2[Enum.DevTouchMovementMode.Thumbpad] = u12
 tbl_upv_2[Enum.TouchMovementMode.Thumbstick] = ClassicThumbstick_upv_1
 tbl_upv_2[Enum.DevTouchMovementMode.Thumbstick] = ClassicThumbstick_upv_1
-tbl_upv_2[Enum.TouchMovementMode.DynamicThumbstick] = u13
-tbl_upv_2[Enum.DevTouchMovementMode.DynamicThumbstick] = u13
+tbl_upv_2[Enum.TouchMovementMode.DynamicThumbstick] = u12
+tbl_upv_2[Enum.DevTouchMovementMode.DynamicThumbstick] = u12
 tbl_upv_2[Enum.TouchMovementMode.ClickToMove] = ClickToMoveController_upv_1
 tbl_upv_2[Enum.DevTouchMovementMode.ClickToMove] = ClickToMoveController_upv_1
-tbl_upv_2[Enum.TouchMovementMode.Default] = u13
+tbl_upv_2[Enum.TouchMovementMode.Default] = u12
 tbl_upv_2[Enum.ComputerMovementMode.Default] = ActionController_upv_1
 tbl_upv_2[Enum.ComputerMovementMode.KeyboardMouse] = ActionController_upv_1
 tbl_upv_2[Enum.DevComputerMovementMode.KeyboardMouse] = ActionController_upv_1
@@ -73,7 +72,7 @@ tbl_upv_2[Enum.DevComputerMovementMode.ClickToMove] = ClickToMoveController_upv_
 function tbl_upv_1.new()
     --[[
       name: new
-      line: 106
+      line: 105
       upvalues:
         tbl_upv_1 (copy, index: 1)
         RunService_upv_1 (copy, index: 2)
@@ -81,145 +80,145 @@ function tbl_upv_1.new()
         VehicleController_upv_1 (copy, index: 4)
         UserGameSettings_upv_1 (copy, index: 5)
         u2 (copy, index: 6)
-        u14 (ref,  index: 7)
+        u13 (ref,  index: 7)
         GuiService_upv_1 (copy, index: 8)
         UserInputService_upv_1 (copy, index: 9)
         u3 (copy, index: 10)
         ContextActionService_upv_1 (copy, index: 11)
     ]]
-    local u16 = setmetatable({}, tbl_upv_1)
+    local u15 = setmetatable({}, tbl_upv_1)
     if not RunService_upv_1:IsServer() then
-        u16.controllers = {}
-        u16.activeControlModule = nil
-        u16.activeController = nil
-        u16.touchJumpController = nil
-        u16.touchAbilitiesController = nil
-        u16.moveFunction = Players_upv_1.LocalPlayer.Move
-        u16.humanoid = nil
-        u16.controlsEnabled = true
-        u16.enabled = false
-        u16.humanoidSeatedConn = nil
-        u16.vehicleController = nil
-        u16.touchControlFrame = nil
-        u16.currentTorsoAngle = 0
-        u16.inputMoveVector = Vector3.new(0, 0, 0)
-        u16.renderedRotationOverride = nil
-        u16.vehicleController = VehicleController_upv_1.new()
+        u15.controllers = {}
+        u15.activeControlModule = nil
+        u15.activeController = nil
+        u15.touchJumpController = nil
+        u15.touchAbilitiesController = nil
+        u15.moveFunction = Players_upv_1.LocalPlayer.Move
+        u15.humanoid = nil
+        u15.controlsEnabled = true
+        u15.enabled = false
+        u15.humanoidSeatedConn = nil
+        u15.vehicleController = nil
+        u15.touchControlFrame = nil
+        u15.currentTorsoAngle = 0
+        u15.inputMoveVector = Vector3.new(0, 0, 0)
+        u15.renderedRotationOverride = nil
+        u15.vehicleController = VehicleController_upv_1.new()
         Players_upv_1.LocalPlayer.CharacterAdded:Connect(
             function(a1)
                 --[[
-                  line: 139
+                  line: 138
                   upvalues:
-                    u16 (copy, index: 1)
+                    u15 (copy, index: 1)
                 ]]
-                u16:OnCharacterAdded(a1)
+                u15:OnCharacterAdded(a1)
             end
         )
         Players_upv_1.LocalPlayer.CharacterRemoving:Connect(
             function(a2)
                 --[[
-                  line: 140
+                  line: 139
                   upvalues:
-                    u16 (copy, index: 1)
+                    u15 (copy, index: 1)
                 ]]
-                u16:OnCharacterRemoving(a2)
+                u15:OnCharacterRemoving(a2)
             end
         )
         if Players_upv_1.LocalPlayer.Character then
-            u16:OnCharacterAdded(Players_upv_1.LocalPlayer.Character)
+            u15:OnCharacterAdded(Players_upv_1.LocalPlayer.Character)
         end
         UserGameSettings_upv_1:GetPropertyChangedSignal("TouchMovementMode"):Connect(
             function()
                 --[[
-                  line: 145
+                  line: 144
                   upvalues:
-                    u16 (copy, index: 1)
+                    u15 (copy, index: 1)
                 ]]
-                u16:UpdateMovementMode()
+                u15:UpdateMovementMode()
             end
         )
         Players_upv_1.LocalPlayer:GetPropertyChangedSignal("DevTouchMovementMode"):Connect(
             function()
                 --[[
-                  line: 148
+                  line: 147
                   upvalues:
-                    u16 (copy, index: 1)
+                    u15 (copy, index: 1)
                 ]]
-                u16:UpdateMovementMode()
+                u15:UpdateMovementMode()
             end
         )
         UserGameSettings_upv_1:GetPropertyChangedSignal("ComputerMovementMode"):Connect(
             function()
                 --[[
-                  line: 152
+                  line: 151
                   upvalues:
-                    u16 (copy, index: 1)
+                    u15 (copy, index: 1)
                 ]]
-                u16:UpdateMovementMode()
+                u15:UpdateMovementMode()
             end
         )
         Players_upv_1.LocalPlayer:GetPropertyChangedSignal("DevComputerMovementMode"):Connect(
             function()
                 --[[
-                  line: 155
+                  line: 154
                   upvalues:
-                    u16 (copy, index: 1)
+                    u15 (copy, index: 1)
                 ]]
-                u16:UpdateMovementMode()
+                u15:UpdateMovementMode()
             end
         )
         if u2 then
-            u14:GetEnabledChangedSignal():Connect(
+            u13:GetEnabledChangedSignal():Connect(
                 function()
                     --[[
-                      line: 159
+                      line: 158
                       upvalues:
-                        u16 (copy, index: 1)
+                        u15 (copy, index: 1)
                     ]]
-                    u16:UpdateAbilitiesControllers()
+                    u15:UpdateAbilitiesControllers()
                 end
             )
         end
-        u16.playerGui = nil
-        u16.touchGui = nil
-        u16.playerGuiAddedConn = nil
+        u15.playerGui = nil
+        u15.touchGui = nil
+        u15.playerGuiAddedConn = nil
         GuiService_upv_1:GetPropertyChangedSignal("TouchControlsEnabled"):Connect(
             function()
                 --[[
-                  line: 169
+                  line: 168
                   upvalues:
-                    u16 (copy, index: 1)
+                    u15 (copy, index: 1)
                 ]]
-                u16:UpdateMovementMode()
-                u16:UpdateActiveControlModuleEnabled()
+                u15:UpdateMovementMode()
+                u15:UpdateActiveControlModuleEnabled()
             end
         )
         UserInputService_upv_1:GetPropertyChangedSignal("PreferredInput"):Connect(
             function()
                 --[[
-                  line: 174
+                  line: 173
                   upvalues:
-                    u16 (copy, index: 1)
+                    u15 (copy, index: 1)
                 ]]
-                u16:UpdateMovementMode()
+                u15:UpdateMovementMode()
             end
         )
-        u16.playerGui = Players_upv_1.LocalPlayer:FindFirstChildOfClass("PlayerGui")
-        if not (u16.playerGui) then
-            u16.playerGuiAddedConn = Players_upv_1.LocalPlayer.ChildAdded:Connect(
+        u15.playerGui = Players_upv_1.LocalPlayer:FindFirstChildOfClass("PlayerGui")
+        if not (u15.playerGui) then
+            u15.playerGuiAddedConn = Players_upv_1.LocalPlayer.ChildAdded:Connect(
                 function(a3)
                     --[[
-                      line: 180
+                      line: 179
                       upvalues:
-                        u16 (copy, index: 1)
+                        u15 (copy, index: 1)
                     ]]
                     if not a3:IsA("PlayerGui") then
                         return
                     end
-                    u16.playerGui = a3
-                    u16.playerGuiAddedConn:Disconnect()
-                    u16.playerGuiAddedConn = nil
-                    u16:UpdateMovementMode()
+                    u15.playerGui = a3
+                    u15.playerGuiAddedConn:Disconnect()
+                    u15.playerGuiAddedConn = nil
+                    u15:UpdateMovementMode()
                 end
             )
         end
@@ -227,12 +226,12 @@ function tbl_upv_1.new()
             ContextActionService_upv_1:BindActivate(Enum.UserInputType.Gamepad1, Enum.KeyCode.ButtonR2)
         end
     end
-    return u16
+    return u15
 end
 function tbl_upv_1.restoreSimulatedRotation(a1)
     --[[
       name: restoreSimulatedRotation
-      line: 218
+      line: 217
     ]]
     local renderedRotationOverride_1 = a1.renderedRotationOverride
     if renderedRotationOverride_1 == nil then
@@ -246,7 +245,7 @@ end
 function tbl_upv_1.applyRenderedRotation(a1)
     --[[
       name: applyRenderedRotation
-      line: 229
+      line: 228
       upvalues:
         Workspace_upv_1 (copy, index: 1)
     ]]
@@ -276,7 +275,7 @@ local InputReplication_upv_1
 local function _cloneInputs(a1)
     --[[
       name: _cloneInputs
-      line: 255
+      line: 254
       upvalues:
         StarterPlayer_upv_1 (copy, index: 1)
     ]]
@@ -288,7 +287,7 @@ end
 local function _fireCustomInputs(a1)
     --[[
       name: _fireCustomInputs
-      line: 198
+      line: 197
       upvalues:
         UserGameSettings_upv_1 (copy, index: 1)
     ]]
@@ -312,7 +311,7 @@ end
 function tbl_upv_1.InitializeServerAuthority(a1)
     --[[
       name: InitializeServerAuthority
-      line: 262
+      line: 261
       upvalues:
         RunService_upv_1 (copy, index: 1)
         u2 (copy, index: 2)
@@ -323,11 +322,11 @@ function tbl_upv_1.InitializeServerAuthority(a1)
         u4 (copy, index: 7)
         u5 (copy, index: 8)
         AvatarAbilitiesInterface_upv_1 (ref,  index: 9)
-        u10 (copy, index: 10)
-        u11 (copy, index: 11)
+        u9 (copy, index: 10)
+        u10 (copy, index: 11)
         _fireCustomInputs (copy, index: 12)
         UserGameSettings_upv_1 (copy, index: 13)
-        u14 (ref,  index: 14)
+        u13 (ref,  index: 14)
     ]]
     if RunService_upv_1:IsServer() then
         if u2 then
@@ -357,7 +356,7 @@ function tbl_upv_1.InitializeServerAuthority(a1)
             Players_upv_1.PlayerAdded:Connect(
                 function(a2)
                     --[[
-                      line: 287
+                      line: 286
                       upvalues:
                         AvatarAbilitiesInterface_upv_1 (ref, index: 1)
                     ]]
@@ -365,11 +364,11 @@ function tbl_upv_1.InitializeServerAuthority(a1)
                 end
             )
         end
-        if u10 then
+        if u9 then
             RunService_upv_1:BindToAnimation(
                 function(a3)
                     --[[
-                      line: 293
+                      line: 292
                       upvalues:
                         Players_upv_1 (copy, index: 1)
                         a1 (copy, index: 2)
@@ -384,7 +383,7 @@ function tbl_upv_1.InitializeServerAuthority(a1)
             RunService_upv_1:BindToSimulation(
                 function(a4)
                     --[[
-                      line: 299
+                      line: 298
                       upvalues:
                         Players_upv_1 (copy, index: 1)
                         a1 (copy, index: 2)
@@ -400,11 +399,11 @@ function tbl_upv_1.InitializeServerAuthority(a1)
         if u4 then
             InputReplication_upv_1.watchForPlayerControlState(Players_upv_1.LocalPlayer)
         end
-        if u11 then
+        if u10 then
             RunService_upv_1.PreAnimation:Connect(
                 function()
                     --[[
-                      line: 311
+                      line: 310
                       upvalues:
                         a1 (copy, index: 1)
                     ]]
@@ -417,7 +416,7 @@ function tbl_upv_1.InitializeServerAuthority(a1)
             Enum.RenderPriority.Last.Value,
             function()
                 --[[
-                  line: 317
+                  line: 316
                   upvalues:
                     u4 (copy, index: 1)
                     InputReplication_upv_1 (copy, index: 2)
@@ -425,28 +424,28 @@ function tbl_upv_1.InitializeServerAuthority(a1)
                     a1 (copy, index: 4)
                     u2 (copy, index: 5)
                     _fireCustomInputs (copy, index: 6)
-                    u11 (copy, index: 7)
+                    u10 (copy, index: 7)
                     UserGameSettings_upv_1 (copy, index: 8)
-                    u14 (ref,  index: 9)
+                    u13 (ref,  index: 9)
                 ]]
                 if u4 then
-                    InputReplication_upv_1.writeInputToPCS(Players_upv_1.LocalPlayer, a1, true)
+                    InputReplication_upv_1.writeInputToPCS(Players_upv_1.LocalPlayer, a1)
                 elseif u2 then
                     InputReplication_upv_1.FireCustomInputs(Players_upv_1.LocalPlayer)
                 else
                     _fireCustomInputs(Players_upv_1.LocalPlayer)
                 end
-                if not u11 or UserGameSettings_upv_1.RotationType ~= Enum.RotationType.CameraRelative or (u2) and (u14:isEnabled()) then
+                if not u10 or UserGameSettings_upv_1.RotationType ~= Enum.RotationType.CameraRelative or (u2) and (u13:isEnabled()) then
                     return
                 end
                 a1:applyRenderedRotation()
             end
         )
-        if u10 then
+        if u9 then
             RunService_upv_1:BindToAnimation(
                 function(a5)
                     --[[
-                      line: 332
+                      line: 331
                       upvalues:
                         a1 (copy, index: 1)
                         Players_upv_1 (copy, index: 2)
@@ -459,7 +458,7 @@ function tbl_upv_1.InitializeServerAuthority(a1)
             RunService_upv_1:BindToSimulation(
                 function(a6)
                     --[[
-                      line: 336
+                      line: 335
                       upvalues:
                         a1 (copy, index: 1)
                         Players_upv_1 (copy, index: 2)
@@ -479,7 +478,7 @@ end
 local function NormalizeAngle(a1)
     --[[
       name: NormalizeAngle
-      line: 349
+      line: 348
     ]]
     a1 = (a1 + 12.566370614359172) % math.tau
     return ((a1 > math.pi) and (a1 - math.tau)) or a1
@@ -487,7 +486,7 @@ end
 local function AverageAngle(a1, a2)
     --[[
       name: AverageAngle
-      line: 357
+      line: 356
     ]]
     local v6 = ((a2 - a1) + 12.566370614359172) % math.tau
     local v7 = ((a1 + ((((v6 > math.pi) and (v6 - math.tau)) or v6) / 2)) + 12.566370614359172) % math.tau
@@ -496,7 +495,7 @@ end
 function tbl_upv_1.GetEstimatedVRTorsoFrame(a1)
     --[[
       name: GetEstimatedVRTorsoFrame
-      line: 362
+      line: 361
       upvalues:
         VRService_upv_1 (copy, index: 1)
     ]]
@@ -547,7 +546,7 @@ end
 function tbl_upv_1.GetActiveController(a1)
     --[[
       name: GetActiveController
-      line: 406
+      line: 405
     ]]
     return a1.activeController
 end
@@ -555,13 +554,13 @@ local TouchAbilities_upv_1
 function tbl_upv_1.UpdateAbilitiesControllers(a1)
     --[[
       name: UpdateAbilitiesControllers
-      line: 410
+      line: 409
       upvalues:
         UserInputService_upv_1 (copy, index: 1)
         ClickToMoveController_upv_1 (copy, index: 2)
         ClassicThumbstick_upv_1 (copy, index: 3)
-        u13 (ref,  index: 4)
-        u14 (ref,  index: 5)
+        u12 (ref,  index: 4)
+        u13 (ref,  index: 5)
         TouchJump_upv_1 (copy, index: 6)
         TouchAbilities_upv_1 (copy, index: 7)
     ]]
@@ -575,14 +574,14 @@ function tbl_upv_1.UpdateAbilitiesControllers(a1)
                 if a1.activeControlModule ~= ClickToMoveController_upv_1 then
                     v27 = true
                     if a1.activeControlModule ~= ClassicThumbstick_upv_1 then
-                        v27 = a1.activeControlModule == u13
+                        v27 = a1.activeControlModule == u12
                     end
                 end
             end
         end
     end
-    local v29 = v27 and (not u14:isEnabled())
-    local v28 = v27 and (u14:isEnabled())
+    local v29 = v27 and (not u13:isEnabled())
+    local v28 = v27 and (u13:isEnabled())
     if v27 then
         if not (a1.controllers[TouchJump_upv_1]) then
             a1.controllers[TouchJump_upv_1] = TouchJump_upv_1.new(a1.data)
@@ -605,25 +604,25 @@ end
 function tbl_upv_1.UpdateActiveControlModuleEnabled(a1)
     --[[
       name: UpdateActiveControlModuleEnabled
-      line: 446
+      line: 445
       upvalues:
         u2 (copy, index: 1)
-        u14 (ref,  index: 2)
+        u13 (ref,  index: 2)
         Players_upv_1 (copy, index: 3)
         UserInputService_upv_1 (copy, index: 4)
         ClickToMoveController_upv_1 (copy, index: 5)
         ClassicThumbstick_upv_1 (copy, index: 6)
-        u13 (ref,  index: 7)
+        u12 (ref,  index: 7)
         TouchJump_upv_1 (copy, index: 8)
         GuiService_upv_1 (copy, index: 9)
     ]]
     local v29 = function()
         --[[
-          line: 448
+          line: 447
           upvalues:
             u2 (copy, index: 1)
             a1 (copy, index: 2)
-            u14 (ref,  index: 3)
+            u13 (ref,  index: 3)
             Players_upv_1 (copy, index: 4)
         ]]
         if u2 then
@@ -635,28 +634,28 @@ function tbl_upv_1.UpdateActiveControlModuleEnabled(a1)
         elseif a1.touchJumpController then
             a1.touchJumpController:Enable(false)
         end
-        if not a1.moveFunction or (u2) and (u14:isEnabled()) then
+        if not a1.moveFunction or (u2) and (u13:isEnabled()) then
             return
         end
         a1.moveFunction(Players_upv_1.LocalPlayer, Vector3.new(0, 0, 0), true)
     end
     local v30 = function()
         --[[
-          line: 468
+          line: 467
           upvalues:
             u2 (copy, index: 1)
             a1 (copy, index: 2)
             UserInputService_upv_1 (copy, index: 3)
             ClickToMoveController_upv_1 (copy, index: 4)
             ClassicThumbstick_upv_1 (copy, index: 5)
-            u13 (ref,  index: 6)
+            u12 (ref,  index: 6)
             TouchJump_upv_1 (copy, index: 7)
             Players_upv_1 (copy, index: 8)
         ]]
         if u2 then
             a1.enabled = true
             a1:UpdateAbilitiesControllers()
-        elseif a1.touchControlFrame and UserInputService_upv_1.PreferredInput == Enum.PreferredInput.Touch and (a1.activeControlModule == ClickToMoveController_upv_1 or a1.activeControlModule == ClassicThumbstick_upv_1 or a1.activeControlModule == u13) then
+        elseif a1.touchControlFrame and UserInputService_upv_1.PreferredInput == Enum.PreferredInput.Touch and (a1.activeControlModule == ClickToMoveController_upv_1 or a1.activeControlModule == ClassicThumbstick_upv_1 or a1.activeControlModule == u12) then
             if not (a1.controllers[TouchJump_upv_1]) then
                 a1.controllers[TouchJump_upv_1] = TouchJump_upv_1.new(a1.data)
             end
@@ -676,7 +675,7 @@ function tbl_upv_1.UpdateActiveControlModuleEnabled(a1)
     if not a1.activeController then
         return
     end
-    if a1.controlsEnabled and ((GuiService_upv_1.TouchControlsEnabled) or UserInputService_upv_1.PreferredInput ~= Enum.PreferredInput.Touch or a1.activeControlModule ~= ClickToMoveController_upv_1 and a1.activeControlModule ~= ClassicThumbstick_upv_1 and a1.activeControlModule ~= u13) then
+    if a1.controlsEnabled and ((GuiService_upv_1.TouchControlsEnabled) or UserInputService_upv_1.PreferredInput ~= Enum.PreferredInput.Touch or a1.activeControlModule ~= ClickToMoveController_upv_1 and a1.activeControlModule ~= ClassicThumbstick_upv_1 and a1.activeControlModule ~= u12) then
         v30()
         return
     end
@@ -685,7 +684,7 @@ end
 function tbl_upv_1.Enable(a1, a2)
     --[[
       name: Enable
-      line: 533
+      line: 532
     ]]
     if a2 == nil then
         a2 = true
@@ -702,14 +701,14 @@ end
 function tbl_upv_1.Disable(a1)
     --[[
       name: Disable
-      line: 548
+      line: 547
     ]]
     a1:Enable(false)
 end
 function tbl_upv_1.SelectComputerMovementModule(a1)
     --[[
       name: SelectComputerMovementModule
-      line: 554
+      line: 553
       upvalues:
         u7 (copy, index: 1)
         UserInputService_upv_1 (copy, index: 2)
@@ -719,21 +718,21 @@ function tbl_upv_1.SelectComputerMovementModule(a1)
         ClickToMoveController_upv_1 (copy, index: 6)
         tbl_upv_2 (copy, index: 7)
     ]]
-    local u17 = false
+    local u16 = false
     if u7 then
         pcall(
             function()
                 --[[
-                  line: 557
+                  line: 556
                   upvalues:
-                    u17 (ref,  index: 1)
+                    u16 (ref,  index: 1)
                     UserInputService_upv_1 (copy, index: 2)
                 ]]
-                u17 = UserInputService_upv_1.PreferredInput == Enum.PreferredInput.MicroGamepad
+                u16 = UserInputService_upv_1.PreferredInput == Enum.PreferredInput.MicroGamepad
             end
         )
     end
-    if UserInputService_upv_1.PreferredInput ~= Enum.PreferredInput.KeyboardAndMouse and UserInputService_upv_1.PreferredInput ~= Enum.PreferredInput.Gamepad and not (u17) then
+    if UserInputService_upv_1.PreferredInput ~= Enum.PreferredInput.KeyboardAndMouse and UserInputService_upv_1.PreferredInput ~= Enum.PreferredInput.Gamepad and not (u16) then
         return nil, false
     end
     local DevComputerMovementMode_1 = Players_upv_1.LocalPlayer.DevComputerMovementMode
@@ -760,7 +759,7 @@ end
 function tbl_upv_1.SelectTouchModule(a1)
     --[[
       name: SelectTouchModule
-      line: 598
+      line: 597
       upvalues:
         Players_upv_1 (copy, index: 1)
         tbl_upv_2 (copy, index: 2)
@@ -780,7 +779,7 @@ end
 function tbl_upv_1.calculateRawMoveVector(a1, a2, a3)
     --[[
       name: calculateRawMoveVector
-      line: 611
+      line: 610
       upvalues:
         Workspace_upv_1 (copy, index: 1)
         VRService_upv_1 (copy, index: 2)
@@ -823,15 +822,15 @@ function tbl_upv_1.calculateRawMoveVector(a1, a2, a3)
         return CFrame.fromEulerAnglesYXZ(v44, v45 + v46, 0).LookVector
     end
 end
-local u12
+local u11
 function tbl_upv_1.initialize(a1, a2)
     --[[
       name: initialize
-      line: 672
+      line: 671
       upvalues:
         ActionController_upv_1 (copy, index: 1)
         u2 (copy, index: 2)
-        u12 (copy, index: 3)
+        u11 (copy, index: 3)
     ]]
     a1.data = a2
     a1:UpdateMovementMode()
@@ -839,121 +838,97 @@ function tbl_upv_1.initialize(a1, a2)
     if not u2 then
         return
     end
-    u12.setupSlotActions(a1.data.player, a1.data.isServerAuthority)
+    u11.setupSlotActions(a1.data.player, a1.data.isServerAuthority)
 end
 function tbl_upv_1.Update(a1, a2, a3)
     --[[
       name: Update
-      line: 683
+      line: 682
       upvalues:
-        u9 (copy, index: 1)
-        ActionController_upv_1 (copy, index: 2)
-        VRService_upv_1 (copy, index: 3)
-        u4 (copy, index: 4)
-        u2 (copy, index: 5)
-        u14 (ref,  index: 6)
-        InputReplication_upv_1 (copy, index: 7)
-        Players_upv_1 (copy, index: 8)
-        u6 (copy, index: 9)
+        ActionController_upv_1 (copy, index: 1)
+        VRService_upv_1 (copy, index: 2)
     ]]
     assert(a2.player)
     assert(a2.character)
-    if u9 then
-        if not a1.humanoid then
-            return
-        end
-        if not (a2.playerModule.ControlModule.Enabled) then
-            a2.isJumping = false
-            a2.moveVector = Vector2.new()
-            a2.worldMoveVector = Vector3.new()
-            ActionController_upv_1.update(a2)
-            a1.inputMoveVector = Vector3.new()
-            if a1.vehicleController then
-                a1.vehicleController:Update(Vector3.new(), true)
-            end
-            a1:characterMove(a2)
-            return
-        end
-    end
-    ActionController_upv_1.initializeActions(a2)
-    if not u9 and (not a2.actions.MoveAction or not a2.actions.JumpAction) then
+    if not a1.humanoid then
         return
     end
-    if a1.activeController and a1.activeController.enabled and a1.humanoid then
-        ActionController_upv_1.update(a2)
-        a1:GetClickToMoveController():Update(a2, a3)
-        local v47 = Vector3.new(a2.moveVector.X, 0, -a2.moveVector.Y)
-        if a1.vehicleController then
-            local v48, v49 = a1.vehicleController:Update(v47, true)
-            _ = v49
-            v47 = v48
-        end
-        v47 = a1:calculateRawMoveVector(a1.humanoid, v47)
-        a1.inputMoveVector = v47
-        if VRService_upv_1.VREnabled then
-            v47 = a1:updateVRMoveVector(v47)
-        end
-        if u9 then
-            a2.worldMoveVector = v47
-            a1:characterMove(a2)
+    local controlModule_1 = a2.controlModule
+    if a2.playerModule.ControlModule.Enabled then
+        ActionController_upv_1.initializeActions(a2)
+        if not a1.activeController or not a1.activeController.enabled then
             return
         end
-        if u4 then
-            if not (a2.isServerAuthority) then
-                if u2 and u14:isEnabled() then
-                    InputReplication_upv_1.writeInputToPCS(Players_upv_1.LocalPlayer, a1, false)
-                else
-                    a1.moveFunction(Players_upv_1.LocalPlayer, v47, false)
-                    a1.humanoid.Jump = a2.isJumping
-                end
-                return
+        if a1.humanoid then
+            ActionController_upv_1.update(a2)
+            a1:GetClickToMoveController():Update(a2, a3)
+            local v47 = Vector3.new(a2.controlModule.moveVector.X, 0, -a2.controlModule.moveVector.Y)
+            if a1.vehicleController then
+                local v48, v49 = a1.vehicleController:Update(v47, true)
+                _ = v49
+                v47 = v48
             end
-        elseif (not (u6) or not (a2.isServerAuthority)) and (not (u2) or not (u14:isEnabled())) then
-            a1.moveFunction(Players_upv_1.LocalPlayer, v47, false)
-            a1.humanoid.Jump = a2.isJumping
+            v47 = a1:calculateRawMoveVector(a1.humanoid, v47)
+            a1.inputMoveVector = v47
+            if VRService_upv_1.VREnabled then
+                v47 = a1:updateVRMoveVector(v47)
+            end
+            controlModule_1.worldMoveVector = v47
+            a1:characterMove(a2)
         end
+    else
+        controlModule_1.isJumping = false
+        controlModule_1.moveVector = Vector2.new()
+        controlModule_1.worldMoveVector = Vector3.new()
+        ActionController_upv_1.update(a2)
+        a1.inputMoveVector = Vector3.new()
+        if a1.vehicleController then
+            a1.vehicleController:Update(Vector3.new(), true)
+        end
+        a1:characterMove(a2)
     end
 end
 function tbl_upv_1.characterMove(a1, a2)
     --[[
       name: characterMove
-      line: 764
+      line: 737
       upvalues:
         u4 (copy, index: 1)
         u2 (copy, index: 2)
-        u14 (ref,  index: 3)
+        u13 (ref,  index: 3)
         InputReplication_upv_1 (copy, index: 4)
         Players_upv_1 (copy, index: 5)
         u6 (copy, index: 6)
     ]]
+    local controlModule_2 = a2.controlModule
     if u4 then
         if (a2.isServerAuthority) then
             return
         end
-        if u2 and u14:isEnabled() then
-            InputReplication_upv_1.writeInputToPCS(Players_upv_1.LocalPlayer, a1, false)
+        if u2 and u13:isEnabled() then
+            InputReplication_upv_1.writeInputToPCS(Players_upv_1.LocalPlayer, a1)
         else
-            a1.moveFunction(Players_upv_1.LocalPlayer, a2.worldMoveVector, false)
-            a1.humanoid.Jump = a2.isJumping
+            a1.moveFunction(Players_upv_1.LocalPlayer, controlModule_2.worldMoveVector, false)
+            a1.humanoid.Jump = controlModule_2.isJumping
         end
-    elseif (not u6 or not a2.isServerAuthority) and (not u2 or not u14:isEnabled()) then
-        a1.moveFunction(Players_upv_1.LocalPlayer, a2.worldMoveVector, false)
-        a1.humanoid.Jump = a2.isJumping
+    elseif (not u6 or not a2.isServerAuthority) and (not u2 or not u13:isEnabled()) then
+        a1.moveFunction(Players_upv_1.LocalPlayer, controlModule_2.worldMoveVector, false)
+        a1.humanoid.Jump = controlModule_2.isJumping
     end
 end
 function tbl_upv_1.updateVRMoveVector(a1, a2)
     --[[
       name: updateVRMoveVector
-      line: 784
+      line: 759
       upvalues:
         u1 (copy, index: 1)
-        u15 (copy, index: 2)
+        u14 (copy, index: 2)
         VRService_upv_1 (copy, index: 3)
     ]]
     local CurrentCamera_3 = workspace.CurrentCamera
     local v50
     if u1 then
-        v50 = u15.inFirstPerson
+        v50 = u14.inFirstPerson
     else
         v50 = (CurrentCamera_3.Focus.Position - CurrentCamera_3.CFrame.Position).Magnitude < 5 and true
     end
@@ -971,7 +946,7 @@ end
 function tbl_upv_1.OnHumanoidSeated(a1, a2, a3)
     --[[
       name: OnHumanoidSeated
-      line: 825
+      line: 800
     ]]
     if a2 then
         if not a3 or not a3:IsA("VehicleSeat") then
@@ -988,7 +963,7 @@ end
 function tbl_upv_1.OnCharacterAdded(a1, a2)
     --[[
       name: OnCharacterAdded
-      line: 840
+      line: 815
     ]]
     a1.humanoid = a2:FindFirstChildOfClass("Humanoid")
     while not (a1.humanoid) do
@@ -1002,7 +977,7 @@ function tbl_upv_1.OnCharacterAdded(a1, a2)
     a1.humanoidSeatedConn = a1.humanoid.Seated:Connect(
         function(a3, a4)
             --[[
-              line: 851
+              line: 826
               upvalues:
                 a1 (copy, index: 1)
             ]]
@@ -1014,7 +989,7 @@ end
 function tbl_upv_1.OnCharacterRemoving(a1, a2)
     --[[
       name: OnCharacterRemoving
-      line: 858
+      line: 833
     ]]
     a1.humanoid = nil
     a1:UpdateMovementMode()
@@ -1022,7 +997,7 @@ end
 function tbl_upv_1.UpdateTouchGuiVisibility(a1)
     --[[
       name: UpdateTouchGuiVisibility
-      line: 864
+      line: 839
       upvalues:
         GuiService_upv_1 (copy, index: 1)
         UserInputService_upv_1 (copy, index: 2)
@@ -1039,7 +1014,7 @@ end
 function tbl_upv_1.SwitchToController(a1, a2)
     --[[
       name: SwitchToController
-      line: 883
+      line: 858
     ]]
     if a2 then
         if not (a1.controllers[a2]) then
@@ -1064,7 +1039,7 @@ end
 function tbl_upv_1.UpdateMovementMode(a1)
     --[[
       name: UpdateMovementMode
-      line: 922
+      line: 897
       upvalues:
         UserInputService_upv_1 (copy, index: 1)
     ]]
@@ -1082,7 +1057,7 @@ end
 function tbl_upv_1.CreateTouchGuiContainer(a1)
     --[[
       name: CreateTouchGuiContainer
-      line: 938
+      line: 913
       upvalues:
         u2 (copy, index: 1)
         u8 (copy, index: 2)
@@ -1111,7 +1086,7 @@ end
 function tbl_upv_1.GetClickToMoveController(a1)
     --[[
       name: GetClickToMoveController
-      line: 965
+      line: 940
       upvalues:
         ClickToMoveController_upv_1 (copy, index: 1)
     ]]
@@ -1123,7 +1098,7 @@ end
 function tbl_upv_1.ProcessInputs(a1, a2, a3)
     --[[
       name: ProcessInputs
-      line: 972
+      line: 947
       upvalues:
         u2 (copy, index: 1)
         AvatarAbilitiesInterface_upv_1 (ref,  index: 2)
@@ -1164,7 +1139,7 @@ function tbl_upv_1.ProcessInputs(a1, a2, a3)
         local function isValidInput2D(a4)
             --[[
               name: isValidInput2D
-              line: 1008
+              line: 983
             ]]
             local v59 = true
             local v60
@@ -1184,7 +1159,7 @@ function tbl_upv_1.ProcessInputs(a1, a2, a3)
         local function isValidInput3D(a5)
             --[[
               name: isValidInput3D
-              line: 1016
+              line: 991
             ]]
             local v61 = true
             local v62

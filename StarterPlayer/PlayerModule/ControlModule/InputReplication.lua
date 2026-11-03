@@ -1,18 +1,17 @@
 local v1 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil")
 local u1 = v1.getUserFlag("UserPlayerScriptsCCLIntegrationD")
-local u2 = v1.getUserFlag("UserControlModuleEnabledAPI")
 local StarterPlayer_upv_1 = game:GetService("StarterPlayer")
 local UserGameSettings_upv_1 = UserSettings():GetService("UserGameSettings")
 local Workspace_upv_1 = game:GetService("Workspace")
 local AvatarAbilitiesInterface_upv_1 = require(script.Parent:WaitForChild("AvatarAbilitiesInterface"))
-local u3 = v1.getUserFlag("UserAbilitiesUserInterfaceB")
-local u4 = (u3 and "ControlState") or "PlayerControlState"
+local u2 = v1.getUserFlag("UserAbilitiesUserInterfaceB")
+local u3 = (u2 and "ControlState") or "PlayerControlState"
 local tbl_upv_1 = {}
 tbl_upv_1.__index = tbl_upv_1
 function tbl_upv_1._calculatePlayerInputValues(a1)
     --[[
       name: _calculatePlayerInputValues
-      line: 15
+      line: 14
     ]]
     local v2 = a1.Character
     if v2 == nil then
@@ -36,7 +35,7 @@ function tbl_upv_1._calculatePlayerInputValues(a1)
     local function isValidInput2D(a2)
         --[[
           name: isValidInput2D
-          line: 36
+          line: 35
         ]]
         local v3 = true
         local v4
@@ -56,7 +55,7 @@ function tbl_upv_1._calculatePlayerInputValues(a1)
     local function isValidInput3D(a3)
         --[[
           name: isValidInput3D
-          line: 44
+          line: 43
         ]]
         local v5 = true
         local v6
@@ -131,7 +130,7 @@ end
 function tbl_upv_1.CloneInputsIfAbsent(a1)
     --[[
       name: CloneInputsIfAbsent
-      line: 74
+      line: 73
       upvalues:
         StarterPlayer_upv_1 (copy, index: 1)
     ]]
@@ -146,7 +145,7 @@ end
 function tbl_upv_1.FireCustomInputs(a1)
     --[[
       name: FireCustomInputs
-      line: 83
+      line: 82
       upvalues:
         UserGameSettings_upv_1 (copy, index: 1)
     ]]
@@ -169,7 +168,7 @@ end
 function tbl_upv_1.SendInputToCCLCharacter(a1)
     --[[
       name: SendInputToCCLCharacter
-      line: 102
+      line: 101
       upvalues:
         AvatarAbilitiesInterface_upv_1 (copy, index: 1)
         tbl_upv_1 (copy, index: 2)
@@ -199,7 +198,7 @@ end
 function tbl_upv_1.SendInputToHumanoidForServerAuth(a1)
     --[[
       name: SendInputToHumanoidForServerAuth
-      line: 123
+      line: 122
       upvalues:
         tbl_upv_1 (copy, index: 1)
     ]]
@@ -236,7 +235,7 @@ end
 function tbl_upv_1.setupPlayerControlState(a1)
     --[[
       name: setupPlayerControlState
-      line: 152
+      line: 151
     ]]
     a1:AddVector3Field("Move", Vector3.new(0, 0, 0), 1)
     a1:AddBoolField("Jump", false)
@@ -246,19 +245,19 @@ end
 function tbl_upv_1.watchForPlayerControlState(a1)
     --[[
       name: watchForPlayerControlState
-      line: 160
+      line: 159
       upvalues:
         tbl_upv_1 (copy, index: 2)
     ]]
     local function watchCharacter(a2)
         --[[
           name: watchCharacter
-          line: 161
+          line: 160
           upvalues:
             tbl_upv_1 (copy, index: 2)
         ]]
         local v21 = function() end
-        local v22 = a2:FindFirstChildOfClass(u4)
+        local v22 = a2:FindFirstChildOfClass(u3)
         if v22 then
             tbl_upv_1.setupPlayerControlState(v22)
         end
@@ -274,11 +273,11 @@ function tbl_upv_1.watchForPlayerControlState(a1)
         local function onPCSAdded(a3)
             --[[
               name: onPCSAdded
-              line: 162
+              line: 161
               upvalues:
                 tbl_upv_1 (copy, index: 2)
             ]]
-            if not a3:IsA(u4) then
+            if not a3:IsA(u3) then
                 return
             end
             tbl_upv_1.setupPlayerControlState(a3)
@@ -290,36 +289,36 @@ end
 function tbl_upv_1.createPlayerControlState(a1)
     --[[
       name: createPlayerControlState
-      line: 176
+      line: 175
       upvalues:
-        u3 (copy, index: 1)
-        u4 (copy, index: 2)
+        u2 (copy, index: 1)
+        u3 (copy, index: 2)
         tbl_upv_1 (copy, index: 3)
     ]]
     local function createForCharacter(a2)
         --[[
           name: createForCharacter
-          line: 177
+          line: 176
           upvalues:
-            u3 (copy, index: 1)
+            u2 (copy, index: 1)
             a1 (copy, index: 3)
             tbl_upv_1 (copy, index: 4)
         ]]
-        if u3 then
-            if a2:FindFirstChildOfClass(u4) then
+        if u2 then
+            if a2:FindFirstChildOfClass(u3) then
                 return
             end
-        elseif a2:FindFirstChild(u4) then
+        elseif a2:FindFirstChild(u3) then
             return
         end
-        local v24 = Instance.new(u4)
+        local v24 = Instance.new(u3)
         v24.Owner = a1
         v24.Parent = a2
         tbl_upv_1.setupPlayerControlState(v24)
     end
     if a1.Character then
         local Character_3 = a1.Character
-        if u3 then
+        if u2 then
             local v25 = Character_3:FindFirstChildOfClass(createForCharacter)
             if not (v25) then
                 local v26 = Instance.new(createForCharacter)
@@ -330,7 +329,7 @@ function tbl_upv_1.createPlayerControlState(a1)
         else
             local v27 = Character_3:FindFirstChild(createForCharacter)
             if not (v27) then
-                local v26 = Instance.new(u4)
+                local v26 = Instance.new(u3)
                 v26.Owner = a1
                 v26.Parent = Character_3
                 tbl_upv_1.setupPlayerControlState(v26)
@@ -339,87 +338,54 @@ function tbl_upv_1.createPlayerControlState(a1)
     end
     a1.CharacterAdded:Connect(createForCharacter)
 end
-function tbl_upv_1.writeInputToPCS(a1, a2, a3)
+function tbl_upv_1.writeInputToPCS(a1, a2)
     --[[
       name: writeInputToPCS
-      line: 193
+      line: 192
       upvalues:
         u2 (copy, index: 1)
         u3 (copy, index: 2)
-        u4 (copy, index: 3)
-        UserGameSettings_upv_1 (copy, index: 4)
-        Workspace_upv_1 (copy, index: 5)
-        u1 (copy, index: 6)
-        AvatarAbilitiesInterface_upv_1 (copy, index: 7)
+        UserGameSettings_upv_1 (copy, index: 3)
+        Workspace_upv_1 (copy, index: 4)
+        u1 (copy, index: 5)
+        AvatarAbilitiesInterface_upv_1 (copy, index: 6)
     ]]
-    local v28 = nil
-    local _ = (not u2) or (a2.data)
+    local data_1 = a2.data
     local Character_4 = a1.Character
     if not Character_4 then
         return
     end
-    local v29
-    if u3 then
-        v29 = Character_4:FindFirstChildOfClass(u4)
-    else
-        v29 = Character_4:FindFirstChild(u4)
-    end
-    if not v29 then
-        return
-    end
-    local humanoid_1 = a2.humanoid
-    if not humanoid_1 then
-        return
-    end
-    local v30
-    if a3 then
-        v30 = a1:FindFirstChild("InputContexts")
-    else
-        v30 = script.Parent.Parent:FindFirstChild("InputContexts")
-    end
-    local v31, v32
+    local v28
     if u2 then
-        v32 = v28.isJumping
-        v31 = v28.worldMoveVector
+        v28 = Character_4:FindFirstChildOfClass(u3)
     else
-        local v33 = v30 and v30:FindFirstChild("CharacterContext")
-        if not v33 then
-            return
-        end
-        local MoveAction_1 = v33:FindFirstChild("MoveAction")
-        local JumpAction_2 = v33:FindFirstChild("JumpAction")
-        if MoveAction_1 then
-            v33 = MoveAction_1:GetState()
-        else
-            v33 = Vector2.zero
-        end
-        if JumpAction_2 then
-            v32 = JumpAction_2:GetState()
-        else
-            v32 = false
-        end
-        v31 = a2:calculateRawMoveVector(humanoid_1, Vector3.new(v33.X, 0, -v33.Y))
+        v28 = Character_4:FindFirstChild(u3)
     end
-    v30 = UserGameSettings_upv_1.RotationType == Enum.RotationType.CameraRelative
-    local v34 = ((Workspace_upv_1.CurrentCamera) and (Workspace_upv_1.CurrentCamera.CFrame.LookVector)) or Vector3.new(0, 0, 1)
-    local v35 = Vector3.new(v34.X, 0, v34.Z)
-    local v36 = ((not (v35.Magnitude > 0.001)) and Vector3.new(0, 0, 1)) or (v35.Unit)
+    if not v28 or not a2.humanoid then
+        return
+    end
+    local isJumping_1 = data_1.controlModule.isJumping
+    local worldMoveVector_1 = data_1.controlModule.worldMoveVector
+    data_1 = UserGameSettings_upv_1.RotationType == Enum.RotationType.CameraRelative
+    local v29 = ((Workspace_upv_1.CurrentCamera) and (Workspace_upv_1.CurrentCamera.CFrame.LookVector)) or Vector3.new(0, 0, 1)
+    local v30 = Vector3.new(v29.X, 0, v29.Z)
+    local v31 = ((not (v30.Magnitude > 0.001)) and Vector3.new(0, 0, 1)) or (v30.Unit)
     local tbl_2 = {}
-    tbl_2.Move = v31
-    tbl_2.RotateToLookDirection = v30
-    tbl_2.LookDirection = v36
+    tbl_2.Move = worldMoveVector_1
+    tbl_2.RotateToLookDirection = data_1
+    tbl_2.LookDirection = v31
     if not (u1) or not (AvatarAbilitiesInterface_upv_1.get(a1):isEnabled()) then
-        tbl_2.Jump = v32
+        tbl_2.Jump = isJumping_1
     end
-    v29:UpdateFields(tbl_2)
+    v28:UpdateFields(tbl_2)
 end
 function tbl_upv_1.processPCSInputs(a1)
     --[[
       name: processPCSInputs
-      line: 247
+      line: 224
       upvalues:
-        u3 (copy, index: 1)
-        u4 (copy, index: 2)
+        u2 (copy, index: 1)
+        u3 (copy, index: 2)
     ]]
     local Character_5 = a1.Character
     if Character_5 == nil then
@@ -429,20 +395,20 @@ function tbl_upv_1.processPCSInputs(a1)
     if Humanoid_3 == nil then
         return
     end
-    local v37
-    if u3 then
-        v37 = Character_5:FindFirstChildOfClass(u4)
+    local v32
+    if u2 then
+        v32 = Character_5:FindFirstChildOfClass(u3)
     else
-        v37 = Character_5:FindFirstChild(u4)
+        v32 = Character_5:FindFirstChild(u3)
     end
-    if v37 == nil then
+    if v32 == nil then
         return
     end
-    local v38 = v37:GetState()
-    local Move_1 = v38.Move
-    local Jump_1 = v38.Jump
-    local RotateToLookDirection_1 = v38.RotateToLookDirection
-    local LookDirection_1 = v38.LookDirection
+    local v33 = v32:GetState()
+    local Move_1 = v33.Move
+    local Jump_1 = v33.Jump
+    local RotateToLookDirection_1 = v33.RotateToLookDirection
+    local LookDirection_1 = v33.LookDirection
     if Move_1 then
         Humanoid_3:Move(Move_1)
     end
