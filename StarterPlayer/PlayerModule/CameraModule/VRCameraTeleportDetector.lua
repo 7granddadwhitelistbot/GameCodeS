@@ -1,17 +1,23 @@
-local tbl_upv_1 = {}
-tbl_upv_1.JUMP_STUDS = 4
-tbl_upv_1.SETTLED_STUDS = 1
-tbl_upv_1.DEBOUNCE_SECONDS = 0.25
-function tbl_upv_1.shouldRecenter(a1, a2, a3, a4)
+local v1 = {JUMP_STUDS = 4, SETTLED_STUDS = 1, DEBOUNCE_SECONDS = 0.25}
+
+function v1.shouldRecenter(a2, a3, a4, a5)
     --[[
       name: shouldRecenter
       line: 29
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    if a2 <= tbl_upv_1.JUMP_STUDS or a1 ~= nil and tbl_upv_1.SETTLED_STUDS <= a1 or a3 ~= nil and a4 - a3 < tbl_upv_1.DEBOUNCE_SECONDS then
+    if a3 <= v1.JUMP_STUDS then
         return false
     end
+    if a2 ~= nil and v1.SETTLED_STUDS <= a2 then
+        return false
+    end
+    if a4 ~= nil and a5 - a4 < v1.DEBOUNCE_SECONDS then
+        return false
+    end
+
     return true
 end
-return tbl_upv_1
+
+return v1

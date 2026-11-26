@@ -1,1408 +1,1512 @@
-local v1 = os.clock()
-local Players_1 = game:GetService("Players")
-local StarterGui_upv_1 = game:GetService("StarterGui")
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local RunService_upv_1 = game:GetService("RunService")
-local ProximityPromptService_upv_1 = game:GetService("ProximityPromptService")
-local GuiService_upv_1 = game:GetService("GuiService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local PlayerGui_upv_1 = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-pcall(
-    function()
-        --[[
-          line: 16
-          upvalues:
-            PlayerGui_upv_1 (copy, index: 1)
-        ]]
-        PlayerGui_upv_1.ScreenOrientation = Enum.ScreenOrientation.LandscapeSensor
-    end
-)
-local Parent_upv_1 = script.Parent
-local Shared_1 = ReplicatedStorage_1:WaitForChild("Shared")
-local Signal_1 = require(Shared_1:WaitForChild("Signal"))
-local Loc_upv_1 = require(Shared_1:WaitForChild("Loc"))
-Loc_upv_1.Install()
-local Theme_upv_1 = require(Parent_upv_1.Theme)
-local UI_upv_1 = require(Parent_upv_1.UI)
-local Sounds_1 = require(Parent_upv_1.Sounds)
-local Remotes_upv_1 = require(Parent_upv_1.Remotes)
-local State_upv_1 = require(Parent_upv_1.State)
-local MenuManager_upv_1 = require(Parent_upv_1.MenuManager)
-local WeaponInfo_1 = require(Parent_upv_1.WeaponInfo)
-local WeaponIcon_1 = require(Parent_upv_1.WeaponIcon)
-local Portraits_upv_1 = require(Parent_upv_1.Portraits)
-local Fighters_1 = require(Parent_upv_1.Fighters)
-WeaponIcon_1.Init(UI_upv_1, WeaponInfo_1)
-Portraits_upv_1.Init(UI_upv_1, Fighters_1)
-pcall(
-    function()
-        --[[
-          line: 44
-          upvalues:
-            GuiService_upv_1 (copy, index: 1)
-        ]]
-        GuiService_upv_1.AutoSelectGuiEnabled = false
-    end
-)
-UI_upv_1.SelectionRing(PlayerGui_upv_1)
-local u1 = false
-local u2 = function()
+local v1 = function()
     --[[
       line: 57
     ]]
     return false
 end
+
+local timestamp = os.clock()
+local players = game:GetService("Players")
+local starterGui = game:GetService("StarterGui")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local proximityPromptService = game:GetService("ProximityPromptService")
+local guiService = game:GetService("GuiService")
+local workspace = game:GetService("Workspace")
+local localPlayer = players.LocalPlayer
+local playerGui = localPlayer:WaitForChild("PlayerGui")
+pcall(
+    function()
+        --[[
+          line: 16
+          upvalues:
+            playerGui (copy, index: 1)
+        ]]
+        playerGui.ScreenOrientation = Enum.ScreenOrientation.LandscapeSensor
+    end
+)
+local parent = script.Parent
+local shared = replicatedStorage:WaitForChild("Shared")
+local Signal = require(shared:WaitForChild("Signal"))
+local Loc = require(shared:WaitForChild("Loc"))
+Loc.Install()
+local Theme = require(parent.Theme)
+local UI = require(parent.UI)
+local Sounds = require(parent.Sounds)
+local Remotes = require(parent.Remotes)
+local State = require(parent.State)
+local MenuManager = require(parent.MenuManager)
+local WeaponInfo = require(parent.WeaponInfo)
+local WeaponIcon = require(parent.WeaponIcon)
+local Portraits = require(parent.Portraits)
+local Fighters = require(parent.Fighters)
+WeaponIcon.Init(UI, WeaponInfo)
+Portraits.Init(UI, Fighters)
+pcall(
+    function()
+        --[[
+          line: 44
+          upvalues:
+            guiService (copy, index: 1)
+        ]]
+        guiService.AutoSelectGuiEnabled = false
+    end
+)
+UI.SelectionRing(playerGui)
+local v26 = false
+local v27 = v1
+
 local function applyPlayerList()
     --[[
       name: applyPlayerList
       line: 60
       upvalues:
-        u1 (ref,  index: 1)
-        StarterGui_upv_1 (copy, index: 2)
-        State_upv_1 (copy, index: 3)
-        u2 (ref,  index: 4)
+        v26 (ref,  index: 1)
+        starterGui (copy, index: 2)
+        State (copy, index: 3)
+        v27 (ref,  index: 4)
     ]]
-    if not u1 then
+    if not v26 then
         return
     end
+
     pcall(
         function()
             --[[
               line: 64
               upvalues:
-                StarterGui_upv_1 (copy, index: 1)
-                State_upv_1 (copy, index: 2)
-                u2 (ref,  index: 3)
+                starterGui (copy, index: 1)
+                State (copy, index: 2)
+                v27 (ref,  index: 3)
             ]]
-            local v2 = not State_upv_1.InMatch() and (not u2())
-            StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, v2)
+            local playerList = Enum.CoreGuiType.PlayerList
+            local enabled = not State.InMatch() and not v27()
+            starterGui:SetCoreGuiEnabled(playerList, enabled)
         end
     )
+
     pcall(
         function()
             --[[
               line: 68
               upvalues:
-                StarterGui_upv_1 (copy, index: 1)
-                State_upv_1 (copy, index: 2)
+                starterGui (copy, index: 1)
+                State (copy, index: 2)
             ]]
-            StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, not State_upv_1.InMatch())
+            starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, not State.InMatch())
         end
     )
 end
+
 task.spawn(
     function()
         --[[
           line: 72
           upvalues:
-            StarterGui_upv_1 (copy, index: 1)
-            State_upv_1 (copy, index: 2)
-            u2 (ref,  index: 3)
-            u1 (ref,  index: 4)
+            starterGui (copy, index: 1)
+            State (copy, index: 2)
+            v27 (ref,  index: 3)
+            v26 (ref,  index: 4)
             applyPlayerList (copy, index: 5)
         ]]
         for _ = 1, 20 do
-            if not (pcall(
+            if pcall(
                 function()
                     --[[
                       line: 74
                       upvalues:
-                        StarterGui_upv_1 (copy, index: 1)
-                        State_upv_1 (copy, index: 2)
-                        u2 (ref,  index: 3)
+                        starterGui (copy, index: 1)
+                        State (copy, index: 2)
+                        v27 (ref,  index: 3)
                     ]]
-                    StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
-                    StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
-                    local v3 = not State_upv_1.InMatch() and (not u2())
-                    StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, v3)
+                    starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+                    starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
+                    local playerList = Enum.CoreGuiType.PlayerList
+                    local enabled = not State.InMatch() and not v27()
+                    starterGui:SetCoreGuiEnabled(playerList, enabled)
                 end
-            )) then
-                task.wait(0.5)
-                continue
+            ) then
+                v26 = true
+                applyPlayerList()
+
+                return
             end
-            u1 = true
-            applyPlayerList()
-            return
+
+            task.wait(0.5)
         end
     end
 )
-local _, u3 = UI_upv_1.Screen("TR_HUD", 5, PlayerGui_upv_1)
-local v73, v4 = UI_upv_1.Screen("TR_Backdrop", 9, PlayerGui_upv_1, {fullBleed = true})
-UI_upv_1.BackdropCanvas = v4
-local v74, v5 = UI_upv_1.Screen("TR_Menus", 10, PlayerGui_upv_1)
-local v75, v6 = UI_upv_1.Screen("TR_Overlay", 20, PlayerGui_upv_1, {fullBleed = true})
-local v76, v7 = UI_upv_1.Screen("TR_Top", 40, PlayerGui_upv_1, {fullBleed = true})
-local tbl_upv_1 = {HudHidden = false, Toast = 0}
-tbl_upv_1.UI = UI_upv_1
-tbl_upv_1.Theme = Theme_upv_1
-tbl_upv_1.Sounds = Sounds_1
-tbl_upv_1.Remotes = Remotes_upv_1
-tbl_upv_1.State = State_upv_1
-tbl_upv_1.MenuManager = MenuManager_upv_1
-tbl_upv_1.WeaponInfo = WeaponInfo_1
-tbl_upv_1.WeaponIcon = WeaponIcon_1
-tbl_upv_1.Portraits = Portraits_upv_1
-tbl_upv_1.Fighters = Fighters_1
-tbl_upv_1.Loc = Loc_upv_1
-tbl_upv_1.Player = LocalPlayer_upv_1
-tbl_upv_1.PlayerGui = PlayerGui_upv_1
-tbl_upv_1.Canvas = {HUD = u3, Backdrop = v4, Menus = v5, Overlay = v6, Top = v7}
-tbl_upv_1.HudHiddenChanged = Signal_1.new()
-tbl_upv_1.HeldWeaponChanged = Signal_1.new()
-tbl_upv_1.Debug = {}
-function tbl_upv_1.Toast(a1, a2, a3)
-    --[[
-      name: Toast
-      line: 117
-    ]]
-    print("[UI toast]", a1, a2)
-end
-local tbl_upv_2 = {}
-function tbl_upv_1.SetHudHidden(a1, a2)
+
+local _, hud = UI.Screen("TR_HUD", 5, playerGui)
+local _, v37 = UI.Screen("TR_Backdrop", 9, playerGui, {fullBleed = true})
+UI.BackdropCanvas = v37
+local _, menus = UI.Screen("TR_Menus", 10, playerGui)
+local _, overlay = UI.Screen("TR_Overlay", 20, playerGui, {fullBleed = true})
+local _, top = UI.Screen("TR_Top", 40, playerGui, {fullBleed = true})
+local v44 = {
+    HudHidden = false,
+    UI = UI,
+    Theme = Theme,
+    Sounds = Sounds,
+    Remotes = Remotes,
+    State = State,
+    MenuManager = MenuManager,
+    WeaponInfo = WeaponInfo,
+    WeaponIcon = WeaponIcon,
+    Portraits = Portraits,
+    Fighters = Fighters,
+    Loc = Loc,
+    Player = localPlayer,
+    PlayerGui = playerGui,
+    Canvas = {HUD = hud, Backdrop = v37, Menus = menus, Overlay = overlay, Top = top},
+    HudHiddenChanged = Signal.new(),
+    HeldWeaponChanged = Signal.new(),
+    Debug = {},
+    Toast = (function(a45, a46, a47)
+        --[[
+          name: Toast
+          line: 117
+        ]]
+        print("[UI toast]", a45, a46)
+    end)
+}
+local v48 = {}
+
+function v44.SetHudHidden(key, a50)
     --[[
       name: SetHudHidden
       line: 124
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v48 (copy, index: 1)
+        v44 (copy, index: 2)
     ]]
-    tbl_upv_2[a1] = (a2 and true) or nil
-    local v8 = next(tbl_upv_2) ~= nil
-    if tbl_upv_1._refreshMenuOpen then
-        task.defer(tbl_upv_1._refreshMenuOpen)
+    v48[key] = a50 and true or nil
+    local hudHidden = next(v48) ~= nil
+
+    if v44._refreshMenuOpen then
+        task.defer(v44._refreshMenuOpen)
     end
-    if v8 == tbl_upv_1.HudHidden then
-        return
+
+    if hudHidden ~= v44.HudHidden then
+        v44.HudHidden = hudHidden
+        v44.HudHiddenChanged:Fire(hudHidden)
     end
-    tbl_upv_1.HudHidden = v8
-    tbl_upv_1.HudHiddenChanged:Fire(v8)
 end
-function tbl_upv_1.IsHudHiddenFor(a1)
+
+function v44.IsHudHiddenFor(key)
     --[[
       name: IsHudHiddenFor
       line: 135
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v48 (copy, index: 1)
     ]]
-    return tbl_upv_2[a1] == true
+    return v48[key] == true
 end
-local ContentProvider_upv_1 = game:GetService("ContentProvider")
-local tbl_upv_3 = {}
-function tbl_upv_1.PreloadThumb(a1, a2)
+
+local contentProvider = game:GetService("ContentProvider")
+local v54 = {}
+
+function v44.PreloadThumb(key, a56)
     --[[
       name: PreloadThumb
       line: 143
       upvalues:
-        tbl_upv_3 (copy, index: 1)
-        ContentProvider_upv_1 (copy, index: 2)
+        v54 (copy, index: 1)
+        contentProvider (copy, index: 2)
     ]]
-    if type(a1) ~= "string" or a1 == "" then
+    if type(key) ~= "string" or key == "" then
         return
     end
-    if tbl_upv_3[a1] == nil or (a2) then
-        if tbl_upv_3[a1] ~= nil then
-            local v9 = os.clock()
-            while tbl_upv_3[a1] == false do
-                if os.clock() - v9 < 8 then
-                    task.wait(0.1)
-                    continue
-                else
-                    break
-                end
+    if v54[key] ~= nil and not a56 then
+        return
+    end
+
+    if v54[key] == nil then
+        v54[key] = false
+        pcall(
+            function()
+                --[[
+                  line: 152
+                  upvalues:
+                    contentProvider (copy, index: 1)
+                    key (copy, index: 2)
+                ]]
+                contentProvider:PreloadAsync({key})
             end
-        else
-            tbl_upv_3[a1] = false
-            pcall(
-                function()
-                    --[[
-                      line: 152
-                      upvalues:
-                        ContentProvider_upv_1 (copy, index: 1)
-                        a1 (copy, index: 2)
-                    ]]
-                    ContentProvider_upv_1:PreloadAsync({a1})
-                end
-            )
-            tbl_upv_3[a1] = true
-        end
+        )
+        v54[key] = true
+
+        return
+    end
+
+    local timestamp = os.clock()
+
+    while v54[key] == false and os.clock() - timestamp < 8 do
+        task.wait(0.1)
     end
 end
-State_upv_1.MatchChanged:Connect(
-    function(a1)
+
+State.MatchChanged:Connect(
+    function(a58)
         --[[
           line: 163
           upvalues:
-            tbl_upv_3 (copy, index: 1)
-            tbl_upv_1 (copy, index: 2)
+            v54 (copy, index: 1)
+            v44 (copy, index: 2)
         ]]
-        if not a1 or type(a1.mapThumb) ~= "string" or tbl_upv_3[a1.mapThumb] ~= nil then
-            return
+        if a58 and type(a58.mapThumb) == "string" and v54[a58.mapThumb] == nil then
+            task.spawn(v44.PreloadThumb, a58.mapThumb)
         end
-        task.spawn(tbl_upv_1.PreloadThumb, a1.mapThumb)
     end
 )
-State_upv_1.MatchEvent:Connect(
-    function(a1, a2)
+
+State.MatchEvent:Connect(
+    function(a59, a60)
         --[[
           line: 168
           upvalues:
-            tbl_upv_1 (copy, index: 1)
+            v44 (copy, index: 1)
         ]]
-        if a1 ~= "MatchStart" or type(a2) ~= "table" then
-            return
+        if a59 == "MatchStart" and type(a60) == "table" then
+            task.spawn(v44.PreloadThumb, a60.mapThumb)
         end
-        task.spawn(tbl_upv_1.PreloadThumb, a2.mapThumb)
     end
 )
-function tbl_upv_1.ProfileAction(a1, ...)
+
+function v44.ProfileAction(a61, ...)
     --[[
       name: ProfileAction
       line: 176
       upvalues:
-        State_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-        Remotes_upv_1 (copy, index: 3)
+        State (copy, index: 1)
+        v44 (copy, index: 2)
+        Remotes (copy, index: 3)
     ]]
-    if State_upv_1.Mock then
-        return tbl_upv_1.Debug._mockProfileAction(a1, ...)
+    if State.Mock then
+        return v44.Debug._mockProfileAction(a61, ...)
     end
-    local v10, v11, v12, v13 = Remotes_upv_1.Invoke("ProfileAction", a1, ...)
-    if v10 then
-        if v11 == true then
-            task.delay(0.6, State_upv_1.Refresh)
-            return true, nil, v13
-        end
-        tbl_upv_1.Toast(tostring(v12 or "Couldn't do that"), "error")
-        return false, v12
+
+    local v62, v63, v64, v65 = Remotes.Invoke("ProfileAction", a61, ...)
+    if not v62 then
+        v44.Toast(tostring((v63 or "Server unavailable")), "error")
+        return false, (tostring(v63))
     end
-    tbl_upv_1.Toast(tostring(v11 or "Server unavailable"), "error")
-    return false, (tostring(v11))
+
+    if v63 ~= true then
+        v44.Toast(tostring((v64 or "Couldn't do that")), "error")
+        return false, v64
+    end
+
+    task.delay(0.6, State.Refresh)
+
+    return true, nil, v65
 end
-function tbl_upv_1.QueueAction(a1, a2, a3, a4)
+
+function v44.QueueAction(a66, a67, a68, a69)
     --[[
       name: QueueAction
       line: 196
       upvalues:
-        State_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-        Remotes_upv_1 (copy, index: 3)
+        State (copy, index: 1)
+        v44 (copy, index: 2)
+        Remotes (copy, index: 3)
     ]]
-    if State_upv_1.Mock then
-        if tbl_upv_1.Debug._mockQueueAction then
-            return tbl_upv_1.Debug._mockQueueAction(a1, a4)
+    if State.Mock then
+        if v44.Debug._mockQueueAction then
+            return v44.Debug._mockQueueAction(a66, a69)
         end
-        tbl_upv_1.Toast("(mock) " .. a1, "info")
+
+        v44.Toast("(mock) " .. a66, "info")
+
         return true, nil
-    else
-        local v14, v15, v16 = Remotes_upv_1.Invoke("QueueAction", a1, a2 or "menu", a3, a4)
-        if v14 then
-            if v15 == true then
-                return true, nil
-            end
-            if v16 then
-                tbl_upv_1.Toast(tostring(v16), "error")
-            end
-            return false, v16
-        end
-        tbl_upv_1.Toast(tostring(v15 or "Server unavailable"), "error")
-        return false, (tostring(v15))
     end
+
+    local v70, v71, v72 = Remotes.Invoke("QueueAction", a66, a67 or "menu", a68, a69)
+    if not v70 then
+        v44.Toast(tostring((v71 or "Server unavailable")), "error")
+        return false, (tostring(v71))
+    end
+
+    if v71 == true then
+        return true, nil
+    end
+
+    if v72 then
+        v44.Toast(tostring(v72), "error")
+    end
+
+    return false, v72
 end
-State_upv_1.Start()
-require(Parent_upv_1.SettingsStore).Init(tbl_upv_1)
-require(Parent_upv_1.Economy).Init(tbl_upv_1)
-require(Parent_upv_1.Custom).Init(tbl_upv_1)
-require(Parent_upv_1.Tribes).Init(tbl_upv_1)
-MenuManager_upv_1.Changed:Connect(
-    function(a1)
+
+State.Start()
+require(parent.SettingsStore).Init(v44)
+require(parent.Economy).Init(v44)
+require(parent.Custom).Init(v44)
+require(parent.Tribes).Init(v44)
+MenuManager.Changed:Connect(
+    function(a73)
         --[[
           line: 225
           upvalues:
-            ProximityPromptService_upv_1 (copy, index: 1)
+            proximityPromptService (copy, index: 1)
         ]]
-        ProximityPromptService_upv_1.Enabled = a1 == nil
+        proximityPromptService.Enabled = a73 == nil
     end
 )
-local u4 = false
+local v74 = false
+
 local function refreshMenuOpen()
     --[[
       name: refreshMenuOpen
       line: 233
       upvalues:
-        MenuManager_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
-        UI_upv_1 (copy, index: 4)
-        u4 (ref,  index: 5)
-        GuiService_upv_1 (copy, index: 6)
+        MenuManager (copy, index: 1)
+        v48 (copy, index: 2)
+        localPlayer (copy, index: 3)
+        UI (copy, index: 4)
+        v74 (ref,  index: 5)
+        guiService (copy, index: 6)
     ]]
-    local v17 = MenuManager_upv_1.IsOpen()
-    if not (v17) then
-        v17 = true
-        if tbl_upv_2.MatchEnd ~= true then
-            v17 = true
-            if tbl_upv_2.Intro ~= true then
-                v17 = true
-                if tbl_upv_2.Celebrate ~= true then
-                    v17 = true
-                    if tbl_upv_2.Reveal ~= true then
-                        v17 = tbl_upv_2.RankUp == true
-                    end
-                end
-            end
-        end
+    local v76 = MenuManager.IsOpen()
+        or v48.MatchEnd == true
+        or v48.Intro == true
+        or v48.Celebrate == true
+        or v48.Reveal == true
+        or v48.RankUp == true
+
+    if localPlayer:GetAttribute("MenuOpen") ~= v76 then
+        localPlayer:SetAttribute("MenuOpen", v76)
     end
-    if LocalPlayer_upv_1:GetAttribute("MenuOpen") ~= v17 then
-        LocalPlayer_upv_1:SetAttribute("MenuOpen", v17)
-    end
-    if UI_upv_1.Touch then
-        local u5 = v17 or (LocalPlayer_upv_1:GetAttribute("TouchControlsReady") == false)
-        u4 = u5
+
+    if UI.Touch then
+        local v77 = v76 or localPlayer:GetAttribute("TouchControlsReady") == false
+        v74 = v77
         pcall(
             function()
                 --[[
                   line: 246
                   upvalues:
-                    GuiService_upv_1 (copy, index: 1)
-                    u5 (copy, index: 2)
+                    guiService (copy, index: 1)
+                    v77 (copy, index: 2)
                 ]]
-                GuiService_upv_1.TouchControlsEnabled = not u5
+                guiService.TouchControlsEnabled = not v77
             end
         )
-    elseif u4 then
-        u4 = false
+
+        return
+    end
+
+    if v74 then
+        v74 = false
         pcall(
             function()
                 --[[
                   line: 251
                   upvalues:
-                    GuiService_upv_1 (copy, index: 1)
+                    guiService (copy, index: 1)
                 ]]
-                GuiService_upv_1.TouchControlsEnabled = true
+                guiService.TouchControlsEnabled = true
             end
         )
     end
 end
-MenuManager_upv_1.Changed:Connect(refreshMenuOpen)
-u2 = function()
+
+MenuManager.Changed:Connect(refreshMenuOpen)
+
+v27 = function()
     --[[
       line: 258
       upvalues:
-        MenuManager_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        MenuManager (copy, index: 1)
+        v44 (copy, index: 2)
     ]]
-    local v18 = MenuManager_upv_1.IsOpen() or (tbl_upv_1.HudHidden == true)
-    return v18
+    return MenuManager.IsOpen() or v44.HudHidden == true
 end
-MenuManager_upv_1.Changed:Connect(applyPlayerList)
-tbl_upv_1.HudHiddenChanged:Connect(applyPlayerList)
-UI_upv_1.TouchChanged:Connect(refreshMenuOpen)
-LocalPlayer_upv_1:GetAttributeChangedSignal("TouchControlsReady"):Connect(refreshMenuOpen)
-tbl_upv_1._refreshMenuOpen = refreshMenuOpen
+
+MenuManager.Changed:Connect(applyPlayerList)
+v44.HudHiddenChanged:Connect(applyPlayerList)
+UI.TouchChanged:Connect(refreshMenuOpen)
+localPlayer:GetAttributeChangedSignal("TouchControlsReady"):Connect(refreshMenuOpen)
+v44._refreshMenuOpen = refreshMenuOpen
 task.defer(refreshMenuOpen)
-tbl_upv_1.PendingEvent = nil
-function tbl_upv_1.OnMatchEvent(a1)
+v44.PendingEvent = nil
+
+function v44.OnMatchEvent(a78)
     --[[
       name: OnMatchEvent
       line: 272
       upvalues:
-        State_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        State (copy, index: 1)
+        v44 (copy, index: 2)
     ]]
-    State_upv_1.MatchEvent:Connect(a1)
-    local PendingEvent_1 = tbl_upv_1.PendingEvent
-    if not PendingEvent_1 then
-        return
+    State.MatchEvent:Connect(a78)
+
+    if const pendingEvent = v44.PendingEvent then
+        task.spawn(a78, pendingEvent.kind, pendingEvent.data)
     end
-    task.spawn(a1, PendingEvent_1.kind, PendingEvent_1.data)
 end
-local tbl_4 = {"Notifications", "LobbyHud", "MatchSettings", "RankedSwitch", "Hotbar", "ActionHints", "Nameplates", "TouchLayout", "Economy", "Party", "Joining", "DropReveal", "ChatTags", "CustomLobby", "Onboarding", "Moderation", "CheaterBanned"}
-local tbl_upv_5 = {"MatchHud", "TabList", "KillFeed", "Decider", "Banners", "Celebration", "Spectate", "LoadoutSwap", "TeamChat"}
-local tbl_upv_6 = {"Leaderboards", "CustomLive", "MoveDebug", "TribeHall", "News", "GoldenOffer"}
-local tbl_upv_7 = {CustomHost = "CustomHost", Letter = "Letter", News = "News", Loadout = "Loadout", Ranks = "RankRoad", GoldenOffer = "GoldenOffer", Settings = "Settings", CustomMatches = "CustomMatches", Collection = "Collection", Mode = "ModeSelect", Tribe = "Tribe", PlayerCard = "PlayerCard"}
-local Screens_upv_1 = Parent_upv_1:WaitForChild("Screens")
-local tbl_upv_8 = {}
-local tbl_upv_9 = {}
-local u6 = false
-local function ensureScreen(a1)
+
+local v80 = {"Notifications", "LobbyHud", "MatchSettings", "RankedSwitch", "Hotbar", "ActionHints", "Nameplates", "TouchLayout", "Economy", "Party", "Joining", "DropReveal", "ChatTags", "CustomLobby", "Onboarding", "Moderation", "CheaterBanned"}
+local v81 = {"MatchHud", "TabList", "KillFeed", "Decider", "Banners", "Celebration", "Spectate", "LoadoutSwap", "TeamChat"}
+local v82 = {"Leaderboards", "CustomLive", "MoveDebug", "TribeHall", "News", "GoldenOffer"}
+local v83 = {Mode = "ModeSelect", Ranks = "RankRoad", Loadout = "Loadout", Settings = "Settings", Collection = "Collection", Letter = "Letter", PlayerCard = "PlayerCard", CustomMatches = "CustomMatches", CustomHost = "CustomHost", Tribe = "Tribe", News = "News", GoldenOffer = "GoldenOffer"}
+local screens = parent:WaitForChild("Screens")
+local v85 = {}
+local v86 = {}
+local v87 = false
+
+local function ensureScreen(childName)
     --[[
       name: ensureScreen
       line: 290
       upvalues:
-        tbl_upv_9 (copy, index: 1)
-        Screens_upv_1 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
-        tbl_upv_8 (copy, index: 4)
-        u6 (ref,  index: 5)
-        RunService_upv_1 (copy, index: 6)
+        v86 (copy, index: 1)
+        screens (copy, index: 2)
+        v44 (copy, index: 3)
+        v85 (copy, index: 4)
+        v87 (ref,  index: 5)
+        runService (copy, index: 6)
     ]]
-    if tbl_upv_9[a1] then
+    if v86[childName] then
         return true
     end
-    tbl_upv_9[a1] = true
-    local u7 = Screens_upv_1:FindFirstChild(a1) or (Screens_upv_1:WaitForChild(a1, 5))
-    if u7 then
-        local v19 = os.clock()
-        local success_1, v20 = xpcall(
-            function()
-                --[[
-                  line: 301
-                  upvalues:
-                    u7 (copy, index: 1)
-                    tbl_upv_1 (copy, index: 2)
-                ]]
-                require(u7).Init(tbl_upv_1)
-            end,
-            debug.traceback
-        )
-        local v21 = (os.clock() - v19) * 1000
-        tbl_upv_8[a1] = v21
-        if success_1 then
-            if u6 and RunService_upv_1:IsStudio() then
-                print(string.format("[UI] built %s on demand in %.1f ms", a1, v21))
-            end
-        else
-            warn("[UI] screen " .. a1 .. " failed to init: " .. tostring(v20))
-        end
-        return success_1
+
+    v86[childName] = true
+    local child = screens:FindFirstChild(childName) or screens:WaitForChild(childName, 5)
+    if not child then
+        warn("[UI] missing screen module " .. childName)
+        return false
     end
-    warn("[UI] missing screen module " .. a1)
-    return false
+
+    local timestamp = os.clock()
+    local success, result = xpcall(
+        function()
+            --[[
+              line: 301
+              upvalues:
+                child (copy, index: 1)
+                v44 (copy, index: 2)
+            ]]
+            require(child).Init(v44)
+        end,
+        debug.traceback
+    )
+    local v94 = (os.clock() - timestamp) * 1000
+    v85[childName] = v94
+
+    if success then
+        if v87 and runService:IsStudio() then
+            print(string.format("[UI] built %s on demand in %.1f ms", childName, v94))
+        end
+    else
+        warn("[UI] screen " .. childName .. " failed to init: " .. tostring(result))
+    end
+
+    return success
 end
-tbl_upv_1.EnsureScreen = ensureScreen
-tbl_upv_1.IsScreenLoaded = function(a1)
+
+v44.EnsureScreen = ensureScreen
+
+v44.IsScreenLoaded = function(key)
     --[[
       line: 314
       upvalues:
-        tbl_upv_9 (copy, index: 1)
+        v86 (copy, index: 1)
     ]]
-    return tbl_upv_9[a1] == true
+    return v86[key] == true
 end
-MenuManager_upv_1.SetLoader(
-    function(a1)
+
+MenuManager.SetLoader(
+    function(key)
         --[[
           line: 318
           upvalues:
-            tbl_upv_7 (copy, index: 1)
+            v83 (copy, index: 1)
             ensureScreen (copy, index: 2)
         ]]
-        local v22 = tbl_upv_7[a1]
-        if not v22 then
-            return
+        if const childName = v83[key] then
+            ensureScreen(childName)
         end
-        ensureScreen(v22)
     end
 )
-tbl_upv_1.BuildMatchScreens = function()
+
+v44.BuildMatchScreens = function()
     --[[
       name: buildMatchScreens
       line: 326
       upvalues:
-        tbl_upv_5 (copy, index: 1)
+        v81 (copy, index: 1)
         ensureScreen (copy, index: 2)
     ]]
-    for _, value_1 in tbl_upv_5 do
-        ensureScreen(value_1)
+    for _, childName in v81 do
+        ensureScreen(childName)
     end
 end
-for v77, value_2 in tbl_4 do
-    ensureScreen(value_2)
+
+for _, childName in v80 do
+    ensureScreen(childName)
 end
-local v23 = os.clock()
-u6 = true
-State_upv_1.PlayerStateChanged:Connect(
-    function(a1)
+
+local timestamp2 = os.clock()
+v87 = true
+
+State.PlayerStateChanged:Connect(
+    function(a103)
         --[[
           line: 339
           upvalues:
             applyPlayerList (copy, index: 1)
-            tbl_upv_5 (copy, index: 2)
+            v81 (copy, index: 2)
             ensureScreen (copy, index: 3)
         ]]
         applyPlayerList()
-        if a1 ~= "Match" then
-            return
-        end
-        for _, value_3 in tbl_upv_5 do
-            ensureScreen(value_3)
+
+        if a103 == "Match" then
+            for _, childName in v81 do
+                ensureScreen(childName)
+            end
         end
     end
 )
-State_upv_1.WatchChanged:Connect(
-    function(a1)
+
+State.WatchChanged:Connect(
+    function(a106)
         --[[
           line: 346
           upvalues:
-            tbl_upv_5 (copy, index: 1)
+            v81 (copy, index: 1)
             ensureScreen (copy, index: 2)
         ]]
-        if not a1 then
-            return
-        end
-        for _, value_4 in tbl_upv_5 do
-            ensureScreen(value_4)
+        if a106 then
+            for _, childName in v81 do
+                ensureScreen(childName)
+            end
         end
     end
 )
-if State_upv_1.Watching() then
-    for v78, value_5 in tbl_upv_5 do
-        ensureScreen(value_5)
+
+if State.Watching() then
+    for _, childName in v81 do
+        ensureScreen(childName)
     end
 end
+
 applyPlayerList()
-if State_upv_1.InMatch() then
-    for v79, value_6 in tbl_upv_5 do
-        ensureScreen(value_6)
+
+if State.InMatch() then
+    for _, childName in v81 do
+        ensureScreen(childName)
     end
 end
-State_upv_1.MatchEvent:Connect(
-    function(a1, a2)
+
+State.MatchEvent:Connect(
+    function(kind, data)
         --[[
           line: 360
           upvalues:
-            tbl_upv_9 (copy, index: 1)
-            Portraits_upv_1 (copy, index: 2)
-            tbl_upv_1 (copy, index: 3)
-            tbl_upv_5 (copy, index: 4)
+            v86 (copy, index: 1)
+            Portraits (copy, index: 2)
+            v44 (copy, index: 3)
+            v81 (copy, index: 4)
             ensureScreen (copy, index: 5)
         ]]
-        if a1 == "MatchStart" and tbl_upv_9.MatchHud then
-            Portraits_upv_1.Reset()
+        if kind == "MatchStart" and v86.MatchHud then
+            Portraits.Reset()
         end
-        local v24 = not tbl_upv_9.MatchHud
-        local v25 = (a1 == "MatchEnd") and (not tbl_upv_9.MatchEnd)
-        if (v24) or (v25) then
-            tbl_upv_1.PendingEvent = {kind = a1, data = a2}
-            if a1 == "MatchStart" then
-                Portraits_upv_1.Reset()
-            end
-            if v24 then
-                for _, value_7 in tbl_upv_5 do
-                    ensureScreen(value_7)
-                end
-            end
-            if v25 then
-                ensureScreen("MatchEnd")
-            end
-            tbl_upv_1.PendingEvent = nil
+
+        local v115 = not v86.MatchHud
+        local v116 = kind == "MatchEnd" and not v86.MatchEnd
+
+        if not v115 and not v116 then
+            return
         end
+
+        v44.PendingEvent = {kind = kind, data = data}
+
+        if kind == "MatchStart" then
+            Portraits.Reset()
+        end
+
+        if v115 then
+            for _, childName in v81 do
+                ensureScreen(childName)
+            end
+        end
+
+        if v116 then
+            ensureScreen("MatchEnd")
+        end
+
+        v44.PendingEvent = nil
     end
 )
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local Keybinds_upv_1 = require(ReplicatedStorage_1.Shared:WaitForChild("Keybinds"))
-Keybinds_upv_1.OnInput(
+
+local userInputService = game:GetService("UserInputService")
+local Keybinds = require(replicatedStorage.Shared:WaitForChild("Keybinds"))
+
+Keybinds.OnInput(
     "Began",
-    function(a1, a2)
+    function(a121, a122)
         --[[
           line: 387
           upvalues:
-            UserInputService_upv_1 (copy, index: 1)
-            tbl_upv_1 (copy, index: 2)
-            MenuManager_upv_1 (copy, index: 3)
+            userInputService (copy, index: 1)
+            v44 (copy, index: 2)
+            MenuManager (copy, index: 3)
         ]]
-        if UserInputService_upv_1:GetFocusedTextBox() then
+        if userInputService:GetFocusedTextBox() then
             return
         end
-        if a1.KeyCode == Enum.KeyCode.M and not (a2) or a1.KeyCode == Enum.KeyCode.ButtonSelect and not (tbl_upv_1.PadCapturing) then
-            MenuManager_upv_1.Toggle("Settings")
+
+        if a121.KeyCode == Enum.KeyCode.M and not a122
+            or a121.KeyCode == Enum.KeyCode.ButtonSelect and not v44.PadCapturing
+        then
+            MenuManager.Toggle("Settings")
         end
     end
 )
-local tbl_upv_10 = {}
-tbl_upv_10.kb = Enum.KeyCode.E
-tbl_upv_10.pad = Enum.KeyCode.ButtonX
-local u8 = -math.huge
-tbl_upv_1.LoadoutKeys = tbl_upv_10
-local tbl_upv_11 = {CustomMatchesPrompt = "CustomMatches", TribeBoardPrompt = "Tribe", LoadoutPrompt = "Loadout", LetterPrompt = "Letter", TribePrompt = "Tribe", ContractPrompt = "Collection"}
-local tbl_upv_12 = {TribeBoardPrompt = "Leaderboard"}
-local tbl_upv_13 = {CustomMatches = true, Collection = true, Letter = true, Loadout = true, Tribe = true}
-MenuManager_upv_1.Changed:Connect(
-    function(a1)
+
+local loadoutKeys = {kb = Enum.KeyCode.E, pad = Enum.KeyCode.ButtonX}
+local timestamp3 = -math.huge
+v44.LoadoutKeys = loadoutKeys
+local v125 = {LoadoutPrompt = "Loadout", ContractPrompt = "Collection", LetterPrompt = "Letter", CustomMatchesPrompt = "CustomMatches", TribePrompt = "Tribe", TribeBoardPrompt = "Tribe"}
+local v126 = {TribeBoardPrompt = "Leaderboard"}
+local v127 = {Loadout = true, Collection = true, Letter = true, CustomMatches = true, Tribe = true}
+
+MenuManager.Changed:Connect(
+    function(key)
         --[[
           line: 414
           upvalues:
-            tbl_upv_13 (copy, index: 1)
-            u8 (ref,  index: 2)
+            v127 (copy, index: 1)
+            timestamp3 (ref,  index: 2)
         ]]
-        if not a1 or not tbl_upv_13[a1] then
-            return
+        if key and v127[key] then
+            timestamp3 = os.clock()
         end
-        u8 = os.clock()
     end
 )
-ProximityPromptService_upv_1.PromptTriggered:Connect(
-    function(a1)
+
+proximityPromptService.PromptTriggered:Connect(
+    function(prompt: ProximityPrompt)
         --[[
           line: 419
           upvalues:
-            tbl_upv_11 (copy, index: 1)
-            tbl_upv_10 (copy, index: 2)
-            MenuManager_upv_1 (copy, index: 3)
-            tbl_upv_12 (copy, index: 4)
-            u8 (ref,  index: 5)
+            v125 (copy, index: 1)
+            loadoutKeys (copy, index: 2)
+            MenuManager (copy, index: 3)
+            v126 (copy, index: 4)
+            timestamp3 (ref,  index: 5)
         ]]
-        local v26 = tbl_upv_11[a1.Name]
-        if not v26 then
-            return
+        if const v130 = v125[prompt.Name] then
+            loadoutKeys.kb = prompt.KeyboardKeyCode
+            loadoutKeys.pad = prompt.GamepadKeyCode
+            MenuManager.Open(v130, v126[prompt.Name])
+            timestamp3 = os.clock()
         end
-        tbl_upv_10.kb = a1.KeyboardKeyCode
-        tbl_upv_10.pad = a1.GamepadKeyCode
-        MenuManager_upv_1.Open(v26, tbl_upv_12[a1.Name])
-        u8 = os.clock()
     end
 )
-UserInputService_upv_1.InputBegan:Connect(
-    function(a1)
+
+userInputService.InputBegan:Connect(
+    function(input: InputObject)
         --[[
           line: 428
           upvalues:
-            MenuManager_upv_1 (copy, index: 1)
-            tbl_upv_13 (copy, index: 2)
-            UserInputService_upv_1 (copy, index: 3)
-            tbl_upv_10 (copy, index: 4)
-            u8 (ref,  index: 5)
+            MenuManager (copy, index: 1)
+            v127 (copy, index: 2)
+            userInputService (copy, index: 3)
+            loadoutKeys (copy, index: 4)
+            timestamp3 (ref,  index: 5)
         ]]
-        local v27 = MenuManager_upv_1.Current()
-        if not v27 or not tbl_upv_13[v27] or (UserInputService_upv_1:GetFocusedTextBox()) then
+        local v132 = MenuManager.Current()
+
+        if not v132 or not v127[v132] or userInputService:GetFocusedTextBox() then
             return
         end
-        if (a1.KeyCode == tbl_upv_10.kb or a1.KeyCode == tbl_upv_10.pad) and not (os.clock() - u8 < 0.3) then
-            MenuManager_upv_1.Close(v27)
+        if input.KeyCode ~= loadoutKeys.kb and input.KeyCode ~= loadoutKeys.pad then
+            return
         end
+        if os.clock() - timestamp3 < 0.3 then
+            return
+        end
+
+        MenuManager.Close(v132)
     end
 )
+
 task.spawn(
     function()
         --[[
           line: 442
           upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            tbl_upv_6 (copy, index: 2)
+            localPlayer (copy, index: 1)
+            v82 (copy, index: 2)
             ensureScreen (copy, index: 3)
         ]]
-        if not (LocalPlayer_upv_1.Character) then
-            LocalPlayer_upv_1.CharacterAdded:Wait()
+        if not localPlayer.Character then
+            localPlayer.CharacterAdded:Wait()
         end
+
         task.wait(1)
-        for _, value_8 in tbl_upv_6 do
-            ensureScreen(value_8)
+
+        for _, childName in v82 do
+            ensureScreen(childName)
         end
     end
 )
-if RunService_upv_1:IsStudio() then
-    local Debug_upv_1 = tbl_upv_1.Debug
-    Debug_upv_1.open = function(a1, ...)
+
+if runService:IsStudio() then
+    local debug = v44.Debug
+
+    debug.open = function(a136, ...)
         --[[
           line: 455
           upvalues:
-            MenuManager_upv_1 (copy, index: 1)
+            MenuManager (copy, index: 1)
         ]]
-        MenuManager_upv_1.Open(a1, ...)
+        MenuManager.Open(a136, ...)
         return true
     end
-    Debug_upv_1.close = function()
+
+    debug.close = function()
         --[[
           line: 459
           upvalues:
-            MenuManager_upv_1 (copy, index: 1)
+            MenuManager (copy, index: 1)
         ]]
-        MenuManager_upv_1.CloseAll()
+        MenuManager.CloseAll()
         return true
     end
-    Debug_upv_1.notify = function(a1, a2)
+
+    debug.notify = function(a137, a138)
         --[[
           line: 463
           upvalues:
-            tbl_upv_1 (copy, index: 1)
+            v44 (copy, index: 1)
         ]]
-        tbl_upv_1.Toast(a1, a2)
+        v44.Toast(a137, a138)
         return true
     end
-    Debug_upv_1.event = function(a1, a2)
+
+    debug.event = function(a139, a140)
         --[[
           line: 467
           upvalues:
-            State_upv_1 (copy, index: 1)
+            State (copy, index: 1)
         ]]
-        State_upv_1.InjectEvent(a1, a2)
+        State.InjectEvent(a139, a140)
         return true
     end
-    Debug_upv_1.snapshot = function(a1)
+
+    debug.snapshot = function(a141)
         --[[
           line: 471
           upvalues:
-            State_upv_1 (copy, index: 1)
+            State (copy, index: 1)
         ]]
-        State_upv_1.InjectSnapshot(a1)
+        State.InjectSnapshot(a141)
         return true
     end
-    Debug_upv_1.attr = function(a1, a2)
+
+    debug.attr = function(a142, a143)
         --[[
           line: 475
           upvalues:
-            State_upv_1 (copy, index: 1)
+            State (copy, index: 1)
         ]]
-        State_upv_1.SetMockAttr(a1, a2)
+        State.SetMockAttr(a142, a143)
         return true
     end
-    Debug_upv_1.profile = function(a1)
+
+    debug.profile = function(a144)
         --[[
           line: 479
           upvalues:
-            State_upv_1 (copy, index: 1)
+            State (copy, index: 1)
         ]]
-        State_upv_1.SetProfile(a1, true)
+        State.SetProfile(a144, true)
         return true
     end
-    Debug_upv_1.setting = function(a1, a2)
+
+    debug.setting = function(a145, a146)
         --[[
           line: 484
         ]]
-        local SettingsStore_1 = require(script.Parent:WaitForChild("SettingsStore"))
-        SettingsStore_1.Set(a1, a2, true)
-        return SettingsStore_1.Get(a1)
+        local SettingsStore = require(script.Parent:WaitForChild("SettingsStore"))
+        SettingsStore.Set(a145, a146, true)
+
+        return SettingsStore.Get(a145)
     end
-    Debug_upv_1.screens = function()
+
+    debug.screens = function()
         --[[
           line: 489
           upvalues:
-            tbl_upv_9 (copy, index: 1)
+            v86 (copy, index: 1)
         ]]
-        local tbl_14 = {}
-        for key_1 in tbl_upv_9 do
-            table.insert(tbl_14, key_1)
+        local parts = {}
+
+        for v149 in v86 do
+            table.insert(parts, v149)
         end
-        table.sort(tbl_14)
-        return table.concat(tbl_14, ",")
+
+        table.sort(parts)
+
+        return table.concat(parts, ",")
     end
-    Debug_upv_1.loc = function(a1)
+
+    debug.loc = function(a150)
         --[[
           line: 499
           upvalues:
-            Loc_upv_1 (copy, index: 1)
-            PlayerGui_upv_1 (copy, index: 2)
+            Loc (copy, index: 1)
+            playerGui (copy, index: 2)
         ]]
-        local tbl_15 = {"lang " .. Loc_upv_1.Lang()}
-        if a1 ~= "clip" then
-            for _, value_9 in Loc_upv_1.Missing(PlayerGui_upv_1) do
-                table.insert(tbl_15, value_9[1] .. " | " .. value_9[2])
+        local parts = {"lang " .. Loc.Lang()}
+
+        if a150 ~= "clip" then
+            for _, v153 in Loc.Missing(playerGui) do
+                table.insert(parts, v153[1] .. " | " .. v153[2])
             end
-        else
-            for _, value_10 in PlayerGui_upv_1:GetDescendants() do
-                if value_10:IsA("TextLabel") or value_10:IsA("TextButton") then
-                    if not (value_10.Visible) or value_10.Text == "" then
-                        continue
-                    end
-                    if not (value_10.TextFits) then
-                        table.insert(tbl_15, value_10:GetFullName() .. " | " .. value_10.Text)
-                    end
+
+            return table.concat(parts, "\n")
+        end
+
+        for _, descendant in playerGui:GetDescendants() do
+            if not descendant:IsA("TextLabel") and not descendant:IsA("TextButton") then
+                continue
+            end
+
+            if descendant.Visible then
+                if descendant.Text ~= "" and not descendant.TextFits then
+                    table.insert(parts, descendant:GetFullName() .. " | " .. descendant.Text)
                 end
             end
         end
-        return table.concat(tbl_15, "\n")
+
+        return table.concat(parts, "\n")
     end
-    Debug_upv_1.instances = function()
+
+    debug.instances = function()
         --[[
           line: 514
           upvalues:
-            PlayerGui_upv_1 (copy, index: 1)
+            playerGui (copy, index: 1)
         ]]
-        local v28 = 0
-        for _, v29 in PlayerGui_upv_1:GetDescendants() do
-            v28 = v28 + 1
+        local count = 0
+
+        for _, v158 in playerGui:GetDescendants() do
+            count += 1
         end
-        return v28
+
+        return count
     end
-    Debug_upv_1.device = function(a1, a2, a3)
+
+    debug.device = function(a159, x: number, y: number)
         --[[
           line: 522
           upvalues:
-            Workspace_upv_1 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
+            workspace (copy, index: 1)
+            UI (copy, index: 2)
         ]]
-        local v30 = Workspace_upv_1.CurrentCamera
-        local v31 = (v30 and (v30.ViewportSize)) or (Vector2.new(1920, 1080))
-        if type(a2) == "number" and type(a3) == "number" then
-            v30 = Vector2.new(a2, a3)
+        local v162
+        local camera = workspace.CurrentCamera
+        local v164 = camera and camera.ViewportSize or Vector2.new(1920, 1080)
+
+        if type(x) ~= "number" or type(y) ~= "number" then
+            v162 = v164
         else
-            v30 = v31
+            v162 = Vector2.new(x, y)
         end
-        local v32 = nil
-        if a1 ~= "desktop1080" then
-            v32 = ({iphone14 = {bar = 44, safe = Vector2.new(750, 390), full = Vector2.new(844, 390)}, iphone13promax = {bar = 44, safe = Vector2.new(832, 407), full = Vector2.new(926, 428)}, galaxya06 = {bar = 40, safe = Vector2.new(705, 338), full = Vector2.new(800, 360)}, ipad = {tablet = true, bar = 44, safe = Vector2.new(1180, 800), full = Vector2.new(1180, 820)}})[a1 or ""]
-            if v32 then
-                local v33 = math.min(v32.full.X / 1280, v32.full.Y / 600)
-                local v34 = math.min(v30.X / v32.safe.X, v30.Y / v32.safe.Y)
-                local v35 = Vector2.new(math.floor(v32.safe.X * v34), math.floor(v32.safe.Y * v34))
-                local SetDebugDevice_1 = UI_upv_1.SetDebugDevice
-                local tbl_16 = {topLeft = 0, topInset = 0, tablet = 0}
-                tbl_16.rect = v35
-                tbl_16.scale = v33 * v34
-                tbl_16.topLeft = v30 ~= v31
-                tbl_16.tablet = v32.tablet
-                tbl_16.topInset = v32.bar / v33
-                SetDebugDevice_1(tbl_16, true)
-                local tbl_17 = {}
-                tbl_17.rect = v35
-                tbl_17.canvas = v35 / (v33 * v34)
-                return tbl_17
-            end
-            UI_upv_1.SetDebugDevice(nil)
+
+        if a159 == "desktop1080" then
+            local v165 = math.min(v162.X / 1920, v162.Y / 1080)
+            local rect = Vector2.new(math.floor(v165 * 1920), (math.floor(v165 * 1080)))
+            UI.SetDebugDevice({compact = false, topInset = 48.333333333333336, rect = rect, scale = rect.X / 1600, topLeft = v162 ~= v164}, false)
+
+            return {rect = rect}
+        end
+
+        local v167 = ({iphone14 = {bar = 44, safe = Vector2.new(750, 390), full = Vector2.new(844, 390)}, iphone13promax = {bar = 44, safe = Vector2.new(832, 407), full = Vector2.new(926, 428)}, galaxya06 = {bar = 40, safe = Vector2.new(705, 338), full = Vector2.new(800, 360)}, ipad = {bar = 44, tablet = true, safe = Vector2.new(1180, 800), full = Vector2.new(1180, 820)}})[a159
+            or ""]
+        if not v167 then
+            UI.SetDebugDevice(nil)
             return "reset"
-        else
-            local v36 = math.min(v30.X / 1920, v30.Y / 1080)
-            local v37 = Vector2.new(math.floor(v36 * 1920), math.floor(v36 * 1080))
-            local SetDebugDevice_2 = UI_upv_1.SetDebugDevice
-            local tbl_18 = {topLeft = 0, compact = false, topInset = 48.333333333333336}
-            tbl_18.rect = v37
-            tbl_18.scale = v37.X / 1600
-            tbl_18.topLeft = v30 ~= v31
-            SetDebugDevice_2(tbl_18, false)
-            local tbl_19 = {}
-            tbl_19.rect = v37
-            return tbl_19
         end
+
+        local v168 = math.min(v167.full.X / 1280, v167.full.Y / 600)
+        local v169 = math.min(v162.X / v167.safe.X, v162.Y / v167.safe.Y)
+        local rect = Vector2.new(math.floor(v167.safe.X * v169), (math.floor(v167.safe.Y * v169)))
+        UI.SetDebugDevice({rect = rect, scale = v168 * v169, topLeft = v162 ~= v164, tablet = v167.tablet, topInset = v167.bar / v168}, true)
+
+        return {rect = rect, canvas = rect / (v168 * v169)}
     end
-    Debug_upv_1.screen = function(a1, a2, a3)
+
+    debug.screen = function(a171, a172, a173)
         --[[
           line: 553
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            Workspace_upv_1 (copy, index: 2)
-            Theme_upv_1 (copy, index: 3)
+            UI (copy, index: 1)
+            workspace (copy, index: 2)
+            Theme (copy, index: 3)
         ]]
-        if type(a1) == "number" and type(a2) == "number" then
-            local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
-            local v38 = (CurrentCamera_1 and (CurrentCamera_1.ViewportSize)) or (Vector2.new(1920, 1080))
-            local v39 = math.min(v38.X / a1, v38.Y / a2)
-            local v40 = Vector2.new(math.floor(a1 * v39), math.floor(a2 * v39))
-            local v41
-            if a3 ~= true then
-                v41 = math.min(a1 / 1600, a2 / 900)
-            else
-                v41 = math.clamp(math.min(a1 / Theme_upv_1.DesignSize.X, a2 / Theme_upv_1.DesignSize.Y), 0.4, 1.6)
-            end
-            local SetDebugDevice_3 = UI_upv_1.SetDebugDevice
-            local tbl_20 = {topLeft = false, compact = 0, topInset = 0}
-            tbl_20.rect = v40
-            tbl_20.scale = v41 * v39
-            tbl_20.compact = a2 < 560
-            tbl_20.topInset = 58 / v41
-            SetDebugDevice_3(tbl_20, false)
-            local tbl_21 = {}
-            tbl_21.rect = v40
-            tbl_21.canvas = v40 / (v41 * v39)
-            return tbl_21
+        if type(a171) ~= "number" or type(a172) ~= "number" then
+            UI.SetDebugDevice(nil)
+            return "reset"
         end
-        UI_upv_1.SetDebugDevice(nil)
-        return "reset"
+
+        local v174
+        local camera = workspace.CurrentCamera
+        local v176 = camera and camera.ViewportSize or Vector2.new(1920, 1080)
+        local v177 = math.min(v176.X / a171, v176.Y / a172)
+        local rect = Vector2.new(math.floor(a171 * v177), (math.floor(a172 * v177)))
+
+        if a173 ~= true then
+            v174 = math.min(a171 / 1600, a172 / 900)
+        else
+            v174 = math.clamp(math.min(a171 / Theme.DesignSize.X, a172 / Theme.DesignSize.Y), 0.4, 1.6)
+        end
+
+        UI.SetDebugDevice({topLeft = false, rect = rect, scale = v174 * v177, compact = a172 < 560, topInset = 58 / v174}, false)
+
+        return {rect = rect, canvas = rect / (v174 * v177)}
     end
-    Debug_upv_1.chat = function()
+
+    debug.chat = function()
         --[[
           line: 569
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            tbl_upv_1 (copy, index: 2)
+            UI (copy, index: 1)
+            v44 (copy, index: 2)
         ]]
-        local v42 = UI_upv_1.ChatRect()
-        local v43 = ((tbl_upv_1.LobbyColumn) and (tbl_upv_1.LobbyColumn.Shift())) or (Vector2.zero)
-        local tbl_22 = {shift = 0, rect = 0}
-        tbl_22.rect = not v42 and "closed" or string.format("%d,%d %d,%d", v42.Min.X, v42.Min.Y, v42.Max.X, v42.Max.Y)
-        tbl_22.shift = string.format("%d,%d", v43.X, v43.Y)
-        return tbl_22
+        local v179 = UI.ChatRect()
+        local v180 = v44.LobbyColumn and v44.LobbyColumn.Shift() or Vector2.zero
+        local v181 = {rect = if v179 then string.format("%d,%d %d,%d", v179.Min.X, v179.Min.Y, v179.Max.X, v179.Max.Y) else "closed"}
+        v181.shift = string.format("%d,%d", v180.X, v180.Y)
+        return v181
     end
-    Debug_upv_1.gamepad = function(a1, a2)
+
+    debug.gamepad = function(a182, a183)
         --[[
           line: 579
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            MenuManager_upv_1 (copy, index: 2)
-            GuiService_upv_1 (copy, index: 3)
+            UI (copy, index: 1)
+            MenuManager (copy, index: 2)
+            guiService (copy, index: 3)
         ]]
-        if a1 ~= "tv" then
-            if a1 ~= true and a1 ~= false then
-                if a1 ~= "auto" then
-                    if a1 == "hud" then
-                        return MenuManager_upv_1.HudFocus(a2)
-                    end
-                    if a1 == "back" then
-                        return MenuManager_upv_1.Back()
-                    end
-                    local SelectedObject_1 = GuiService_upv_1.SelectedObject
-                    local tbl_23 = {padBlocked = 0, menu = 0, hudFocus = 0, screenFocus = 0, selected = 0}
-                    tbl_23.gamepad = UI_upv_1.Gamepad
-                    tbl_23.tv = UI_upv_1.TenFoot
-                    local v45
-                    if SelectedObject_1 then
-                        v45 = SelectedObject_1:GetFullName()
-                    else
-                        v45 = false
-                    end
-                    tbl_23.selected = v45
-                    tbl_23.menu = MenuManager_upv_1.Current() or false
-                    tbl_23.hudFocus = MenuManager_upv_1.HudFocused()
-                    tbl_23.screenFocus = MenuManager_upv_1.HasFocus()
-                    tbl_23.padBlocked = MenuManager_upv_1.PadBlocked()
-                    return tbl_23
-                else
-                    UI_upv_1.SetDebugGamepad(nil)
-                    local SelectedObject_1 = GuiService_upv_1.SelectedObject
-                    local tbl_23 = {padBlocked = 0, menu = 0, hudFocus = 0, screenFocus = 0, selected = 0}
-                    tbl_23.gamepad = UI_upv_1.Gamepad
-                    tbl_23.tv = UI_upv_1.TenFoot
-                    local v45
-                    if SelectedObject_1 then
-                        v45 = SelectedObject_1:GetFullName()
-                    else
-                        v45 = false
-                    end
-                    tbl_23.selected = v45
-                    tbl_23.menu = MenuManager_upv_1.Current() or false
-                    tbl_23.hudFocus = MenuManager_upv_1.HudFocused()
-                    tbl_23.screenFocus = MenuManager_upv_1.HasFocus()
-                    tbl_23.padBlocked = MenuManager_upv_1.PadBlocked()
-                    return tbl_23
+        if a182 ~= "tv" then
+            if a182 == true or a182 == false then
+                UI.SetDebugGamepad(a182)
+            elseif a182 ~= "auto" then
+                if a182 == "hud" then
+                    return MenuManager.HudFocus(a183)
                 end
+                if a182 == "back" then
+                    return MenuManager.Back()
+                end
+            else
+                UI.SetDebugGamepad(nil)
             end
-            UI_upv_1.SetDebugGamepad(a1)
         else
-            UI_upv_1.SetDebugTenFoot(a2 == true)
+            UI.SetDebugTenFoot(a183 == true)
         end
-        local SelectedObject_1 = GuiService_upv_1.SelectedObject
-        local tbl_23 = {padBlocked = 0, menu = 0, hudFocus = 0, screenFocus = 0, selected = 0}
-        tbl_23.gamepad = UI_upv_1.Gamepad
-        tbl_23.tv = UI_upv_1.TenFoot
-        local v45
-        if SelectedObject_1 then
-            v45 = SelectedObject_1:GetFullName()
-        else
-            v45 = false
-        end
-        tbl_23.selected = v45
-        tbl_23.menu = MenuManager_upv_1.Current() or false
-        tbl_23.hudFocus = MenuManager_upv_1.HudFocused()
-        tbl_23.screenFocus = MenuManager_upv_1.HasFocus()
-        tbl_23.padBlocked = MenuManager_upv_1.PadBlocked()
-        return tbl_23
+
+        local selectedObject = guiService.SelectedObject
+        local v185 = {gamepad = UI.Gamepad, tv = UI.TenFoot, selected = if selectedObject then selectedObject:GetFullName() else false}
+        v185.menu = MenuManager.Current() or false
+        v185.hudFocus = MenuManager.HudFocused()
+        v185.screenFocus = MenuManager.HasFocus()
+        v185.padBlocked = MenuManager.PadBlocked()
+        return v185
     end
-    Debug_upv_1.padInput = function(a1, a2, a3)
+
+    debug.padInput = function(stick: string, a187, a188)
         --[[
           line: 611
           upvalues:
-            Keybinds_upv_1 (copy, index: 1)
+            Keybinds (copy, index: 1)
         ]]
-        local success_2, u9 = pcall(
+        local success, result = pcall(
             function()
                 --[[
                   line: 612
                   upvalues:
-                    a1 (copy, index: 1)
+                    stick (copy, index: 1)
                 ]]
-                return Enum.KeyCode[a1]
+                return Enum.KeyCode[stick]
             end
         )
-        if success_2 and u9 then
-            local function fire(a4, a5, a6)
-                --[[
-                  name: fire
-                  line: 618
-                  upvalues:
-                    u9 (copy, index: 1)
-                    Keybinds_upv_1 (copy, index: 2)
-                ]]
-                Keybinds_upv_1.FakeInput:Fire(a4, {Delta = Vector3.new(0, 0, 0), KeyCode = u9, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = a5, Position = a6}, false)
-            end
-            local v46 = nil
-            if string.sub(a1, 1, 10) ~= "Thumbstick" then
-                if a2 ~= "down" then
-                    if a2 ~= "up" then
-                        Keybinds_upv_1.FakeInput:Fire("Began", {Position = Vector3.new(0, 0, 0), Delta = Vector3.new(0, 0, 0), KeyCode = u9, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = Enum.UserInputState.Begin}, false)
-                        local v47 = ((a2 ~= "hold") and 0.05) or (tonumber(a3) or 0.8)
-                        task.wait(v47)
-                    end
-                    Keybinds_upv_1.FakeInput:Fire("Ended", {Position = Vector3.new(0, 0, 0), Delta = Vector3.new(0, 0, 0), KeyCode = u9, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = Enum.UserInputState.End}, false)
-                else
-                    Keybinds_upv_1.FakeInput:Fire("Began", {Position = Vector3.new(0, 0, 0), Delta = Vector3.new(0, 0, 0), KeyCode = u9, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = Enum.UserInputState.Begin}, false)
-                end
-                return true
-            else
-                v46 = tonumber(a2) or 0
-                local v48 = tonumber(a3) or 0
-                Keybinds_upv_1.FakeInput:Fire("Changed", {Delta = Vector3.new(0, 0, 0), KeyCode = u9, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = Enum.UserInputState.Change, Position = Vector3.new(v46, v48, 0)}, false)
-                if v46 == 0 and v48 == 0 then
-                    Keybinds_upv_1.FakeInput:Fire("Ended", {Position = Vector3.new(0, 0, 0), Delta = Vector3.new(0, 0, 0), KeyCode = u9, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = Enum.UserInputState.End}, false)
-                end
-                local tbl_24 = {}
-                tbl_24.stick = a1
-                tbl_24.x = v46
-                tbl_24.y = v48
-                return tbl_24
-            end
+
+        if not success or not result then
+            return "unknown KeyCode " .. tostring(stick)
         end
-        return "unknown KeyCode " .. tostring(a1)
+
+        local function fire(a192, userInputState, position)
+            --[[
+              name: fire
+              line: 618
+              upvalues:
+                result (copy, index: 1)
+                Keybinds (copy, index: 2)
+            ]]
+            Keybinds.FakeInput:Fire(a192, {Delta = Vector3.new(0, 0, 0), KeyCode = result, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = userInputState, Position = position}, false)
+        end
+
+        if string.sub(stick, 1, 10) == "Thumbstick" then
+            local number = tonumber(a187) or 0
+            local number2 = tonumber(a188) or 0
+            local change = Enum.UserInputState.Change
+            local position = Vector3.new(number, number2, 0)
+            Keybinds.FakeInput:Fire("Changed", {Delta = Vector3.new(0, 0, 0), KeyCode = result, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = change, Position = position}, false)
+
+            if number == 0 and number2 == 0 then
+                local endValue = Enum.UserInputState.End
+                Keybinds.FakeInput:Fire("Ended", {Position = Vector3.new(0, 0, 0), Delta = Vector3.new(0, 0, 0), KeyCode = result, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = endValue}, false)
+            end
+
+            return {stick = stick, x = number, y = number2}
+        end
+
+        if a187 == "down" then
+            local begin = Enum.UserInputState.Begin
+            Keybinds.FakeInput:Fire("Began", {Position = Vector3.new(0, 0, 0), Delta = Vector3.new(0, 0, 0), KeyCode = result, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = begin}, false)
+        elseif a187 == "up" then
+            local endValue = Enum.UserInputState.End
+            local v202 = {Position = Vector3.new(0, 0, 0), Delta = Vector3.new(0, 0, 0), KeyCode = result, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = endValue}
+            Keybinds.FakeInput:Fire("Ended", v202, false)
+        else
+            local v203 = Enum.UserInputState.Begin
+            local v204 = {Position = Vector3.new(0, 0, 0), Delta = Vector3.new(0, 0, 0), KeyCode = result, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = v203}
+            Keybinds.FakeInput:Fire("Began", v204, false)
+            v203 = task.wait
+            local v205 = a187 ~= "hold" and 0.05 or tonumber(a188) or 0.8
+            v203(v205)
+            local endValue = Enum.UserInputState.End
+            local v207 = {Position = Vector3.new(0, 0, 0), Delta = Vector3.new(0, 0, 0), KeyCode = result, UserInputType = Enum.UserInputType.Gamepad1, UserInputState = endValue}
+            Keybinds.FakeInput:Fire("Ended", v207, false)
+        end
+
+        return true
     end
-    Debug_upv_1.padBind = function(a1, a2, a3)
+
+    debug.padBind = function(a208, a209, a210)
         --[[
           line: 647
           upvalues:
-            Keybinds_upv_1 (copy, index: 1)
+            Keybinds (copy, index: 1)
         ]]
-        local SettingsStore_2 = require(script.Parent:WaitForChild("SettingsStore"))
-        if a1 == "reset" then
-            local v49 = Keybinds_upv_1.PadResetAll()
-            SettingsStore_2.SavePadBinds(v49)
-            local tbl_25 = {}
-            tbl_25.changed = v49
-            return tbl_25
-        elseif a2 ~= "-" then
-            local v50, v51 = Keybinds_upv_1.PadAssign(a1, a3 or 1, a2 or "")
-            if #v50 > 0 then
-                SettingsStore_2.SavePadBinds(v50)
-            end
-            local tbl_26 = {}
-            for _, value_11 in v51 do
-                tbl_26[value_11.id] = table.concat(value_11.now, ",")
-            end
-            local tbl_27 = {}
-            tbl_27.changed = v50
-            tbl_27.moved = tbl_26
-            tbl_27.now = Keybinds_upv_1.PadGet(a1)
-            return tbl_27
-        else
-            Keybinds_upv_1.PadClear(a1, a3 or 1)
-            SettingsStore_2.SavePadBinds({a1})
-            local tbl_28 = {}
-            tbl_28.changed = {a1}
-            tbl_28.now = Keybinds_upv_1.PadGet(a1)
-            return tbl_28
+        local SettingsStore = require(script.Parent:WaitForChild("SettingsStore"))
+
+        if a208 == "reset" then
+            local changed = Keybinds.PadResetAll()
+            SettingsStore.SavePadBinds(changed)
+
+            return {changed = changed}
         end
+
+        if a209 == "-" then
+            Keybinds.PadClear(a208, a210 or 1)
+            SettingsStore.SavePadBinds({a208})
+
+            return {changed = {a208}, now = Keybinds.PadGet(a208)}
+        end
+
+        local changed, v214 = Keybinds.PadAssign(a208, a210 or 1, a209 or "")
+
+        if 0 < #changed then
+            SettingsStore.SavePadBinds(changed)
+        end
+
+        local moved = {}
+
+        for _, v217 in v214 do
+            moved[v217.id] = table.concat(v217.now, ",")
+        end
+
+        return {changed = changed, moved = moved, now = Keybinds.PadGet(a208)}
     end
-    Debug_upv_1.padState = function()
+
+    debug.padState = function()
         --[[
           line: 669
           upvalues:
-            Keybinds_upv_1 (copy, index: 1)
-            MenuManager_upv_1 (copy, index: 2)
-            tbl_upv_1 (copy, index: 3)
-            LocalPlayer_upv_1 (copy, index: 4)
-            State_upv_1 (copy, index: 5)
-            Debug_upv_1 (copy, index: 6)
+            Keybinds (copy, index: 1)
+            MenuManager (copy, index: 2)
+            v44 (copy, index: 3)
+            localPlayer (copy, index: 4)
+            State (copy, index: 5)
+            debug (copy, index: 6)
         ]]
-        local tbl_29 = {}
-        local tbl_30 = {}
-        for _, value_12 in Keybinds_upv_1.PAD_ACTIONS do
-            tbl_30[value_12.id] = table.concat(Keybinds_upv_1.PadGet(value_12.id), ",")
+        local success
+        local unsaved
+        local v220 = {}
+        local binds = {}
+
+        for _, padAction in Keybinds.PAD_ACTIONS do
+            binds[padAction.id] = table.concat(Keybinds.PadGet(padAction.id), ",")
         end
-        tbl_29.binds = tbl_30
-        tbl_29.allDefault = Keybinds_upv_1.PadAllDefault()
-        tbl_29.padBlocked = Keybinds_upv_1.PadBlocked()
-        tbl_29.menuPadBlocked = MenuManager_upv_1.PadBlocked()
-        tbl_29.padCapturing = tbl_upv_1.PadCapturing == true
-        local tbl_31 = {}
-        local TribesInputs_1 = LocalPlayer_upv_1:FindFirstChild("TribesInputs")
-        for _, value_13 in {"Jump", "Slide"} do
-            local v52 = TribesInputs_1 and (TribesInputs_1:FindFirstChild(value_13))
-            local tbl_32 = {}
-            if not (v52) then
-                tbl_31[value_13] = table.concat(tbl_32, " ")
-                continue
-            end
-            for v59, value_14 in v52:GetChildren() do
-                if not (value_14:IsA("InputBinding")) then
-                    continue
+
+        v220.binds = binds
+        v220.allDefault = Keybinds.PadAllDefault()
+        v220.padBlocked = Keybinds.PadBlocked()
+        v220.menuPadBlocked = MenuManager.PadBlocked()
+        local padCapturing = v44.PadCapturing == true
+        v220.padCapturing = padCapturing
+        local ias = {}
+        local tribesInputs = localPlayer:FindFirstChild("TribesInputs")
+
+        for _, childName in {"Jump", "Slide"} do
+            local child2 = tribesInputs and tribesInputs:FindFirstChild(childName)
+            local parts = {}
+
+            if child2 then
+                for _, child in child2:GetChildren() do
+                    if child:IsA("InputBinding") and child.Name ~= "Script" then
+                        table.insert(parts, child.Name .. "=" .. child.KeyCode.Name)
+                    end
                 end
-                if value_14.Name ~= "Script" then
-                    table.insert(tbl_32, value_14.Name .. "=" .. value_14.KeyCode.Name)
-                end
+
+                table.sort(parts)
             end
-            table.sort(tbl_32)
-            tbl_31[value_13] = table.concat(tbl_32, " ")
+
+            ias[childName] = table.concat(parts, " ")
         end
-        tbl_29.ias = tbl_31
-        local tbl_33 = {}
-        local ContextActionService_1 = game:GetService("ContextActionService")
-        local v53 = nil
-        local v54 = nil
-        for _, value_15 in {"TribesFirstPerson", "TribesShoulderSwap", "TribesSpectateCycle", "TribesFreeCursor"} do
-            local v55 = ContextActionService_1:GetBoundActionInfo(value_15)
-            local tbl_34 = {}
-            if type(v55) == "table" and type(v55.inputTypes) == "table" then
-                for v60, value_16 in v55.inputTypes do
-                    table.insert(tbl_34, (tostring(value_16.Name)))
+
+        v220.ias = ias
+        local cas = {}
+        local contextActionService = game:GetService("ContextActionService")
+
+        for _, actionName in {"TribesFirstPerson", "TribesShoulderSwap", "TribesSpectateCycle", "TribesFreeCursor"} do
+            local boundActionInfo = contextActionService:GetBoundActionInfo(actionName)
+            local parts = {}
+
+            if type(boundActionInfo) == "table" and type(boundActionInfo.inputTypes) == "table" then
+                for _, inputType in boundActionInfo.inputTypes do
+                    table.insert(parts, (tostring(inputType.Name)))
                 end
             end
-            if #tbl_34 > 0 then
-                v53 = table.concat(tbl_34, ",")
-            else
-                v53 = false
-            end
-            tbl_33[v54] = v53
+
+            cas[actionName] = if 0 < #parts then table.concat(parts, ",") else false
         end
-        tbl_29.cas = tbl_33
-        local tbl_35 = {}
-        local Profile_1 = State_upv_1.Profile
-        if type(Profile_1) == "table" and type(Profile_1.settings) == "table" then
-            for key_2, value_17 in Profile_1.settings do
-                if type(key_2) ~= "string" then
-                    continue
-                end
-                if string.sub(key_2, 1, 3) == Keybinds_upv_1.PAD_PREFIX then
-                    tbl_35[key_2] = value_17
+
+        v220.cas = cas
+        local profileGp = {}
+        local profile = State.Profile
+
+        if type(profile) == "table" and type(profile.settings) == "table" then
+            for text, setting in profile.settings do
+                if type(text) == "string" then
+                    local substring = string.sub(text, 1, 3)
+
+                    if substring ~= Keybinds.PAD_PREFIX then
+                        continue
+                    end
+
+                    profileGp[text] = setting
                 end
             end
         end
-        tbl_29.profileGp = tbl_35
-        local v56, v57 = pcall(require, script.Parent:WaitForChild("SettingsStore"))
-        local success_3
-        if v56 then
-            success_3 = v57.PendingKeys()
+
+        v220.profileGp = profileGp
+        local success2, result = pcall(require, script.Parent:WaitForChild("SettingsStore"))
+
+        if success2 then
+            unsaved = result.PendingKeys()
         else
-            success_3 = false
+            unsaved = false
         end
-        tbl_29.unsaved = success_3
-        if Debug_upv_1.padSettings then
-            local success_3, v58 = pcall(Debug_upv_1.padSettings)
-            if success_3 then
-                v54 = v58
+
+        v220.unsaved = unsaved
+
+        if debug.padSettings then
+            local v248
+            local result2
+            success, result2 = pcall(debug.padSettings)
+
+            if success then
+                v248 = result2
             else
-                v54 = tostring(v58)
+                v248 = tostring(result2)
             end
-            tbl_29.settings = v54
+
+            v220.settings = v248
         end
-        return tbl_29
+
+        return v220
     end
-    Debug_upv_1.padCaps = function(a1)
+
+    debug.padCaps = function(pattern: string)
         --[[
           line: 727
           upvalues:
-            PlayerGui_upv_1 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
+            playerGui (copy, index: 1)
+            UI (copy, index: 2)
         ]]
-        local tbl_36 = {}
-        local v59 = nil
-        for _, value_18 in PlayerGui_upv_1:GetDescendants() do
-            if not (value_18:IsA("Frame")) then
-                continue
-            end
-            if value_18.Name == "KeyCap" or value_18.Name ~= "KeyCap" and value_18.Name == "PadPrev" or value_18.Name ~= "KeyCap" and value_18.Name ~= "PadPrev" and value_18.Name == "PadNext" then
-                local v60 = UI_upv_1.CapInfo(value_18)
-                if not (v60) or not (v60.pad) then
+        local v251 = {}
+
+        for _, descendant in playerGui:GetDescendants() do
+            if descendant:IsA("Frame") then
+                local visible
+
+                if descendant.Name ~= "KeyCap"
+                    and descendant.Name ~= "PadPrev"
+                    and descendant.Name ~= "PadNext"
+                then
                     continue
                 end
-                local v61 = string.gsub(value_18:GetFullName(), "^.-PlayerGui%.", "")
-                if a1 and not (string.find(v61, a1, 1, true)) then
+
+                local v255 = UI.CapInfo(descendant)
+                if not v255 then
                     continue
                 end
-                local visible_1 = v60.visible
-                v59 = value_18.Parent
-                while visible_1 and (v59) and not v59:IsA("LayerCollector") do
-                    if (v59:IsA("GuiObject")) and not v59.Visible then
-                        local v62 = false
+                if not v255.pad then
+                    continue
+                end
+
+                local fullName = descendant:GetFullName()
+                local text = string.gsub(fullName, "^.-PlayerGui%.", "")
+
+                if pattern and not string.find(text, pattern, 1, true) then
+                    continue
+                end
+
+                local visible2 = v255.visible
+                local parent = descendant.Parent
+                visible = visible2
+
+                while visible and parent do
+                    if parent:IsA("LayerCollector") then
+                        break
                     end
-                    v59 = v59.Parent
+
+                    if not parent:IsA("GuiObject") or parent.Visible then
+                        parent = parent.Parent
+                    else
+                        visible = false
+                        parent = parent.Parent
+                    end
                 end
-                tbl_36[v61] = string.format("%s%s%s", v60.pad, ((v60.padUnbound) and " (unbound)") or "", (visible_1 and " shown") or "")
+
+                local stringFormat = string.format
+                local pad = v255.pad
+                local v262 = v255.padUnbound and " (unbound)" or ""
+                local v263 = visible and " shown" or ""
+                v251[text] = stringFormat("%s%s%s", pad, v262, v263)
             end
         end
-        return tbl_36
+
+        return v251
     end
-    Debug_upv_1.platform = function()
+
+    debug.platform = function()
         --[[
           line: 751
           upvalues:
-            UI_upv_1 (copy, index: 1)
+            UI (copy, index: 1)
         ]]
-        local v62 = UI_upv_1.CanvasSize()
-        local tbl_37 = {}
-        tbl_37.touch = UI_upv_1.Touch
-        tbl_37.gamepad = UI_upv_1.Gamepad
-        tbl_37.tv = UI_upv_1.TenFoot
-        tbl_37.compact = UI_upv_1.Compact
-        tbl_37.tablet = UI_upv_1.Tablet
-        tbl_37.scale = math.floor((UI_upv_1.Scale * 1000) + 0.5) / 1000
-        tbl_37.canvas = string.format("%dx%d", v62.X, v62.Y)
-        tbl_37.topInset = UI_upv_1.TopInset()
-        return tbl_37
+        local v264 = UI.CanvasSize()
+        return {touch = UI.Touch, gamepad = UI.Gamepad, tv = UI.TenFoot, compact = UI.Compact, tablet = UI.Tablet, scale = math.floor((UI.Scale * 1000) + 0.5) / 1000, canvas = string.format("%dx%d", v264.X, v264.Y), topInset = UI.TopInset()}
     end
-    local tbl_upv_38 = {loadoutSwap = "LoadoutSwap", playerCard = "PlayerCard", rankUp = "RankUp", matchEnd = "MatchEnd", banner = "Banners", finalRound = "Decider", killfeed = "KillFeed", ranks = "RankRoad"}
-    local function onInvoke(a1, ...)
+
+    local v265 = {killfeed = "KillFeed", banner = "Banners", matchEnd = "MatchEnd", finalRound = "Decider", loadoutSwap = "LoadoutSwap", ranks = "RankRoad", rankUp = "RankUp", playerCard = "PlayerCard"}
+
+    local function onInvoke(key, ...)
         --[[
           name: onInvoke
           line: 765
           upvalues:
-            tbl_upv_38 (copy, index: 1)
+            v265 (copy, index: 1)
             ensureScreen (copy, index: 2)
-            Debug_upv_1 (copy, index: 3)
+            debug (copy, index: 3)
         ]]
-        if tbl_upv_38[a1] then
-            ensureScreen(tbl_upv_38[a1])
+        if v265[key] then
+            ensureScreen(v265[key])
         end
-        local v63 = Debug_upv_1[a1]
-        if not v63 then
-            return "unknown command " .. tostring(a1)
+
+        local v268 = debug[key]
+        if not v268 then
+            return "unknown command " .. tostring(key)
         end
-        local success_4, v64 = pcall(v63, ...)
-        if success_4 then
-            if v64 ~= nil then
-                return v64
-            end
+
+        local success, result = pcall(v268, ...)
+        if not success then
+            return "error: " .. tostring(result)
+        end
+        if result == nil then
             return true
         end
-        return "error: " .. tostring(v64)
+
+        return result
     end
+
     local function makeHook()
         --[[
           name: makeHook
           line: 776
           upvalues:
             onInvoke (copy, index: 1)
-            PlayerGui_upv_1 (copy, index: 2)
+            playerGui (copy, index: 2)
         ]]
-        local v65 = Instance.new("BindableFunction")
-        v65.Name = "TR_Debug"
-        v65.OnInvoke = onInvoke
-        v65.Parent = PlayerGui_upv_1
+        local trDebug = Instance.new("BindableFunction")
+        trDebug.Name = "TR_Debug"
+        trDebug.OnInvoke = onInvoke
+        trDebug.Parent = playerGui
     end
-    local v66 = Instance.new("BindableFunction")
-    v66.Name = "TR_Debug"
-    v66.OnInvoke = onInvoke
-    v66.Parent = PlayerGui_upv_1
-    PlayerGui_upv_1.ChildRemoved:Connect(
-        function(a1)
+
+    local trDebug = Instance.new("BindableFunction")
+    trDebug.Name = "TR_Debug"
+    trDebug.OnInvoke = onInvoke
+    trDebug.Parent = playerGui
+
+    playerGui.ChildRemoved:Connect(
+        function(child: Instance)
             --[[
               line: 783
               upvalues:
-                PlayerGui_upv_1 (copy, index: 1)
+                playerGui (copy, index: 1)
                 onInvoke (copy, index: 2)
             ]]
-            if a1.Name ~= "TR_Debug" then
-                return
-            end
-            task.defer(
-                function()
-                    --[[
-                      line: 785
-                      upvalues:
-                        PlayerGui_upv_1 (copy, index: 1)
-                        onInvoke (copy, index: 2)
-                    ]]
-                    if not (PlayerGui_upv_1:FindFirstChild("TR_Debug")) then
-                        local v67 = Instance.new("BindableFunction")
-                        v67.Name = "TR_Debug"
-                        v67.OnInvoke = onInvoke
-                        v67.Parent = PlayerGui_upv_1
+            if child.Name == "TR_Debug" then
+                task.defer(
+                    function()
+                        --[[
+                          line: 785
+                          upvalues:
+                            playerGui (copy, index: 1)
+                            onInvoke (copy, index: 2)
+                        ]]
+                        if not playerGui:FindFirstChild("TR_Debug") then
+                            local trDebug = Instance.new("BindableFunction")
+                            trDebug.Name = "TR_Debug"
+                            trDebug.OnInvoke = onInvoke
+                            trDebug.Parent = playerGui
+                        end
                     end
-                end
-            )
+                )
+            end
         end
     )
-    local success_5, v68 = pcall(
+
+    local success, result = pcall(
         function()
             --[[
               line: 793
               upvalues:
-                Parent_upv_1 (copy, index: 1)
-                tbl_upv_1 (copy, index: 2)
+                parent (copy, index: 1)
+                v44 (copy, index: 2)
             ]]
-            require(Parent_upv_1.Mock).Init(tbl_upv_1)
+            require(parent.Mock).Init(v44)
         end
     )
-    if not (success_5) then
-        warn("[UI] mock init failed: " .. tostring(v68))
+    if not success then
+        warn("[UI] mock init failed: " .. tostring(result))
     end
 end
+
 task.spawn(
     function()
         --[[
           line: 803
           upvalues:
-            Parent_upv_1 (copy, index: 1)
-            tbl_upv_5 (copy, index: 2)
+            parent (copy, index: 1)
+            v81 (copy, index: 2)
             ensureScreen (copy, index: 3)
-            tbl_upv_1 (copy, index: 4)
-            u3 (copy, index: 5)
+            v44 (copy, index: 4)
+            hud (copy, index: 5)
         ]]
-        local v69 = Parent_upv_1.Parent:WaitForChild("Replay", 30)
-        local v70 = v69 and (v69:WaitForChild("HudBridge", 10))
-        if not v70 then
+        local replay = parent.Parent:WaitForChild("Replay", 30)
+        local hudBridge = replay and replay:WaitForChild("HudBridge", 10)
+
+        if not hudBridge or not hudBridge:IsA("ModuleScript") then
             return
         end
-        if v70:IsA("ModuleScript") then
-            local success_6, v71 = pcall(require, v70)
-            if not success_6 or type(v71) ~= "table" then
-                return
-            end
-            local tbl_upv_39 = {}
-            local tbl_40 = {}
-            function tbl_40.Enter(a1)
+
+        local success, result = pcall(require, hudBridge)
+
+        if not success or type(result) ~= "table" then
+            return
+        end
+
+        local v282 = {}
+        result.ui = {
+            Enter = (function(a283)
                 --[[
                   name: Enter
                   line: 815
                   upvalues:
-                    tbl_upv_5 (copy, index: 1)
+                    v81 (copy, index: 1)
                     ensureScreen (copy, index: 2)
-                    tbl_upv_1 (copy, index: 3)
-                    u3 (copy, index: 4)
-                    tbl_upv_39 (copy, index: 5)
+                    v44 (copy, index: 3)
+                    hud (copy, index: 4)
+                    v282 (copy, index: 5)
                 ]]
-                for _, value_19 in tbl_upv_5 do
-                    ensureScreen(value_19)
+                for _, childName in v81 do
+                    ensureScreen(childName)
                 end
-                local HotbarRoot_1 = tbl_upv_1.HotbarRoot
-                local MatchHud_1 = tbl_upv_1.MatchHud
-                local _ = MatchHud_1 and (tbl_upv_1.MatchHud.Root)
-                for v1, value_20 in u3:GetChildren() do
-                    if not (value_20:IsA("GuiObject")) or not (value_20.Visible) or value_20 == HotbarRoot_1 then
-                        continue
+
+                local hotbarRoot = v44.HotbarRoot
+                local root = v44.MatchHud and v44.MatchHud.Root
+
+                for _, child in hud:GetChildren() do
+                    if child:IsA("GuiObject") then
+                        if not child.Visible then
+                            continue
+                        end
+
+                        if child ~= hotbarRoot and child ~= root then
+                            child.Visible = false
+                            table.insert(v282, child)
+                        end
                     end
-                    if value_20 ~= MatchHud_1 then
-                        value_20.Visible = false
-                        table.insert(tbl_upv_39, value_20)
-                    end
                 end
-                if tbl_upv_1.Hotbar and tbl_upv_1.Hotbar.SetReplaySource then
-                    tbl_upv_1.Hotbar.SetReplaySource(a1)
+
+                if v44.Hotbar and v44.Hotbar.SetReplaySource then
+                    v44.Hotbar.SetReplaySource(a283)
                 end
-                if not tbl_upv_1.MatchHud or not tbl_upv_1.MatchHud.SetReplaySource then
-                    return
+
+                if v44.MatchHud and v44.MatchHud.SetReplaySource then
+                    v44.MatchHud.SetReplaySource(a283.model)
                 end
-                tbl_upv_1.MatchHud.SetReplaySource(a1.model)
-            end
-            function tbl_40.Leave()
+            end),
+            Leave = (function()
                 --[[
                   name: Leave
                   line: 832
                   upvalues:
-                    tbl_upv_1 (copy, index: 1)
-                    tbl_upv_39 (copy, index: 2)
+                    v44 (copy, index: 1)
+                    v282 (copy, index: 2)
                 ]]
-                if tbl_upv_1.Hotbar and tbl_upv_1.Hotbar.SetReplaySource then
-                    tbl_upv_1.Hotbar.SetReplaySource(nil)
+                if v44.Hotbar and v44.Hotbar.SetReplaySource then
+                    v44.Hotbar.SetReplaySource(nil)
                 end
-                if tbl_upv_1.MatchHud and tbl_upv_1.MatchHud.SetReplaySource then
-                    tbl_upv_1.MatchHud.SetReplaySource(nil)
+
+                if v44.MatchHud and v44.MatchHud.SetReplaySource then
+                    v44.MatchHud.SetReplaySource(nil)
                 end
-                for _, value_21 in tbl_upv_39 do
-                    if value_21.Parent then
-                        value_21.Visible = true
+
+                for _, v291 in v282 do
+                    if v291.Parent then
+                        v291.Visible = true
                     end
                 end
-                table.clear(tbl_upv_39)
-            end
-            v71.ui = tbl_40
-        end
+
+                table.clear(v282)
+            end)
+        }
     end
 )
-LocalPlayer_upv_1:SetAttribute("UIReady", true)
-local tbl_41 = {}
-for key_3, value_22 in tbl_upv_8 do
-    table.insert(tbl_41, string.format("%s=%.1f", key_3, value_22))
+
+localPlayer:SetAttribute("UIReady", true)
+local parts = {}
+
+for v293, v294 in v85 do
+    table.insert(parts, string.format("%s=%.1f", v293, v294))
 end
-table.sort(tbl_41)
-local v72 = string.format("total=%.1fms | %s", (v23 - v1) * 1000, table.concat(tbl_41, " "))
-LocalPlayer_upv_1:SetAttribute("UIStartup", v72)
-if not RunService_upv_1:IsStudio() then
-    return
+
+table.sort(parts)
+local uiStartup = string.format("total=%.1fms | %s", (timestamp2 - timestamp) * 1000, table.concat(parts, " "))
+localPlayer:SetAttribute("UIStartup", uiStartup)
+
+if runService:IsStudio() then
+    print("[UI] startup " .. uiStartup)
 end
-print("[UI] startup " .. v72)

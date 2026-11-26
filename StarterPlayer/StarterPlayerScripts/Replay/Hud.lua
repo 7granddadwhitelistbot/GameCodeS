@@ -1,908 +1,1008 @@
 local _ = game:GetService("Players")
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local Workspace_upv_1 = game:GetService("Workspace")
-local Shared_1 = ReplicatedStorage_1:WaitForChild("Shared")
-local ReplayCodec_upv_1 = require(Shared_1:WaitForChild("ReplayCodec"))
-local Combat_upv_1 = require(Shared_1:WaitForChild("Combat"))
-local Weapons_upv_1 = require(Shared_1:WaitForChild("Weapons"))
-local HudBridge_upv_1 = require(script.Parent.HudBridge)
-local tbl_upv_1 = {}
-local Parent_upv_1 = script.Parent.Parent
-local u1 = Color3.fromRGB(228, 232, 240)
-local u2 = Color3.fromRGB(150, 200, 255)
-local tbl_upv_2 = {}
-local tbl_upv_3 = {active = false, ui = false, style = "Dot", blocking = false, armor = -1, alive = true, hp = -1, aiming = false}
-tbl_upv_3.items = {}
-tbl_upv_3.slots = {}
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local workspace = game:GetService("Workspace")
+local shared = replicatedStorage:WaitForChild("Shared")
+local ReplayCodec = require(shared:WaitForChild("ReplayCodec"))
+local Combat = require(shared:WaitForChild("Combat"))
+local Weapons = require(shared:WaitForChild("Weapons"))
+local HudBridge = require(script.Parent.HudBridge)
+local v9 = {}
+local parent = script.Parent.Parent
+local color3 = Color3.fromRGB(228, 232, 240)
+local color32 = Color3.fromRGB(150, 200, 255)
+local v13 = {}
+
+local function mod(childName: string)
+    --[[
+      name: mod
+      line: 35
+      upvalues:
+        v13 (copy, index: 1)
+        parent (copy, index: 2)
+    ]]
+    local v16 = v13[childName]
+    if v16 == nil then
+        local instance = parent:FindFirstChild("Combat")
+        instance = instance and instance:FindFirstChild(childName)
+        v16 = false
+
+        if instance and instance:IsA("ModuleScript") then
+            local success, result = pcall(require, instance)
+
+            if success and type(result) == "table" then
+                v16 = result
+            end
+        end
+
+        v13[childName] = v16
+    end
+
+    return v16 or nil
+end
+
+local v20 = {active = false, src = nil, hum = nil, heldId = nil, style = "Dot", charge = nil, aiming = false, blocking = false, hp = -1, armor = -1, ui = false, alive = true, items = {}, slots = {}}
+
 local function now()
     --[[
       name: now
       line: 88
       upvalues:
-        Workspace_upv_1 (copy, index: 1)
+        workspace (copy, index: 1)
     ]]
-    return Workspace_upv_1:GetServerTimeNow()
+    return workspace:GetServerTimeNow()
 end
-local function mod(a1)
-    --[[
-      name: mod
-      line: 35
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-        Parent_upv_1 (copy, index: 2)
-    ]]
-    local v1 = tbl_upv_2[a1]
-    if v1 == nil then
-        local Combat_2 = Parent_upv_1:FindFirstChild("Combat")
-        local v2 = Combat_2 and (Combat_2:FindFirstChild(a1))
-        v1 = false
-        local v3 = nil
-        if v2 then
-            local v4 = v2:IsA("ModuleScript")
-            if v4 then
-                local success_1, v5 = pcall(require, v2)
-                if success_1 and type(v5) == "table" then
-                    v3 = v5
-                end
-            end
-        end
-        tbl_upv_2[a1] = v3
-    end
-    return v1 or nil
-end
-local function tuningOf(a1)
-    --[[
-      name: tuningOf
-      line: 101
-      upvalues:
-        Combat_upv_1 (copy, index: 1)
-    ]]
-    local success_2, v6 = pcall(Combat_upv_1.Tuning, a1)
-    if success_2 and type(v6) == "table" then
-        return v6
-    end
-    return {}
-end
-local function heldSlot()
-    --[[
-      name: heldSlot
-      line: 108
-      upvalues:
-        tbl_upv_3 (copy, index: 1)
-    ]]
-    for _, value_1 in tbl_upv_3.slots do
-        if value_1.id ~= tbl_upv_3.heldId then
-            continue
-        end
-        return value_1
-    end
-    return nil
-end
-local function presetOf(a1)
+
+local function presetOf(a23)
     --[[
       name: presetOf
       line: 92
       upvalues:
         mod (copy, index: 1)
-        Combat_upv_1 (copy, index: 2)
+        Combat (copy, index: 2)
     ]]
-    local v7 = mod("Presentation")
-    if not v7 then
+    local v24 = mod("Presentation")
+    if not v24 then
         return {}
     end
-    local success_3, v8 = pcall(v7.For, a1, Combat_upv_1.Kind(a1))
-    if success_3 and type(v8) == "table" then
-        return v8
+
+    local success, result = pcall(v24.For, a23, Combat.Kind(a23))
+
+    if success and type(result) == "table" then
+        return result
     end
+
     return {}
 end
-local function refreshArc()
+
+local function tuningOf(a28)
     --[[
-      name: refreshArc
-      line: 155
+      name: tuningOf
+      line: 101
       upvalues:
-        mod (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
-        Workspace_upv_1 (copy, index: 3)
-        Combat_upv_1 (copy, index: 4)
-        u1 (copy, index: 5)
-        u2 (copy, index: 6)
+        Combat (copy, index: 1)
     ]]
-    local v9 = mod("Hud")
-    local v10 = nil
-    for _, value_2 in tbl_upv_3.slots do
-        if value_2.id == tbl_upv_3.heldId then
-            v10 = value_2
-        end
+    local success, result = pcall(Combat.Tuning, a28)
+
+    if success and type(result) == "table" then
+        return result
     end
-    if not v9 then
-        return
-    end
-    if v10 then
-        local v11 = v10.tool
-        local v12 = Workspace_upv_1:GetServerTimeNow()
-        local v13 = v11:GetAttribute("ReloadEndsAt")
-        if v11:GetAttribute("Reloading") == true and type(v13) == "number" and v12 < v13 then
-            local success_4, v14 = pcall(Combat_upv_1.Tuning, v10.id)
-            local v15
-            if (success_4) and type(v14) == "table" then
-                v15 = v14
-            else
-                v15 = {}
-            end
-            local v16 = v15.reloadTime or (v13 - v12)
-            v9.SetArc(v16, u1, (math.max(0, v16 - (v13 - v12))))
-            return
-        else
-            v13 = v11:GetAttribute("NextCharge")
-            local success_5, v17 = pcall(Combat_upv_1.Tuning, v10.id)
-            if (success_5) and type(v17) == "table" then
-                v11 = v17
-            else
-                v11 = {}
-            end
-        end
-        local regen_1 = v11.regen
-        if type(v13) == "number" and v12 < v13 and type(regen_1) == "number" then
-            v9.SetArc(regen_1, u2, (math.max(0, regen_1 - (v13 - v12))))
-        end
-    end
+
+    return {}
 end
+
+local function heldSlot()
+    --[[
+      name: heldSlot
+      line: 108
+      upvalues:
+        v20 (copy, index: 1)
+    ]]
+    for _, slot in v20.slots do
+        if slot.id == v20.heldId then
+            return slot
+        end
+    end
+
+    return nil
+end
+
 local function refreshPips()
     --[[
       name: refreshPips
       line: 117
       upvalues:
         mod (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
-        Combat_upv_1 (copy, index: 3)
+        v20 (copy, index: 2)
+        Combat (copy, index: 3)
         presetOf (copy, index: 4)
-        Weapons_upv_1 (copy, index: 5)
+        Weapons (copy, index: 5)
     ]]
-    local v18 = mod("Hud")
-    if not v18 or not tbl_upv_3.src then
+    local v35 = mod("Hud")
+
+    if not v35 or not v20.src then
         return
     end
-    local heldId_1 = tbl_upv_3.heldId
-    local v19 = nil
-    for _, value_3 in tbl_upv_3.slots do
-        if value_3.id == tbl_upv_3.heldId then
-            v19 = value_3
+
+    local slot
+    local ammo
+    local maxAmmo
+    local charges
+    local maxCharges
+    local v41
+    local heldId = v20.heldId
+
+    for _, slot2 in v20.slots do
+        if slot2.id == v20.heldId then
+            slot = slot2
+            break
         end
     end
-    local v20 = Combat_upv_1.Kind(heldId_1) or "Fists"
-    local u3 = v19 and (v19.tool)
-    local function num_1(a1)
+
+    local v45 = Combat.Kind(heldId) or "Fists"
+    local tool = slot and slot.tool
+
+    local function num(a48)
         --[[
           name: num
           line: 126
           upvalues:
-            u3 (copy, index: 1)
+            tool (copy, index: 1)
         ]]
-        local v21
-        if u3 then
-            v21 = u3:GetAttribute(a1)
-        else
-            v21 = u3
-        end
-        if type(v21) ~= "number" then
+        local v49 = tool and tool:GetAttribute(a48)
+
+        if type(v49) ~= "number" then
             return nil
         end
-        return v21
+
+        return v49
     end
-    local model_1 = u3 and (u3:GetAttribute("Ammo"))
-    local v22
-    if type(model_1) ~= "number" then
-        v22 = nil
+
+    local ammo2 = tool and tool:GetAttribute("Ammo")
+
+    if type(ammo2) ~= "number" then
+        ammo = nil
     else
-        v22 = model_1
+        ammo = ammo2
     end
-    model_1 = u3 and (u3:GetAttribute("MaxAmmo"))
-    local v23
-    if type(model_1) ~= "number" then
-        v23 = nil
+
+    local maxAmmo2 = tool and tool:GetAttribute("MaxAmmo")
+
+    if type(maxAmmo2) ~= "number" then
+        maxAmmo = nil
     else
-        v23 = model_1
+        maxAmmo = maxAmmo2
     end
-    local v24 = u3 and (u3:GetAttribute("Charges"))
-    if type(v24) ~= "number" then
-        model_1 = nil
+
+    local charges2 = tool and tool:GetAttribute("Charges")
+
+    if type(charges2) ~= "number" then
+        charges = nil
     else
-        model_1 = v24
+        charges = charges2
     end
-    local v25 = u3 and (u3:GetAttribute("MaxCharges"))
-    local v26
-    if type(v25) ~= "number" then
-        v26 = nil
+
+    local maxCharges2 = tool and tool:GetAttribute("MaxCharges")
+
+    if type(maxCharges2) ~= "number" then
+        maxCharges = nil
     else
-        v26 = v25
+        maxCharges = maxCharges2
     end
-    if Combat_upv_1.UsesAmmo(v20) and v22 and v23 then
-        v18.SetPips(v22, v23)
-    elseif model_1 and v26 then
-        if v20 == "Bow" then
-            v18.SetPips(0, 0)
-        else
-            local SetPips_1 = v18.SetPips
-            local v27
-            if v20 == "Herbs" or v20 == "Trap" then
-                v27 = presetOf(heldId_1).color
+
+    if Combat.UsesAmmo(v45) and ammo and maxAmmo then
+        v35.SetPips(ammo, maxAmmo)
+    elseif not charges or not maxCharges or v45 == "Bow" then
+        v35.SetPips(0, 0)
+    else
+        local setPips = v35.SetPips
+        local v55 = if v45 ~= "Herbs" and v45 ~= "Trap" then nil else presetOf(heldId).color
+        setPips(charges, maxCharges, v55)
+    end
+
+    local text = heldId and Weapons.AmmoOf and Weapons.AmmoOf(heldId)
+    local model = v20.src.model
+
+    if type(text) ~= "string" then
+        v41 = nil
+    else
+        v41 = model:GetAttribute("Ammo_" .. text)
+    end
+
+    local v58 = mod("Util")
+
+    if type(text) == "string" and v58 and v58.AmmoShown and 0 < v58.AmmoLeft(model, text) then
+        v35.SetAmmoCount(v58.AmmoShown(model, text))
+        return
+    end
+
+    if type(v41) ~= "number" then
+        v35.SetAmmoCount(nil)
+        return
+    end
+
+    local setAmmoCount = v35.SetAmmoCount
+    local v60 = v58 and v58.AMMO_NOUN and v58.AMMO_NOUN[text] or string.upper(text)
+    setAmmoCount(v41, v60)
+end
+
+local function refreshArc()
+    --[[
+      name: refreshArc
+      line: 155
+      upvalues:
+        mod (copy, index: 1)
+        v20 (copy, index: 2)
+        workspace (copy, index: 3)
+        Combat (copy, index: 4)
+        color3 (copy, index: 5)
+        color32 (copy, index: 6)
+    ]]
+    local slot
+    local v63 = mod("Hud")
+
+    for _, slot2 in v20.slots do
+        if slot2.id == v20.heldId then
+            slot = slot2
+            break
+        end
+    end
+
+    if not v63 or not slot then
+        return
+    end
+
+    local v66
+    local tool = slot.tool
+    local serverTimeNow = workspace:GetServerTimeNow()
+    local reloadEndsAt = tool:GetAttribute("ReloadEndsAt")
+
+    if tool:GetAttribute("Reloading") == true and type(reloadEndsAt) == "number" then
+        if serverTimeNow < reloadEndsAt then
+            local v70
+            local v71 = false
+            local id = slot.id
+            local success, result = pcall(Combat.Tuning, id)
+
+            if success then
+                if type(result) ~= "table" then
+                    v71 = true
+                else
+                    v70 = result
+                end
             else
-                v27 = nil
+                v71 = true
             end
-            SetPips_1(model_1, v26, v27)
+
+            if v71 then
+                v70 = {}
+            end
+
+            local v75 = v70.reloadTime or reloadEndsAt - serverTimeNow
+            v63.SetArc(v75, color3, (math.max(0, v75 - (reloadEndsAt - serverTimeNow))))
+
+            return
         end
+    end
+
+    local nextCharge = tool:GetAttribute("NextCharge")
+    local id = slot.id
+    local success, result = pcall(Combat.Tuning, id)
+
+    if not success or type(result) ~= "table" then
+        v66 = {}
     else
-        v18.SetPips(0, 0)
+        v66 = result
     end
-    v26 = heldId_1 and (Weapons_upv_1.AmmoOf and (Weapons_upv_1.AmmoOf(heldId_1)))
-    model_1 = tbl_upv_3.src.model
-    if type(v26) ~= "string" then
-        v23 = nil
-    else
-        v23 = model_1:GetAttribute("Ammo_" .. v26)
-    end
-    v22 = mod("Util")
-    if type(heldId_1) == "string" and v22 and v22.AmmoShown and v22.AmmoLeft(model_1, heldId_1) > 0 then
-        v18.SetAmmoCount(v22.AmmoShown(model_1, heldId_1))
-        return
-    end
-    if type(v23) ~= "number" then
-        v18.SetAmmoCount(nil)
-    else
-        local SetAmmoCount_1 = v18.SetAmmoCount
-        local v28 = ((v22 and (v22.AMMO_NOUN)) and (v22.AMMO_NOUN[heldId_1])) or (string.upper(heldId_1))
-        SetAmmoCount_1(v23, v28)
+
+    local regen = v66.regen
+
+    if type(nextCharge) == "number" and serverTimeNow < nextCharge and type(regen) == "number" then
+        v63.SetArc(regen, color32, (math.max(0, regen - (nextCharge - serverTimeNow))))
     end
 end
-local function applyInv(a1)
-    --[[
-      name: applyInv
-      line: 202
-      upvalues:
-        tbl_upv_3 (copy, index: 1)
-        Workspace_upv_1 (copy, index: 2)
-        ReplayCodec_upv_1 (copy, index: 3)
-        Weapons_upv_1 (copy, index: 4)
-        Combat_upv_1 (copy, index: 5)
-        refreshPips (copy, index: 6)
-        refreshArc (copy, index: 7)
-    ]]
-    local src_1 = tbl_upv_3.src
-    if not src_1 then
-        return
-    end
-    local items_1 = a1.items
-    local v29 = Workspace_upv_1:GetServerTimeNow()
-    local tbl_5 = {}
-    if type(items_1) == "string" then
-        local v30, v31 = nil, nil
-        for n_1 = 0, (#items_1 // ReplayCodec_upv_1.INV_BYTES) - 1 do
-            local success_6, v30, v32, v33, v34, v35, v36, v37, v38, v39 = pcall(string.unpack, ReplayCodec_upv_1.INV_FORMAT, items_1, (n_1 * ReplayCodec_upv_1.INV_BYTES) + 1)
-            local v40, v41 = nil, nil
-            if not (success_6) then
-                break
-            end
-            v40 = tbl_upv_3.items[v30]
-            if not (v40) or v32 < 1 or v32 > 6 then
-                continue
-            end
-            tbl_5[v32] = true
-            v30 = tbl_upv_3.slots[v32]
-            if not (v30) or v30.id ~= v40 then
-                if v30 then
-                    v30.tool:Destroy()
-                end
-                local v42 = Instance.new("Tool")
-                v41 = Weapons_upv_1.Get(v40)
-                if v41 then
-                    v31 = v41.name
-                else
-                    v31 = v40
-                end
-                v42.Name = v31
-                v42.RequiresHandle = false
-                v42.CanBeDropped = false
-                v42:SetAttribute("WeaponId", v40)
-                v42:SetAttribute("SlotIndex", v32)
-                v42:SetAttribute("Kind", Combat_upv_1.Kind(v40))
-                if v40 ~= tbl_upv_3.heldId then
-                    v31 = src_1.backpack
-                else
-                    v31 = src_1.character
-                end
-                v42.Parent = v31
-                v30 = {tool = v42, id = v40}
-                tbl_upv_3.slots[v32] = v30
-                local tool_upv_1 = v30.tool
-                local function set_1(a2, a3)
-                    --[[
-                      name: set
-                      line: 240
-                      upvalues:
-                        tool_upv_1 (copy, index: 1)
-                    ]]
-                    local v43 = ((a3 > 0) and (a3 - 1)) or nil
-                    if tool_upv_1:GetAttribute(a2) == v43 then
-                        return
-                    end
-                    tool_upv_1:SetAttribute(a2, v43)
-                end
-                success_6 = ((v33 > 0) and (v33 - 1)) or nil
-                if tool_upv_1:GetAttribute("Ammo") ~= success_6 then
-                    tool_upv_1:SetAttribute("Ammo", success_6)
-                end
-                v33 = ((v34 > 0) and (v34 - 1)) or nil
-                if tool_upv_1:GetAttribute("MaxAmmo") ~= v33 then
-                    tool_upv_1:SetAttribute("MaxAmmo", v33)
-                end
-                v34 = ((v35 > 0) and (v35 - 1)) or nil
-                if tool_upv_1:GetAttribute("Charges") ~= v34 then
-                    tool_upv_1:SetAttribute("Charges", v34)
-                end
-                v35 = ((v36 > 0) and (v36 - 1)) or nil
-                if tool_upv_1:GetAttribute("MaxCharges") ~= v35 then
-                    tool_upv_1:SetAttribute("MaxCharges", v35)
-                end
-                tool_upv_1:SetAttribute("Reloading", v37 > 0)
-                tool_upv_1:SetAttribute("ReloadEndsAt", ((v37 > 0) and (v29 + v37 / 100)) or 0)
-                tool_upv_1:SetAttribute("Cooldown", ((v38 > 0) and (v29 + v38 / 100)) or 0)
-                tool_upv_1:SetAttribute("NextCharge", ((v39 > 0) and (v29 + v39 / 100)) or 0)
-            end
-            local tool_upv_1 = v30.tool
-            local function set_1(a2, a3)
-                --[[
-                  name: set
-                  line: 240
-                  upvalues:
-                    tool_upv_1 (copy, index: 1)
-                ]]
-                local v43 = ((a3 > 0) and (a3 - 1)) or nil
-                if tool_upv_1:GetAttribute(a2) == v43 then
-                    return
-                end
-                tool_upv_1:SetAttribute(a2, v43)
-            end
-            success_6 = ((v33 > 0) and (v33 - 1)) or nil
-            if tool_upv_1:GetAttribute("Ammo") ~= success_6 then
-                tool_upv_1:SetAttribute("Ammo", success_6)
-            end
-            v33 = ((v34 > 0) and (v34 - 1)) or nil
-            if tool_upv_1:GetAttribute("MaxAmmo") ~= v33 then
-                tool_upv_1:SetAttribute("MaxAmmo", v33)
-            end
-            v34 = ((v35 > 0) and (v35 - 1)) or nil
-            if tool_upv_1:GetAttribute("Charges") ~= v34 then
-                tool_upv_1:SetAttribute("Charges", v34)
-            end
-            v35 = ((v36 > 0) and (v36 - 1)) or nil
-            if tool_upv_1:GetAttribute("MaxCharges") ~= v35 then
-                tool_upv_1:SetAttribute("MaxCharges", v35)
-            end
-            tool_upv_1:SetAttribute("Reloading", v37 > 0)
-            tool_upv_1:SetAttribute("ReloadEndsAt", ((v37 > 0) and (v29 + v37 / 100)) or 0)
-            tool_upv_1:SetAttribute("Cooldown", ((v38 > 0) and (v29 + v38 / 100)) or 0)
-            tool_upv_1:SetAttribute("NextCharge", ((v39 > 0) and (v29 + v39 / 100)) or 0)
-        end
-    end
-    for key_1, value_4 in tbl_upv_3.slots do
-        if not (tbl_5[key_1]) then
-            value_4.tool:Destroy()
-            tbl_upv_3.slots[key_1] = nil
-        end
-    end
-    for key_2, value_5 in a1 do
-        if type(key_2) ~= "string" or string.sub(key_2, 1, 4) ~= "Ammo" then
-            continue
-        end
-        if type(value_5) == "number" then
-            src_1.model:SetAttribute(key_2, value_5)
-        end
-    end
-    if type(a1.maxArmor) == "number" then
-        src_1.model:SetAttribute("MaxArmor", a1.maxArmor)
-    end
-    refreshPips()
-    refreshArc()
-end
-function tbl_upv_1.Begin(a1)
-    --[[
-      name: Begin
-      line: 276
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
-        mod (copy, index: 3)
-        HudBridge_upv_1 (copy, index: 4)
-    ]]
-    tbl_upv_1.End()
-    tbl_upv_3.active = true
-    tbl_upv_3.items = a1
-    tbl_upv_3.slots = {}
-    tbl_upv_3.heldId = nil
-    tbl_upv_3.charge = nil
-    tbl_upv_3.aiming = false
-    tbl_upv_3.blocking = false
-    tbl_upv_3.hp = -1
-    tbl_upv_3.armor = -1
-    tbl_upv_3.alive = true
-    local v44 = Instance.new("Model")
-    v44.Name = "ReplayHudSource"
-    local v45 = Instance.new("Humanoid")
-    v45.MaxHealth = 100
-    v45.Health = 100
-    v45.Parent = v44
-    v44:SetAttribute("Armor", 0)
-    v44:SetAttribute("MaxArmor", 0)
-    local v46 = Instance.new("Folder")
-    v46.Name = "Backpack"
-    v46.Parent = v44
-    local v47 = Instance.new("Folder")
-    v47.Name = "Character"
-    v47.Parent = v44
-    tbl_upv_3.src = {backpack = v46, character = v47, model = v44}
-    tbl_upv_3.hum = v45
-    local v48 = mod("Controller")
-    if v48 and type(v48.SetReplayHud) == "function" then
-        pcall(v48.SetReplayHud, true)
-    end
-    local v49 = mod("Hud")
-    if v49 then
-        v49.SetVisible(true)
-        v49.SetStyle("Dot")
-        v49.SetPips(0, 0)
-        v49.SetArc(nil)
-        v49.SetAmmoCount(nil)
-        v49.SetFrozen(false)
-    end
-    tbl_upv_3.ui = false
-    local ui_1 = HudBridge_upv_1.ui
-    if not ui_1 then
-        return
-    end
-    tbl_upv_3.ui = pcall(ui_1.Enter, tbl_upv_3.src)
-end
-function tbl_upv_1.Active()
-    --[[
-      name: Active
-      line: 324
-      upvalues:
-        tbl_upv_3 (copy, index: 1)
-    ]]
-    return tbl_upv_3.active
-end
-function tbl_upv_1.UiShown()
-    --[[
-      name: UiShown
-      line: 328
-      upvalues:
-        tbl_upv_3 (copy, index: 1)
-    ]]
-    return tbl_upv_3.ui
-end
-function tbl_upv_1.End()
-    --[[
-      name: End
-      line: 332
-      upvalues:
-        tbl_upv_3 (copy, index: 1)
-        mod (copy, index: 2)
-        HudBridge_upv_1 (copy, index: 3)
-    ]]
-    if not tbl_upv_3.active then
-        return
-    end
-    tbl_upv_3.active = false
-    local v50 = mod("Hud")
-    if v50 then
-        pcall(v50.StopChannel)
-        pcall(v50.SetCharge, 0)
-        pcall(v50.SetArc, nil)
-        pcall(v50.SetAmmoCount, nil)
-        pcall(v50.SetVisible, false)
-    end
-    local ui_2 = HudBridge_upv_1.ui
-    if tbl_upv_3.ui and ui_2 then
-        pcall(ui_2.Leave)
-    end
-    tbl_upv_3.ui = false
-    local v51 = mod("Controller")
-    if v51 and type(v51.SetReplayHud) == "function" then
-        pcall(v51.SetReplayHud, false)
-    end
-    if tbl_upv_3.src then
-        tbl_upv_3.src.model:Destroy()
-    end
-    tbl_upv_3.src = nil
-    tbl_upv_3.hum = nil
-    tbl_upv_3.slots = {}
-end
-local function setHeld(a1)
+
+local function setHeld(held)
     --[[
       name: setHeld
       line: 176
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v20 (copy, index: 1)
         mod (copy, index: 2)
         presetOf (copy, index: 3)
-        Combat_upv_1 (copy, index: 4)
+        Combat (copy, index: 4)
         refreshPips (copy, index: 5)
         refreshArc (copy, index: 6)
     ]]
-    tbl_upv_3.heldId = a1
-    tbl_upv_3.charge = nil
-    local v52 = mod("Hud")
-    local src_2 = tbl_upv_3.src
-    if src_2 then
-        local v53 = nil
-        for _, value_6 in tbl_upv_3.slots do
-            if value_6.id ~= a1 then
-                v53 = src_2.backpack
-            else
-                v53 = src_2.character
-            end
-            if value_6.tool.Parent ~= v53 then
-                value_6.tool.Parent = v53
+    v20.heldId = held
+    v20.charge = nil
+    local v83 = mod("Hud")
+
+    if const src = v20.src then
+        for _, slot in v20.slots do
+            local v87 = if slot.id == held then src.character else src.backpack
+
+            if slot.tool.Parent ~= v87 then
+                slot.tool.Parent = v87
             end
         end
     end
-    if v52 then
-        local v54 = presetOf(a1 or (Combat_upv_1.FISTS_ID)).crosshair or "Dot"
-        tbl_upv_3.style = v54
-        v52.SetStyle(v54)
-        v52.SetArc(nil)
-        v52.SetBlocking(tbl_upv_3.blocking)
+
+    if v83 then
+        local v88 = held or Combat.FISTS_ID
+        local crosshair = presetOf(v88).crosshair or "Dot"
+        v20.style = crosshair
+        v83.SetStyle(crosshair)
+        v83.SetArc(nil)
+        v83.SetBlocking(v20.blocking)
     end
+
     refreshPips()
     refreshArc()
 end
-function tbl_upv_1.Update(a1, a2, a3, a4, a5)
+
+local function applyInv(a91)
+    --[[
+      name: applyInv
+      line: 202
+      upvalues:
+        v20 (copy, index: 1)
+        workspace (copy, index: 2)
+        ReplayCodec (copy, index: 3)
+        Weapons (copy, index: 4)
+        Combat (copy, index: 5)
+        refreshPips (copy, index: 6)
+        refreshArc (copy, index: 7)
+    ]]
+    local src = v20.src
+    if not src then
+        return
+    end
+
+    local items = a91.items
+    local serverTimeNow = workspace:GetServerTimeNow()
+    local v95 = {}
+
+    if type(items) == "string" then
+        for index = 0, (#items // ReplayCodec.INV_BYTES) - 1 do
+            local success, result, slotIndex, v100, v101, v102, v103, v104, v105, v106 = pcall(string.unpack, ReplayCodec.INV_FORMAT, items, (index * ReplayCodec.INV_BYTES) + 1)
+            if not success then
+                break
+            end
+
+            local weaponId = v20.items[result]
+
+            if weaponId and not (slotIndex < 1) and not (6 < slotIndex) then
+                local v108
+                v95[slotIndex] = true
+                local slot = v20.slots[slotIndex]
+
+                if not slot or slot.id ~= weaponId then
+                    if slot then
+                        slot.tool:Destroy()
+                    end
+
+                    local tool = Instance.new("Tool")
+                    local v111 = Weapons.Get(weaponId)
+                    tool.Name = if v111 then v111.name else weaponId
+                    tool.RequiresHandle = false
+                    tool.CanBeDropped = false
+                    tool:SetAttribute("WeaponId", weaponId)
+                    tool:SetAttribute("SlotIndex", slotIndex)
+                    tool:SetAttribute("Kind", Combat.Kind(weaponId))
+                    tool.Parent = if weaponId == v20.heldId then src.character else src.backpack
+                    v108 = {tool = tool, id = weaponId}
+                    v20.slots[slotIndex] = v108
+                else
+                    v108 = slot
+                end
+
+                local tool = v108.tool
+
+                local function set(a114, a115)
+                    --[[
+                      name: set
+                      line: 240
+                      upvalues:
+                        tool (copy, index: 1)
+                    ]]
+                    local v116 = if 0 < a115 then a115 - 1 else nil
+
+                    if tool:GetAttribute(a114) ~= v116 then
+                        tool:SetAttribute(a114, v116)
+                    end
+                end
+
+                local ammo = if 0 < v100 then v100 - 1 else nil
+
+                if tool:GetAttribute("Ammo") ~= ammo then
+                    tool:SetAttribute("Ammo", ammo)
+                end
+
+                local maxAmmo = if 0 < v101 then v101 - 1 else nil
+
+                if tool:GetAttribute("MaxAmmo") ~= maxAmmo then
+                    tool:SetAttribute("MaxAmmo", maxAmmo)
+                end
+
+                local charges = if 0 < v102 then v102 - 1 else nil
+
+                if tool:GetAttribute("Charges") ~= charges then
+                    tool:SetAttribute("Charges", charges)
+                end
+
+                local maxCharges = if 0 < v103 then v103 - 1 else nil
+
+                if tool:GetAttribute("MaxCharges") ~= maxCharges then
+                    tool:SetAttribute("MaxCharges", maxCharges)
+                end
+
+                tool:SetAttribute("Reloading", 0 < v104)
+                local reloadEndsAt = not (0 < v104) and 0 or serverTimeNow + v104 / 100
+                tool:SetAttribute("ReloadEndsAt", reloadEndsAt)
+                local cooldown = not (0 < v105) and 0 or serverTimeNow + v105 / 100
+                tool:SetAttribute("Cooldown", cooldown)
+                local nextCharge = not (0 < v106) and 0 or serverTimeNow + v106 / 100
+                tool:SetAttribute("NextCharge", nextCharge)
+            end
+        end
+    end
+
+    for slotKey, slot in v20.slots do
+        if not v95[slotKey] then
+            slot.tool:Destroy()
+            v20.slots[slotKey] = nil
+        end
+    end
+
+    for text, v127 in a91 do
+        if type(text) == "string" then
+            if string.sub(text, 1, 4) == "Ammo" and type(v127) == "number" then
+                src.model:SetAttribute(text, v127)
+            end
+        end
+    end
+
+    if type(a91.maxArmor) == "number" then
+        src.model:SetAttribute("MaxArmor", a91.maxArmor)
+    end
+
+    refreshPips()
+    refreshArc()
+end
+
+function v9.Begin(items)
+    --[[
+      name: Begin
+      line: 276
+      upvalues:
+        v9 (copy, index: 1)
+        v20 (copy, index: 2)
+        mod (copy, index: 3)
+        HudBridge (copy, index: 4)
+    ]]
+    v9.End()
+    v20.active = true
+    v20.items = items
+    v20.slots = {}
+    v20.heldId = nil
+    v20.charge = nil
+    v20.aiming = false
+    v20.blocking = false
+    v20.hp = -1
+    v20.armor = -1
+    v20.alive = true
+    local replayHudSource = Instance.new("Model")
+    replayHudSource.Name = "ReplayHudSource"
+
+    local hum = Instance.new("Humanoid")
+    hum.MaxHealth = 100
+    hum.Health = 100
+    hum.Parent = replayHudSource
+    replayHudSource:SetAttribute("Armor", 0)
+    replayHudSource:SetAttribute("MaxArmor", 0)
+    local backpack = Instance.new("Folder")
+    backpack.Name = "Backpack"
+    backpack.Parent = replayHudSource
+
+    local character = Instance.new("Folder")
+    character.Name = "Character"
+    character.Parent = replayHudSource
+    v20.src = {backpack = backpack, character = character, model = replayHudSource}
+    v20.hum = hum
+    local v133 = mod("Controller")
+
+    if v133 and type(v133.SetReplayHud) == "function" then
+        pcall(v133.SetReplayHud, true)
+    end
+
+    if const v134 = mod("Hud") then
+        v134.SetVisible(true)
+        v134.SetStyle("Dot")
+        v134.SetPips(0, 0)
+        v134.SetArc(nil)
+        v134.SetAmmoCount(nil)
+        v134.SetFrozen(false)
+    end
+
+    v20.ui = false
+
+    if const ui = HudBridge.ui then
+        v20.ui = pcall(ui.Enter, v20.src)
+    end
+end
+
+function v9.Active()
+    --[[
+      name: Active
+      line: 324
+      upvalues:
+        v20 (copy, index: 1)
+    ]]
+    return v20.active
+end
+
+function v9.UiShown()
+    --[[
+      name: UiShown
+      line: 328
+      upvalues:
+        v20 (copy, index: 1)
+    ]]
+    return v20.ui
+end
+
+function v9.End()
+    --[[
+      name: End
+      line: 332
+      upvalues:
+        v20 (copy, index: 1)
+        mod (copy, index: 2)
+        HudBridge (copy, index: 3)
+    ]]
+    if not v20.active then
+        return
+    end
+
+    v20.active = false
+
+    if const v136 = mod("Hud") then
+        pcall(v136.StopChannel)
+        pcall(v136.SetCharge, 0)
+        pcall(v136.SetArc, nil)
+        pcall(v136.SetAmmoCount, nil)
+        pcall(v136.SetVisible, false)
+    end
+
+    local ui = HudBridge.ui
+
+    if v20.ui and ui then
+        pcall(ui.Leave)
+    end
+
+    v20.ui = false
+    local v138 = mod("Controller")
+
+    if v138 and type(v138.SetReplayHud) == "function" then
+        pcall(v138.SetReplayHud, false)
+    end
+
+    if v20.src then
+        v20.src.model:Destroy()
+    end
+
+    v20.src = nil
+    v20.hum = nil
+    v20.slots = {}
+end
+
+function v9.Update(a139, held, hp: number, armor, a143: number)
     --[[
       name: Update
       line: 365
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v20 (copy, index: 1)
         mod (copy, index: 2)
         setHeld (copy, index: 3)
-        ReplayCodec_upv_1 (copy, index: 4)
-        Combat_upv_1 (copy, index: 5)
+        ReplayCodec (copy, index: 4)
+        Combat (copy, index: 5)
     ]]
-    if not tbl_upv_3.active then
+    if not v20.active then
         return
     end
-    local v55 = mod("Hud")
-    local v56 = tbl_upv_3.hum
-    if v56 and math.abs(a3 - tbl_upv_3.hp) >= 0.5 then
-        tbl_upv_3.hp = a3
-        v56.Health = math.clamp(a3, 0, 100)
+
+    local v144 = mod("Hud")
+    local hum = v20.hum
+
+    if hum and 0.5 <= math.abs(hp - v20.hp) then
+        v20.hp = hp
+        hum.Health = math.clamp(hp, 0, 100)
     end
-    if tbl_upv_3.src and math.abs(a4 - tbl_upv_3.armor) >= 0.5 then
-        tbl_upv_3.armor = a4
-        tbl_upv_3.src.model:SetAttribute("Armor", a4)
+
+    if v20.src and 0.5 <= math.abs(armor - v20.armor) then
+        v20.armor = armor
+        v20.src.model:SetAttribute("Armor", armor)
     end
-    if a2 ~= tbl_upv_3.heldId then
-        setHeld(a2)
+
+    if held ~= v20.heldId then
+        setHeld(held)
     end
-    if not v55 then
+
+    if not v144 then
         return
     end
-    local v57 = bit32.btest(a5, ReplayCodec_upv_1.F_ALIVE)
-    if v57 ~= tbl_upv_3.alive then
-        tbl_upv_3.alive = v57
-        v55.SetVisible(v57)
-        if not (v57) then
-            v55.StopChannel()
-            v55.SetCharge(0)
-            tbl_upv_3.charge = nil
+
+    local alive = bit32.btest(a143, ReplayCodec.F_ALIVE)
+
+    if alive ~= v20.alive then
+        v20.alive = alive
+        v144.SetVisible(alive)
+
+        if not alive then
+            v144.StopChannel()
+            v144.SetCharge(0)
+            v20.charge = nil
         end
     end
-    local v58 = bit32.btest(a5, ReplayCodec_upv_1.F_BLOCKING)
-    if v58 ~= tbl_upv_3.blocking then
-        tbl_upv_3.blocking = v58
-        v55.SetBlocking(v58)
+
+    local blocking = bit32.btest(a143, ReplayCodec.F_BLOCKING)
+
+    if blocking ~= v20.blocking then
+        v20.blocking = blocking
+        v144.SetBlocking(blocking)
     end
-    tbl_upv_3.aiming = bit32.btest(a5, ReplayCodec_upv_1.F_AIMING)
-    v56 = tbl_upv_3.charge
-    if v56 then
-        v55.SetCharge((math.clamp((a1 - v56.start) / math.max(0.05, v56.time), 0, 1)))
+
+    v20.aiming = bit32.btest(a143, ReplayCodec.F_AIMING)
+
+    if const charge = v20.charge then
+        v144.SetCharge((math.clamp((a139 - charge.start) / math.max(0.05, charge.time), 0, 1)))
     end
-    if tbl_upv_3.style == "Gun" or tbl_upv_3.style == "Spread" then
-        local success_7, v59 = pcall(Combat_upv_1.Tuning, tbl_upv_3.heldId)
-        if (success_7) and type(v59) == "table" then
-            v56 = v59
+
+    if v20.style == "Gun" or v20.style == "Spread" then
+        local v149
+        local v150
+        local v151 = v20.heldId
+        local success, result = pcall(Combat.Tuning, v151)
+
+        if not success or type(result) ~= "table" then
+            v149 = {}
         else
-            v56 = {}
+            v149 = result
         end
-        local v60 = Combat_upv_1.Kind(tbl_upv_3.heldId)
-        local v61
-        if v60 == "Blunderbuss" then
-            v61 = tbl_upv_3.aiming and v56.spreadAim or (v56.spread or 6)
-        elseif v60 == "Crossbow" then
-            v61 = 0.4
-        elseif tbl_upv_3.aiming then
-            v61 = v56.spreadAim or 0
+
+        v151 = Combat.Kind(v20.heldId)
+
+        if v151 ~= "Blunderbuss" then
+            v150 = v151 == "Crossbow" and 0.4
+                or (if v20.aiming then v149.spreadAim or 0 else v149.spreadHip or 0)
+        elseif v20.aiming then
+            v150 = v149.spreadAim or v149.spread or 6
         else
-            v61 = v56.spreadHip or 0
+            v150 = v149.spread or 6
         end
-        v55.SetSpread(v61)
+
+        v144.SetSpread(v150)
     end
 end
-function tbl_upv_1.ChargeAt(a1)
+
+function v9.ChargeAt(a154)
     --[[
       name: ChargeAt
       line: 418
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v20 (copy, index: 1)
     ]]
-    local charge_1 = tbl_upv_3.charge
-    if charge_1 then
-        return (math.clamp((a1 - charge_1.start) / math.max(0.05, charge_1.time), 0, 1))
-    end
-    return 1
+    return if const charge = v20.charge then (math.clamp((a154 - charge.start) / math.max(0.05, charge.time), 0, 1)) else 1
 end
-function tbl_upv_1.HeldCharges()
+
+function v9.HeldCharges()
     --[[
       name: HeldCharges
       line: 427
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v20 (copy, index: 1)
     ]]
-    local v62 = nil
-    for _, value_7 in tbl_upv_3.slots do
-        if value_7.id == tbl_upv_3.heldId then
-            v62 = value_7
+    local slot
+
+    for _, slot2 in v20.slots do
+        if slot2.id == v20.heldId then
+            slot = slot2
+            break
         end
     end
-    if not v62 then
+
+    if not slot then
         return nil
     end
-    local v63 = v62.tool:GetAttribute("MaxCharges")
-    local v64 = v62.tool:GetAttribute("Charges")
-    if type(v63) == "number" and v63 > 0 and type(v64) == "number" then
-        return v64
+
+    local maxCharges = slot.tool:GetAttribute("MaxCharges")
+    local charges = slot.tool:GetAttribute("Charges")
+
+    if type(maxCharges) == "number" and 0 < maxCharges and type(charges) == "number" then
+        return charges
     end
+
     return nil
 end
-function tbl_upv_1.OnFighterEvent(a1, a2, a3)
+
+function v9.OnFighterEvent(a161, a162, start)
     --[[
       name: OnFighterEvent
       line: 440
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v20 (copy, index: 1)
         mod (copy, index: 2)
         applyInv (copy, index: 3)
-        Combat_upv_1 (copy, index: 4)
+        Combat (copy, index: 4)
         presetOf (copy, index: 5)
-        u1 (copy, index: 6)
+        color3 (copy, index: 6)
     ]]
-    if not tbl_upv_3.active then
+    if not v20.active then
         return
     end
-    local v65 = mod("Hud")
-    if a1 == "Inv" then
-        applyInv(a2)
-    elseif v65 then
-        if a1 ~= "Charge" then
-            if a1 == "Projectile" then
-                local v66 = Combat_upv_1.Kind(a2.weaponId)
-                local charge_2 = tbl_upv_3.charge
-                local v67 = ((not charge_2) and 1) or (math.clamp((a3 - charge_2.start) / math.max(0.05, charge_2.time), 0, 1))
-                if v66 ~= "Bow" then
-                    local v68 = nil
-                    if Combat_upv_1.UsesAmmo(v66) then
-                        local v69 = presetOf(a2.weaponId)
-                        local Kick_1 = v65.Kick
-                        local success_8, v70 = pcall(Combat_upv_1.Tuning, a2.weaponId)
-                        local v71
-                        if (success_8) and type(v70) == "table" then
-                            v71 = v70
-                        else
-                            v71 = {}
-                        end
-                        Kick_1((v71.kick or (v69.kick or 2)) * 3)
-                    else
-                        v65.Kick(4)
-                        local success_9, v72 = pcall(Combat_upv_1.Tuning, a2.weaponId)
-                        local v73
-                        if (success_9) and type(v72) == "table" then
-                            v73 = v72
-                        else
-                            v73 = {}
-                        end
-                        v68 = v73.cooldown
-                        if type(v68) == "number" and v68 >= 0.3 then
-                            v65.SetArc(v68, u1)
-                        end
-                    end
-                else
-                    v65.Kick(v67 * 6)
-                end
-                tbl_upv_3.charge = nil
-                v65.SetCharge(0)
-            elseif a1 == "Swing" then
-                if a2.heavy == true or a2.lunge == true then
-                    local success_10, v74 = pcall(Combat_upv_1.Tuning, a2.weaponId)
-                    local v75
-                    if (success_10) and type(v74) == "table" then
-                        v75 = v74
-                    else
-                        local tbl_8 = {}
-                        v75 = tbl_8
-                    end
-                    local v76
-                    if a2.heavy ~= true then
-                        v76 = v75.lunge
-                    else
-                        v76 = v75.heavy
-                    end
-                    local SetArc_1 = v65.SetArc
-                    if type(v76) ~= "table" then
-                        v74 = 1
-                    else
-                        v74 = v76.cooldown
-                        v74 = v74 or 1
-                    end
-                    SetArc_1(v74, u1)
-                end
-                tbl_upv_3.charge = nil
-                v65.SetCharge(0)
-            elseif a1 ~= "Reload" then
-                if a1 == "Use" then
-                    local v77 = nil
-                    if a2.position == nil then
-                        local v78 = presetOf(a2.weaponId)
-                        v77 = tonumber(a2.duration)
-                        if v77 and v77 > 0 then
-                            v65.StartChannel(v78.label or "USING", v77, v78.color)
-                        end
-                        return
-                    end
-                end
-                if a1 ~= "Heal" then
-                    return
-                end
-                v65.StopChannel()
-                v65.Flash(Color3.fromRGB(110, 220, 110), 0.35, 0.4)
-            else
-                local v79 = tonumber(a2.duration)
-                if not (v79) then
-                    local success_11, v80 = pcall(Combat_upv_1.Tuning, a2.weaponId)
-                    if (success_11) and type(v80) == "table" then
-                        v79 = v80
-                    else
-                        v79 = {}
-                    end
-                    v79 = v79.reloadTime or 1
-                end
-                v65.SetArc(v79, u1)
-            end
-        elseif a2.on ~= true then
-            tbl_upv_3.charge = nil
-            v65.SetCharge(0)
-        else
-            local v81
-            if type(a2.weaponId) ~= "string" then
-                v81 = tbl_upv_3.heldId
-            else
-                v81 = a2.weaponId
-            end
-            local v82, v83 = pcall(Combat_upv_1.Tuning, v81)
-            local v84
-            if (v82) and type(v83) == "table" then
-                v84 = v83
-            else
-                local tbl_9 = {}
-                v84 = tbl_9
-            end
-            local str_1 = tostring(a2.kind)
-            if str_1 == "Heavy" then
-                v82 = ((v84.heavy) and (v84.heavy.charge)) or 0.6
-            elseif str_1 == "Lunge" then
-                v82 = ((v84.lunge) and (v84.lunge.charge)) or 0.6
-            elseif str_1 ~= "Throw" then
-                v82 = v84.drawTime or 1
-            else
-                v82 = v84.drawTime or 0.5
-            end
-            tbl_upv_3.charge = {kind = str_1, start = a3, time = v82}
+
+    local v164 = mod("Hud")
+
+    if a161 == "Inv" then
+        applyInv(a162)
+        return
+    end
+
+    if not v164 then
+        return
+    end
+
+    if a161 == "Charge" then
+        local v165
+        local v166
+        local v167
+
+        if a162.on ~= true then
+            v20.charge = nil
+            v164.SetCharge(0)
+
+            return
         end
+
+        if type(a162.weaponId) ~= "string" then
+            v165 = v20.heldId
+        else
+            v165 = a162.weaponId
+        end
+
+        local success, result = pcall(Combat.Tuning, v165)
+
+        if not success or type(result) ~= "table" then
+            v166 = {}
+        else
+            v166 = result
+        end
+
+        local text = tostring(a162.kind)
+
+        if text == "Heavy" then
+            v167 = v166.heavy and v166.heavy.charge or 0.6
+        elseif text == "Lunge" then
+            v167 = v166.lunge and v166.lunge.charge or 0.6
+        else
+            v167 = if text == "Throw" then v166.drawTime or 0.5 else v166.drawTime or 1
+        end
+
+        v20.charge = {kind = text, start = start, time = v167}
+
+        return
+    end
+
+    if a161 == "Projectile" then
+        local v171 = Combat.Kind(a162.weaponId)
+        local v173 = if const charge = v20.charge then math.clamp((start - charge.start) / math.max(0.05, charge.time), 0, 1) else 1
+
+        if v171 ~= "Bow" then
+            if Combat.UsesAmmo(v171) then
+                local v174
+                local v175 = presetOf(a162.weaponId)
+                local kick = v164.Kick
+                local weaponId = a162.weaponId
+                local success, result = pcall(Combat.Tuning, weaponId)
+
+                if not success or type(result) ~= "table" then
+                    v174 = {}
+                else
+                    v174 = result
+                end
+
+                local kick2 = v174.kick or v175.kick or 2
+                kick(kick2 * 3)
+            else
+                local v181
+                v164.Kick(4)
+                local weaponId = a162.weaponId
+                local success, result = pcall(Combat.Tuning, weaponId)
+
+                if not success or type(result) ~= "table" then
+                    v181 = {}
+                else
+                    v181 = result
+                end
+
+                local cooldown = v181.cooldown
+
+                if type(cooldown) == "number" and 0.3 <= cooldown then
+                    v164.SetArc(cooldown, color3)
+                end
+            end
+        else
+            v164.Kick(v173 * 6)
+        end
+
+        v20.charge = nil
+        v164.SetCharge(0)
+
+        return
+    end
+
+    local v186
+
+    if a161 == "Swing" then
+        if a162.heavy == true or a162.lunge == true then
+            local v187
+            local weaponId = a162.weaponId
+            local result
+            v186, result = pcall(Combat.Tuning, weaponId)
+
+            if not v186 or type(result) ~= "table" then
+                v187 = {}
+            else
+                v187 = result
+            end
+
+            local v190 = if a162.heavy == true then v187.heavy else v187.lunge
+            v186 = v164.SetArc
+            local cooldown = type(v190) == "table" and v190.cooldown or 1
+            v186(cooldown, color3)
+        end
+
+        v20.charge = nil
+        v164.SetCharge(0)
+
+        return
+    end
+
+    if a161 == "Reload" then
+        local v192 = tonumber(a162.duration)
+        if not v192 then
+            local v193
+            local weaponId = a162.weaponId
+            local success, result = pcall(Combat.Tuning, weaponId)
+
+            if not success or type(result) ~= "table" then
+                v193 = {}
+            else
+                v193 = result
+            end
+
+            v192 = v193.reloadTime or 1
+        end
+
+        v164.SetArc(v192, color3)
+
+        return
+    end
+
+    if a161 == "Use" and a162.position == nil then
+        local v197 = presetOf(a162.weaponId)
+        local number = tonumber(a162.duration)
+
+        if not number or not (0 < number) then
+            return
+        end
+
+        v164.StartChannel((v197.label or "USING"), number, v197.color)
+
+        return
+    end
+
+    if a161 == "Heal" then
+        v164.StopChannel()
+        v164.Flash(Color3.fromRGB(110, 220, 110), 0.35, 0.4)
     end
 end
-function tbl_upv_1.HitConfirm(a1, a2)
+
+function v9.HitConfirm(a199, a200)
     --[[
       name: HitConfirm
       line: 508
       upvalues:
         mod (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
+        v20 (copy, index: 2)
     ]]
-    local v85 = mod("Controller")
-    if not tbl_upv_3.active or not v85 then
+    local v201 = mod("Controller")
+
+    if not v20.active or not v201 or type(v201.ReplayHitConfirm) ~= "function" then
         return
     end
-    if type(v85.ReplayHitConfirm) == "function" then
-        local ReplayHitConfirm_1 = v85.ReplayHitConfirm
-        local tbl_10 = {weaponId = 0, armorBroken = 0, armor = 0, headshot = 0, dot = 0, position = 0, blocked = 0, crit = 0, killed = 0}
-        tbl_10.victimId = a2 or ""
-        tbl_10.victim = a1.victim
-        tbl_10.amount = tonumber(a1.amount) or 0
-        tbl_10.headshot = a1.headshot == true
-        tbl_10.crit = a1.crit == true
-        tbl_10.killed = a1.killed == true
-        tbl_10.blocked = a1.blocked == true
-        tbl_10.position = a1.position
-        tbl_10.weaponId = a1.weaponId
-        tbl_10.dot = a1.dot == true
-        tbl_10.armor = tonumber(a1.armor) or 0
-        tbl_10.armorBroken = a1.armorBroken == true
-        ReplayHitConfirm_1(tbl_10)
-    end
+
+    local replayHitConfirm = v201.ReplayHitConfirm
+    local v203 = {victimId = a200 or "", victim = a199.victim, amount = tonumber(a199.amount) or 0, headshot = a199.headshot == true, crit = a199.crit == true, killed = a199.killed == true, blocked = a199.blocked == true, position = a199.position, weaponId = a199.weaponId, dot = a199.dot == true, armor = tonumber(a199.armor)
+        or 0, armorBroken = a199.armorBroken == true}
+    replayHitConfirm(v203)
 end
-function tbl_upv_1.DamageTaken(a1, a2)
+
+function v9.DamageTaken(a204, a205)
     --[[
       name: DamageTaken
       line: 530
       upvalues:
         mod (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
+        v20 (copy, index: 2)
     ]]
-    local v86 = mod("Controller")
-    if not tbl_upv_3.active or not v86 then
+    local v206 = mod("Controller")
+
+    if not v20.active or not v206 or type(v206.ReplayDamageTaken) ~= "function" then
         return
     end
-    if type(v86.ReplayDamageTaken) == "function" then
-        local attacker_1 = a1.attacker
-        local fromPosition_1 = a1.fromPosition
-        if typeof(fromPosition_1) ~= "Vector3" then
-            local v87 = nil
-            if typeof(attacker_1) == "Instance" then
-                v87 = attacker_1:FindFirstChild("HumanoidRootPart")
-                fromPosition_1 = not (v87) or not (v87:IsA("BasePart")) or v87.Position
-            end
-        end
-        local ReplayDamageTaken_1 = v86.ReplayDamageTaken
-        local tbl_11 = {armorBroken = 0, knockback = false, attackerId = 0, weaponId = 0, fromPosition = 0, attacker = 0, headshot = 0, damageType = 0, stagger = 0, armor = 0, blocked = 0, interrupted = 0, killed = 0}
-        tbl_11.amount = tonumber(a1.amount) or 0
-        local v88
-        if typeof(fromPosition_1) ~= "Vector3" then
-            v88 = false
-        else
-            v88 = fromPosition_1
-        end
-        tbl_11.fromPosition = v88
-        tbl_11.attackerId = a2 or ""
-        tbl_11.attacker = attacker_1
-        tbl_11.headshot = a1.headshot == true
-        tbl_11.killed = a1.killed == true
-        tbl_11.blocked = a1.blocked == true
-        if type(a1.weaponId) ~= "string" then
-            v88 = false
-        else
-            v88 = a1.weaponId
-        end
-        tbl_11.weaponId = v88
-        if type(a1.damageType) ~= "string" then
-            v88 = false
-        else
-            v88 = a1.damageType
-        end
-        tbl_11.damageType = v88
-        if type(a1.stagger) ~= "number" then
-            v88 = false
-        else
-            v88 = a1.stagger
-        end
-        tbl_11.stagger = v88
-        tbl_11.armor = tonumber(a1.armor) or 0
-        tbl_11.armorBroken = a1.armorBroken == true
-        tbl_11.interrupted = a1.interrupted == true
-        ReplayDamageTaken_1(tbl_11)
-        if a1.interrupted == true then
-            fromPosition_1 = mod("Hud")
-            if fromPosition_1 then
-                fromPosition_1.StopChannel()
-            end
+
+    local v207
+    local weaponId
+    local damageType
+    local stagger
+    local attacker = a204.attacker
+    local v212 = a204.fromPosition
+
+    if typeof(v212) ~= "Vector3" and typeof(attacker) == "Instance" then
+        local humanoidRootPart = attacker:FindFirstChild("HumanoidRootPart")
+        v212 = if humanoidRootPart and humanoidRootPart:IsA("BasePart") then humanoidRootPart.Position else nil
+    end
+
+    local replayDamageTaken = v206.ReplayDamageTaken
+    local v215 = {knockback = false, amount = tonumber(a204.amount) or 0}
+
+    if typeof(v212) ~= "Vector3" then
+        v207 = false
+    else
+        v207 = v212
+    end
+
+    v215.fromPosition = v207
+    v215.attackerId = a205 or ""
+    v215.attacker = attacker
+    v215.headshot = a204.headshot == true
+    v215.killed = a204.killed == true
+    v215.blocked = a204.blocked == true
+
+    if type(a204.weaponId) ~= "string" then
+        weaponId = false
+    else
+        weaponId = a204.weaponId
+    end
+
+    v215.weaponId = weaponId
+
+    if type(a204.damageType) ~= "string" then
+        damageType = false
+    else
+        damageType = a204.damageType
+    end
+
+    v215.damageType = damageType
+
+    if type(a204.stagger) ~= "number" then
+        stagger = false
+    else
+        stagger = a204.stagger
+    end
+
+    v215.stagger = stagger
+    v215.armor = tonumber(a204.armor) or 0
+    v215.armorBroken = a204.armorBroken == true
+    v215.interrupted = a204.interrupted == true
+    replayDamageTaken(v215)
+
+    if a204.interrupted == true then
+        if const v216 = mod("Hud") then
+            v216.StopChannel()
         end
     end
 end
-return tbl_upv_1
+
+return v9

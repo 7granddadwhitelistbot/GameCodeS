@@ -1,844 +1,805 @@
-local Players_upv_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local RunService_upv_1 = game:GetService("RunService")
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local Keybinds_upv_1 = require(ReplicatedStorage_upv_1:WaitForChild("Shared"):WaitForChild("Keybinds"))
-local tbl_1 = {}
-function tbl_1.Init(a1)
-    --[[
-      name: Init
-      line: 36
-      upvalues:
-        Players_upv_1 (copy, index: 1)
-        ReplicatedStorage_upv_1 (copy, index: 2)
-        RunService_upv_1 (copy, index: 3)
-        Keybinds_upv_1 (copy, index: 4)
-        UserInputService_upv_1 (copy, index: 5)
-    ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local WeaponIcon_upv_1 = a1.WeaponIcon
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_1 = Theme_upv_1.Fonts
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local LOADOUT_SWAP_CUTOFF_upv_1 = 0.3
-    local Config_upv_1 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Config")
-    local success_1, v1 = pcall(
-        function()
-            --[[
-              line: 44
-              upvalues:
-                Config_upv_1 (copy, index: 1)
-            ]]
-            if Config_upv_1 then
-                return (require(Config_upv_1))
-            end
-            return nil
-        end
-    )
-    if success_1 and type(v1) == "table" and type(v1.LOADOUT_SWAP_CUTOFF) == "number" then
-        LOADOUT_SWAP_CUTOFF_upv_1 = v1.LOADOUT_SWAP_CUTOFF
-    end
-    local u1 = LOADOUT_SWAP_CUTOFF_upv_1 + 0.12
-    local u2 = LOADOUT_SWAP_CUTOFF_upv_1 + 0.25
-    LOADOUT_SWAP_CUTOFF_upv_1 = UI_upv_1.new("Frame", {Name = "LoadoutSwap", Visible = false, AnchorPoint = Vector2.new(0.5, 1), Size = UDim2.fromOffset(800, 90), Parent = a1.Canvas.HUD})
-    local u3 = UI_upv_1.new("Frame", {Name = "Header", Size = UDim2.new(1, 0, 0, 22), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center), Parent = LOADOUT_SWAP_CUTOFF_upv_1})
-    local u4 = UI_upv_1.ActionCap("NextLoadout", {Height = 20, LayoutOrder = 1, Parent = u3})
-    local u5 = UI_upv_1.new("TextLabel", {LayoutOrder = 2, Text = "SWITCH LOADOUT", Name = "Title", TextSize = 15, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromOffset(0, 20), FontFace = Fonts_1.Heavy, TextColor3 = Colors_upv_1.TextDim, Parent = u3})
-    local u6 = UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.35)
-    u6.Parent = u5
-    local u7 = UI_upv_1.new("Frame", {Name = "Cards", Position = UDim2.fromOffset(0, 26), Size = UDim2.new(1, 0, 0, 58), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center), Parent = LOADOUT_SWAP_CUTOFF_upv_1})
-    local tbl_upv_2 = {}
-    local u8 = nil
-    local u9 = nil
-    local u10 = false
-    for n_upv_1 = 1, 5 do
-        local v2 = UI_upv_1.new("TextButton", {Name = "Slot" .. n_upv_1, Size = UDim2.fromOffset(128, 60), Text = "", AutoButtonColor = false, BackgroundColor3 = Colors_upv_1.Panel, BackgroundTransparency = 0.25, LayoutOrder = n_upv_1, [1] = UI_upv_1.Corner(10), Parent = u7})
-        local v3 = UI_upv_1.Stroke(Colors_upv_1.Stroke, 1.5, 0.82)
-        v3.Parent = v2
-        local v4 = UI_upv_1.new("TextLabel", {Name = "Num", ZIndex = 3, TextSize = 15, Position = UDim2.fromOffset(7, 3), Size = UDim2.fromOffset(16, 16), Text = tostring(n_upv_1), FontFace = Fonts_1.Display, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = v2})
-        local v5 = UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.3)
-        v5.Parent = v4
-        local v6 = UI_upv_1.new("Frame", {Name = "Icons", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 3), Size = UDim2.new(1, -10, 0, 40), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 2, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center), Parent = v2})
-        local tbl_3 = {}
-        for n_2 = 1, 3 do
-            tbl_3[n_2] = UI_upv_1.new("Frame", {ZIndex = 2, Visible = false, Name = "I" .. n_2, Size = UDim2.fromOffset(38, 38), LayoutOrder = n_2, Parent = v6})
-        end
-        local v7 = UI_upv_1.new("TextLabel", {Visible = false, Text = "", Name = "More", ZIndex = 3, TextSize = 13, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -6, 1, -2), Size = UDim2.fromOffset(30, 16), FontFace = Fonts_1.Display, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = v2})
-        local v8 = UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.3)
-        v8.Parent = v7
-        local tbl_upv_4 = {hover = false}
-        tbl_upv_4.btn = v2
-        tbl_upv_4.stroke = v3
-        tbl_upv_4.num = v4
-        tbl_upv_4.numStroke = v5
-        tbl_upv_4.icons = v6
-        tbl_upv_4.holders = tbl_3
-        tbl_upv_4.more = v7
-        tbl_upv_4.moreStroke = v8
-        tbl_upv_2[n_upv_1] = tbl_upv_4
-        v2.Activated:Connect(
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local userInputService = game:GetService("UserInputService")
+local Keybinds = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Keybinds"))
+
+return {
+    Init = (function(a6)
+        --[[
+          name: Init
+          line: 36
+          upvalues:
+            players (copy, index: 1)
+            replicatedStorage (copy, index: 2)
+            runService (copy, index: 3)
+            Keybinds (copy, index: 4)
+            userInputService (copy, index: 5)
+        ]]
+        local ui = a6.UI
+        local theme = a6.Theme
+        local state = a6.State
+        local weaponIcon = a6.WeaponIcon
+        local colors = theme.Colors
+        local fonts = theme.Fonts
+        local localPlayer = players.LocalPlayer
+        local loadoutSwapCutoff = 0.3
+        local config = replicatedStorage.Shared:FindFirstChild("Config")
+
+        local success, result = pcall(
             function()
                 --[[
-                  line: 164
+                  line: 44
                   upvalues:
-                    u8 (ref,  index: 1)
-                    n_upv_1 (copy, index: 2)
+                    config (copy, index: 1)
                 ]]
-                u8(n_upv_1, "tap")
-            end
-        )
-        v2.MouseEnter:Connect(
-            function()
-                --[[
-                  line: 167
-                  upvalues:
-                    tbl_upv_4 (copy, index: 1)
-                    u9 (ref,  index: 2)
-                ]]
-                tbl_upv_4.hover = true
-                if not u9 then
-                    return
+                if config then
+                    return (require(config))
                 end
-                u9()
+
+                return nil
             end
         )
-        v2.MouseLeave:Connect(
-            function()
-                --[[
-                  line: 173
-                  upvalues:
-                    tbl_upv_4 (copy, index: 1)
-                    u9 (ref,  index: 2)
-                ]]
-                tbl_upv_4.hover = false
-                if not u9 then
-                    return
-                end
-                u9()
+
+        if success and type(result) == "table" and type(result.LOADOUT_SWAP_CUTOFF) == "number" then
+            loadoutSwapCutoff = result.LOADOUT_SWAP_CUTOFF
+        end
+
+        local v18 = loadoutSwapCutoff + 0.12
+        local v19 = loadoutSwapCutoff + 0.25
+        local parent = ui.new("Frame", {Name = "LoadoutSwap", Visible = false, AnchorPoint = Vector2.new(0.5, 1), Size = UDim2.fromOffset(800, 90), Parent = a6.Canvas.HUD})
+        local parent2 = ui.new("Frame", {Name = "Header", Size = UDim2.new(1, 0, 0, 22), (ui.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)), Parent = parent})
+        local v22 = ui.ActionCap("NextLoadout", {Height = 20, LayoutOrder = 1, Parent = parent2})
+        local parent3 = ui.new("TextLabel", {Name = "Title", Text = "SWITCH LOADOUT", TextSize = 15, LayoutOrder = 2, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromOffset(0, 20), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, Parent = parent2})
+        local v24 = ui.TextStroke(colors.Void, 1.5, 0.35)
+        v24.Parent = parent3
+        local parent4 = ui.new("Frame", {Name = "Cards", Position = UDim2.fromOffset(0, 26), Size = UDim2.new(1, 0, 0, 58), (ui.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)), Parent = parent})
+        local v26 = {}
+        local v27 = nil
+        local paint2 = nil
+        local v29 = false
+
+        for layoutOrder = 1, 5 do
+            local ui2 = ui.new("TextButton", {Name = "Slot" .. layoutOrder, Size = UDim2.fromOffset(128, 60), Text = "", AutoButtonColor = false, BackgroundColor3 = colors.Panel, BackgroundTransparency = 0.25, LayoutOrder = layoutOrder, (ui.Corner(10)), Parent = parent4})
+            local stroke = ui.Stroke(colors.Stroke, 1.5, 0.82)
+            stroke.Parent = ui2
+            local ui3 = ui.new("TextLabel", {Name = "Num", TextSize = 15, ZIndex = 3, Position = UDim2.fromOffset(7, 3), Size = UDim2.fromOffset(16, 16), Text = tostring(layoutOrder), FontFace = fonts.Display, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = ui2})
+            local numStroke = ui.TextStroke(colors.Void, 1.5, 0.3)
+            numStroke.Parent = ui3
+            local ui4 = ui.new("Frame", {Name = "Icons", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 3), Size = UDim2.new(1, -10, 0, 40), (ui.List(Enum.FillDirection.Horizontal, 2, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)), Parent = ui2})
+            local holders = {}
+
+            for layoutOrder2 = 1, 3 do
+                holders[layoutOrder2] = ui.new("Frame", {Visible = false, ZIndex = 2, Name = "I" .. layoutOrder2, Size = UDim2.fromOffset(38, 38), LayoutOrder = layoutOrder2, Parent = ui4})
             end
-        )
-        for _, value_1 in tbl_3 do
-            value_1.ChildAdded:Connect(
+
+            local ui5 = ui.new("TextLabel", {Name = "More", Text = "", TextSize = 13, Visible = false, ZIndex = 3, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -6, 1, -2), Size = UDim2.fromOffset(30, 16), FontFace = fonts.Display, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = ui2})
+            local moreStroke = ui.TextStroke(colors.Void, 1.5, 0.3)
+            moreStroke.Parent = ui5
+            local v40 = {sig = nil, hover = false, btn = ui2, stroke = stroke, num = ui3, numStroke = numStroke, icons = ui4, holders = holders, more = ui5, moreStroke = moreStroke}
+            v26[layoutOrder] = v40
+            ui2.Activated:Connect(
                 function()
                     --[[
-                      line: 181
+                      line: 164
                       upvalues:
-                        u9 (ref, index: 1)
-                        u10 (ref, index: 2)
+                        v27 (ref,  index: 1)
+                        layoutOrder (copy, index: 2)
                     ]]
-                    if not u9 or (u10) then
-                        return
-                    end
-                    u10 = true
-                    task.defer(
-                        function()
-                            --[[
-                              line: 184
-                              upvalues:
-                                u10 (ref, index: 1)
-                                u9 (ref, index: 2)
-                            ]]
-                            u10 = false
-                            if not u9 then
-                                return
-                            end
-                            u9()
-                        end
-                    )
+                    v27(layoutOrder, "tap")
                 end
             )
-        end
-    end
-    local u11 = 0
-    local u12 = 1
-    local u13 = 0
-    local u14 = 0
-    local u15 = nil
-    local function slotCount()
-        --[[
-          name: slotCount
-          line: 202
-          upvalues:
-            State_upv_1 (copy, index: 1)
-        ]]
-        if State_upv_1.HasLoadoutSlots() then
-            return (math.min(State_upv_1.LoadoutSlotCount(), 5))
-        end
-        return 0
-    end
-    local tbl_upv_5 = {outline = false, glow = true, glowTransparency = 1, transparency = 0.98}
-    tbl_upv_5.glowColor = Color3.fromRGB(120, 132, 158)
-    local function idsOf(a2)
-        --[[
-          name: idsOf
-          line: 206
-          upvalues:
-            State_upv_1 (copy, index: 1)
-        ]]
-        local v9 = State_upv_1.LoadoutSlot(a2)
-        local tbl_6 = {}
-        for _, value_2 in (v9 and (v9.items)) or {} do
-            if type(value_2) == "string" then
-                table.insert(tbl_6, value_2)
-            end
-        end
-        if v9 and type(v9.armor) == "string" then
-            table.insert(tbl_6, v9.armor)
-        end
-        return tbl_6
-    end
-    local u16 = 0
-    local u17 = 0
-    local function paint()
-        --[[
-          name: paint
-          line: 243
-          upvalues:
-            u16 (ref,  index: 1)
-            tbl_upv_2 (copy, index: 2)
-            u11 (ref,  index: 3)
-            u12 (ref,  index: 4)
-            Colors_upv_1 (copy, index: 5)
-            Theme_upv_1 (copy, index: 6)
-            WeaponIcon_upv_1 (copy, index: 7)
-            u5 (copy, index: 8)
-            u6 (copy, index: 9)
-            UI_upv_1 (copy, index: 10)
-            u4 (copy, index: 11)
-        ]]
-        local v10 = u16
-        local v11 = 1 - v10
-        local v12 = nil
-        local v15 = nil
-        local v16 = nil
-        for key_1, value_3 in tbl_upv_2 do
-            if u11 < key_1 then
-                continue
-            end
-            local v13 = key_1 == u12
-            local btn_1 = value_3.btn
-            if v13 then
-                v12 = Colors_upv_1.Accent
-            elseif value_3.hover then
-                v12 = Colors_upv_1.PanelHi
-            else
-                v12 = Colors_upv_1.Panel
-            end
-            btn_1.BackgroundColor3 = v12
-            local btn_2 = value_3.btn
-            btn_2.BackgroundTransparency = ((v13 and 0.06) or 0.25) + ((1 - ((v13 and 0.06) or 0.25)) * v11)
-            local stroke_1 = value_3.stroke
-            if v13 then
-                v12 = Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.45)
-            else
-                v12 = Colors_upv_1.Stroke
-            end
-            stroke_1.Color = v12
-            value_3.stroke.Thickness = (v13 and 2) or 1.5
-            local stroke_2 = value_3.stroke
-            local v14 = (v13 and 0.15) or 0.82
-            stroke_2.Transparency = v14 + ((1 - ((v13 and 0.15) or 0.82)) * v11)
-            local num_1 = value_3.num
-            if v13 then
-                v12 = Colors_upv_1.Text
-            else
-                v12 = Colors_upv_1.TextDim
-            end
-            num_1.TextColor3 = v12
-            value_3.num.TextTransparency = v11
-            value_3.numStroke.Transparency = (v11 * 0.7) + 0.3
-            local more_1 = value_3.more
-            if v13 then
-                v12 = Colors_upv_1.Text
-            else
-                v12 = Colors_upv_1.TextDim
-            end
-            more_1.TextColor3 = v12
-            value_3.more.TextTransparency = v11
-            value_3.moreStroke.Transparency = (v11 * 0.7) + 0.3
-            local btn_3 = value_3.btn
-            if v10 >= 0.5 then
-                v12 = true
-            else
-                v12 = false
-            end
-            btn_3.Interactable = v12
-            for v17, value_4 in value_3.holders do
-                if not (value_4.Visible) then
-                    continue
-                end
-                WeaponIcon_upv_1.SetTransparency(value_4, v11 * 0.98)
-                local WeaponGlow_1 = value_4:FindFirstChild("WeaponGlow")
-                if not (WeaponGlow_1) then
-                    continue
-                end
-                if WeaponGlow_1:IsA("ImageLabel") then
-                    WeaponGlow_1.ImageTransparency = (v11 * 0.55) + 0.45
-                end
-            end
-        end
-        u5.TextTransparency = v11
-        u6.Transparency = (v11 * 0.65) + 0.35
-        UI_upv_1.SetCapFade(u4, v11)
-    end
-    local function layout()
-        --[[
-          name: layout
-          line: 282
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            u11 (ref,  index: 2)
-            State_upv_1 (copy, index: 3)
-            tbl_upv_2 (copy, index: 4)
-            u7 (copy, index: 5)
-            u3 (copy, index: 6)
-            LOADOUT_SWAP_CUTOFF_upv_1 (copy, index: 7)
-            a1 (copy, index: 8)
-        ]]
-        local Compact_1 = UI_upv_1.Compact
-        local v15 = ((not (State_upv_1.HasLoadoutSlots())) and 0) or (math.min(State_upv_1.LoadoutSlotCount(), 5))
-        u11 = v15
-        local v16 = (Compact_1 and 108) or 128
-        local v17 = (Compact_1 and 44) or 60
-        local v18 = (Compact_1 and 30) or 38
-        local v19 = (Compact_1 and 6) or 8
-        for key_2, value_5 in tbl_upv_2 do
-            value_5.btn.Visible = key_2 <= u11
-            value_5.btn.Size = UDim2.fromOffset(v16, v17)
-            value_5.icons.Size = UDim2.new(1, -8, 0, v18 + 2)
-            for _, value_6 in value_5.holders do
-                value_6.Size = UDim2.fromOffset(v18, v18)
-            end
-        end
-        local v20 = u7:FindFirstChildOfClass("UIListLayout")
-        if v20 then
-            v20.Padding = UDim.new(0, v19)
-            local v21
-            if Compact_1 then
-                v21 = Enum.FillDirection.Vertical
-            else
-                v21 = Enum.FillDirection.Horizontal
-            end
-            v20.FillDirection = v21
-        end
-        local v22 = math.max(u11, 1)
-        if Compact_1 then
-            u3.Visible = false
-            u7.Position = UDim2.new()
-            u7.Size = UDim2.fromScale(1, 1)
-            LOADOUT_SWAP_CUTOFF_upv_1.AnchorPoint = Vector2.new(0, 0.5)
-            LOADOUT_SWAP_CUTOFF_upv_1.Size = UDim2.fromOffset(v16, (v22 * v17) + ((v22 - 1) * v19))
-            LOADOUT_SWAP_CUTOFF_upv_1.Position = UDim2.new(0, 12, 0.45, 0)
-        else
-            u3.Visible = true
-            u7.Position = UDim2.fromOffset(0, 26)
-            u7.Size = UDim2.new(1, 0, 0, v17)
-            LOADOUT_SWAP_CUTOFF_upv_1.AnchorPoint = Vector2.new(0.5, 1)
-            LOADOUT_SWAP_CUTOFF_upv_1.Size = UDim2.fromOffset((v22 * v16) + ((v22 - 1) * v19), v17 + 26)
-            local v21 = ((not (a1.HotbarTop)) and 104) or (a1.HotbarTop())
-            LOADOUT_SWAP_CUTOFF_upv_1.Position = UDim2.new(0.5, 0, 1, -(((v21 + 70) + 28) + 6))
-        end
-    end
-    layout()
-    UI_upv_1.LayoutChanged:Connect(layout)
-    if a1.HotbarChanged then
-        a1.HotbarChanged.Event:Connect(layout)
-    end
-    local function fillCard(a3, a4)
-        --[[
-          name: fillCard
-          line: 223
-          upvalues:
-            idsOf (copy, index: 1)
-            WeaponIcon_upv_1 (copy, index: 2)
-            tbl_upv_5 (copy, index: 3)
-        ]]
-        local v23 = idsOf(a4)
-        local v24 = table.concat(v23, ",")
-        if a3.sig == v24 then
-            return
-        end
-        a3.sig = v24
-        local v25 = math.min(#v23, 3)
-        local v26 = nil
-        local v27 = nil
-        for key_3, value_7 in a3.holders do
-            if key_3 <= v25 then
-                v26 = v23[key_3]
-            else
-                v26 = nil
-            end
-            if v26 ~= nil then
-                v27 = true
-            else
-                v27 = false
-            end
-            value_7.Visible = v27
-            WeaponIcon_upv_1.Set(value_7, v26, tbl_upv_5)
-        end
-        a3.more.Visible = v25 < #v23
-        a3.more.Text = "+" .. tostring(#v23 - v25)
-    end
-    local function refreshCards()
-        --[[
-          name: refreshCards
-          line: 331
-          upvalues:
-            State_upv_1 (copy, index: 1)
-            u11 (ref,  index: 2)
-            layout (copy, index: 3)
-            u13 (ref,  index: 4)
-            u12 (ref,  index: 5)
-            fillCard (copy, index: 6)
-            tbl_upv_2 (copy, index: 7)
-            paint (copy, index: 8)
-        ]]
-        local v28 = ((not (State_upv_1.HasLoadoutSlots())) and 0) or (math.min(State_upv_1.LoadoutSlotCount(), 5))
-        if v28 ~= u11 then
-            layout()
-        end
-        if u13 == 0 then
-            u12 = State_upv_1.ActiveLoadout()
-        end
-        for n_3 = 1, u11 do
-            fillCard(tbl_upv_2[n_3], n_3)
-        end
-        paint()
-    end
-    local function timeLeft()
-        --[[
-          name: timeLeft
-          line: 346
-          upvalues:
-            State_upv_1 (copy, index: 1)
-        ]]
-        local v29, v30 = State_upv_1.PhaseClock()
-        if v29 == "PreRound" and not (v30 <= 0) then
-            return v30 - State_upv_1.Now()
-        end
-        return -1
-    end
-    local u18 = false
-    local function setShown(a5)
-        --[[
-          name: setShown
-          line: 363
-          upvalues:
-            u18 (ref,  index: 1)
-            u17 (ref,  index: 2)
-            u14 (ref,  index: 3)
-            u13 (ref,  index: 4)
-            refreshCards (copy, index: 5)
-            UI_upv_1 (copy, index: 6)
-            LOADOUT_SWAP_CUTOFF_upv_1 (copy, index: 7)
-            Theme_upv_1 (copy, index: 8)
-        ]]
-        if a5 == u18 then
-            return
-        end
-        u18 = a5
-        u17 = (a5 and 1) or 0
-        if a5 then
-            u14 = u14 + 1
-            u13 = 0
-            refreshCards()
-            local SlideIn_1 = UI_upv_1.SlideIn
-            local v31
-            if UI_upv_1.Compact then
-                v31 = Vector2.new(-18, 0)
-            else
-                v31 = Vector2.new(0, 18)
-            end
-            SlideIn_1(LOADOUT_SWAP_CUTOFF_upv_1, v31, Theme_upv_1.Tween.Smooth)
-        end
-    end
-    local u19 = nil
-    local function baseOk()
-        --[[
-          name: baseOk
-          line: 353
-          upvalues:
-            State_upv_1 (copy, index: 1)
-            a1 (copy, index: 2)
-            LocalPlayer_upv_1 (copy, index: 3)
-        ]]
-        local v32 = State_upv_1.InMatch()
-        local v33 = nil
-        if v32 then
-            v33 = State_upv_1.IsAlive()
-            if v33 then
-                local v34 = false
-                local v35 = nil
-                if State_upv_1.Get("CombatMode") == false then
-                    v32 = v34
-                else
-                    v35 = not a1.HudHidden
-                    local v36 = nil
-                    if v35 then
-                        v36 = not a1.MenuManager.IsOpen()
-                        if v36 then
-                            local v37 = false
-                            if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") == true then
-                                v32 = v37
-                            else
-                                local v38 = ((not (State_upv_1.HasLoadoutSlots())) and 0) or (math.min(State_upv_1.LoadoutSlotCount(), 5))
-                                if v38 >= 2 then
-                                    v32 = true
-                                else
-                                    v32 = false
-                                end
-                            end
-                        else
-                            v32 = v36
-                        end
-                    else
-                        v32 = v35
+
+            ui2.MouseEnter:Connect(
+                function()
+                    --[[
+                      line: 167
+                      upvalues:
+                        v40 (copy, index: 1)
+                        paint2 (ref,  index: 2)
+                    ]]
+                    v40.hover = true
+
+                    if paint2 then
+                        paint2()
                     end
                 end
-            else
-                v32 = v33
+            )
+
+            ui2.MouseLeave:Connect(
+                function()
+                    --[[
+                      line: 173
+                      upvalues:
+                        v40 (copy, index: 1)
+                        paint2 (ref,  index: 2)
+                    ]]
+                    v40.hover = false
+
+                    if paint2 then
+                        paint2()
+                    end
+                end
+            )
+
+            for _, v42 in holders do
+                v42.ChildAdded:Connect(
+                    function()
+                        --[[
+                          line: 181
+                          upvalues:
+                            paint2 (ref, index: 1)
+                            v29 (ref, index: 2)
+                        ]]
+                        if paint2 and not v29 then
+                            v29 = true
+
+                            task.defer(
+                                function()
+                                    --[[
+                                      line: 184
+                                      upvalues:
+                                        v29 (ref, index: 1)
+                                        paint2 (ref, index: 2)
+                                    ]]
+                                    v29 = false
+
+                                    if paint2 then
+                                        paint2()
+                                    end
+                                end
+                            )
+                        end
+                    end
+                )
             end
         end
-        return v32
-    end
-    local function frame(a6)
-        --[[
-          name: frame
-          line: 378
-          upvalues:
-            State_upv_1 (copy, index: 1)
-            setShown (copy, index: 2)
-            u2 (copy, index: 3)
-            baseOk (copy, index: 4)
-            u16 (ref,  index: 5)
-            u17 (ref,  index: 6)
-            paint (copy, index: 7)
-        ]]
-        local v39, v40 = State_upv_1.PhaseClock()
-        local v41
-        if v39 ~= "PreRound" or v40 <= 0 then
-            v41 = -1
-        else
-            v41 = v40 - State_upv_1.Now()
-        end
-        local v42 = false
-        if u2 < v41 then
-            v42 = baseOk()
-        end
-        setShown(v42)
-        if u16 ~= u17 then
-            local v43 = ((u16 < u17) and 0.18) or 0.14
-            local v44 = a6 / v43
-            local v45
-            if u16 < u17 then
-                v45 = math.min(u17, u16 + v44)
-            else
-                v45 = math.max(u17, u16 - v44)
-            end
-            u16 = v45
-            paint()
-        end
-    end
-    local function watch()
-        --[[
-          name: watch
-          line: 387
-          upvalues:
-            State_upv_1 (copy, index: 1)
-            u19 (ref,  index: 2)
-            RunService_upv_1 (copy, index: 3)
-            frame (copy, index: 4)
-            u18 (ref,  index: 5)
-            u16 (ref,  index: 6)
-            u17 (ref,  index: 7)
-            refreshCards (copy, index: 8)
-            LOADOUT_SWAP_CUTOFF_upv_1 (copy, index: 9)
-            u11 (ref,  index: 10)
-        ]]
-        local v46 = State_upv_1.InMatch()
-        if not (v46) or u19 then
-            if not (v46) and u19 then
-                u19:Disconnect()
-                u19 = nil
-                u18 = false
-                u16 = 0
-                u17 = 0
-            end
-        else
-            u19 = RunService_upv_1.RenderStepped:Connect(frame)
-        end
-        refreshCards()
-        LOADOUT_SWAP_CUTOFF_upv_1.Visible = v46 and (u11 >= 2)
-    end
-    watch()
-    State_upv_1.PlayerStateChanged:Connect(watch)
-    State_upv_1.ProfileChanged:Connect(
-        function()
+
+        local count2 = 0
+        local selected = 1
+        local busy = 0
+        local count = 0
+        local v47 = nil
+
+        local function slotCount()
             --[[
-              line: 402
+              name: slotCount
+              line: 202
               upvalues:
-                State_upv_1 (copy, index: 1)
-                refreshCards (copy, index: 2)
-                LOADOUT_SWAP_CUTOFF_upv_1 (copy, index: 3)
-                u11 (ref,  index: 4)
+                state (copy, index: 1)
             ]]
-            if not State_upv_1.InMatch() then
+            if state.HasLoadoutSlots() then
+                return (math.min(state.LoadoutSlotCount(), 5))
+            end
+
+            return 0
+        end
+
+        local function idsOf(a50: number)
+            --[[
+              name: idsOf
+              line: 206
+              upvalues:
+                state (copy, index: 1)
+            ]]
+            local v51 = state.LoadoutSlot(a50)
+            local v52 = {}
+            local v53 = v51 and v51.items or {}
+
+            for _, v55 in v53 do
+                if type(v55) == "string" then
+                    table.insert(v52, v55)
+                end
+            end
+
+            if v51 and type(v51.armor) == "string" then
+                table.insert(v52, v51.armor)
+            end
+
+            return v52
+        end
+
+        local v56 = {outline = false, glow = true, glowTransparency = 1, transparency = 0.98, glowColor = Color3.fromRGB(120, 132, 158)}
+
+        local function fillCard(a58, a59: number)
+            --[[
+              name: fillCard
+              line: 223
+              upvalues:
+                idsOf (copy, index: 1)
+                weaponIcon (copy, index: 2)
+                v56 (copy, index: 3)
+            ]]
+            local parts = idsOf(a59)
+            local sig = table.concat(parts, ",")
+
+            if a58.sig == sig then
                 return
             end
-            refreshCards()
-            LOADOUT_SWAP_CUTOFF_upv_1.Visible = u11 >= 2
-        end
-    )
-    local function snapBack()
-        --[[
-          name: snapBack
-          line: 410
-          upvalues:
-            u12 (ref,  index: 1)
-            State_upv_1 (copy, index: 2)
-            paint (copy, index: 3)
-            UI_upv_1 (copy, index: 4)
-            u7 (copy, index: 5)
-            a1 (copy, index: 6)
-        ]]
-        u12 = State_upv_1.ActiveLoadout()
-        paint()
-        UI_upv_1.Shake(u7, 6)
-        a1.Sounds.Play("Error")
-    end
-    local u20 = function(a7, a8)
-        --[[
-          line: 416
-          upvalues:
-            u18 (ref,  index: 1)
-            u11 (ref,  index: 2)
-            u12 (ref,  index: 3)
-            UI_upv_1 (copy, index: 4)
-            tbl_upv_2 (copy, index: 5)
-            State_upv_1 (copy, index: 6)
-            u1 (copy, index: 7)
-            paint (copy, index: 8)
-            a1 (copy, index: 9)
-            u14 (ref,  index: 10)
-            u13 (ref,  index: 11)
-            u15 (ref,  index: 12)
-            u7 (copy, index: 13)
-        ]]
-        if not u18 or (a7 < 1) or (u11 < a7) then
-            return
-        end
-        if a7 ~= u12 then
-            local v47, v48 = State_upv_1.PhaseClock()
-            local v49
-            if v47 ~= "PreRound" or v48 <= 0 then
-                v49 = -1
-            else
-                v49 = v48 - State_upv_1.Now()
+
+            a58.sig = sig
+            local v62 = math.min(#parts, 3)
+
+            for v63, holder in a58.holders do
+                local v65 = if v63 <= v62 then parts[v63] else nil
+                holder.Visible = v65 ~= nil
+                weaponIcon.Set(holder, v65, v56)
             end
-            if v49 < u1 then
+
+            local more = a58.more
+            local visible = v62 < #parts
+            more.Visible = visible
+            a58.more.Text = "+" .. tostring(#parts - v62)
+        end
+
+        local fade = 0
+        local v69 = 0
+
+        local function paint()
+            --[[
+              name: paint
+              line: 243
+              upvalues:
+                fade (ref,  index: 1)
+                v26 (copy, index: 2)
+                count2 (ref,  index: 3)
+                selected (ref,  index: 4)
+                colors (copy, index: 5)
+                theme (copy, index: 6)
+                weaponIcon (copy, index: 7)
+                parent3 (copy, index: 8)
+                v24 (copy, index: 9)
+                ui (copy, index: 10)
+                v22 (copy, index: 11)
+            ]]
+            local v71 = fade
+            local textTransparency = 1 - v71
+
+            for v73, v74 in v26 do
+                if not (count2 < v73) then
+                    local v75
+                    local v76 = v73 == selected
+                    local btn = v74.btn
+
+                    if v76 then
+                        v75 = colors.Accent
+                    else
+                        v75 = if v74.hover then colors.PanelHi else colors.Panel
+                    end
+
+                    btn.BackgroundColor3 = v75
+                    local btn2 = v74.btn
+                    local v79 = v76 and 0.06 or 0.25
+                    local v80 = v76 and 0.06 or 0.25
+                    btn2.BackgroundTransparency = v79 + ((1 - v80) * textTransparency)
+                    v74.stroke.Color = if v76 then theme.Lighten(colors.Accent, 0.45) else colors.Stroke
+                    v74.stroke.Thickness = v76 and 2 or 1.5
+                    local stroke = v74.stroke
+                    local v82 = v76 and 0.15 or 0.82
+                    local v83 = v76 and 0.15 or 0.82
+                    stroke.Transparency = v82 + ((1 - v83) * textTransparency)
+                    v74.num.TextColor3 = if v76 then colors.Text else colors.TextDim
+                    v74.num.TextTransparency = textTransparency
+                    v74.numStroke.Transparency = (textTransparency * 0.7) + 0.3
+                    v74.more.TextColor3 = if v76 then colors.Text else colors.TextDim
+                    v74.more.TextTransparency = textTransparency
+                    v74.moreStroke.Transparency = (textTransparency * 0.7) + 0.3
+                    v74.btn.Interactable = 0.5 <= v71
+
+                    for _, holder in v74.holders do
+                        if holder.Visible then
+                            weaponIcon.SetTransparency(holder, textTransparency * 0.98)
+                            local weaponGlow = holder:FindFirstChild("WeaponGlow")
+
+                            if weaponGlow and weaponGlow:IsA("ImageLabel") then
+                                weaponGlow.ImageTransparency = (textTransparency * 0.55) + 0.45
+                            end
+                        end
+                    end
+                end
+            end
+
+            parent3.TextTransparency = textTransparency
+            v24.Transparency = (textTransparency * 0.65) + 0.35
+            ui.SetCapFade(v22, textTransparency)
+        end
+
+        paint2 = paint
+
+        local function layout()
+            --[[
+              name: layout
+              line: 282
+              upvalues:
+                ui (copy, index: 1)
+                count2 (ref,  index: 2)
+                state (copy, index: 3)
+                v26 (copy, index: 4)
+                parent4 (copy, index: 5)
+                parent2 (copy, index: 6)
+                parent (copy, index: 7)
+                a6 (copy, index: 8)
+            ]]
+            local compact = ui.Compact
+            count2 = not state.HasLoadoutSlots() and 0 or math.min(state.LoadoutSlotCount(), 5)
+            local v89 = compact and 108 or 128
+            local v90 = compact and 44 or 60
+            local v91 = compact and 30 or 38
+            local v92 = compact and 6 or 8
+
+            for v93, v94 in v26 do
+                local btn = v94.btn
+                btn.Visible = v93 <= count2
+                v94.btn.Size = UDim2.fromOffset(v89, v90)
+                v94.icons.Size = UDim2.new(1, -8, 0, v91 + 2)
+
+                for _, holder in v94.holders do
+                    holder.Size = UDim2.fromOffset(v91, v91)
+                end
+            end
+
+            if const uiListLayout = parent4:FindFirstChildOfClass("UIListLayout") then
+                uiListLayout.Padding = UDim.new(0, v92)
+                uiListLayout.FillDirection = if compact then Enum.FillDirection.Vertical else Enum.FillDirection.Horizontal
+            end
+
+            local v99 = math.max(count2, 1)
+
+            if compact then
+                parent2.Visible = false
+                parent4.Position = UDim2.new()
+                parent4.Size = UDim2.fromScale(1, 1)
+                parent.AnchorPoint = Vector2.new(0, 0.5)
+                parent.Size = UDim2.fromOffset(v89, v99 * v90 + ((v99 - 1) * v92))
+                parent.Position = UDim2.new(0, 12, 0.45, 0)
+
                 return
             end
-            u12 = a7
+
+            parent2.Visible = true
+            parent4.Position = UDim2.fromOffset(0, 26)
+            parent4.Size = UDim2.new(1, 0, 0, v90)
+            parent.AnchorPoint = Vector2.new(0.5, 1)
+            parent.Size = UDim2.fromOffset((v99 * v89) + ((v99 - 1) * v92), v90 + 26)
+            local v100 = not a6.HotbarTop and 104 or a6.HotbarTop()
+            parent.Position = UDim2.new(0.5, 0, 1, -(((v100 + 70) + 28) + 6))
+        end
+
+        layout()
+        ui.LayoutChanged:Connect(layout)
+
+        if a6.HotbarChanged then
+            a6.HotbarChanged.Event:Connect(layout)
+        end
+
+        local function refreshCards()
+            --[[
+              name: refreshCards
+              line: 331
+              upvalues:
+                state (copy, index: 1)
+                count2 (ref,  index: 2)
+                layout (copy, index: 3)
+                busy (ref,  index: 4)
+                selected (ref,  index: 5)
+                fillCard (copy, index: 6)
+                v26 (copy, index: 7)
+                paint (copy, index: 8)
+            ]]
+            local v102 = not state.HasLoadoutSlots() and 0 or math.min(state.LoadoutSlotCount(), 5)
+
+            if v102 ~= count2 then
+                layout()
+            end
+
+            if busy == 0 then
+                selected = state.ActiveLoadout()
+            end
+
+            for index = 1, count2 do
+                fillCard(v26[index], index)
+            end
+
             paint()
-            UI_upv_1.Bump(tbl_upv_2[a7].btn, 0.08)
-            a1.Sounds.Play("Equip")
-            u14 = u14 + 1
-            local u21 = u14
-            u13 = u13 + 1
-            local v50, v51 = State_upv_1.PhaseClock()
-            local v52
-            if v50 ~= "PreRound" or v51 <= 0 then
-                v52 = -1
-            else
-                v52 = v51 - State_upv_1.Now()
+        end
+
+        local function timeLeft()
+            --[[
+              name: timeLeft
+              line: 346
+              upvalues:
+                state (copy, index: 1)
+            ]]
+            local v105, v106 = state.PhaseClock()
+
+            if v105 == "PreRound" and not (v106 <= 0) then
+                return v106 - state.Now()
             end
-            local v53
-            if u1 < v52 - 0.15 then
-                v53 = 0.15
-            else
-                v53 = 0
+
+            return -1
+        end
+
+        local function baseOk()
+            --[[
+              name: baseOk
+              line: 353
+              upvalues:
+                state (copy, index: 1)
+                a6 (copy, index: 2)
+                localPlayer (copy, index: 3)
+            ]]
+            local v108 = state.InMatch()
+            if v108 then
+                v108 = state.IsAlive()
+
+                if v108 then
+                    v108 = state.Get("CombatMode") ~= false
+                        and not a6.HudHidden
+                        and not a6.MenuManager.IsOpen()
+                        and localPlayer:GetAttribute("ReplayPlaying") ~= true
+
+                    if v108 then
+                        local v109 = not state.HasLoadoutSlots() and 0 or math.min(state.LoadoutSlotCount(), 5)
+                        v108 = 2 <= v109
+                    end
+                end
             end
-            task.delay(
-                v53,
+
+            return v108
+        end
+
+        local shown2 = false
+
+        local function setShown(shown)
+            --[[
+              name: setShown
+              line: 363
+              upvalues:
+                shown2 (ref,  index: 1)
+                v69 (ref,  index: 2)
+                count (ref,  index: 3)
+                busy (ref,  index: 4)
+                refreshCards (copy, index: 5)
+                ui (copy, index: 6)
+                parent (copy, index: 7)
+                theme (copy, index: 8)
+            ]]
+            if shown == shown2 then
+                return
+            end
+
+            shown2 = shown
+            v69 = shown and 1 or 0
+
+            if shown then
+                count += 1
+                busy = 0
+                refreshCards()
+                local slideIn = ui.SlideIn
+                local vector2 = if ui.Compact then Vector2.new(-18, 0) else Vector2.new(0, 18)
+                slideIn(parent, vector2, theme.Tween.Smooth)
+            end
+        end
+
+        local renderSteppedConnection = nil
+
+        local function frame(deltaTime: number)
+            --[[
+              name: frame
+              line: 378
+              upvalues:
+                state (copy, index: 1)
+                setShown (copy, index: 2)
+                v19 (copy, index: 3)
+                baseOk (copy, index: 4)
+                fade (ref,  index: 5)
+                v69 (ref,  index: 6)
+                paint (copy, index: 7)
+            ]]
+            local v118, v119 = state.PhaseClock()
+            local v120 = if v118 == "PreRound" and not (v119 <= 0) then v119 - state.Now() else -1
+            local shown = v19 < v120 and baseOk()
+            setShown(shown)
+
+            if fade ~= v69 then
+                local v122 = not (fade < v69) and 0.14 or 0.18
+                local v123 = deltaTime / v122
+                fade = if fade < v69 then math.min(v69, fade + v123) else math.max(v69, fade - v123)
+                paint()
+            end
+        end
+
+        local function watch()
+            --[[
+              name: watch
+              line: 387
+              upvalues:
+                state (copy, index: 1)
+                renderSteppedConnection (ref,  index: 2)
+                runService (copy, index: 3)
+                frame (copy, index: 4)
+                shown2 (ref,  index: 5)
+                fade (ref,  index: 6)
+                v69 (ref,  index: 7)
+                refreshCards (copy, index: 8)
+                parent (copy, index: 9)
+                count2 (ref,  index: 10)
+            ]]
+            local v125 = state.InMatch()
+
+            if v125 and not renderSteppedConnection then
+                renderSteppedConnection = runService.RenderStepped:Connect(frame)
+            elseif not v125 and renderSteppedConnection then
+                renderSteppedConnection:Disconnect()
+                renderSteppedConnection = nil
+                shown2 = false
+                fade = 0
+                v69 = 0
+            end
+
+            refreshCards()
+            parent.Visible = v125 and 2 <= count2
+        end
+
+        watch()
+        state.PlayerStateChanged:Connect(watch)
+
+        state.ProfileChanged:Connect(
+            function()
+                --[[
+                  line: 402
+                  upvalues:
+                    state (copy, index: 1)
+                    refreshCards (copy, index: 2)
+                    parent (copy, index: 3)
+                    count2 (ref,  index: 4)
+                ]]
+                if state.InMatch() then
+                    refreshCards()
+                    parent.Visible = 2 <= count2
+                end
+            end
+        )
+
+        local function snapBack()
+            --[[
+              name: snapBack
+              line: 410
+              upvalues:
+                selected (ref,  index: 1)
+                state (copy, index: 2)
+                paint (copy, index: 3)
+                ui (copy, index: 4)
+                parent4 (copy, index: 5)
+                a6 (copy, index: 6)
+            ]]
+            selected = state.ActiveLoadout()
+            paint()
+            ui.Shake(parent4, 6)
+            a6.Sounds.Play("Error")
+        end
+
+        v27 = function(key, a128)
+            --[[
+              line: 416
+              upvalues:
+                shown2 (ref,  index: 1)
+                count2 (ref,  index: 2)
+                selected (ref,  index: 3)
+                ui (copy, index: 4)
+                v26 (copy, index: 5)
+                state (copy, index: 6)
+                v18 (copy, index: 7)
+                paint (copy, index: 8)
+                a6 (copy, index: 9)
+                count (ref,  index: 10)
+                busy (ref,  index: 11)
+                v47 (ref,  index: 12)
+                parent4 (copy, index: 13)
+            ]]
+            if not shown2 or key < 1 or count2 < key then
+                return
+            end
+
+            if key == selected then
+                if a128 == "tap" then
+                    ui.Bump(v26[key].btn, 0.05)
+                end
+
+                return
+            end
+
+            local v129, v130 = state.PhaseClock()
+            local v131 = if v129 == "PreRound" and not (v130 <= 0) then v130 - state.Now() else -1
+
+            if v131 < v18 then
+                return
+            end
+
+            selected = key
+            paint()
+            ui.Bump(v26[key].btn, 0.08)
+            a6.Sounds.Play("Equip")
+            count += 1
+            local v132 = count
+            busy += 1
+            local taskDelay = task.delay
+            local v134, v135 = state.PhaseClock()
+            local v136 = if v134 == "PreRound" and not (v135 <= 0) then v135 - state.Now() else -1
+            local v137 = not (v18 < v136 - 0.15) and 0 or 0.15
+
+            taskDelay(
+                v137,
                 function()
                     --[[
                       line: 437
                       upvalues:
-                        u12 (ref,  index: 1)
-                        u21 (copy, index: 2)
-                        u14 (ref,  index: 3)
-                        u15 (ref,  index: 4)
-                        State_upv_1 (copy, index: 5)
-                        u13 (ref,  index: 6)
+                        selected (ref,  index: 1)
+                        v132 (copy, index: 2)
+                        count (ref,  index: 3)
+                        v47 (ref,  index: 4)
+                        state (copy, index: 5)
+                        busy (ref,  index: 6)
                         paint (copy, index: 7)
-                        u1 (copy, index: 8)
-                        UI_upv_1 (copy, index: 9)
-                        u7 (copy, index: 10)
-                        a1 (copy, index: 11)
+                        v18 (copy, index: 8)
+                        ui (copy, index: 9)
+                        parent4 (copy, index: 10)
+                        a6 (copy, index: 11)
                     ]]
-                    local v54 = u21 ~= u14
-                    local v55 = nil
-                    if not (v54) then
-                        v55 = u15 or (State_upv_1.ActiveLoadout())
-                        if u12 ~= v55 then
-                            local v56, v57 = State_upv_1.PhaseClock()
-                            local v58
-                            if v56 ~= "PreRound" or v57 <= 0 then
-                                v58 = -1
-                            else
-                                v58 = v57 - State_upv_1.Now()
-                            end
-                            if v58 < u1 then
-                                u13 = math.max(0, u13 - 1)
-                                if u21 == u14 then
-                                    u12 = State_upv_1.ActiveLoadout()
+                    local v138 = selected
+                    local v139 = v132 ~= count
+                    if not v139 then
+                        local v140 = v47 or state.ActiveLoadout()
+
+                        if v138 ~= v140 then
+                            local v141, v142 = state.PhaseClock()
+                            local v143 = if v141 == "PreRound" and not (v142 <= 0) then v142 - state.Now() else -1
+
+                            if v143 < v18 then
+                                busy = math.max(0, busy - 1)
+
+                                if v132 == count then
+                                    selected = state.ActiveLoadout()
                                     paint()
-                                    UI_upv_1.Shake(u7, 6)
-                                    a1.Sounds.Play("Error")
+                                    ui.Shake(parent4, 6)
+                                    a6.Sounds.Play("Error")
                                 end
-                            else
-                                u15 = u12
-                                v54 = a1.ProfileAction("SelectLoadout", u12)
-                                u13 = math.max(0, u13 - 1)
-                                if u15 == u12 then
-                                    u15 = nil
-                                end
-                                if v54 then
-                                    State_upv_1.Profile.activeLoadout = u12
-                                    if type(State_upv_1.Profile.loadouts) == "table" and State_upv_1.Profile.loadouts[u12] then
-                                        State_upv_1.Profile.loadout = State_upv_1.Profile.loadouts[u12]
-                                    end
-                                    if u13 == 0 then
-                                        u12 = State_upv_1.ActiveLoadout()
-                                        paint()
-                                        return
-                                    end
-                                elseif u21 == u14 then
-                                    u12 = State_upv_1.ActiveLoadout()
-                                    paint()
-                                    UI_upv_1.Shake(u7, 6)
-                                    a1.Sounds.Play("Error")
-                                end
+
+                                return
                             end
+
+                            v47 = v138
+                            local v144 = a6.ProfileAction("SelectLoadout", v138)
+                            busy = math.max(0, busy - 1)
+
+                            if v47 == v138 then
+                                v47 = nil
+                            end
+
+                            if v144 then
+                                state.Profile.activeLoadout = v138
+
+                                if type(state.Profile.loadouts) == "table" and state.Profile.loadouts[v138] then
+                                    state.Profile.loadout = state.Profile.loadouts[v138]
+                                end
+
+                                if busy == 0 then
+                                    selected = state.ActiveLoadout()
+                                    paint()
+                                end
+                            elseif v132 == count then
+                                selected = state.ActiveLoadout()
+                                paint()
+                                ui.Shake(parent4, 6)
+                                a6.Sounds.Play("Error")
+                            end
+
                             return
                         end
                     end
-                    u13 = math.max(0, u13 - 1)
-                    if (v54) then
-                        return
+
+                    busy = math.max(0, busy - 1)
+
+                    if not v139 then
+                        paint()
                     end
-                    paint()
                 end
             )
-        elseif a8 == "tap" then
-            UI_upv_1.Bump(tbl_upv_2[a7].btn, 0.05)
         end
-    end
-    local function step(a9)
-        --[[
-          name: step
-          line: 475
-          upvalues:
-            u11 (ref, index: 1)
-            u20 (ref, index: 2)
-            u12 (ref, index: 3)
-        ]]
-        if (u11 < 2) then
-            return
-        end
-        u20((((u12 - 1) + a9) % u11) + 1, "key")
-    end
-    Keybinds_upv_1.OnInput(
-        "Began",
-        function(a10, a11)
+
+        local function step(a146)
             --[[
-              line: 482
+              name: step
+              line: 475
               upvalues:
-                u18 (ref,  index: 1)
-                UserInputService_upv_1 (copy, index: 2)
-                Keybinds_upv_1 (copy, index: 3)
-                u11 (ref,  index: 4)
-                u20 (ref,  index: 5)
-                u12 (ref,  index: 6)
+                count2 (ref, index: 1)
+                v27 (ref, index: 2)
+                selected (ref, index: 3)
             ]]
-            if not u18 or (a11) or (UserInputService_upv_1:GetFocusedTextBox()) then
+            if count2 < 2 then
                 return
             end
-            if Keybinds_upv_1.IsPad(a10, "NextLoadout") then
-                if not (Keybinds_upv_1.PadBlocked()) then
-                    if not (u11 < 2) then
-                        u20((((u12 - 1) + 1) % u11) + 1, "key")
+
+            v27((((selected - 1) + a146) % count2) + 1, "key")
+        end
+
+        Keybinds.OnInput(
+            "Began",
+            function(a147, a148)
+                --[[
+                  line: 482
+                  upvalues:
+                    shown2 (ref,  index: 1)
+                    userInputService (copy, index: 2)
+                    Keybinds (copy, index: 3)
+                    count2 (ref,  index: 4)
+                    v27 (ref,  index: 5)
+                    selected (ref,  index: 6)
+                ]]
+                if shown2 and not a148 and not userInputService:GetFocusedTextBox() then
+                    if Keybinds.IsPad(a147, "NextLoadout") then
+                        if not Keybinds.PadBlocked() and not (count2 < 2) then
+                            v27((((selected - 1) + 1) % count2) + 1, "key")
+                        end
+                    elseif Keybinds.IsPad(a147, "PrevLoadout") then
+                        if not Keybinds.PadBlocked() and not (count2 < 2) then
+                            v27((((selected - 1) + -1) % count2) + 1, "key")
+                        end
+                    elseif Keybinds.ActionOf(a147) == "NextLoadout" and not (count2 < 2) then
+                        v27((((selected - 1) + 1) % count2) + 1, "key")
                     end
-                    return
                 end
-            elseif Keybinds_upv_1.IsPad(a10, "PrevLoadout") then
-                if not (Keybinds_upv_1.PadBlocked()) then
-                    if not (u11 < 2) then
-                        u20((((u12 - 1) + -1) % u11) + 1, "key")
-                    end
-                    return
-                end
-            elseif Keybinds_upv_1.ActionOf(a10) == "NextLoadout" and not (u11 < 2) then
-                u20((((u12 - 1) + 1) % u11) + 1, "key")
             end
+        )
+
+        a6.Debug.loadoutSwap = function(a149, a150)
+            --[[
+              line: 501
+              upvalues:
+                v27 (ref,  index: 1)
+                count2 (ref,  index: 2)
+                selected (ref,  index: 3)
+                v26 (copy, index: 4)
+                shown2 (ref,  index: 5)
+                parent (copy, index: 6)
+                fade (ref,  index: 7)
+                state (copy, index: 8)
+                busy (ref,  index: 9)
+            ]]
+            local v151
+
+            if a149 == "pick" then
+                v27((tonumber(a150) or 1), "tap")
+            elseif a149 == "next" and not (count2 < 2) then
+                v27((((selected - 1) + 1) % count2) + 1, "key")
+            end
+
+            local cards = {}
+
+            for index = 1, count2 do
+                cards[index] = v26[index].sig or ""
+            end
+
+            local v154 = {shown = shown2, visible = parent.Visible, fade = fade, selected = selected, active = state.ActiveLoadout(), busy = busy, count = count2}
+            local v155
+            v151, v155 = state.PhaseClock()
+            v154.timeLeft = if v151 == "PreRound" and not (v155 <= 0) then v155 - state.Now() else -1
+            v154.cards = cards
+            v154.rect = {parent.AbsolutePosition.X, parent.AbsolutePosition.Y, parent.AbsoluteSize.X, parent.AbsoluteSize.Y}
+
+            return v154
         end
-    )
-    a1.Debug.loadoutSwap = function(a12, a13)
-        --[[
-          line: 501
-          upvalues:
-            u20 (ref,  index: 1)
-            u11 (ref,  index: 2)
-            u12 (ref,  index: 3)
-            tbl_upv_2 (copy, index: 4)
-            u18 (ref,  index: 5)
-            LOADOUT_SWAP_CUTOFF_upv_1 (copy, index: 6)
-            u16 (ref,  index: 7)
-            State_upv_1 (copy, index: 8)
-            u13 (ref,  index: 9)
-        ]]
-        if a12 == "pick" then
-            u20(tonumber(a13) or 1, "tap")
-        elseif a12 == "next" and not (u11 < 2) then
-            u20((((u12 - 1) + 1) % u11) + 1, "key")
-        end
-        local tbl_7 = {}
-        for n_4 = 1, u11 do
-            tbl_7[n_4] = tbl_upv_2[n_4].sig or ""
-            local v59 = n_4
-        end
-        local tbl_8 = {rect = 0, cards = 0, timeLeft = 0}
-        tbl_8.shown = u18
-        tbl_8.visible = LOADOUT_SWAP_CUTOFF_upv_1.Visible
-        tbl_8.fade = u16
-        tbl_8.selected = u12
-        tbl_8.active = State_upv_1.ActiveLoadout()
-        tbl_8.busy = u13
-        tbl_8.count = u11
-        local v59, v60 = State_upv_1.PhaseClock()
-        local v61
-        if v59 ~= "PreRound" or v60 <= 0 then
-            v61 = -1
-        else
-            v61 = v60 - State_upv_1.Now()
-        end
-        tbl_8.timeLeft = v61
-        tbl_8.cards = tbl_7
-        tbl_8.rect = {LOADOUT_SWAP_CUTOFF_upv_1.AbsolutePosition.X, LOADOUT_SWAP_CUTOFF_upv_1.AbsolutePosition.Y, LOADOUT_SWAP_CUTOFF_upv_1.AbsoluteSize.X, LOADOUT_SWAP_CUTOFF_upv_1.AbsoluteSize.Y}
-        return tbl_8
-    end
-    local tbl_9 = {}
-    function tbl_9.IsShown()
-        --[[
-          name: IsShown
-          line: 524
-          upvalues:
-            u18 (ref, index: 1)
-        ]]
-        return u18
-    end
-    a1.LoadoutSwap = tbl_9
-end
-return tbl_1
+
+        a6.LoadoutSwap = {
+            IsShown = (function()
+                --[[
+                  name: IsShown
+                  line: 524
+                  upvalues:
+                    shown2 (ref, index: 1)
+                ]]
+                return shown2
+            end)
+        }
+    end)
+}

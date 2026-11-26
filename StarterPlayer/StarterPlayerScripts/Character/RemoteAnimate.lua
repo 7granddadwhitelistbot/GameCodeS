@@ -1,587 +1,734 @@
-local Players_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local Characters_upv_1 = require(script.Parent:WaitForChild("Characters"))
-local Effects_upv_1 = require(script.Parent:WaitForChild("Effects"))
-local Perf_upv_1 = require(script.Parent:WaitForChild("Perf"))
-local AnimationIds_upv_1 = require(script.Parent:WaitForChild("AnimationIds"))
-local AnimGuard_upv_1 = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("AnimGuard"))
-local tbl_1 = {}
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local u1 = RunService_upv_1:IsStudio()
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local workspace = game:GetService("Workspace")
+local Characters = require(script.Parent:WaitForChild("Characters"))
+local Effects = require(script.Parent:WaitForChild("Effects"))
+local Perf = require(script.Parent:WaitForChild("Perf"))
+local AnimationIds = require(script.Parent:WaitForChild("AnimationIds"))
+local AnimGuard = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("AnimGuard"))
+local v9 = {}
+local localPlayer = players.LocalPlayer
+local isStudio = runService:IsStudio()
+
 local function clientAuthority()
     --[[
       name: clientAuthority
       line: 78
       upvalues:
-        Workspace_upv_1 (copy, index: 1)
+        workspace (copy, index: 1)
     ]]
-    local v1 = Workspace_upv_1:GetAttribute("TribesAuthority") == "Client"
-    return v1
+    return workspace:GetAttribute("TribesAuthority") == "Client"
 end
-local tbl_upv_2 = {}
-for _, value_1 in {AnimationIds_upv_1.R15, AnimationIds_upv_1.R6} do
-    for v3, value_2 in {"idle", "idle2", "walk", "run", "jump", "fall"} do
-        local v2 = value_1[value_2]
-        if type(v2) ~= "string" then
-            continue
-        end
-        if v2 ~= "" then
-            tbl_upv_2[v2] = true
+
+local v13 = {}
+
+for _, v15 in {AnimationIds.R15, AnimationIds.R6} do
+    for _, v17 in {"idle", "idle2", "walk", "run", "jump", "fall"} do
+        local v18 = v15[v17]
+
+        if type(v18) == "string" and v18 ~= "" then
+            v13[v18] = true
         end
     end
 end
-local tbl_upv_3 = {}
-tbl_upv_3[AnimationIds_upv_1.SlideLegs] = true
-tbl_upv_3[AnimationIds_upv_1.SlideFallback] = true
-local u2 = setmetatable({}, {__mode = "k"})
-local tbl_upv_4 = {}
-local u3 = RaycastParams.new()
-u3.FilterType = Enum.RaycastFilterType.Exclude
-u3.RespectCanCollide = true
-local u4 = setmetatable({}, {__mode = "k"})
-local function guard(a1)
+
+local v19 = {}
+v19[AnimationIds.SlideLegs] = true
+v19[AnimationIds.SlideFallback] = true
+local v20 = setmetatable({}, {__mode = "k"})
+local v21 = {}
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+raycastParams.RespectCanCollide = true
+local v23 = setmetatable({}, {__mode = "k"})
+
+local function guard(key)
     --[[
       name: guard
       line: 107
       upvalues:
-        u4 (copy, index: 1)
+        v23 (copy, index: 1)
     ]]
-    if not a1 then
+    if not key then
         return
     end
-    local v3 = u4[a1]
-    if v3 and a1.Priority ~= v3 then
-        a1.Priority = v3
+
+    local priority = v23[key]
+
+    if priority and key.Priority ~= priority then
+        key.Priority = priority
     end
-    if (a1.Looped) then
-        return
+
+    if not key.Looped then
+        key.Looped = true
     end
-    a1.Looped = true
 end
-local function load(a1, a2, a3, a4)
+
+local function load(animator, animationId, priority: Enum.AnimationPriority, name: string)
     --[[
       name: load
       line: 120
       upvalues:
-        u4 (copy, index: 1)
-        u2 (copy, index: 2)
+        v23 (copy, index: 1)
+        v20 (copy, index: 2)
     ]]
-    if a2 == "" then
+    if animationId == "" then
         return nil
     end
-    local u5 = Instance.new("Animation")
-    u5.Name = a4
-    u5.AnimationId = a2
-    local success_1, v4 = pcall(
+
+    local animation = Instance.new("Animation")
+    animation.Name = name
+    animation.AnimationId = animationId
+    local success, result = pcall(
         function()
             --[[
               line: 127
               upvalues:
-                a1 (copy, index: 1)
-                u5 (copy, index: 2)
+                animator (copy, index: 1)
+                animation (copy, index: 2)
             ]]
-            return a1:LoadAnimation(u5)
+            return animator:LoadAnimation(animation)
         end
     )
-    if success_1 and v4 then
-        v4.Priority = a3
-        v4.Looped = true
-        u4[v4] = a3
-        u2[v4] = true
-        return v4
+
+    if not success or not result then
+        return nil
     end
-    return nil
+
+    result.Priority = priority
+    result.Looped = true
+    v23[result] = priority
+    v20[result] = true
+
+    return result
 end
-local function muteReplicated(a1)
+
+local function build(character, a37: boolean)
+    --[[
+      name: build
+      line: 140
+      upvalues:
+        AnimationIds (copy, index: 1)
+        load (copy, index: 2)
+    ]]
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    local animator = humanoid and humanoid:FindFirstChildOfClass("Animator")
+
+    if not humanoid or not humanoidRootPart or not humanoidRootPart:IsA("BasePart") or not animator then
+        return nil
+    end
+
+    local v41
+    local v42 = if humanoid.RigType == Enum.HumanoidRigType.R6 then AnimationIds.R6 else AnimationIds.R15
+    local v43 = {legs = nil, upper = nil, sliding = false, slideSound = nil, replSliding = false, groundedAt = 0, jumpAt = -1, active = false, character = character, humanoid = humanoid, root = humanoidRootPart, tracks = {}, weights = {}, targets = {}}
+
+    for _, v45 in {"idle", "walk", "run", "jump", "fall"} do
+        if const v46 = load(animator, v42[v45], Enum.AnimationPriority.Core, v45) then
+            v43.tracks[v45] = v46
+            v43.weights[v45] = 0
+        end
+    end
+
+    if not a37 then
+        return v43
+    end
+
+    local legs = load(animator, AnimationIds.SlideLegs, Enum.AnimationPriority.Action2, "SlideLegs")
+
+    if legs then
+        v41 = v43
+    else
+        legs = load(animator, AnimationIds.SlideFallback, Enum.AnimationPriority.Movement, "SlideFallback")
+        v41 = v43
+    end
+
+    v41.legs = legs
+    v41.upper = load(animator, AnimationIds.SlideUpper, Enum.AnimationPriority.Movement, "SlideUpper")
+
+    return v41
+end
+
+local function muteReplicated(a49)
     --[[
       name: muteReplicated
       line: 181
       upvalues:
-        u2 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
-        tbl_upv_3 (copy, index: 3)
+        v20 (copy, index: 1)
+        v13 (copy, index: 2)
+        v19 (copy, index: 3)
     ]]
-    local v5 = a1.humanoid:FindFirstChildOfClass("Animator")
-    if not v5 then
+    local animator = a49.humanoid:FindFirstChildOfClass("Animator")
+    if not animator then
         return
     end
-    local v6 = false
-    for _, value_3 in v5:GetPlayingAnimationTracks() do
-        if u2[value_3] then
-            continue
-        end
-        local Animation_1 = value_3.Animation
-        if not (Animation_1) or not (tbl_upv_2[Animation_1.AnimationId]) then
-            if not (Animation_1) then
-                continue
+
+    local replSliding = false
+
+    for _, playingAnimationTrack in animator:GetPlayingAnimationTracks() do
+        if not v20[playingAnimationTrack] then
+            local animation = playingAnimationTrack.Animation
+
+            if animation and v13[animation.AnimationId] then
+                playingAnimationTrack:Stop(0)
+            elseif animation then
+                if not v19[animation.AnimationId] then
+                    continue
+                end
+                if not (0.5 < playingAnimationTrack.WeightTarget) then
+                    continue
+                end
+
+                replSliding = true
             end
-            if tbl_upv_3[Animation_1.AnimationId] then
-                v6 = ((value_3.WeightTarget > 0.5) and true) or v6
-                continue
-            end
         end
-        value_3:Stop(0)
     end
-    a1.replSliding = v6
+
+    a49.replSliding = replSliding
 end
-local function setSliding(a1, a2)
+
+local function setSlideSound(slideSound2, a57)
     --[[
-      name: setSliding
-      line: 222
-    ]]
-    local character_1 = a1.character
-    if character_1.Parent then
-        local v7 = character_1:GetAttribute("Sliding") == true
-        if v7 == a2 then
-            return
-        end
-        character_1:SetAttribute("Sliding", (a2 and true) or nil)
-    end
-end
-local u6 = setmetatable({}, {__mode = "k"})
-local function guardTracks(a1)
-    --[[
-      name: guardTracks
-      line: 235
+      name: setSlideSound
+      line: 201
       upvalues:
-        u6 (copy, index: 1)
-        AnimGuard_upv_1 (copy, index: 2)
+        Effects (copy, index: 1)
     ]]
-    local v8 = a1:FindFirstChildOfClass("Humanoid")
-    local v9 = v8 and (v8:FindFirstChildOfClass("Animator"))
-    if not v9 then
+    if a57 and not slideSound2.slideSound then
+        slideSound2.slideSound = Effects.PlaySound("Slide", slideSound2.root, {pitchVar = 0.08, looped = true, volume = 1.2})
         return
     end
-    u6[a1] = true
-    AnimGuard_upv_1.Watch(v9)
-end
-local function destroyRig(a1)
-    --[[
-      name: destroyRig
-      line: 267
-    ]]
-    local function drop_1(a2)
-        --[[
-          name: drop
-          line: 268
-        ]]
-        if not a2 then
-            return
-        end
-        pcall(function() end)
-    end
-    for _, value_4 in a1.tracks do
-        if value_4 then
-            pcall(function() end)
-        end
-    end
-    local legs_1 = a1.legs
-    if legs_1 then
-        pcall(function() end)
-    end
-    local upper_upv_1 = a1.upper
-    if upper_upv_1 then
-        pcall(
-            function()
-                --[[
-                  line: 270
-                  upvalues:
-                    upper_upv_1 (copy, index: 1)
-                ]]
-                upper_upv_1:Stop(0)
-                upper_upv_1:Destroy()
-            end
-        )
-    end
-    table.clear(a1.tracks)
-    a1.legs = nil
-    a1.upper = nil
-    if a1.slideSound then
-        a1.slideSound:Destroy()
-        a1.slideSound = nil
-    end
-    a1.active = false
-end
-local function stopAll(a1)
-    --[[
-      name: stopAll
-      line: 244
-    ]]
-    for key_1, value_5 in a1.tracks do
-        value_5:Stop(0.2)
-        a1.weights[key_1] = 0
-    end
-    if a1.legs then
-        a1.legs:Stop(0.15)
-    end
-    if a1.upper then
-        a1.upper:Stop(0.15)
-    end
-    a1.sliding = false
-    a1.replSliding = false
-    if a1.slideSound then
-        local slideSound_upv_1 = a1.slideSound
-        a1.slideSound = nil
+
+    if not a57 and slideSound2.slideSound then
+        local slideSound = slideSound2.slideSound
+        slideSound2.slideSound = nil
+
         task.spawn(
             function()
                 --[[
                   line: 207
                   upvalues:
-                    slideSound_upv_1 (copy, index: 1)
+                    slideSound (copy, index: 1)
                 ]]
                 for _ = 1, 8 do
-                    if slideSound_upv_1.Parent then
-                        slideSound_upv_1.Volume = slideSound_upv_1.Volume * 0.7
-                        task.wait(0.02)
-                        continue
-                    else
+                    if not slideSound.Parent then
                         break
                     end
+
+                    slideSound.Volume *= 0.7
+                    task.wait(0.02)
                 end
-                slideSound_upv_1:Destroy()
+
+                slideSound:Destroy()
             end
         )
     end
-    local character_2 = a1.character
-    if character_2.Parent then
-        local v10 = character_2:GetAttribute("Sliding") == true
-        if v10 ~= false then
-            character_2:SetAttribute("Sliding", nil)
+end
+
+local function setSliding(sliding3, a62)
+    --[[
+      name: setSliding
+      line: 222
+    ]]
+    local character = sliding3.character
+
+    if character.Parent then
+        local sliding = character:GetAttribute("Sliding") == true
+
+        if sliding ~= a62 then
+            local sliding2 = a62 and true or nil
+            character:SetAttribute("Sliding", sliding2)
         end
     end
-    a1.active = false
 end
-local function setSlideSound(a1, a2)
+
+local v66 = setmetatable({}, {__mode = "k"})
+
+local function guardTracks(key)
     --[[
-      name: setSlideSound
-      line: 201
+      name: guardTracks
+      line: 235
       upvalues:
-        Effects_upv_1 (copy, index: 1)
+        v66 (copy, index: 1)
+        AnimGuard (copy, index: 2)
     ]]
-    if (not a2 or (a1.slideSound)) and not (a2) and a1.slideSound then
-        local _ = a1.slideSound
-        a1.slideSound = nil
-        task.spawn(function() end)
+    local humanoid = key:FindFirstChildOfClass("Humanoid")
+
+    if const animator = humanoid and humanoid:FindFirstChildOfClass("Animator") then
+        v66[key] = true
+        AnimGuard.Watch(animator)
     end
-    a1.slideSound = Effects_upv_1.PlaySound("Slide", a1.root, {looped = true, volume = 1.2, pitchVar = 0.08})
 end
-local u7 = 0
-local function step(a1, a2, a3)
+
+local function stopAll(a72)
+    --[[
+      name: stopAll
+      line: 244
+    ]]
+    for weightKey, track in a72.tracks do
+        track:Stop(0.2)
+        a72.weights[weightKey] = 0
+    end
+
+    if a72.legs then
+        a72.legs:Stop(0.15)
+    end
+
+    if a72.upper then
+        a72.upper:Stop(0.15)
+    end
+
+    a72.sliding = false
+    a72.replSliding = false
+
+    if a72.slideSound then
+        local slideSound = a72.slideSound
+        a72.slideSound = nil
+
+        task.spawn(
+            function()
+                --[[
+                  line: 207
+                  upvalues:
+                    slideSound (copy, index: 1)
+                ]]
+                for _ = 1, 8 do
+                    if not slideSound.Parent then
+                        break
+                    end
+
+                    slideSound.Volume *= 0.7
+                    task.wait(0.02)
+                end
+
+                slideSound:Destroy()
+            end
+        )
+    end
+
+    local character = a72.character
+
+    if character.Parent then
+        local sliding = character:GetAttribute("Sliding") == true
+
+        if sliding ~= false then
+            character:SetAttribute("Sliding", nil)
+        end
+    end
+
+    a72.active = false
+end
+
+local function destroyRig(a80)
+    --[[
+      name: destroyRig
+      line: 267
+    ]]
+    local function drop(a82)
+        --[[
+          name: drop
+          line: 268
+        ]]
+        if a82 then
+            pcall(
+                function()
+                    --[[
+                      line: 270
+                      upvalues:
+                        a82 (copy, index: 1)
+                    ]]
+                    a82:Stop(0)
+                    a82:Destroy()
+                end
+            )
+        end
+    end
+
+    for _, track in a80.tracks do
+        if track then
+            pcall(
+                function()
+                    --[[
+                      line: 270
+                      upvalues:
+                        track (copy, index: 1)
+                    ]]
+                    track:Stop(0)
+                    track:Destroy()
+                end
+            )
+        end
+    end
+
+    if const legs = a80.legs then
+        pcall(
+            function()
+                --[[
+                  line: 270
+                  upvalues:
+                    legs (copy, index: 1)
+                ]]
+                legs:Stop(0)
+                legs:Destroy()
+            end
+        )
+    end
+
+    if const upper = a80.upper then
+        pcall(
+            function()
+                --[[
+                  line: 270
+                  upvalues:
+                    upper (copy, index: 1)
+                ]]
+                upper:Stop(0)
+                upper:Destroy()
+            end
+        )
+    end
+
+    table.clear(a80.tracks)
+    a80.legs = nil
+    a80.upper = nil
+
+    if a80.slideSound then
+        a80.slideSound:Destroy()
+        a80.slideSound = nil
+    end
+
+    a80.active = false
+end
+
+local function step(slideSound, a89: number, timestamp: number)
     --[[
       name: step
       line: 290
       upvalues:
         stopAll (copy, index: 1)
-        u3 (copy, index: 2)
-        Workspace_upv_1 (copy, index: 3)
-        u4 (copy, index: 4)
+        raycastParams (copy, index: 2)
+        workspace (copy, index: 3)
+        v23 (copy, index: 4)
         setSlideSound (copy, index: 5)
-        LocalPlayer_upv_1 (copy, index: 6)
+        localPlayer (copy, index: 6)
     ]]
-    local v11 = a1.humanoid
-    local root_1 = a1.root
-    local v12, v13, _, v14 = nil, nil, nil, nil
-    if v11.Health <= 0 then
-        if a1.active then
-            stopAll(a1)
+    local humanoid = slideSound.humanoid
+    local root = slideSound.root
+
+    if humanoid.Health <= 0 then
+        if slideSound.active then
+            stopAll(slideSound)
         end
+
+        return
+    end
+
+    local v93
+    local v94
+    slideSound.active = true
+    local targets = slideSound.targets
+
+    for targetKey in slideSound.tracks do
+        targets[targetKey] = 0
+    end
+
+    local assemblyLinearVelocity = root.AssemblyLinearVelocity
+    local magnitude = Vector3.new(assemblyLinearVelocity.X, 0, assemblyLinearVelocity.Z).Magnitude
+    local sHipBase = root:GetAttribute("SHipBase")
+
+    if type(sHipBase) ~= "number" then
+        v93 = humanoid.HipHeight
     else
-        a1.active = true
-        local targets_1 = a1.targets
-        for key_2 in a1.tracks do
-            targets_1[key_2] = 0
-        end
-        local v15 = root_1.AssemblyLinearVelocity
-        local Magnitude_1 = Vector3.new(v15.X, 0, v15.Z).Magnitude
-        local LookVector_1 = root_1:GetAttribute("SHipBase")
-        local v16
-        if type(LookVector_1) ~= "number" then
-            v16 = v11.HipHeight
-        else
-            v16 = LookVector_1
-        end
-        local v17 = math.max(0.5, v16 / 2)
-        u3.FilterDescendantsInstances = {a1.character}
-        local v18 = false
-        v11 = (math.abs(v15.Y) < 12) and (Workspace_upv_1:Raycast(root_1.Position, Vector3.new(0, -((v18.HipHeight + (root_1.Size.Y / 2)) + 0.9), 0), u3) ~= nil)
-        if v11 then
-            a1.groundedAt = a3
-        elseif v15.Y > 8 and a3 - a1.groundedAt < 0.25 then
-            a1.jumpAt = a3
-        end
-        if v11 or a3 - a1.groundedAt < 0.1 then
-            LookVector_1 = math.clamp((Magnitude_1 - 0.6) / 2.5, 0, 1)
-            v13 = math.clamp(((Magnitude_1 / v17) - 9) / 5, 0, 1)
-            targets_1.idle = 1 - LookVector_1
-            targets_1.walk = LookVector_1 * (1 - v13)
-            targets_1.run = LookVector_1 * v13
-            v13 = 1
-            if Magnitude_1 > 1 then
-                LookVector_1 = root_1.CFrame.LookVector
-                v13 = (v15.X * root_1.CFrame.LookVector.X + v15.Z * root_1.CFrame.LookVector.Z) / Magnitude_1 < -0.35 and -1 or v13
-            end
-            v12 = a1.tracks.walk
-            local run_1 = a1.tracks.run
-            if v12 then
-                v12:AdjustSpeed(v13 * math.clamp(Magnitude_1 / (v17 * 7.5), 0.4, 1.8))
-            end
-            if run_1 then
-                run_1:AdjustSpeed(v13 * math.clamp(Magnitude_1 / (v17 * 16.5), 0.55, 1.7))
-            end
-        elseif a1.jumpAt > 0 and a3 - a1.jumpAt < 0.45 and v15.Y > -12 then
-            targets_1.jump = 1
-        else
-            targets_1.fall = 1
-        end
-        local v19 = 1 - math.exp(a2 * -14)
-        v13 = a1.legs
-        if v13 then
-            v15 = u4[v13]
-            if v15 and v13.Priority ~= v15 then
-                v13.Priority = v15
-            end
-            if not (v13.Looped) then
-                v13.Looped = true
-            end
-        end
-        v13 = a1.upper
-        if v13 then
-            v11 = u4[v13]
-            if v11 and v13.Priority ~= v11 then
-                v13.Priority = v11
-            end
-            if not (v13.Looped) then
-                v13.Looped = true
-            end
-        end
-        for key_3, value_6 in a1.tracks do
-            if value_6 then
-                local v20 = u4[value_6]
-                if v20 and value_6.Priority ~= v20 then
-                    value_6.Priority = v20
-                end
-                if not (value_6.Looped) then
-                    value_6.Looped = true
-                end
-            end
-            local v21 = a1.weights[key_3] + ((targets_1[key_3] or 0) - a1.weights[key_3]) * v19
-            v21 = ((v21 < 0.001) and 1e-04) or v21
-            a1.weights[key_3] = v21
-            if value_6.IsPlaying then
-                value_6:AdjustWeight(v21, 0)
-            else
-                value_6:Play(0, v21, value_6.Speed)
-            end
-        end
-        v17 = root_1:GetAttribute("SSlide") ~= nil
-        if v17 ~= a1.sliding then
-            a1.sliding = v17
-            if v17 then
-                if a1.legs then
-                    a1.legs:Play(0.08, 1, 1)
-                end
-                if a1.upper then
-                    a1.upper:Play(0.12, 1, 1)
-                end
-            else
-                if a1.legs then
-                    a1.legs:Stop(0.15)
-                end
-                if a1.upper then
-                    a1.upper:Stop(0.15)
-                end
-            end
-        end
-        if a1.sliding then
-            v17 = Magnitude_1 >= 4
-        else
-            v17 = a1.replSliding
-            v17 = a1.replSliding and Magnitude_1 >= 4
-        end
-        v14 = a1.character
-        if v14.Parent then
-            v13 = v14:GetAttribute("Sliding") == true
-            if v13 ~= v17 then
-                v14:SetAttribute("Sliding", (v17 and true) or nil)
-            end
-        end
-        local v22 = v17 and (LocalPlayer_upv_1:GetAttribute("State") == "Match")
-        setSlideSound(a1, v22)
+        v93 = sHipBase
     end
-end
-local function build(a1, a2)
-    --[[
-      name: build
-      line: 140
-      upvalues:
-        AnimationIds_upv_1 (copy, index: 1)
-        load (copy, index: 2)
-    ]]
-    local v23 = a1:FindFirstChildOfClass("Humanoid")
-    local HumanoidRootPart_1 = a1:FindFirstChild("HumanoidRootPart")
-    local v24 = v23 and (v23:FindFirstChildOfClass("Animator"))
-    if not v23 or not HumanoidRootPart_1 or not HumanoidRootPart_1:IsA("BasePart") or not v24 then
-        return nil
+
+    local v100 = math.max(0.5, v93 / 2)
+    raycastParams.FilterDescendantsInstances = {slideSound.character}
+    local v101 = humanoid.HipHeight + (root.Size.Y / 2) + 0.9
+    local v102 = math.abs(assemblyLinearVelocity.Y) < 12
+        and workspace:Raycast(root.Position, Vector3.new(0, -v101, 0), raycastParams) ~= nil
+
+    if v102 then
+        slideSound.groundedAt = timestamp
+    elseif 8 < assemblyLinearVelocity.Y and timestamp - slideSound.groundedAt < 0.25 then
+        slideSound.jumpAt = timestamp
     end
-    local v25
-    if v23.RigType ~= Enum.HumanoidRigType.R6 then
-        v25 = AnimationIds_upv_1.R15
+
+    if v102 or timestamp - slideSound.groundedAt < 0.1 then
+        local v103
+        local clampedValue = math.clamp((magnitude - 0.6) / 2.5, 0, 1)
+        local clampedValue2 = math.clamp(((magnitude / v100) - 9) / 5, 0, 1)
+        targets.idle = 1 - clampedValue
+        targets.walk = clampedValue * (1 - clampedValue2)
+        targets.run = clampedValue * clampedValue2
+        local v106 = 1
+
+        if not (1 < magnitude) then
+            v103 = v106
+        else
+            local lookVector = root.CFrame.LookVector
+            v103 = (assemblyLinearVelocity.X * lookVector.X + (assemblyLinearVelocity.Z * lookVector.Z)) / magnitude < -0.35
+                and -1
+                or v106
+        end
+
+        local walk = slideSound.tracks.walk
+        local run = slideSound.tracks.run
+
+        if walk then
+            walk:AdjustSpeed(v103 * math.clamp(magnitude / (v100 * 7.5), 0.4, 1.8))
+        end
+
+        if run then
+            run:AdjustSpeed(v103 * math.clamp(magnitude / (v100 * 16.5), 0.55, 1.7))
+        end
+    elseif not (0 < slideSound.jumpAt)
+        or not (timestamp - slideSound.jumpAt < 0.45)
+        or not (-12 < assemblyLinearVelocity.Y)
+    then
+        targets.fall = 1
     else
-        v25 = AnimationIds_upv_1.R6
+        targets.jump = 1
     end
-    local tbl_5 = {sliding = false, active = false, jumpAt = -1, groundedAt = 0, replSliding = false}
-    tbl_5.character = a1
-    tbl_5.humanoid = v23
-    tbl_5.root = HumanoidRootPart_1
-    tbl_5.tracks = {}
-    tbl_5.weights = {}
-    tbl_5.targets = {}
-    for _, value_7 in {"idle", "walk", "run", "jump", "fall"} do
-        local v26 = load(v23, v25[value_7], Enum.AnimationPriority.Core, value_7)
-        if v26 then
-            tbl_5.tracks[value_7] = v26
-            tbl_5.weights[value_7] = 0
+
+    local v110 = 1 - math.exp(a89 * -14)
+
+    if const legs = slideSound.legs then
+        local priority = v23[legs]
+
+        if priority and legs.Priority ~= priority then
+            legs.Priority = priority
+        end
+
+        if not legs.Looped then
+            legs.Looped = true
         end
     end
-    if a2 then
-        tbl_5.legs = load(v23, AnimationIds_upv_1.SlideLegs, Enum.AnimationPriority.Action2, "SlideLegs") or load(v23, AnimationIds_upv_1.SlideFallback, Enum.AnimationPriority.Movement, "SlideFallback")
-        tbl_5.upper = load(v23, AnimationIds_upv_1.SlideUpper, Enum.AnimationPriority.Movement, "SlideUpper")
+
+    if const upper = slideSound.upper then
+        local priority = v23[upper]
+
+        if priority and upper.Priority ~= priority then
+            upper.Priority = priority
+        end
+
+        if not upper.Looped then
+            upper.Looped = true
+        end
     end
-    return tbl_5
+
+    for v115, track in slideSound.tracks do
+        if track then
+            local priority = v23[track]
+
+            if priority and track.Priority ~= priority then
+                track.Priority = priority
+            end
+
+            if not track.Looped then
+                track.Looped = true
+            end
+        end
+
+        local v118 = slideSound.weights[v115] + ((targets[v115] or 0) - slideSound.weights[v115]) * v110
+
+        if v118 < 0.001 then
+            v118 = 1e-04
+        end
+
+        slideSound.weights[v115] = v118
+
+        if track.IsPlaying then
+            track:AdjustWeight(v118, 0)
+        else
+            track:Play(0, v118, track.Speed)
+        end
+    end
+
+    local sliding3 = root:GetAttribute("SSlide") ~= nil
+
+    if sliding3 ~= slideSound.sliding then
+        slideSound.sliding = sliding3
+
+        if sliding3 then
+            if slideSound.legs then
+                slideSound.legs:Play(0.08, 1, 1)
+            end
+
+            if slideSound.upper then
+                slideSound.upper:Play(0.12, 1, 1)
+            end
+        else
+            if slideSound.legs then
+                slideSound.legs:Stop(0.15)
+            end
+
+            if slideSound.upper then
+                slideSound.upper:Stop(0.15)
+            end
+        end
+    end
+
+    if slideSound.sliding then
+        v94 = 4 <= magnitude
+    else
+        v94 = slideSound.replSliding
+        v94 = v94 and 4 <= magnitude
+    end
+
+    local character = slideSound.character
+
+    if character.Parent then
+        local sliding = character:GetAttribute("Sliding") == true
+
+        if sliding ~= v94 then
+            local sliding2 = v94 and true or nil
+            character:SetAttribute("Sliding", sliding2)
+        end
+    end
+
+    setSlideSound(slideSound, (v94 and (localPlayer:GetAttribute("State") == "Match")))
 end
-local function update(a1)
+
+local v123 = 0
+
+local function update(deltaTime: number)
     --[[
       name: update
       line: 390
       upvalues:
-        u7 (ref,  index: 1)
-        Workspace_upv_1 (copy, index: 2)
-        Characters_upv_1 (copy, index: 3)
-        u1 (copy, index: 4)
-        LocalPlayer_upv_1 (copy, index: 5)
-        u6 (copy, index: 6)
-        AnimGuard_upv_1 (copy, index: 7)
-        tbl_upv_4 (copy, index: 8)
+        v123 (ref,  index: 1)
+        workspace (copy, index: 2)
+        Characters (copy, index: 3)
+        isStudio (copy, index: 4)
+        localPlayer (copy, index: 5)
+        v66 (copy, index: 6)
+        AnimGuard (copy, index: 7)
+        v21 (copy, index: 8)
         stopAll (copy, index: 9)
         build (copy, index: 10)
         muteReplicated (copy, index: 11)
         step (copy, index: 12)
         destroyRig (copy, index: 13)
     ]]
-    u7 = u7 + a1
-    if u7 < 0.03333333333333333 then
+    v123 += deltaTime
+
+    if v123 < 0.03333333333333333 then
         return
     end
-    local v28 = math.min(u7, 0.1)
-    u7 = 0
-    local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
-    if not CurrentCamera_1 then
+
+    local v126 = math.min(v123, 0.1)
+    v123 = 0
+    local camera = workspace.CurrentCamera
+    if not camera then
         return
     end
-    local Position_1 = CurrentCamera_1.CFrame.Position
-    local v29 = os.clock()
-    local tbl_6 = {}
-    local v30, v31 = nil, nil
-    local _ = nil
-    for v38, value_8 in Characters_upv_1.List() do
-        local v32 = Characters_upv_1.PlayerOf(value_8)
-        local v33 = u1 and (value_8:HasTag("CharacterLoadTest"))
-        if v32 == LocalPlayer_upv_1 then
-            continue
-        end
-        if v32 or v33 or value_8:HasTag("Combatant") then
-            if v32 == nil then
-                v30 = u1 and (value_8:HasTag("ClientAuthorityTest"))
-            else
-                if Workspace_upv_1:GetAttribute("TribesAuthority") == "Client" then
-                    local v34 = true
-                    v30, v30 = v34, v34
-                else
-                    v30 = false
-                end
-                if not (v30) then
-                    v30 = u1 and (value_8:HasTag("ClientAuthorityTest"))
-                end
-            end
-            if v30 and not (u6[value_8]) then
-                local v35 = value_8:FindFirstChildOfClass("Humanoid")
-                local v36 = v35 and (v35:FindFirstChildOfClass("Animator"))
-                if v36 then
-                    u6[value_8] = true
-                    AnimGuard_upv_1.Watch(v36)
-                end
-            end
-            local HumanoidRootPart_2 = value_8:FindFirstChild("HumanoidRootPart")
-            if not (HumanoidRootPart_2) or not (HumanoidRootPart_2:IsA("BasePart")) then
-                continue
-            end
-            v31 = tbl_upv_4[value_8]
-            if (HumanoidRootPart_2.Position - Position_1).Magnitude > 160 then
-                if not (v31) then
-                    continue
-                end
-                if v31.active then
-                    stopAll(v31)
-                end
-            else
-                if not v31 then
-                    local v37 = build(value_8, not v30)
-                    if not (v37) then
-                        continue
+
+    local position = camera.CFrame.Position
+    local timestamp = os.clock()
+    local v130 = {}
+
+    for _, character in Characters.List() do
+        local v133 = Characters.PlayerOf(character)
+        local hasTag = isStudio and character:HasTag("CharacterLoadTest")
+
+        if v133 ~= localPlayer then
+            if v133 or hasTag or character:HasTag("Combatant") then
+                local v135 = v133 ~= nil and workspace:GetAttribute("TribesAuthority") == "Client"
+                    or isStudio and character:HasTag("ClientAuthorityTest")
+
+                if v135 and not v66[character] then
+                    local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+                    if const animator = humanoid and humanoid:FindFirstChildOfClass("Animator") then
+                        v66[character] = true
+                        AnimGuard.Watch(animator)
                     end
-                    tbl_upv_4[value_8] = v37
-                    v31 = v37
                 end
-                tbl_6[value_8] = true
-                if v30 then
-                    muteReplicated(v31)
+
+                if const humanoidRootPart = character:FindFirstChild("HumanoidRootPart") then
+                    local v139, v140
+                    local v141
+                    local v142 = false
+
+                    if humanoidRootPart:IsA("BasePart") then
+                        v139 = v21[character]
+
+                        if not (160 < (humanoidRootPart.Position - position).Magnitude) then
+                            if v139 then
+                                v141 = v139
+                                v142 = true
+                            else
+                                v140 = build(character, not v135)
+
+                                if v140 then
+                                    v21[character] = v140
+                                    v141 = v140
+                                    v142 = true
+                                end
+                            end
+                        elseif v139 and v139.active then
+                            stopAll(v139)
+                        end
+                    end
+
+                    if v142 then
+                        v130[character] = true
+
+                        if v135 then
+                            muteReplicated(v141)
+                        end
+
+                        step(v141, v126, timestamp)
+                    end
                 end
-                step(v31, v28, v29)
             end
         end
     end
-    for key_4, value_9 in tbl_upv_4 do
-        if not (key_4.Parent) then
-            destroyRig(value_9)
-            tbl_upv_4[key_4] = nil
-            continue
-        end
-        if tbl_6[key_4] then
-            continue
-        end
-        if value_9.active then
-            stopAll(value_9)
+
+    for v143, v144 in v21 do
+        if v143.Parent then
+            if not v130[v143] and v144.active then
+                stopAll(v144)
+            end
+        else
+            destroyRig(v144)
+            v21[v143] = nil
         end
     end
 end
-local u8 = false
-function tbl_1.Start()
+
+local hasRun = false
+
+function v9.Start()
     --[[
       name: Start
       line: 452
       upvalues:
-        u8 (ref,  index: 1)
-        RunService_upv_1 (copy, index: 2)
-        Perf_upv_1 (copy, index: 3)
+        hasRun (ref,  index: 1)
+        runService (copy, index: 2)
+        Perf (copy, index: 3)
         update (copy, index: 4)
     ]]
-    if u8 then
+    if hasRun then
         return
     end
-    u8 = true
-    RunService_upv_1.Heartbeat:Connect(
-        function(a1)
+
+    hasRun = true
+
+    runService.Heartbeat:Connect(
+        function(deltaTime: number)
             --[[
               line: 457
               upvalues:
-                Perf_upv_1 (copy, index: 1)
+                Perf (copy, index: 1)
                 update (copy, index: 2)
             ]]
-            local v38 = Perf_upv_1.Begin()
-            update(a1)
-            Perf_upv_1.End("RemoteAnimate", v38)
+            local v147 = Perf.Begin()
+            update(deltaTime)
+            Perf.End("RemoteAnimate", v147)
         end
     )
 end
-return tbl_1
+
+return v9

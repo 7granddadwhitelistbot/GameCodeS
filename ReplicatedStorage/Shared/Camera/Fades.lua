@@ -1,129 +1,160 @@
-local CollectionService_upv_1 = game:GetService("CollectionService")
-local Players_1 = game:GetService("Players")
-local Workspace_upv_1 = game:GetService("Workspace")
-local Fighters_upv_1 = require(script.Parent:WaitForChild("Fighters"))
-local tbl_1 = {}
-tbl_1.DECOR_FADE = 0.75
-tbl_1.ALLY_FADE = 0.7
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local tbl_upv_2 = {}
-local tbl_upv_3 = {}
-local u1 = 0
-local tbl_upv_4 = {}
-local tbl_upv_5 = {}
-local u2 = 0
-local u3 = false
-local function cellKey(a1, a2, a3)
-    --[[
-      name: cellKey
-      line: 72
-    ]]
-    return a1 .. "," .. a2 .. "," .. a3
-end
-local function isDecor(a1)
+local collectionService = game:GetService("CollectionService")
+local players = game:GetService("Players")
+local workspace = game:GetService("Workspace")
+local Fighters = require(script.Parent:WaitForChild("Fighters"))
+local v5 = {DECOR_FADE = 0.75, ALLY_FADE = 0.7}
+local localPlayer = players.LocalPlayer
+local v7 = {}
+local v8 = {}
+local decorParts = 0
+local v10 = {}
+local v11 = {}
+local timestamp = 0
+local hasRun = false
+
+local function isDecor(instance: Instance)
     --[[
       name: isDecor
       line: 49
     ]]
-    if not a1:IsA("BasePart") or not a1.Anchored or a1.Transparency >= 0.95 or not (a1:HasTag("Foliage")) and (a1.CanCollide or a1.CanQuery) then
+    if not instance:IsA("BasePart") or not instance.Anchored or 0.95 <= instance.Transparency then
         return false
     end
-    local v1 = a1.Size
-    if math.max(v1.X, v1.Y, v1.Z) < 1 then
-        return false
-    end
-    v1 = a1:FindFirstAncestorWhichIsA("Model")
-    while v1 do
-        if v1:HasTag("BearTrap") or v1:FindFirstChildOfClass("Humanoid") then
+
+    if not instance:HasTag("Foliage") then
+        if instance.CanCollide then
             return false
         end
-        v1 = v1:FindFirstAncestorWhichIsA("Model")
+        if instance.CanQuery then
+            return false
+        end
     end
+
+    local size = instance.Size
+
+    if math.max(size.X, size.Y, size.Z) < 1 then
+        return false
+    end
+
+    local firstAncestorWhichIsA = instance:FindFirstAncestorWhichIsA("Model")
+
+    while firstAncestorWhichIsA do
+        if firstAncestorWhichIsA:HasTag("BearTrap") then
+            return false
+        end
+        if firstAncestorWhichIsA:FindFirstChildOfClass("Humanoid") then
+            return false
+        end
+
+        firstAncestorWhichIsA = firstAncestorWhichIsA:FindFirstAncestorWhichIsA("Model")
+    end
+
     return true
 end
-local function addDecor(a1)
+
+local function cellKey(a19, a20, a21)
+    --[[
+      name: cellKey
+      line: 72
+    ]]
+    return a19 .. "," .. a20 .. "," .. a21
+end
+
+local function addDecor(instance: Instance)
     --[[
       name: addDecor
       line: 76
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v8 (copy, index: 1)
         isDecor (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
-        u1 (ref,  index: 4)
+        v7 (copy, index: 3)
+        decorParts (ref,  index: 4)
     ]]
-    if tbl_upv_3[a1] or not isDecor(a1) then
+    if v8[instance] or not isDecor(instance) then
         return
     end
-    local CFrame_1 = a1.CFrame
-    local v2 = a1.Size / 2
-    local v3 = CFrame_1.RightVector * v2.X
-    local v4 = CFrame_1.UpVector * v2.Y
-    local tbl_6 = CFrame_1.LookVector * v2.Z
-    local v5 = Vector3.new((math.abs(v3.X) + math.abs(v4.X)) + math.abs(tbl_6.X), (math.abs(v3.Y) + math.abs(v4.Y)) + math.abs(tbl_6.Y), (math.abs(v3.Z) + math.abs(v4.Z)) + math.abs(tbl_6.Z))
-    local v6 = (CFrame_1.Position - v5) / 16
-    local v7 = (CFrame_1.Position + v5) / 16
-    local v8 = math.floor(v6.X)
-    local v9 = math.floor(v6.Y)
-    local v10 = math.floor(v6.Z)
-    local v11 = math.floor(v7.X)
-    local v12 = math.floor(v7.Y)
-    local v13 = math.floor(v7.Z)
-    if (((v11 - v8) + 1) * (v12 - v9 + 1)) * (v13 - v10 + 1) > 64 then
+
+    local cFrame = instance.CFrame
+    local v25 = instance.Size / 2
+    local v26 = cFrame.RightVector * v25.X
+    local v27 = cFrame.UpVector * v25.Y
+    local v28 = cFrame.LookVector * v25.Z
+    local vector3 = Vector3.new((math.abs(v26.X) + math.abs(v27.X)) + math.abs(v28.X), (math.abs(v26.Y) + math.abs(v27.Y)) + math.abs(v28.Y), math.abs(v26.Z) + math.abs(v27.Z) + math.abs(v28.Z))
+    local v30 = (cFrame.Position - vector3) / 16
+    local v31 = (cFrame.Position + vector3) / 16
+    local flooredValue = math.floor(v30.X)
+    local flooredValue2 = math.floor(v30.Y)
+    local flooredValue3 = math.floor(v30.Z)
+    local flooredValue4 = math.floor(v31.X)
+    local flooredValue5 = math.floor(v31.Y)
+    local flooredValue6 = math.floor(v31.Z)
+
+    if 64 < ((flooredValue4 - flooredValue) + 1) * (flooredValue5 - flooredValue2 + 1) * (flooredValue6 - flooredValue3 + 1) then
         return
     end
-    v7 = {}
-    v7 = nil
-    for n_1 = v8, v11 do
-        v7 = nil
-        for n_2 = v9, v12 do
-            v7 = nil
-            for n_3 = v10, v13 do
-                v6 = n_1 .. "," .. n_2 .. "," .. n_3
-                tbl_6 = tbl_upv_2[v6]
-                if not (tbl_6) then
-                    tbl_6 = {}
-                    tbl_upv_2[v6] = tbl_6
+
+    local cells = {}
+
+    for index = flooredValue, flooredValue4 do
+        for index2 = flooredValue2, flooredValue5 do
+            for index3 = flooredValue3, flooredValue6 do
+                local v42
+                local v43 = index .. "," .. index2 .. "," .. index3
+
+                if const v44 = v7[v43] then
+                    v42 = v44
+                else
+                    v42 = {}
+                    v7[v43] = v42
                 end
-                tbl_6[a1] = true
-                table.insert(v7, v6)
+
+                v42[instance] = true
+                table.insert(cells, v43)
             end
         end
     end
-    tbl_upv_3[a1] = {part = a1, cells = v7}
-    u1 = u1 + 1
+
+    v8[instance] = {part = instance, cells = cells}
+    decorParts += 1
 end
-local function removeDecor(a1)
+
+local function removeDecor(instance: Instance)
     --[[
       name: removeDecor
       line: 115
       upvalues:
-        tbl_upv_3 (copy, index: 1)
-        u1 (ref,  index: 2)
-        tbl_upv_2 (copy, index: 3)
-        tbl_upv_4 (copy, index: 4)
+        v8 (copy, index: 1)
+        decorParts (ref,  index: 2)
+        v7 (copy, index: 3)
+        v10 (copy, index: 4)
     ]]
-    local v14 = tbl_upv_3[a1]
-    if not v14 then
+    local v47 = v8[instance]
+    if not v47 then
         return
     end
-    tbl_upv_3[v14.part] = nil
-    u1 = u1 - 1
-    for _, value_1 in v14.cells do
-        local v15 = tbl_upv_2[value_1]
-        if not (v15) then
-            continue
-        end
-        v15[v14.part] = nil
-        if next(v15) == nil then
-            tbl_upv_2[value_1] = nil
+
+    v8[v47.part] = nil
+    decorParts -= 1
+
+    for _, cell in v47.cells do
+        if const v50 = v7[cell] then
+            v50[v47.part] = nil
+
+            if next(v50) ~= nil then
+                continue
+            end
+
+            v7[cell] = nil
         end
     end
-    if tbl_upv_4[v14.part] then
-        tbl_upv_4[v14.part] = nil
-        v14.part.LocalTransparencyModifier = 0
+
+    if v10[v47.part] then
+        v10[v47.part] = nil
+        v47.part.LocalTransparencyModifier = 0
     end
 end
-local function watchDecorRoot(a1)
+
+local function watchDecorRoot(child: Instance?)
     --[[
       name: watchDecorRoot
       line: 137
@@ -131,357 +162,398 @@ local function watchDecorRoot(a1)
         addDecor (copy, index: 1)
         removeDecor (copy, index: 2)
     ]]
-    for _, value_2 in a1:GetDescendants() do
-        addDecor(value_2)
+    for _, descendant in child:GetDescendants() do
+        addDecor(descendant)
     end
-    a1.DescendantAdded:Connect(addDecor)
-    a1.DescendantRemoving:Connect(removeDecor)
+
+    child.DescendantAdded:Connect(addDecor)
+    child.DescendantRemoving:Connect(removeDecor)
 end
+
 local function startDecorWatch()
     --[[
       name: startDecorWatch
       line: 145
       upvalues:
-        u3 (ref,  index: 1)
-        Workspace_upv_1 (copy, index: 2)
+        hasRun (ref,  index: 1)
+        workspace (copy, index: 2)
         watchDecorRoot (copy, index: 3)
-        CollectionService_upv_1 (copy, index: 4)
+        collectionService (copy, index: 4)
         addDecor (copy, index: 5)
         removeDecor (copy, index: 6)
     ]]
-    if u3 then
+    if hasRun then
         return
     end
-    u3 = true
-    for _, value_3 in {"Arenas", "Lobby"} do
-        local v16 = Workspace_upv_1:FindFirstChild(value_3)
-        if v16 then
-            watchDecorRoot(v16)
+
+    hasRun = true
+
+    for _, childName in {"Arenas", "Lobby"} do
+        if const child = workspace:FindFirstChild(childName) then
+            watchDecorRoot(child)
         end
     end
-    Workspace_upv_1.ChildAdded:Connect(
-        function(a1)
+
+    workspace.ChildAdded:Connect(
+        function(child: Instance)
             --[[
               line: 156
               upvalues:
                 watchDecorRoot (copy, index: 1)
             ]]
-            if a1.Name ~= "Arenas" and a1.Name ~= "Lobby" then
-                return
+            if child.Name == "Arenas" or child.Name == "Lobby" then
+                watchDecorRoot(child)
             end
-            watchDecorRoot(a1)
         end
     )
-    CollectionService_upv_1:GetInstanceAddedSignal("Foliage"):Connect(addDecor)
-    CollectionService_upv_1:GetInstanceRemovedSignal("Foliage"):Connect(removeDecor)
-    for _, value_4 in CollectionService_upv_1:GetTagged("Foliage") do
-        addDecor(value_4)
+
+    collectionService:GetInstanceAddedSignal("Foliage"):Connect(addDecor)
+    collectionService:GetInstanceRemovedSignal("Foliage"):Connect(removeDecor)
+
+    for _, foliage in collectionService:GetTagged("Foliage") do
+        addDecor(foliage)
     end
 end
-local function boxDistance(a1, a2)
+
+local function boxDistance(a63, a64)
     --[[
       name: boxDistance
       line: 170
     ]]
-    local v17 = a1.CFrame:PointToObjectSpace(a2)
-    local v18 = a1.Size / 2
-    local v19 = math.max(math.abs(v17.X) - v18.X, 0)
-    local v20 = math.max(math.abs(v17.Y) - v18.Y, 0)
-    local v21 = math.max(math.abs(v17.Z) - v18.Z, 0)
-    return (math.sqrt(((v19 * v19) + (v20 * v20)) + (v21 * v21)))
+    local objectSpacePoint = a63.CFrame:PointToObjectSpace(a64)
+    local v66 = a63.Size / 2
+    local v67 = math.max(math.abs(objectSpacePoint.X) - v66.X, 0)
+    local v68 = math.max(math.abs(objectSpacePoint.Y) - v66.Y, 0)
+    local v69 = math.max(math.abs(objectSpacePoint.Z) - v66.Z, 0)
+
+    return (math.sqrt(((v67 * v67) + (v68 * v68)) + (v69 * v69)))
 end
-function tbl_1.ClearDecor()
-    --[[
-      name: ClearDecor
-      line: 197
-      upvalues:
-        tbl_upv_4 (copy, index: 1)
-    ]]
-    for key_1 in tbl_upv_4 do
-        if key_1.Parent then
-            key_1.LocalTransparencyModifier = 0
-        end
-    end
-    table.clear(tbl_upv_4)
-end
-local function markDecorNear(a1, a2)
+
+local function markDecorNear(a71, a72: number)
     --[[
       name: markDecorNear
       line: 179
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        tbl_upv_5 (copy, index: 2)
+        v7 (copy, index: 1)
+        v11 (copy, index: 2)
         boxDistance (copy, index: 3)
     ]]
-    local v22 = (a1 - (Vector3.new(1, 1, 1) * a2)) / 16
-    local v23 = (a1 + (Vector3.new(1, 1, 1) * a2)) / 16
-    for n_4 = math.floor(v22.X), math.floor(v23.X) do
-        for n_5 = math.floor(v22.Y), math.floor(v23.Y) do
-            for n_6 = math.floor(v22.Z), math.floor(v23.Z) do
-                local v24 = tbl_upv_2[n_4 .. "," .. n_5 .. "," .. n_6]
-                if not (v24) then
-                    continue
-                end
-                for key_2 in v24 do
-                    if tbl_upv_5[key_2] then
-                        continue
-                    end
-                    if boxDistance(key_2, a1) < a2 then
-                        tbl_upv_5[key_2] = true
+    local v73 = (a71 - (Vector3.new(1, 1, 1) * a72)) / 16
+    local v74 = (a71 + (Vector3.new(1, 1, 1) * a72)) / 16
+
+    for index = math.floor(v73.X), math.floor(v74.X) do
+        for index2 = math.floor(v73.Y), math.floor(v74.Y) do
+            for index3 = math.floor(v73.Z), math.floor(v74.Z) do
+                if const v78 = v7[index .. "," .. index2 .. "," .. index3] then
+                    for v79 in v78 do
+                        if not v11[v79] and boxDistance(v79, a71) < a72 then
+                            v11[v79] = true
+                        end
                     end
                 end
             end
         end
     end
 end
-function tbl_1.UpdateDecor(a1, a2)
+
+function v5.ClearDecor()
+    --[[
+      name: ClearDecor
+      line: 197
+      upvalues:
+        v10 (copy, index: 1)
+    ]]
+    for v80 in v10 do
+        if v80.Parent then
+            v80.LocalTransparencyModifier = 0
+        end
+    end
+
+    table.clear(v10)
+end
+
+function v5.UpdateDecor(startValue, targetValue)
     --[[
       name: UpdateDecor
       line: 207
       upvalues:
-        u2 (ref,  index: 1)
+        timestamp (ref,  index: 1)
         startDecorWatch (copy, index: 2)
-        tbl_upv_5 (copy, index: 3)
+        v11 (copy, index: 3)
         markDecorNear (copy, index: 4)
-        tbl_upv_4 (copy, index: 5)
+        v10 (copy, index: 5)
     ]]
-    local v25 = os.clock()
-    if (v25 - u2 < 0.1) then
+    local timestamp2 = os.clock()
+
+    if timestamp2 - timestamp < 0.1 then
         return
     end
-    u2 = v25
+
+    timestamp = timestamp2
     startDecorWatch()
-    table.clear(tbl_upv_5)
-    markDecorNear(a1, 3)
-    if a2 then
-        markDecorNear(a1:Lerp(a2, 0.33), 1.2)
-        markDecorNear(a1:Lerp(a2, 0.66), 1.2)
+    table.clear(v11)
+    markDecorNear(startValue, 3)
+
+    if targetValue then
+        markDecorNear(startValue:Lerp(targetValue, 0.33), 1.2)
+        markDecorNear(startValue:Lerp(targetValue, 0.66), 1.2)
     end
-    for key_3 in tbl_upv_5 do
-        if not (tbl_upv_4[key_3]) then
-            tbl_upv_4[key_3] = true
-            key_3.LocalTransparencyModifier = 0.75
+
+    for v84 in v11 do
+        if not v10[v84] then
+            v10[v84] = true
+            v84.LocalTransparencyModifier = 0.75
         end
     end
-    for key_4 in tbl_upv_4 do
-        if tbl_upv_5[key_4] then
-            continue
-        end
-        tbl_upv_4[key_4] = nil
-        if key_4.Parent then
-            key_4.LocalTransparencyModifier = 0
+
+    for v85 in v10 do
+        if not v11[v85] then
+            v10[v85] = nil
+
+            if not v85.Parent then
+                continue
+            end
+
+            v85.LocalTransparencyModifier = 0
         end
     end
 end
-local tbl_upv_7 = {}
-local function setAllyLtm(a1, a2, a3)
+
+local v86 = {}
+
+local function setAllyLtm(allyLtm, a89, localTransparencyModifier: number)
     --[[
       name: setAllyLtm
       line: 242
     ]]
-    if a1.dirty then
-        table.clear(a1.parts)
-        for _, value_5 in a2:GetDescendants() do
-            if value_5:IsA("BasePart") or value_5:IsA("Decal") then
-                table.insert(a1.parts, value_5)
+    if allyLtm.dirty then
+        table.clear(allyLtm.parts)
+
+        for _, descendant in a89:GetDescendants() do
+            if descendant:IsA("BasePart") or descendant:IsA("Decal") then
+                table.insert(allyLtm.parts, descendant)
             end
         end
-        a1.dirty = false
+
+        allyLtm.dirty = false
     end
-    for _, value_6 in a1.parts do
-        if value_6.LocalTransparencyModifier == a3 then
-            continue
-        end
-        if value_6.Parent then
-            value_6.LocalTransparencyModifier = a3
+
+    for _, part in allyLtm.parts do
+        if part.LocalTransparencyModifier ~= localTransparencyModifier and part.Parent then
+            part.LocalTransparencyModifier = localTransparencyModifier
         end
     end
 end
-local function unfadeAlly(a1)
+
+local function unfadeAlly(key)
     --[[
       name: unfadeAlly
       line: 259
       upvalues:
-        tbl_upv_7 (copy, index: 1)
+        v86 (copy, index: 1)
         setAllyLtm (copy, index: 2)
     ]]
-    local v26 = tbl_upv_7[a1]
-    if not v26 then
+    local allyLtm = v86[key]
+    if not allyLtm then
         return
     end
-    tbl_upv_7[a1] = nil
-    for _, value_7 in v26.conns do
-        value_7:Disconnect()
+
+    v86[key] = nil
+
+    for _, conn in allyLtm.conns do
+        conn:Disconnect()
     end
-    v26.dirty = true
-    setAllyLtm(v26, a1, 0)
+
+    allyLtm.dirty = true
+    setAllyLtm(allyLtm, key, 0)
 end
-function tbl_1.ClearAllies()
+
+function v5.ClearAllies()
     --[[
       name: ClearAllies
       line: 272
       upvalues:
-        tbl_upv_7 (copy, index: 1)
+        v86 (copy, index: 1)
         setAllyLtm (copy, index: 2)
     ]]
-    for key_5 in tbl_upv_7 do
-        local v27 = tbl_upv_7[key_5]
-        if not (v27) then
-            continue
+    for v100 in v86 do
+        if const allyLtm = v86[v100] then
+            v86[v100] = nil
+
+            for _, conn in allyLtm.conns do
+                conn:Disconnect()
+            end
+
+            allyLtm.dirty = true
+            setAllyLtm(allyLtm, v100, 0)
         end
-        tbl_upv_7[key_5] = nil
-        for _, value_8 in v27.conns do
-            value_8:Disconnect()
-        end
-        v27.dirty = true
-        setAllyLtm(v27, key_5, 0)
     end
 end
-local function segmentDistance(a1, a2, a3)
+
+local function segmentDistance(a105, a106, a107)
     --[[
       name: segmentDistance
       line: 278
     ]]
-    local v28 = a3 - a2
-    local v29 = v28:Dot(v28)
-    local v30 = ((not (v29 > 1e-06)) and 0) or (math.clamp((a1 - a2):Dot(v28) / v29, 0, 1))
-    return ((a2 + (v28 * v30)) - a1).Magnitude
+    local v108 = a107 - a106
+    local v109 = v108:Dot(v108)
+    local v110 = not (1e-06 < v109) and 0 or math.clamp((a105 - a106):Dot(v108) / v109, 0, 1)
+
+    return ((a106 + (v108 * v110)) - a105).Magnitude
 end
-local function isAlly(a1, a2)
+
+local function isAlly(a112, a113)
     --[[
       name: isAlly
       line: 285
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
     ]]
-    if a1 == a2 then
+    if a112 == a113 then
         return false
     end
-    local v31 = LocalPlayer_upv_1:GetAttribute("MatchId")
-    if type(v31) == "string" and v31 ~= "" and a1:GetAttribute("MatchId") == v31 then
-        local v32 = LocalPlayer_upv_1:GetAttribute("Team")
-        local v33 = (v32 ~= nil) and (a1:GetAttribute("Team") == v32)
-        return v33
+
+    local matchId = localPlayer:GetAttribute("MatchId")
+
+    if type(matchId) ~= "string" or matchId == "" or a112:GetAttribute("MatchId") ~= matchId then
+        return false
     end
-    return false
+
+    local team = localPlayer:GetAttribute("Team")
+
+    return team ~= nil and a112:GetAttribute("Team") == team
 end
-function tbl_1.UpdateAllies(a1, a2, a3)
+
+function v5.UpdateAllies(a116, a117, a118)
     --[[
       name: UpdateAllies
       line: 298
       upvalues:
-        Fighters_upv_1 (copy, index: 1)
-        tbl_upv_7 (copy, index: 2)
+        Fighters (copy, index: 1)
+        v86 (copy, index: 2)
         isAlly (copy, index: 3)
         setAllyLtm (copy, index: 4)
     ]]
-    local v34 = nil
-    for _, value_9 in Fighters_upv_1.List() do
-        local v35 = value_9:FindFirstChildOfClass("Humanoid")
-        local HumanoidRootPart_1 = value_9:FindFirstChild("HumanoidRootPart")
-        local v36 = tbl_upv_7[value_9] ~= nil
-        v34 = false
-        if v35 and v35.Health > 0 and HumanoidRootPart_1 then
-            local v37 = HumanoidRootPart_1:IsA("BasePart")
-            if v37 then
-                local v38 = isAlly(value_9, a3)
-                if v38 then
-                    local Head_1 = value_9:FindFirstChild("Head")
-                    local Position_1 = HumanoidRootPart_1.Position
-                    local v39 = a2 - a1
-                    local v40 = v39:Dot(v39)
-                    local v41 = ((not (v40 > 1e-06)) and 0) or (math.clamp((Position_1 - a1):Dot(v39) / v40, 0, 1))
-                    local Magnitude_1 = ((a1 + (v39 * v41)) - Position_1).Magnitude
-                    if Head_1 and Head_1:IsA("BasePart") then
-                        local Position_2 = Head_1.Position
-                        local v42 = a2 - a1
-                        local v43 = (a2 - a1):Dot(a2 - a1)
-                        local v44 = ((not (v43 > 1e-06)) and 0) or (math.clamp((Position_2 - a1):Dot(v42) / v43, 0, 1))
-                        local v48 = math.min(Magnitude_1, ((a1 + (v42 * v44)) - Position_2).Magnitude)
-                    end
-                    v34 = Magnitude_1 < ((v36 and 5.6) or 5)
+    local magnitude
+
+    for _, v121 in Fighters.List() do
+        local humanoid = v121:FindFirstChildOfClass("Humanoid")
+        local humanoidRootPart = v121:FindFirstChild("HumanoidRootPart")
+        local v124 = v86[v121] ~= nil
+        local v125 = false
+
+        if humanoid
+            and 0 < humanoid.Health
+            and humanoidRootPart
+            and humanoidRootPart:IsA("BasePart")
+            and isAlly(v121, a118)
+        then
+            local v126
+            local head = v121:FindFirstChild("Head")
+            local position = humanoidRootPart.Position
+            local v129 = a117 - a116
+            local v130 = v129:Dot(v129)
+            local v131 = not (1e-06 < v130) and 0 or math.clamp((position - a116):Dot(v129) / v130, 0, 1)
+            magnitude = ((a116 + (v129 * v131)) - position).Magnitude
+
+            if head then
+                if head:IsA("BasePart") then
+                    local position2 = head.Position
+                    local v133 = a117 - a116
+                    local v134 = v133:Dot(v133)
+                    local v135 = not (1e-06 < v134) and 0 or math.clamp((position2 - a116):Dot(v133) / v134, 0, 1)
+                    v126 = math.min(magnitude, ((a116 + (v133 * v135)) - position2).Magnitude)
+                else
+                    v126 = magnitude
                 end
+            else
+                v126 = magnitude
             end
+
+            local v136 = v124 and 5.6 or 5
+            v125 = v126 < v136
         end
-        if v34 and not (v36) then
-            local tbl_upv_8 = {dirty = true}
-            tbl_upv_8.parts = {}
-            tbl_upv_8.conns = {}
+
+        if v125 and not v124 then
+            local allyLtm = {dirty = true, parts = {}, conns = {}}
             table.insert(
-                tbl_upv_8.conns,
-                value_9.DescendantAdded:Connect(
+                allyLtm.conns,
+                v121.DescendantAdded:Connect(
                     function()
                         --[[
                           line: 314
                           upvalues:
-                            tbl_upv_8 (copy, index: 1)
+                            allyLtm (copy, index: 1)
                         ]]
-                        tbl_upv_8.dirty = true
+                        allyLtm.dirty = true
                     end
                 )
             )
-            tbl_upv_7[value_9] = tbl_upv_8
-            setAllyLtm(tbl_upv_8, value_9, 0.7)
-            continue
-        end
-        if v34 and v36 then
-            local v45 = tbl_upv_7[value_9]
-            if v45.dirty then
-                setAllyLtm(v45, value_9, 0.7)
+            v86[v121] = allyLtm
+            setAllyLtm(allyLtm, v121, 0.7)
+        elseif v125 and v124 then
+            local allyLtm = v86[v121]
+
+            if allyLtm.dirty then
+                setAllyLtm(allyLtm, v121, 0.7)
             end
-        else
-            if not (v36) then
+        elseif v124 then
+            local allyLtm = v86[v121]
+            if not allyLtm then
                 continue
             end
-            local v46 = tbl_upv_7[value_9]
-            if not (v46) then
-                continue
+
+            v86[v121] = nil
+
+            for _, conn in allyLtm.conns do
+                conn:Disconnect()
             end
-            tbl_upv_7[value_9] = nil
-            for v49, value_10 in v46.conns do
-                value_10:Disconnect()
-            end
-            v46.dirty = true
-            setAllyLtm(v46, value_9, 0)
+
+            allyLtm.dirty = true
+            setAllyLtm(allyLtm, v121, 0)
         end
     end
-    for key_6 in tbl_upv_7 do
-        if key_6.Parent then
-            continue
+
+    for v142 in v86 do
+        if not v142.Parent then
+            local allyLtm = v86[v142]
+            if not allyLtm then
+                continue
+            end
+
+            v86[v142] = nil
+
+            for _, conn in allyLtm.conns do
+                conn:Disconnect()
+            end
+
+            allyLtm.dirty = true
+            setAllyLtm(allyLtm, v142, 0)
         end
-        local v47 = tbl_upv_7[key_6]
-        if not (v47) then
-            continue
-        end
-        tbl_upv_7[key_6] = nil
-        for _, value_11 in v47.conns do
-            value_11:Disconnect()
-        end
-        v47.dirty = true
-        setAllyLtm(v47, key_6, 0)
     end
 end
-function tbl_1.Stats()
+
+function v5.Stats()
     --[[
       name: Stats
       line: 335
       upvalues:
-        tbl_upv_4 (copy, index: 1)
-        tbl_upv_7 (copy, index: 2)
-        u1 (ref,  index: 3)
+        v10 (copy, index: 1)
+        v86 (copy, index: 2)
+        decorParts (ref,  index: 3)
     ]]
-    local v48 = 0
-    local v49 = 0
-    for _ in tbl_upv_4 do
-        v48 = v48 + 1
+    local count = 0
+    local count2 = 0
+
+    for _ in v10 do
+        count += 1
     end
-    for _ in tbl_upv_7 do
-        v49 = v49 + 1
+
+    for _ in v86 do
+        count2 += 1
     end
-    local tbl_9 = {}
-    tbl_9.decorParts = u1
-    tbl_9.decorFaded = v48
-    tbl_9.alliesFaded = v49
-    return tbl_9
+
+    return {decorParts = decorParts, decorFaded = count, alliesFaded = count2}
 end
-return tbl_1
+
+return v5

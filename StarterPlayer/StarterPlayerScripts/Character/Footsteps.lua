@@ -1,915 +1,528 @@
-local Players_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local Effects_upv_1 = require(script.Parent:WaitForChild("Effects"))
-local Characters_upv_1 = require(script.Parent:WaitForChild("Characters"))
-local Perf_upv_1 = require(script.Parent:WaitForChild("Perf"))
-local Quality_upv_1 = require(script.Parent:WaitForChild("Quality"))
-local tbl_1 = {}
-local tbl_upv_2 = {}
-tbl_upv_2[Enum.Material.Grass] = "Grass"
-tbl_upv_2[Enum.Material.LeafyGrass] = "Grass"
-tbl_upv_2[Enum.Material.Ground] = "Dirt"
-tbl_upv_2[Enum.Material.Mud] = "Dirt"
-tbl_upv_2[Enum.Material.Sand] = "Sand"
-tbl_upv_2[Enum.Material.Salt] = "Grass"
-tbl_upv_2[Enum.Material.Snow] = "Snow"
-tbl_upv_2[Enum.Material.Glacier] = "Snow"
-tbl_upv_2[Enum.Material.Ice] = "Snow"
-tbl_upv_2[Enum.Material.Wood] = "Wood"
-tbl_upv_2[Enum.Material.WoodPlanks] = "Wood"
-tbl_upv_2[Enum.Material.Metal] = "Metal"
-tbl_upv_2[Enum.Material.DiamondPlate] = "Metal"
-tbl_upv_2[Enum.Material.CorrodedMetal] = "Metal"
-tbl_upv_2[Enum.Material.Foil] = "Metal"
-tbl_upv_2[Enum.Material.Water] = "Water"
-tbl_upv_2[Enum.Material.Fabric] = "Soft"
-tbl_upv_2[Enum.Material.Carpet] = "Soft"
-tbl_upv_2[Enum.Material.Leather] = "Soft"
-tbl_upv_2[Enum.Material.Cardboard] = "Wood"
-tbl_upv_2[Enum.Material.Slate] = "Stone"
-tbl_upv_2[Enum.Material.Cobblestone] = "Stone"
-tbl_upv_2[Enum.Material.Rock] = "Stone"
-tbl_upv_2[Enum.Material.Basalt] = "Dirt"
-tbl_upv_2[Enum.Material.Limestone] = "Stone"
-tbl_upv_2[Enum.Material.Sandstone] = "Stone"
-tbl_upv_2[Enum.Material.Granite] = "Stone"
-tbl_upv_2[Enum.Material.Brick] = "Stone"
-tbl_upv_2[Enum.Material.Pavement] = "Stone"
-tbl_upv_2[Enum.Material.Concrete] = "Stone"
-tbl_upv_2[Enum.Material.Marble] = "Stone"
-tbl_upv_2[Enum.Material.CrackedLava] = "Stone"
-local tbl_upv_3 = {}
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local u1 = RaycastParams.new()
-u1.FilterType = Enum.RaycastFilterType.Exclude
-u1.IgnoreWater = false
-tbl_1.SurfaceFor = function(a1)
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local workspace = game:GetService("Workspace")
+local Effects = require(script.Parent:WaitForChild("Effects"))
+local Characters = require(script.Parent:WaitForChild("Characters"))
+local Perf = require(script.Parent:WaitForChild("Perf"))
+local Quality = require(script.Parent:WaitForChild("Quality"))
+local v8 = {}
+local v9 = {}
+v9[Enum.Material.Grass] = "Grass"
+v9[Enum.Material.LeafyGrass] = "Grass"
+v9[Enum.Material.Ground] = "Dirt"
+v9[Enum.Material.Mud] = "Dirt"
+v9[Enum.Material.Sand] = "Sand"
+v9[Enum.Material.Salt] = "Grass"
+v9[Enum.Material.Snow] = "Snow"
+v9[Enum.Material.Glacier] = "Snow"
+v9[Enum.Material.Ice] = "Snow"
+v9[Enum.Material.Wood] = "Wood"
+v9[Enum.Material.WoodPlanks] = "Wood"
+v9[Enum.Material.Metal] = "Metal"
+v9[Enum.Material.DiamondPlate] = "Metal"
+v9[Enum.Material.CorrodedMetal] = "Metal"
+v9[Enum.Material.Foil] = "Metal"
+v9[Enum.Material.Water] = "Water"
+v9[Enum.Material.Fabric] = "Soft"
+v9[Enum.Material.Carpet] = "Soft"
+v9[Enum.Material.Leather] = "Soft"
+v9[Enum.Material.Cardboard] = "Wood"
+v9[Enum.Material.Slate] = "Stone"
+v9[Enum.Material.Cobblestone] = "Stone"
+v9[Enum.Material.Rock] = "Stone"
+v9[Enum.Material.Basalt] = "Dirt"
+v9[Enum.Material.Limestone] = "Stone"
+v9[Enum.Material.Sandstone] = "Stone"
+v9[Enum.Material.Granite] = "Stone"
+v9[Enum.Material.Brick] = "Stone"
+v9[Enum.Material.Pavement] = "Stone"
+v9[Enum.Material.Concrete] = "Stone"
+v9[Enum.Material.Marble] = "Stone"
+v9[Enum.Material.CrackedLava] = "Stone"
+local v10 = {}
+local localPlayer = players.LocalPlayer
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+raycastParams.IgnoreWater = false
+
+v8.SurfaceFor = function(key)
     --[[
       name: surfaceFor
       line: 81
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v9 (copy, index: 1)
     ]]
-    return tbl_upv_2[a1] or "Stone"
+    return v9[key] or "Stone"
 end
-local function stepSoundName(a1)
+
+local function stepSoundName(a15)
     --[[
       name: stepSoundName
       line: 86
     ]]
-    local Assets_1 = game:GetService("ReplicatedStorage"):FindFirstChild("Assets")
-    local v1 = Assets_1 and (Assets_1:FindFirstChild("Sounds"))
-    local v2 = v1 and (v1:FindFirstChild("Character"))
-    if v2 then
-        if v2:FindFirstChild("Footstep_" .. a1) then
-            return "Footstep_" .. a1
-        elseif v2:FindFirstChild("Footstep_Stone") then
+    local instance = game:GetService("ReplicatedStorage"):FindFirstChild("Assets")
+    instance = instance
+    instance = instance and instance:FindFirstChild("Sounds")
+
+    if const character = instance and instance:FindFirstChild("Character") then
+        if character:FindFirstChild("Footstep_" .. a15) then
+            return "Footstep_" .. a15
+        end
+        if character:FindFirstChild("Footstep_Stone") then
             return "Footstep_Stone"
         end
     end
+
     return "Footstep"
 end
-tbl_1.StepSoundName = stepSoundName
-local tbl_upv_4 = {Running = true, Jumping = true, Landing = true, FreeFalling = true, GettingUp = true}
-local tbl_upv_5 = {}
-local u2 = 0
-local function step(a1, a2, a3, a4, a5)
-    --[[
-      name: step
-      line: 129
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        u2 (ref,  index: 2)
-        Quality_upv_1 (copy, index: 3)
-        tbl_upv_5 (copy, index: 4)
-        u1 (copy, index: 5)
-        Workspace_upv_1 (copy, index: 6)
-        tbl_upv_2 (copy, index: 7)
-        Effects_upv_1 (copy, index: 8)
-        stepSoundName (copy, index: 9)
-    ]]
-    local v3 = a1 == LocalPlayer_upv_1.Character
-    if not (v3) and Quality_upv_1.budget.maxSteps <= u2 then
-        return
-    end
-    local v4 = a2:GetAttribute("SWade")
-    if type(v4) == "number" and v4 >= 0.3 then
-        return
-    end
-    v4 = a2.Position - Vector3.new(0, a3.HipHeight + (a2.Size.Y / 2), 0)
-    local v5 = nil
-    if v3 and a3.FloorMaterial ~= Enum.Material.Air then
-        v5 = a3.FloorMaterial
-        local v6 = tbl_upv_2[v5] or "Stone"
-        if v6 == "Water" then
-            return
-        end
-        local v7 = a5 > 23
-        local v8
-        if v7 then
-            v8 = 1
-        else
-            v8 = 0.8
-        end
-        local v9 = (v3 and 0.55) or 1
-        a4.leftFoot = not a4.leftFoot
-        local v10 = a2.CFrame.RightVector * (((a4.leftFoot) and -0.5) or 0.5)
-        local PlaySoundAt_1 = Effects_upv_1.PlaySoundAt
-        local v11 = stepSoundName(v6)
-        local tbl_6 = {speed = 0, maxDistance = 90, pitchVar = 0.09}
-        tbl_6.volume = v8 * v9
-        tbl_6.speed = (v7 and 1.05) or 1
-        v9 = PlaySoundAt_1(v11, v4 + v10, tbl_6)
-        if v9 then
-            u2 = u2 + 1
-            local v12 = ((v9.TimeLength > 0) and (v9.TimeLength / math.max(v9.PlaybackSpeed, 0.5))) or 0.5
-            task.delay(
-                math.clamp(v12, 0.15, 1.5),
-                function()
-                    --[[
-                      line: 174
-                      upvalues:
-                        u2 (ref, index: 1)
-                    ]]
-                    u2 = u2 - 1
-                end
-            )
-        end
-        if v7 then
-            if v6 ~= "Dirt" and v6 ~= "Sand" and v6 ~= "Snow" or not (math.random() < 0.5) or not (v3) and not (Quality_upv_1.budget.remoteDust) then
-                return
-            end
-            Effects_upv_1.Dust(v4 + v10, 0.35, Effects_upv_1.DustColor(v5))
-        end
-        return
-    end
-    tbl_upv_5[1] = a1
-    u1.FilterDescendantsInstances = tbl_upv_5
-    local v13 = Workspace_upv_1:Raycast(a2.Position, Vector3.new(0, -((a3.HipHeight + (a2.Size.Y / 2)) + 1.5), 0), u1)
-    if not v13 then
-        return
-    end
-    v5, v4 = v13.Material, v13.Position
-    local v6 = tbl_upv_2[v5] or "Stone"
-    if v6 == "Water" then
-        return
-    end
-    local v7 = a5 > 23
-    local v8
-    if v7 then
-        v8 = 1
-    else
-        v8 = 0.8
-    end
-    local v9 = (v3 and 0.55) or 1
-    a4.leftFoot = not a4.leftFoot
-    local v10 = a2.CFrame.RightVector * (((a4.leftFoot) and -0.5) or 0.5)
-    local PlaySoundAt_1 = Effects_upv_1.PlaySoundAt
-    local v11 = stepSoundName(v6)
-    local tbl_6 = {speed = 0, maxDistance = 90, pitchVar = 0.09}
-    tbl_6.volume = v8 * v9
-    tbl_6.speed = (v7 and 1.05) or 1
-    v9 = PlaySoundAt_1(v11, v4 + v10, tbl_6)
-    if v9 then
-        u2 = u2 + 1
-        local v12 = ((v9.TimeLength > 0) and (v9.TimeLength / math.max(v9.PlaybackSpeed, 0.5))) or 0.5
-        task.delay(
-            math.clamp(v12, 0.15, 1.5),
-            function()
-                --[[
-                  line: 174
-                  upvalues:
-                    u2 (ref, index: 1)
-                ]]
-                u2 = u2 - 1
-            end
-        )
-    end
-    if not v7 then
-        return
-    end
-    if (v6 == "Dirt" or v6 == "Sand" or v6 == "Snow") and (math.random() < 0.5) and (v3 or Quality_upv_1.budget.remoteDust) then
-        Effects_upv_1.Dust(v4 + v10, 0.35, Effects_upv_1.DustColor(v5))
-    end
-end
-local tbl_upv_7 = {}
-local u3 = 90
-local u4 = 0
-local function muteDefaultSounds(a1)
+
+v8.StepSoundName = stepSoundName
+local v18 = {Running = true, Landing = true, Jumping = true, FreeFalling = true, GettingUp = true}
+
+local function muteDefaultSounds(a20)
     --[[
       name: muteDefaultSounds
       line: 105
       upvalues:
-        tbl_upv_4 (copy, index: 1)
+        v18 (copy, index: 1)
     ]]
-    local v14 = a1:WaitForChild("HumanoidRootPart", 10)
-    if not v14 then
+    local humanoidRootPart = a20:WaitForChild("HumanoidRootPart", 10)
+    if not humanoidRootPart then
         return
     end
-    local function mute_1(a2)
+
+    local function mute(a23)
         --[[
           name: mute
           line: 110
           upvalues:
-            tbl_upv_4 (copy, index: 1)
+            v18 (copy, index: 1)
         ]]
-        if not a2:IsA("Sound") or not tbl_upv_4[a2.Name] then
+        if a23:IsA("Sound") and v18[a23.Name] then
+            a23.Volume = 0
+
+            a23:GetPropertyChangedSignal("Volume"):Connect(
+                function()
+                    --[[
+                      line: 113
+                      upvalues:
+                        a23 (copy, index: 1)
+                    ]]
+                    if a23.Volume ~= 0 then
+                        a23.Volume = 0
+                    end
+                end
+            )
+        end
+    end
+
+    for _, child in humanoidRootPart:GetChildren() do
+        mute(child)
+    end
+
+    humanoidRootPart.ChildAdded:Connect(mute)
+end
+
+local filterDescendantsInstances = {}
+local v27 = 0
+
+local function step(a29, a30, humanoid, a32, a33: number?)
+    --[[
+      name: step
+      line: 129
+      upvalues:
+        localPlayer (copy, index: 1)
+        v27 (ref,  index: 2)
+        Quality (copy, index: 3)
+        filterDescendantsInstances (copy, index: 4)
+        raycastParams (copy, index: 5)
+        workspace (copy, index: 6)
+        v9 (copy, index: 7)
+        Effects (copy, index: 8)
+        stepSoundName (copy, index: 9)
+    ]]
+    local v34
+    local speed
+    local v36 = a29 == localPlayer.Character
+    if not v36 then
+        local v37 = v27
+
+        if Quality.budget.maxSteps <= v37 then
             return
         end
-        a2.Volume = 0
-        a2:GetPropertyChangedSignal("Volume"):Connect(
+    end
+
+    local sWade = a30:GetAttribute("SWade")
+
+    if type(sWade) == "number" and 0.3 <= sWade then
+        return
+    end
+
+    local v39 = a30.Position - Vector3.new(0, humanoid.HipHeight + (a30.Size.Y / 2), 0)
+
+    if not v36 or humanoid.FloorMaterial == Enum.Material.Air then
+        filterDescendantsInstances[1] = a29
+        raycastParams.FilterDescendantsInstances = filterDescendantsInstances
+        local raycastResult = workspace:Raycast(a30.Position, Vector3.new(0, -((humanoid.HipHeight + (a30.Size.Y / 2)) + 1.5), 0), raycastParams)
+        if not raycastResult then
+            return
+        end
+
+        v34 = raycastResult.Material
+        v39 = raycastResult.Position
+    else
+        v34 = humanoid.FloorMaterial
+    end
+
+    local v41 = v9[v34] or "Stone"
+
+    if v41 == "Water" then
+        return
+    end
+
+    local v42 = 23 < a33
+    local v43 = v42 and 1 or 0.8
+    local v44 = v36 and 0.55 or 1
+    local volume = v43 * v44
+    a32.leftFoot = not a32.leftFoot
+    local rightVector = a30.CFrame.RightVector
+    local v47 = a32.leftFoot and -0.5 or 0.5
+    local v48 = rightVector * v47
+    local playSoundAt = Effects.PlaySoundAt
+    local v50 = stepSoundName(v41)
+    local v51 = v39 + v48
+    local v52 = {pitchVar = 0.09, maxDistance = 90, volume = volume}
+
+    if v42 then
+        speed = 1.05
+    else
+        speed = 1
+    end
+
+    v52.speed = speed
+
+    if const v53 = playSoundAt(v50, v51, v52) then
+        v27 += 1
+        local v54 = not (0 < v53.TimeLength) and 0.5 or v53.TimeLength / math.max(v53.PlaybackSpeed, 0.5)
+        task.delay(
+            math.clamp(v54, 0.15, 1.5),
             function()
                 --[[
-                  line: 113
+                  line: 174
                   upvalues:
-                    a2 (copy, index: 1)
+                    v27 (ref, index: 1)
                 ]]
-                if a2.Volume == 0 then
-                    return
-                end
-                a2.Volume = 0
+                v27 -= 1
             end
         )
     end
-    for _, value_1 in v14:GetChildren() do
-        mute_1(value_1)
+
+    if v42
+        and (v41 == "Dirt" or v41 == "Sand" or v41 == "Snow")
+        and math.random() < 0.5
+        and (v36 or Quality.budget.remoteDust)
+    then
+        Effects.Dust(v39 + v48, 0.35, Effects.DustColor(v34))
     end
-    v14.ChildAdded:Connect(mute_1)
 end
-local function update(a1)
+
+local v55 = {}
+local v56 = 90
+local v57 = 0
+
+local function update(deltaTime: number)
     --[[
       name: update
       line: 187
       upvalues:
-        Quality_upv_1 (copy, index: 1)
-        u4 (ref,  index: 2)
-        Workspace_upv_1 (copy, index: 3)
-        LocalPlayer_upv_1 (copy, index: 4)
-        u3 (ref,  index: 5)
-        tbl_upv_7 (copy, index: 6)
-        Characters_upv_1 (copy, index: 7)
-        tbl_upv_3 (copy, index: 8)
+        Quality (copy, index: 1)
+        v57 (ref,  index: 2)
+        workspace (copy, index: 3)
+        localPlayer (copy, index: 4)
+        v56 (ref,  index: 5)
+        v55 (copy, index: 6)
+        Characters (copy, index: 7)
+        v10 (copy, index: 8)
         muteDefaultSounds (copy, index: 9)
-        Effects_upv_1 (copy, index: 10)
+        Effects (copy, index: 10)
         step (copy, index: 11)
     ]]
-    local budget_1 = Quality_upv_1.budget
-    u4 = u4 + a1
-    local v15 = 1 / budget_1.remoteHz <= u4
-    if v15 then
-        u4 = 0
+    local budget = Quality.budget
+    v57 += deltaTime
+    local v61 = v57
+    local v62 = 1 / budget.remoteHz <= v61
+    local v63 = v61
+
+    if v62 then
+        v57 = 0
     end
-    local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
-    local v16 = ((not CurrentCamera_1) and Vector3.new(0, 0, 0)) or (CurrentCamera_1.CFrame.Position)
-    local Character_1 = LocalPlayer_upv_1.Character
-    local v17 = u3 * u3
-    local v18 = 0
-    table.clear(tbl_upv_7)
-    local v19, v20, v21, v20, v22, v23, v21 = nil, nil, nil, nil, nil, nil, nil
-    local v24 = nil
-    for _, value_2 in Characters_upv_1.List() do
-        tbl_upv_7[value_2] = true
-        v20 = value_2 == Character_1
-        if v20 or v15 then
-            if v20 then
-                v19 = a1
+
+    local v65 = if const camera = workspace.CurrentCamera then camera.CFrame.Position else Vector3.new(0, 0, 0)
+    local character = localPlayer.Character
+    local v67 = v56 * v56
+    local count = 0
+    table.clear(v55)
+    local v69, humanoid
+
+    for _, v72 in Characters.List() do
+        v55[v72] = true
+        local v73 = v72 == character
+
+        if v73 or v62 then
+            local v74 = if v73 then deltaTime else v63
+            local position, v76, assemblyLinearVelocity, magnitude, v79, clampedValue, playSoundAt
+            local magnitude2
+            local v83
+            local v84
+            local humanoid2
+            local v86
+            local v87, v88, v89, v90, v91, v92, v93, v94, v95, v96, v97, v98, v99 = false, false, false, false, false, false, false, false, false, false, false, false, false
+            v69 = v10[v72]
+
+            if v69 then
+                v86 = v69
             else
-                v19 = u4
+                v86 = {humanoid = nil, root = nil, distance = 0, lastPos = nil, lastVy = 0, airTime = 0, leftFoot = false}
+                v10[v72] = v86
+                task.spawn(muteDefaultSounds, v72)
             end
-            local v25 = tbl_upv_3[value_2]
-            if v25 then
-                v20 = v25
+
+            humanoid = v86.humanoid
+            local root = v86.root
+
+            if humanoid then
+                if humanoid.Parent == v72 then
+                    humanoid2 = humanoid
+                else
+                    v87 = true
+                end
             else
-                local tbl_8 = {leftFoot = false, distance = 0, lastVy = 0, airTime = 0}
-                tbl_upv_3[value_2] = tbl_8
-                task.spawn(muteDefaultSounds, value_2)
-                v20 = tbl_8
+                v87 = true
             end
-            v22 = v20.humanoid
-            v21 = v20.root
-            if not (v22) or v22.Parent ~= value_2 then
-                local v26 = value_2:FindFirstChildOfClass("Humanoid")
-                v20.humanoid = v26
-                v22 = v26
+
+            if v87 then
+                humanoid2 = v72:FindFirstChildOfClass("Humanoid")
+                v86.humanoid = humanoid2
             end
-            if not (v21) or v21.Parent ~= value_2 then
-                local v27 = value_2:FindFirstChild("HumanoidRootPart")
-                if not (v27) or not (v27:IsA("BasePart")) then
-                    v21 = nil
-                    v20.root = v21
-                    if not (v22) or not (v21) or v22.Health <= 0 then
-                        continue
-                    end
-                    local v27 = v21.Position
-                    local v28 = value_2 == Character_1
-                    v23 = v27 - v16
-                    if v28 then
-                        v23 = v21.AssemblyLinearVelocity
-                        local Magnitude_1 = Vector3.new(v23.X, 0, v23.Z).Magnitude
-                        if v28 then
-                            v24 = v22.FloorMaterial ~= Enum.Material.Air
-                        else
-                            local v29 = v22:GetState()
-                            local v30 = (math.abs(v23.Y) < 6) and ((v29 ~= Enum.HumanoidStateType.Freefall) and ((v29 ~= Enum.HumanoidStateType.Jumping) and (v29 ~= Enum.HumanoidStateType.Swimming)))
-                            v24 = v30
-                        end
-                        if not (v28) then
-                            if v24 then
-                                if not (v20.airTime > 0.35) or not (v20.lastVy < -30) then
-                                    v20.airTime = 0
-                                    v20.lastVy = v23.Y
-                                    v23 = true
-                                    if value_2:GetAttribute("Sliding") ~= true then
-                                        v23 = not v28 and (Magnitude_1 > 30)
-                                    end
-                                    if not (v24) then
-                                        v20.distance = math.min(v20.distance, 2.34)
-                                        v20.lastPos = v27
-                                        continue
-                                    end
-                                    if not (Magnitude_1 > 2) then
-                                        v20.distance = math.min(v20.distance, 2.34)
-                                        v20.lastPos = v27
-                                        continue
-                                    end
-                                    if v23 then
-                                        v20.distance = math.min(v20.distance, 2.34)
-                                        v20.lastPos = v27
-                                        continue
-                                    end
-                                    local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v27.X, 0, v27.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                                    if v31 < 10 then
-                                        v20.distance = v20.distance + v31
-                                    end
-                                    if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                                        v20.distance = 0
-                                        step(value_2, v21, v22, v20, Magnitude_1)
-                                    end
-                                    v20.lastPos = v27
-                                end
-                                local v32 = v27 - Vector3.new(0, v22.HipHeight + (v21.Size.Y / 2), 0)
-                                local v33 = -v20.lastVy
-                                if v33 > 72 then
-                                    local v34 = math.clamp((v33 - 64) / 60, 0, 1)
-                                    if budget_1.remoteDust then
-                                        Effects_upv_1.Dust(v32, (v34 * 1.4) + 0.6, Effects_upv_1.DustColor(nil))
-                                    end
-                                    Effects_upv_1.PlaySoundAt(((v34 > 0.5) and "LandHeavy") or "Land", v32, {maxDistance = 90, pitchVar = 0.06, volume = (v34 * 0.6) + 0.35})
-                                else
-                                    step(value_2, v21, v22, v20, 16)
-                                end
-                                v20.airTime = 0
-                            else
-                                v20.airTime = v20.airTime + v19
-                            end
-                            v20.lastVy = v23.Y
-                        end
-                        v23 = true
-                        if value_2:GetAttribute("Sliding") ~= true then
-                            v23 = not v28 and (Magnitude_1 > 30)
-                        end
-                        if not (v24) then
-                            v20.distance = math.min(v20.distance, 2.34)
-                            v20.lastPos = v27
-                            continue
-                        end
-                        if not (Magnitude_1 > 2) then
-                            v20.distance = math.min(v20.distance, 2.34)
-                            v20.lastPos = v27
-                            continue
-                        end
-                        if v23 then
-                            v20.distance = math.min(v20.distance, 2.34)
-                            v20.lastPos = v27
-                            continue
-                        end
-                        local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v27.X, 0, v27.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                        if v31 < 10 then
-                            v20.distance = v20.distance + v31
-                        end
-                        if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                            v20.distance = 0
-                            step(value_2, v21, v22, v20, Magnitude_1)
-                        end
-                        v20.lastPos = v27
-                    else
-                        if v17 < ((v23.X * v23.X) + (v23.Y * v23.Y)) + (v23.Z * v23.Z) then
-                            v20.lastPos = v27
-                            continue
-                        end
-                        v18 = v18 + 1
-                        v23 = v21.AssemblyLinearVelocity
-                        local Magnitude_1 = Vector3.new(v23.X, 0, v23.Z).Magnitude
-                        if v28 then
-                            v24 = v22.FloorMaterial ~= Enum.Material.Air
-                        else
-                            local v29 = v22:GetState()
-                            local v30 = (math.abs(v23.Y) < 6) and ((v29 ~= Enum.HumanoidStateType.Freefall) and ((v29 ~= Enum.HumanoidStateType.Jumping) and (v29 ~= Enum.HumanoidStateType.Swimming)))
-                            v24 = v30
-                        end
-                        if not (v28) then
-                            if v24 then
-                                if not (v20.airTime > 0.35) or not (v20.lastVy < -30) then
-                                    v20.airTime = 0
-                                    v20.lastVy = v23.Y
-                                    v23 = true
-                                    if value_2:GetAttribute("Sliding") ~= true then
-                                        v23 = not v28 and (Magnitude_1 > 30)
-                                    end
-                                    if not (v24) then
-                                        v20.distance = math.min(v20.distance, 2.34)
-                                        v20.lastPos = v35
-                                        continue
-                                    end
-                                    if not (Magnitude_1 > 2) then
-                                        v20.distance = math.min(v20.distance, 2.34)
-                                        v20.lastPos = v35
-                                        continue
-                                    end
-                                    if v23 then
-                                        v20.distance = math.min(v20.distance, 2.34)
-                                        v20.lastPos = v35
-                                        continue
-                                    end
-                                    local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v35.X, 0, v35.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                                    if v31 < 10 then
-                                        v20.distance = v20.distance + v31
-                                    end
-                                    if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                                        v20.distance = 0
-                                        step(value_2, v21, v22, v20, Magnitude_1)
-                                    end
-                                    v20.lastPos = v35
-                                end
-                                local v32 = v35 - Vector3.new(0, v22.HipHeight + (v21.Size.Y / 2), 0)
-                                local v33 = -v20.lastVy
-                                if v33 > 72 then
-                                    local v34 = math.clamp((v33 - 64) / 60, 0, 1)
-                                    if budget_1.remoteDust then
-                                        Effects_upv_1.Dust(v32, (v34 * 1.4) + 0.6, Effects_upv_1.DustColor(nil))
-                                    end
-                                    Effects_upv_1.PlaySoundAt(((v34 > 0.5) and "LandHeavy") or "Land", v32, {maxDistance = 90, pitchVar = 0.06, volume = (v34 * 0.6) + 0.35})
-                                else
-                                    step(value_2, v21, v22, v20, 16)
-                                end
-                                v20.airTime = 0
-                            else
-                                v20.airTime = v20.airTime + v19
-                            end
-                            v20.lastVy = v23.Y
-                        end
-                        v23 = true
-                        if value_2:GetAttribute("Sliding") ~= true then
-                            v23 = not v28 and (Magnitude_1 > 30)
-                        end
-                        if not (v24) then
-                            v20.distance = math.min(v20.distance, 2.34)
-                            v20.lastPos = v27
-                            continue
-                        end
-                        if not (Magnitude_1 > 2) then
-                            v20.distance = math.min(v20.distance, 2.34)
-                            v20.lastPos = v27
-                            continue
-                        end
-                        if v23 then
-                            v20.distance = math.min(v20.distance, 2.34)
-                            v20.lastPos = v27
-                            continue
-                        end
-                        local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v27.X, 0, v27.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                        if v31 < 10 then
-                            v20.distance = v20.distance + v31
-                        end
-                        if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                            v20.distance = 0
-                            step(value_2, v21, v22, v20, Magnitude_1)
-                        end
-                        v20.lastPos = v27
-                    end
-                    continue
-                end
-                v21 = v27
-                v20.root = v21
-                if not (v22) or not (v21) or v22.Health <= 0 then
-                    continue
-                end
-                local v27 = v21.Position
-                local v28 = value_2 == Character_1
-                v23 = v27 - v16
-                if v28 then
-                    local AssemblyLinearVelocity_1 = v21.AssemblyLinearVelocity
-                    local Magnitude_1 = Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude
-                    if v28 then
-                        v24 = v22.FloorMaterial ~= Enum.Material.Air
-                    else
-                        local v29 = v22:GetState()
-                        local v30 = (math.abs(AssemblyLinearVelocity_1.Y) < 6) and ((v29 ~= Enum.HumanoidStateType.Freefall) and ((v29 ~= Enum.HumanoidStateType.Jumping) and (v29 ~= Enum.HumanoidStateType.Swimming)))
-                        v24 = v30
-                    end
-                    if not (v28) then
-                        if v24 then
-                            if not (v20.airTime > 0.35) or not (v20.lastVy < -30) then
-                                v20.airTime = 0
-                                v20.lastVy = AssemblyLinearVelocity_1.Y
-                                local v36 = true
-                                if value_2:GetAttribute("Sliding") == true then
-                                    v23 = v36
-                                else
-                                    v23 = not v28 and (Magnitude_1 > 30)
-                                end
-                                if not (v24) then
-                                    v20.distance = math.min(v20.distance, 2.34)
-                                    v20.lastPos = v27
-                                    continue
-                                end
-                                if not (Magnitude_1 > 2) then
-                                    v20.distance = math.min(v20.distance, 2.34)
-                                    v20.lastPos = v27
-                                    continue
-                                end
-                                if v23 then
-                                    v20.distance = math.min(v20.distance, 2.34)
-                                    v20.lastPos = v27
-                                    continue
-                                end
-                                local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v27.X, 0, v27.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                                if v31 < 10 then
-                                    v20.distance = v20.distance + v31
-                                end
-                                if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                                    v20.distance = 0
-                                    step(value_2, v21, v22, v20, Magnitude_1)
-                                end
-                                v20.lastPos = v27
-                            end
-                            local v32 = v27 - Vector3.new(0, v22.HipHeight + (v21.Size.Y / 2), 0)
-                            local v33 = -v20.lastVy
-                            if v33 > 72 then
-                                local v34 = math.clamp((v33 - 64) / 60, 0, 1)
-                                if budget_1.remoteDust then
-                                    Effects_upv_1.Dust(v32, (v34 * 1.4) + 0.6, Effects_upv_1.DustColor(nil))
-                                end
-                                Effects_upv_1.PlaySoundAt(((v34 > 0.5) and "LandHeavy") or "Land", v32, {maxDistance = 90, pitchVar = 0.06, volume = (v34 * 0.6) + 0.35})
-                            else
-                                step(value_2, v21, v22, v20, 16)
-                            end
-                            v20.airTime = 0
-                        else
-                            v20.airTime = v20.airTime + v19
-                        end
-                        v20.lastVy = AssemblyLinearVelocity_1.Y
-                    end
-                    local v36 = true
-                    if value_2:GetAttribute("Sliding") == true then
-                        v23 = v36
-                    else
-                        v23 = not v28 and (Magnitude_1 > 30)
-                    end
-                    if not (v24) then
-                        v20.distance = math.min(v20.distance, 2.34)
-                        v20.lastPos = v27
-                        continue
-                    end
-                    if not (Magnitude_1 > 2) then
-                        v20.distance = math.min(v20.distance, 2.34)
-                        v20.lastPos = v27
-                        continue
-                    end
-                    if v23 then
-                        v20.distance = math.min(v20.distance, 2.34)
-                        v20.lastPos = v27
-                        continue
-                    end
-                    local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v27.X, 0, v27.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                    if v31 < 10 then
-                        v20.distance = v20.distance + v31
-                    end
-                    if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                        v20.distance = 0
-                        step(value_2, v21, v22, v20, Magnitude_1)
-                    end
-                    v20.lastPos = v27
+
+            if root then
+                if root.Parent == v72 then
+                    v84 = root
                 else
-                    if v17 < ((v23.X * v23.X) + (v23.Y * v23.Y)) + (v23.Z * v23.Z) then
-                        v20.lastPos = v27
-                        continue
-                    end
-                    v18 = v18 + 1
-                    local AssemblyLinearVelocity_1 = v21.AssemblyLinearVelocity
-                    local Magnitude_1 = Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude
-                    if v28 then
-                        v24 = v22.FloorMaterial ~= Enum.Material.Air
-                    else
-                        local v29 = v22:GetState()
-                        local v30 = (math.abs(AssemblyLinearVelocity_1.Y) < 6) and ((v29 ~= Enum.HumanoidStateType.Freefall) and ((v29 ~= Enum.HumanoidStateType.Jumping) and (v29 ~= Enum.HumanoidStateType.Swimming)))
-                        v24 = v30
-                    end
-                    if not (v28) then
-                        if v24 then
-                            if not (v20.airTime > 0.35) or not (v20.lastVy < -30) then
-                                v20.airTime = 0
-                                v20.lastVy = AssemblyLinearVelocity_1.Y
-                                local v36 = true
-                                if value_2:GetAttribute("Sliding") == true then
-                                    v23 = v36
-                                else
-                                    v23 = not v28 and (Magnitude_1 > 30)
-                                end
-                                if not (v24) then
-                                    v20.distance = math.min(v20.distance, 2.34)
-                                    v20.lastPos = v35
-                                    continue
-                                end
-                                if not (Magnitude_1 > 2) then
-                                    v20.distance = math.min(v20.distance, 2.34)
-                                    v20.lastPos = v35
-                                    continue
-                                end
-                                if v23 then
-                                    v20.distance = math.min(v20.distance, 2.34)
-                                    v20.lastPos = v35
-                                    continue
-                                end
-                                local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v35.X, 0, v35.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                                if v31 < 10 then
-                                    v20.distance = v20.distance + v31
-                                end
-                                if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                                    v20.distance = 0
-                                    step(value_2, v21, v22, v20, Magnitude_1)
-                                end
-                                v20.lastPos = v35
-                            end
-                            local v32 = v35 - Vector3.new(0, v22.HipHeight + (v21.Size.Y / 2), 0)
-                            local v33 = -v20.lastVy
-                            if v33 > 72 then
-                                local v34 = math.clamp((v33 - 64) / 60, 0, 1)
-                                if budget_1.remoteDust then
-                                    Effects_upv_1.Dust(v32, (v34 * 1.4) + 0.6, Effects_upv_1.DustColor(nil))
-                                end
-                                Effects_upv_1.PlaySoundAt(((v34 > 0.5) and "LandHeavy") or "Land", v32, {maxDistance = 90, pitchVar = 0.06, volume = (v34 * 0.6) + 0.35})
-                            else
-                                step(value_2, v21, v22, v20, 16)
-                            end
-                            v20.airTime = 0
-                        else
-                            v20.airTime = v20.airTime + v19
-                        end
-                        v20.lastVy = AssemblyLinearVelocity_1.Y
-                    end
-                    local v36 = true
-                    if value_2:GetAttribute("Sliding") == true then
-                        v23 = v36
-                    else
-                        v23 = not v28 and (Magnitude_1 > 30)
-                    end
-                    if not (v24) then
-                        v20.distance = math.min(v20.distance, 2.34)
-                        v20.lastPos = v27
-                        continue
-                    end
-                    if not (Magnitude_1 > 2) then
-                        v20.distance = math.min(v20.distance, 2.34)
-                        v20.lastPos = v27
-                        continue
-                    end
-                    if v23 then
-                        v20.distance = math.min(v20.distance, 2.34)
-                        v20.lastPos = v27
-                        continue
-                    end
-                    local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v27.X, 0, v27.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                    if v31 < 10 then
-                        v20.distance = v20.distance + v31
-                    end
-                    if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                        v20.distance = 0
-                        step(value_2, v21, v22, v20, Magnitude_1)
-                    end
-                    v20.lastPos = v27
+                    v88 = true
                 end
-                continue
-            end
-            if not (v22) or not (v21) or v22.Health <= 0 then
-                continue
-            end
-            local v27 = v21.Position
-            local v28 = value_2 == Character_1
-            v23 = v27 - v16
-            if v28 then
-                local AssemblyLinearVelocity_1 = v21.AssemblyLinearVelocity
-                local Magnitude_1 = Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude
-                if v28 then
-                    v24 = v22.FloorMaterial ~= Enum.Material.Air
-                else
-                    local v29 = v22:GetState()
-                    local v30 = (math.abs(AssemblyLinearVelocity_1.Y) < 6) and ((v29 ~= Enum.HumanoidStateType.Freefall) and ((v29 ~= Enum.HumanoidStateType.Jumping) and (v29 ~= Enum.HumanoidStateType.Swimming)))
-                    v24 = v30
-                end
-                if not (v28) then
-                    if v24 then
-                        if not (v20.airTime > 0.35) or not (v20.lastVy < -30) then
-                            v20.airTime = 0
-                            v20.lastVy = AssemblyLinearVelocity_1.Y
-                            local v36 = true
-                            if value_2:GetAttribute("Sliding") == true then
-                                v23 = v36
-                            else
-                                v23 = not v28 and (Magnitude_1 > 30)
-                            end
-                            if not (v24) then
-                                v20.distance = math.min(v20.distance, 2.34)
-                                v20.lastPos = v27
-                                continue
-                            end
-                            if not (Magnitude_1 > 2) then
-                                v20.distance = math.min(v20.distance, 2.34)
-                                v20.lastPos = v27
-                                continue
-                            end
-                            if v23 then
-                                v20.distance = math.min(v20.distance, 2.34)
-                                v20.lastPos = v27
-                                continue
-                            end
-                            local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v27.X, 0, v27.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                            if v31 < 10 then
-                                v20.distance = v20.distance + v31
-                            end
-                            if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                                v20.distance = 0
-                                step(value_2, v21, v22, v20, Magnitude_1)
-                            end
-                            v20.lastPos = v27
-                        end
-                        local v32 = v27 - Vector3.new(0, v22.HipHeight + (v21.Size.Y / 2), 0)
-                        local v33 = -v20.lastVy
-                        if v33 > 72 then
-                            local v34 = math.clamp((v33 - 64) / 60, 0, 1)
-                            if budget_1.remoteDust then
-                                Effects_upv_1.Dust(v32, (v34 * 1.4) + 0.6, Effects_upv_1.DustColor(nil))
-                            end
-                            Effects_upv_1.PlaySoundAt(((v34 > 0.5) and "LandHeavy") or "Land", v32, {maxDistance = 90, pitchVar = 0.06, volume = (v34 * 0.6) + 0.35})
-                        else
-                            step(value_2, v21, v22, v20, 16)
-                        end
-                        v20.airTime = 0
-                    else
-                        v20.airTime = v20.airTime + v19
-                    end
-                    v20.lastVy = AssemblyLinearVelocity_1.Y
-                end
-                local v36 = true
-                if value_2:GetAttribute("Sliding") == true then
-                    v23 = v36
-                else
-                    v23 = not v28 and (Magnitude_1 > 30)
-                end
-                if not (v24) or not (Magnitude_1 > 2) or v23 then
-                    v20.distance = math.min(v20.distance, 2.34)
-                    v20.lastPos = v27
-                    continue
-                end
-                local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v27.X, 0, v27.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                if v31 < 10 then
-                    v20.distance = v20.distance + v31
-                end
-                if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                    v20.distance = 0
-                    step(value_2, v21, v22, v20, Magnitude_1)
-                end
-                v20.lastPos = v27
             else
-                if v17 < ((v23.X * v23.X) + (v23.Y * v23.Y)) + (v23.Z * v23.Z) then
-                    v20.lastPos = v27
-                    continue
-                end
-                v18 = v18 + 1
-                local AssemblyLinearVelocity_1 = v21.AssemblyLinearVelocity
-                local Magnitude_1 = Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude
-                if v28 then
-                    v24 = v22.FloorMaterial ~= Enum.Material.Air
-                else
-                    local v29 = v22:GetState()
-                    local v30 = (math.abs(AssemblyLinearVelocity_1.Y) < 6) and ((v29 ~= Enum.HumanoidStateType.Freefall) and ((v29 ~= Enum.HumanoidStateType.Jumping) and (v29 ~= Enum.HumanoidStateType.Swimming)))
-                    v24 = v30
-                end
-                if not (v28) then
-                    if v24 then
-                        if not (v20.airTime > 0.35) or not (v20.lastVy < -30) then
-                            v20.airTime = 0
-                            v20.lastVy = AssemblyLinearVelocity_1.Y
-                            local v36 = true
-                            if value_2:GetAttribute("Sliding") == true then
-                                v23 = v36
-                            else
-                                v23 = not v28 and (Magnitude_1 > 30)
-                            end
-                            if not (v24) then
-                                v20.distance = math.min(v20.distance, 2.34)
-                                v20.lastPos = v35
-                                continue
-                            end
-                            if not (Magnitude_1 > 2) then
-                                v20.distance = math.min(v20.distance, 2.34)
-                                v20.lastPos = v35
-                                continue
-                            end
-                            if v23 then
-                                v20.distance = math.min(v20.distance, 2.34)
-                                v20.lastPos = v35
-                                continue
-                            end
-                            local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v35.X, 0, v35.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                            if v31 < 10 then
-                                v20.distance = v20.distance + v31
-                            end
-                            if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                                v20.distance = 0
-                                step(value_2, v21, v22, v20, Magnitude_1)
-                            end
-                            v20.lastPos = v35
-                        end
-                        local v32 = v35 - Vector3.new(0, v22.HipHeight + (v21.Size.Y / 2), 0)
-                        local v33 = -v20.lastVy
-                        if v33 > 72 then
-                            local v34 = math.clamp((v33 - 64) / 60, 0, 1)
-                            if budget_1.remoteDust then
-                                Effects_upv_1.Dust(v32, (v34 * 1.4) + 0.6, Effects_upv_1.DustColor(nil))
-                            end
-                            Effects_upv_1.PlaySoundAt(((v34 > 0.5) and "LandHeavy") or "Land", v32, {maxDistance = 90, pitchVar = 0.06, volume = (v34 * 0.6) + 0.35})
-                        else
-                            step(value_2, v21, v22, v20, 16)
-                        end
-                        v20.airTime = 0
+                v88 = true
+            end
+
+            if v88 then
+                v84 = v72:FindFirstChild("HumanoidRootPart")
+
+                if v84 then
+                    if v84:IsA("BasePart") then
+                        v90 = true
                     else
-                        v20.airTime = v20.airTime + v19
+                        v89 = true
                     end
-                    v20.lastVy = AssemblyLinearVelocity_1.Y
-                end
-                local v36 = true
-                if value_2:GetAttribute("Sliding") == true then
-                    v23 = v36
                 else
-                    v23 = not v28 and (Magnitude_1 > 30)
+                    v89 = true
                 end
-                if not (v24) or not (Magnitude_1 > 2) or v23 then
-                    v20.distance = math.min(v20.distance, 2.34)
-                    v20.lastPos = v27
-                    continue
+            end
+
+            if v89 then
+                v84 = nil
+                v90 = true
+            end
+
+            if v90 then
+                v86.root = v84
+            end
+
+            if humanoid2 and v84 and not (humanoid2.Health <= 0) then
+                position = v84.Position
+                v76 = v72 == character
+                local v101 = position - v65
+
+                if v76 then
+                    v91 = true
+                elseif not (v67 < (v101.X * v101.X) + (v101.Y * v101.Y) + (v101.Z * v101.Z)) then
+                    count += 1
+                    v91 = true
+                else
+                    v86.lastPos = position
                 end
-                local v31 = ((not (v20.lastPos)) and 0) or ((Vector3.new(v27.X, 0, v27.Z) - Vector3.new(v20.lastPos.X, 0, v20.lastPos.Z)).Magnitude)
-                if v31 < 10 then
-                    v20.distance = v20.distance + v31
+            end
+
+            if v91 then
+                assemblyLinearVelocity = v84.AssemblyLinearVelocity
+                magnitude = Vector3.new(assemblyLinearVelocity.X, 0, assemblyLinearVelocity.Z).Magnitude
+
+                if v76 then
+                    v83 = humanoid2.FloorMaterial ~= Enum.Material.Air
+                else
+                    local state = humanoid2:GetState()
+                    v83 = math.abs(assemblyLinearVelocity.Y) < 6
+                        and state ~= Enum.HumanoidStateType.Freefall
+                        and state ~= Enum.HumanoidStateType.Jumping
+                        and state ~= Enum.HumanoidStateType.Swimming
                 end
-                if (((Magnitude_1 > 15) and 5.2) or 3.9) <= v20.distance then
-                    v20.distance = 0
-                    step(value_2, v21, v22, v20, Magnitude_1)
+
+                if v76 then
+                    v96 = true
+                elseif v83 then
+                    if not (0.35 < v86.airTime) then
+                        v94 = true
+                    elseif not (v86.lastVy < -30) then
+                        v94 = true
+                    else
+                        v79 = position - Vector3.new(0, humanoid2.HipHeight + (v84.Size.Y / 2), 0)
+                        local v103 = -v86.lastVy
+
+                        if not (72 < v103) then
+                            step(v72, v84, humanoid2, v86, 16)
+                            v93 = true
+                        else
+                            clampedValue = math.clamp((v103 - 64) / 60, 0, 1)
+
+                            if budget.remoteDust then
+                                Effects.Dust(v79, (clampedValue * 1.4) + 0.6, Effects.DustColor(nil))
+                            end
+
+                            v92 = true
+                        end
+                    end
+                else
+                    v86.airTime += v74
+                    v95 = true
                 end
-                v20.lastPos = v27
+            end
+
+            if v92 then
+                local v104
+                playSoundAt = Effects.PlaySoundAt
+
+                if not (0.5 < clampedValue) then
+                    v104 = "Land"
+                else
+                    v104 = "LandHeavy"
+                end
+
+                playSoundAt(v104, v79, {pitchVar = 0.06, maxDistance = 90, volume = (clampedValue * 0.6) + 0.35})
+                v93 = true
+            end
+
+            if v93 then
+                v86.airTime = 0
+                v95 = true
+            end
+
+            if v94 then
+                v86.airTime = 0
+                v95 = true
+            end
+
+            if v95 then
+                v86.lastVy = assemblyLinearVelocity.Y
+                v96 = true
+            end
+
+            if v96 then
+                local v105 = v72:GetAttribute("Sliding") == true or not v76 and 30 < magnitude
+
+                if v83 then
+                    if not (2 < magnitude) then
+                        v98 = true
+                    elseif v105 then
+                        v98 = true
+                    else
+                        if v86.lastPos then
+                            magnitude2 = (Vector3.new(position.X, 0, position.Z) - Vector3.new(v86.lastPos.X, 0, v86.lastPos.Z)).Magnitude
+                        else
+                            magnitude2 = 0
+                        end
+
+                        v97 = true
+                    end
+                else
+                    v98 = true
+                end
+            end
+
+            if v97 then
+                local v106
+
+                if magnitude2 < 10 then
+                    v86.distance += magnitude2
+                end
+
+                if not (15 < magnitude) then
+                    v106 = 3.9
+                else
+                    v106 = 5.2
+                end
+
+                if v106 <= v86.distance then
+                    v86.distance = 0
+                    step(v72, v84, humanoid2, v86, magnitude)
+                end
+
+                v99 = true
+            end
+
+            if v98 then
+                v86.distance = math.min(v86.distance, 2.34)
+                v99 = true
+            end
+
+            if v99 then
+                v86.lastPos = position
             end
         end
     end
-    if v15 then
-        for key_1 in tbl_upv_3 do
-            if not (tbl_upv_7[key_1]) then
-                tbl_upv_3[key_1] = nil
+
+    if v62 then
+        for v107 in v10 do
+            if not v55[v107] then
+                v10[v107] = nil
             end
         end
     end
-    if v15 then
-        local stepCap_1 = budget_1.stepCap
-        if stepCap_1 < v18 then
-            u3 = math.max(30, u3 * 0.92)
-        elseif v18 < stepCap_1 * 0.7 then
-            u3 = math.min(budget_1.stepRadius, u3 + (u4 * 20))
+
+    if v62 then
+        local stepCap = budget.stepCap
+
+        if stepCap < count then
+            v56 = math.max(30, v56 * 0.92)
+        elseif count < stepCap * 0.7 then
+            v56 = math.min(budget.stepRadius, v56 + (v63 * 20))
         end
-        u3 = math.min(u3, budget_1.stepRadius)
+
+        v56 = math.min(v56, budget.stepRadius)
     end
 end
-function tbl_1.Start()
+
+function v8.Start()
     --[[
       name: Start
       line: 315
       upvalues:
-        RunService_upv_1 (copy, index: 1)
-        Perf_upv_1 (copy, index: 2)
+        runService (copy, index: 1)
+        Perf (copy, index: 2)
         update (copy, index: 3)
     ]]
-    RunService_upv_1.Heartbeat:Connect(
-        function(a1)
+    runService.Heartbeat:Connect(
+        function(deltaTime: number)
             --[[
               line: 316
               upvalues:
-                Perf_upv_1 (copy, index: 1)
+                Perf (copy, index: 1)
                 update (copy, index: 2)
             ]]
-            local v37 = Perf_upv_1.Begin()
-            update(a1)
-            Perf_upv_1.End("Footsteps", v37)
+            local v110 = Perf.Begin()
+            update(deltaTime)
+            Perf.End("Footsteps", v110)
         end
     )
 end
-return tbl_1
+
+return v8

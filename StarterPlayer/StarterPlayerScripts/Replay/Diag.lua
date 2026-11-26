@@ -1,643 +1,755 @@
-local Players_upv_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local tbl_upv_1 = {}
-tbl_upv_1.FAR = 10
-local u1 = nil
-local u2 = nil
-local u3 = RunService_upv_1:IsStudio()
-local tbl_upv_2 = {}
-local function num(a1)
-    --[[
-      name: num
-      line: 85
-    ]]
-    if a1 < 0 then
-        return "-"
-    end
-    if a1 ~= 0 then
-        if a1 < 5 then
-            return "1+"
-        end
-        if a1 < 10 then
-            return "5+"
-        elseif a1 < 20 then
-            return "10+"
-        else
-            return "20+"
-        end
-    end
-    return "0"
-end
-local function rel(a1, a2)
-    --[[
-      name: rel
-      line: 100
-    ]]
-    if a1 <= 0 then
-        return "0"
-    end
-    if a2 <= a1 then
-        return "all"
-    elseif a2 <= a1 * 2 then
-        return "most"
-    else
-        return "some"
-    end
-end
-local function cnt(a1)
-    --[[
-      name: cnt
-      line: 111
-    ]]
-    if a1 >= 2 then
-        return "2+"
-    end
-    return (tostring(a1))
-end
-local function b(a1)
-    --[[
-      name: b
-      line: 115
-    ]]
-    if a1 then
-        return "1"
-    end
-    return "0"
-end
-function tbl_upv_1.Evaluate(a1)
-    --[[
-      name: Evaluate
-      line: 122
-    ]]
-    if a1.parented then
-        if a1.parts ~= 0 then
-            if a1.parts <= a1.far * 2 then
-                return "far"
-            end
-            if a1.parts <= a1.loose * 2 then
-                return "loose"
-            end
-            if a1.vis * 3 < a1.parts then
-                if a1.tr > 0 and a1.ltm <= a1.tr then
-                    return "tr"
-                elseif a1.ltm > 0 then
-                    return "ltm"
-                else
-                    return "vis"
-                end
-            end
-            return nil
-        end
-        return "noparts"
-    end
-    return "unparented"
-end
-local function kindOf(a1)
-    --[[
-      name: kindOf
-      line: 142
-    ]]
-    if string.sub(a1, 1, 1) ~= "p" then
-        return "B"
-    end
-    return "A"
-end
-local function tally(a1, a2, a3)
-    --[[
-      name: tally
-      line: 147
-    ]]
-    local v1 = ((string.sub(a2, 1, 1) ~= "p") and "B") or "A"
-    if a3 then
-        if v1 ~= "A" then
-            a1.hB = a1.hB + 1
-        else
-            a1.hA = a1.hA + 1
-        end
-    elseif v1 ~= "A" then
-        a1.okB = a1.okB + 1
-    else
-        a1.okA = a1.okA + 1
-    end
-end
-function tbl_upv_1.Begin(a1)
-    --[[
-      name: Begin
-      line: 165
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-        u1 (ref,  index: 2)
-        Players_upv_1 (copy, index: 3)
-    ]]
-    local tbl_3 = {}
-    for key_1, value_1 in a1.fighters do
-        tbl_3[key_1] = value_1.id
-    end
-    local v2 = false
-    local v3 = a1.fighters[a1.focus]
-    if v3 and v3.flags then
-        for n_1 = 1, v3.n do
-            if bit32.band(v3.flags[n_1], 96) == 96 then
-                v2 = true
-                break
-            end
-        end
-    end
-    table.clear(tbl_upv_2)
-    local tbl_4 = {aimBest = math.huge, frames = 0, onFrames = 0, emitted = false, early = false}
-    tbl_4.ids = tbl_3
-    tbl_4.focus = a1.focus
-    tbl_4.me = "p" .. tostring(Players_upv_1.LocalPlayer.UserId)
-    tbl_4.fp = v2
-    tbl_4.build = {hB = 0, okB = 0, okA = 0, hA = 0}
-    tbl_4.srcs = {}
-    tbl_4.shots = {}
-    u1 = tbl_4
-end
-local function detail(a1, a2, a3, a4, a5)
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local v3 = {FAR = 10}
+local v4 = nil
+local formattedText = nil
+local isStudio = runService:IsStudio()
+local v7 = {}
+
+local function detail(a9, a10, a11, a12, a13)
     --[[
       name: detail
       line: 77
       upvalues:
-        u3 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
+        isStudio (copy, index: 1)
+        v7 (copy, index: 2)
     ]]
-    if not u3 then
-        return
-    end
-    if #tbl_upv_2 < 40 then
-        local v4 = ((not a5) and "-") or (string.format("parts=%d vis=%d tr=%d ltm=%d far=%d loose=%d par=%s", a5.parts, a5.vis, a5.tr, a5.ltm, a5.far, a5.loose, tostring(a5.parented)))
-        table.insert(tbl_upv_2, string.format("%s %s why=%s src=%s %s", a1, a2, a3, a4, v4))
+    if isStudio and #v7 < 40 then
+        local stringFormat = string.format
+        local v15 = not a13 and "-"
+            or string.format("parts=%d vis=%d tr=%d ltm=%d far=%d loose=%d par=%s", a13.parts, a13.vis, a13.tr, a13.ltm, a13.far, a13.loose, (tostring(a13.parented)))
+        table.insert(v7, stringFormat("%s %s why=%s src=%s %s", a9, a10, a11, a12, v15))
     end
 end
-local function note(a1, a2, a3, a4, a5, a6, a7, a8)
+
+local function num(a17)
+    --[[
+      name: num
+      line: 85
+    ]]
+    if a17 < 0 then
+        return "-"
+    end
+    if a17 == 0 then
+        return "0"
+    end
+    if a17 < 5 then
+        return "1+"
+    end
+    if a17 < 10 then
+        return "5+"
+    end
+    if a17 < 20 then
+        return "10+"
+    end
+
+    return "20+"
+end
+
+local function rel(a19, a20)
+    --[[
+      name: rel
+      line: 100
+    ]]
+    if a19 <= 0 then
+        return "0"
+    end
+    if a20 <= a19 then
+        return "all"
+    end
+    if a20 <= a19 * 2 then
+        return "most"
+    end
+
+    return "some"
+end
+
+local function cnt(a22)
+    --[[
+      name: cnt
+      line: 111
+    ]]
+    if 2 <= a22 then
+        return "2+"
+    end
+
+    return (tostring(a22))
+end
+
+local function b(a24)
+    --[[
+      name: b
+      line: 115
+    ]]
+    if a24 then
+        return "1"
+    end
+
+    return "0"
+end
+
+function v3.Evaluate(a25)
+    --[[
+      name: Evaluate
+      line: 122
+    ]]
+    if not a25.parented then
+        return "unparented"
+    end
+    if a25.parts == 0 then
+        return "noparts"
+    end
+
+    local v26 = a25.far * 2
+
+    if a25.parts <= v26 then
+        return "far"
+    end
+
+    local v27 = a25.loose * 2
+
+    if a25.parts <= v27 then
+        return "loose"
+    end
+    if not (a25.vis * 3 < a25.parts) then
+        return nil
+    end
+
+    if 0 < a25.tr then
+        local tr = a25.tr
+
+        if a25.ltm <= tr then
+            return "tr"
+        end
+    end
+
+    if 0 < a25.ltm then
+        return "ltm"
+    end
+
+    return "vis"
+end
+
+local function kindOf(text: string)
+    --[[
+      name: kindOf
+      line: 142
+    ]]
+    if string.sub(text, 1, 1) ~= "p" then
+        return "B"
+    end
+
+    return "A"
+end
+
+local function tally(a32, text: string, a34)
+    --[[
+      name: tally
+      line: 147
+    ]]
+    local v35
+
+    if string.sub(text, 1, 1) ~= "p" then
+        v35 = "B"
+    else
+        v35 = "A"
+    end
+
+    if a34 then
+        if v35 == "A" then
+            a32.hA += 1
+            return
+        end
+
+        a32.hB += 1
+
+        return
+    end
+
+    if v35 == "A" then
+        a32.okA += 1
+        return
+    end
+
+    a32.okB += 1
+end
+
+function v3.Begin(a36)
+    --[[
+      name: Begin
+      line: 165
+      upvalues:
+        v7 (copy, index: 1)
+        v4 (ref,  index: 2)
+        players (copy, index: 3)
+    ]]
+    local ids = {}
+
+    for v38, fighter in a36.fighters do
+        ids[v38] = fighter.id
+    end
+
+    local fp = false
+    local fighter = a36.fighters[a36.focus]
+
+    if fighter and fighter.flags then
+        for flagKey = 1, fighter.n do
+            if bit32.band(fighter.flags[flagKey], 96) == 96 then
+                fp = true
+                break
+            end
+        end
+    end
+
+    table.clear(v7)
+    v4 = {failure = nil, counts = nil, early = false, emitted = false, frames = 0, onFrames = 0, aimBest = math.huge, ids = ids, focus = a36.focus, me = "p" .. tostring(players.LocalPlayer.UserId), fp = fp, build = {hA = 0, hB = 0, okA = 0, okB = 0}, srcs = {}, shots = {}}
+end
+
+local function note(a44, at, index, why, src, st, live, fix)
     --[[
       name: note
       line: 200
     ]]
-    if a1.failure then
+    local k
+
+    if a44.failure then
         return
     end
-    local v5 = a1.ids[a3] or "?"
-    local tbl_5 = {self = 0, live = 0, st = 0, at = 0, src = 0, k = 0, focus = 0, fix = 0}
-    tbl_5.index = a3
-    tbl_5.why = a4
-    tbl_5.k = string.sub(v5, 1, 1) ~= "p" and "B" or "A"
-    tbl_5.src = a5
-    tbl_5.at = a2
-    tbl_5.self = v5 == a1.me
-    tbl_5.focus = a3 == a1.focus
-    tbl_5.st = a6
-    tbl_5.live = a7
-    tbl_5.fix = a8
-    a1.failure = tbl_5
+
+    local text = a44.ids[index] or "?"
+    local failure = {index = index, why = why}
+
+    if string.sub(text, 1, 1) ~= "p" then
+        k = "B"
+    else
+        k = "A"
+    end
+
+    failure.k = k
+    failure.src = src
+    failure.at = at
+    failure.self = text == a44.me
+    failure.focus = index == a44.focus
+    failure.st = st
+    failure.live = live
+    failure.fix = fix
+    a44.failure = failure
 end
-function tbl_upv_1.Built(a1, a2, a3, a4, a5, a6, a7, a8)
+
+function v3.Built(key, a56, why, a58, st, live, a61, a62)
     --[[
       name: Built
       line: 222
       upvalues:
-        u1 (ref,  index: 1)
+        v4 (ref,  index: 1)
         detail (copy, index: 2)
         note (copy, index: 3)
     ]]
-    if not u1 then
+    local v63 = v4
+    if not v63 then
         return
     end
-    local v7 = u1.ids[a1] or "?"
-    if a2 then
-        u1.srcs[a2.src] = (u1.srcs[a2.src] or 0) + 1
+
+    local text = v63.ids[key] or "?"
+
+    if a56 then
+        v63.srcs[a56.src] = (v63.srcs[a56.src] or 0) + 1
     end
-    local v8
-    if a8 then
-        v8 = u1.failure
-        if not v8 or v8.index ~= a1 or v8.at ~= "build" or not a2 or not a7 then
-            return
+
+    if a62 then
+        local failure = v63.failure
+
+        if failure and failure.index == key and failure.at == "build" and a56 and a61 then
+            failure.fix = a56.src
         end
-        v8.fix = a2.src
+
+        return
+    end
+
+    local v66
+    local v67
+    local v68 = why ~= nil or a56 == nil
+    local build = v63.build
+
+    if string.sub(text, 1, 1) ~= "p" then
+        v66 = "B"
     else
-        v8 = true
-        if a3 == nil then
-            v8 = a2 == nil
-        end
-        local build_1 = u1.build
-        local v9 = ((string.sub(v7, 1, 1) ~= "p") and "B") or "A"
-        if v8 then
-            if v9 ~= "A" then
-                build_1.hB = build_1.hB + 1
-            else
-                build_1.hA = build_1.hA + 1
-            end
-        elseif v9 ~= "A" then
-            build_1.okB = build_1.okB + 1
+        v66 = "A"
+    end
+
+    if v68 then
+        if v66 ~= "A" then
+            build.hB += 1
         else
-            build_1.okA = build_1.okA + 1
+            build.hA += 1
         end
-        if v8 then
-            detail("build", v7, a3 or "missing", a4 or "none", a5)
-        end
-        if v8 then
-            if a2 and a7 and a3 then
-                v8 = a2.src
-            else
-                v8 = (a3 and "failed") or "none"
-            end
-            if a2 == nil and a3 == nil then
-                note(u1, "build", a1, "missing", "none", nil, a6, "none")
-            else
-                note(u1, "build", a1, a3, a4 or "?", a5, a6, v8)
-            end
-            if u1.failure and u1.failure.at == "build" and u1.counts == nil then
-                u1.counts = u1.build
-            end
-        end
+    elseif v66 ~= "A" then
+        build.okB += 1
+    else
+        build.okA += 1
+    end
+
+    if v68 then
+        detail("build", text, (why or "missing"), (a58 or "none"), st)
+    end
+
+    if not v68 then
+        return
+    end
+
+    if a56 and a61 and why then
+        v67 = a56.src
+    else
+        v67 = why and "failed" or "none"
+    end
+
+    if a56 ~= nil or why ~= nil then
+        note(v63, "build", key, why, (a58 or "?"), st, live, v67)
+    else
+        note(v63, "build", key, "missing", "none", nil, live, "none")
+    end
+
+    if v63.failure and v63.failure.at == "build" and v63.counts == nil then
+        v63.counts = v63.build
     end
 end
-function tbl_upv_1.Check(a1, a2, a3, a4, a5)
+
+function v3.Check(at, a71, a72, callback, callback2)
     --[[
       name: Check
       line: 261
       upvalues:
-        u1 (ref,  index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v4 (ref,  index: 1)
+        v3 (copy, index: 2)
         detail (copy, index: 3)
         note (copy, index: 4)
     ]]
-    if not u1 then
+    local v75 = v4
+    if not v75 then
         return
     end
-    if a1 == "early" then
-        u1.early = true
+
+    if at == "early" then
+        v75.early = true
     end
-    local tbl_6 = {hB = 0, okB = 0, okA = 0, hA = 0}
-    local v10 = false
-    local v11, v12 = nil, nil
-    local v13 = nil
-    for key_2, value_2 in a2.clip.fighters do
-        local v14 = a2.puppets[key_2]
-        if value_2.n > 0 and not (v14) then
-            a5(key_2)
+
+    local counts = {hA = 0, hB = 0, okA = 0, okB = 0}
+    local v77 = false
+
+    for v78, fighter in a71.clip.fighters do
+        local puppet = a71.puppets[v78]
+
+        if 0 < fighter.n and not puppet then
+            callback2(v78)
         end
-        local v15 = a2.states[key_2]
-        if not (value_2.n > 0) or not (v15) or not (v15.present) then
-            continue
-        end
-        if key_2 ~= a2.focus or not (a3) then
-            v12 = nil
-            if v14 then
-                v12 = a4(v14)
-                v11 = tbl_upv_1.Evaluate(v12)
-                v12 = v11 or v14.alive and v12
-            else
-                v11 = "missing"
-            end
-            local id_1 = value_2.id
-            if v11 ~= nil then
-                v13 = true
-            else
-                v13 = false
-            end
-            local v16 = ((string.sub(id_1, 1, 1) ~= "p") and "B") or "A"
-            if v13 then
-                if v16 ~= "A" then
-                    tbl_6.hB = tbl_6.hB + 1
-                else
-                    tbl_6.hA = tbl_6.hA + 1
-                end
-            elseif v16 ~= "A" then
-                tbl_6.okB = tbl_6.okB + 1
-            else
-                tbl_6.okA = tbl_6.okA + 1
-            end
-            if v11 then
-                detail(a1, value_2.id, v11, ((not v14) and "none") or (v14.src), v12)
-            end
-            if not (v11) then
+
+        local state = a71.states[v78]
+
+        if 0 < fighter.n then
+            if not state then
                 continue
             end
-            if not (u1.failure) then
-                note(u1, a1, key_2, v11, ((not v14) and "none") or (v14.src), v12, ((not v14) and -1) or (v14.liveParts), "none")
-                v10 = true
+            if not state.present then
+                continue
+            end
+
+            if v78 ~= a71.focus or not a72 then
+                local v82
+                local v83
+                local v84 = nil
+
+                if puppet then
+                    v84 = callback(puppet)
+                    v82 = v3.Evaluate(v84)
+
+                    if not v82
+                        and puppet.alive
+                        and 3 < (puppet.root.Position - state.cf.Position).Magnitude
+                    then
+                        v82 = "drift"
+                    end
+                else
+                    v82 = "missing"
+                end
+
+                local id = fighter.id
+                local v86 = v82 ~= nil
+
+                if string.sub(id, 1, 1) == "p" then
+                    v83 = "A"
+                else
+                    v83 = "B"
+                end
+
+                if v86 then
+                    if v83 == "A" then
+                        counts.hA += 1
+                    else
+                        counts.hB += 1
+                    end
+                elseif v83 == "A" then
+                    counts.okA += 1
+                else
+                    counts.okB += 1
+                end
+
+                if v82 then
+                    local id2 = fighter.id
+                    local v88 = not puppet and "none" or puppet.src
+                    detail(at, id2, v82, v88, v84)
+                end
+
+                if v82 then
+                    if v75.failure then
+                        continue
+                    end
+
+                    local v89 = not puppet and "none" or puppet.src
+                    local v90 = not puppet and -1 or puppet.liveParts
+                    note(v75, at, v78, v82, v89, v84, v90, "none")
+                    v77 = true
+                end
             end
         end
     end
-    if not v10 then
-        return
+
+    if v77 then
+        v75.counts = counts
     end
-    u1.counts = tbl_6
 end
-function tbl_upv_1.Frame(a1, a2)
+
+function v3.Frame(a91, a92)
     --[[
       name: Frame
       line: 306
       upvalues:
-        u1 (ref, index: 1)
+        v4 (ref, index: 1)
     ]]
-    if not u1 then
+    local v93 = v4
+    if not v93 then
         return
     end
-    u1.frames = u1.frames + 1
-    local CFrame_1 = a2.CFrame
-    local LookVector_1 = CFrame_1.LookVector
-    local Position_1 = CFrame_1.Position
-    local team_1 = a1.clip.fighters[a1.focus].team
-    local v17 = false
-    for key_3, value_3 in a1.clip.fighters do
-        local v18 = a1.states[key_3]
-        if key_3 == a1.focus or not (v18) or not (v18.present) then
-            continue
-        end
-        local v19 = v18.cf.Position + Vector3.new(0, 1, 0)
-        local v20, v21 = a2:WorldToViewportPoint(v19)
-        if v21 then
-            v17 = ((v20.Z > 0) and true) or v17
-        end
-        if value_3.team == team_1 then
-            continue
-        end
-        local v22 = bit32.btest(v18.flags, 1)
-        if not (v22) then
-            continue
-        end
-        local v23 = v19 - Position_1
-        if not (v23.Magnitude > 1) then
-            continue
-        end
-        local v24 = math.deg(math.acos(math.clamp(LookVector_1:Dot(v23.Unit), -1, 1)))
-        if v24 < u1.aimBest then
-            u1.aimBest = v24
+
+    v93.frames += 1
+    local cFrame = a92.CFrame
+    local lookVector = cFrame.LookVector
+    local position = cFrame.Position
+    local team = a91.clip.fighters[a91.focus].team
+    local v98 = false
+
+    for stateKey, fighter in a91.clip.fighters do
+        local state = a91.states[stateKey]
+
+        if stateKey ~= a91.focus then
+            if not state then
+                continue
+            end
+            if not state.present then
+                continue
+            end
+
+            local v102 = state.cf.Position + Vector3.new(0, 1, 0)
+            local v103, v104 = a92:WorldToViewportPoint(v102)
+
+            if v104 and 0 < v103.Z then
+                v98 = true
+            end
+
+            if fighter.team ~= team and bit32.btest(state.flags, 1) then
+                local v105 = v102 - position
+
+                if 1 < v105.Magnitude then
+                    local aimBest = math.deg((math.acos((math.clamp(lookVector:Dot(v105.Unit), -1, 1)))))
+
+                    if aimBest < v93.aimBest then
+                        v93.aimBest = aimBest
+                    end
+                end
+            end
         end
     end
-    if not v17 then
-        return
+
+    if v98 then
+        v93.onFrames += 1
     end
-    u1.onFrames = u1.onFrames + 1
 end
-function tbl_upv_1.Shot(a1, a2)
+
+function v3.Shot(a107, a108)
     --[[
       name: Shot
       line: 342
       upvalues:
-        u1 (ref, index: 1)
+        v4 (ref, index: 1)
     ]]
-    if not u1 then
+    local v109 = v4
+
+    if not v109 or 32 <= #v109.shots then
         return
     end
-    if not (#u1.shots >= 32) then
-        local CFrame_2 = a1.CFrame
-        local v25 = a2 - CFrame_2.Position
-        if (v25.Magnitude < 2) then
-            return
-        end
-        table.insert(u1.shots, (math.deg(math.acos(math.clamp(CFrame_2.LookVector:Dot(v25.Unit), -1, 1)))))
+
+    local cFrame = a107.CFrame
+    local v111 = a108 - cFrame.Position
+
+    if v111.Magnitude < 2 then
+        return
     end
+
+    table.insert(v109.shots, (math.deg((math.acos((math.clamp(cFrame.LookVector:Dot(v111.Unit), -1, 1)))))))
 end
-local function median(a1)
+
+local function median(a113)
     --[[
       name: median
       line: 355
     ]]
-    if #a1 == 0 then
+    if #a113 == 0 then
         return nil
     end
-    local v26 = table.clone(a1)
-    table.sort(v26)
-    return v26[math.ceil(#v26 / 2)]
+
+    local values = table.clone(a113)
+    table.sort(values)
+
+    return values[math.ceil(#values / 2)]
 end
-local function view(a1)
+
+local function view(a116)
     --[[
       name: view
       line: 364
     ]]
-    local v27 = a1.shots
-    local v28
-    if #v27 ~= 0 then
-        local v29 = table.clone(v27)
-        table.sort(v29)
-        v28 = v29[math.ceil(#v29 / 2)]
+    local value
+    local shots = a116.shots
+
+    if #shots ~= 0 then
+        local values = table.clone(shots)
+        table.sort(values)
+        value = values[math.ceil(#values / 2)]
     else
-        v28 = nil
+        value = nil
     end
-    if v28 ~= nil then
-        v27 = ((v28 < 2) and "<2") or (((v28 < 5) and "<5") or (((v28 < 15) and "<15") or "15+"))
-    else
-        v27 = "-"
+
+    local v120 = value ~= nil and (value < 2 and "<2" or value < 5 and "<5" or value < 15 and "<15" or "15+") or "-"
+    local aimBest = a116.aimBest
+    local v122 = aimBest ~= math.huge
+        and (aimBest < 5 and "<5" or aimBest < 15 and "<15" or aimBest < 45 and "<45" or "45+")
+        or "-"
+    local v123 = "-"
+
+    if 0 < a116.frames then
+        local v124 = a116.onFrames / a116.frames
+        v123 = a116.onFrames ~= 0 and (v124 < 0.25 and "<25" or v124 < 0.75 and "<75" or "75+") or "0"
     end
-    local aimBest_1 = a1.aimBest
-    local v29 = ((aimBest_1 == math.huge) and "-") or (((aimBest_1 < 5) and "<5") or (((aimBest_1 < 15) and "<15") or (((aimBest_1 < 45) and "<45") or "45+")))
-    local v30 = "-"
-    if a1.frames > 0 then
-        local _ = a1.onFrames / a1.frames
-        v30 = a1.onFrames == 0 and "0" or a1.onFrames / a1.frames < 0.25 and "<25" or a1.onFrames / a1.frames < 0.75 and "<75" or "75+"
-    end
-    return string.format("shot=%s aim=%s onscr=%s", v27, v29, v30)
+
+    return string.format("shot=%s aim=%s onscr=%s", v120, v122, v123)
 end
-function tbl_upv_1.Flush()
+
+function v3.Flush()
     --[[
       name: Flush
       line: 380
       upvalues:
-        u1 (ref,  index: 1)
+        v4 (ref,  index: 1)
         view (copy, index: 2)
-        RunService_upv_1 (copy, index: 3)
-        u2 (ref,  index: 4)
+        runService (copy, index: 3)
+        formattedText (ref,  index: 4)
     ]]
-    if not u1 or u1.emitted then
+    local v125 = v4
+
+    if not v125 or v125.emitted then
         return
     end
-    u1.emitted = true
-    local shots_1 = u1.shots
-    local v31
-    if #shots_1 ~= 0 then
-        local v32 = table.clone(shots_1)
-        table.sort(v32)
-        v31 = v32[math.ceil(#v32 / 2)]
+
+    local value
+    v125.emitted = true
+    local shots = v125.shots
+
+    if #shots ~= 0 then
+        local values = table.clone(shots)
+        table.sort(values)
+        value = values[math.ceil(#values / 2)]
     else
-        v31 = nil
+        value = nil
     end
-    if not (u1.failure) and v31 and #u1.shots >= 2 and v31 >= 15 then
-        local v33 = u1.ids[u1.focus] or "?"
-        local tbl_7 = {self = 0, live = -1, at = "clip", src = "-", k = 0, focus = true, why = "aim", fix = "none"}
-        tbl_7.index = u1.focus
-        tbl_7.k = string.sub(v33, 1, 1) ~= "p" and "B" or "A"
-        tbl_7.self = v33 == u1.me
-        u1.failure = tbl_7
+
+    if not v125.failure and value and 2 <= #v125.shots and 15 <= value then
+        local k
+        local text = v125.ids[v125.focus] or "?"
+        local failure = {why = "aim", src = "-", at = "clip", focus = true, st = nil, live = -1, fix = "none", index = v125.focus}
+
+        if string.sub(text, 1, 1) ~= "p" then
+            k = "B"
+        else
+            k = "A"
+        end
+
+        failure.k = k
+        failure.self = text == v125.me
+        v125.failure = failure
     end
-    local failure_1 = u1.failure
-    local v35 = nil
-    if failure_1 then
-        local st_1 = failure_1.st
-        local v36 = u1.counts or u1.build
-        local why_1 = failure_1.why
-        local v37 = failure_1.k
-        local v38 = failure_1.src
-        local at_1 = failure_1.at
-        local v39 = failure_1.self and "1" or "0"
-        local v40 = failure_1.focus and "1" or "0"
-        local v41 = u1.fp and "1" or "0"
-        local v42
-        if st_1 then
-            local _ = st_1.parts
-            v42 = st_1.parts < 0 and "-" or st_1.parts == 0 and "0" or st_1.parts < 5 and "1+" or st_1.parts < 10 and "5+" or st_1.parts < 20 and "10+" or "20+"
+
+    local failure = v125.failure
+    local formattedText2 = nil
+
+    if failure then
+        local v134
+        local st = failure.st
+        local v136 = v125.counts or v125.build
+        local stringFormat = string.format
+        local why = failure.why
+        local k = failure.k
+        local src = failure.src
+        local at = failure.at
+        local v142 = failure.self and "1" or "0"
+        local v143 = failure.focus and "1" or "0"
+        local v144 = v125.fp and "1" or "0"
+
+        if st then
+            local parts = st.parts
+            v134 = parts < 0 and "-"
+                or parts ~= 0 and (parts < 5 and "1+" or parts < 10 and "5+" or parts < 20 and "10+" or "20+")
+                or "0"
         else
-            v42 = "-"
+            v134 = "-"
         end
-        local v43 = failure_1.live
-        local v44 = ((v43 < 0) and "-") or (((v43 == 0) and "0") or (((v43 < 5) and "1+") or (((v43 < 10) and "5+") or (((v43 < 20) and "10+") or "20+"))))
-        if st_1 then
-            local v45 = st_1.vis
-            local v46 = st_1.parts
-            v43 = st_1.vis <= 0 and "0" or st_1.parts <= st_1.vis and "all" or st_1.parts <= st_1.vis * 2 and "most" or "some"
+
+        local v146
+        local v147
+        local v148
+        local v149
+        local v150
+        local v151
+        local text, v153
+        local live = failure.live
+        local v155 = live < 0 and "-"
+            or live ~= 0 and (live < 5 and "1+" or live < 10 and "5+" or live < 20 and "10+" or "20+")
+            or "0"
+
+        if st then
+            local vis = st.vis
+            local parts = st.parts
+            v146 = vis <= 0 and "0" or parts <= vis and "all" or parts <= vis * 2 and "most" or "some"
         else
-            v43 = "-"
+            v146 = "-"
         end
-        local v45
-        local v46
-        if st_1 then
-            v46 = st_1.tr
-            local v47 = st_1.parts
-            v45 = st_1.tr <= 0 and "0" or st_1.parts <= st_1.tr and "all" or st_1.parts <= st_1.tr * 2 and "most" or "some"
+
+        if st then
+            local tr = st.tr
+            local parts = st.parts
+            v147 = tr <= 0 and "0" or parts <= tr and "all" or parts <= tr * 2 and "most" or "some"
         else
-            v45 = "-"
+            v147 = "-"
         end
-        local v47
-        if st_1 then
-            v47 = st_1.ltm
-            local v48 = st_1.parts
-            v46 = st_1.ltm <= 0 and "0" or st_1.parts <= st_1.ltm and "all" or st_1.parts <= st_1.ltm * 2 and "most" or "some"
+
+        if st then
+            local ltm = st.ltm
+            local parts = st.parts
+            v148 = ltm <= 0 and "0" or parts <= ltm and "all" or parts <= ltm * 2 and "most" or "some"
         else
-            v46 = "-"
+            v148 = "-"
         end
-        local v48
-        if st_1 then
-            v48 = st_1.far
-            local v65 = st_1.parts
-            v47 = st_1.far <= 0 and "0" or st_1.parts <= st_1.far and "all" or st_1.parts <= st_1.far * 2 and "most" or "some"
+
+        if st then
+            local far = st.far
+            local parts = st.parts
+            v149 = far <= 0 and "0" or parts <= far and "all" or parts <= far * 2 and "most" or "some"
         else
-            v47 = "-"
+            v149 = "-"
         end
-        if st_1 then
-            local _ = st_1.loose
-            local v49 = st_1.parts
-            v48 = st_1.loose <= 0 and "0" or st_1.parts <= st_1.loose and "all" or st_1.parts <= st_1.loose * 2 and "most" or "some"
+
+        if st then
+            local loose = st.loose
+            local parts = st.parts
+            v150 = loose <= 0 and "0" or parts <= loose and "all" or parts <= loose * 2 and "most" or "some"
         else
-            v48 = "-"
+            v150 = "-"
         end
-        local v50 = ((not st_1) and "-") or (((st_1.parented) and "1") or "0")
-        local v49
-        if st_1 then
-            local _ = st_1.wrap
-            v49 = st_1.wrap < 0 and "-" or st_1.wrap == 0 and "0" or st_1.wrap < 5 and "1+" or st_1.wrap < 10 and "5+" or st_1.wrap < 20 and "10+" or "20+"
+
+        local v166 = st and (st.parented and "1" or "0") or "-"
+
+        if st then
+            local wrap = st.wrap
+            v151 = wrap < 0 and "-"
+                or wrap ~= 0 and (wrap < 5 and "1+" or wrap < 10 and "5+" or wrap < 20 and "10+" or "20+")
+                or "0"
         else
-            v49 = "-"
+            v151 = "-"
         end
-        local fix_1 = failure_1.fix
-        local hA_1 = v36.hA
-        local v51 = ((hA_1 >= 2) and "2+") or (tostring(hA_1))
-        local hB_1 = v36.hB
-        local v52 = ((hB_1 >= 2) and "2+") or (tostring(hB_1))
-        local okA_1 = v36.okA
-        local v53 = ((okA_1 >= 2) and "2+") or (tostring(okA_1))
-        local okB_1 = v36.okB
-        local v54 = ((okB_1 >= 2) and "2+") or (tostring(okB_1))
-        v35 = string.format("[ReplayDiag] hidden why=%s k=%s src=%s at=%s self=%s foc=%s fp=%s parts=%s live=%s vis=%s tr=%s ltm=%s far=%s loose=%s par=%s wrap=%s fix=%s hA=%s hB=%s okA=%s okB=%s %s", why_1, v37, v38, at_1, v39, v40, v41, v42, v44, v43, v45, v46, v47, v48, v50, v49, fix_1, v51, v52, v53, v54, view(u1))
-        warn(v35)
-    elseif u1.early then
-        if math.random() < 0.1 then
-            local build_2 = u1.build
-            local tbl_8 = {}
-            for key_4 in u1.srcs do
-                table.insert(tbl_8, key_4)
-            end
-            table.sort(tbl_8)
-            local v55 = ((u1.fp) and "1") or "0"
-            local v56 = ((string.sub(u1.ids[u1.focus] or "?", 1, 1) ~= "p") and "B") or "A"
-            local v38
-            if v56 == "A" then
-                v38 = true
-            else
-                v38 = false
-            end
-            local v37
-            if v38 then
-                v37 = "1"
-            else
-                v37 = "0"
-            end
-            local v57 = u1.ids[u1.focus] == u1.me
-            if v57 then
-                v38 = "1"
-            else
-                v38 = "0"
-            end
-            local v58 = build_2.okA + build_2.hA
-            local v59 = ((v58 >= 2) and "2+") or (tostring(v58))
-            local v60 = build_2.okB + build_2.hB
-            local v61 = ((v60 >= 2) and "2+") or (tostring(v60))
-            local v62 = ((not (#tbl_8 > 0)) and "-") or (table.concat(tbl_8, "+"))
-            v35 = string.format("[ReplayDiag] ok fp=%s focA=%s mine=%s A=%s B=%s src=%s %s", v55, v37, v38, v59, v61, v62, view(u1))
-            warn(v35)
+
+        local fix = failure.fix
+        local hA = v136.hA
+        local v170 = 2 <= hA and "2+" or tostring(hA)
+        local hB = v136.hB
+        local v172 = 2 <= hB and "2+" or tostring(hB)
+        local okA = v136.okA
+        local v174 = 2 <= okA and "2+" or tostring(okA)
+        local okB = v136.okB
+
+        if not (2 <= okB) then
+            text = tostring(okB)
+            v153 = v125
         else
-            local v63 = RunService_upv_1:IsStudio()
-            if v63 and workspace:GetAttribute("ReplayDiagAlways") == true then
-                local build_2 = u1.build
-                local tbl_8 = {}
-                for key_4 in u1.srcs do
-                    table.insert(tbl_8, key_4)
-                end
-                table.sort(tbl_8)
-                local v55 = ((u1.fp) and "1") or "0"
-                local v56 = ((string.sub(u1.ids[u1.focus] or "?", 1, 1) ~= "p") and "B") or "A"
-                local v38
-                if v56 == "A" then
-                    v38 = true
-                else
-                    v38 = false
-                end
-                local v37
-                if v38 then
-                    v37 = "1"
-                else
-                    v37 = "0"
-                end
-                local v57 = u1.ids[u1.focus] == u1.me
-                if v57 then
-                    v38 = "1"
-                else
-                    v38 = "0"
-                end
-                local v58 = build_2.okA + build_2.hA
-                local v59 = ((v58 >= 2) and "2+") or (tostring(v58))
-                local v60 = build_2.okB + build_2.hB
-                local v61 = ((v60 >= 2) and "2+") or (tostring(v60))
-                local v62 = ((not (#tbl_8 > 0)) and "-") or (table.concat(tbl_8, "+"))
-                v35 = string.format("[ReplayDiag] ok fp=%s focA=%s mine=%s A=%s B=%s src=%s %s", v55, v37, v38, v59, v61, v62, view(u1))
-                warn(v64)
-                v35 = v64
-            end
+            text = "2+"
+            v153 = v125
         end
+
+        formattedText2 = stringFormat("[ReplayDiag] hidden why=%s k=%s src=%s at=%s self=%s foc=%s fp=%s parts=%s live=%s vis=%s tr=%s ltm=%s far=%s loose=%s par=%s wrap=%s fix=%s hA=%s hB=%s okA=%s okB=%s %s", why, k, src, at, v142, v143, v144, v134, v155, v146, v147, v148, v149, v150, v166, v151, fix, v170, v172, v174, text, view(v153))
+        warn(formattedText2)
+    elseif v125.early
+        and (math.random() < 0.1 or runService:IsStudio() and workspace:GetAttribute("ReplayDiagAlways") == true)
+    then
+        local v176
+        local build = v125.build
+        local parts = {}
+
+        for v179 in v125.srcs do
+            table.insert(parts, v179)
+        end
+
+        table.sort(parts)
+        local stringFormat = string.format
+        local v181 = v125.fp and "1" or "0"
+
+        if string.sub(v125.ids[v125.focus] or "?", 1, 1) ~= "p" then
+            v176 = "B"
+        else
+            v176 = "A"
+        end
+
+        local v182 = v176 == "A" and "1" or "0"
+        local v183 = v125.ids[v125.focus] == v125.me and "1" or "0"
+        local v184 = build.okA + build.hA
+        local v185 = 2 <= v184 and "2+" or tostring(v184)
+        local v186 = build.okB + build.hB
+        local v187 = 2 <= v186 and "2+" or tostring(v186)
+        local v188 = not (0 < #parts) and "-" or table.concat(parts, "+")
+        formattedText2 = stringFormat("[ReplayDiag] ok fp=%s focA=%s mine=%s A=%s B=%s src=%s %s", v181, v182, v183, v185, v187, v188, view(v125))
+        warn(formattedText2)
     end
-    u2 = v35
+
+    formattedText = formattedText2
 end
-function tbl_upv_1.End()
+
+function v3.End()
     --[[
       name: End
       line: 445
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
+        v3 (copy, index: 1)
+        v4 (ref,  index: 2)
     ]]
-    tbl_upv_1.Flush()
-    u1 = nil
+    v3.Flush()
+    v4 = nil
 end
-function tbl_upv_1.LastLine()
+
+function v3.LastLine()
     --[[
       name: LastLine
       line: 452
       upvalues:
-        u2 (ref,  index: 1)
-        tbl_upv_2 (copy, index: 2)
+        formattedText (ref,  index: 1)
+        v7 (copy, index: 2)
     ]]
-    return u2, tbl_upv_2
+    return formattedText, v7
 end
-return tbl_upv_1
+
+return v3

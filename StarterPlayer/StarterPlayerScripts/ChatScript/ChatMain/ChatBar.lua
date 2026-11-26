@@ -1,778 +1,851 @@
-local tbl_1 = {}
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local RunService_upv_1 = game:GetService("RunService")
-local Players_1 = game:GetService("Players")
-local TextService_upv_1 = game:GetService("TextService")
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-while not (LocalPlayer_upv_1) do
-    Players_1.PlayerAdded:wait()
-    LocalPlayer_upv_1 = Players_1.LocalPlayer
+local localPlayer
+local v2 = {}
+local userInputService = game:GetService("UserInputService")
+local runService = game:GetService("RunService")
+local players = game:GetService("Players")
+local textService = game:GetService("TextService")
+localPlayer = players.LocalPlayer
+
+while not localPlayer do
+    players.PlayerAdded:wait()
+    localPlayer = players.LocalPlayer
 end
-local Chat_upv_1 = game:GetService("Chat")
-local ClientChatModules_1 = Chat_upv_1:WaitForChild("ClientChatModules")
-local Parent_1 = script.Parent
-local ChatSettings_upv_1 = require(ClientChatModules_1:WaitForChild("ChatSettings"))
-local CurveUtil_upv_1 = require(Parent_1:WaitForChild("CurveUtil"))
-local Whisper_upv_1 = require(ClientChatModules_1:WaitForChild("CommandModules"):WaitForChild("Whisper"))
-local _ = require(Parent_1:WaitForChild("MessageSender"))
-local u1 = nil
+
+local chat = game:GetService("Chat")
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local parent = script.Parent
+local ChatSettings = require(clientChatModules:WaitForChild("ChatSettings"))
+local CurveUtil = require(parent:WaitForChild("CurveUtil"))
+local commandModules = clientChatModules:WaitForChild("CommandModules")
+local Whisper = require(commandModules:WaitForChild("Whisper"))
+local _ = require(parent:WaitForChild("MessageSender"))
+local v15 = nil
 pcall(
     function()
         --[[
           line: 35
           upvalues:
-            u1 (ref, index: 1)
+            v15 (ref, index: 1)
         ]]
-        u1 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
+        v15 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
     end
 )
-if u1 == nil then
-    u1 = {}
-    function u1.Get(a1, a2, a3)
+
+if v15 == nil then
+    v15 = {}
+
+    function v15.Get(a16, a17, a18)
         --[[
           name: Get
           line: 36
         ]]
-        return a3
+        return a18
     end
 end
-local tbl_upv_2 = {}
-tbl_upv_2.__index = tbl_upv_2
-function tbl_upv_2.CreateGuiObjects(a1, a2)
+
+local Class = {}
+Class.__index = Class
+
+function Class.CreateGuiObjects(self, instance: Instance?)
     --[[
       name: CreateGuiObjects
       line: 43
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        ChatSettings (copy, index: 1)
     ]]
-    a1.ChatBarParentFrame = a2
-    local v1 = Instance.new("Frame")
-    v1.Selectable = false
-    v1.Size = UDim2.new(1, 0, 1, 0)
-    v1.BackgroundTransparency = 0.6
-    v1.BorderSizePixel = 0
-    v1.BackgroundColor3 = ChatSettings_upv_1.ChatBarBackGroundColor
-    v1.Parent = a2
-    local v2 = Instance.new("Frame")
-    v2.Selectable = false
-    v2.Name = "BoxFrame"
-    v2.BackgroundTransparency = 0.6
-    v2.BorderSizePixel = 0
-    v2.BackgroundColor3 = ChatSettings_upv_1.ChatBarBoxColor
-    v2.Size = UDim2.new(1, -14, 1, -14)
-    v2.Position = UDim2.new(0, 7, 0, 7)
-    v2.Parent = v1
-    local v3 = Instance.new("Frame")
-    v3.BackgroundTransparency = 1
-    v3.Size = UDim2.new(1, -10, 1, -10)
-    v3.Position = UDim2.new(0, 5, 0, 5)
-    v3.Parent = v2
-    local v4 = Instance.new("TextBox")
-    v4.Selectable = ChatSettings_upv_1.GamepadNavigationEnabled
-    v4.Name = "ChatBar"
-    v4.BackgroundTransparency = 1
-    v4.Size = UDim2.new(1, 0, 1, 0)
-    v4.Position = UDim2.new(0, 0, 0, 0)
-    v4.TextSize = ChatSettings_upv_1.ChatBarTextSize
-    v4.Font = ChatSettings_upv_1.ChatBarFont
-    v4.TextColor3 = ChatSettings_upv_1.ChatBarTextColor
-    v4.TextTransparency = 0.4
-    v4.TextStrokeTransparency = 1
-    v4.ClearTextOnFocus = false
-    v4.TextXAlignment = Enum.TextXAlignment.Left
-    v4.TextYAlignment = Enum.TextYAlignment.Top
-    v4.TextWrapped = true
-    v4.Text = ""
-    v4.Parent = v3
-    local v5 = Instance.new("TextButton")
-    v5.Selectable = false
-    v5.Name = "MessageMode"
-    v5.BackgroundTransparency = 1
-    v5.Position = UDim2.new(0, 0, 0, 0)
-    v5.TextSize = ChatSettings_upv_1.ChatBarTextSize
-    v5.Font = ChatSettings_upv_1.ChatBarFont
-    v5.TextXAlignment = Enum.TextXAlignment.Left
-    v5.TextWrapped = true
-    v5.Text = ""
-    v5.Size = UDim2.new(0, 0, 0, 0)
-    v5.TextYAlignment = Enum.TextYAlignment.Center
-    v5.TextColor3 = a1:GetDefaultChannelNameColor()
-    v5.Visible = true
-    v5.Parent = v3
-    local v6 = Instance.new("TextLabel")
-    v6.Selectable = false
-    v6.TextWrapped = true
-    v6.BackgroundTransparency = 1
-    v6.Size = v4.Size
-    v6.Position = v4.Position
-    v6.TextSize = v4.TextSize
-    v6.Font = v4.Font
-    v6.TextColor3 = v4.TextColor3
-    v6.TextTransparency = v4.TextTransparency
-    v6.TextStrokeTransparency = v4.TextStrokeTransparency
-    v6.TextXAlignment = v4.TextXAlignment
-    v6.TextYAlignment = v4.TextYAlignment
-    v6.Text = "..."
-    v6.Parent = v3
-    a1.GuiObject = v1
-    a1.TextBox = v4
-    a1.TextLabel = v6
-    a1.GuiObjects.BaseFrame = v1
-    a1.GuiObjects.TextBoxFrame = v2
-    a1.GuiObjects.TextBox = v4
-    a1.GuiObjects.TextLabel = v6
-    a1.GuiObjects.MessageModeTextButton = v5
-    a1:AnimGuiObjects()
-    a1:SetUpTextBoxEvents(v4, v6, v5)
-    if a1.UserHasChatOff then
-        a1:DoLockChatBar()
+    self.ChatBarParentFrame = instance
+    local frame = Instance.new("Frame")
+    frame.Selectable = false
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundTransparency = 0.6
+    frame.BorderSizePixel = 0
+    frame.BackgroundColor3 = ChatSettings.ChatBarBackGroundColor
+    frame.Parent = instance
+
+    local boxFrame = Instance.new("Frame")
+    boxFrame.Selectable = false
+    boxFrame.Name = "BoxFrame"
+    boxFrame.BackgroundTransparency = 0.6
+    boxFrame.BorderSizePixel = 0
+    boxFrame.BackgroundColor3 = ChatSettings.ChatBarBoxColor
+    boxFrame.Size = UDim2.new(1, -14, 1, -14)
+    boxFrame.Position = UDim2.new(0, 7, 0, 7)
+    boxFrame.Parent = frame
+
+    local parent = Instance.new("Frame")
+    parent.BackgroundTransparency = 1
+    parent.Size = UDim2.new(1, -10, 1, -10)
+    parent.Position = UDim2.new(0, 5, 0, 5)
+    parent.Parent = boxFrame
+
+    local chatBar = Instance.new("TextBox")
+    chatBar.Selectable = ChatSettings.GamepadNavigationEnabled
+    chatBar.Name = "ChatBar"
+    chatBar.BackgroundTransparency = 1
+    chatBar.Size = UDim2.new(1, 0, 1, 0)
+    chatBar.Position = UDim2.new(0, 0, 0, 0)
+    chatBar.TextSize = ChatSettings.ChatBarTextSize
+    chatBar.Font = ChatSettings.ChatBarFont
+    chatBar.TextColor3 = ChatSettings.ChatBarTextColor
+    chatBar.TextTransparency = 0.4
+    chatBar.TextStrokeTransparency = 1
+    chatBar.ClearTextOnFocus = false
+    chatBar.TextXAlignment = Enum.TextXAlignment.Left
+    chatBar.TextYAlignment = Enum.TextYAlignment.Top
+    chatBar.TextWrapped = true
+    chatBar.Text = ""
+    chatBar.Parent = parent
+
+    local messageMode = Instance.new("TextButton")
+    messageMode.Selectable = false
+    messageMode.Name = "MessageMode"
+    messageMode.BackgroundTransparency = 1
+    messageMode.Position = UDim2.new(0, 0, 0, 0)
+    messageMode.TextSize = ChatSettings.ChatBarTextSize
+    messageMode.Font = ChatSettings.ChatBarFont
+    messageMode.TextXAlignment = Enum.TextXAlignment.Left
+    messageMode.TextWrapped = true
+    messageMode.Text = ""
+    messageMode.Size = UDim2.new(0, 0, 0, 0)
+    messageMode.TextYAlignment = Enum.TextYAlignment.Center
+    messageMode.TextColor3 = self:GetDefaultChannelNameColor()
+    messageMode.Visible = true
+    messageMode.Parent = parent
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Selectable = false
+    textLabel.TextWrapped = true
+    textLabel.BackgroundTransparency = 1
+    textLabel.Size = chatBar.Size
+    textLabel.Position = chatBar.Position
+    textLabel.TextSize = chatBar.TextSize
+    textLabel.Font = chatBar.Font
+    textLabel.TextColor3 = chatBar.TextColor3
+    textLabel.TextTransparency = chatBar.TextTransparency
+    textLabel.TextStrokeTransparency = chatBar.TextStrokeTransparency
+    textLabel.TextXAlignment = chatBar.TextXAlignment
+    textLabel.TextYAlignment = chatBar.TextYAlignment
+    textLabel.Text = "..."
+    textLabel.Parent = parent
+    self.GuiObject = frame
+    self.TextBox = chatBar
+    self.TextLabel = textLabel
+    self.GuiObjects.BaseFrame = frame
+    self.GuiObjects.TextBoxFrame = boxFrame
+    self.GuiObjects.TextBox = chatBar
+    self.GuiObjects.TextLabel = textLabel
+    self.GuiObjects.MessageModeTextButton = messageMode
+    self:AnimGuiObjects()
+    self:SetUpTextBoxEvents(chatBar, textLabel, messageMode)
+
+    if self.UserHasChatOff then
+        self:DoLockChatBar()
     end
-    a1.eGuiObjectsChanged:Fire()
+
+    self.eGuiObjectsChanged:Fire()
 end
-function tbl_upv_2.DoLockChatBar(a1)
+
+function Class.DoLockChatBar(self)
     --[[
       name: DoLockChatBar
       line: 142
       upvalues:
-        LocalPlayer_upv_1 (ref, index: 1)
-        u1 (ref, index: 2)
+        localPlayer (ref, index: 1)
+        v15 (ref, index: 2)
     ]]
-    if a1.TextLabel then
-        if LocalPlayer_upv_1.UserId > 0 then
-            a1.TextLabel.Text = u1:Get("GameChat_ChatMessageValidator_SettingsError", "To chat in game, turn on chat in your Privacy Settings.")
+    if self.TextLabel then
+        if not (0 < localPlayer.UserId) then
+            self.TextLabel.Text = v15:Get("GameChat_SwallowGuestChat_Message", "Sign up to chat in game.")
         else
-            a1.TextLabel.Text = u1:Get("GameChat_SwallowGuestChat_Message", "Sign up to chat in game.")
+            self.TextLabel.Text = v15:Get("GameChat_ChatMessageValidator_SettingsError", "To chat in game, turn on chat in your Privacy Settings.")
         end
-        a1:CalculateSize()
+
+        self:CalculateSize()
     end
-    if not a1.TextBox then
-        return
+
+    if self.TextBox then
+        self.TextBox.Active = false
+        self.TextBox.Focused:connect(
+            function()
+                --[[
+                  line: 159
+                  upvalues:
+                    self (copy, index: 1)
+                ]]
+                self.TextBox:ReleaseFocus()
+            end
+        )
     end
-    a1.TextBox.Active = false
-    a1.TextBox.Focused:connect(
-        function()
-            --[[
-              line: 159
-              upvalues:
-                a1 (copy, index: 1)
-            ]]
-            a1.TextBox:ReleaseFocus()
-        end
-    )
 end
-function tbl_upv_2.SetUpTextBoxEvents(a1, a2, a3, a4)
+
+function Class.SetUpTextBoxEvents(self, a30, a31, a32)
     --[[
       name: SetUpTextBoxEvents
       line: 165
       upvalues:
-        UserInputService_upv_1 (copy, index: 1)
-        ChatSettings_upv_1 (copy, index: 2)
+        userInputService (copy, index: 1)
+        ChatSettings (copy, index: 2)
     ]]
-    for key_1, value_1 in pairs(a1.TextBoxConnections) do
-        value_1:disconnect()
-        a1.TextBoxConnections[key_1] = nil
+    for textBoxConnectionKey, textBoxConnection in pairs(self.TextBoxConnections) do
+        textBoxConnection:disconnect()
+        self.TextBoxConnections[textBoxConnectionKey] = nil
     end
-    a1.TextBoxConnections.UserInputBegan = UserInputService_upv_1.InputBegan:connect(
-        function(a5, a6)
+
+    self.TextBoxConnections.UserInputBegan = userInputService.InputBegan:connect(
+        function(input: InputObject, gameProcessedEvent: boolean)
             --[[
               line: 173
               upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
-                ChatSettings_upv_1 (copy, index: 3)
+                self (copy, index: 1)
+                a30 (copy, index: 2)
+                ChatSettings (copy, index: 3)
             ]]
-            if a5.KeyCode ~= Enum.KeyCode.Backspace or not a1:IsFocused() or a2.Text ~= "" then
-                return
+            if input.KeyCode == Enum.KeyCode.Backspace and self:IsFocused() and a30.Text == "" then
+                self:SetChannelTarget(ChatSettings.GeneralChannelName)
             end
-            a1:SetChannelTarget(ChatSettings_upv_1.GeneralChannelName)
         end
     )
-    a1.TextBoxConnections.TextBoxChanged = a2.Changed:connect(
-        function(a7)
+
+    self.TextBoxConnections.TextBoxChanged = a30.Changed:connect(
+        function(a37)
             --[[
               line: 181
               upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
-                ChatSettings_upv_1 (copy, index: 3)
+                self (copy, index: 1)
+                a30 (copy, index: 2)
+                ChatSettings (copy, index: 3)
             ]]
-            if a7 == "AbsoluteSize" then
-                a1:CalculateSize()
-            elseif a7 == "Text" then
-                a1:CalculateSize()
-                if ChatSettings_upv_1.MaximumMessageLength < utf8.len(utf8.nfcnormalize(a2.Text)) then
-                    a2.Text = a1.PreviousText
-                else
-                    a1.PreviousText = a2.Text
-                end
-                local v7 = nil
-                if a1.InCustomState then
-                    a1.CustomState:TextUpdated()
-                else
-                    v7 = a1.CommandProcessor:ProcessInProgressChatMessage(a2.Text, a1.ChatWindow, a1)
-                    if v7 then
-                        a1.InCustomState = true
-                        a1.CustomState = v7
-                        return
-                    end
-                end
+            if a37 == "AbsoluteSize" then
+                self:CalculateSize()
+                return
+            end
+
+            if a37 ~= "Text" then
+                return
+            end
+
+            self:CalculateSize()
+            local length = utf8.len(utf8.nfcnormalize(a30.Text))
+
+            if ChatSettings.MaximumMessageLength < length then
+                a30.Text = self.PreviousText
+            else
+                self.PreviousText = a30.Text
+            end
+
+            if self.InCustomState then
+                self.CustomState:TextUpdated()
+            elseif const customState = self.CommandProcessor:ProcessInProgressChatMessage(a30.Text, self.ChatWindow, self) then
+                self.InCustomState = true
+                self.CustomState = customState
             end
         end
     )
-    local function UpdateOnFocusStatusChanged(a8)
+
+    local function UpdateOnFocusStatusChanged(a41)
         --[[
           name: UpdateOnFocusStatusChanged
           line: 210
           upvalues:
-            a2 (copy, index: 1)
-            a3 (copy, index: 2)
+            a30 (copy, index: 1)
+            a31 (copy, index: 2)
         ]]
-        if not (a8) and a2.Text == "" then
-            a3.Visible = true
-        else
-            a3.Visible = false
+        if not a41 and a30.Text == "" then
+            a31.Visible = true
+            return
         end
+
+        a31.Visible = false
     end
-    a1.TextBoxConnections.MessageModeClick = a4.MouseButton1Click:connect(
+
+    self.TextBoxConnections.MessageModeClick = a32.MouseButton1Click:connect(
         function()
             --[[
               line: 218
               upvalues:
-                a4 (copy, index: 1)
-                a1 (copy, index: 2)
-                ChatSettings_upv_1 (copy, index: 3)
+                a32 (copy, index: 1)
+                self (copy, index: 2)
+                ChatSettings (copy, index: 3)
             ]]
-            if a4.Text == "" then
-                return
+            if a32.Text ~= "" then
+                self:SetChannelTarget(ChatSettings.GeneralChannelName)
             end
-            a1:SetChannelTarget(ChatSettings_upv_1.GeneralChannelName)
         end
     )
-    a1.TextBoxConnections.TextBoxFocused = a2.Focused:connect(
+
+    self.TextBoxConnections.TextBoxFocused = a30.Focused:connect(
         function()
             --[[
               line: 224
               upvalues:
-                a1 (copy, index: 1)
-                a3 (copy, index: 2)
+                self (copy, index: 1)
+                a31 (copy, index: 2)
             ]]
-            if (a1.UserHasChatOff) then
-                return
+            if not self.UserHasChatOff then
+                self:CalculateSize()
+                a31.Visible = false
             end
-            a1:CalculateSize()
-            a3.Visible = false
         end
     )
-    a1.TextBoxConnections.TextBoxFocusLost = a2.FocusLost:connect(
-        function(a9, a10)
+
+    self.TextBoxConnections.TextBoxFocusLost = a30.FocusLost:connect(
+        function(a42, a43)
             --[[
               line: 231
               upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
-                a3 (copy, index: 3)
+                self (copy, index: 1)
+                a30 (copy, index: 2)
+                a31 (copy, index: 3)
             ]]
-            a1:CalculateSize()
-            if a10 and a10.KeyCode == Enum.KeyCode.Escape then
-                a2.Text = ""
+            self:CalculateSize()
+
+            if a43 and a43.KeyCode == Enum.KeyCode.Escape then
+                a30.Text = ""
             end
-            if a2.Text == "" then
-                a3.Visible = true
-            else
-                a3.Visible = false
+
+            if a30.Text ~= "" then
+                a31.Visible = false
+                return
             end
+
+            a31.Visible = true
         end
     )
 end
-function tbl_upv_2.GetTextBox(a1)
+
+function Class.GetTextBox(self)
     --[[
       name: GetTextBox
       line: 240
     ]]
-    return a1.TextBox
+    return self.TextBox
 end
-function tbl_upv_2.GetMessageModeTextButton(a1)
+
+function Class.GetMessageModeTextButton(self)
     --[[
       name: GetMessageModeTextButton
       line: 244
     ]]
-    return a1.GuiObjects.MessageModeTextButton
+    return self.GuiObjects.MessageModeTextButton
 end
-function tbl_upv_2.GetMessageModeTextLabel(a1)
+
+function Class.GetMessageModeTextLabel(self)
     --[[
       name: GetMessageModeTextLabel
       line: 250
     ]]
-    return a1:GetMessageModeTextButton()
+    return self:GetMessageModeTextButton()
 end
-function tbl_upv_2.IsFocused(a1)
+
+function Class.IsFocused(self)
     --[[
       name: IsFocused
       line: 254
     ]]
-    if a1.UserHasChatOff then
+    if self.UserHasChatOff then
         return false
     end
-    return a1:GetTextBox():IsFocused()
+
+    return self:GetTextBox():IsFocused()
 end
-function tbl_upv_2.GetVisible(a1)
+
+function Class.GetVisible(self)
     --[[
       name: GetVisible
       line: 262
     ]]
-    return a1.GuiObject.Visible
+    return self.GuiObject.Visible
 end
-function tbl_upv_2.CaptureFocus(a1)
+
+function Class.CaptureFocus(self)
     --[[
       name: CaptureFocus
       line: 266
     ]]
-    if (a1.UserHasChatOff) then
-        return
+    if not self.UserHasChatOff then
+        self:GetTextBox():CaptureFocus()
     end
-    a1:GetTextBox():CaptureFocus()
 end
-function tbl_upv_2.ReleaseFocus(a1, a2)
+
+function Class.ReleaseFocus(self, a51)
     --[[
       name: ReleaseFocus
       line: 272
     ]]
-    a1:GetTextBox():ReleaseFocus(a2)
+    self:GetTextBox():ReleaseFocus(a51)
 end
-function tbl_upv_2.ResetText(a1)
+
+function Class.ResetText(self)
     --[[
       name: ResetText
       line: 276
     ]]
-    a1:GetTextBox().Text = ""
+    self:GetTextBox().Text = ""
 end
-function tbl_upv_2.SetText(a1, a2)
+
+function Class.SetText(self, text)
     --[[
       name: SetText
       line: 280
     ]]
-    a1:GetTextBox().Text = a2
+    self:GetTextBox().Text = text
 end
-function tbl_upv_2.GetEnabled(a1)
+
+function Class.GetEnabled(self)
     --[[
       name: GetEnabled
       line: 284
     ]]
-    return a1.GuiObject.Visible
+    return self.GuiObject.Visible
 end
-function tbl_upv_2.SetEnabled(a1, a2)
+
+function Class.SetEnabled(self, enabled)
     --[[
       name: SetEnabled
       line: 288
     ]]
-    if a1.UserHasChatOff then
-        a1.GuiObject.Visible = true
-    else
-        a1.GuiObject.Visible = a2
+    if self.UserHasChatOff then
+        self.GuiObject.Visible = true
+        return
     end
+
+    self.GuiObject.Visible = enabled
 end
-function tbl_upv_2.SetTextLabelText(a1, a2)
+
+function Class.SetTextLabelText(self, textLabelText)
     --[[
       name: SetTextLabelText
       line: 298
     ]]
-    if (a1.UserHasChatOff) then
-        return
+    if not self.UserHasChatOff then
+        self.TextLabel.Text = textLabelText
     end
-    a1.TextLabel.Text = a2
 end
-function tbl_upv_2.SetTextBoxText(a1, a2)
+
+function Class.SetTextBoxText(self, textBoxText)
     --[[
       name: SetTextBoxText
       line: 304
     ]]
-    a1.TextBox.Text = a2
+    self.TextBox.Text = textBoxText
 end
-function tbl_upv_2.GetTextBoxText(a1)
+
+function Class.GetTextBoxText(self)
     --[[
       name: GetTextBoxText
       line: 308
     ]]
-    return a1.TextBox.Text
+    return self.TextBox.Text
 end
-function tbl_upv_2.ResetSize(a1)
+
+function Class.ResetSize(self)
     --[[
       name: ResetSize
       line: 312
     ]]
-    a1.TargetYSize = 0
-    a1:TweenToTargetYSize()
+    self.TargetYSize = 0
+    self:TweenToTargetYSize()
 end
-local function measureSize(a1)
+
+local function measureSize(a65)
     --[[
       name: measureSize
       line: 317
       upvalues:
-        TextService_upv_1 (copy, index: 1)
+        textService (copy, index: 1)
     ]]
-    return TextService_upv_1:GetTextSize(a1.Text, a1.TextSize, a1.Font, Vector2.new(a1.AbsoluteSize.X, 10000))
+    return textService:GetTextSize(a65.Text, a65.TextSize, a65.Font, Vector2.new(a65.AbsoluteSize.X, 10000))
 end
-function tbl_upv_2.CalculateSize(a1)
+
+function Class.CalculateSize(self)
     --[[
       name: CalculateSize
       line: 326
       upvalues:
-        TextService_upv_1 (copy, index: 1)
+        textService (copy, index: 1)
     ]]
-    if a1.CalculatingSizeLock then
+    local textSize, y
+
+    if self.CalculatingSizeLock then
         return
     end
-    a1.CalculatingSizeLock = true
-    local v8, v9
-    if a1:IsFocused() or a1.TextBox.Text ~= "" then
-        v9 = a1.TextBox.TextSize
-        local _ = a1.TextBox
-        v8 = TextService_upv_1:GetTextSize(a1.TextBox.Text, a1.TextBox.TextSize, a1.TextBox.Font, Vector2.new(a1.TextBox.AbsoluteSize.X, 10000)).Y
+
+    self.CalculatingSizeLock = true
+
+    if self:IsFocused() or self.TextBox.Text ~= "" then
+        textSize = self.TextBox.TextSize
+        local textBox = self.TextBox
+        y = textService:GetTextSize(textBox.Text, textBox.TextSize, textBox.Font, Vector2.new(textBox.AbsoluteSize.X, 10000)).Y
     else
-        v9 = a1.TextLabel.TextSize
-        local _ = a1.TextLabel
-        v8 = TextService_upv_1:GetTextSize(a1.TextLabel.Text, a1.TextLabel.TextSize, a1.TextLabel.Font, Vector2.new(a1.TextLabel.AbsoluteSize.X, 10000)).Y
+        textSize = self.TextLabel.TextSize
+        local textLabel = self.TextLabel
+        y = textService:GetTextSize(textLabel.Text, textLabel.TextSize, textLabel.Font, Vector2.new(textLabel.AbsoluteSize.X, 10000)).Y
     end
-    local v10 = v8 - v9
-    if a1.TargetYSize ~= v10 then
-        a1.TargetYSize = v10
-        a1:TweenToTargetYSize()
+
+    local targetYSize = y - textSize
+
+    if self.TargetYSize ~= targetYSize then
+        self.TargetYSize = targetYSize
+        self:TweenToTargetYSize()
     end
-    a1.CalculatingSizeLock = false
+
+    self.CalculatingSizeLock = false
 end
-function tbl_upv_2.TweenToTargetYSize(a1)
+
+function Class.TweenToTargetYSize(self)
     --[[
       name: TweenToTargetYSize
       line: 352
     ]]
-    local u2 = UDim2.new(1, 0, 1, a1.TargetYSize)
-    a1.GuiObject.Size = u2
-    a1.GuiObject.Size = a1.GuiObject.Size
-    local u3 = math.min(1, math.abs(a1.GuiObject.AbsoluteSize.Y - a1.GuiObject.AbsoluteSize.Y) * (1 / a1.TweenPixelsPerSecond))
-    if (pcall(
+    local size2 = UDim2.new(1, 0, 1, self.TargetYSize)
+    local size = self.GuiObject.Size
+    local y = self.GuiObject.AbsoluteSize.Y
+    self.GuiObject.Size = size2
+    local y2 = self.GuiObject.AbsoluteSize.Y
+    self.GuiObject.Size = size
+    local v77 = math.min(1, math.abs(y2 - y) * (1 / self.TweenPixelsPerSecond))
+
+    if not pcall(
         function()
             --[[
               line: 364
               upvalues:
-                a1 (copy, index: 1)
-                u2 (copy, index: 2)
-                u3 (copy, index: 3)
+                self (copy, index: 1)
+                size2 (copy, index: 2)
+                v77 (copy, index: 3)
             ]]
-            a1.GuiObject:TweenSize(u2, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, u3, true)
+            self.GuiObject:TweenSize(size2, Enum.EasingDirection.Out, Enum.EasingStyle.Quad, v77, true)
         end
-    )) then
-        return
+    ) then
+        self.GuiObject.Size = size2
     end
-    a1.GuiObject.Size = u2
 end
-function tbl_upv_2.SetTextSize(a1, a2)
+
+function Class.SetTextSize(self, textSize)
     --[[
       name: SetTextSize
       line: 372
     ]]
-    if (a1:IsInCustomState()) then
-        return
+    if not self:IsInCustomState() then
+        if self.TextBox then
+            self.TextBox.TextSize = textSize
+        end
+
+        if self.TextLabel then
+            self.TextLabel.TextSize = textSize
+        end
     end
-    if a1.TextBox then
-        a1.TextBox.TextSize = a2
-    end
-    if not a1.TextLabel then
-        return
-    end
-    a1.TextLabel.TextSize = a2
 end
-function tbl_upv_2.GetDefaultChannelNameColor(a1)
+
+function Class.GetDefaultChannelNameColor(self)
     --[[
       name: GetDefaultChannelNameColor
       line: 383
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        ChatSettings (copy, index: 1)
     ]]
-    if ChatSettings_upv_1.DefaultChannelNameColor then
-        return ChatSettings_upv_1.DefaultChannelNameColor
+    if ChatSettings.DefaultChannelNameColor then
+        return ChatSettings.DefaultChannelNameColor
     end
+
     return Color3.fromRGB(35, 76, 142)
 end
-function tbl_upv_2.SetChannelTarget(a1, a2)
+
+function Class.SetChannelTarget(self, channelTarget)
     --[[
       name: SetChannelTarget
       line: 390
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
+        ChatSettings (copy, index: 1)
+        v15 (ref,  index: 2)
     ]]
-    local MessageModeTextButton_1 = a1.GuiObjects.MessageModeTextButton
-    local TextBox_1 = a1.TextBox
-    local TextLabel_1 = a1.TextLabel
-    a1.TargetChannel = a2
-    if not (a1:IsInCustomState()) then
-        local v11 = nil
-        if a2 == ChatSettings_upv_1.GeneralChannelName then
-            MessageModeTextButton_1.Text = ""
-            MessageModeTextButton_1.Size = UDim2.new(0, 0, 0, 0)
-            TextBox_1.Size = UDim2.new(1, 0, 1, 0)
-            TextBox_1.Position = UDim2.new(0, 0, 0, 0)
-            TextLabel_1.Size = UDim2.new(1, 0, 1, 0)
-            TextLabel_1.Position = UDim2.new(0, 0, 0, 0)
-        else
-            MessageModeTextButton_1.Size = UDim2.new(0, 1000, 1, 0)
-            if u1.tryLocalize then
-                v11 = u1:tryLocalize(a2)
+    local messageModeTextButton = self.GuiObjects.MessageModeTextButton
+    local textBox = self.TextBox
+    local textLabel = self.TextLabel
+    self.TargetChannel = channelTarget
+
+    if not self:IsInCustomState() then
+        if channelTarget ~= ChatSettings.GeneralChannelName then
+            messageModeTextButton.Size = UDim2.new(0, 1000, 1, 0)
+            local v86 = if v15.tryLocalize then v15:tryLocalize(channelTarget) else channelTarget
+            messageModeTextButton.Text = string.format("[%s] ", v86)
+
+            if const textColor3 = self:GetChannelNameColor(channelTarget) then
+                messageModeTextButton.TextColor3 = textColor3
             else
-                v11 = a2
+                messageModeTextButton.TextColor3 = self:GetDefaultChannelNameColor()
             end
-            MessageModeTextButton_1.Text = string.format("[%s] ", v11)
-            v11 = a1:GetChannelNameColor(a2)
-            if v11 then
-                MessageModeTextButton_1.TextColor3 = v11
-            else
-                MessageModeTextButton_1.TextColor3 = a1:GetDefaultChannelNameColor()
-            end
-            local X_1 = MessageModeTextButton_1.TextBounds.X
-            MessageModeTextButton_1.Size = UDim2.new(0, X_1, 1, 0)
-            TextBox_1.Size = UDim2.new(1, -X_1, 1, 0)
-            TextBox_1.Position = UDim2.new(0, X_1, 0, 0)
-            TextLabel_1.Size = UDim2.new(1, -X_1, 1, 0)
-            TextLabel_1.Position = UDim2.new(0, X_1, 0, 0)
+
+            local x = messageModeTextButton.TextBounds.X
+            messageModeTextButton.Size = UDim2.new(0, x, 1, 0)
+            textBox.Size = UDim2.new(1, -x, 1, 0)
+            textBox.Position = UDim2.new(0, x, 0, 0)
+            textLabel.Size = UDim2.new(1, -x, 1, 0)
+            textLabel.Position = UDim2.new(0, x, 0, 0)
+
+            return
         end
+
+        messageModeTextButton.Text = ""
+        messageModeTextButton.Size = UDim2.new(0, 0, 0, 0)
+        textBox.Size = UDim2.new(1, 0, 1, 0)
+        textBox.Position = UDim2.new(0, 0, 0, 0)
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.Position = UDim2.new(0, 0, 0, 0)
     end
 end
-function tbl_upv_2.IsInCustomState(a1)
+
+function Class.IsInCustomState(self)
     --[[
       name: IsInCustomState
       line: 430
     ]]
-    return a1.InCustomState
+    return self.InCustomState
 end
-function tbl_upv_2.ResetCustomState(a1)
+
+function Class.ResetCustomState(self)
     --[[
       name: ResetCustomState
       line: 434
       upvalues:
-        u1 (ref, index: 1)
+        v15 (ref, index: 1)
     ]]
-    if not a1.InCustomState then
-        return
+    if self.InCustomState then
+        self.CustomState:Destroy()
+        self.CustomState = nil
+        self.InCustomState = false
+        self.ChatBarParentFrame:ClearAllChildren()
+        self:CreateGuiObjects(self.ChatBarParentFrame)
+        self:SetTextLabelText(v15:Get("GameChat_ChatMain_ChatBarText", "To chat click here or press \"/\" key"))
     end
-    a1.CustomState:Destroy()
-    a1.CustomState = nil
-    a1.InCustomState = false
-    a1.ChatBarParentFrame:ClearAllChildren()
-    a1:CreateGuiObjects(a1.ChatBarParentFrame)
-    a1:SetTextLabelText(u1:Get("GameChat_ChatMain_ChatBarText", "To chat click here or press \"/\" key"))
 end
-function tbl_upv_2.EnterWhisperState(a1, a2)
+
+function Class.EnterWhisperState(self, a92)
     --[[
       name: EnterWhisperState
       line: 451
       upvalues:
-        Whisper_upv_1 (copy, index: 1)
-        ChatSettings_upv_1 (copy, index: 2)
+        Whisper (copy, index: 1)
+        ChatSettings (copy, index: 2)
     ]]
-    a1:ResetCustomState()
-    if Whisper_upv_1.CustomStateCreator then
-        a1.CustomState = Whisper_upv_1.CustomStateCreator(a2, a1.ChatWindow, a1, ChatSettings_upv_1)
-        a1.InCustomState = true
+    self:ResetCustomState()
+
+    if Whisper.CustomStateCreator then
+        self.CustomState = Whisper.CustomStateCreator(a92, self.ChatWindow, self, ChatSettings)
+        self.InCustomState = true
     else
-        local v12
-        if ChatSettings_upv_1.PlayerDisplayNamesEnabled then
-            v12 = a2.DisplayName
-        else
-            v12 = a2.Name
-        end
-        a1:SetText("/w " .. v12)
+        local v93 = if ChatSettings.PlayerDisplayNamesEnabled then a92.DisplayName else a92.Name
+        self:SetText("/w " .. v93)
     end
-    a1:CaptureFocus()
+
+    self:CaptureFocus()
 end
-function tbl_upv_2.GetCustomMessage(a1)
+
+function Class.GetCustomMessage(self)
     --[[
       name: GetCustomMessage
       line: 475
     ]]
-    if a1.InCustomState then
-        return a1.CustomState:GetMessage()
+    if self.InCustomState then
+        return self.CustomState:GetMessage()
     end
+
     return nil
 end
-function tbl_upv_2.CustomStateProcessCompletedMessage(a1, a2)
+
+function Class.CustomStateProcessCompletedMessage(self, a96)
     --[[
       name: CustomStateProcessCompletedMessage
       line: 482
     ]]
-    if a1.InCustomState then
-        return a1.CustomState:ProcessCompletedMessage()
+    if self.InCustomState then
+        return self.CustomState:ProcessCompletedMessage()
     end
+
     return false
 end
-function tbl_upv_2.FadeOutBackground(a1, a2)
+
+function Class.FadeOutBackground(self, a98)
     --[[
       name: FadeOutBackground
       line: 489
       upvalues:
-        CurveUtil_upv_1 (copy, index: 1)
+        CurveUtil (copy, index: 1)
     ]]
-    a1.AnimParams.Background_TargetTransparency = 1
-    a1.AnimParams.Background_NormalizedExptValue = CurveUtil_upv_1:NormalizedDefaultExptValueInSeconds(a2)
-    a1:FadeOutText(a2)
+    self.AnimParams.Background_TargetTransparency = 1
+    self.AnimParams.Background_NormalizedExptValue = CurveUtil:NormalizedDefaultExptValueInSeconds(a98)
+    self:FadeOutText(a98)
 end
-function tbl_upv_2.FadeInBackground(a1, a2)
+
+function Class.FadeInBackground(self, a100)
     --[[
       name: FadeInBackground
       line: 495
       upvalues:
-        CurveUtil_upv_1 (copy, index: 1)
+        CurveUtil (copy, index: 1)
     ]]
-    a1.AnimParams.Background_TargetTransparency = 0.6
-    a1.AnimParams.Background_NormalizedExptValue = CurveUtil_upv_1:NormalizedDefaultExptValueInSeconds(a2)
-    a1:FadeInText(a2)
+    self.AnimParams.Background_TargetTransparency = 0.6
+    self.AnimParams.Background_NormalizedExptValue = CurveUtil:NormalizedDefaultExptValueInSeconds(a100)
+    self:FadeInText(a100)
 end
-function tbl_upv_2.FadeOutText(a1, a2)
+
+function Class.FadeOutText(self, a102)
     --[[
       name: FadeOutText
       line: 501
       upvalues:
-        CurveUtil_upv_1 (copy, index: 1)
+        CurveUtil (copy, index: 1)
     ]]
-    a1.AnimParams.Text_TargetTransparency = 1
-    a1.AnimParams.Text_NormalizedExptValue = CurveUtil_upv_1:NormalizedDefaultExptValueInSeconds(a2)
+    self.AnimParams.Text_TargetTransparency = 1
+    self.AnimParams.Text_NormalizedExptValue = CurveUtil:NormalizedDefaultExptValueInSeconds(a102)
 end
-function tbl_upv_2.FadeInText(a1, a2)
+
+function Class.FadeInText(self, a104)
     --[[
       name: FadeInText
       line: 506
       upvalues:
-        CurveUtil_upv_1 (copy, index: 1)
+        CurveUtil (copy, index: 1)
     ]]
-    a1.AnimParams.Text_TargetTransparency = 0.4
-    a1.AnimParams.Text_NormalizedExptValue = CurveUtil_upv_1:NormalizedDefaultExptValueInSeconds(a2)
+    self.AnimParams.Text_TargetTransparency = 0.4
+    self.AnimParams.Text_NormalizedExptValue = CurveUtil:NormalizedDefaultExptValueInSeconds(a104)
 end
-function tbl_upv_2.AnimGuiObjects(a1)
+
+function Class.AnimGuiObjects(self)
     --[[
       name: AnimGuiObjects
       line: 511
     ]]
-    a1.GuiObject.BackgroundTransparency = a1.AnimParams.Background_CurrentTransparency
-    a1.GuiObjects.TextBoxFrame.BackgroundTransparency = a1.AnimParams.Background_CurrentTransparency
-    a1.GuiObjects.TextLabel.TextTransparency = a1.AnimParams.Text_CurrentTransparency
-    a1.GuiObjects.TextBox.TextTransparency = a1.AnimParams.Text_CurrentTransparency
-    a1.GuiObjects.MessageModeTextButton.TextTransparency = a1.AnimParams.Text_CurrentTransparency
+    self.GuiObject.BackgroundTransparency = self.AnimParams.Background_CurrentTransparency
+    self.GuiObjects.TextBoxFrame.BackgroundTransparency = self.AnimParams.Background_CurrentTransparency
+    self.GuiObjects.TextLabel.TextTransparency = self.AnimParams.Text_CurrentTransparency
+    self.GuiObjects.TextBox.TextTransparency = self.AnimParams.Text_CurrentTransparency
+    self.GuiObjects.MessageModeTextButton.TextTransparency = self.AnimParams.Text_CurrentTransparency
 end
-function tbl_upv_2.InitializeAnimParams(a1)
+
+function Class.InitializeAnimParams(self)
     --[[
       name: InitializeAnimParams
       line: 520
     ]]
-    a1.AnimParams.Text_TargetTransparency = 0.4
-    a1.AnimParams.Text_CurrentTransparency = 0.4
-    a1.AnimParams.Text_NormalizedExptValue = 1
-    a1.AnimParams.Background_TargetTransparency = 0.6
-    a1.AnimParams.Background_CurrentTransparency = 0.6
-    a1.AnimParams.Background_NormalizedExptValue = 1
+    self.AnimParams.Text_TargetTransparency = 0.4
+    self.AnimParams.Text_CurrentTransparency = 0.4
+    self.AnimParams.Text_NormalizedExptValue = 1
+    self.AnimParams.Background_TargetTransparency = 0.6
+    self.AnimParams.Background_CurrentTransparency = 0.6
+    self.AnimParams.Background_NormalizedExptValue = 1
 end
-function tbl_upv_2.Update(a1, a2)
+
+function Class.Update(self, a108)
     --[[
       name: Update
       line: 530
       upvalues:
-        CurveUtil_upv_1 (copy, index: 1)
+        CurveUtil (copy, index: 1)
     ]]
-    a1.AnimParams.Text_CurrentTransparency = CurveUtil_upv_1:Expt(a1.AnimParams.Text_CurrentTransparency, a1.AnimParams.Text_TargetTransparency, a1.AnimParams.Text_NormalizedExptValue, a2)
-    a1.AnimParams.Background_CurrentTransparency = CurveUtil_upv_1:Expt(a1.AnimParams.Background_CurrentTransparency, a1.AnimParams.Background_TargetTransparency, a1.AnimParams.Background_NormalizedExptValue, a2)
-    a1:AnimGuiObjects()
+    self.AnimParams.Text_CurrentTransparency = CurveUtil:Expt(self.AnimParams.Text_CurrentTransparency, self.AnimParams.Text_TargetTransparency, self.AnimParams.Text_NormalizedExptValue, a108)
+    self.AnimParams.Background_CurrentTransparency = CurveUtil:Expt(self.AnimParams.Background_CurrentTransparency, self.AnimParams.Background_TargetTransparency, self.AnimParams.Background_NormalizedExptValue, a108)
+    self:AnimGuiObjects()
 end
-function tbl_upv_2.SetChannelNameColor(a1, a2, a3)
+
+function Class.SetChannelNameColor(self, channelNameColorKey, textColor3)
     --[[
       name: SetChannelNameColor
       line: 547
     ]]
-    a1.ChannelNameColors[a2] = a3
-    if a1.GuiObjects.MessageModeTextButton.Text ~= a2 then
-        return
+    self.ChannelNameColors[channelNameColorKey] = textColor3
+
+    if self.GuiObjects.MessageModeTextButton.Text == channelNameColorKey then
+        self.GuiObjects.MessageModeTextButton.TextColor3 = textColor3
     end
-    a1.GuiObjects.MessageModeTextButton.TextColor3 = a3
 end
-function tbl_upv_2.GetChannelNameColor(a1, a2)
+
+function Class.GetChannelNameColor(self, channelNameColorKey)
     --[[
       name: GetChannelNameColor
       line: 554
     ]]
-    return a1.ChannelNameColors[a2]
+    return self.ChannelNameColors[channelNameColorKey]
 end
-function tbl_1.new(a1, a2)
+
+function v2.new(commandProcessor, chatWindow)
     --[[
       name: new
       line: 561
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        ChatSettings_upv_1 (copy, index: 2)
-        Chat_upv_1 (copy, index: 3)
-        LocalPlayer_upv_1 (ref,  index: 4)
-        RunService_upv_1 (copy, index: 5)
+        Class (copy, index: 1)
+        ChatSettings (copy, index: 2)
+        chat (copy, index: 3)
+        localPlayer (ref,  index: 4)
+        runService (copy, index: 5)
     ]]
-    local u4 = setmetatable({}, tbl_upv_2)
-    u4.GuiObject = nil
-    u4.ChatBarParentFrame = nil
-    u4.TextBox = nil
-    u4.TextLabel = nil
-    u4.GuiObjects = {}
-    u4.eGuiObjectsChanged = Instance.new("BindableEvent")
-    u4.GuiObjectsChanged = u4.eGuiObjectsChanged.Event
-    u4.TextBoxConnections = {}
-    u4.PreviousText = ""
-    u4.InCustomState = false
-    u4.CustomState = nil
-    u4.TargetChannel = nil
-    u4.CommandProcessor = a1
-    u4.ChatWindow = a2
-    u4.TweenPixelsPerSecond = 500
-    u4.TargetYSize = 0
-    u4.AnimParams = {}
-    u4.CalculatingSizeLock = false
-    u4.ChannelNameColors = {}
-    u4.UserHasChatOff = false
-    u4:InitializeAnimParams()
-    ChatSettings_upv_1.SettingsChanged:connect(
-        function(a3, a4)
+    local v116 = setmetatable({}, Class)
+    v116.GuiObject = nil
+    v116.ChatBarParentFrame = nil
+    v116.TextBox = nil
+    v116.TextLabel = nil
+    v116.GuiObjects = {}
+    v116.eGuiObjectsChanged = Instance.new("BindableEvent")
+    v116.GuiObjectsChanged = v116.eGuiObjectsChanged.Event
+    v116.TextBoxConnections = {}
+    v116.PreviousText = ""
+    v116.InCustomState = false
+    v116.CustomState = nil
+    v116.TargetChannel = nil
+    v116.CommandProcessor = commandProcessor
+    v116.ChatWindow = chatWindow
+    v116.TweenPixelsPerSecond = 500
+    v116.TargetYSize = 0
+    v116.AnimParams = {}
+    v116.CalculatingSizeLock = false
+    v116.ChannelNameColors = {}
+    v116.UserHasChatOff = false
+    v116:InitializeAnimParams()
+
+    ChatSettings.SettingsChanged:connect(
+        function(a117, textSize)
             --[[
               line: 593
               upvalues:
-                u4 (copy, index: 1)
+                v116 (copy, index: 1)
             ]]
-            if a3 ~= "ChatBarTextSize" then
-                return
+            if a117 == "ChatBarTextSize" then
+                v116:SetTextSize(textSize)
             end
-            u4:SetTextSize(a4)
         end
     )
+
     coroutine.wrap(
         function()
             --[[
               line: 599
               upvalues:
-                Chat_upv_1 (copy, index: 1)
-                LocalPlayer_upv_1 (ref,  index: 2)
-                RunService_upv_1 (copy, index: 3)
-                u4 (copy, index: 4)
+                chat (copy, index: 1)
+                localPlayer (ref,  index: 2)
+                runService (copy, index: 3)
+                v116 (copy, index: 4)
             ]]
-            local success_1, v13 = pcall(
+            local v119, canUserChatAsync = pcall(
                 function()
                     --[[
                       line: 600
                       upvalues:
-                        Chat_upv_1 (copy, index: 1)
-                        LocalPlayer_upv_1 (ref,  index: 2)
+                        chat (copy, index: 1)
+                        localPlayer (ref,  index: 2)
                     ]]
-                    return Chat_upv_1:CanUserChatAsync(LocalPlayer_upv_1.UserId)
+                    return chat:CanUserChatAsync(localPlayer.UserId)
                 end
             )
-            local v14 = success_1 and (RunService_upv_1:IsStudio() or v13)
-            if v14 ~= false then
-                return
+            v119 = v119 and (runService:IsStudio() or canUserChatAsync)
+
+            if v119 == false then
+                v116.UserHasChatOff = true
+                v116:DoLockChatBar()
             end
-            u4.UserHasChatOff = true
-            u4:DoLockChatBar()
         end
     )()
-    return u4
+
+    return v116
 end
-return tbl_1
+
+return v2

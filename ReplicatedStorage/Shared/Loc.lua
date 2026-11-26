@@ -1,497 +1,576 @@
-local Players_upv_1 = game:GetService("Players")
-local LocalizationService_upv_1 = game:GetService("LocalizationService")
-local RunService_upv_1 = game:GetService("RunService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local tbl_upv_1 = {}
-tbl_upv_1.LANGS = {"es", "pt", "ru", "th", "fr"}
-tbl_upv_1.Changed = require(script.Parent:WaitForChild("Signal")).new()
-local u1 = "en"
-local u2 = "en-us"
-local u3 = nil
-local u4 = nil
-local u5 = false
-local function langOf(a1)
+local players = game:GetService("Players")
+local localizationService = game:GetService("LocalizationService")
+local runService = game:GetService("RunService")
+local workspace = game:GetService("Workspace")
+local Signal = require(script.Parent:WaitForChild("Signal"))
+local v6 = {LANGS = {"es", "pt", "ru", "th", "fr"}, Changed = Signal.new()}
+local v7 = "en"
+local localeId = "en-us"
+local result = nil
+local translator = nil
+local v11 = false
+
+local function langOf(a13)
     --[[
       name: langOf
       line: 52
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v6 (copy, index: 1)
     ]]
-    local v1 = string.lower(string.sub(a1 or "", 1, 2))
-    if table.find(tbl_upv_1.LANGS, v1) then
-        return v1
+    local lowercaseText = string.lower((string.sub((a13 or ""), 1, 2)))
+
+    if table.find(v6.LANGS, lowercaseText) then
+        return lowercaseText
     end
+
     return "en"
 end
+
 local function testLang()
     --[[
       name: testLang
       line: 57
       upvalues:
-        RunService_upv_1 (copy, index: 1)
-        Workspace_upv_1 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        runService (copy, index: 1)
+        workspace (copy, index: 2)
+        v6 (copy, index: 3)
     ]]
-    if not RunService_upv_1:IsStudio() then
+    if not runService:IsStudio() then
         return nil
     end
-    local v2 = Workspace_upv_1:GetAttribute("LocTest")
-    if type(v2) == "string" and table.find(tbl_upv_1.LANGS, v2) then
-        return v2
+
+    local locTest = workspace:GetAttribute("LocTest")
+
+    if type(locTest) == "string" and table.find(v6.LANGS, locTest) then
+        return locTest
     end
+
     return nil
 end
-local function retranslate(a1)
-    --[[
-      name: retranslate
-      line: 96
-    ]]
-    for _, value_1 in a1:GetDescendants() do
-        if (value_1:IsA("TextLabel") or value_1:IsA("TextButton") or value_1:IsA("TextBox")) and value_1.AutoLocalize then
-            value_1.AutoLocalize = false
-            value_1.AutoLocalize = true
-        end
-    end
-end
-local function setLocale(a1)
-    --[[
-      name: setLocale
-      line: 105
-      upvalues:
-        RunService_upv_1 (copy, index: 1)
-        Workspace_upv_1 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
-        u2 (ref,  index: 4)
-        u4 (ref,  index: 5)
-        u3 (ref,  index: 6)
-        u1 (ref,  index: 7)
-    ]]
-    local v3, v4 = nil, nil
-    if RunService_upv_1:IsStudio() then
-        v3 = Workspace_upv_1:GetAttribute("LocTest")
-        v4 = type(v3) ~= "string" or not (table.find(tbl_upv_1.LANGS, v3)) or v3
-    else
-        v4 = nil
-    end
-    if v4 then
-        a1 = "en-us"
-    end
-    u2 = a1
-    local v5 = nil
-    if v4 then
-        v3 = v4
-    else
-        v5 = string.lower(string.sub(a1 or "", 1, 2))
-        if table.find(tbl_upv_1.LANGS, v5) then
-            v3 = v5
-        else
-            v3 = "en"
-        end
-    end
-    u4 = nil
-    if u3 then
-        local success_1, v6 = pcall(
-            function()
-                --[[
-                  line: 114
-                  upvalues:
-                    u3 (ref, index: 1)
-                    a1 (ref, index: 2)
-                ]]
-                return u3:GetTranslator(a1)
-            end
-        )
-        if success_1 then
-            u4 = v6
-        end
-    end
-    if v3 == u1 then
-        return
-    end
-    u1 = v3
-    tbl_upv_1.Changed:Fire(v3)
-end
+
 local function build()
     --[[
       name: build
       line: 65
       upvalues:
-        RunService_upv_1 (copy, index: 1)
-        Workspace_upv_1 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        runService (copy, index: 1)
+        workspace (copy, index: 2)
+        v6 (copy, index: 3)
     ]]
-    local Strings_1 = require(script:WaitForChild("Strings"))
-    local v7, v8 = nil, nil
-    if RunService_upv_1:IsStudio() then
-        v7 = Workspace_upv_1:GetAttribute("LocTest")
-        v8 = type(v7) ~= "string" or not (table.find(tbl_upv_1.LANGS, v7)) or v7
+    local locTest
+    local sourceLocaleId
+    local Strings = require(script:WaitForChild("Strings"))
+
+    if runService:IsStudio() then
+        local locTest2 = workspace:GetAttribute("LocTest")
+
+        if type(locTest2) ~= "string" or not table.find(v6.LANGS, locTest2) then
+            locTest = nil
+        else
+            locTest = locTest2
+        end
     else
-        v8 = nil
+        locTest = nil
     end
-    local v9 = table.create(#Strings_1)
-    local tbl_2 = {}
-    local v10 = nil
-    for _, value_2 in Strings_1 do
-        local v11 = value_2[1]
-        if type(v11) ~= "string" or v11 == "" or tbl_2[v11] then
-            continue
-        end
-        tbl_2[v11] = true
-        local tbl_3 = {}
-        for key_1, value_3 in tbl_upv_1.LANGS do
-            v10 = value_2[key_1 + 1]
-            if type(v10) ~= "string" then
-                continue
+
+    local entries = table.create(#Strings)
+    local v23 = {}
+
+    for _, string in Strings do
+        local source = string[1]
+
+        if type(source) == "string" then
+            if source ~= "" and not v23[source] then
+                v23[source] = true
+                local values = {}
+
+                for v28, lang in v6.LANGS do
+                    local v30 = string[v28 + 1]
+
+                    if type(v30) == "string" and v30 ~= "" then
+                        values[lang] = v30
+                    end
+                end
+
+                if locTest then
+                    values["en-us"] = values[locTest] or source
+                end
+
+                table.insert(entries, {Key = "", Context = "", Example = "", Source = source, Values = values})
             end
-            if v10 ~= "" then
-                tbl_3[value_3] = v10
-            end
         end
-        if v8 then
-            tbl_3["en-us"] = tbl_3[v8] or v11
-        end
-        table.insert(v9, {Key = "", Example = "", Context = "", Source = v11, Values = tbl_3})
     end
-    local v12 = Instance.new("LocalizationTable")
-    v12.Name = "TribesStrings"
-    v12.SourceLocaleId = (v8 and "zz-zz") or "en-us"
-    v12:SetEntries(v9)
-    return v12
+
+    local tribesStrings = Instance.new("LocalizationTable")
+    tribesStrings.Name = "TribesStrings"
+
+    if locTest then
+        sourceLocaleId = "zz-zz"
+    else
+        sourceLocaleId = "en-us"
+    end
+
+    tribesStrings.SourceLocaleId = sourceLocaleId
+    tribesStrings:SetEntries(entries)
+
+    return tribesStrings
 end
-function tbl_upv_1.Install()
+
+local function retranslate(playerGui: PlayerGui?)
+    --[[
+      name: retranslate
+      line: 96
+    ]]
+    for _, descendant in playerGui:GetDescendants() do
+        if descendant:IsA("TextLabel") or descendant:IsA("TextButton") or descendant:IsA("TextBox") then
+            if descendant.AutoLocalize then
+                descendant.AutoLocalize = false
+                descendant.AutoLocalize = true
+            end
+        end
+    end
+end
+
+local function setLocale(locale)
+    --[[
+      name: setLocale
+      line: 105
+      upvalues:
+        runService (copy, index: 1)
+        workspace (copy, index: 2)
+        v6 (copy, index: 3)
+        localeId (ref,  index: 4)
+        translator (ref,  index: 5)
+        result (ref,  index: 6)
+        v7 (ref,  index: 7)
+    ]]
+    local locTest
+    local localeId2
+
+    if runService:IsStudio() then
+        local locTest2 = workspace:GetAttribute("LocTest")
+
+        if type(locTest2) ~= "string" or not table.find(v6.LANGS, locTest2) then
+            locTest = nil
+        else
+            locTest = locTest2
+        end
+    else
+        locTest = nil
+    end
+
+    if locTest then
+        localeId2 = "en-us"
+    else
+        localeId2 = locale
+    end
+
+    localeId = localeId2
+    local v41 = locTest
+    if not v41 then
+        local localeId3 = localeId2
+        local lowercaseText = string.lower((string.sub((localeId3 or ""), 1, 2)))
+
+        if table.find(v6.LANGS, lowercaseText) then
+            v41 = lowercaseText
+        else
+            v41 = "en"
+        end
+    end
+
+    translator = nil
+
+    if result then
+        local success, translator2 = pcall(
+            function()
+                --[[
+                  line: 114
+                  upvalues:
+                    result (ref, index: 1)
+                    localeId2 (ref, index: 2)
+                ]]
+                return result:GetTranslator(localeId2)
+            end
+        )
+        if success then
+            translator = translator2
+        end
+    end
+
+    if v41 ~= v7 then
+        v7 = v41
+        v6.Changed:Fire(v41)
+    end
+end
+
+function v6.Install()
     --[[
       name: Install
       line: 127
       upvalues:
-        u5 (ref,  index: 1)
-        u3 (ref,  index: 2)
-        RunService_upv_1 (copy, index: 3)
-        LocalizationService_upv_1 (copy, index: 4)
+        v11 (ref,  index: 1)
+        result (ref,  index: 2)
+        runService (copy, index: 3)
+        localizationService (copy, index: 4)
         build (copy, index: 5)
-        Players_upv_1 (copy, index: 6)
+        players (copy, index: 6)
         setLocale (copy, index: 7)
         retranslate (copy, index: 8)
     ]]
-    if u5 then
-        return u3
+    if v11 then
+        return result
     end
-    u5 = true
-    if not RunService_upv_1:IsClient() then
+
+    v11 = true
+
+    if not runService:IsClient() then
         return nil
     end
-    local TribesStrings_1 = LocalizationService_upv_1:FindFirstChild("TribesStrings")
-    if TribesStrings_1 and TribesStrings_1:IsA("LocalizationTable") then
-        u3 = TribesStrings_1
-        local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-        setLocale((LocalPlayer_upv_1 and (LocalPlayer_upv_1.LocaleId)) or "en-us")
-        if LocalPlayer_upv_1 then
-            local v13 = LocalPlayer_upv_1:FindFirstChildOfClass("PlayerGui")
-            if v13 then
-                retranslate(v13)
-            end
-            task.spawn(
-                function()
-                    --[[
-                      line: 155
-                      upvalues:
-                        LocalizationService_upv_1 (copy, index: 1)
-                        LocalPlayer_upv_1 (copy, index: 2)
-                        setLocale (copy, index: 3)
-                    ]]
-                    local success_2, u6 = pcall(
-                        function()
-                            --[[
-                              line: 156
-                              upvalues:
-                                LocalizationService_upv_1 (copy, index: 1)
-                                LocalPlayer_upv_1 (copy, index: 2)
-                            ]]
-                            return LocalizationService_upv_1:GetTranslatorForPlayerAsync(LocalPlayer_upv_1)
-                        end
-                    )
-                    if not success_2 or not u6 then
-                        return
+
+    local tribesStrings = localizationService:FindFirstChild("TribesStrings")
+
+    if not tribesStrings or not tribesStrings:IsA("LocalizationTable") then
+        local success, result2 = pcall(build)
+        if not success then
+            warn("[Loc] table not built: " .. tostring(result2))
+            return nil
+        end
+
+        result = result2
+        result2.Parent = localizationService
+    else
+        result = tribesStrings
+    end
+
+    local localPlayer = players.LocalPlayer
+    local localeId = localPlayer and localPlayer.LocaleId or "en-us"
+    setLocale(localeId)
+
+    if localPlayer then
+        if const playerGui = localPlayer:FindFirstChildOfClass("PlayerGui") then
+            retranslate(playerGui)
+        end
+
+        task.spawn(
+            function()
+                --[[
+                  line: 155
+                  upvalues:
+                    localizationService (copy, index: 1)
+                    localPlayer (copy, index: 2)
+                    setLocale (copy, index: 3)
+                ]]
+                local success, translatorForPlayerAsync = pcall(
+                    function()
+                        --[[
+                          line: 156
+                          upvalues:
+                            localizationService (copy, index: 1)
+                            localPlayer (copy, index: 2)
+                        ]]
+                        return localizationService:GetTranslatorForPlayerAsync(localPlayer)
                     end
-                    setLocale(u6.LocaleId)
-                    u6:GetPropertyChangedSignal("LocaleId"):Connect(
+                )
+
+                if success and translatorForPlayerAsync then
+                    setLocale(translatorForPlayerAsync.LocaleId)
+                    translatorForPlayerAsync:GetPropertyChangedSignal("LocaleId"):Connect(
                         function()
                             --[[
                               line: 161
                               upvalues:
                                 setLocale (copy, index: 1)
-                                u6 (copy, index: 2)
+                                translatorForPlayerAsync (copy, index: 2)
                             ]]
-                            setLocale(u6.LocaleId)
+                            setLocale(translatorForPlayerAsync.LocaleId)
                         end
                     )
                 end
-            )
-        end
-        return u3
-    end
-    local success_3, v14 = pcall(build)
-    if success_3 then
-        u3 = v14
-        v14.Parent = LocalizationService_upv_1
-        local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-        setLocale((LocalPlayer_upv_1 and (LocalPlayer_upv_1.LocaleId)) or "en-us")
-        if LocalPlayer_upv_1 then
-            local v13 = LocalPlayer_upv_1:FindFirstChildOfClass("PlayerGui")
-            if v13 then
-                retranslate(v13)
             end
-            task.spawn(
-                function()
-                    --[[
-                      line: 155
-                      upvalues:
-                        LocalizationService_upv_1 (copy, index: 1)
-                        LocalPlayer_upv_1 (copy, index: 2)
-                        setLocale (copy, index: 3)
-                    ]]
-                    local success_2, u6 = pcall(
-                        function()
-                            --[[
-                              line: 156
-                              upvalues:
-                                LocalizationService_upv_1 (copy, index: 1)
-                                LocalPlayer_upv_1 (copy, index: 2)
-                            ]]
-                            return LocalizationService_upv_1:GetTranslatorForPlayerAsync(LocalPlayer_upv_1)
-                        end
-                    )
-                    if not success_2 or not u6 then
-                        return
-                    end
-                    setLocale(u6.LocaleId)
-                    u6:GetPropertyChangedSignal("LocaleId"):Connect(
-                        function()
-                            --[[
-                              line: 161
-                              upvalues:
-                                setLocale (copy, index: 1)
-                                u6 (copy, index: 2)
-                            ]]
-                            setLocale(u6.LocaleId)
-                        end
-                    )
-                end
-            )
-        end
-        return u3
+        )
     end
-    warn("[Loc] table not built: " .. tostring(v14))
-    return nil
+
+    return result
 end
-function tbl_upv_1.Lang()
+
+function v6.Lang()
     --[[
       name: Lang
       line: 170
       upvalues:
-        u1 (ref, index: 1)
+        v7 (ref, index: 1)
     ]]
-    return u1
+    return v7
 end
-function tbl_upv_1.T(a1)
+
+function v6.T(a54)
     --[[
       name: T
       line: 175
       upvalues:
-        u1 (ref,  index: 1)
-        RunService_upv_1 (copy, index: 2)
-        Workspace_upv_1 (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
-        u4 (ref,  index: 5)
+        v7 (ref,  index: 1)
+        runService (copy, index: 2)
+        workspace (copy, index: 3)
+        v6 (copy, index: 4)
+        translator (ref,  index: 5)
     ]]
-    if u1 == "en" then
-        local v15, v16 = nil, nil
-        if RunService_upv_1:IsStudio() then
-            v15 = Workspace_upv_1:GetAttribute("LocTest")
-            v16 = type(v15) ~= "string" or not (table.find(tbl_upv_1.LANGS, v15)) or v15
+    if v7 == "en" then
+        local locTest
+
+        if runService:IsStudio() then
+            local locTest2 = workspace:GetAttribute("LocTest")
+
+            if type(locTest2) ~= "string" or not table.find(v6.LANGS, locTest2) then
+                locTest = nil
+            else
+                locTest = locTest2
+            end
         else
-            v16 = nil
+            locTest = nil
         end
-        if not (v16) then
-            return a1
+
+        if not locTest then
+            return a54
         end
     end
-    local u7 = u4
-    if not u7 then
-        return a1
+
+    local translator2 = translator
+    if not translator2 then
+        return a54
     end
-    local success_4, v17 = pcall(
+
+    local success, result = pcall(
         function()
             --[[
               line: 183
               upvalues:
-                u7 (copy, index: 1)
-                a1 (copy, index: 2)
+                translator2 (copy, index: 1)
+                a54 (copy, index: 2)
             ]]
-            return u7:Translate(game, a1)
+            return translator2:Translate(game, a54)
         end
     )
-    if success_4 and type(v17) == "string" then
-        return v17
+
+    if success and type(result) == "string" then
+        return result
     end
-    return a1
+
+    return a54
 end
-function tbl_upv_1.Pick(a1, a2)
+
+function v6.Pick(a60, a61)
     --[[
       name: Pick
       line: 193
       upvalues:
-        u1 (ref,  index: 1)
-        RunService_upv_1 (copy, index: 2)
-        Workspace_upv_1 (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
+        v7 (ref,  index: 1)
+        runService (copy, index: 2)
+        workspace (copy, index: 3)
+        v6 (copy, index: 4)
     ]]
-    if u1 == "en" then
-        local v18, v19 = nil, nil
-        if RunService_upv_1:IsStudio() then
-            v18 = Workspace_upv_1:GetAttribute("LocTest")
-            v19 = type(v18) ~= "string" or not (table.find(tbl_upv_1.LANGS, v18)) or v18
+    if v7 == "en" then
+        local locTest
+
+        if runService:IsStudio() then
+            local locTest2 = workspace:GetAttribute("LocTest")
+
+            if type(locTest2) ~= "string" or not table.find(v6.LANGS, locTest2) then
+                locTest = nil
+            else
+                locTest = locTest2
+            end
         else
-            v19 = nil
+            locTest = nil
         end
-        if not (v19) then
-            return a2
+
+        if not locTest then
+            return a61
         end
     end
-    local v20 = tbl_upv_1.T(a1)
-    if v20 ~= a1 then
-        return v20
+
+    local v64 = v6.T(a60)
+
+    if v64 == a60 then
+        return a61
     end
-    return a2
+
+    return v64
 end
-function tbl_upv_1.Rich(a1, a2)
+
+function v6.Rich(a65, a66)
     --[[
       name: Rich
       line: 204
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v6 (copy, index: 1)
     ]]
-    a1.AutoLocalize = false
-    a1.Text = tbl_upv_1.T(a2)
+    a65.AutoLocalize = false
+    a65.Text = v6.T(a66)
 end
-function tbl_upv_1.Off(a1)
+
+function v6.Off(a67)
     --[[
       name: Off
       line: 211
     ]]
-    a1.AutoLocalize = false
-    return a1
+    a67.AutoLocalize = false
+    return a67
 end
-function tbl_upv_1.Fit(a1, a2, a3)
+
+function v6.Fit(parent: Instance?, a69, a70: number)
     --[[
       name: Fit
       line: 219
     ]]
-    if a1:FindFirstChild("LocFit") then
-        return a1
+    if not parent:FindFirstChild("LocFit") then
+        local locFit = Instance.new("UITextSizeConstraint")
+        locFit.Name = "LocFit"
+        local textSize = parent.TextSize
+        locFit.MaxTextSize = math.max(1, textSize)
+        locFit.MinTextSize = math.min(textSize, (a69 or math.max(8, (math.floor(textSize * 0.6)))))
+        locFit.Parent = parent
+        parent.TextScaled = true
+
+        parent:GetPropertyChangedSignal("TextSize"):Connect(
+            function()
+                --[[
+                  name: cap
+                  line: 226
+                  upvalues:
+                    parent (copy, index: 1)
+                    locFit (copy, index: 2)
+                    a69 (copy, index: 3)
+                ]]
+                local textSize = parent.TextSize
+                locFit.MaxTextSize = math.max(1, textSize)
+                locFit.MinTextSize = math.min(textSize, (a69 or math.max(8, (math.floor(textSize * 0.6)))))
+            end
+        )
+
+        if a70 and 0 < a70 and not parent:FindFirstChildOfClass("UIPadding") then
+            local uiPadding = Instance.new("UIPadding")
+            uiPadding.PaddingLeft = UDim.new(a70, 0)
+            uiPadding.PaddingRight = UDim.new(a70, 0)
+            uiPadding.Parent = parent
+        end
     end
-    local u8 = Instance.new("UITextSizeConstraint")
-    u8.Name = "LocFit"
-    local TextSize_1 = a1.TextSize
-    u8.MaxTextSize = math.max(1, TextSize_1)
-    local v21 = a2 or (math.max(8, math.floor(TextSize_1 * 0.6)))
-    u8.MinTextSize = math.min(TextSize_1, v21)
-    u8.Parent = a1
-    a1.TextScaled = true
-    local function cap()
-        --[[
-          name: cap
-          line: 226
-          upvalues:
-            a1 (copy, index: 1)
-            u8 (copy, index: 2)
-            a2 (copy, index: 3)
-        ]]
-        local TextSize_2 = a1.TextSize
-        u8.MaxTextSize = math.max(1, TextSize_2)
-        local v22 = a2 or (math.max(8, math.floor(TextSize_2 * 0.6)))
-        u8.MinTextSize = math.min(TextSize_2, v22)
-    end
-    a1:GetPropertyChangedSignal("TextSize"):Connect(cap)
-    if a3 and a3 > 0 and not (a1:FindFirstChildOfClass("UIPadding")) then
-        local v23 = Instance.new("UIPadding")
-        v23.PaddingLeft = UDim.new(a3, 0)
-        v23.PaddingRight = UDim.new(a3, 0)
-        v23.Parent = a1
-    end
-    return a1
+
+    return parent
 end
-function tbl_upv_1.Missing(a1)
+
+function v6.Missing(a75)
     --[[
       name: Missing
       line: 245
       upvalues:
-        u3 (ref,  index: 1)
-        RunService_upv_1 (copy, index: 2)
-        Workspace_upv_1 (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
-        u2 (ref,  index: 5)
+        result (ref,  index: 1)
+        runService (copy, index: 2)
+        workspace (copy, index: 3)
+        v6 (copy, index: 4)
+        localeId (ref,  index: 5)
     ]]
-    local tbl_4 = {}
-    if not u3 then
-        return tbl_4
+    local locTest
+    local v77 = {}
+
+    if not result then
+        return v77
     end
-    local tbl_5 = {}
-    local v24, v25 = nil, nil
-    if RunService_upv_1:IsStudio() then
-        v24 = Workspace_upv_1:GetAttribute("LocTest")
-        v25 = type(v24) ~= "string" or not (table.find(tbl_upv_1.LANGS, v24)) or v24
+
+    local v78 = {}
+    local result2 = result
+
+    if runService:IsStudio() then
+        local locTest2 = workspace:GetAttribute("LocTest")
+
+        if type(locTest2) ~= "string" or not table.find(v6.LANGS, locTest2) then
+            locTest = nil
+        else
+            locTest = locTest2
+        end
     else
-        v25 = nil
+        locTest = nil
     end
-    local v26
-    if v25 then
-        v26 = "en-us"
-    else
-        v26 = u2
+
+    local v81 = locTest and "en-us" or localeId
+
+    do
+        local v82, tableMove, values = v78, table.move, table.pack(result2:GetTranslator(v81), result:GetTranslator("th"))
+        tableMove(values, 1, values.n, 1, v82)
     end
-    __setlist(tbl_5, 1, {u3:GetTranslator(v26), u3:GetTranslator("th")})
-    local v27, v28, v29 = nil, nil, nil
-    for _, value_upv_4 in a1:GetDescendants() do
-        if value_upv_4:IsA("TextLabel") and (value_upv_4.AutoLocalize) and (value_upv_4.Visible) and value_upv_4.Text ~= "" or not value_upv_4:IsA("TextLabel") and (value_upv_4:IsA("TextButton")) and (value_upv_4.AutoLocalize) and (value_upv_4.Visible) and value_upv_4.Text ~= "" then
-            local Text_upv_1 = value_upv_4.Text
-            if not (string.find(Text_upv_1, "%a")) then
+
+    for _, descendant in a75:GetDescendants() do
+        if not descendant:IsA("TextLabel") and not descendant:IsA("TextButton") then
+            continue
+        end
+
+        if descendant.AutoLocalize then
+            local parent
+
+            if not descendant.Visible then
                 continue
             end
-            v27 = false
-            for v32, value_upv_5 in tbl_5 do
-                local success_5, v30 = pcall(
+            if descendant.Text == "" then
+                continue
+            end
+
+            local text = descendant.Text
+
+            if not string.find(text, "%a") then
+                continue
+            end
+
+            local v89 = false
+
+            for _, v91 in v78 do
+                local success, result3 = pcall(
                     function()
                         --[[
                           line: 258
                           upvalues:
-                            value_upv_5 (copy, index: 1)
-                            value_upv_4 (copy, index: 2)
-                            Text_upv_1 (copy, index: 3)
+                            v91 (copy, index: 1)
+                            descendant (copy, index: 2)
+                            text (copy, index: 3)
                         ]]
-                        return value_upv_5:Translate(value_upv_4, Text_upv_1)
+                        return v91:Translate(descendant, text)
                     end
                 )
-                v27 = v27 or success_5 and v30 ~= Text_upv_1
+                local v94 = v89 or success and result3 ~= text
+                v89 = v94
             end
-            if v27 then
+
+            if v89 then
                 continue
             end
-            v29 = true
-            v28 = value_upv_4.Parent
-            while v28 and v28 ~= a1 do
-                if (v28:IsA("GuiObject")) and not v28.Visible then
-                    v29 = false
+
+            local v95 = true
+            parent = descendant.Parent
+
+            while parent do
+                if parent == a75 then
                     break
-                elseif not (v28:IsA("LayerCollector")) or v28.Enabled then
-                    v28 = v28.Parent
                 end
+                if parent:IsA("GuiObject") and not parent.Visible then
+                    break
+                end
+
+                if parent:IsA("LayerCollector") and not parent.Enabled then
+                    v95 = false
+                    break
+                end
+
+                parent = parent.Parent
             end
-            if v29 then
-                local tbl_6 = {value_upv_4:GetFullName(), Text_upv_1}
-                table.insert(tbl_4, tbl_6)
+
+            if not v95 then
+                continue
             end
+
+            local v96 = {descendant:GetFullName(), text}
+            table.insert(v77, v96)
         end
     end
-    return tbl_4
+
+    return v77
 end
-return tbl_upv_1
+
+return v6

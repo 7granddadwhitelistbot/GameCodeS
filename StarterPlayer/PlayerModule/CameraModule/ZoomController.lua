@@ -1,148 +1,167 @@
-local Popper_upv_1 = require(script:WaitForChild("Popper"))
-local clamp_upv_1 = math.clamp
-local exp_upv_1 = math.exp
-local min_upv_1 = math.min
-local max_upv_1 = math.max
-local CameraMinZoomDistance_upv_1 = nil
-local CameraMaxZoomDistance_upv_1 = nil
-local LocalPlayer_upv_1 = game:GetService("Players").LocalPlayer
-assert(LocalPlayer_upv_1)
+local Popper = require(script:WaitForChild("Popper"))
+local mathClamp = math.clamp
+local mathExp = math.exp
+local mathMin = math.min
+local mathMax = math.max
+local cameraMinZoomDistance = nil
+local cameraMaxZoomDistance = nil
+local localPlayer = game:GetService("Players").LocalPlayer
+assert(localPlayer)
+
 local function updateBounds()
     --[[
       name: updateBounds
-      line: 23
+      line: 24
       upvalues:
-        CameraMinZoomDistance_upv_1 (ref,  index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-        CameraMaxZoomDistance_upv_1 (ref,  index: 3)
+        cameraMinZoomDistance (ref,  index: 1)
+        localPlayer (copy, index: 2)
+        cameraMaxZoomDistance (ref,  index: 3)
     ]]
-    CameraMinZoomDistance_upv_1 = LocalPlayer_upv_1.CameraMinZoomDistance
-    CameraMaxZoomDistance_upv_1 = LocalPlayer_upv_1.CameraMaxZoomDistance
+    cameraMinZoomDistance = localPlayer.CameraMinZoomDistance
+    cameraMaxZoomDistance = localPlayer.CameraMaxZoomDistance
 end
-CameraMinZoomDistance_upv_1 = LocalPlayer_upv_1.CameraMinZoomDistance
-CameraMaxZoomDistance_upv_1 = LocalPlayer_upv_1.CameraMaxZoomDistance
-LocalPlayer_upv_1:GetPropertyChangedSignal("CameraMinZoomDistance"):Connect(updateBounds)
-LocalPlayer_upv_1:GetPropertyChangedSignal("CameraMaxZoomDistance"):Connect(updateBounds)
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-function tbl_upv_1.new(a1, a2, a3, a4)
+
+cameraMinZoomDistance = localPlayer.CameraMinZoomDistance
+cameraMaxZoomDistance = localPlayer.CameraMaxZoomDistance
+localPlayer:GetPropertyChangedSignal("CameraMinZoomDistance"):Connect(updateBounds)
+localPlayer:GetPropertyChangedSignal("CameraMaxZoomDistance"):Connect(updateBounds)
+local Class = {}
+Class.__index = Class
+
+function Class.new(freq, a12, minValue: number, maxValue: number)
     --[[
       name: new
-      line: 37
+      line: 39
       upvalues:
-        clamp_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        mathClamp (copy, index: 1)
+        Class (copy, index: 2)
     ]]
-    a2 = clamp_upv_1(a2, a3, a4)
-    return (setmetatable({v = 0, freq = a1, x = a2, minValue = a3, maxValue = a4, goal = a2}, tbl_upv_1))
+    a12 = mathClamp(a12, minValue, maxValue)
+    return (setmetatable({v = 0, freq = freq, x = a12, minValue = minValue, maxValue = maxValue, goal = a12}, Class))
 end
-function tbl_upv_1.Step(a1, a2)
+
+function Class.Step(self, a16)
     --[[
       name: Step
-      line: 49
+      line: 51
       upvalues:
-        exp_upv_1 (copy, index: 1)
+        mathExp (copy, index: 1)
     ]]
-    local v1 = a1.freq * 2 * math.pi
-    local v_1 = a1.v
-    local minValue_1 = a1.minValue
-    local maxValue_1 = a1.maxValue
-    local goal_1 = a1.goal
-    local v2 = goal_1 - a1.x
-    local v3 = v1 * a2
-    local v4 = exp_upv_1(-v3)
-    local v5 = goal_1 + ((v_1 * a2) - (v2 * (v3 + 1))) * v4
-    local v6 = ((((v2 * v1) - v_1) * v3) + v_1) * v4
-    if v5 < minValue_1 then
-        v5, v6 = minValue_1, 0
-    elseif maxValue_1 < v5 then
-        v5, v6 = maxValue_1, 0
+    local v17 = self.freq * 2 * math.pi
+    local x = self.x
+    local v = self.v
+    local minValue = self.minValue
+    local maxValue = self.maxValue
+    local goal = self.goal
+    local v23 = goal - x
+    local v24 = v17 * a16
+    local v25 = mathExp(-v24)
+    local v26 = goal + (v * a16 - (v23 * (v24 + 1))) * v25
+    local v2 = ((((v23 * v17) - v) * v24) + v) * v25
+
+    if v26 < minValue then
+        v2 = 0
+        v26 = minValue
+    elseif maxValue < v26 then
+        v2 = 0
+        v26 = maxValue
     end
-    a1.x = v5
-    a1.v = v6
-    return v5
+
+    self.x = v26
+    self.v = v2
+
+    return v26
 end
-local u1 = tbl_upv_1.new(4.5, 12.5, 0.5, CameraMaxZoomDistance_upv_1)
-local function stepTargetZoom(a1, a2, a3, a4)
+
+local class = Class.new(4.5, 12.5, 0.5, cameraMaxZoomDistance)
+
+local function stepTargetZoom(a30, a31, minValue: number, maxValue: number)
     --[[
       name: stepTargetZoom
-      line: 87
+      line: 89
       upvalues:
-        clamp_upv_1 (copy, index: 1)
+        mathClamp (copy, index: 1)
     ]]
-    local v7 = clamp_upv_1(a1 + (a2 * ((a1 * 0.0375) + 1)), a3, a4)
-    if v7 < 1 then
-        local v8 = a2 <= 0 and a3 or 1
-        a1 = v8
-    else
-        a1 = v7
+    local v34 = mathClamp(a30 + (a31 * ((a30 * 0.0375) + 1)), minValue, maxValue)
+
+    if v34 < 1 then
+        v34 = a31 <= 0 and minValue or 1
     end
-    return a1
+
+    return v34
 end
-local u2 = 0
-local tbl_2 = {}
-function tbl_2.Update(a1, a2, a3)
-    --[[
-      name: Update
-      line: 98
-      upvalues:
-        u1 (copy, index: 1)
-        u2 (ref,  index: 2)
-        CameraMinZoomDistance_upv_1 (ref,  index: 3)
-        CameraMaxZoomDistance_upv_1 (ref,  index: 4)
-        clamp_upv_1 (copy, index: 5)
-        max_upv_1 (copy, index: 6)
-        Popper_upv_1 (copy, index: 7)
-        min_upv_1 (copy, index: 8)
-    ]]
-    local v9 = math.huge
-    local v10 = nil
-    if u1.goal > 1 then
-        local x_1 = u1.x
-        local v11 = u1.goal
-        local v12 = u2
-        local v13 = CameraMinZoomDistance_upv_1
-        v10 = clamp_upv_1(u1.goal + u2 * (u1.goal * 0.0375 + 1), CameraMinZoomDistance_upv_1, CameraMaxZoomDistance_upv_1)
-        if v10 < 1 then
-            v11 = v12 <= 0 and v13 or 1
-        else
-            v11 = v10
+
+local v35 = 0
+
+return {
+    Update = (function(a36, a37, a38)
+        --[[
+          name: Update
+          line: 101
+          upvalues:
+            class (copy, index: 1)
+            v35 (ref,  index: 2)
+            cameraMinZoomDistance (ref,  index: 3)
+            cameraMaxZoomDistance (ref,  index: 4)
+            mathClamp (copy, index: 5)
+            mathMax (copy, index: 6)
+            Popper (copy, index: 7)
+            mathMin (copy, index: 8)
+        ]]
+        local v39 = math.huge
+
+        if 1 < class.goal then
+            local v40
+            local x = class.x
+            local goal = class.goal
+            local v43 = v35
+            local cameraMinZoomDistance2 = cameraMinZoomDistance
+            local cameraMaxZoomDistance2 = cameraMaxZoomDistance
+            local clampedValue = mathClamp(goal + (v43 * ((goal * 0.0375) + 1)), cameraMinZoomDistance2, cameraMaxZoomDistance2)
+
+            if not (clampedValue < 1) then
+                v40 = clampedValue
+            else
+                v40 = v43 <= 0 and cameraMinZoomDistance2 or 1
+            end
+
+            local v47 = mathMax(x, v40)
+            v39 = Popper(a37 * CFrame.new(0, 0, 0.5), v47 - 0.5, a38) + 0.5
         end
-        local v15 = max_upv_1(x_1, v11)
-        v9 = Popper_upv_1(a2 * CFrame.new(0, 0, 0.5), v15 - 0.5, a3) + 0.5
-    end
-    u1.minValue = 0.5
-    u1.maxValue = min_upv_1(CameraMaxZoomDistance_upv_1, v9)
-    return u1:Step(a1)
-end
-function tbl_2.GetZoomRadius()
-    --[[
-      name: GetZoomRadius
-      line: 122
-      upvalues:
-        u1 (copy, index: 1)
-    ]]
-    return u1.x
-end
-function tbl_2.SetZoomParameters(a1, a2)
-    --[[
-      name: SetZoomParameters
-      line: 126
-      upvalues:
-        u1 (copy, index: 1)
-        u2 (ref,  index: 2)
-    ]]
-    u1.goal = a1
-    u2 = a2
-end
-function tbl_2.ReleaseSpring()
-    --[[
-      name: ReleaseSpring
-      line: 131
-      upvalues:
-        u1 (copy, index: 1)
-    ]]
-    u1.x = u1.goal
-    u1.v = 0
-end
-return tbl_2
+
+        class.minValue = 0.5
+        class.maxValue = mathMin(cameraMaxZoomDistance, v39)
+
+        return class:Step(a36)
+    end),
+    GetZoomRadius = (function()
+        --[[
+          name: GetZoomRadius
+          line: 125
+          upvalues:
+            class (copy, index: 1)
+        ]]
+        return class.x
+    end),
+    SetZoomParameters = (function(goal, a49)
+        --[[
+          name: SetZoomParameters
+          line: 129
+          upvalues:
+            class (copy, index: 1)
+            v35 (ref,  index: 2)
+        ]]
+        class.goal = goal
+        v35 = a49
+    end),
+    ReleaseSpring = (function()
+        --[[
+          name: ReleaseSpring
+          line: 134
+          upvalues:
+            class (copy, index: 1)
+        ]]
+        class.x = class.goal
+        class.v = 0
+    end)
+}

@@ -1,53 +1,61 @@
-local Players_1 = game:GetService("Players")
-local StarterGui_upv_1 = game:GetService("StarterGui")
-local tbl_1 = {}
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local u1 = 0
+local players = game:GetService("Players")
+local starterGui = game:GetService("StarterGui")
+local v3 = {}
+local localPlayer = players.LocalPlayer
+local count = 0
+
 local function apply()
     --[[
       name: apply
       line: 14
       upvalues:
-        u1 (ref,  index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-        StarterGui_upv_1 (copy, index: 3)
+        count (ref,  index: 1)
+        localPlayer (copy, index: 2)
+        starterGui (copy, index: 3)
     ]]
-    u1 = u1 + 1
-    local u2 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
+    count += 1
+    local v7 = count
+    local value = localPlayer:GetAttribute("State") ~= "Match"
+
     for _ = 1, 40 do
-        if u1 == u1
-            and not (pcall(
-                function()
-                    --[[
-                      line: 22
-                      upvalues:
-                        StarterGui_upv_1 (copy, index: 1)
-                        u2 (copy, index: 2)
-                    ]]
-                    StarterGui_upv_1:SetCore("ResetButtonCallback", u2)
-                end
-            )) then
-            task.wait(0.5)
-            continue
+        if v7 ~= count then
+            return
         end
-        return
+        if pcall(
+            function()
+                --[[
+                  line: 22
+                  upvalues:
+                    starterGui (copy, index: 1)
+                    value (copy, index: 2)
+                ]]
+                starterGui:SetCore("ResetButtonCallback", value)
+            end
+        ) then
+            return
+        end
+
+        task.wait(0.5)
     end
 end
-local u3 = false
-function tbl_1.Start()
+
+local hasRun = false
+
+function v3.Start()
     --[[
       name: Start
       line: 33
       upvalues:
-        u3 (ref,  index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
+        hasRun (ref,  index: 1)
+        localPlayer (copy, index: 2)
         apply (copy, index: 3)
     ]]
-    if u3 then
+    if hasRun then
         return
     end
-    u3 = true
-    LocalPlayer_upv_1:GetAttributeChangedSignal("State"):Connect(
+
+    hasRun = true
+    localPlayer:GetAttributeChangedSignal("State"):Connect(
         function()
             --[[
               line: 38
@@ -59,4 +67,5 @@ function tbl_1.Start()
     )
     task.spawn(apply)
 end
-return tbl_1
+
+return v3

@@ -1,445 +1,501 @@
-local Lighting_upv_1 = game:GetService("Lighting")
-local Players_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local TweenService_upv_1 = game:GetService("TweenService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local Config_upv_1 = require(ReplicatedStorage_upv_1:WaitForChild("Shared"):WaitForChild("Config"))
-local tbl_1 = {}
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local tbl_upv_2 = {"ClockTime", "Brightness", "Ambient", "OutdoorAmbient", "ExposureCompensation", "EnvironmentDiffuseScale", "EnvironmentSpecularScale", "ShadowSoftness", "GeographicLatitude", "ColorShift_Top", "ColorShift_Bottom", "FogColor", "FogStart", "FogEnd"}
-local tbl_upv_3 = {SunRaysEffect = true, Sky = true, BloomEffect = true, Atmosphere = true, DepthOfFieldEffect = true, ColorCorrectionEffect = true, BlurEffect = true}
-local tbl_upv_4 = {}
-local tbl_upv_5 = {}
-local tbl_upv_6 = {}
-local tbl_upv_7 = {}
-local u1 = nil
-local u2 = nil
-local u3 = 0
-local u4 = Instance.new("Folder")
-u4.Name = "CoreLightingStash"
-local u5 = Instance.new("ColorCorrectionEffect")
-u5.Name = "CoreTransition"
-u5.Enabled = false
+local lighting = game:GetService("Lighting")
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local tweenService = game:GetService("TweenService")
+local workspace = game:GetService("Workspace")
+local Config = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
+local v7 = {}
+local localPlayer = players.LocalPlayer
+local attributeNames = {"ClockTime", "Brightness", "Ambient", "OutdoorAmbient", "ExposureCompensation", "EnvironmentDiffuseScale", "EnvironmentSpecularScale", "ShadowSoftness", "GeographicLatitude", "ColorShift_Top", "ColorShift_Bottom", "FogColor", "FogStart", "FogEnd"}
+local v10 = {Atmosphere = true, Sky = true, BloomEffect = true, ColorCorrectionEffect = true, SunRaysEffect = true, DepthOfFieldEffect = true, BlurEffect = true}
+local v11 = {}
+local v12 = {}
+local v13 = {}
+local v14 = {}
+local v15 = nil
+local instance = nil
+local count = 0
+local coreLightingStash = Instance.new("Folder")
+coreLightingStash.Name = "CoreLightingStash"
+
+local coreTransition = Instance.new("ColorCorrectionEffect")
+coreTransition.Name = "CoreTransition"
+coreTransition.Enabled = false
+
 local function presetsFolder()
     --[[
       name: presetsFolder
       line: 66
       upvalues:
-        ReplicatedStorage_upv_1 (copy, index: 1)
+        replicatedStorage (copy, index: 1)
     ]]
-    return ReplicatedStorage_upv_1:FindFirstChild("Lighting")
+    return replicatedStorage:FindFirstChild("Lighting")
 end
-local function getPreset(a1)
+
+local function getPreset(childName: string)
     --[[
       name: getPreset
       line: 70
       upvalues:
-        ReplicatedStorage_upv_1 (copy, index: 1)
+        replicatedStorage (copy, index: 1)
     ]]
-    local Lighting_2 = ReplicatedStorage_upv_1:FindFirstChild("Lighting")
-    if Lighting_2 and a1 then
-        return (Lighting_2:FindFirstChild(a1))
+    local lighting = replicatedStorage:FindFirstChild("Lighting")
+
+    if lighting and childName then
+        return (lighting:FindFirstChild(childName))
     end
+
     return nil
 end
-local function arenaOf(a1)
+
+local function arenaOf(childName: string)
     --[[
       name: arenaOf
       line: 75
       upvalues:
-        Workspace_upv_1 (copy, index: 1)
+        workspace (copy, index: 1)
     ]]
-    if type(a1) == "string" and a1 ~= "" then
-        local Arenas_1 = Workspace_upv_1:FindFirstChild("Arenas")
-        local v1 = Arenas_1 and (Arenas_1:FindFirstChild(a1))
-        return v1
+    if type(childName) ~= "string" or childName == "" then
+        return nil
     end
-    return nil
+
+    local arenas = workspace:FindFirstChild("Arenas")
+
+    return arenas and arenas:FindFirstChild(childName)
 end
+
 local function seenMatch()
     --[[
       name: seenMatch
       line: 84
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
     ]]
-    local v2
-    if LocalPlayer_upv_1:GetAttribute("State") ~= "Match" then
-        v2 = LocalPlayer_upv_1:GetAttribute("Spectating")
-    else
-        v2 = LocalPlayer_upv_1:GetAttribute("MatchId")
-    end
-    if type(v2) ~= "string" then
+    local v28 = if localPlayer:GetAttribute("State") == "Match" then localPlayer:GetAttribute("MatchId") else localPlayer:GetAttribute("Spectating")
+
+    if type(v28) ~= "string" then
         return ""
     end
-    return v2
+
+    return v28
 end
+
 local function wantedName()
     --[[
       name: wantedName
       line: 90
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        Workspace_upv_1 (copy, index: 2)
-        ReplicatedStorage_upv_1 (copy, index: 3)
-        u1 (ref,  index: 4)
+        localPlayer (copy, index: 1)
+        workspace (copy, index: 2)
+        replicatedStorage (copy, index: 3)
+        v15 (ref,  index: 4)
     ]]
-    local v3
-    if LocalPlayer_upv_1:GetAttribute("State") ~= "Match" then
-        v3 = LocalPlayer_upv_1:GetAttribute("Spectating")
+    local v30
+    local v31
+    local child
+    local v33 = if localPlayer:GetAttribute("State") == "Match" then localPlayer:GetAttribute("MatchId") else localPlayer:GetAttribute("Spectating")
+
+    if type(v33) ~= "string" then
+        v30 = ""
     else
-        v3 = LocalPlayer_upv_1:GetAttribute("MatchId")
+        v30 = v33
     end
-    local v4
-    if type(v3) ~= "string" then
-        v4 = ""
-    else
-        v4 = v3
-    end
-    if v4 == "" then
+
+    if v30 == "" then
         return "Lobby"
     end
-    local v5
-    if LocalPlayer_upv_1:GetAttribute("State") ~= "Match" then
-        v5 = LocalPlayer_upv_1:GetAttribute("Spectating")
+
+    local v34 = if localPlayer:GetAttribute("State") == "Match" then localPlayer:GetAttribute("MatchId") else localPlayer:GetAttribute("Spectating")
+
+    if type(v34) ~= "string" then
+        v31 = ""
     else
-        v5 = LocalPlayer_upv_1:GetAttribute("MatchId")
+        v31 = v34
     end
-    if type(v5) ~= "string" then
-        v3 = ""
+
+    if type(v31) ~= "string" or v31 == "" then
+        child = nil
     else
-        v3 = v5
+        local arenas = workspace:FindFirstChild("Arenas")
+        child = arenas and arenas:FindFirstChild(v31)
     end
-    if type(v3) ~= "string" or v3 == "" then
-        v4 = nil
+
+    if not child then
+        return v15 or "Lobby"
+    end
+
+    local v36 = child:GetAttribute("LightingPreset")
+
+    if type(v36) ~= "string" then
+        v30 = child
+    elseif v36 == "" then
+        v30 = child
     else
-        local Arenas_2 = Workspace_upv_1:FindFirstChild("Arenas")
-        v4 = Arenas_2 and (Arenas_2:FindFirstChild(v3))
+        local lighting = replicatedStorage:FindFirstChild("Lighting")
+        local instance = if lighting and v36 then lighting:FindFirstChild(v36) else nil
+        if instance then
+            return v36
+        end
+
+        v30 = child
     end
-    if not v4 then
-        return u1 or "Lobby"
-    end
-    v3 = v4:GetAttribute("LightingPreset")
-    local v9 = nil
-    if type(v3) == "string" then
-        if v3 ~= "" then
-            v9 = ReplicatedStorage_upv_1:FindFirstChild("Lighting")
-            local v7 = not (v9) or not (v3) or v9:FindFirstChild(v3)
-            if v7 then
-                return v3
-            end
+
+    local v39 = v30:GetAttribute("MapId")
+
+    if type(v39) == "string" then
+        local lighting = replicatedStorage:FindFirstChild("Lighting")
+        local instance = if lighting and v39 then lighting:FindFirstChild(v39) else nil
+        if instance then
+            return v39
         end
     end
-    local v8 = v4:GetAttribute("MapId")
-    if type(v8) == "string" then
-        v9 = ReplicatedStorage_upv_1:FindFirstChild("Lighting")
-        local v10 = not (v9) or not (v8) or v9:FindFirstChild(v8)
-        if v10 then
-            return v8
-        end
+
+    if type(v36) == "string" and v36 ~= "" then
+        return v36
     end
-    if type(v3) == "string" and v3 ~= "" then
-        return v3
-    end
+
     return "Lobby"
 end
+
 local function restoreDefaults()
     --[[
       name: restoreDefaults
       line: 109
       upvalues:
-        tbl_upv_4 (copy, index: 1)
-        Lighting_upv_1 (copy, index: 2)
-        tbl_upv_6 (copy, index: 3)
-        tbl_upv_7 (copy, index: 4)
+        v11 (copy, index: 1)
+        lighting (copy, index: 2)
+        v13 (copy, index: 3)
+        v14 (copy, index: 4)
     ]]
-    for key_upv_1, value_upv_1 in tbl_upv_4 do
+    for v43, v44 in v11 do
         pcall(
             function()
                 --[[
                   line: 111
                   upvalues:
-                    Lighting_upv_1 (copy, index: 1)
-                    key_upv_1 (copy, index: 2)
-                    value_upv_1 (copy, index: 3)
+                    lighting (copy, index: 1)
+                    v43 (copy, index: 2)
+                    v44 (copy, index: 3)
                 ]]
-                Lighting_upv_1[key_upv_1] = value_upv_1
+                lighting[v43] = v44
             end
         )
     end
-    for _, value_2 in tbl_upv_6 do
-        value_2:Destroy()
+
+    for _, v46 in v13 do
+        v46:Destroy()
     end
-    table.clear(tbl_upv_6)
-    for _, value_3 in tbl_upv_7 do
-        value_3.Parent = Lighting_upv_1
+
+    table.clear(v13)
+
+    for _, v48 in v14 do
+        v48.Parent = lighting
     end
-    table.clear(tbl_upv_7)
+
+    table.clear(v14)
 end
-local function applyNow(a1)
+
+local function applyNow(instance2: Instance?)
     --[[
       name: applyNow
       line: 125
       upvalues:
         restoreDefaults (copy, index: 1)
-        u2 (ref,  index: 2)
-        tbl_upv_2 (copy, index: 3)
-        Lighting_upv_1 (copy, index: 4)
-        tbl_upv_3 (copy, index: 5)
-        tbl_upv_5 (copy, index: 6)
-        u4 (copy, index: 7)
-        tbl_upv_7 (copy, index: 8)
-        tbl_upv_6 (copy, index: 9)
+        instance (ref,  index: 2)
+        attributeNames (copy, index: 3)
+        lighting (copy, index: 4)
+        v10 (copy, index: 5)
+        v12 (copy, index: 6)
+        coreLightingStash (copy, index: 7)
+        v14 (copy, index: 8)
+        v13 (copy, index: 9)
     ]]
     restoreDefaults()
-    u2 = a1
-    if not a1 then
+    instance = instance2
+
+    if not instance2 then
         return
     end
-    for _, value_upv_4 in tbl_upv_2 do
-        local u6 = a1:GetAttribute(value_upv_4)
-        if u6 ~= nil then
+
+    for _, attributeName in attributeNames do
+        local v53 = instance2:GetAttribute(attributeName)
+        if v53 ~= nil then
             pcall(
                 function()
                     --[[
                       line: 134
                       upvalues:
-                        Lighting_upv_1 (copy, index: 1)
-                        value_upv_4 (copy, index: 2)
-                        u6 (copy, index: 3)
+                        lighting (copy, index: 1)
+                        attributeName (copy, index: 2)
+                        v53 (copy, index: 3)
                     ]]
-                    Lighting_upv_1[value_upv_4] = u6
+                    lighting[attributeName] = v53
                 end
             )
         end
     end
-    local tbl_8 = {}
-    for _, value_5 in a1:GetChildren() do
-        if tbl_upv_3[value_5.ClassName] then
-            tbl_8[value_5.ClassName] = true
+
+    local v54 = {}
+
+    for _, child in instance2:GetChildren() do
+        if v10[child.ClassName] then
+            v54[child.ClassName] = true
         end
     end
-    for _, value_6 in Lighting_upv_1:GetChildren() do
-        if not (tbl_upv_5[value_6]) then
-            continue
-        end
-        if tbl_8[value_6.ClassName] then
-            value_6.Parent = u4
-            table.insert(tbl_upv_7, value_6)
+
+    for _, child in lighting:GetChildren() do
+        if v12[child] and v54[child.ClassName] then
+            child.Parent = coreLightingStash
+            table.insert(v14, child)
         end
     end
-    for _, value_7 in a1:GetChildren() do
-        if tbl_upv_3[value_7.ClassName] then
-            local v11 = value_7:Clone()
-            v11.Parent = Lighting_upv_1
-            table.insert(tbl_upv_6, v11)
+
+    for _, child in instance2:GetChildren() do
+        if v10[child.ClassName] then
+            local child2 = child:Clone()
+            child2.Parent = lighting
+            table.insert(v13, child2)
         end
     end
 end
-local function fade(a1, a2)
-    --[[
-      name: fade
-      line: 189
-      upvalues:
-        TweenService_upv_1 (copy, index: 1)
-        u5 (copy, index: 2)
-    ]]
-    local v12 = TweenService_upv_1:Create(u5, TweenInfo.new(a2, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {TintColor = a1})
-    v12:Play()
-    return v12
-end
+
 local function landed()
     --[[
       name: landed
       line: 161
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        Workspace_upv_1 (copy, index: 2)
-        Config_upv_1 (copy, index: 3)
+        localPlayer (copy, index: 1)
+        workspace (copy, index: 2)
+        Config (copy, index: 3)
     ]]
-    if LocalPlayer_upv_1:GetAttribute("State") ~= "Match" then
-        local v13
-        if LocalPlayer_upv_1:GetAttribute("State") ~= "Match" then
-            v13 = LocalPlayer_upv_1:GetAttribute("Spectating")
+    if localPlayer:GetAttribute("State") ~= "Match" then
+        local v63
+        local v64 = if localPlayer:GetAttribute("State") == "Match" then localPlayer:GetAttribute("MatchId") else localPlayer:GetAttribute("Spectating")
+
+        if type(v64) ~= "string" then
+            v63 = ""
         else
-            v13 = LocalPlayer_upv_1:GetAttribute("MatchId")
+            v63 = v64
         end
-        local v14
-        if type(v13) ~= "string" then
-            v14 = ""
-        else
-            v14 = v13
-        end
-        if v14 ~= "" then
-            local v15
-            if LocalPlayer_upv_1:GetAttribute("State") ~= "Match" then
-                v15 = LocalPlayer_upv_1:GetAttribute("Spectating")
+
+        if v63 ~= "" then
+            local v65
+            local child
+            local v67 = if localPlayer:GetAttribute("State") == "Match" then localPlayer:GetAttribute("MatchId") else localPlayer:GetAttribute("Spectating")
+
+            if type(v67) ~= "string" then
+                v65 = ""
             else
-                v15 = LocalPlayer_upv_1:GetAttribute("MatchId")
+                v65 = v67
             end
-            if type(v15) ~= "string" then
-                v13 = ""
+
+            if type(v65) ~= "string" then
+                child = nil
+            elseif v65 ~= "" then
+                local arenas = workspace:FindFirstChild("Arenas")
+                child = arenas and arenas:FindFirstChild(v65)
             else
-                v13 = v15
+                child = nil
             end
-            if type(v13) ~= "string" or v13 == "" then
-                v14 = nil
-            else
-                local Arenas_3 = Workspace_upv_1:FindFirstChild("Arenas")
-                v14 = Arenas_3 and (Arenas_3:FindFirstChild(v13))
+
+            local ringCenterX = child and child:GetAttribute("RingCenterX")
+            local ringCenterZ = child and child:GetAttribute("RingCenterZ")
+            local camera = workspace.CurrentCamera
+
+            if type(ringCenterX) ~= "number" or type(ringCenterZ) ~= "number" or not camera then
+                return false
             end
-            v13 = v14 and (v14:GetAttribute("RingCenterX"))
-            local v16 = v14 and (v14:GetAttribute("RingCenterZ"))
-            v14 = Workspace_upv_1.CurrentCamera
-            if type(v14) == "number" and type(v16) == "number" and v14 then
-                local Position_1 = v14.CFrame.Position
-                local v17 = Vector2.new(Position_1.X - v14, Position_1.Z - v16).Magnitude < 600
-                return v17
-            end
-            return false
+
+            local position = camera.CFrame.Position
+
+            return Vector2.new(position.X - ringCenterX, position.Z - ringCenterZ).Magnitude < 600
         end
     end
-    local Character_1 = LocalPlayer_upv_1.Character
-    local v13 = Character_1 and (Character_1:FindFirstChild("HumanoidRootPart"))
-    if v13 and v13:IsA("BasePart") then
-        local Position_2 = v13.Position
-        local v18 = nil
-        if LocalPlayer_upv_1:GetAttribute("State") ~= "Match" then
-            local v19 = Vector2.new(Position_2.X - Config_upv_1.LOBBY_CENTER.X, Position_2.Z - Config_upv_1.LOBBY_CENTER.Z).Magnitude < Config_upv_1.LOBBY_HALF_SIZE + 200
-            return v19
-        else
-            v18 = LocalPlayer_upv_1:GetAttribute("MatchId")
-            if type(v18) ~= "string" or v18 == "" then
-                v13 = nil
-            else
-                local Arenas_4 = Workspace_upv_1:FindFirstChild("Arenas")
-                v13 = Arenas_4 and (Arenas_4:FindFirstChild(v18))
-            end
-            local v20 = v13
-            local _ = v20 and (v13:GetAttribute("RingCenterX"))
-            local v21 = v13 and (v13:GetAttribute("RingCenterZ"))
-            if type(v20) == "number" and type(v21) == "number" then
-                local v22 = Vector2.new(Position_2.X - v20, Position_2.Z - v21).Magnitude < 600
-                return v22
-            end
-            return false
-        end
+
+    local instance = localPlayer.Character
+    instance = instance and instance:FindFirstChild("HumanoidRootPart")
+
+    if not instance or not instance:IsA("BasePart") then
+        return false
     end
+
+    local v74, v75
+    local position = instance.Position
+
+    if localPlayer:GetAttribute("State") ~= "Match" then
+        return Vector2.new(position.X - Config.LOBBY_CENTER.X, position.Z - Config.LOBBY_CENTER.Z).Magnitude < Config.LOBBY_HALF_SIZE + 200
+    end
+
+    local v77 = localPlayer:GetAttribute("MatchId")
+
+    if type(v77) ~= "string" or v77 == "" then
+        v74 = nil
+    else
+        v74 = if const arenas = workspace:FindFirstChild("Arenas") then arenas:FindFirstChild(v77) else v75
+    end
+
+    local ringCenterX = v74 and v74:GetAttribute("RingCenterX")
+    v75 = v74
+
+    if v75 then
+        v74 = v74:GetAttribute("RingCenterZ")
+    else
+        v74 = v75
+    end
+
+    if type(ringCenterX) == "number" and type(v74) == "number" then
+        return Vector2.new(position.X - ringCenterX, position.Z - v74).Magnitude < 600
+    end
+
     return false
 end
-local function refresh(a1)
+
+local function fade(tintColor: Color3, a82: number)
+    --[[
+      name: fade
+      line: 189
+      upvalues:
+        tweenService (copy, index: 1)
+        coreTransition (copy, index: 2)
+    ]]
+    local tween = tweenService:Create(coreTransition, TweenInfo.new(a82, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {TintColor = tintColor})
+    tween:Play()
+
+    return tween
+end
+
+local function refresh(a85: boolean)
     --[[
       name: refresh
       line: 195
       upvalues:
         wantedName (copy, index: 1)
-        ReplicatedStorage_upv_1 (copy, index: 2)
-        u1 (ref,  index: 3)
-        u2 (ref,  index: 4)
-        u5 (copy, index: 5)
-        u3 (ref,  index: 6)
+        replicatedStorage (copy, index: 2)
+        v15 (ref,  index: 3)
+        instance (ref,  index: 4)
+        coreTransition (copy, index: 5)
+        count (ref,  index: 6)
         applyNow (copy, index: 7)
         fade (copy, index: 8)
         landed (copy, index: 9)
     ]]
-    local u7 = wantedName()
-    local Lighting_3 = ReplicatedStorage_upv_1:FindFirstChild("Lighting")
-    local v23 = not (Lighting_3) or not (u7) or Lighting_3:FindFirstChild(u7)
-    if u7 == u1 and v23 == u2 and not (u5.Enabled) then
+    local childName = wantedName()
+    local lighting = replicatedStorage:FindFirstChild("Lighting")
+    local instance2 = if lighting and childName then lighting:FindFirstChild(childName) else nil
+
+    if childName == v15 and instance2 == instance and not coreTransition.Enabled then
         return
     end
-    u3 = u3 + 1
-    local u8 = u3
-    local v24 = (u1 ~= nil) and (u7 ~= u1)
-    u1 = u7
-    if (not a1 or not v24) and not u5.Enabled then
-        applyNow(v23)
+
+    count += 1
+    local v89 = count
+    local v90 = v15 ~= nil and childName ~= v15
+    v15 = childName
+
+    if a85 and v90 or coreTransition.Enabled then
+        task.spawn(
+            function()
+                --[[
+                  line: 210
+                  upvalues:
+                    coreTransition (copy, index: 1)
+                    fade (copy, index: 2)
+                    v89 (copy, index: 3)
+                    count (ref,  index: 4)
+                    landed (copy, index: 5)
+                    applyNow (copy, index: 6)
+                    childName (copy, index: 7)
+                    replicatedStorage (copy, index: 8)
+                ]]
+                coreTransition.Enabled = true
+                fade(Color3.new(0.05, 0.05, 0.06), 0.25).Completed:Wait()
+                local v91 = os.clock() + 2.5
+
+                while os.clock() < v91 and v89 == count do
+                    if landed() then
+                        break
+                    end
+
+                    task.wait(0.05)
+                end
+
+                if v89 ~= count then
+                    return
+                end
+
+                local childName2 = childName
+                local lighting = replicatedStorage:FindFirstChild("Lighting")
+                local instance = if lighting and childName2 then lighting:FindFirstChild(childName2) else nil
+                applyNow(instance)
+                task.wait(0.1)
+
+                if v89 ~= count then
+                    return
+                end
+
+                fade(Color3.new(1, 1, 1), 0.45).Completed:Wait()
+
+                if v89 == count then
+                    coreTransition.Enabled = false
+                end
+            end
+        )
+
+        return
     end
-    task.spawn(
-        function()
-            --[[
-              line: 210
-              upvalues:
-                u5 (copy, index: 1)
-                fade (copy, index: 2)
-                u8 (copy, index: 3)
-                u3 (ref,  index: 4)
-                landed (copy, index: 5)
-                applyNow (copy, index: 6)
-                u7 (copy, index: 7)
-                ReplicatedStorage_upv_1 (copy, index: 8)
-            ]]
-            u5.Enabled = true
-            fade(Color3.new(0.05, 0.05, 0.06), 0.25).Completed:Wait()
-            local v25 = os.clock() + 2.5
-            while os.clock() < v25 and u8 == u3 and not landed() do
-                task.wait(0.05)
-            end
-            if u8 ~= u3 then
-                return
-            end
-            local v26 = u7
-            local Lighting_4 = ReplicatedStorage_upv_1:FindFirstChild("Lighting")
-            local v27 = not (Lighting_4) or not (v26) or Lighting_4:FindFirstChild(v26)
-            applyNow(v27)
-            task.wait(0.1)
-            if u8 ~= u3 then
-                return
-            end
-            fade(Color3.new(1, 1, 1), 0.45).Completed:Wait()
-            if u8 ~= u3 then
-                return
-            end
-            u5.Enabled = false
-        end
-    )
+
+    applyNow(instance2)
 end
-function tbl_1.Current()
+
+function v7.Current()
     --[[
       name: Current
       line: 233
       upvalues:
-        u1 (ref, index: 1)
+        v15 (ref, index: 1)
     ]]
-    return u1
+    return v15
 end
-function tbl_1.Start()
+
+function v7.Start()
     --[[
       name: Start
       line: 237
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        Lighting_upv_1 (copy, index: 2)
-        tbl_upv_4 (copy, index: 3)
-        tbl_upv_5 (copy, index: 4)
-        u5 (copy, index: 5)
+        attributeNames (copy, index: 1)
+        lighting (copy, index: 2)
+        v11 (copy, index: 3)
+        v12 (copy, index: 4)
+        coreTransition (copy, index: 5)
         refresh (copy, index: 6)
-        LocalPlayer_upv_1 (copy, index: 7)
-        ReplicatedStorage_upv_1 (copy, index: 8)
-        Workspace_upv_1 (copy, index: 9)
+        localPlayer (copy, index: 7)
+        replicatedStorage (copy, index: 8)
+        workspace (copy, index: 9)
     ]]
-    for _, value_upv_8 in tbl_upv_2 do
-        local success_1, v28 = pcall(
+    for _, v96 in attributeNames do
+        local success, result = pcall(
             function()
                 --[[
                   line: 239
                   upvalues:
-                    Lighting_upv_1 (copy, index: 1)
-                    value_upv_8 (copy, index: 2)
+                    lighting (copy, index: 1)
+                    v96 (copy, index: 2)
                 ]]
-                return Lighting_upv_1[value_upv_8]
+                return lighting[v96]
             end
         )
-        if success_1 then
-            tbl_upv_4[value_upv_8] = v28
+        if success then
+            v11[v96] = result
         end
     end
-    for _, value_9 in Lighting_upv_1:GetChildren() do
-        tbl_upv_5[value_9] = true
+
+    for _, child in lighting:GetChildren() do
+        v12[child] = true
     end
-    u5.Parent = Lighting_upv_1
+
+    coreTransition.Parent = lighting
     refresh(false)
-    LocalPlayer_upv_1:GetAttributeChangedSignal("State"):Connect(
+    localPlayer:GetAttributeChangedSignal("State"):Connect(
         function()
             --[[
               line: 252
@@ -449,7 +505,7 @@ function tbl_1.Start()
             refresh(true)
         end
     )
-    LocalPlayer_upv_1:GetAttributeChangedSignal("MatchId"):Connect(
+    localPlayer:GetAttributeChangedSignal("MatchId"):Connect(
         function()
             --[[
               line: 255
@@ -459,7 +515,7 @@ function tbl_1.Start()
             refresh(true)
         end
     )
-    LocalPlayer_upv_1:GetAttributeChangedSignal("Spectating"):Connect(
+    localPlayer:GetAttributeChangedSignal("Spectating"):Connect(
         function()
             --[[
               line: 258
@@ -469,90 +525,104 @@ function tbl_1.Start()
             refresh(true)
         end
     )
-    local function watchPresets(a1)
+
+    local function watchPresets(a102)
         --[[
           name: watchPresets
           line: 263
           upvalues:
             refresh (copy, index: 1)
         ]]
-        a1.ChildAdded:Connect(function() end)
+        a102.ChildAdded:Connect(
+            function()
+                --[[
+                  line: 264
+                  upvalues:
+                    refresh (copy, index: 1)
+                ]]
+                task.defer(refresh, false)
+            end
+        )
         refresh(false)
     end
-    local Lighting_5 = ReplicatedStorage_upv_1:FindFirstChild("Lighting")
-    if Lighting_5 then
-        Lighting_5.ChildAdded:Connect(function() end)
+
+    if const lighting2 = replicatedStorage:FindFirstChild("Lighting") then
+        lighting2.ChildAdded:Connect(
+            function()
+                --[[
+                  line: 264
+                  upvalues:
+                    refresh (copy, index: 1)
+                ]]
+                task.defer(refresh, false)
+            end
+        )
         refresh(false)
     else
-        local u9 = nil
-        local v29 = ReplicatedStorage_upv_1.ChildAdded:Connect(
-            function(a2)
+        local childAddedConnection = nil
+
+        childAddedConnection = replicatedStorage.ChildAdded:Connect(
+            function(child: Instance)
                 --[[
                   line: 274
                   upvalues:
-                    u9 (ref,  index: 1)
+                    childAddedConnection (ref,  index: 1)
                     refresh (copy, index: 2)
                 ]]
-                if a2.Name ~= "Lighting" then
-                    return
+                if child.Name == "Lighting" then
+                    childAddedConnection:Disconnect()
+                    child.ChildAdded:Connect(
+                        function()
+                            --[[
+                              line: 264
+                              upvalues:
+                                refresh (copy, index: 1)
+                            ]]
+                            task.defer(refresh, false)
+                        end
+                    )
+                    refresh(false)
                 end
-                u9:Disconnect()
-                a2.ChildAdded:Connect(
-                    function()
-                        --[[
-                          line: 264
-                          upvalues:
-                            refresh (copy, index: 1)
-                        ]]
-                        task.defer(refresh, false)
-                    end
-                )
-                refresh(false)
             end
         )
-        u9 = v29
     end
+
     task.spawn(
         function()
             --[[
               line: 281
               upvalues:
-                Workspace_upv_1 (copy, index: 1)
-                LocalPlayer_upv_1 (copy, index: 2)
+                workspace (copy, index: 1)
+                localPlayer (copy, index: 2)
                 refresh (copy, index: 3)
             ]]
-            local v30 = Workspace_upv_1:WaitForChild("Arenas", 60)
-            if not v30 then
-                return
+            if const arenas = workspace:WaitForChild("Arenas", 60) then
+                arenas.ChildAdded:Connect(
+                    function(child: Instance)
+                        --[[
+                          line: 284
+                          upvalues:
+                            localPlayer (copy, index: 1)
+                            refresh (copy, index: 2)
+                        ]]
+                        local v108
+                        local name = child.Name
+                        local v110 = if localPlayer:GetAttribute("State") == "Match" then localPlayer:GetAttribute("MatchId") else localPlayer:GetAttribute("Spectating")
+
+                        if type(v110) ~= "string" then
+                            v108 = ""
+                        else
+                            v108 = v110
+                        end
+
+                        if name == v108 then
+                            task.defer(refresh, true)
+                        end
+                    end
+                )
             end
-            v30.ChildAdded:Connect(
-                function(a3)
-                    --[[
-                      line: 284
-                      upvalues:
-                        LocalPlayer_upv_1 (copy, index: 1)
-                        refresh (copy, index: 2)
-                    ]]
-                    local Name_1 = a3.Name
-                    local v31
-                    if LocalPlayer_upv_1:GetAttribute("State") ~= "Match" then
-                        v31 = LocalPlayer_upv_1:GetAttribute("Spectating")
-                    else
-                        v31 = LocalPlayer_upv_1:GetAttribute("MatchId")
-                    end
-                    local v32
-                    if type(v31) ~= "string" then
-                        v32 = ""
-                    else
-                        v32 = v31
-                    end
-                    if Name_1 ~= v32 then
-                        return
-                    end
-                    task.defer(refresh, true)
-                end
-            )
         end
     )
 end
-return tbl_1
+
+return v7

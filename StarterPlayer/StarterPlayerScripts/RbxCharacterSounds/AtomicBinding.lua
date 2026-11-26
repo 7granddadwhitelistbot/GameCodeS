@@ -1,267 +1,314 @@
-local function isManifestResolved(a1, a2)
+local function parsePath(text)
+    --[[
+      name: parsePath
+      line: 4
+    ]]
+    local parts = string.split(text, "/")
+
+    for partKey = #parts, 1, -1 do
+        if parts[partKey] == "" then
+            table.remove(parts, partKey)
+        end
+    end
+
+    return parts
+end
+
+local function isManifestResolved(a6, a7)
     --[[
       name: isManifestResolved
       line: 14
     ]]
-    local v1 = 0
-    for _ in pairs(a1) do
-        v1 = v1 + 1
+    local count = 0
+
+    for _ in pairs(a6) do
+        count += 1
     end
-    assert(v1 <= a2, v1)
-    return v1 == a2
+
+    local v10 = count <= a7
+    assert(v10, count)
+
+    return count == a7
 end
-local function unbindNodeDescend(a1, a2)
+
+local function unbindNodeDescend(a12, a13)
     --[[
       name: unbindNodeDescend
       line: 24
       upvalues:
         unbindNodeDescend (copy, index: 1)
     ]]
-    if a1.instance == nil then
+    if a12.instance == nil then
         return
     end
-    a1.instance = nil
-    local connections_1 = a1.connections
-    if connections_1 then
-        for _, value_1 in ipairs(connections_1) do
-            value_1:Disconnect()
+
+    a12.instance = nil
+
+    if const connections = a12.connections then
+        for _, connection in ipairs(connections) do
+            connection:Disconnect()
         end
-        table.clear(connections_1)
+
+        table.clear(connections)
     end
-    if a2 and a1.alias then
-        a2[a1.alias] = nil
+
+    if a13 and a12.alias then
+        a13[a12.alias] = nil
     end
-    local children_1 = a1.children
-    if not children_1 then
-        return
-    end
-    for _, value_2 in pairs(children_1) do
-        unbindNodeDescend(value_2, a2)
-    end
-end
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-local function parsePath(a1)
-    --[[
-      name: parsePath
-      line: 4
-    ]]
-    local v2 = string.split(a1, "/")
-    for n_1 = #v2, 1, -1 do
-        if v2[n_1] == "" then
-            table.remove(v2, n_1)
+
+    if const children = a12.children then
+        for _, child in pairs(children) do
+            unbindNodeDescend(child, a13)
         end
     end
-    return v2
 end
-function tbl_upv_1.new(a1, a2)
+
+local Class = {}
+Class.__index = Class
+
+function Class.new(a21, boundFn)
     --[[
       name: new
       line: 54
       upvalues:
         parsePath (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        Class (copy, index: 2)
     ]]
-    local tbl_2 = {}
-    local tbl_3 = {}
-    local tbl_4 = {}
-    local tbl_5 = {}
-    local tbl_6 = {}
-    local v3 = 1
-    for key_1, value_3 in pairs(a1) do
-        tbl_6[key_1] = parsePath(value_3)
-        v3 = v3 + 1
+    local dtorMap = {}
+    local connections = {}
+    local rootInstToRootNode = {}
+    local rootInstToManifest = {}
+    local parsedManifest = {}
+    local manifestSizeTarget = 1
+
+    for key, text in pairs(a21) do
+        parsedManifest[key] = parsePath(text)
+        manifestSizeTarget += 1
     end
-    return (setmetatable({_boundFn = a2, _parsedManifest = tbl_6, _manifestSizeTarget = v3, _dtorMap = tbl_2, _connections = tbl_3, _rootInstToRootNode = tbl_4, _rootInstToManifest = tbl_5}, tbl_upv_1))
+
+    return (setmetatable({_boundFn = boundFn, _parsedManifest = parsedManifest, _manifestSizeTarget = manifestSizeTarget, _dtorMap = dtorMap, _connections = connections, _rootInstToRootNode = rootInstToRootNode, _rootInstToManifest = rootInstToManifest}, Class))
 end
-function tbl_upv_1._startBoundFn(a1, a2, a3)
+
+function Class._startBoundFn(self, key, a33)
     --[[
       name: _startBoundFn
       line: 80
     ]]
-    local _boundFn_1 = a1._boundFn
-    local _dtorMap_1 = a1._dtorMap
-    local v4 = _dtorMap_1[a2]
-    if v4 then
-        v4()
-        _dtorMap_1[a2] = nil
+    local boundFn = self._boundFn
+    local dtorMap = self._dtorMap
+
+    if const v36 = dtorMap[key] then
+        v36()
+        dtorMap[key] = nil
     end
-    local v5 = _boundFn_1(a3)
-    if not v5 then
-        return
+
+    if const v37 = boundFn(a33) then
+        dtorMap[key] = v37
     end
-    _dtorMap_1[a2] = v5
 end
-function tbl_upv_1._stopBoundFn(a1, a2)
+
+function Class._stopBoundFn(self, key)
     --[[
       name: _stopBoundFn
       line: 96
     ]]
-    local _dtorMap_2 = a1._dtorMap
-    local v6 = _dtorMap_2[a2]
-    if not v6 then
-        return
+    local dtorMap = self._dtorMap
+
+    if const v41 = dtorMap[key] then
+        v41()
+        dtorMap[key] = nil
     end
-    v6()
-    _dtorMap_2[a2] = nil
 end
-function tbl_upv_1.bindRoot(a1, a2)
+
+function Class.bindRoot(self, instance)
     --[[
       name: bindRoot
       line: 106
+      upvalues:
+        unbindNodeDescend (copy, index: 1)
     ]]
     debug.profilebegin("AtomicBinding:BindRoot")
-    local _parsedManifest_1 = a1._parsedManifest
-    local v7 = a1._rootInstToRootNode
-    local _rootInstToManifest_1 = a1._rootInstToManifest
-    local _manifestSizeTarget_upv_1 = a1._manifestSizeTarget
-    assert(_rootInstToManifest_1[a2] == nil)
-    local tbl_upv_7 = {}
-    _rootInstToManifest_1[a2] = tbl_upv_7
+    local parsedManifest = self._parsedManifest
+    local rootInstToRootNode = self._rootInstToRootNode
+    local rootInstToManifest = self._rootInstToManifest
+    local manifestSizeTarget = self._manifestSizeTarget
+    assert(rootInstToManifest[instance] == nil)
+    local v48 = {}
+    rootInstToManifest[instance] = v48
     debug.profilebegin("BuildTree")
-    local tbl_8 = {}
-    tbl_8.alias = "root"
-    tbl_8.instance = a2
-    if next(_parsedManifest_1) then
-        tbl_8.children = {}
-        tbl_8.connections = {}
+    local v49 = {alias = "root", instance = instance}
+
+    if next(parsedManifest) then
+        v49.children = {}
+        v49.connections = {}
     end
-    v7[a2] = tbl_8
-    for key_2, value_4 in pairs(_parsedManifest_1) do
-        v7 = tbl_8
-        for key_3, value_5 in ipairs(value_4) do
-            local v8 = key_3 == #value_4
-            local v9 = v7.children[value_5] or {}
-            if not (v8) then
-                v9.children = v9.children or {}
-                v9.connections = v9.connections or {}
-                v7.children[value_5] = v9
-                v7 = v9
-                continue
+
+    rootInstToRootNode[instance] = v49
+
+    for alias, v51 in pairs(parsedManifest) do
+        local v52 = v49
+
+        for index, childKey in ipairs(v51) do
+            local v55 = index == #v51
+            local v56 = v52.children[childKey] or {}
+
+            if v55 then
+                if v56.alias ~= nil then
+                    error("Multiple aliases assigned to one instance")
+                end
+
+                v56.alias = alias
+            else
+                v56.children = v56.children or {}
+                v56.connections = v56.connections or {}
             end
-            if v9.alias ~= nil then
-                error("Multiple aliases assigned to one instance")
-            end
-            v9.alias = key_2
-            v7.children[value_5] = v9
-            v7 = v9
+
+            v52.children[childKey] = v56
+            v52 = v56
         end
     end
+
     debug.profileend()
-    local function processNode(a3)
+
+    local function processNode(a58)
         --[[
           name: processNode
           line: 160
           upvalues:
-            tbl_upv_7 (copy, index: 1)
+            v48 (copy, index: 1)
             processNode (copy, index: 2)
-            a1 (copy, index: 3)
-            a2 (copy, index: 4)
-            processNode (copy, index: 5)
-            _manifestSizeTarget_upv_1 (copy, index: 6)
+            self (copy, index: 3)
+            instance (copy, index: 4)
+            unbindNodeDescend (copy, index: 5)
+            manifestSizeTarget (copy, index: 6)
         ]]
-        local u1 = assert(a3.instance)
-        local children_upv_2 = a3.children
-        local alias_1 = a3.alias
-        local v10 = not children_upv_2
-        if alias_1 then
-            tbl_upv_7[alias_1] = u1
+        local v59 = assert(a58.instance)
+        local children = a58.children
+        local alias = a58.alias
+        local v62 = not children
+
+        if alias then
+            v48[alias] = v59
         end
-        if not (v10) then
-            local function processDeleteChild_1(a4)
-                --[[
-                  name: processDeleteChild
-                  line: 183
-                  upvalues:
-                    children_upv_2 (copy, index: 1)
-                    a1 (copy, index: 2)
-                    a2 (copy, index: 3)
-                    unbindNodeDescend (copy, index: 4)
-                    tbl_upv_7 (copy, index: 5)
-                    u1 (copy, index: 6)
-                    processNode (copy, index: 7)
-                ]]
-                local Name_1 = a4.Name
-                local v11 = children_upv_2[Name_1]
-                if not v11 or v11.instance ~= a4 then
-                    return
+
+        if not v62 then
+            for _, child in ipairs(v59:GetChildren()) do
+                local child2 = children[child.Name]
+
+                if child2 and child2.instance == nil then
+                    child2.instance = child
+                    processNode(child2)
                 end
-                a1:_stopBoundFn(a2)
-                unbindNodeDescend(v11, tbl_upv_7)
-                assert(v11.instance == nil)
-                local v12 = u1:FindFirstChild(Name_1)
-                if v12 then
-                    local v13 = children_upv_2[v12.Name]
-                    if not v13 or v13.instance ~= nil then
-                        return
+            end
+
+            table.insert(
+                a58.connections,
+                v59.ChildAdded:Connect(
+                    function(instance)
+                        --[[
+                          name: processAddChild
+                          line: 172
+                          upvalues:
+                            children (copy, index: 1)
+                            processNode (copy, index: 2)
+                        ]]
+                        local child = children[instance.Name]
+
+                        if not child or child.instance ~= nil then
+                            return
+                        end
+
+                        child.instance = instance
+                        processNode(child)
                     end
-                    v13.instance = v12
-                    processNode(v13)
-                end
-            end
-            for _, value_6 in ipairs(u1:GetChildren()) do
-                local v14 = children_upv_2[value_6.Name]
-                if not (v14) then
-                    continue
-                end
-                if v14.instance == nil then
-                    v14.instance = value_6
-                    processNode(v14)
-                end
-            end
-            local function processAddChild_1(a5)
-                --[[
-                  name: processAddChild
-                  line: 172
-                  upvalues:
-                    children_upv_2 (copy, index: 1)
-                    processNode (copy, index: 2)
-                ]]
-                local v15 = children_upv_2[a5.Name]
-                if not v15 or v15.instance ~= nil then
-                    return
-                end
-                v15.instance = a5
-                processNode(v15)
-            end
-            table.insert(a3.connections, u1.ChildAdded:Connect(processAddChild_1))
-            table.insert(a3.connections, u1.ChildRemoved:Connect(processDeleteChild_1))
+                )
+            )
+
+            table.insert(
+                a58.connections,
+                v59.ChildRemoved:Connect(
+                    function(a68)
+                        --[[
+                          name: processDeleteChild
+                          line: 183
+                          upvalues:
+                            children (copy, index: 1)
+                            self (copy, index: 2)
+                            instance (copy, index: 3)
+                            unbindNodeDescend (copy, index: 4)
+                            v48 (copy, index: 5)
+                            v59 (copy, index: 6)
+                            processNode (copy, index: 7)
+                        ]]
+                        local name = a68.Name
+                        local child = children[name]
+                        if not child then
+                            return
+                        end
+                        if child.instance ~= a68 then
+                            return
+                        end
+
+                        self:_stopBoundFn(instance)
+                        unbindNodeDescend(child, v48)
+                        assert(child.instance == nil)
+
+                        if const instance2 = v59:FindFirstChild(name) then
+                            local child2 = children[instance2.Name]
+
+                            if child2 and child2.instance == nil then
+                                child2.instance = instance2
+                                processNode(child2)
+                            end
+                        end
+                    end
+                )
+            )
         end
-        if v10 then
-            local v16 = 0
-            for _ in pairs(tbl_upv_7) do
-                v16 = v16 + 1
+
+        if v62 then
+            local count = 0
+
+            for _ in pairs(v48) do
+                count += 1
             end
-            assert(v16 <= _manifestSizeTarget_upv_1, v16)
-            if v16 ~= _manifestSizeTarget_upv_1 then
-                return
+
+            local v75 = count <= manifestSizeTarget
+            assert(v75, count)
+
+            if count == manifestSizeTarget then
+                self:_startBoundFn(instance, v48)
             end
-            a1:_startBoundFn(a2, tbl_upv_7)
         end
     end
+
     debug.profilebegin("ResolveTree")
-    processNode(tbl_8)
+    processNode(v49)
     debug.profileend()
     debug.profileend()
 end
-function tbl_upv_1.unbindRoot(a1, a2)
+
+function Class.unbindRoot(self, key)
     --[[
       name: unbindRoot
       line: 236
       upvalues:
         unbindNodeDescend (copy, index: 1)
     ]]
-    local _rootInstToRootNode_1 = a1._rootInstToRootNode
-    local _rootInstToManifest_2 = a1._rootInstToManifest
-    a1:_stopBoundFn(a2)
-    local v17 = _rootInstToRootNode_1[a2]
-    if v17 then
-        unbindNodeDescend(v17, (assert(_rootInstToManifest_2[a2])))
-        _rootInstToRootNode_1[a2] = nil
+    local rootInstToRootNode = self._rootInstToRootNode
+    local rootInstToManifest = self._rootInstToManifest
+    self:_stopBoundFn(key)
+
+    if const v80 = rootInstToRootNode[key] then
+        local v81 = assert(rootInstToManifest[key])
+        unbindNodeDescend(v80, v81)
+        rootInstToRootNode[key] = nil
     end
-    _rootInstToManifest_2[a2] = nil
+
+    rootInstToManifest[key] = nil
 end
-function tbl_upv_1.destroy(a1)
+
+function Class.destroy(self)
     --[[
       name: destroy
       line: 252
@@ -269,20 +316,28 @@ function tbl_upv_1.destroy(a1)
         unbindNodeDescend (copy, index: 1)
     ]]
     debug.profilebegin("AtomicBinding:destroy")
-    for _, value_7 in pairs(a1._dtorMap) do
-        value_7:destroy()
+
+    for _, v84 in pairs(self._dtorMap) do
+        v84:destroy()
     end
-    table.clear(a1._dtorMap)
-    for _, value_8 in ipairs(a1._connections) do
-        value_8:Disconnect()
+
+    table.clear(self._dtorMap)
+
+    for _, connection in ipairs(self._connections) do
+        connection:Disconnect()
     end
-    table.clear(a1._connections)
-    local _rootInstToManifest_3 = a1._rootInstToManifest
-    for key_4, value_9 in pairs(a1._rootInstToRootNode) do
-        unbindNodeDescend(value_9, (assert(_rootInstToManifest_3[key_4])))
+
+    table.clear(self._connections)
+    local rootInstToManifest = self._rootInstToManifest
+
+    for key, v89 in pairs(self._rootInstToRootNode) do
+        local v90 = assert(rootInstToManifest[key])
+        unbindNodeDescend(v89, v90)
     end
-    table.clear(a1._rootInstToManifest)
-    table.clear(a1._rootInstToRootNode)
+
+    table.clear(self._rootInstToManifest)
+    table.clear(self._rootInstToRootNode)
     debug.profileend()
 end
-return tbl_upv_1
+
+return Class

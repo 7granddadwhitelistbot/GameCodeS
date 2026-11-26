@@ -1,1429 +1,1702 @@
-local _ = game:GetService("CollectionService")
-local Players_upv_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local Signal_1 = require(script.Parent.Parent:WaitForChild("Signal"))
-local Fighters_upv_1 = require(script.Parent:WaitForChild("Fighters"))
-local tbl_upv_1 = {}
-local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-local u1 = "none"
-local u2 = nil
-local u3 = nil
-local u4 = nil
-local u5 = false
-local u6 = nil
-local u7 = nil
-local u8 = ""
-local u9 = 0
-local u10 = nil
-local attackerId_upv_1 = nil
-local u11 = -math.huge
-local u12 = nil
-local u13 = 0
-local u14 = false
-tbl_upv_1.Changed = Signal_1.new()
+game:GetService("CollectionService")
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local Signal = require(script.Parent.Parent:WaitForChild("Signal"))
+local Fighters = require(script.Parent:WaitForChild("Fighters"))
+local v5 = {}
+local localPlayer = players.LocalPlayer
+local spectateMode = "none"
+local target = nil
+local v9 = nil
+local v10 = nil
+local v11 = false
+local v12 = nil
+local v13 = nil
+local v14 = ""
+local timestamp = 0
+local v16 = nil
+local attackerId = nil
+local timestamp2 = -math.huge
+local timestamp3 = nil
+local timestamp4 = 0
+local hasRun = false
+v5.Changed = Signal.new()
+
 local function myId()
     --[[
       name: myId
       line: 60
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
     ]]
-    return "p" .. tostring(LocalPlayer_upv_1.UserId)
+    return "p" .. tostring(localPlayer.UserId)
 end
-local function humanoidAlive(a1)
+
+local function humanoidAlive(a24)
     --[[
       name: humanoidAlive
       line: 64
     ]]
-    local v1 = a1:FindFirstChildOfClass("Humanoid")
-    local v2 = (v1 ~= nil) and ((v1.Health > 0) and ((a1.Parent ~= nil) and (a1:FindFirstChild("HumanoidRootPart") ~= nil)))
-    return v2
+    local humanoid = a24:FindFirstChildOfClass("Humanoid")
+    return humanoid ~= nil
+        and 0 < humanoid.Health
+        and a24.Parent ~= nil
+        and a24:FindFirstChild("HumanoidRootPart") ~= nil
 end
-function tbl_upv_1.ResolveCombatant(a1)
+
+function v5.ResolveCombatant(text: string)
     --[[
       name: ResolveCombatant
       line: 70
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        Fighters_upv_1 (copy, index: 2)
+        players (copy, index: 1)
+        Fighters (copy, index: 2)
     ]]
-    if type(a1) == "string" and a1 ~= "" then
-        local v3 = string.sub(a1, 1, 1)
-        if v3 == "p" then
-            local v4 = string.sub(a1, 2)
-            local tonumber_1 = tonumber
-            local v5 = tonumber_1(v4)
-            local v6 = v5 and (Players_upv_1:GetPlayerByUserId(v5))
-            local v7 = v6 and (v6.Character)
-            if v7 and v7.Parent then
-                return v7
-            end
-            v3 = v5
-        end
-        local u15 = nil
-        Fighters_upv_1.EachTagged(
-            function(a2)
-                --[[
-                  line: 83
-                  upvalues:
-                    u15 (ref,  index: 1)
-                    a1 (copy, index: 2)
-                ]]
-                if (u15) or a2:GetAttribute("CombatantId") ~= a1 or not a2.Parent then
-                    return
-                end
-                u15 = a2
-            end
-        )
-        return v3
+    if type(text) ~= "string" or text == "" then
+        return nil
     end
-    return nil
+
+    if string.sub(text, 1, 1) == "p" then
+        local v27 = tonumber((string.sub(text, 2)))
+        local player = v27 and players:GetPlayerByUserId(v27)
+
+        if const character = player and player.Character then
+            if character.Parent then
+                return character
+            end
+        end
+    end
+
+    local v30 = nil
+
+    Fighters.EachTagged(
+        function(a31)
+            --[[
+              line: 83
+              upvalues:
+                v30 (ref,  index: 1)
+                text (copy, index: 2)
+            ]]
+            if not v30 and a31:GetAttribute("CombatantId") == text and a31.Parent then
+                v30 = a31
+            end
+        end
+    )
+
+    return v30
 end
-local function nameOf(a1)
+
+local function nameOf(character: Model)
     --[[
       name: nameOf
       line: 91
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    if not a1 then
+    if not character then
         return ""
     end
-    local v8 = a1:GetAttribute("DisplayName")
-    if type(v8) == "string" and v8 ~= "" then
-        return v8
-    end
-    local v9 = Players_upv_1:GetPlayerFromCharacter(a1)
-    if v9 then
-        return v9.DisplayName
-    end
-    return a1.Name
+
+    local displayName = character:GetAttribute("DisplayName")
+
+    return if type(displayName) == "string" and displayName ~= "" then displayName elseif const player = players:GetPlayerFromCharacter(character) then player.DisplayName else character.Name
 end
-local function idOf(a1)
+
+local function idOf(character: Model)
     --[[
       name: idOf
       line: 103
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    if not a1 then
+    if not character then
         return ""
     end
-    local v10 = a1:GetAttribute("CombatantId")
-    if type(v10) == "string" then
-        return v10
-    end
-    local v11 = Players_upv_1:GetPlayerFromCharacter(a1)
-    if v11 then
-        return "p" .. v11.UserId
-    end
-    return a1.Name
+
+    local combatantId = character:GetAttribute("CombatantId")
+
+    return if type(combatantId) == "string" then combatantId elseif const player = players:GetPlayerFromCharacter(character) then "p" .. player.UserId else character.Name
 end
+
 local function watchedMatch()
     --[[
       name: watchedMatch
       line: 116
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
     ]]
-    local v12 = LocalPlayer_upv_1:GetAttribute("Spectating")
-    if type(v12) == "string" and v12 ~= "" and LocalPlayer_upv_1:GetAttribute("State") ~= "Match" then
-        return v12
+    local spectating = localPlayer:GetAttribute("Spectating")
+
+    if type(spectating) == "string" and spectating ~= "" and localPlayer:GetAttribute("State") ~= "Match" then
+        return spectating
     end
+
     return ""
 end
-local function teamOf(a1)
+
+local function teamOf(character: Model)
     --[[
       name: teamOf
       line: 124
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    local v13 = a1:GetAttribute("Team")
-    if type(v13) ~= "number" then
-        local v14 = Players_upv_1:GetPlayerFromCharacter(a1)
-        v13 = v14 and v14:GetAttribute("Team")
+    local team = character:GetAttribute("Team")
+
+    if type(team) ~= "number" then
+        local player = players:GetPlayerFromCharacter(character)
+        team = player and player:GetAttribute("Team")
     end
-    if type(v13) ~= "number" then
+
+    if type(team) ~= "number" then
         return 0
     end
-    return v13
+
+    return team
 end
-local function sortIds(a1, a2, a3)
+
+local function sortIds(a47, a48, a49)
     --[[
       name: sortIds
       line: 133
     ]]
-    table.sort(a1, function() end)
+    table.sort(
+        a47,
+        function(left, right)
+            --[[
+              line: 134
+              upvalues:
+                a49 (copy, index: 1)
+                a48 (copy, index: 2)
+            ]]
+            if a49 then
+                local v52 = a48[left] or 0
+                local v53 = a48[right] or 0
+
+                if v52 ~= v53 then
+                    return v52 < v53
+                end
+            end
+
+            return left < right
+        end
+    )
 end
-local function candidates(a1)
+
+local function candidates(a55: boolean)
     --[[
       name: candidates
       line: 149
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        Players_upv_1 (copy, index: 2)
-        Fighters_upv_1 (copy, index: 3)
-        u4 (ref,  index: 4)
-        tbl_upv_1 (copy, index: 5)
+        localPlayer (copy, index: 1)
+        players (copy, index: 2)
+        Fighters (copy, index: 3)
+        v10 (ref,  index: 4)
+        v5 (copy, index: 5)
+        humanoidAlive (copy, index: 6)
     ]]
-    local v16 = LocalPlayer_upv_1:GetAttribute("Spectating")
-    local v17
-    if type(v16) ~= "string" or v16 == "" or LocalPlayer_upv_1:GetAttribute("State") == "Match" then
-        v17 = ""
+    local spectating
+    local spectating2 = localPlayer:GetAttribute("Spectating")
+
+    if type(spectating2) ~= "string" or spectating2 == "" or localPlayer:GetAttribute("State") == "Match" then
+        spectating = ""
     else
-        v17 = v16
+        spectating = spectating2
     end
-    local u16
-    if v17 == "" then
-        u16 = LocalPlayer_upv_1:GetAttribute("MatchId")
-    else
-        u16 = v17
+
+    local v58 = if spectating ~= "" then spectating else localPlayer:GetAttribute("MatchId")
+    local team = localPlayer:GetAttribute("Team")
+    local v60 = spectating ~= ""
+    local v61 = {}
+    local v62 = {}
+
+    if type(v58) ~= "string" or v58 == "" then
+        return v61
     end
-    local u17 = LocalPlayer_upv_1:GetAttribute("Team")
-    local u18 = v17 ~= ""
-    local tbl_upv_2 = {}
-    local tbl_upv_3 = {}
-    if type(u16) ~= "string" or u16 == "" then
-        return tbl_upv_2
-    end
-    local function add_1(a2, a3)
+
+    local function add(key, value)
         --[[
           name: add
           line: 159
           upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            tbl_upv_3 (copy, index: 2)
-            tbl_upv_2 (copy, index: 3)
+            localPlayer (copy, index: 1)
+            v62 (copy, index: 2)
+            v61 (copy, index: 3)
         ]]
-        if a2 == "" or a2 == "p" .. tostring(LocalPlayer_upv_1.UserId) or tbl_upv_3[a2] ~= nil then
-            return
+        if key ~= "" and key ~= "p" .. tostring(localPlayer.UserId) and v62[key] == nil then
+            v62[key] = value
+            table.insert(v61, key)
         end
-        tbl_upv_3[a2] = a3
-        table.insert(tbl_upv_2, a2)
     end
-    local v18, v19 = nil, nil
-    for _, value_1 in Players_upv_1:GetPlayers() do
-        if value_1 == LocalPlayer_upv_1 or value_1:GetAttribute("MatchId") ~= u16 or value_1:GetAttribute("Alive") == false then
-            continue
-        end
-        if u18 then
-            local Character_1 = value_1.Character
-            if not (Character_1) then
+
+    for _, player in players:GetPlayers() do
+        if player ~= localPlayer then
+            local team2
+
+            if player:GetAttribute("MatchId") ~= v58 then
                 continue
             end
-            v19 = Character_1:FindFirstChildOfClass("Humanoid")
-            local v20 = (v19 ~= nil) and ((v19.Health > 0) and ((Character_1.Parent ~= nil) and (Character_1:FindFirstChild("HumanoidRootPart") ~= nil)))
-            if not (v20) then
+            if player:GetAttribute("Alive") == false then
                 continue
             end
-            local UserId_1 = "p" .. value_1.UserId
-            v18 = Character_1:GetAttribute("Team")
-            if type(v18) ~= "number" then
-                local v21 = Players_upv_1:GetPlayerFromCharacter(Character_1)
-                local v22 = v21 and (v21:GetAttribute("Team"))
-                v18 = v22
+            if not v60 and player:GetAttribute("Team") == team ~= a55 then
+                continue
             end
-            if type(v18) ~= "number" then
-                v19 = 0
+
+            local character = player.Character
+            if not character then
+                continue
+            end
+            if not humanoidAlive(character) then
+                continue
+            end
+
+            local v70 = "p" .. player.UserId
+            local team3 = character:GetAttribute("Team")
+
+            if type(team3) ~= "number" then
+                local player2 = players:GetPlayerFromCharacter(character)
+                team3 = player2 and player2:GetAttribute("Team")
+            end
+
+            if type(team3) == "number" then
+                team2 = team3
             else
-                v19 = v18
+                team2 = 0
             end
-            if UserId_1 == "" or UserId_1 == "p" .. tostring(LocalPlayer_upv_1.UserId) then
+
+            if v70 == "" then
                 continue
             end
-            if tbl_upv_3[UserId_1] == nil then
-                tbl_upv_3[UserId_1] = v19
-                table.insert(tbl_upv_2, UserId_1)
-            end
-        else
-            local v23 = value_1:GetAttribute("Team") == u17
-            if v23 ~= a1 then
-                continue
-            end
-            local Character_1 = value_1.Character
-            if not (Character_1) then
-                continue
-            end
-            v19 = Character_1:FindFirstChildOfClass("Humanoid")
-            local v20 = (v19 ~= nil) and ((v19.Health > 0) and ((Character_1.Parent ~= nil) and (Character_1:FindFirstChild("HumanoidRootPart") ~= nil)))
-            if not (v20) then
-                continue
-            end
-            local UserId_1 = "p" .. value_1.UserId
-            v18 = Character_1:GetAttribute("Team")
-            if type(v18) ~= "number" then
-                local v21 = Players_upv_1:GetPlayerFromCharacter(Character_1)
-                local v22 = v21 and (v21:GetAttribute("Team"))
-                v18 = v22
-            end
-            if type(v18) ~= "number" then
-                v19 = 0
-            else
-                v19 = v18
-            end
-            if UserId_1 == "" or UserId_1 == "p" .. tostring(LocalPlayer_upv_1.UserId) then
-                continue
-            end
-            if tbl_upv_3[UserId_1] == nil then
-                tbl_upv_3[UserId_1] = v19
-                table.insert(tbl_upv_2, UserId_1)
+
+            if v70 ~= "p" .. tostring(localPlayer.UserId) and v62[v70] == nil then
+                v62[v70] = team2
+                table.insert(v61, v70)
             end
         end
     end
-    Fighters_upv_1.EachTagged(
-        function(a4)
+
+    Fighters.EachTagged(
+        function(character: Model)
             --[[
               line: 175
               upvalues:
-                Players_upv_1 (copy, index: 1)
-                u16 (copy, index: 2)
-                u18 (copy, index: 3)
-                u17 (copy, index: 4)
-                a1 (copy, index: 5)
-                LocalPlayer_upv_1 (copy, index: 6)
-                tbl_upv_3 (copy, index: 7)
-                tbl_upv_2 (copy, index: 8)
+                players (copy, index: 1)
+                v58 (copy, index: 2)
+                v60 (copy, index: 3)
+                team (copy, index: 4)
+                a55 (copy, index: 5)
+                localPlayer (copy, index: 6)
+                v62 (copy, index: 7)
+                v61 (copy, index: 8)
             ]]
-            if Players_upv_1:GetPlayerFromCharacter(a4) ~= nil then
-                return
-            end
-            if a4:GetAttribute("MatchId") == u16 then
-                local v24 = a4:FindFirstChildOfClass("Humanoid")
-                local v25 = (v24 ~= nil) and ((v24.Health > 0) and ((a4.Parent ~= nil) and (a4:FindFirstChild("HumanoidRootPart") ~= nil)))
-                if v25 then
-                    local v26 = nil
-                    if u18 then
-                        local v27, v28 = nil, nil
-                        if a4 then
-                            v27 = a4:GetAttribute("CombatantId")
-                            if type(v27) ~= "string" then
-                                local v29 = Players_upv_1:GetPlayerFromCharacter(a4)
-                                v28 = (v29 and ("p" .. v29.UserId)) or (a4.Name)
-                            else
-                                v28 = v27
-                            end
-                        else
-                            v28 = ""
-                        end
-                        local v30 = a4:GetAttribute("Team")
-                        if type(v30) ~= "number" then
-                            local v31 = Players_upv_1:GetPlayerFromCharacter(a4)
-                            local v32 = v31 and (v31:GetAttribute("Team"))
-                            v30 = v32
-                        end
-                        if type(v30) ~= "number" then
-                            v24 = 0
-                        else
-                            v24 = v30
-                        end
-                        if v28 == "" or v28 == "p" .. tostring(LocalPlayer_upv_1.UserId) or tbl_upv_3[v28] ~= nil then
+            if players:GetPlayerFromCharacter(character) == nil and character:GetAttribute("MatchId") == v58 then
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+                if humanoid ~= nil
+                    and 0 < humanoid.Health
+                    and character.Parent ~= nil
+                    and character:FindFirstChild("HumanoidRootPart") ~= nil
+                then
+                    local v75
+                    local team2
+
+                    if not v60 then
+                        local v77 = character:GetAttribute("Team") == team
+
+                        if v77 ~= a55 then
                             return
                         end
-                        tbl_upv_3[v28] = v24
-                        table.insert(tbl_upv_2, v28)
-                    else
-                        v26 = a4:GetAttribute("Team") == u17
-                        if v26 == a1 then
-                            local v27, v28 = nil, nil
-                            if a4 then
-                                v27 = a4:GetAttribute("CombatantId")
-                                if type(v27) ~= "string" then
-                                    local v29 = Players_upv_1:GetPlayerFromCharacter(a4)
-                                    v28 = (v29 and ("p" .. v29.UserId)) or (a4.Name)
-                                else
-                                    v28 = v27
-                                end
-                            else
-                                v28 = ""
-                            end
-                            local v30 = a4:GetAttribute("Team")
-                            if type(v30) ~= "number" then
-                                local v31 = Players_upv_1:GetPlayerFromCharacter(a4)
-                                local v32 = v31 and (v31:GetAttribute("Team"))
-                                v30 = v32
-                            end
-                            if type(v30) ~= "number" then
-                                v24 = 0
-                            else
-                                v24 = v30
-                            end
-                            if v28 == "" or v28 == "p" .. tostring(LocalPlayer_upv_1.UserId) or tbl_upv_3[v28] ~= nil then
-                                return
-                            end
-                            tbl_upv_3[v28] = v24
-                            table.insert(tbl_upv_2, v28)
+                    end
+
+                    if character then
+                        local combatantId = character:GetAttribute("CombatantId")
+
+                        if type(combatantId) ~= "string" then
+                            v75 = if const player = players:GetPlayerFromCharacter(character) then "p" .. player.UserId else character.Name
+                        else
+                            v75 = combatantId
                         end
+                    else
+                        v75 = ""
+                    end
+
+                    local team3 = character:GetAttribute("Team")
+
+                    if type(team3) ~= "number" then
+                        local player = players:GetPlayerFromCharacter(character)
+                        team3 = player and player:GetAttribute("Team")
+                    end
+
+                    if type(team3) ~= "number" then
+                        team2 = 0
+                    else
+                        team2 = team3
+                    end
+
+                    if v75 ~= "" and v75 ~= "p" .. tostring(localPlayer.UserId) and v62[v75] == nil then
+                        v62[v75] = team2
+                        table.insert(v61, v75)
                     end
                 end
             end
         end
     )
-    if type(u4) == "table" and u4.matchId == u16 and type(u4.teams) == "table" then
-        for key_1, value_2 in u4.teams do
-            if type(key_1) ~= "number" or type(value_2) ~= "table" or type(value_2.members) ~= "table" then
-                continue
-            end
-            if u18 or not u18 and key_1 == u17 == a1 then
-                for _, value_3 in value_2.members do
-                    local v33 = (type(value_3) == "table") and (value_3.id)
-                    if type(v33) ~= "string" or value_3.alive ~= true or value_3.connected == false or tbl_upv_3[v33] ~= nil then
-                        continue
-                    end
-                    if string.sub(v33, 1, 1) ~= "p" then
-                        local v34 = tbl_upv_1.ResolveCombatant(v33)
-                        if v34 == nil then
-                            if v33 == "" or v33 == "p" .. tostring(LocalPlayer_upv_1.UserId) then
+
+    local v82 = v10
+
+    if type(v82) == "table" and v82.matchId == v58 and type(v82.teams) == "table" then
+        for v83, team4 in v82.teams do
+            if type(v83) == "number" then
+                if type(team4) ~= "table" then
+                    continue
+                end
+                if type(team4.members) ~= "table" then
+                    continue
+                end
+
+                if v60 or v83 == team == a55 then
+                    for _, member in team4.members do
+                        local id = type(member) == "table" and member.id
+
+                        if type(id) == "string" then
+                            if member.alive ~= true then
                                 continue
                             end
-                        else
-                            local v35 = v34:FindFirstChildOfClass("Humanoid")
-                            local v36 = (v35 ~= nil) and ((v35.Health > 0) and ((v34.Parent ~= nil) and (v34:FindFirstChild("HumanoidRootPart") ~= nil)))
-                            if not (v36) or v33 == "" or v33 == "p" .. tostring(LocalPlayer_upv_1.UserId) then
+                            if member.connected == false then
                                 continue
                             end
-                        end
-                        if tbl_upv_3[v33] == nil then
-                            tbl_upv_3[v33] = key_1
-                            table.insert(tbl_upv_2, v33)
-                        end
-                    else
-                        local v37 = Players_upv_1:GetPlayerByUserId(tonumber(string.sub(v33, 2)) or 0)
-                        if not (v37) or v37:GetAttribute("Alive") == false or v37:GetAttribute("MatchId") ~= u16 then
-                            continue
-                        end
-                        local v34 = tbl_upv_1.ResolveCombatant(v33)
-                        if v34 == nil then
-                            if v33 == "" or v33 == "p" .. tostring(LocalPlayer_upv_1.UserId) then
+                            if v62[id] ~= nil then
                                 continue
                             end
-                        else
-                            local v35 = v34:FindFirstChildOfClass("Humanoid")
-                            local v36 = (v35 ~= nil) and ((v35.Health > 0) and ((v34.Parent ~= nil) and (v34:FindFirstChild("HumanoidRootPart") ~= nil)))
-                            if not (v36) or v33 == "" or v33 == "p" .. tostring(LocalPlayer_upv_1.UserId) then
+
+                            if string.sub(id, 1, 1) == "p" then
+                                local player = players:GetPlayerByUserId(tonumber((string.sub(id, 2))) or 0)
+                                if not player then
+                                    continue
+                                end
+                                if player:GetAttribute("Alive") == false then
+                                    continue
+                                end
+                                if player:GetAttribute("MatchId") ~= v58 then
+                                    continue
+                                end
+                            end
+
+                            local v89 = v5.ResolveCombatant(id)
+
+                            if v89 ~= nil and not humanoidAlive(v89) then
                                 continue
                             end
-                        end
-                        if tbl_upv_3[v33] == nil then
-                            tbl_upv_3[v33] = key_1
-                            table.insert(tbl_upv_2, v33)
+                            if id == "" then
+                                continue
+                            end
+
+                            if id ~= "p" .. tostring(localPlayer.UserId) and v62[id] == nil then
+                                v62[id] = v83
+                                table.insert(v61, id)
+                            end
                         end
                     end
                 end
             end
         end
     end
+
     table.sort(
-        tbl_upv_2,
-        function(a5, a6)
+        v61,
+        function(left, right)
             --[[
               line: 134
               upvalues:
-                u18 (copy, index: 1)
-                tbl_upv_3 (copy, index: 2)
+                v60 (copy, index: 1)
+                v62 (copy, index: 2)
             ]]
-            local v38, v39 = nil, nil
-            if u18 then
-                v38 = tbl_upv_3[a5] or 0
-                v39 = tbl_upv_3[a6] or 0
-                if v38 ~= v39 then
-                    return v38 < v39
+            if v60 then
+                local v92 = v62[left] or 0
+                local v93 = v62[right] or 0
+
+                if v92 ~= v93 then
+                    return v92 < v93
                 end
             end
-            return a5 < a6
+
+            return left < right
         end
     )
-    return tbl_upv_2
+
+    return v61
 end
+
 local function publishCount()
     --[[
       name: publishCount
       line: 214
       upvalues:
-        u1 (ref,  index: 1)
+        spectateMode (ref,  index: 1)
         candidates (copy, index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
+        localPlayer (copy, index: 3)
     ]]
-    local v40 = 0
-    if u1 == "follow" then
-        v40 = #candidates(true)
-        if v40 == 0 then
-            v40 = #candidates(false)
+    local spectateCount = 0
+
+    if spectateMode == "follow" then
+        spectateCount = #candidates(true)
+
+        if spectateCount == 0 then
+            spectateCount = #candidates(false)
         end
     end
-    LocalPlayer_upv_1:SetAttribute("SpectateCount", v40)
+
+    localPlayer:SetAttribute("SpectateCount", spectateCount)
 end
-local function isEnemy(a1)
+
+local function isEnemy(text)
     --[[
       name: isEnemy
       line: 226
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-        Players_upv_1 (copy, index: 3)
-        u4 (ref,  index: 4)
+        localPlayer (copy, index: 1)
+        v5 (copy, index: 2)
+        players (copy, index: 3)
+        v10 (ref,  index: 4)
     ]]
-    local v41 = LocalPlayer_upv_1:GetAttribute("Team")
-    local v42 = tbl_upv_1.ResolveCombatant(a1)
-    if v42 then
-        local v43 = v42:GetAttribute("Team")
-        if type(v43) ~= "number" then
-            local v44 = Players_upv_1:GetPlayerFromCharacter(v42)
-            v43 = v44 and v44:GetAttribute("Team")
+    local team = localPlayer:GetAttribute("Team")
+
+    if const character = v5.ResolveCombatant(text) then
+        local team2
+        local team3 = character:GetAttribute("Team")
+
+        if type(team3) ~= "number" then
+            local player = players:GetPlayerFromCharacter(character)
+            team3 = player and player:GetAttribute("Team")
         end
-        local v46
-        if type(v43) ~= "number" then
-            v46 = 0
+
+        if type(team3) ~= "number" then
+            team2 = 0
         else
-            v46 = v43
+            team2 = team3
         end
-        local v47
-        if v46 ~= v41 then
-            v47 = true
-        else
-            v47 = false
+
+        return team2 ~= team
+    end
+
+    if string.sub(text, 1, 1) == "p" then
+        if const player = players:GetPlayerByUserId(tonumber((string.sub(text, 2))) or 0) then
+            return player:GetAttribute("Team") ~= team
         end
-        return v47
-    else
-        local v48 = nil
-        if string.sub(a1, 1, 1) == "p" then
-            v48 = Players_upv_1:GetPlayerByUserId(tonumber(string.sub(a1, 2)) or 0)
-            if v48 then
-                local v49 = v48:GetAttribute("Team") ~= v41
-                return v49
-            end
-        end
-        if type(u4) == "table" and type(u4.teams) == "table" then
-            for key_2, value_4 in u4.teams do
-                if type(value_4) ~= "table" or type(value_4.members) ~= "table" then
+    end
+
+    local v104 = v10
+
+    if type(v104) == "table" and type(v104.teams) == "table" then
+        for v105, team4 in v104.teams do
+            if type(team4) == "table" then
+                if type(team4.members) ~= "table" then
                     continue
                 end
-                for _, value_5 in value_4.members do
-                    if type(value_5) ~= "table" or value_5.id ~= a1 then
-                        continue
+
+                for _, member in team4.members do
+                    if type(member) == "table" and member.id == text then
+                        local v109 = v105 ~= team
+                        return v109
                     end
-                    return key_2 ~= v41
                 end
             end
         end
-        return false
     end
+
+    return false
 end
-local function snapshotName(a1)
+
+local function snapshotName(a111)
     --[[
       name: snapshotName
       line: 254
       upvalues:
-        u4 (ref, index: 1)
+        v10 (ref, index: 1)
     ]]
-    if a1 and type(u4) == "table" and type(u4.teams) == "table" then
-        for _, value_6 in u4.teams do
-            if type(value_6) ~= "table" or type(value_6.members) ~= "table" then
-                continue
-            end
-            for v1, value_7 in value_6.members do
-                if type(value_7) ~= "table" or value_7.id ~= a1 or type(value_7.name) ~= "string" then
+    local v112 = v10
+
+    if a111 and type(v112) == "table" and type(v112.teams) == "table" then
+        for _, team in v112.teams do
+            if type(team) == "table" then
+                if type(team.members) ~= "table" then
                     continue
                 end
-                return value_7.name
+
+                for _, member in team.members do
+                    if type(member) == "table" and member.id == a111 and type(member.name) == "string" then
+                        return member.name
+                    end
+                end
             end
         end
     end
+
     return ""
 end
+
 local function publish()
     --[[
       name: publish
       line: 270
       upvalues:
-        u1 (ref,  index: 1)
+        spectateMode (ref,  index: 1)
         candidates (copy, index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
-        u2 (ref,  index: 4)
-        u3 (ref,  index: 5)
-        Players_upv_1 (copy, index: 6)
+        localPlayer (copy, index: 3)
+        target (ref,  index: 4)
+        v9 (ref,  index: 5)
+        players (copy, index: 6)
         snapshotName (copy, index: 7)
-        u8 (ref,  index: 8)
-        tbl_upv_1 (copy, index: 9)
+        v14 (ref,  index: 8)
+        v5 (copy, index: 9)
     ]]
-    local v50 = 0
-    if u1 == "follow" then
-        v50 = #candidates(true)
-        if v50 == 0 then
-            v50 = #candidates(false)
+    local v118
+    local spectateCount = 0
+
+    if spectateMode == "follow" then
+        spectateCount = #candidates(true)
+
+        if spectateCount == 0 then
+            spectateCount = #candidates(false)
         end
     end
-    LocalPlayer_upv_1:SetAttribute("SpectateCount", v50)
-    v50 = (u1 == "follow") and (u2 ~= nil)
-    LocalPlayer_upv_1:SetAttribute("SpectateMode", u1)
-    local v51
-    if v50 then
-        v51 = u2
-    else
-        v51 = ""
-    end
-    LocalPlayer_upv_1:SetAttribute("SpectateTargetId", v51)
-    local v52
-    if v50 then
-        local v53 = nil
-        if u3 then
-            v53 = u3
-            local v54, v55 = nil, nil
-            if v53 then
-                v54 = v53:GetAttribute("DisplayName")
-                if type(v54) ~= "string" or v54 == "" then
-                    v55 = Players_upv_1:GetPlayerFromCharacter(v53)
-                    if v55 then
-                        v52 = v55.DisplayName
-                    else
-                        v52 = v53.Name
-                    end
+
+    localPlayer:SetAttribute("SpectateCount", spectateCount)
+    local v120 = spectateMode == "follow" and target ~= nil
+    localPlayer:SetAttribute("SpectateMode", spectateMode)
+    local spectateTargetId = not v120 and "" or target
+    localPlayer:SetAttribute("SpectateTargetId", spectateTargetId)
+
+    if v120 then
+        if v9 then
+            if const character = v9 then
+                local displayName = character:GetAttribute("DisplayName")
+
+                if type(displayName) == "string" and displayName ~= "" then
+                    v118, v118 = displayName, v5
+                elseif const player = players:GetPlayerFromCharacter(character) then
+                    v118 = player.DisplayName
+                    v118 = v5
                 else
-                    v52 = v54
+                    v118 = character.Name
+                    v118 = v5
                 end
             else
-                v52 = ""
+                v118 = ""
+                v118 = v5
             end
         else
-            v52 = snapshotName(u2)
+            v118 = snapshotName(target)
+            v118 = v5
         end
     else
-        v52 = ""
+        v118 = ""
+        v118 = v5
     end
-    LocalPlayer_upv_1:SetAttribute("SpectateTargetName", v52)
-    LocalPlayer_upv_1:SetAttribute("SpectateKillerName", u8)
-    local Changed_1 = tbl_upv_1.Changed
-    local v56
-    if u1 ~= "follow" then
-        v56 = nil
-    else
-        v56 = u3
-    end
-    Changed_1:Fire(v56, u1)
+
+    localPlayer:SetAttribute("SpectateTargetName", v118)
+    localPlayer:SetAttribute("SpectateKillerName", v14)
+    local changed = v118.Changed
+    local v126 = if spectateMode == "follow" then v9 else nil
+    changed:Fire(v126, spectateMode)
 end
-local u19 = nil
+
+local result = nil
+
 local function playSwitch()
     --[[
       name: playSwitch
       line: 282
       upvalues:
-        u19 (ref, index: 1)
+        result (ref, index: 1)
     ]]
-    local v57 = nil
-    if u19 == nil then
-        v57 = script.Parent.Parent:FindFirstChild("Sfx")
-        u19 = false
-        if v57 and v57:IsA("ModuleScript") then
-            local success_1, v58 = pcall(require, v57)
-            if success_1 and type(v58) == "table" then
-                u19 = v58
+    if result == nil then
+        local sfx = script.Parent.Parent:FindFirstChild("Sfx")
+        result = false
+
+        if sfx and sfx:IsA("ModuleScript") then
+            local success, result2 = pcall(require, sfx)
+
+            if success and type(result2) == "table" then
+                result = result2
             end
         end
     end
-    if not u19 or type(u19.PlayUI) ~= "function" then
-        return
+
+    if result and type(result.PlayUI) == "function" then
+        pcall(result.PlayUI, "UI/Spectate_Switch")
     end
-    pcall(u19.PlayUI, "UI/Spectate_Switch")
 end
+
 local function resolveTarget()
     --[[
       name: resolveTarget
       line: 299
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u2 (ref,  index: 2)
-        u3 (ref,  index: 3)
+        v5 (copy, index: 1)
+        target (ref,  index: 2)
+        v9 (ref,  index: 3)
+        humanoidAlive (copy, index: 4)
     ]]
-    local v59 = tbl_upv_1.ResolveCombatant(u2)
-    local v60, v61 = nil, nil
-    if v59 then
-        local v62 = v59:FindFirstChildOfClass("Humanoid")
-        v60 = (v62 ~= nil) and ((v62.Health > 0) and ((v59.Parent ~= nil) and (v59:FindFirstChild("HumanoidRootPart") ~= nil)))
-        if v60 then
-            v61 = v59
-        else
-            v61 = nil
-        end
+    local v133 = v5.ResolveCombatant(target)
+
+    if not v133 or not humanoidAlive(v133) then
+        v9 = nil
     else
-        v61 = nil
+        v9 = v133
     end
-    u3 = v61
 end
-local u20 = nil
-local u21 = 0
-local function reportFocus(a1)
+
+local instance = nil
+local timestamp5 = 0
+
+local function reportFocus(a137: boolean?)
     --[[
       name: reportFocus
       line: 308
       upvalues:
-        u1 (ref,  index: 1)
-        u2 (ref,  index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
-        u5 (ref,  index: 4)
-        u21 (ref,  index: 5)
-        u20 (ref,  index: 6)
-        ReplicatedStorage_upv_1 (copy, index: 7)
+        spectateMode (ref,  index: 1)
+        target (ref,  index: 2)
+        localPlayer (copy, index: 3)
+        v11 (ref,  index: 4)
+        timestamp5 (ref,  index: 5)
+        instance (ref,  index: 6)
+        replicatedStorage (copy, index: 7)
     ]]
-    local v63
-    if u1 ~= "follow" then
-        v63 = false
+    local v138
+
+    if spectateMode ~= "follow" or not target then
+        v138 = false
     else
-        local v64 = nil
-        if u2 then
-            v64 = LocalPlayer_upv_1:GetAttribute("Spectating")
-            local v65
-            if type(v64) ~= "string" or v64 == "" or LocalPlayer_upv_1:GetAttribute("State") == "Match" then
-                v65 = ""
-            else
-                v65 = v64
-            end
-            if v65 ~= "" then
-                v63 = false
-            else
-                v63 = u2
-            end
+        local spectating
+        local spectating2 = localPlayer:GetAttribute("Spectating")
+
+        if type(spectating2) ~= "string" or spectating2 == "" or localPlayer:GetAttribute("State") == "Match" then
+            spectating = ""
         else
-            v63 = false
+            spectating = spectating2
+        end
+
+        if spectating ~= "" then
+            v138 = false
+        else
+            v138 = target
         end
     end
-    if v63 ~= u5 or (a1) then
-        u5 = v63
-        u21 = os.clock()
-        if not (u20) then
-            local Remotes_1 = ReplicatedStorage_upv_1:FindFirstChild("Remotes")
-            local v66 = Remotes_1 and (Remotes_1:FindFirstChild("SpectateFocus"))
-            local v67 = not (v66) or not (v66:IsA("RemoteEvent")) or v66
-            u20 = v67
-        end
-        if u20 then
-            u20:FireServer(v63)
-        end
+
+    if v138 == v11 and not a137 then
+        return
+    end
+
+    v11 = v138
+    timestamp5 = os.clock()
+
+    if not instance then
+        local instance2 = replicatedStorage:FindFirstChild("Remotes")
+        instance2 = instance2 and instance2:FindFirstChild("SpectateFocus")
+        instance = if instance2 and instance2:IsA("RemoteEvent") then instance2 else nil
+    end
+
+    if instance then
+        instance:FireServer(v138)
     end
 end
-local function setTarget(a1)
+
+local function setTarget(target2)
     --[[
       name: setTarget
       line: 325
       upvalues:
-        u2 (ref,  index: 1)
-        u1 (ref,  index: 2)
+        target (ref,  index: 1)
+        spectateMode (ref,  index: 2)
         playSwitch (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
-        u3 (ref,  index: 5)
-        u12 (ref,  index: 6)
+        v5 (copy, index: 4)
+        v9 (ref,  index: 5)
+        timestamp3 (ref,  index: 6)
         reportFocus (copy, index: 7)
         publish (copy, index: 8)
+        humanoidAlive (copy, index: 9)
     ]]
-    if a1 ~= u2 and a1 ~= nil and u1 == "follow" then
+    local v144
+
+    if target2 ~= target and target2 ~= nil and spectateMode == "follow" then
         playSwitch()
     end
-    u2 = a1
-    local v68 = tbl_upv_1.ResolveCombatant(u2)
-    local v69, v70 = nil, nil
-    if v68 then
-        local v71 = v68:FindFirstChildOfClass("Humanoid")
-        v69 = (v71 ~= nil) and ((v71.Health > 0) and ((v68.Parent ~= nil) and (v68:FindFirstChild("HumanoidRootPart") ~= nil)))
-        if v69 then
-            v70 = v68
+
+    target = target2
+
+    if const v145 = v5.ResolveCombatant(target) then
+        if humanoidAlive(v145) then
+            v144 = v145
         else
-            v70 = nil
+            v144 = nil
         end
     else
-        v70 = nil
+        v144 = nil
     end
-    u3 = v70
-    u12 = nil
+
+    v9 = v144
+    timestamp3 = nil
     reportFocus()
     publish()
 end
-local function pick(a1)
+
+local function pick(a147)
     --[[
       name: pick
       line: 336
       upvalues:
         candidates (copy, index: 1)
-        u2 (ref,  index: 2)
-        u1 (ref,  index: 3)
+        target (ref,  index: 2)
+        spectateMode (ref,  index: 3)
         playSwitch (copy, index: 4)
-        tbl_upv_1 (copy, index: 5)
-        u3 (ref,  index: 6)
-        u12 (ref,  index: 7)
+        v5 (copy, index: 5)
+        v9 (ref,  index: 6)
+        timestamp3 (ref,  index: 7)
         reportFocus (copy, index: 8)
         publish (copy, index: 9)
+        humanoidAlive (copy, index: 10)
     ]]
-    local v72 = candidates(true)
-    if #v72 == 0 then
-        v72 = candidates(false)
+    local v148 = candidates(true)
+
+    if #v148 == 0 then
+        v148 = candidates(false)
     end
-    if #v72 ~= 0 then
-        local v73
-        if u2 then
-            v73 = table.find(v72, u2)
-        else
-            v73 = nil
-        end
-        local v74
-        if v73 then
-            v74 = ((v73 - 1) + a1) % #v72 + 1
-        else
-            v74 = ((a1 < 0) and (#v72)) or 1
-        end
-        if v72[v74] ~= u2 then
-            local v75 = v72[v74]
-            if v75 ~= u2 and v75 ~= nil and u1 == "follow" then
-                playSwitch()
-            end
-            u2 = v75
-            local v76 = tbl_upv_1.ResolveCombatant(u2)
-            local v77, v78 = nil, nil
-            if v76 then
-                local v79 = v76:FindFirstChildOfClass("Humanoid")
-                v77 = (v79 ~= nil) and ((v79.Health > 0) and ((v76.Parent ~= nil) and (v76:FindFirstChild("HumanoidRootPart") ~= nil)))
-                if v77 then
-                    v78 = v76
+
+    if #v148 == 0 then
+        if target ~= nil then
+            local v149
+            target = nil
+
+            if const v150 = v5.ResolveCombatant(target) then
+                if humanoidAlive(v150) then
+                    v149 = v150
                 else
-                    v78 = nil
+                    v149 = nil
                 end
             else
-                v78 = nil
+                v149 = nil
             end
-            u3 = v78
-            u12 = nil
+
+            v9 = v149
+            timestamp3 = nil
             reportFocus()
             publish()
         end
-    elseif u2 ~= nil then
-        u2 = nil
-        local v80 = tbl_upv_1.ResolveCombatant(u2)
-        local v81, v82 = nil, nil
-        if v80 then
-            local v83 = v80:FindFirstChildOfClass("Humanoid")
-            v81 = (v83 ~= nil) and ((v83.Health > 0) and ((v80.Parent ~= nil) and (v80:FindFirstChild("HumanoidRootPart") ~= nil)))
-            if v81 then
-                v82 = v80
+
+        return
+    end
+
+    local v151 = if const v152 = if target then table.find(v148, target) else nil then ((v152 - 1) + a147) % #v148 + 1 else not (a147 < 0)
+        and 1
+        or #v148
+
+    if v148[v151] ~= target then
+        local v153
+        local v154 = v148[v151]
+
+        if v154 ~= target and v154 ~= nil and spectateMode == "follow" then
+            playSwitch()
+        end
+
+        target = v154
+
+        if const v155 = v5.ResolveCombatant(target) then
+            if humanoidAlive(v155) then
+                v153 = v155
             else
-                v82 = nil
+                v153 = nil
             end
         else
-            v82 = nil
+            v153 = nil
         end
-        u3 = v82
-        u12 = nil
+
+        v9 = v153
+        timestamp3 = nil
         reportFocus()
         publish()
     end
 end
+
 local function followWanted()
     --[[
       name: followWanted
       line: 362
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
         candidates (copy, index: 2)
-        u2 (ref,  index: 3)
-        u1 (ref,  index: 4)
+        target (ref,  index: 3)
+        spectateMode (ref,  index: 4)
         playSwitch (copy, index: 5)
-        tbl_upv_1 (copy, index: 6)
-        u3 (ref,  index: 7)
-        u12 (ref,  index: 8)
+        v5 (copy, index: 6)
+        v9 (ref,  index: 7)
+        timestamp3 (ref,  index: 8)
         reportFocus (copy, index: 9)
         publish (copy, index: 10)
+        humanoidAlive (copy, index: 11)
     ]]
-    local v84 = LocalPlayer_upv_1:GetAttribute("SpectateFollow")
-    if type(v84) ~= "string" or v84 == "" then
-        return false
-    end
-    local v85 = LocalPlayer_upv_1:GetAttribute("Spectating")
-    local v86
-    if type(v85) ~= "string" or v85 == "" or LocalPlayer_upv_1:GetAttribute("State") == "Match" then
-        v86 = ""
-    else
-        v86 = v85
-    end
-    if v86 ~= "" then
-        for _, value_8 in candidates(false) do
-            if value_8 == v84 then
-                if value_8 ~= u2 and value_8 ~= nil and u1 == "follow" then
-                    playSwitch()
-                end
-                u2 = value_8
-                local v87 = tbl_upv_1.ResolveCombatant(u2)
-                local v88, v89 = nil, nil
-                if v87 then
-                    local v90 = v87:FindFirstChildOfClass("Humanoid")
-                    v88 = (v90 ~= nil) and ((v90.Health > 0) and ((v87.Parent ~= nil) and (v87:FindFirstChild("HumanoidRootPart") ~= nil)))
-                    if v88 then
-                        v89 = v87
-                    else
-                        v89 = nil
+    local spectateFollow = localPlayer:GetAttribute("SpectateFollow")
+
+    if type(spectateFollow) == "string" and spectateFollow ~= "" then
+        local spectating
+        local spectating2 = localPlayer:GetAttribute("Spectating")
+
+        if type(spectating2) ~= "string" then
+            spectating = ""
+        elseif spectating2 == "" or localPlayer:GetAttribute("State") == "Match" then
+            spectating = ""
+        else
+            spectating = spectating2
+        end
+
+        if spectating ~= "" then
+            for _, v161 in candidates(false) do
+                if v161 == spectateFollow then
+                    local v162
+
+                    if v161 ~= target then
+                        if v161 ~= nil then
+                            if spectateMode == "follow" then
+                                playSwitch()
+                            end
+
+                            target = v161
+                            local v163 = v5.ResolveCombatant(target)
+
+                            if v163 then
+                                if humanoidAlive(v163) then
+                                    v162 = v163
+                                end
+                            else
+                                v162 = nil
+                            end
+
+                            v9 = v162
+                            timestamp3 = nil
+                            reportFocus()
+                            publish()
+                            localPlayer:SetAttribute("SpectateFollow", nil)
+
+                            return true
+                        end
                     end
-                else
-                    v89 = nil
+
+                    target = v161
+                    local v163 = v5.ResolveCombatant(target)
+
+                    if v163 then
+                        humanoidAlive(v163)
+                    else
+                        v162 = nil
+                    end
+
+                    v9 = v162
+                    timestamp3 = nil
+                    reportFocus()
+                    publish()
+                    localPlayer:SetAttribute("SpectateFollow", nil)
+
+                    return true
                 end
-                u3 = v89
-                u12 = nil
-                reportFocus()
-                publish()
-                LocalPlayer_upv_1:SetAttribute("SpectateFollow", nil)
-                return true
             end
+
+            return false
         end
-    else
-        return false
     end
+
+    return false
 end
-local u22 = nil
-local u23 = ""
-local function noteUnexplained()
-    --[[
-      name: noteUnexplained
-      line: 400
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        u23 (ref,  index: 2)
-    ]]
-    local v91 = LocalPlayer_upv_1:GetAttribute("MatchId")
-    local Arenas_1 = workspace:FindFirstChild("Arenas")
-    local v92 = Arenas_1 and ((type(v91) == "string") and (Arenas_1:FindFirstChild(v91)))
-    local v93 = v92 and (v92:GetAttribute("Round"))
-    local v94 = ("%*:%*"):format(v91, v93)
-    if v94 == u23 then
-        return
-    end
-    u23 = v94
-    local Character_2 = LocalPlayer_upv_1.Character
-    local v95 = Character_2
-    local v96 = v95 and (Character_2:FindFirstChildOfClass("Humanoid"))
-    local v97 = Character_2
-    local _ = v97 and (Character_2:FindFirstChild("HumanoidRootPart"))
-    if Character_2 and Character_2.Parent and Character_2 and Character_2.Health <= 0 and LocalPlayer_upv_1:GetAttribute("Alive") == false then
-        return
-    end
-    local Name_1 = LocalPlayer_upv_1.Name
-    local v98 = LocalPlayer_upv_1:GetAttribute("Alive")
-    local v99 = ((not Character_2) and "none") or (((Character_2.Parent) and "in world") or "removed")
-    local v100 = (v96 and (math.floor(Character_2.Health))) or "-"
-    local v101 = (v96 and (Character_2:GetState().Name)) or "-"
-    local v102 = (v97 and (math.floor(Character_2.Position.Y))) or "-"
-    local v103 = (v92 and (v92:GetAttribute("Phase"))) or "-"
-    warn((("[Spectate] %* down with no attacker: Alive %*, body %*, hp %*, state %*, y %*, phase %* r%*"):format(Name_1, v98, v99, v100, v101, v102, v103, v92 or "-")))
-end
-local function resolveKiller()
-    --[[
-      name: resolveKiller
-      line: 419
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u7 (ref,  index: 2)
-        u6 (ref,  index: 3)
-        u8 (ref,  index: 4)
-        Players_upv_1 (copy, index: 5)
-    ]]
-    local v104 = tbl_upv_1.ResolveCombatant(u7)
-    u6 = v104
-    if v104 then
-        local v105, v106, v107 = nil, nil, nil
-        if v104 then
-            v105 = v104:GetAttribute("DisplayName")
-            if type(v105) ~= "string" or v105 == "" then
-                v106 = Players_upv_1:GetPlayerFromCharacter(v104)
-                if v106 then
-                    v107 = v106.DisplayName
-                else
-                    v107 = v104.Name
-                end
-            else
-                v107 = v105
-            end
-        else
-            v107 = ""
-        end
-        u8 = v107
-    end
-end
-local function enterDeath(a1)
-    --[[
-      name: enterDeath
-      line: 427
-      upvalues:
-        u1 (ref,  index: 1)
-        u9 (ref,  index: 2)
-        u10 (ref,  index: 3)
-        u2 (ref,  index: 4)
-        u3 (ref,  index: 5)
-        u5 (ref,  index: 6)
-        u6 (ref,  index: 7)
-        u8 (ref,  index: 8)
-        u7 (ref,  index: 9)
-        u11 (ref,  index: 10)
-        attackerId_upv_1 (ref,  index: 11)
-        tbl_upv_1 (copy, index: 12)
-        Players_upv_1 (copy, index: 13)
-        publish (copy, index: 14)
-    ]]
-    u1 = "death"
-    u9 = os.clock()
-    u10 = a1
-    u2 = nil
-    u3 = nil
-    u5 = false
-    u6 = nil
-    u8 = ""
-    if u7 == nil and os.clock() - u11 < 4 then
-        u7 = attackerId_upv_1
-    end
-    local v108 = tbl_upv_1.ResolveCombatant(u7)
-    u6 = v108
-    if v108 then
-        local v109, v110, v111 = nil, nil, nil
-        if v108 then
-            v109 = v108:GetAttribute("DisplayName")
-            if type(v109) ~= "string" or v109 == "" then
-                v110 = Players_upv_1:GetPlayerFromCharacter(v108)
-                if v110 then
-                    v111 = v110.DisplayName
-                else
-                    v111 = v108.Name
-                end
-            else
-                v111 = v109
-            end
-        else
-            v111 = ""
-        end
-        u8 = v111
-    end
-    publish()
-end
-local function leave()
-    --[[
-      name: leave
-      line: 443
-      upvalues:
-        u22 (ref,  index: 1)
-        u1 (ref,  index: 2)
-        u2 (ref,  index: 3)
-        u3 (ref,  index: 4)
-        u5 (ref,  index: 5)
-        u6 (ref,  index: 6)
-        u7 (ref,  index: 7)
-        u8 (ref,  index: 8)
-        u10 (ref,  index: 9)
-        u12 (ref,  index: 10)
-        publish (copy, index: 11)
-    ]]
-    u22 = nil
-    u1 = "none"
-    u2 = nil
-    u3 = nil
-    u5 = false
-    u6 = nil
-    u7 = nil
-    u8 = ""
-    u10 = nil
-    u12 = nil
-    publish()
-end
+
 local function wantsSpectate()
     --[[
       name: wantsSpectate
       line: 377
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
     ]]
-    local v112 = LocalPlayer_upv_1:GetAttribute("Spectating")
-    local v113
-    if type(v112) ~= "string" or v112 == "" or LocalPlayer_upv_1:GetAttribute("State") == "Match" then
-        v113 = ""
+    local spectating
+    local spectating2 = localPlayer:GetAttribute("Spectating")
+
+    if type(spectating2) ~= "string" or spectating2 == "" or localPlayer:GetAttribute("State") == "Match" then
+        spectating = ""
     else
-        v113 = v112
+        spectating = spectating2
     end
-    if v113 ~= "" then
+
+    if spectating ~= "" then
         return true
     end
-    if LocalPlayer_upv_1:GetAttribute("State") ~= "Match" then
+    if localPlayer:GetAttribute("State") ~= "Match" then
         return false
     end
-    if LocalPlayer_upv_1:GetAttribute("Alive") == false then
+    if localPlayer:GetAttribute("Alive") == false then
         return true
     end
-    local Character_3 = LocalPlayer_upv_1.Character
-    local v114 = Character_3 and (Character_3:FindFirstChildOfClass("Humanoid"))
-    local v115 = false
-    if v114 ~= nil then
-        v115 = v114.Health <= 0
-    end
-    return v115
+
+    local character = localPlayer.Character
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+    return humanoid ~= nil and humanoid.Health <= 0
 end
-function tbl_upv_1.Step(a1)
+
+local v169 = nil
+local formattedText = ""
+
+local function noteUnexplained()
+    --[[
+      name: noteUnexplained
+      line: 400
+      upvalues:
+        localPlayer (copy, index: 1)
+        formattedText (ref,  index: 2)
+    ]]
+    local flooredValue
+    local flooredValue2
+    local v174 = localPlayer:GetAttribute("MatchId")
+    local arenas = workspace:FindFirstChild("Arenas")
+    local child = arenas and type(v174) == "string" and arenas:FindFirstChild(v174)
+    local round = child and child:GetAttribute("Round")
+    local formattedText2 = `{v174}:{round}`
+
+    if formattedText2 == formattedText then
+        return
+    end
+
+    formattedText = formattedText2
+    local character = localPlayer.Character
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+    local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+
+    if character
+        and character.Parent
+        and humanoid
+        and humanoid.Health <= 0
+        and localPlayer:GetAttribute("Alive") == false
+    then
+        return
+    end
+
+    local warn = warn
+    local name = localPlayer.Name
+    local alive = localPlayer:GetAttribute("Alive")
+    local v185 = character and (character.Parent and "in world" or "removed") or "none"
+
+    if humanoid then
+        flooredValue = math.floor(humanoid.Health)
+        flooredValue = flooredValue or "-"
+    else
+        flooredValue = "-"
+    end
+
+    local name2 = humanoid and humanoid:GetState().Name or "-"
+
+    if humanoidRootPart then
+        flooredValue2 = math.floor(humanoidRootPart.Position.Y)
+        flooredValue2 = flooredValue2 or "-"
+    else
+        flooredValue2 = "-"
+    end
+
+    local phase = child and child:GetAttribute("Phase") or "-"
+    warn((`[Spectate] {name} down with no attacker: Alive {alive}, body {v185}, hp {flooredValue}, state {name2}, y {flooredValue2}, phase {phase} r{round
+        or "-"}`))
+end
+
+local function resolveKiller()
+    --[[
+      name: resolveKiller
+      line: 419
+      upvalues:
+        v5 (copy, index: 1)
+        v13 (ref,  index: 2)
+        v12 (ref,  index: 3)
+        v14 (ref,  index: 4)
+        players (copy, index: 5)
+    ]]
+    local character = v5.ResolveCombatant(v13)
+    v12 = character
+
+    if character then
+        local v190
+
+        if character then
+            local displayName = character:GetAttribute("DisplayName")
+
+            if type(displayName) == "string" and displayName ~= "" then
+                v190 = displayName
+                v14 = v190
+
+                return
+            end
+
+            v190 = if const player = players:GetPlayerFromCharacter(character) then player.DisplayName else character.Name
+        else
+            v190 = ""
+        end
+
+        v14 = v190
+    end
+end
+
+local function enterDeath(a194)
+    --[[
+      name: enterDeath
+      line: 427
+      upvalues:
+        spectateMode (ref,  index: 1)
+        timestamp (ref,  index: 2)
+        v16 (ref,  index: 3)
+        target (ref,  index: 4)
+        v9 (ref,  index: 5)
+        v11 (ref,  index: 6)
+        v12 (ref,  index: 7)
+        v14 (ref,  index: 8)
+        v13 (ref,  index: 9)
+        timestamp2 (ref,  index: 10)
+        attackerId (ref,  index: 11)
+        v5 (copy, index: 12)
+        players (copy, index: 13)
+        publish (copy, index: 14)
+    ]]
+    spectateMode = "death"
+    timestamp = os.clock()
+    v16 = a194
+    target = nil
+    v9 = nil
+    v11 = false
+    v12 = nil
+    v14 = ""
+
+    if v13 == nil and os.clock() - timestamp2 < 4 then
+        v13 = attackerId
+    end
+
+    local character = v5.ResolveCombatant(v13)
+    v12 = character
+
+    if character then
+        local v196
+
+        if character then
+            local displayName = character:GetAttribute("DisplayName")
+
+            if type(displayName) == "string" and displayName ~= "" then
+                v196 = displayName
+            else
+                v196 = if const player = players:GetPlayerFromCharacter(character) then player.DisplayName else character.Name
+            end
+        else
+            v196 = ""
+        end
+
+        v14 = v196
+    end
+
+    publish()
+end
+
+local function leave()
+    --[[
+      name: leave
+      line: 443
+      upvalues:
+        v169 (ref,  index: 1)
+        spectateMode (ref,  index: 2)
+        target (ref,  index: 3)
+        v9 (ref,  index: 4)
+        v11 (ref,  index: 5)
+        v12 (ref,  index: 6)
+        v13 (ref,  index: 7)
+        v14 (ref,  index: 8)
+        v16 (ref,  index: 9)
+        timestamp3 (ref,  index: 10)
+        publish (copy, index: 11)
+    ]]
+    v169 = nil
+    spectateMode = "none"
+    target = nil
+    v9 = nil
+    v11 = false
+    v12 = nil
+    v13 = nil
+    v14 = ""
+    v16 = nil
+    timestamp3 = nil
+    publish()
+end
+
+function v5.Step(a200)
     --[[
       name: Step
       line: 458
       upvalues:
         wantsSpectate (copy, index: 1)
-        u1 (ref,  index: 2)
-        u22 (ref,  index: 3)
-        u2 (ref,  index: 4)
-        u3 (ref,  index: 5)
-        u5 (ref,  index: 6)
-        u6 (ref,  index: 7)
-        u7 (ref,  index: 8)
-        u8 (ref,  index: 9)
-        u10 (ref,  index: 10)
-        u12 (ref,  index: 11)
+        spectateMode (ref,  index: 2)
+        v169 (ref,  index: 3)
+        target (ref,  index: 4)
+        v9 (ref,  index: 5)
+        v11 (ref,  index: 6)
+        v12 (ref,  index: 7)
+        v13 (ref,  index: 8)
+        v14 (ref,  index: 9)
+        v16 (ref,  index: 10)
+        timestamp3 (ref,  index: 11)
         publish (copy, index: 12)
-        LocalPlayer_upv_1 (copy, index: 13)
+        localPlayer (copy, index: 13)
         followWanted (copy, index: 14)
         pick (copy, index: 15)
         enterDeath (copy, index: 16)
         noteUnexplained (copy, index: 17)
-        u13 (ref,  index: 18)
-        tbl_upv_1 (copy, index: 19)
-        Players_upv_1 (copy, index: 20)
-        u9 (ref,  index: 21)
+        timestamp4 (ref,  index: 18)
+        v5 (copy, index: 19)
+        players (copy, index: 20)
+        timestamp (ref,  index: 21)
         candidates (copy, index: 22)
         isEnemy (copy, index: 23)
-        u21 (ref,  index: 24)
+        timestamp5 (ref,  index: 24)
         reportFocus (copy, index: 25)
+        humanoidAlive (copy, index: 26)
     ]]
-    local v116 = os.clock()
-    if wantsSpectate() then
-        local v117 = nil
-        if u1 ~= "none" then
-            if u22 and v116 - u22 >= 3 then
-                u22 = nil
-                noteUnexplained()
-            end
-            if not (v116 - u13 < 0.25) then
-                u13 = v116
-                local v118 = nil
-                if u1 == "death" then
-                    if u6 == nil or u6.Parent == nil then
-                        v118 = tbl_upv_1.ResolveCombatant(u7)
-                        u6 = v118
-                        if v118 then
-                            local v119, v120, v121 = nil, nil, nil
-                            if v118 then
-                                v119 = v118:GetAttribute("DisplayName")
-                                if type(v119) ~= "string" or v119 == "" then
-                                    v120 = Players_upv_1:GetPlayerFromCharacter(v118)
-                                    if v120 then
-                                        v121 = v120.DisplayName
-                                    else
-                                        v121 = v118.Name
-                                    end
-                                else
-                                    v121 = v119
-                                end
-                            else
-                                v121 = ""
-                            end
-                            u8 = v121
-                        end
-                    end
-                    if v116 - u9 >= 1.55 then
-                        u1 = "follow"
-                        pick(1)
-                        publish()
-                    end
-                elseif u1 == "follow" then
-                    v118 = 0
-                    local v122 = nil
-                    if u1 == "follow" then
-                        v122 = #candidates(true)
-                        if v122 ~= 0 then
-                            v118 = v122
-                        else
-                            v118 = #candidates(false)
-                        end
-                    end
-                    LocalPlayer_upv_1:SetAttribute("SpectateCount", v118)
-                    followWanted()
-                    local v123 = tbl_upv_1.ResolveCombatant(u2)
-                    local v124, v125 = nil, nil
-                    if v123 then
-                        local v126 = v123:FindFirstChildOfClass("Humanoid")
-                        v124 = (v126 ~= nil) and ((v126.Health > 0) and ((v123.Parent ~= nil) and (v123:FindFirstChild("HumanoidRootPart") ~= nil)))
-                        if v124 then
-                            v125 = v123
-                        else
-                            v125 = nil
-                        end
-                    else
-                        v125 = nil
-                    end
-                    u3 = v125
-                    if u3 ~= u3 then
-                        publish()
-                    end
-                    v118 = u2
-                    if v118 ~= nil then
-                        local v127 = candidates(true)
-                        v125 = table.find(v127, v118) ~= nil
-                        if v125 then
-                            if u3 ~= nil then
-                                u12 = nil
-                            elseif v125 or table.find(candidates(false), u2) ~= nil then
-                                u12 = nil
-                                if v116 - u21 > 2 then
-                                    reportFocus(true)
-                                end
-                            else
-                                if u12 == nil then
-                                    u12 = v116
-                                end
-                                if v116 - u12 >= 0.9 then
-                                    pick(1)
-                                end
-                            end
-                        else
-                            local v128 = nil
-                            if #v127 > 0 then
-                                v128 = LocalPlayer_upv_1:GetAttribute("Spectating")
-                                local v129
-                                if type(v128) ~= "string" or v128 == "" or LocalPlayer_upv_1:GetAttribute("State") == "Match" then
-                                    v129 = ""
-                                else
-                                    v129 = v128
-                                end
-                                if v129 == "" and isEnemy(v118) then
-                                    pick(1)
-                                elseif u3 ~= nil then
-                                    u12 = nil
-                                elseif v125 or table.find(candidates(false), u2) ~= nil then
-                                    u12 = nil
-                                    if v116 - u21 > 2 then
-                                        reportFocus(true)
-                                    end
-                                else
-                                    if u12 == nil then
-                                        u12 = v116
-                                    end
-                                    if v116 - u12 >= 0.9 then
-                                        pick(1)
-                                    end
-                                end
-                            elseif u3 ~= nil then
-                                u12 = nil
-                            elseif v125 or table.find(candidates(false), u2) ~= nil then
-                                u12 = nil
-                                if v116 - u21 > 2 then
-                                    reportFocus(true)
-                                end
-                            else
-                                if u12 == nil then
-                                    u12 = v116
-                                end
-                                if v116 - u12 >= 0.9 then
-                                    pick(1)
-                                end
-                            end
-                        end
-                    else
-                        pick(1)
-                        return u1
-                    end
-                end
-            end
+    local timestamp2 = os.clock()
+
+    if not wantsSpectate() then
+        if spectateMode ~= "none" then
+            v169 = nil
+            spectateMode = "none"
+            target = nil
+            v9 = nil
+            v11 = false
+            v12 = nil
+            v13 = nil
+            v14 = ""
+            v16 = nil
+            timestamp3 = nil
+            publish()
+        end
+
+        return spectateMode
+    end
+
+    if spectateMode == "none" then
+        local spectating
+        local spectating2 = localPlayer:GetAttribute("Spectating")
+
+        if type(spectating2) ~= "string" or spectating2 == "" or localPlayer:GetAttribute("State") == "Match" then
+            spectating = ""
         else
-            v117 = LocalPlayer_upv_1:GetAttribute("Spectating")
-            local v130
-            if type(v117) ~= "string" or v117 == "" or LocalPlayer_upv_1:GetAttribute("State") == "Match" then
-                v130 = ""
-            else
-                v130 = v117
-            end
-            if v130 == "" then
-                enterDeath(a1)
-                local v131
-                if u7 ~= nil then
-                    v131 = nil
+            spectating = spectating2
+        end
+
+        if spectating == "" then
+            enterDeath(a200)
+            v169 = if v13 == nil then timestamp2 else nil
+
+            return spectateMode
+        end
+
+        spectateMode = "follow"
+        target = nil
+        v9 = nil
+        v14 = ""
+
+        if not followWanted() then
+            pick(1)
+        end
+
+        publish()
+
+        return spectateMode
+    end
+
+    if v169 and 3 <= timestamp2 - v169 then
+        v169 = nil
+        noteUnexplained()
+    end
+
+    if timestamp2 - timestamp4 < 0.25 then
+        return spectateMode
+    end
+
+    timestamp4 = timestamp2
+
+    if spectateMode == "death" then
+        if v12 == nil or v12.Parent == nil then
+            local character = v5.ResolveCombatant(v13)
+            v12 = character
+
+            if character then
+                local v205
+
+                if character then
+                    local displayName = character:GetAttribute("DisplayName")
+
+                    if type(displayName) == "string" and displayName ~= "" then
+                        v205 = displayName
+                    else
+                        v205 = if const player = players:GetPlayerFromCharacter(character) then player.DisplayName else character.Name
+                    end
                 else
-                    v131 = v116
+                    v205 = ""
                 end
-                u22 = v131
-            else
-                u1 = "follow"
-                u2 = nil
-                u3 = nil
-                u8 = ""
-                if not (followWanted()) then
-                    pick(1)
-                end
-                publish()
+
+                v14 = v205
             end
         end
-    elseif u1 ~= "none" then
-        u22 = nil
-        u1 = "none"
-        u2 = nil
-        u3 = nil
-        u5 = false
-        u6 = nil
-        u7 = nil
-        u8 = ""
-        u10 = nil
-        u12 = nil
-        publish()
+
+        if 1.55 <= timestamp2 - timestamp then
+            spectateMode = "follow"
+            pick(1)
+            publish()
+        end
+    elseif spectateMode == "follow" then
+        local v208
+        local spectateCount = 0
+
+        if spectateMode == "follow" then
+            spectateCount = #candidates(true)
+
+            if spectateCount == 0 then
+                spectateCount = #candidates(false)
+            end
+        end
+
+        localPlayer:SetAttribute("SpectateCount", spectateCount)
+        followWanted()
+        local v210 = v9
+
+        if const v211 = v5.ResolveCombatant(target) then
+            if humanoidAlive(v211) then
+                v208 = v211
+            else
+                v208 = nil
+            end
+        else
+            v208 = nil
+        end
+
+        local spectating
+        local spectating3
+        local v214, v215, v216, v217, v218 = false, false, false, false, false
+        v9 = v208
+
+        if v9 ~= v210 then
+            publish()
+        end
+
+        local target2 = target
+        if target2 == nil then
+            pick(1)
+            return spectateMode
+        end
+
+        local v220 = candidates(true)
+        local v221 = table.find(v220, target2) ~= nil
+
+        if v221 then
+            v216 = true
+        elseif not (0 < #v220) then
+            v216 = true
+        else
+            spectating = localPlayer:GetAttribute("Spectating")
+
+            if type(spectating) ~= "string" then
+                v214 = true
+            elseif spectating == "" then
+                v214 = true
+            elseif localPlayer:GetAttribute("State") == "Match" then
+                v214 = true
+            else
+                spectating3 = spectating
+                v215 = true
+            end
+        end
+
+        if v214 then
+            spectating3 = ""
+            v215 = true
+        end
+
+        if v215 then
+            if spectating3 ~= "" then
+                v216 = true
+            elseif isEnemy(target2) then
+                pick(1)
+            else
+                v216 = true
+            end
+        end
+
+        if v216 then
+            if v9 ~= nil then
+                timestamp3 = nil
+            elseif v221 then
+                v218 = true
+            elseif table.find(candidates(false), target2) == nil then
+                if timestamp3 == nil then
+                    timestamp3 = timestamp2
+                end
+
+                v217 = true
+            else
+                v218 = true
+            end
+        end
+
+        if v217 and 0.9 <= timestamp2 - timestamp3 then
+            pick(1)
+        end
+
+        if v218 then
+            timestamp3 = nil
+
+            if 2 < timestamp2 - timestamp5 then
+                reportFocus(true)
+            end
+        end
     end
-    return u1
+
+    return spectateMode
 end
-function tbl_upv_1.GetMode()
+
+function v5.GetMode()
     --[[
       name: GetMode
       line: 543
       upvalues:
-        u1 (ref, index: 1)
+        spectateMode (ref, index: 1)
     ]]
-    return u1
+    return spectateMode
 end
-function tbl_upv_1.GetTarget()
+
+function v5.GetTarget()
     --[[
       name: GetTarget
       line: 547
       upvalues:
-        u1 (ref, index: 1)
-        u3 (ref, index: 2)
+        spectateMode (ref, index: 1)
+        v9 (ref, index: 2)
     ]]
-    if u1 ~= "follow" then
-        return nil
+    if spectateMode == "follow" then
+        return v9
     end
-    return u3
+
+    return nil
 end
-function tbl_upv_1.GetTargetId()
+
+function v5.GetTargetId()
     --[[
       name: GetTargetId
       line: 552
       upvalues:
-        u1 (ref, index: 1)
-        u2 (ref, index: 2)
+        spectateMode (ref, index: 1)
+        target (ref, index: 2)
     ]]
-    if u1 ~= "follow" then
-        return nil
+    if spectateMode == "follow" then
+        return target
     end
-    return u2
+
+    return nil
 end
-function tbl_upv_1.GetKiller()
+
+function v5.GetKiller()
     --[[
       name: GetKiller
       line: 556
       upvalues:
-        u6 (ref, index: 1)
+        v12 (ref, index: 1)
     ]]
-    return u6
+    return v12
 end
-function tbl_upv_1.GetDeathPosition()
+
+function v5.GetDeathPosition()
     --[[
       name: GetDeathPosition
       line: 560
       upvalues:
-        u10 (ref, index: 1)
+        v16 (ref, index: 1)
     ]]
-    return u10
+    return v16
 end
-function tbl_upv_1.DeathElapsed()
+
+function v5.DeathElapsed()
     --[[
       name: DeathElapsed
       line: 564
       upvalues:
-        u9 (ref, index: 1)
+        timestamp (ref, index: 1)
     ]]
-    return os.clock() - u9
+    return os.clock() - timestamp
 end
-function tbl_upv_1.Next(a1)
+
+function v5.Next(a222)
     --[[
       name: Next
       line: 568
       upvalues:
-        u1 (ref,  index: 1)
+        spectateMode (ref,  index: 1)
         pick (copy, index: 2)
     ]]
-    if u1 ~= "follow" then
+    if spectateMode ~= "follow" then
         return
     end
-    pick(((a1 < 0) and -1) or 1)
+
+    local v223 = not (a222 < 0) and 1 or -1
+    pick(v223)
 end
-local function onRemote(a1, a2)
+
+local function onRemote(childName: string, a226)
     --[[
       name: onRemote
       line: 576
-    ]]
-    task.spawn(function() end)
-end
-function tbl_upv_1.Start()
-    --[[
-      name: Start
-      line: 593
       upvalues:
-        u14 (ref,  index: 1)
-        publish (copy, index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
-        u7 (ref,  index: 4)
-        u1 (ref,  index: 6)
-        ReplicatedStorage_upv_1 (copy, index: 12)
-        attackerId_upv_1 (ref,  index: 14)
-        u11 (ref,  index: 15)
+        replicatedStorage (copy, index: 1)
     ]]
-    if u14 then
-        return
-    end
-    u14 = true
-    publish()
-    local _ = "MatchEvent"
-    task.spawn(function() end)
-    local v1 = "MatchState"
-    task.spawn(function() end)
-    local u24 = function(a1)
-        --[[
-          line: 621
-          upvalues:
-            attackerId_upv_1 (ref, index: 1)
-            u11 (ref, index: 2)
-        ]]
-        if type(a1) ~= "table" or type(a1.attackerId) ~= "string" then
-            return
-        end
-        attackerId_upv_1 = a1.attackerId
-        u11 = os.clock()
-    end
-    local u25 = "DamageTaken"
     task.spawn(
         function()
             --[[
               line: 577
               upvalues:
-                ReplicatedStorage_upv_1 (copy, index: 1)
-                u25 (copy, index: 2)
-                u24 (copy, index: 3)
+                replicatedStorage (copy, index: 1)
+                childName (copy, index: 2)
+                a226 (copy, index: 3)
             ]]
-            local v132 = ReplicatedStorage_upv_1:WaitForChild("Remotes", 60)
-            while not (v132) do
-                v132 = ReplicatedStorage_upv_1:WaitForChild("Remotes", 60)
+            local remotes = replicatedStorage:WaitForChild("Remotes", 60)
+
+            while not remotes do
+                remotes = replicatedStorage:WaitForChild("Remotes", 60)
             end
-            local v133 = v132:FindFirstChild(u25)
-            while not (v133) do
-                v132.ChildAdded:Wait()
-                v133 = v132:FindFirstChild(u25)
+
+            local child = remotes:FindFirstChild(childName)
+
+            while not child do
+                remotes.ChildAdded:Wait()
+                child = remotes:FindFirstChild(childName)
             end
-            if not v133 or not v133:IsA("RemoteEvent") then
-                return
+
+            if child and child:IsA("RemoteEvent") then
+                child.OnClientEvent:Connect(a226)
             end
-            v133.OnClientEvent:Connect(u24)
         end
     )
-    LocalPlayer_upv_1.CharacterAdded:Connect(
+end
+
+function v5.Start()
+    --[[
+      name: Start
+      line: 593
+      upvalues:
+        hasRun (ref,  index: 1)
+        publish (copy, index: 2)
+        localPlayer (copy, index: 3)
+        v13 (ref,  index: 4)
+        v14 (ref,  index: 5)
+        spectateMode (ref,  index: 6)
+        v5 (copy, index: 7)
+        v12 (ref,  index: 8)
+        players (copy, index: 9)
+        target (ref,  index: 10)
+        timestamp3 (ref,  index: 11)
+        replicatedStorage (copy, index: 12)
+        v10 (ref,  index: 13)
+        attackerId (ref,  index: 14)
+        timestamp2 (ref,  index: 15)
+    ]]
+    if hasRun then
+        return
+    end
+
+    hasRun = true
+    publish()
+
+    local onOnClientEvent = function(a230, a231)
+        --[[
+          line: 599
+          upvalues:
+            localPlayer (copy, index: 1)
+            v13 (ref,  index: 2)
+            v14 (ref,  index: 3)
+            spectateMode (ref,  index: 4)
+            v5 (copy, index: 5)
+            v12 (ref,  index: 6)
+            players (copy, index: 7)
+            publish (copy, index: 8)
+            target (ref,  index: 9)
+            timestamp3 (ref,  index: 10)
+        ]]
+        if a230 ~= "Elimination" or type(a231) ~= "table" then
+            return
+        end
+
+        if a231.victimId ~= "p" .. tostring(localPlayer.UserId) then
+            if spectateMode == "follow" and target and a231.victimId == target then
+                timestamp3 = os.clock()
+            end
+        else
+            if type(a231.killerId) ~= "string" then
+                v13 = nil
+            else
+                v13 = a231.killerId
+            end
+
+            if type(a231.killerName) == "string" then
+                v14 = a231.killerName
+            end
+
+            if spectateMode == "death" then
+                local character = v5.ResolveCombatant(v13)
+                v12 = character
+
+                if character then
+                    local v233
+
+                    if character then
+                        local displayName = character:GetAttribute("DisplayName")
+
+                        if type(displayName) == "string" and displayName ~= "" then
+                            v233 = displayName
+                        else
+                            v233 = if const player = players:GetPlayerFromCharacter(character) then player.DisplayName else character.Name
+                        end
+                    else
+                        v233 = ""
+                    end
+
+                    v14 = v233
+                end
+
+                publish()
+            end
+        end
+    end
+
+    local childName = "MatchEvent"
+
+    task.spawn(
+        function()
+            --[[
+              line: 577
+              upvalues:
+                replicatedStorage (copy, index: 1)
+                childName (copy, index: 2)
+                onOnClientEvent (copy, index: 3)
+            ]]
+            local remotes = replicatedStorage:WaitForChild("Remotes", 60)
+
+            while not remotes do
+                remotes = replicatedStorage:WaitForChild("Remotes", 60)
+            end
+
+            local child = remotes:FindFirstChild(childName)
+
+            while not child do
+                remotes.ChildAdded:Wait()
+                child = remotes:FindFirstChild(childName)
+            end
+
+            if child and child:IsA("RemoteEvent") then
+                child.OnClientEvent:Connect(onOnClientEvent)
+            end
+        end
+    )
+
+    local onOnClientEvent2 = function(a240)
+        --[[
+          line: 616
+          upvalues:
+            v10 (ref, index: 1)
+        ]]
+        if type(a240) == "table" then
+            v10 = a240
+        end
+    end
+
+    local childName2 = "MatchState"
+
+    task.spawn(
+        function()
+            --[[
+              line: 577
+              upvalues:
+                replicatedStorage (copy, index: 1)
+                childName2 (copy, index: 2)
+                onOnClientEvent2 (copy, index: 3)
+            ]]
+            local remotes = replicatedStorage:WaitForChild("Remotes", 60)
+
+            while not remotes do
+                remotes = replicatedStorage:WaitForChild("Remotes", 60)
+            end
+
+            local child = remotes:FindFirstChild(childName2)
+
+            while not child do
+                remotes.ChildAdded:Wait()
+                child = remotes:FindFirstChild(childName2)
+            end
+
+            if child and child:IsA("RemoteEvent") then
+                child.OnClientEvent:Connect(onOnClientEvent2)
+            end
+        end
+    )
+
+    local onOnClientEvent3 = function(a245)
+        --[[
+          line: 621
+          upvalues:
+            attackerId (ref, index: 1)
+            timestamp2 (ref, index: 2)
+        ]]
+        if type(a245) == "table" and type(a245.attackerId) == "string" then
+            attackerId = a245.attackerId
+            timestamp2 = os.clock()
+        end
+    end
+
+    local childName3 = "DamageTaken"
+
+    task.spawn(
+        function()
+            --[[
+              line: 577
+              upvalues:
+                replicatedStorage (copy, index: 1)
+                childName3 (copy, index: 2)
+                onOnClientEvent3 (copy, index: 3)
+            ]]
+            local remotes = replicatedStorage:WaitForChild("Remotes", 60)
+
+            while not remotes do
+                remotes = replicatedStorage:WaitForChild("Remotes", 60)
+            end
+
+            local child = remotes:FindFirstChild(childName3)
+
+            while not child do
+                remotes.ChildAdded:Wait()
+                child = remotes:FindFirstChild(childName3)
+            end
+
+            if child and child:IsA("RemoteEvent") then
+                child.OnClientEvent:Connect(onOnClientEvent3)
+            end
+        end
+    )
+
+    localPlayer.CharacterAdded:Connect(
         function()
             --[[
               line: 628
               upvalues:
-                u1 (ref, index: 1)
-                u7 (ref, index: 2)
+                spectateMode (ref, index: 1)
+                v13 (ref, index: 2)
             ]]
-            if u1 ~= "none" then
-                return
+            if spectateMode == "none" then
+                v13 = nil
             end
-            u7 = nil
         end
     )
 end
-return tbl_upv_1
+
+return v5

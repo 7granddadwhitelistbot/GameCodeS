@@ -1,868 +1,878 @@
-local Players_upv_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local tbl_1 = {}
-local function M1(a1)
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local v3 = {}
+
+local function M1(label)
     --[[
       name: M1
       line: 36
     ]]
-    local tbl_2 = {action = "Attack", key = "M1"}
-    tbl_2.pad = Enum.KeyCode.ButtonR2
-    tbl_2.label = a1
-    return tbl_2
+    return {key = "M1", action = "Attack", pad = Enum.KeyCode.ButtonR2, label = label}
 end
-local function M2(a1)
+
+local function M2(label)
     --[[
       name: M2
       line: 39
     ]]
-    local tbl_3 = {action = "Aim", key = "M2"}
-    tbl_3.pad = Enum.KeyCode.ButtonL2
-    tbl_3.label = a1
-    return tbl_3
+    return {key = "M2", action = "Aim", pad = Enum.KeyCode.ButtonL2, label = label}
 end
-;({pad = 0, key = "R", label = "reload", action = "Reload", reload = true}).pad = Enum.KeyCode.ButtonX
-local tbl_upv_4 = {}
-tbl_upv_4.Bow = {bit = 0, acts = {{action = "Attack", key = "M1", label = "draw", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "zoom", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Crossbow = {bit = 1, acts = {{action = "Attack", key = "M1", label = "fire", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "aim", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Musket = {bit = 2, acts = {{action = "Attack", key = "M1", label = "fire", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "aim", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Pistol = {bit = 3, acts = {{action = "Attack", key = "M1", label = "fire", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "aim", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Blunderbuss = {bit = 4, acts = {{action = "Attack", key = "M1", label = "fire", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Knives = {bit = 5, acts = {{action = "Attack", key = "M1", label = "throw", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Javelin = {bit = 6, acts = {{action = "Attack", key = "M1", label = "throw", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "cancel", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Sling = {bit = 7, acts = {{action = "Attack", key = "M1", label = "sling", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Sword = {bit = 8, acts = {{action = "Attack", key = "M1", label = "attack", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "block", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Axe = {bit = 9, acts = {{action = "Attack", key = "M1", label = "chop", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "heavy", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Spear = {bit = 10, acts = {{action = "Attack", key = "M1", label = "thrust", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "lunge", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Dagger = {bit = 11, acts = {{action = "Attack", key = "M1", label = "stab", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Club = {bit = 12, acts = {{action = "Attack", key = "M1", label = "smash", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Bomb = {bit = 13, acts = {{action = "Attack", key = "M1", label = "throw", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "cancel", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Herbs = {bit = 14, acts = {{action = "Attack", key = "M1", label = "eat", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Trap = {bit = 15, acts = {{action = "Attack", key = "M1", label = "set", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Bandage = {bit = 16, acts = {{action = "Attack", key = "M1", label = "use", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Tonic = {bit = 17, acts = {{action = "Attack", key = "M1", label = "eat", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Horn = {bit = 18, acts = {{action = "Attack", key = "M1", label = "blow", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Shield = {bit = 19, acts = {{action = "Attack", key = "M1", label = "bash", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "block", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Wall = {bit = 20, acts = {{action = "Attack", key = "M1", label = "build", pad = Enum.KeyCode.ButtonR2}}}
-tbl_upv_4.Gauntlets = {bit = 21, acts = {{action = "Attack", key = "M1", label = "punch", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "dash", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Scythe = {bit = 22, acts = {{action = "Attack", key = "M1", label = "sweep", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "dash", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Katana = {bit = 23, acts = {{action = "Attack", key = "M1", label = "cut", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "parry", pad = Enum.KeyCode.ButtonL2}}}
-tbl_upv_4.Hatchets = {bit = 24, acts = {{action = "Attack", key = "M1", label = "chop", pad = Enum.KeyCode.ButtonR2}, {action = "Aim", key = "M2", label = "throw", pad = Enum.KeyCode.ButtonL2, hatchet = true}}}
-function tbl_1.Init(a1)
+
+;({key = "R", action = "Reload", pad = nil, label = "reload", reload = true}).pad = Enum.KeyCode.ButtonX
+local v8 = {key = "M2", action = "Aim", label = "throw", pad = Enum.KeyCode.ButtonL2, hatchet = true}
+local v9 = {
+    Bow = {bit = 0, acts = {{key = "M1", action = "Attack", label = "draw", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "zoom", pad = Enum.KeyCode.ButtonL2}}},
+    Crossbow = {bit = 1, acts = {{key = "M1", action = "Attack", label = "fire", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "aim", pad = Enum.KeyCode.ButtonL2}}},
+    Musket = {bit = 2, acts = {{key = "M1", action = "Attack", label = "fire", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "aim", pad = Enum.KeyCode.ButtonL2}}},
+    Pistol = {bit = 3, acts = {{key = "M1", action = "Attack", label = "fire", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "aim", pad = Enum.KeyCode.ButtonL2}}},
+    Blunderbuss = {bit = 4, acts = {{key = "M1", action = "Attack", label = "fire", pad = Enum.KeyCode.ButtonR2}}},
+    Knives = {bit = 5, acts = {{key = "M1", action = "Attack", label = "throw", pad = Enum.KeyCode.ButtonR2}}},
+    Javelin = {bit = 6, acts = {{key = "M1", action = "Attack", label = "throw", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "cancel", pad = Enum.KeyCode.ButtonL2}}},
+    Sling = {bit = 7, acts = {{key = "M1", action = "Attack", label = "sling", pad = Enum.KeyCode.ButtonR2}}},
+    Sword = {bit = 8, acts = {{key = "M1", action = "Attack", label = "attack", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "block", pad = Enum.KeyCode.ButtonL2}}},
+    Axe = {bit = 9, acts = {{key = "M1", action = "Attack", label = "chop", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "heavy", pad = Enum.KeyCode.ButtonL2}}},
+    Spear = {bit = 10, acts = {{key = "M1", action = "Attack", label = "thrust", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "lunge", pad = Enum.KeyCode.ButtonL2}}},
+    Dagger = {bit = 11, acts = {{key = "M1", action = "Attack", label = "stab", pad = Enum.KeyCode.ButtonR2}}},
+    Club = {bit = 12, acts = {{key = "M1", action = "Attack", label = "smash", pad = Enum.KeyCode.ButtonR2}}},
+    Bomb = {bit = 13, acts = {{key = "M1", action = "Attack", label = "throw", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "cancel", pad = Enum.KeyCode.ButtonL2}}},
+    Herbs = {bit = 14, acts = {{key = "M1", action = "Attack", label = "eat", pad = Enum.KeyCode.ButtonR2}}},
+    Trap = {bit = 15, acts = {{key = "M1", action = "Attack", label = "set", pad = Enum.KeyCode.ButtonR2}}},
+    Bandage = {bit = 16, acts = {{key = "M1", action = "Attack", label = "use", pad = Enum.KeyCode.ButtonR2}}},
+    Tonic = {bit = 17, acts = {{key = "M1", action = "Attack", label = "eat", pad = Enum.KeyCode.ButtonR2}}},
+    Horn = {bit = 18, acts = {{key = "M1", action = "Attack", label = "blow", pad = Enum.KeyCode.ButtonR2}}},
+    Shield = {bit = 19, acts = {{key = "M1", action = "Attack", label = "bash", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "block", pad = Enum.KeyCode.ButtonL2}}},
+    Wall = {bit = 20, acts = {{key = "M1", action = "Attack", label = "build", pad = Enum.KeyCode.ButtonR2}}},
+    Gauntlets = {bit = 21, acts = {{key = "M1", action = "Attack", label = "punch", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "dash", pad = Enum.KeyCode.ButtonL2}}},
+    Scythe = {bit = 22, acts = {{key = "M1", action = "Attack", label = "sweep", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "dash", pad = Enum.KeyCode.ButtonL2}}},
+    Katana = {bit = 23, acts = {{key = "M1", action = "Attack", label = "cut", pad = Enum.KeyCode.ButtonR2}, {key = "M2", action = "Aim", label = "parry", pad = Enum.KeyCode.ButtonL2}}},
+    Hatchets = {bit = 24, acts = {{key = "M1", action = "Attack", label = "chop", pad = Enum.KeyCode.ButtonR2}, v8}}
+}
+
+function v3.Init(a10)
     --[[
       name: Init
       line: 79
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        ReplicatedStorage_upv_1 (copy, index: 2)
-        tbl_upv_4 (copy, index: 3)
+        players (copy, index: 1)
+        replicatedStorage (copy, index: 2)
+        v9 (copy, index: 3)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local WeaponInfo_upv_1 = a1.WeaponInfo
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local u1 = 0
-    local u2 = 0
-    local u3 = false
+    local result
+    local text
+    local ui = a10.UI
+    local theme = a10.Theme
+    local state = a10.State
+    local weaponInfo = a10.WeaponInfo
+    local colors = theme.Colors
+    local fonts = theme.Fonts
+    local localPlayer = players.LocalPlayer
+    local kindsMask = 0
+    local matchesSeen = 0
+    local loaded = false
+
     local function loadFromProfile()
         --[[
           name: loadFromProfile
           line: 88
           upvalues:
-            State_upv_1 (copy, index: 1)
-            u3 (ref,  index: 2)
-            u1 (ref,  index: 3)
-            u2 (ref,  index: 4)
+            state (copy, index: 1)
+            loaded (ref,  index: 2)
+            kindsMask (ref,  index: 3)
+            matchesSeen (ref,  index: 4)
         ]]
-        local Profile_1 = State_upv_1.Profile and (State_upv_1.Profile.settings)
-        if not State_upv_1.HasProfile or type(Profile_1) ~= "table" then
-            return
-        end
-        u3 = true
-        if type(Profile_1.tutKinds) == "number" then
-            u1 = bit32.bor(u1, Profile_1.tutKinds)
-        end
-        if type(Profile_1.tutMatches) ~= "number" then
-            return
-        end
-        u2 = math.max(u2, Profile_1.tutMatches)
-    end
-    local v1 = State_upv_1.Profile and (State_upv_1.Profile.settings)
-    if State_upv_1.HasProfile and type(v1) == "table" then
-        u3 = true
-        if type(v1.tutKinds) == "number" then
-            u1 = bit32.bor(u1, v1.tutKinds)
-        end
-        if type(v1.tutMatches) == "number" then
-            u2 = math.max(u2, v1.tutMatches)
+        local settings = state.Profile and state.Profile.settings
+
+        if state.HasProfile and type(settings) == "table" then
+            loaded = true
+
+            if type(settings.tutKinds) == "number" then
+                kindsMask = bit32.bor(kindsMask, settings.tutKinds)
+            end
+
+            if type(settings.tutMatches) == "number" then
+                matchesSeen = math.max(matchesSeen, settings.tutMatches)
+            end
         end
     end
-    State_upv_1.ProfileChanged:Connect(loadFromProfile)
-    local function save(a2, a3)
+
+    local settings = state.Profile and state.Profile.settings
+
+    if state.HasProfile and type(settings) == "table" then
+        loaded = true
+
+        if type(settings.tutKinds) == "number" then
+            local tutKinds = settings.tutKinds
+            kindsMask = bit32.bor(kindsMask, tutKinds)
+        end
+
+        if type(settings.tutMatches) == "number" then
+            local tutMatches = settings.tutMatches
+            matchesSeen = math.max(matchesSeen, tutMatches)
+        end
+    end
+
+    state.ProfileChanged:Connect(loadFromProfile)
+
+    local function save(a29, a30)
         --[[
           name: save
           line: 102
           upvalues:
-            State_upv_1 (copy, index: 1)
+            state (copy, index: 1)
+            a10 (copy, index: 2)
         ]]
-        if State_upv_1.Mock then
+        if state.Mock then
             return
         end
-        task.spawn(function() end)
+
+        task.spawn(
+            function()
+                --[[
+                  line: 106
+                  upvalues:
+                    a10 (copy, index: 1)
+                    a29 (copy, index: 2)
+                    a30 (copy, index: 3)
+                ]]
+                a10.Remotes.Invoke("ProfileAction", "SetSetting", a29, a30)
+            end
+        )
     end
-    local u4 = false
-    State_upv_1.MatchEvent:Connect(
-        function(a4)
+
+    local v31 = false
+
+    state.MatchEvent:Connect(
+        function(a32)
             --[[
               line: 111
               upvalues:
-                u3 (ref,  index: 1)
-                u4 (ref,  index: 2)
-                u2 (ref,  index: 3)
-                State_upv_1 (copy, index: 4)
+                loaded (ref,  index: 1)
+                v31 (ref,  index: 2)
+                matchesSeen (ref,  index: 3)
+                state (copy, index: 4)
+                a10 (copy, index: 5)
             ]]
-            if a4 ~= "MatchStart" then
-                return
-            end
-            if u3 then
-                local v2 = u2 < 3
-                u4 = v2
-                if u4 then
-                    u2 = u2 + 1
-                    local _ = u2
-                    if State_upv_1.Mock then
-                        return
+            if a32 == "MatchStart" and loaded then
+                v31 = matchesSeen < 3
+
+                if v31 then
+                    matchesSeen += 1
+                    local v33 = matchesSeen
+
+                    if not state.Mock then
+                        local v34 = "tutMatches"
+                        task.spawn(
+                            function()
+                                --[[
+                                  line: 106
+                                  upvalues:
+                                    a10 (copy, index: 1)
+                                    v34 (copy, index: 2)
+                                    v33 (copy, index: 3)
+                                ]]
+                                a10.Remotes.Invoke("ProfileAction", "SetSetting", v34, v33)
+                            end
+                        )
                     end
-                    local v3 = "tutMatches"
-                    task.spawn(function() end)
                 end
             end
         end
     )
-    local u5 = UI_upv_1.new("Frame", {Name = "ActionStrip", Visible = false, AnchorPoint = Vector2.new(0, 1), Size = UDim2.fromOffset(200, 110), Parent = a1.Canvas.HUD})
-    UI_upv_1.new("UIListLayout", {FillDirection = Enum.FillDirection.Vertical, HorizontalAlignment = Enum.HorizontalAlignment.Left, VerticalAlignment = Enum.VerticalAlignment.Bottom, Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder, Parent = u5})
-    local u6 = UI_upv_1.new("Frame", {Name = "LeftHints", AnchorPoint = Vector2.new(1, 1), Size = UDim2.fromOffset(220, 68), Visible = false, [1] = UI_upv_1.List(Enum.FillDirection.Vertical, 4, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Bottom), Parent = a1.Canvas.HUD})
-    local function newRow(a5, a6, a7, a8)
+
+    local function newRow(parent, act, layoutOrder, a39: boolean)
         --[[
           name: newRow
           line: 124
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            Fonts_upv_1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
+            ui (copy, index: 1)
+            fonts (copy, index: 2)
+            colors (copy, index: 3)
         ]]
-        local v3 = UI_upv_1.new("CanvasGroup", {GroupTransparency = 0.45, Name = "Hint_" .. a6.key, Size = UDim2.fromOffset(0, 32), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = a7, Parent = a5})
-        local new_1 = UI_upv_1.new
-        local tbl_5 = {VerticalAlignment = 0, HorizontalAlignment = 0, Parent = 0, Padding = 0, SortOrder = 0}
-        tbl_5.FillDirection = Enum.FillDirection.Horizontal
-        local v4
-        if a8 then
-            v4 = Enum.HorizontalAlignment.Right
+        local layoutOrder2
+        local layoutOrder3
+        local ui2 = ui.new("CanvasGroup", {GroupTransparency = 0.45, Name = "Hint_" .. act.key, Size = UDim2.fromOffset(0, 32), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = layoutOrder, Parent = parent})
+        local newUi = ui.new
+        local v44 = {FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = if a39 then Enum.HorizontalAlignment.Right else Enum.HorizontalAlignment.Left}
+        v44.VerticalAlignment = Enum.VerticalAlignment.Center
+        v44.Padding = UDim.new(0, 8)
+        v44.SortOrder = Enum.SortOrder.LayoutOrder
+        v44.Parent = ui2
+        newUi("UIListLayout", v44)
+        local actionCap = ui.ActionCap
+        local action = act.action
+        local v47 = {Height = 26, TextSize = 15, Gamepad = act.pad}
+
+        if a39 then
+            layoutOrder2 = 2
         else
-            v4 = Enum.HorizontalAlignment.Left
+            layoutOrder2 = 1
         end
-        tbl_5.HorizontalAlignment = v4
-        tbl_5.VerticalAlignment = Enum.VerticalAlignment.Center
-        tbl_5.Padding = UDim.new(0, 8)
-        tbl_5.SortOrder = Enum.SortOrder.LayoutOrder
-        tbl_5.Parent = v3
-        new_1("UIListLayout", tbl_5)
-        local ActionCap_1 = UI_upv_1.ActionCap
-        local action_1 = a6.action
-        local tbl_6 = {LayoutOrder = 0, Height = 26, TextSize = 15, Parent = 0}
-        tbl_6.Gamepad = a6.pad
-        tbl_6.LayoutOrder = (a8 and 2) or 1
-        tbl_6.Parent = v3
-        local v5 = ActionCap_1(action_1, tbl_6)
-        local new_2 = UI_upv_1.new
-        local tbl_7 = {LayoutOrder = 0, Parent = 0, Name = "Label", TextSize = 18}
-        tbl_7.Size = UDim2.fromOffset(0, 26)
-        tbl_7.AutomaticSize = Enum.AutomaticSize.X
-        tbl_7.Text = a6.label
-        tbl_7.FontFace = Fonts_upv_1.Bold
-        tbl_7.TextColor3 = Colors_upv_1.Text
-        tbl_7.LayoutOrder = (a8 and 1) or 2
-        tbl_7.Parent = v3
-        action_1 = new_2("TextLabel", tbl_7)
-        UI_upv_1.TextStroke(Colors_upv_1.Void, 1, 0.55).Parent = action_1
-        local tbl_8 = {capFade = 0}
-        tbl_8.group = v3
-        tbl_8.label = action_1
-        tbl_8.cap = v5
-        tbl_8.act = a6
-        return tbl_8
+
+        v47.LayoutOrder = layoutOrder2
+        v47.Parent = ui2
+        local cap = actionCap(action, v47)
+        local newUi2 = ui.new
+        local v50 = {Name = "Label", TextSize = 18, Size = UDim2.fromOffset(0, 26), AutomaticSize = Enum.AutomaticSize.X, Text = act.label, FontFace = fonts.Bold, TextColor3 = colors.Text}
+
+        if a39 then
+            layoutOrder3 = 1
+        else
+            layoutOrder3 = 2
+        end
+
+        v50.LayoutOrder = layoutOrder3
+        v50.Parent = ui2
+        local ui3 = newUi2("TextLabel", v50)
+        ui.TextStroke(colors.Void, 1, 0.55).Parent = ui3
+
+        return {capFade = 0, group = ui2, label = ui3, cap = cap, act = act}
     end
-    local u7 = newRow(u6, {action = "Slide", key = "C", label = "slide", pad = Enum.KeyCode.ButtonB}, 1, true)
-    u7.group.GroupTransparency = 1
-    local u8 = newRow(u6, {action = "View", key = "V", label = "first person", pad = Enum.KeyCode.DPadUp}, 2, true)
-    local Camera_upv_1 = ReplicatedStorage_upv_1:WaitForChild("Shared"):FindFirstChild("Camera")
-    local success_1, v6 = pcall(
+
+    local parent = ui.new("Frame", {Name = "ActionStrip", Visible = false, AnchorPoint = Vector2.new(0, 1), Size = UDim2.fromOffset(200, 110), Parent = a10.Canvas.HUD})
+    ui.new("UIListLayout", {FillDirection = Enum.FillDirection.Vertical, HorizontalAlignment = Enum.HorizontalAlignment.Left, VerticalAlignment = Enum.VerticalAlignment.Bottom, Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder, Parent = parent})
+    local ui2 = ui.new("Frame", {Name = "LeftHints", AnchorPoint = Vector2.new(1, 1), Size = UDim2.fromOffset(220, 68), Visible = false, (ui.List(Enum.FillDirection.Vertical, 4, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Bottom)), Parent = a10.Canvas.HUD})
+    local v54 = newRow(ui2, {key = "C", action = "Slide", label = "slide", pad = Enum.KeyCode.ButtonB}, 1, true)
+    v54.group.GroupTransparency = 1
+    local v55 = newRow(ui2, {key = "V", action = "View", label = "first person", pad = Enum.KeyCode.DPadUp}, 2, true)
+    local camera = replicatedStorage:WaitForChild("Shared"):FindFirstChild("Camera")
+
+    local success, result2 = pcall(
         function()
             --[[
               line: 191
               upvalues:
-                Camera_upv_1 (copy, index: 1)
+                camera (copy, index: 1)
             ]]
-            if Camera_upv_1 then
-                return (require(Camera_upv_1))
+            if camera then
+                return (require(camera))
             end
+
             return nil
         end
     )
-    local u9 = not (success_1) or type(v6) ~= "table" or v6
+
+    if not success or type(result2) ~= "table" then
+        result = nil
+    else
+        result = result2
+    end
+
     local function paintView()
         --[[
           name: paintView
           line: 196
           upvalues:
-            u9 (ref,  index: 1)
-            u8 (copy, index: 2)
+            result (ref,  index: 1)
+            v55 (copy, index: 2)
         ]]
-        local v7 = (u9 ~= nil) and ((u9.IsFirstPerson ~= nil) and (u9.IsFirstPerson() == true))
-        local label_1 = u8.label
-        local v8
-        if v7 then
-            v8 = "third person"
-        else
-            v8 = "first person"
-        end
-        label_1.Text = v8
+        local isFirstPerson = result ~= nil and result.IsFirstPerson ~= nil and result.IsFirstPerson() == true
+        v55.label.Text = isFirstPerson and "third person" or "first person"
     end
-    local v9 = false
-    if u9 ~= nil then
-        v9 = (u9.IsFirstPerson ~= nil) and (u9.IsFirstPerson() == true)
-    end
-    local label_2 = u8.label
-    local v10
-    if v9 then
-        v10 = "third person"
+
+    local isFirstPerson = result ~= nil and result.IsFirstPerson ~= nil and result.IsFirstPerson() == true
+    local label = v55.label
+
+    if isFirstPerson then
+        text = "third person"
     else
-        v10 = "first person"
+        text = "first person"
     end
-    label_2.Text = v10
-    if u9 and typeof(u9.FirstPersonChanged) == "RBXScriptSignal" then
-        u9.FirstPersonChanged:Connect(paintView)
+
+    label.Text = text
+
+    if result and typeof(result.FirstPersonChanged) == "RBXScriptSignal" then
+        result.FirstPersonChanged:Connect(paintView)
     end
+
     local function layout()
         --[[
           name: layout
           line: 205
           upvalues:
-            a1 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-            u5 (copy, index: 3)
-            u6 (copy, index: 4)
+            a10 (copy, index: 1)
+            ui (copy, index: 2)
+            parent (copy, index: 3)
+            ui2 (copy, index: 4)
         ]]
-        local v11 = ((not (a1.HotbarWidth)) and 372) or (a1.HotbarWidth())
-        local v12 = ((UI_upv_1.Compact) and -8) or -18
-        u5.Position = UDim2.new(0.5, math.floor(v11 / 2) + 22, 1, v12)
-        u6.Position = UDim2.new(0.5, -(math.floor(v11 / 2) + 22), 1, v12)
+        local v64 = not a10.HotbarWidth and 372 or a10.HotbarWidth()
+        local v65 = ui.Compact and -8 or -18
+        parent.Position = UDim2.new(0.5, math.floor(v64 / 2) + 22, 1, v65)
+        ui2.Position = UDim2.new(0.5, -(math.floor(v64 / 2) + 22), 1, v65)
     end
+
     layout()
-    UI_upv_1.LayoutChanged:Connect(layout)
-    local function kindOf(a9)
+    ui.LayoutChanged:Connect(layout)
+
+    local function kindOf(a67)
         --[[
           name: kindOf
           line: 215
           upvalues:
-            WeaponInfo_upv_1 (copy, index: 1)
-            tbl_upv_4 (copy, index: 2)
+            weaponInfo (copy, index: 1)
+            v9 (copy, index: 2)
         ]]
-        if a9 == "bandage" then
+        if a67 == "bandage" then
             return "Bandage"
         end
-        if a9 == "healing_tonic" then
+        if a67 == "healing_tonic" then
             return "Tonic"
         end
-        if a9 == "palisade" then
+        if a67 == "palisade" then
             return "Wall"
         end
-        local v13 = WeaponInfo_upv_1.Get(a9)
-        local v14 = v13 and (v13.kind)
-        if type(v14) == "string" and tbl_upv_4[v14] then
-            return v14
+
+        local v68 = weaponInfo.Get(a67)
+        local kind = v68 and v68.kind
+
+        if type(kind) == "string" and v9[kind] then
+            return kind
         end
+
         return nil
     end
+
     local function heldTool()
         --[[
           name: heldTool
           line: 231
           upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
+            localPlayer (copy, index: 1)
         ]]
-        local Character_1 = LocalPlayer_upv_1.Character
-        local v15 = Character_1 and (Character_1:FindFirstChildOfClass("Tool"))
-        if v15 and v15:IsA("Tool") then
-            return v15
+        local model = localPlayer.Character
+        model = model and model:FindFirstChildOfClass("Tool")
+
+        if model and model:IsA("Tool") then
+            return model
         end
+
         return nil
     end
-    local tbl_upv_9 = {}
-    local u10 = nil
-    local u11 = 0
-    local u12 = nil
-    local function rebuild(a10)
+
+    local v72 = {}
+    local v73 = nil
+    local v74 = 0
+    local kind = nil
+
+    local function rebuild(a77)
         --[[
           name: rebuild
           line: 242
           upvalues:
-            tbl_upv_9 (copy, index: 1)
-            u10 (ref,  index: 2)
-            tbl_upv_4 (copy, index: 3)
+            v72 (copy, index: 1)
+            v73 (ref,  index: 2)
+            v9 (copy, index: 3)
             newRow (copy, index: 4)
-            u5 (copy, index: 5)
+            parent (copy, index: 5)
         ]]
-        for _, value_1 in tbl_upv_9 do
-            value_1.group:Destroy()
+        for _, v79 in v72 do
+            v79.group:Destroy()
         end
-        table.clear(tbl_upv_9)
-        u10 = a10
-        local v16 = a10 and (tbl_upv_4[a10])
-        if not v16 then
+
+        table.clear(v72)
+        v73 = a77
+        local v80 = a77 and v9[a77]
+        if not v80 then
             return
         end
-        for key_1, value_2 in v16.acts do
-            tbl_upv_9[key_1] = newRow(u5, value_2, #v16.acts - key_1, false)
+
+        local actCount = #v80.acts
+
+        for v82, act in v80.acts do
+            v72[v82] = newRow(parent, act, actCount - v82, false)
         end
     end
-    local function emphasize(a11)
+
+    local function emphasize(key)
         --[[
           name: emphasize
           line: 259
           upvalues:
-            u11 (ref,  index: 1)
-            tbl_upv_9 (copy, index: 2)
-            u1 (ref,  index: 3)
-            tbl_upv_4 (copy, index: 4)
-            State_upv_1 (copy, index: 5)
+            v74 (ref,  index: 1)
+            v72 (copy, index: 2)
+            kindsMask (ref,  index: 3)
+            v9 (copy, index: 4)
+            state (copy, index: 5)
+            a10 (copy, index: 6)
         ]]
-        u11 = os.clock() + 6
-        for _, value_3 in tbl_upv_9 do
-            value_3.group.GroupTransparency = 1
+        v74 = os.clock() + 6
+
+        for _, v87 in v72 do
+            v87.group.GroupTransparency = 1
         end
-        if not (bit32.btest(u1, bit32.lshift(1, tbl_upv_4[a11].bit))) then
-            u1 = bit32.bor(u1, bit32.lshift(1, tbl_upv_4[a11].bit))
-            local _ = u1
-            if State_upv_1.Mock then
+
+        if not bit32.btest(kindsMask, (bit32.lshift(1, v9[key].bit))) then
+            kindsMask = bit32.bor(kindsMask, (bit32.lshift(1, v9[key].bit)))
+            local v88 = kindsMask
+
+            if state.Mock then
                 return
             end
-            local v1 = "tutKinds"
-            task.spawn(function() end)
-        end
-    end
-    a1.HeldWeaponChanged:Connect(
-        function(a12)
-            --[[
-              line: 270
-              upvalues:
-                WeaponInfo_upv_1 (copy, index: 1)
-                tbl_upv_4 (copy, index: 2)
-                u10 (ref,  index: 3)
-                rebuild (copy, index: 4)
-                u3 (ref,  index: 5)
-                u1 (ref,  index: 6)
-                a1 (copy, index: 7)
-                u12 (ref,  index: 8)
-                emphasize (copy, index: 9)
-            ]]
-            local v17
-            if a12 == "bandage" then
-                v17 = "Bandage"
-            elseif a12 == "healing_tonic" then
-                v17 = "Tonic"
-            elseif a12 ~= "palisade" then
-                local v18 = WeaponInfo_upv_1.Get(a12)
-                local v19 = v18 and (v18.kind)
-                v17 = type(v19) ~= "string" or not (tbl_upv_4[v19]) or v19
-            else
-                v17 = "Wall"
-            end
-            if v17 ~= u10 then
-                rebuild(v17)
-            end
-            if not v17 or not u3 or (bit32.btest(u1, bit32.lshift(1, tbl_upv_4[v17].bit))) then
-                return
-            end
-            if a1.HudHidden then
-                u12 = v17
-            else
-                emphasize(v17)
-            end
-        end
-    )
-    a1.HudHiddenChanged:Connect(
-        function(a13)
-            --[[
-              line: 284
-              upvalues:
-                u12 (ref,  index: 1)
-                u10 (ref,  index: 2)
-                emphasize (copy, index: 3)
-            ]]
-            if (a13) or not u12 then
-                return
-            end
-            if u12 == u10 then
-                local v20 = u12
-                u12 = nil
-                task.defer(emphasize, v20)
-            end
-        end
-    )
-    local function inCombat()
-        --[[
-          name: inCombat
-          line: 293
-          upvalues:
-            State_upv_1 (copy, index: 1)
-            a1 (copy, index: 2)
-        ]]
-        local v21 = (State_upv_1.Get("CombatMode") ~= false) and (State_upv_1.IsAlive() and (not a1.HudHidden and (not State_upv_1.Watching())))
-        return v21
-    end
-    local u13 = false
-    local u14 = nil
-    local u15 = os.clock()
-    local function planarSpeed()
-        --[[
-          name: planarSpeed
-          line: 301
-          upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            u14 (ref,  index: 2)
-            u15 (ref,  index: 3)
-        ]]
-        local Character_2 = LocalPlayer_upv_1.Character
-        local v22 = Character_2 and (Character_2:FindFirstChild("HumanoidRootPart"))
-        local v23 = os.clock()
-        if v22 and v22:IsA("BasePart") then
-            local Position_1 = v22.Position
-            v22 = 0
-            if u14 and u15 < v23 then
-                v22 = ((Position_1 - u14) * Vector3.new(1, 0, 1)).Magnitude / (v23 - u15)
-                v22 = ((Position_1 - u14) * Vector3.new(1, 0, 1)).Magnitude / (v23 - u15) > 120 and 0 or ((Position_1 - u14) * Vector3.new(1, 0, 1)).Magnitude / (v23 - u15)
-            end
-            u14 = Position_1
-            u15 = v23
-            return v22
-        end
-        u14 = nil
-        return 0
-    end
-    local u16 = 0
-    local u17 = -math.huge
-    local function threwHatchet()
-        --[[
-          name: threwHatchet
-          line: 324
-          upvalues:
-            u1 (ref, index: 1)
-        ]]
-        return (bit32.btest(u1, 33554432))
-    end
-    local u18 = nil
-    local function setTouchNudge(a14)
-        --[[
-          name: setTouchNudge
-          line: 328
-          upvalues:
-            u18 (ref,  index: 1)
-            LocalPlayer_upv_1 (copy, index: 2)
-        ]]
-        if a14 == u18 then
-            return
-        end
-        local v24 = LocalPlayer_upv_1:FindFirstChildOfClass("PlayerGui")
-        local v25 = v24 and (v24:FindFirstChild("CombatTouch"))
-        if not v25 then
-            return
-        end
-        u18 = a14
-        v25:SetAttribute("Nudge", a14)
-    end
-    UI_upv_1.Every(
-        u5,
-        0.1,
-        function()
-            --[[
-              line: 339
-              upvalues:
-                LocalPlayer_upv_1 (copy, index: 1)
-                u10 (ref,  index: 2)
-                u3 (ref,  index: 3)
-                u1 (ref,  index: 4)
-                State_upv_1 (copy, index: 5)
-                a1 (copy, index: 6)
-                UI_upv_1 (copy, index: 7)
-                u18 (ref,  index: 8)
-                tbl_upv_9 (copy, index: 9)
-                u5 (copy, index: 10)
-                layout (copy, index: 11)
-                u11 (ref,  index: 12)
-                Colors_upv_1 (copy, index: 13)
-                Theme_upv_1 (copy, index: 14)
-                u4 (ref,  index: 15)
-                u2 (ref,  index: 16)
-                planarSpeed (copy, index: 17)
-                u16 (ref,  index: 18)
-                u17 (ref,  index: 19)
-                u6 (copy, index: 20)
-                u13 (ref,  index: 21)
-                u7 (copy, index: 22)
-            ]]
-            local v26 = LocalPlayer_upv_1.Character
-            local v27 = v26 and (v26:FindFirstChildOfClass("Tool"))
-            local v28 = not (v27) or not (v27:IsA("Tool")) or v27
-            v26 = (u10 == "Hatchets") and (v28 ~= nil)
-            local v29 = v26 and (v28:GetAttribute("Thrown") == true)
-            local v30
-            if v29 and u3 and not (bit32.btest(u1, 33554432)) then
-                u1 = bit32.bor(u1, 33554432)
-                v30 = u1
-                if not (State_upv_1.Mock) then
-                    local v50 = "tutKinds"
-                    task.spawn(function() end)
-                end
-            end
-            if UI_upv_1.Touch and v26 and not v29 and u3 then
-                local v31 = nil
-                if bit32.btest(u1, 33554432) then
-                    v30 = nil
-                else
-                    v31 = (State_upv_1.Get("CombatMode") ~= false) and (State_upv_1.IsAlive() and (not a1.HudHidden and (not State_upv_1.Watching())))
-                    if v31 then
-                        v30 = "Secondary"
-                    else
-                        v30 = nil
-                    end
-                end
-            else
-                v30 = nil
-            end
-            if v30 ~= u18 then
-                local v32 = LocalPlayer_upv_1:FindFirstChildOfClass("PlayerGui")
-                local v33 = v32 and (v32:FindFirstChild("CombatTouch"))
-                if v33 then
-                    u18 = v30
-                    v33:SetAttribute("Nudge", v30)
-                end
-            end
-            local v34 = not UI_upv_1.Touch
-            if v34 then
-                v26 = (State_upv_1.Get("CombatMode") ~= false) and (State_upv_1.IsAlive() and (not a1.HudHidden and (not State_upv_1.Watching())))
-                if v26 then
-                    v34 = (#tbl_upv_9 > 0) and (v28 ~= nil)
-                else
-                    v34 = v26
-                end
-            end
-            u5.Visible = v34
-            if v34 then
-                layout()
-                v30 = v28:GetAttribute("Ammo")
-                local v35 = v28:GetAttribute("MaxAmmo")
-                local v36 = v28:GetAttribute("Reloading") == true
-                local v37 = (type(v30) == "number") and ((type(v35) == "number") and ((v35 > 0) and (v30 <= 0)))
-                local v38 = os.clock() < u11
-                local v39, v40, v39, v40 = nil, nil, nil, nil
-                local v41 = nil
-                local _ = nil
-                for v51, value_4 in tbl_upv_9 do
-                    if value_4.act.reload ~= true then
-                        local v42 = false
-                        if value_4.act.hatchet ~= true then
-                            v30 = v42
-                        else
-                            v30 = v29
-                        end
-                    else
-                        v30 = v37
-                        if not (v30) then
-                            v30 = v36
-                            if not (v30) then
-                                local v42 = false
-                                if value_4.act.hatchet ~= true then
-                                    v30 = v42
-                                else
-                                    v30 = v29
-                                end
-                            end
-                        end
-                    end
-                    if v38 or v30 then
-                        v39 = 0
-                        v40 = 0
-                        if value_4.act.hatchet then
-                            if not (v29) or v29 then
-                                if v29 then
-                                    v40 = 1
-                                elseif u3 then
-                                    local v43 = bit32.btest(u1, 33554432)
-                                    if not v43 then
-                                        v39 = 0
-                                    end
-                                end
-                                value_4.label.Text = (v29 and "pick up") or "throw"
-                                local label_3 = value_4.label
-                                if v29 then
-                                    v41 = Colors_upv_1.Warning
-                                else
-                                    v41 = Colors_upv_1.Text
-                                end
-                                label_3.TextColor3 = v41
-                                if math.abs(value_4.group.GroupTransparency - v39) > 0.01 then
-                                    UI_upv_1.Tween(value_4.group, Theme_upv_1.Tween.Smooth, {GroupTransparency = v39})
-                                end
-                                if v40 ~= value_4.capFade then
-                                    value_4.capFade = v40
-                                    UI_upv_1.SetCapFade(value_4.cap, v40)
-                                end
-                                if not (value_4.act.reload) then
-                                    continue
-                                end
-                                value_4.label.Text = (v36 and "reloading") or "reload"
-                                local label_4 = value_4.label
-                                if v30 then
-                                    v41 = Colors_upv_1.Warning
-                                else
-                                    v41 = Colors_upv_1.Text
-                                end
-                                label_4.TextColor3 = v41
-                            end
-                            v39, v40 = 0.7, 0.75
-                            value_4.label.Text = (v29 and "pick up") or "throw"
-                            local label_3 = value_4.label
-                            if v29 then
-                                v41 = Colors_upv_1.Warning
-                            else
-                                v41 = Colors_upv_1.Text
-                            end
-                            label_3.TextColor3 = v41
-                        end
-                        if math.abs(value_4.group.GroupTransparency - v39) > 0.01 then
-                            UI_upv_1.Tween(value_4.group, Theme_upv_1.Tween.Smooth, {GroupTransparency = v39})
-                        end
-                        if v40 ~= value_4.capFade then
-                            value_4.capFade = v40
-                            UI_upv_1.SetCapFade(value_4.cap, v40)
-                        end
-                        if not (value_4.act.reload) then
-                            continue
-                        end
-                        value_4.label.Text = (v36 and "reloading") or "reload"
-                        local label_4 = value_4.label
-                        if v30 then
-                            v41 = Colors_upv_1.Warning
-                        else
-                            v41 = Colors_upv_1.Text
-                        end
-                        label_4.TextColor3 = v41
-                    end
-                    v39 = 0.45
-                    v40 = 0
-                    if value_4.act.hatchet then
-                        if not (v29) or v29 then
-                            if v29 then
-                                v40 = 1
-                            elseif u3 then
-                                local v43 = bit32.btest(u1, 33554432)
-                                if not v43 then
-                                    v39 = 0
-                                end
-                            end
-                            value_4.label.Text = (v29 and "pick up") or "throw"
-                            local label_3 = value_4.label
-                            if v29 then
-                                v41 = Colors_upv_1.Warning
-                            else
-                                v41 = Colors_upv_1.Text
-                            end
-                            label_3.TextColor3 = v41
-                            if math.abs(value_4.group.GroupTransparency - v39) > 0.01 then
-                                UI_upv_1.Tween(value_4.group, Theme_upv_1.Tween.Smooth, {GroupTransparency = v39})
-                            end
-                            if v40 ~= value_4.capFade then
-                                value_4.capFade = v40
-                                UI_upv_1.SetCapFade(value_4.cap, v40)
-                            end
-                            if not (value_4.act.reload) then
-                                continue
-                            end
-                            value_4.label.Text = (v36 and "reloading") or "reload"
-                            local label_4 = value_4.label
-                            if v30 then
-                                v41 = Colors_upv_1.Warning
-                            else
-                                v41 = Colors_upv_1.Text
-                            end
-                            label_4.TextColor3 = v41
-                        end
-                        v39, v40 = 0.7, 0.75
-                        value_4.label.Text = (v29 and "pick up") or "throw"
-                        local label_3 = value_4.label
-                        if v29 then
-                            v41 = Colors_upv_1.Warning
-                        else
-                            v41 = Colors_upv_1.Text
-                        end
-                        label_3.TextColor3 = v41
-                    end
-                    if math.abs(value_4.group.GroupTransparency - v39) > 0.01 then
-                        UI_upv_1.Tween(value_4.group, Theme_upv_1.Tween.Smooth, {GroupTransparency = v39})
-                    end
-                    if v40 ~= value_4.capFade then
-                        value_4.capFade = v40
-                        UI_upv_1.SetCapFade(value_4.cap, v40)
-                    end
-                    if not (value_4.act.reload) then
-                        continue
-                    end
-                    value_4.label.Text = (v36 and "reloading") or "reload"
-                    local label_4 = value_4.label
-                    if v30 then
-                        v41 = Colors_upv_1.Warning
-                    else
-                        v41 = Colors_upv_1.Text
-                    end
-                    label_4.TextColor3 = v41
-                end
-            end
-            local v44 = u3
-            if v44 then
-                if State_upv_1.InMatch() then
-                    v44 = u4
-                else
-                    v44 = u2 < 3
-                end
-            end
-            local v45 = planarSpeed()
-            local v46 = false
-            if v44 then
-                local v47 = nil
-                if UI_upv_1.Touch then
-                    u16 = 0
-                    v26 = v46
-                else
-                    v47 = (State_upv_1.Get("CombatMode") ~= false) and (State_upv_1.IsAlive() and (not a1.HudHidden and (not State_upv_1.Watching())))
-                    if v47 then
-                        local Character_3 = LocalPlayer_upv_1.Character
-                        if v45 > 12 and Character_3 then
-                            if Character_3:GetAttribute("Sliding") == true then
-                                v47 = 0
-                            else
-                                v47 = u16 + 1
-                            end
-                        else
-                            v47 = 0
-                        end
-                        u16 = v47
-                        if u16 >= 3 then
-                            u17 = os.clock()
-                        end
-                        v26 = os.clock() - u17 < 1.5
-                    else
-                        u16 = 0
-                        v26 = v46
-                    end
-                end
-            else
-                u16 = 0
-                v26 = v46
-            end
-            u6.Visible = not UI_upv_1.Touch and State_upv_1.Get("CombatMode") ~= false and State_upv_1.IsAlive() and not a1.HudHidden and not State_upv_1.Watching()
-            if v26 ~= u13 then
-                u13 = v26
-                local Tween_1 = UI_upv_1.Tween
-                local group_1 = u7.group
-                local Smooth_1 = Theme_upv_1.Tween.Smooth
-                local tbl_10 = {GroupTransparency = 0}
-                tbl_10.GroupTransparency = (v26 and 0.35) or 1
-                Tween_1(group_1, Smooth_1, tbl_10)
-            end
-        end
-    )
-    a1.Debug.tutorial = function(a15)
-        --[[
-          line: 411
-          upvalues:
-            u1 (ref,  index: 1)
-            u2 (ref,  index: 2)
-            State_upv_1 (copy, index: 3)
-            a1 (copy, index: 4)
-            u3 (ref,  index: 5)
-            u10 (ref,  index: 6)
-            tbl_upv_9 (copy, index: 7)
-        ]]
-        if a15 ~= "reset" then
-            local tbl_11 = {}
-            tbl_11.kindsMask = u1
-            tbl_11.matchesSeen = u2
-            tbl_11.loaded = u3
-            tbl_11.kind = u10
-            tbl_11.rows = #tbl_upv_9
-            return tbl_11
-        end
-        u1 = 0
-        u2 = 0
-        if not (State_upv_1.Mock) then
-            local _ = "tutKinds"
-            local v1 = 0
-            task.spawn(function() end)
-        end
-        if not (State_upv_1.Mock) then
-            local u19 = "tutMatches"
-            local u20 = 0
+
+            local v89 = "tutKinds"
             task.spawn(
                 function()
                     --[[
                       line: 106
                       upvalues:
-                        a1 (copy, index: 1)
-                        u19 (copy, index: 2)
-                        u20 (copy, index: 3)
+                        a10 (copy, index: 1)
+                        v89 (copy, index: 2)
+                        v88 (copy, index: 3)
                     ]]
-                    a1.Remotes.Invoke("ProfileAction", "SetSetting", u19, u20)
+                    a10.Remotes.Invoke("ProfileAction", "SetSetting", v89, v88)
                 end
             )
         end
+    end
+
+    a10.HeldWeaponChanged:Connect(
+        function(a90)
+            --[[
+              line: 270
+              upvalues:
+                weaponInfo (copy, index: 1)
+                v9 (copy, index: 2)
+                v73 (ref,  index: 3)
+                rebuild (copy, index: 4)
+                loaded (ref,  index: 5)
+                kindsMask (ref,  index: 6)
+                a10 (copy, index: 7)
+                kind (ref,  index: 8)
+                emphasize (copy, index: 9)
+            ]]
+            local kind2
+
+            if a90 == "bandage" then
+                kind2 = "Bandage"
+            elseif a90 == "healing_tonic" then
+                kind2 = "Tonic"
+            elseif a90 == "palisade" then
+                kind2 = "Wall"
+            else
+                local v92 = weaponInfo.Get(a90)
+                local kind3 = v92 and v92.kind
+
+                if type(kind3) ~= "string" or not v9[kind3] then
+                    kind2 = nil
+                else
+                    kind2 = kind3
+                end
+            end
+
+            if kind2 ~= v73 then
+                rebuild(kind2)
+            end
+
+            if kind2 and loaded and not bit32.btest(kindsMask, (bit32.lshift(1, v9[kind2].bit))) then
+                if a10.HudHidden then
+                    kind = kind2
+                else
+                    emphasize(kind2)
+                end
+            end
+        end
+    )
+
+    a10.HudHiddenChanged:Connect(
+        function(a94)
+            --[[
+              line: 284
+              upvalues:
+                kind (ref,  index: 1)
+                v73 (ref,  index: 2)
+                emphasize (copy, index: 3)
+            ]]
+            if not a94 and kind and kind == v73 then
+                local kind2 = kind
+                kind = nil
+                task.defer(emphasize, kind2)
+            end
+        end
+    )
+
+    local function inCombat()
+        --[[
+          name: inCombat
+          line: 293
+          upvalues:
+            state (copy, index: 1)
+            a10 (copy, index: 2)
+        ]]
+        return state.Get("CombatMode") ~= false
+            and state.IsAlive()
+            and not a10.HudHidden
+            and not state.Watching()
+    end
+
+    local v97 = false
+    local position = nil
+    local timestamp = os.clock()
+
+    local function planarSpeed()
+        --[[
+          name: planarSpeed
+          line: 301
+          upvalues:
+            localPlayer (copy, index: 1)
+            position (ref,  index: 2)
+            timestamp (ref,  index: 3)
+        ]]
+        local instance = localPlayer.Character
+        instance = instance and instance:FindFirstChild("HumanoidRootPart")
+        local timestamp2 = os.clock()
+
+        if not instance or not instance:IsA("BasePart") then
+            position = nil
+            return 0
+        end
+
+        local position2 = instance.Position
+        local v104 = 0
+
+        if position and timestamp < timestamp2 then
+            v104 = ((position2 - position) * Vector3.new(1, 0, 1)).Magnitude / (timestamp2 - timestamp)
+
+            if 120 < v104 then
+                v104 = 0
+            end
+        end
+
+        position = position2
+        timestamp = timestamp2
+
+        return v104
+    end
+
+    local v105 = 0
+    local timestamp2 = -math.huge
+
+    local function threwHatchet()
+        --[[
+          name: threwHatchet
+          line: 324
+          upvalues:
+            kindsMask (ref, index: 1)
+        ]]
+        return (bit32.btest(kindsMask, 33554432))
+    end
+
+    local v108 = nil
+
+    local function setTouchNudge(nudge)
+        --[[
+          name: setTouchNudge
+          line: 328
+          upvalues:
+            v108 (ref,  index: 1)
+            localPlayer (copy, index: 2)
+        ]]
+        if nudge == v108 then
+            return
+        end
+
+        local instance = localPlayer:FindFirstChildOfClass("PlayerGui")
+        instance = instance and instance:FindFirstChild("CombatTouch")
+
+        if instance then
+            v108 = nudge
+            instance:SetAttribute("Nudge", nudge)
+        end
+    end
+
+    ui.Every(
+        parent,
+        0.1,
+        function()
+            --[[
+              line: 339
+              upvalues:
+                localPlayer (copy, index: 1)
+                v73 (ref,  index: 2)
+                loaded (ref,  index: 3)
+                kindsMask (ref,  index: 4)
+                state (copy, index: 5)
+                a10 (copy, index: 6)
+                ui (copy, index: 7)
+                v108 (ref,  index: 8)
+                v72 (copy, index: 9)
+                parent (copy, index: 10)
+                layout (copy, index: 11)
+                v74 (ref,  index: 12)
+                colors (copy, index: 13)
+                theme (copy, index: 14)
+                v31 (ref,  index: 15)
+                matchesSeen (ref,  index: 16)
+                planarSpeed (copy, index: 17)
+                v105 (ref,  index: 18)
+                timestamp2 (ref,  index: 19)
+                ui2 (copy, index: 20)
+                v97 (ref,  index: 21)
+                v54 (copy, index: 22)
+            ]]
+            local nudge
+            local model = localPlayer.Character
+            model = model and model:FindFirstChildOfClass("Tool")
+            local model2 = if model and model:IsA("Tool") then model else nil
+            local v115 = v73 == "Hatchets" and model2 ~= nil
+            local thrown = v115 and model2:GetAttribute("Thrown") == true
+            local landed = thrown and model2:GetAttribute("Landed") == true
+
+            if thrown and loaded and not bit32.btest(kindsMask, 33554432) then
+                kindsMask = bit32.bor(kindsMask, 33554432)
+                local v118 = kindsMask
+
+                if not state.Mock then
+                    local v119 = "tutKinds"
+                    task.spawn(
+                        function()
+                            --[[
+                              line: 106
+                              upvalues:
+                                a10 (copy, index: 1)
+                                v119 (copy, index: 2)
+                                v118 (copy, index: 3)
+                            ]]
+                            a10.Remotes.Invoke("ProfileAction", "SetSetting", v119, v118)
+                        end
+                    )
+                end
+            end
+
+            if not ui.Touch or not v115 or thrown or not loaded or bit32.btest(kindsMask, 33554432) then
+                nudge = nil
+            else
+                local v120 = state.Get("CombatMode") ~= false
+                    and state.IsAlive()
+                    and not a10.HudHidden
+                    and not state.Watching()
+
+                if v120 then
+                    nudge = "Secondary"
+                else
+                    nudge = nil
+                end
+            end
+
+            if nudge ~= v108 then
+                local playerGui = localPlayer:FindFirstChildOfClass("PlayerGui")
+
+                if const combatTouch = playerGui and playerGui:FindFirstChild("CombatTouch") then
+                    v108 = nudge
+                    combatTouch:SetAttribute("Nudge", nudge)
+                end
+            end
+
+            local visible = not ui.Touch
+            if visible then
+                local v124 = state.Get("CombatMode") ~= false
+                    and state.IsAlive()
+                    and not a10.HudHidden
+                    and not state.Watching()
+                visible = v124 and 0 < #v72 and model2 ~= nil
+            end
+
+            parent.Visible = visible
+
+            if visible then
+                layout()
+                local ammo = model2:GetAttribute("Ammo")
+                local maxAmmo = model2:GetAttribute("MaxAmmo")
+                local reloading = model2:GetAttribute("Reloading") == true
+                local v128 = type(ammo) == "number" and type(maxAmmo) == "number" and 0 < maxAmmo and ammo <= 0
+                local v129 = os.clock() < v74
+                local v130, reloading2
+
+                for _, v133 in v72 do
+                    local v134
+
+                    if v133.act.reload == true then
+                        v130 = v128
+
+                        if v130 then
+                            v134 = v130
+                        else
+                            reloading2 = reloading
+
+                            if reloading2 then
+                                v134 = reloading2
+                            else
+                                v134 = v133.act.hatchet == true and landed
+                            end
+                        end
+                    else
+                        v134 = v133.act.hatchet == true and landed
+                    end
+
+                    local groupTransparency = not v129 and not v134 and 0.45 or 0
+                    local capFade = 0
+
+                    if v133.act.hatchet then
+                        if thrown and not landed then
+                            groupTransparency = 0.7
+                            capFade = 0.75
+                        elseif thrown then
+                            capFade = 1
+                        elseif loaded and not bit32.btest(kindsMask, 33554432) then
+                            groupTransparency = 0
+                        end
+
+                        v133.label.Text = landed and "pick up" or "throw"
+                        v133.label.TextColor3 = if landed then colors.Warning else colors.Text
+                    end
+
+                    if 0.01 < math.abs(v133.group.GroupTransparency - groupTransparency) then
+                        ui.Tween(v133.group, theme.Tween.Smooth, {GroupTransparency = groupTransparency})
+                    end
+
+                    if capFade ~= v133.capFade then
+                        v133.capFade = capFade
+                        ui.SetCapFade(v133.cap, capFade)
+                    end
+
+                    if v133.act.reload then
+                        v133.label.Text = reloading and "reloading" or "reload"
+                        v133.label.TextColor3 = if v134 then colors.Warning else colors.Text
+                    end
+                end
+            end
+
+            local v137 = loaded and (if state.InMatch() then v31 else matchesSeen < 3)
+            local v138 = planarSpeed()
+            local v139 = false
+
+            if not v137 or ui.Touch then
+                v105 = 0
+            else
+                local v140 = state.Get("CombatMode") ~= false
+                    and state.IsAlive()
+                    and not a10.HudHidden
+                    and not state.Watching()
+
+                if v140 then
+                    local character = localPlayer.Character
+                    v105 = if 12 < v138 and character and character:GetAttribute("Sliding") ~= true then v105 + 1 else 0
+
+                    if 3 <= v105 then
+                        timestamp2 = os.clock()
+                    end
+
+                    v139 = os.clock() - timestamp2 < 1.5
+                else
+                    v105 = 0
+                end
+            end
+
+            ui2.Visible = not ui.Touch
+                and state.Get("CombatMode") ~= false
+                and state.IsAlive()
+                and not a10.HudHidden
+                and not state.Watching()
+
+            if v139 ~= v97 then
+                local groupTransparency
+                v97 = v139
+                local tween = ui.Tween
+                local group = v54.group
+                local smooth = theme.Tween.Smooth
+                local v146 = {}
+
+                if v139 then
+                    groupTransparency = 0.35
+                else
+                    groupTransparency = 1
+                end
+
+                v146.GroupTransparency = groupTransparency
+                tween(group, smooth, v146)
+            end
+        end
+    )
+
+    a10.Debug.tutorial = function(a147)
+        --[[
+          line: 411
+          upvalues:
+            kindsMask (ref,  index: 1)
+            matchesSeen (ref,  index: 2)
+            state (copy, index: 3)
+            a10 (copy, index: 4)
+            loaded (ref,  index: 5)
+            v73 (ref,  index: 6)
+            v72 (copy, index: 7)
+        ]]
+        if a147 ~= "reset" then
+            return {kindsMask = kindsMask, matchesSeen = matchesSeen, loaded = loaded, kind = v73, rows = #v72}
+        end
+
+        kindsMask = 0
+        matchesSeen = 0
+
+        if not state.Mock then
+            local v148 = "tutKinds"
+            local v149 = 0
+            task.spawn(
+                function()
+                    --[[
+                      line: 106
+                      upvalues:
+                        a10 (copy, index: 1)
+                        v148 (copy, index: 2)
+                        v149 (copy, index: 3)
+                    ]]
+                    a10.Remotes.Invoke("ProfileAction", "SetSetting", v148, v149)
+                end
+            )
+        end
+
+        if not state.Mock then
+            local v150 = "tutMatches"
+            local v151 = 0
+            task.spawn(
+                function()
+                    --[[
+                      line: 106
+                      upvalues:
+                        a10 (copy, index: 1)
+                        v150 (copy, index: 2)
+                        v151 (copy, index: 3)
+                    ]]
+                    a10.Remotes.Invoke("ProfileAction", "SetSetting", v150, v151)
+                end
+            )
+        end
+
         return true
     end
-    a1.Debug.hints = function(a16)
+
+    a10.Debug.hints = function(key)
         --[[
           line: 421
           upvalues:
-            tbl_upv_4 (copy, index: 1)
+            v9 (copy, index: 1)
             rebuild (copy, index: 2)
             emphasize (copy, index: 3)
-            tbl_upv_9 (copy, index: 4)
-            u10 (ref,  index: 5)
-            u5 (copy, index: 6)
-            u6 (copy, index: 7)
-            u1 (ref,  index: 8)
-            u18 (ref,  index: 9)
+            v72 (copy, index: 4)
+            v73 (ref,  index: 5)
+            parent (copy, index: 6)
+            ui2 (copy, index: 7)
+            kindsMask (ref,  index: 8)
+            v108 (ref,  index: 9)
         ]]
-        if type(a16) == "string" and tbl_upv_4[a16] then
-            rebuild(a16)
-            emphasize(a16)
+        if type(key) == "string" and v9[key] then
+            rebuild(key)
+            emphasize(key)
+
             return true
         end
-        local tbl_12 = {}
-        for _, value_5 in tbl_upv_9 do
-            table.insert(tbl_12, {key = value_5.act.key, label = value_5.label.Text, transparency = value_5.group.GroupTransparency, capFade = value_5.capFade})
+
+        local texts = {}
+
+        for _, v155 in v72 do
+            table.insert(texts, {key = v155.act.key, label = v155.label.Text, transparency = v155.group.GroupTransparency, capFade = v155.capFade})
         end
-        local tbl_13 = {}
-        tbl_13.kind = u10
-        tbl_13.rows = #tbl_upv_9
-        tbl_13.visible = u5.Visible
-        tbl_13.slide = u6.Visible
-        tbl_13.texts = tbl_12
-        tbl_13.threwHatchet = bit32.btest(u1, 33554432)
-        tbl_13.nudge = u18 or false
-        return tbl_13
+
+        return {kind = v73, rows = #v72, visible = parent.Visible, slide = ui2.Visible, texts = texts, threwHatchet = bit32.btest(kindsMask, 33554432), nudge = v108
+            or false}
     end
 end
-return tbl_1
+
+return v3

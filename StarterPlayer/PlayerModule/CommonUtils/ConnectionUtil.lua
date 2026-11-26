@@ -1,62 +1,71 @@
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-function tbl_upv_1.new()
+local Class = {}
+Class.__index = Class
+
+function Class.new()
     --[[
       name: new
-      line: 25
+      line: 29
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    local v1 = setmetatable({}, tbl_upv_1)
-    v1._connections = {}
-    return v1
+    local v2 = setmetatable({}, Class)
+    v2._connections = {}
+    return v2
 end
-function tbl_upv_1.trackConnection(a1, a2, a3)
+
+function Class.trackConnection(self, connectionKey, a5)
     --[[
       name: trackConnection
-      line: 33
+      line: 37
     ]]
-    if a1._connections[a2] then
-        a1._connections[a2]()
+    if self._connections[connectionKey] then
+        self._connections[connectionKey]()
     end
-    a1._connections[a2] = function()
+
+    self._connections[connectionKey] = function()
         --[[
-          line: 38
+          line: 42
           upvalues:
-            a3 (copy, index: 1)
+            a5 (copy, index: 1)
         ]]
-        a3:Disconnect()
+        a5:Disconnect()
     end
 end
-function tbl_upv_1.trackBoundFunction(a1, a2, a3)
+
+function Class.trackBoundFunction(self, connectionKey, value)
     --[[
       name: trackBoundFunction
-      line: 41
+      line: 47
     ]]
-    if a1._connections[a2] then
-        a1._connections[a2]()
+    if self._connections[connectionKey] then
+        self._connections[connectionKey]()
     end
-    a1._connections[a2] = a3
+
+    self._connections[connectionKey] = value
 end
-function tbl_upv_1.disconnect(a1, a2)
+
+function Class.disconnect(self, connectionKey)
     --[[
       name: disconnect
-      line: 48
+      line: 54
     ]]
-    if not a1._connections[a2] then
-        return
+    local connection = self._connections[connectionKey]
+    if connection then
+        self._connections[connectionKey]()
+        self._connections[connectionKey] = nil
     end
-    a1._connections[a2]()
-    a1._connections[a2] = nil
 end
-function tbl_upv_1.disconnectAll(a1)
+
+function Class.disconnectAll(self)
     --[[
       name: disconnectAll
-      line: 55
+      line: 61
     ]]
-    for _, value_1 in pairs(a1._connections) do
-        value_1()
+    for _, connection in pairs(self._connections) do
+        connection()
     end
-    a1._connections = {}
+
+    self._connections = {}
 end
-return tbl_upv_1
+
+return Class

@@ -1,64 +1,73 @@
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-local ControlModule_upv_1 = require(script.Parent:WaitForChild("ControlModule"))
-local Players_upv_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local CommonUtils_1 = require(script.Parent:WaitForChild("CommonUtils"))
-local v1 = CommonUtils_1.get("FlagUtil")
-local u1 = CommonUtils_1.get("PlayerModuleEventBus")
-local u2 = v1.getUserFlag("UserDisableForceLocalHumanoidPrediction")
-local u3 = false
-function tbl_upv_1.PredictLocalHumanoid()
+local Class = {}
+Class.__index = Class
+local ControlModule = require(script.Parent:WaitForChild("ControlModule"))
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local CommonUtils = require(script.Parent:WaitForChild("CommonUtils"))
+local v6 = CommonUtils.get("FlagUtil")
+local v7 = CommonUtils.get("PlayerModuleEventBus")
+local userFlag = v6.getUserFlag("UserDisableForceLocalHumanoidPrediction")
+local isServerAuthority = false
+
+function Class.PredictLocalHumanoid()
     --[[
       name: PredictLocalHumanoid
-      line: 26
+      line: 27
       upvalues:
-        RunService_upv_1 (copy, index: 1)
-        Players_upv_1 (copy, index: 2)
+        runService (copy, index: 1)
+        players (copy, index: 2)
     ]]
-    if Players_upv_1.LocalPlayer.Character then
-        RunService_upv_1:SetPredictionMode(Players_upv_1.LocalPlayer.Character:WaitForChild("HumanoidRootPart"), Enum.PredictionMode.On)
-    else
-        Players_upv_1.LocalPlayer.CharacterAdded:Connect(
-            function(a1)
-                --[[
-                  line: 27
-                  upvalues:
-                    RunService_upv_1 (copy, index: 1)
-                ]]
-                RunService_upv_1:SetPredictionMode(a1:WaitForChild("HumanoidRootPart"), Enum.PredictionMode.On)
-            end
-        )
+    if players.LocalPlayer.Character then
+        local character = players.LocalPlayer.Character
+        runService:SetPredictionMode(character:WaitForChild("HumanoidRootPart"), Enum.PredictionMode.On)
+
+        return
     end
+
+    players.LocalPlayer.CharacterAdded:Connect(
+        function(character: Model)
+            --[[
+              line: 28
+              upvalues:
+                runService (copy, index: 1)
+            ]]
+            runService:SetPredictionMode(character:WaitForChild("HumanoidRootPart"), Enum.PredictionMode.On)
+        end
+    )
 end
-function tbl_upv_1.initialize(a1)
+
+function Class.initialize(a12)
     --[[
       name: initialize
-      line: 38
+      line: 39
       upvalues:
-        u3 (ref, index: 1)
+        isServerAuthority (ref, index: 1)
     ]]
-    a1.isServerAuthority = u3
+    a12.isServerAuthority = isServerAuthority
 end
-function tbl_upv_1.Initialize()
+
+function Class.Initialize()
     --[[
       name: Initialize
-      line: 42
+      line: 43
       upvalues:
-        u2 (copy, index: 1)
-        RunService_upv_1 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
-        u1 (copy, index: 4)
-        ControlModule_upv_1 (copy, index: 5)
-        u3 (ref,  index: 6)
+        userFlag (copy, index: 1)
+        runService (copy, index: 2)
+        Class (copy, index: 3)
+        v7 (copy, index: 4)
+        ControlModule (copy, index: 5)
+        isServerAuthority (ref,  index: 6)
     ]]
-    if not (u2) and RunService_upv_1:IsClient() then
-        tbl_upv_1.PredictLocalHumanoid()
+    if not userFlag and runService:IsClient() then
+        Class.PredictLocalHumanoid()
     end
-    if not (u1.data.inputsSetupComplete) and RunService_upv_1:IsServer() then
-        u1:subscribe("INPUTS_SETUP"):Wait()
+
+    if not v7.data.inputsSetupComplete and runService:IsServer() then
+        v7:subscribe("INPUTS_SETUP"):Wait()
     end
-    ControlModule_upv_1:InitializeServerAuthority()
-    u3 = true
+
+    ControlModule:InitializeServerAuthority()
+    isServerAuthority = true
 end
-return tbl_upv_1
+
+return Class

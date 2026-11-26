@@ -1,239 +1,310 @@
-local u1 = 0
-local u2 = CFrame.fromOrientation(-0.2617993877991494, 0, 0)
-local u3 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil").getUserFlag("UserFixCameraFPError")
-local Players_upv_1 = game:GetService("Players")
-local CameraInput_upv_1 = require(script.Parent:WaitForChild("CameraInput"))
-local CameraUtils_upv_1 = require(script.Parent:WaitForChild("CameraUtils"))
-local BaseCamera_upv_1 = require(script.Parent:WaitForChild("BaseCamera"))
-local u4 = setmetatable({}, BaseCamera_upv_1)
-u4.__index = u4
-function u4.new()
+local clampedValue = 0
+local v2 = CFrame.fromOrientation(-0.2617993877991494, 0, 0)
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v4 = CommonUtils.get("FlagUtil")
+local userFlag = v4.getUserFlag("UserFixCameraFPError")
+v4 = game:GetService("Players")
+local CameraInput = require(script.Parent:WaitForChild("CameraInput"))
+local CameraUtils = require(script.Parent:WaitForChild("CameraUtils"))
+local BaseCamera = require(script.Parent:WaitForChild("BaseCamera"))
+local v9 = setmetatable({}, BaseCamera)
+v9.__index = v9
+
+function v9.new()
     --[[
       name: new
-      line: 35
+      line: 37
       upvalues:
-        BaseCamera_upv_1 (copy, index: 1)
-        u4 (copy, index: 2)
-        CameraUtils_upv_1 (copy, index: 3)
+        BaseCamera (copy, index: 1)
+        v9 (copy, index: 2)
+        CameraUtils (copy, index: 3)
     ]]
-    local v1 = setmetatable(BaseCamera_upv_1.new(), u4)
-    v1.isFollowCamera = false
-    v1.isCameraToggle = false
-    v1.lastUpdate = tick()
-    v1.cameraToggleSpring = CameraUtils_upv_1.Spring.new(5, 0)
-    return v1
+    local v10 = setmetatable(BaseCamera.new(), v9)
+    v10.isFollowCamera = false
+    v10.isCameraToggle = false
+    v10.lastUpdate = tick()
+    v10.cameraToggleSpring = CameraUtils.Spring.new(5, 0)
+    return v10
 end
-function u4.GetCameraToggleOffset(a1, a2)
+
+function v9.GetCameraToggleOffset(a11, a12)
     --[[
       name: GetCameraToggleOffset
-      line: 46
+      line: 48
       upvalues:
-        CameraInput_upv_1 (copy, index: 1)
-        CameraUtils_upv_1 (copy, index: 2)
+        CameraInput (copy, index: 1)
+        CameraUtils (copy, index: 2)
     ]]
-    if not a1.isCameraToggle then
+    if not a11.isCameraToggle then
         return (Vector3.new())
     end
-    local currentSubjectDistance_1 = a1.currentSubjectDistance
-    if CameraInput_upv_1.getTogglePan() then
-        a1.cameraToggleSpring.goal = math.clamp(CameraUtils_upv_1.map(currentSubjectDistance_1, 0.5, a1.FIRST_PERSON_DISTANCE_THRESHOLD, 0, 1), 0, 1)
+
+    local currentSubjectDistance = a11.currentSubjectDistance
+
+    if CameraInput.getTogglePan() then
+        a11.cameraToggleSpring.goal = math.clamp(CameraUtils.map(currentSubjectDistance, 0.5, a11.FIRST_PERSON_DISTANCE_THRESHOLD, 0, 1), 0, 1)
     else
-        a1.cameraToggleSpring.goal = 0
+        a11.cameraToggleSpring.goal = 0
     end
-    local v2 = math.clamp(CameraUtils_upv_1.map(currentSubjectDistance_1, 0.5, 64, 0, 1), 0, 1) + 1
-    return (Vector3.new(0, a1.cameraToggleSpring:step(a2) * v2, 0))
+
+    local v14 = math.clamp(CameraUtils.map(currentSubjectDistance, 0.5, 64, 0, 1), 0, 1) + 1
+
+    return (Vector3.new(0, a11.cameraToggleSpring:step(a12) * v14, 0))
 end
-function u4.SetCameraMovementMode(a1, a2)
+
+function v9.SetCameraMovementMode(cameraMovementMode, a16)
     --[[
       name: SetCameraMovementMode
-      line: 64
+      line: 67
       upvalues:
-        BaseCamera_upv_1 (copy, index: 1)
+        BaseCamera (copy, index: 1)
     ]]
-    BaseCamera_upv_1.SetCameraMovementMode(a1, a2)
-    a1.isFollowCamera = a2 == Enum.ComputerCameraMovementMode.Follow
-    a1.isCameraToggle = a2 == Enum.ComputerCameraMovementMode.CameraToggle
+    BaseCamera.SetCameraMovementMode(cameraMovementMode, a16)
+    cameraMovementMode.isFollowCamera = a16 == Enum.ComputerCameraMovementMode.Follow
+    cameraMovementMode.isCameraToggle = a16 == Enum.ComputerCameraMovementMode.CameraToggle
 end
-function u4.Update(a1, a2)
+
+function v9.Update(a17, a18)
     --[[
       name: Update
-      line: 71
+      line: 74
       upvalues:
-        u2 (copy, index: 1)
-        Players_upv_1 (copy, index: 2)
-        CameraInput_upv_1 (copy, index: 3)
-        u1 (ref,  index: 4)
-        CameraUtils_upv_1 (copy, index: 5)
-        u3 (copy, index: 6)
+        v2 (copy, index: 1)
+        v4 (copy, index: 2)
+        CameraInput (copy, index: 3)
+        clampedValue (ref,  index: 4)
+        CameraUtils (copy, index: 5)
+        userFlag (copy, index: 6)
     ]]
-    local time_1 = tick()
-    local CurrentCamera_1 = workspace.CurrentCamera
-    local v3 = CurrentCamera_1.CFrame
-    local v4 = CurrentCamera_1.Focus
-    local lookVector_1 = nil
-    local v5 = nil
-    if a1.resetCameraAngle then
-        v5 = a1:GetHumanoidRootPart()
-        if v5 then
-            lookVector_1 = (v5.CFrame * u2).lookVector
-        else
-            lookVector_1 = u2.lookVector
+    local time = tick()
+    local camera = workspace.CurrentCamera
+    local v21 = camera.CFrame
+    local v22 = camera.Focus
+    local lookVector = nil
+
+    if a17.resetCameraAngle then
+        lookVector = if const humanoidRootPart = a17:GetHumanoidRootPart() then (humanoidRootPart.CFrame * v2).lookVector else v2.lookVector
+        a17.resetCameraAngle = false
+    end
+
+    local localPlayer = v4.LocalPlayer
+    local humanoid = a17:GetHumanoid()
+    local cameraSubject = camera.CameraSubject
+    local isVehicleSeat = cameraSubject and cameraSubject:IsA("VehicleSeat")
+    local isSkateboardPlatform = cameraSubject and cameraSubject:IsA("SkateboardPlatform")
+    local isClimbing = humanoid and humanoid:GetState() == Enum.HumanoidStateType.Climbing
+
+    if a17.lastUpdate == nil or 1 < a18 then
+        a17.lastCameraTransform = nil
+    end
+
+    local v31 = CameraInput.getRotation(a18)
+    a17:StepZoom(a18)
+    local y = a17:GetCameraHeight()
+
+    if v31 ~= Vector2.new() then
+        clampedValue = 0
+        a17.lastUserPanCamera = tick()
+    end
+
+    local v33 = time - a17.lastUserPanCamera < 2
+    local v34 = a17:GetSubjectPosition()
+
+    if v34 and localPlayer and camera then
+        local cframe, v36
+        local cameraToSubjectDistance = a17:GetCameraToSubjectDistance()
+
+        if cameraToSubjectDistance < 0.5 then
+            cameraToSubjectDistance = 0.5
         end
-        a1.resetCameraAngle = false
-    end
-    local LocalPlayer_1 = Players_upv_1.LocalPlayer
-    local v6 = a1:GetHumanoid()
-    local CameraSubject_1 = CurrentCamera_1.CameraSubject
-    local _ = CameraSubject_1 and (CameraSubject_1:IsA("VehicleSeat"))
-    local v31 = CameraSubject_1 and (CameraSubject_1:IsA("SkateboardPlatform"))
-    local v7 = v6 and (v6:GetState() == Enum.HumanoidStateType.Climbing)
-    if a1.lastUpdate == nil or a2 > 1 then
-        a1.lastCameraTransform = nil
-    end
-    local v8 = CameraInput_upv_1.getRotation(a2)
-    a1:StepZoom(a2)
-    local v9 = a1:GetCameraHeight()
-    if v8 ~= Vector2.new() then
-        u1 = 0
-        a1.lastUserPanCamera = tick()
-    end
-    local v10 = time_1 - a1.lastUserPanCamera < 2
-    local v11 = a1:GetSubjectPosition()
-    if v11 and LocalPlayer_1 and CurrentCamera_1 then
-        local v12 = a1:GetCameraToSubjectDistance()
-        local v13 = ((v12 < 0.5) and 0.5) or v12
-        if not (a1:GetIsMouseLocked()) or a1:IsInFirstPerson() then
-            local v14 = v8 ~= Vector2.new()
-            if not v14 and a1.lastCameraTransform then
-                local v15 = a1:IsInFirstPerson()
-                if CameraSubject_1 then
-                    if a1.lastUpdate and v6 and v6.Torso then
-                        if v15 then
-                            if a1.lastSubjectCFrame and CameraSubject_1 then
-                                local v16 = CameraSubject_1:IsA("BasePart")
-                                if v16 then
-                                    local v17 = -CameraUtils_upv_1.GetAngleBetweenXZVectors(a1.lastSubjectCFrame.lookVector, CameraSubject_1.CFrame.lookVector)
-                                    v8 = (CameraUtils_upv_1.IsFinite(v17) and (v8 + Vector2.new(v17, 0))) or v8
-                                    u1 = 0
+
+        if a17:GetIsMouseLocked() then
+            if a17:IsInFirstPerson() then
+                if v31 == Vector2.new() and a17.lastCameraTransform then
+                    local isInFirstPerson = a17:IsInFirstPerson()
+
+                    if isVehicleSeat or isSkateboardPlatform or a17.isFollowCamera and isClimbing then
+                        if a17.lastUpdate and humanoid and humanoid.Torso then
+                            if isInFirstPerson then
+                                if a17.lastSubjectCFrame
+                                    and (isVehicleSeat or isSkateboardPlatform)
+                                    and cameraSubject:IsA("BasePart")
+                                then
+                                    local x = -CameraUtils.GetAngleBetweenXZVectors(a17.lastSubjectCFrame.lookVector, cameraSubject.CFrame.lookVector)
+
+                                    if CameraUtils.IsFinite(x) then
+                                        v31 += Vector2.new(x, 0)
+                                    end
+
+                                    clampedValue = 0
+                                end
+                            elseif not v33 then
+                                local lookVector2 = humanoid.Torso.CFrame.lookVector
+                                clampedValue = math.clamp(clampedValue + (3.839724354387525 * a18), 0, 4.363323129985824)
+                                local clampedValue2 = math.clamp(clampedValue * a18, 0, 1)
+
+                                if a17:IsInFirstPerson() and (not a17.isFollowCamera or not a17.isClimbing) then
+                                    clampedValue2 = 1
+                                end
+
+                                local angleBetweenXzVectors = CameraUtils.GetAngleBetweenXZVectors(lookVector2, a17:GetCameraLookVector())
+
+                                if CameraUtils.IsFinite(angleBetweenXzVectors)
+                                    and 1e-04 < math.abs(angleBetweenXzVectors)
+                                then
+                                    v31 += Vector2.new(angleBetweenXzVectors * clampedValue2, 0)
                                 end
                             end
-                        elseif not v10 then
-                            local lookVector_2 = v6.Torso.CFrame.lookVector
-                            u1 = math.clamp(u1 + (3.839724354387525 * a2), 0, 4.363323129985824)
-                            local v18 = math.clamp(u1 * a2, 0, 1)
-                            local v19 = a1:IsInFirstPerson()
-                            if v19 and (not (a1.isFollowCamera) or not (a1.isClimbing)) then
-                                v18 = 1
-                            end
-                            local v20 = CameraUtils_upv_1.GetAngleBetweenXZVectors(lookVector_2, a1:GetCameraLookVector())
-                            local v21 = CameraUtils_upv_1.IsFinite(v20)
-                            if v21 then
-                                v8 = ((math.abs(v20) > 1e-04) and (v8 + Vector2.new(v20 * v18, 0))) or v8
-                            end
-                        end
-                    elseif a1.isFollowCamera and not v15 and not v10 then
-                        local v22 = CameraUtils_upv_1.GetAngleBetweenXZVectors(-(a1.lastCameraTransform.Position - v11), a1:GetCameraLookVector())
-                        local v23 = CameraUtils_upv_1.IsFinite(v22)
-                        if v23 and math.abs(v22) > 1e-04 then
-                            v8 = ((0.4 * a2 < math.abs(v22)) and (v8 + Vector2.new(v22, 0))) or v8
-                        end
-                    end
-                else
-                    if (CameraSubject_1 or a1.isFollowCamera and v7) and a1.lastUpdate and v6 and v6.Torso then
-                        if v15 then
-                            if a1.lastSubjectCFrame and CameraSubject_1 then
-                                local v16 = CameraSubject_1:IsA("BasePart")
-                                if v16 then
-                                    local v17 = -CameraUtils_upv_1.GetAngleBetweenXZVectors(a1.lastSubjectCFrame.lookVector, CameraSubject_1.CFrame.lookVector)
-                                    v8 = (CameraUtils_upv_1.IsFinite(v17) and (v8 + Vector2.new(v17, 0))) or v8
-                                    u1 = 0
+                        elseif a17.isFollowCamera and not isInFirstPerson and not v33 then
+                            local v43 = -(a17.lastCameraTransform.Position - v34)
+                            local x2 = CameraUtils.GetAngleBetweenXZVectors(v43, a17:GetCameraLookVector())
+
+                            if CameraUtils.IsFinite(x2) and 1e-04 < math.abs(x2) then
+                                local absoluteValue = math.abs(x2)
+
+                                if 0.4 * a18 < absoluteValue then
+                                    v31 += Vector2.new(x2, 0)
                                 end
                             end
-                        elseif not v10 then
-                            local lookVector_2 = v6.Torso.CFrame.lookVector
-                            u1 = math.clamp(u1 + (3.839724354387525 * a2), 0, 4.363323129985824)
-                            local v18 = math.clamp(u1 * a2, 0, 1)
-                            local v19 = a1:IsInFirstPerson()
-                            if v19 and (not (a1.isFollowCamera) or not (a1.isClimbing)) then
-                                v18 = 1
-                            end
-                            local v20 = CameraUtils_upv_1.GetAngleBetweenXZVectors(lookVector_2, a1:GetCameraLookVector())
-                            local v21 = CameraUtils_upv_1.IsFinite(v20)
-                            if v21 then
-                                v8 = ((math.abs(v20) > 1e-04) and (v8 + Vector2.new(v20 * v18, 0))) or v8
-                            end
                         end
-                        if a1.isFollowCamera then
-                            local v24 = a1:CalculateNewLookVectorFromArg(lookVector_1, v8)
-                            v4 = CFrame.new(v11)
-                            v3 = ((not u3) and (CFrame.new(v4.Position - (v13 * v24), v4.Position) + Vector3.new(0, v9, 0))) or (CFrame.lookAlong(v4.Position - (v13 * v24), v24))
-                        else
-                            v4 = CFrame.new(v11)
-                            local Position_1 = v4.Position
-                            local v25 = a1:CalculateNewLookVectorFromArg(lookVector_1, v8)
-                            if u3 then
-                                v3 = CFrame.lookAlong(Position_1 - (v13 * v25), v25)
-                            else
-                                v3 = CFrame.new(Position_1 - (v13 * v25), Position_1)
+                    elseif a17.isFollowCamera then
+                        if not isInFirstPerson then
+                            if not v33 then
+                                local v43 = -(a17.lastCameraTransform.Position - v34)
+                                local x2 = CameraUtils.GetAngleBetweenXZVectors(v43, a17:GetCameraLookVector())
+
+                                if CameraUtils.IsFinite(x2) then
+                                    if 1e-04 < math.abs(x2) then
+                                        local absoluteValue = math.abs(x2)
+
+                                        if 0.4 * a18 < absoluteValue then
+                                            v31 += Vector2.new(x2, 0)
+                                        end
+                                    end
+                                end
                             end
                         end
-                        local v26 = a1:GetCameraToggleOffset(a2)
-                        v4 = v4 + v26
-                        v3 = v3 + v26
-                        a1.lastCameraTransform = v3
-                        a1.lastCameraFocus = v4
-                        if not (CameraSubject_1) or not (CameraSubject_1:IsA("BasePart")) then
-                            a1.lastSubjectCFrame = nil
-                            a1.lastUpdate = time_1
-                            return v3, v4
-                        end
-                        a1.lastSubjectCFrame = CameraSubject_1.CFrame
-                        a1.lastUpdate = time_1
-                        return v3, v4
                     end
-                    if a1.isFollowCamera and not v15 and not v10 then
-                        local v22 = CameraUtils_upv_1.GetAngleBetweenXZVectors(-(a1.lastCameraTransform.Position - v11), a1:GetCameraLookVector())
-                        local v23 = CameraUtils_upv_1.IsFinite(v22)
-                        if v23 and math.abs(v22) > 1e-04 then
-                            v8 = ((0.4 * a2 < math.abs(v22)) and (v8 + Vector2.new(v22, 0))) or v8
+                end
+            else
+                local v46 = a17:CalculateNewLookCFrameFromArg(lookVector, v31)
+                local v47 = a17:GetMouseLockOffset()
+
+                if humanoid then
+                    v47 += humanoid.CameraOffset
+                end
+
+                local v48 = (v47.X * v46.RightVector) + (v47.Y * v46.UpVector) + v47.Z * v46.LookVector
+
+                if CameraUtils.IsFiniteVector3(v48) then
+                    v34 += v48
+                end
+            end
+        elseif v31 == Vector2.new() then
+            if a17.lastCameraTransform then
+                local isInFirstPerson = a17:IsInFirstPerson()
+
+                if isVehicleSeat or isSkateboardPlatform or a17.isFollowCamera and isClimbing then
+                    if a17.lastUpdate and humanoid and humanoid.Torso then
+                        if isInFirstPerson then
+                            if a17.lastSubjectCFrame then
+                                if isVehicleSeat or isSkateboardPlatform then
+                                    if cameraSubject:IsA("BasePart") then
+                                        local x = -CameraUtils.GetAngleBetweenXZVectors(a17.lastSubjectCFrame.lookVector, cameraSubject.CFrame.lookVector)
+
+                                        if CameraUtils.IsFinite(x) then
+                                            v31 += Vector2.new(x, 0)
+                                        end
+
+                                        clampedValue = 0
+                                    end
+                                end
+                            end
+                        elseif not v33 then
+                            local lookVector2 = humanoid.Torso.CFrame.lookVector
+                            clampedValue = math.clamp(clampedValue + (3.839724354387525 * a18), 0, 4.363323129985824)
+                            local clampedValue2 = math.clamp(clampedValue * a18, 0, 1)
+
+                            if a17:IsInFirstPerson() then
+                                if not a17.isFollowCamera or not a17.isClimbing then
+                                    clampedValue2 = 1
+                                end
+                            end
+
+                            local angleBetweenXzVectors = CameraUtils.GetAngleBetweenXZVectors(lookVector2, a17:GetCameraLookVector())
+
+                            if CameraUtils.IsFinite(angleBetweenXzVectors) then
+                                if 1e-04 < math.abs(angleBetweenXzVectors) then
+                                    v31 += Vector2.new(angleBetweenXzVectors * clampedValue2, 0)
+                                end
+                            end
+                        end
+                    elseif a17.isFollowCamera then
+                        if not isInFirstPerson then
+                            if not v33 then
+                                local v43 = -(a17.lastCameraTransform.Position - v34)
+                                local x2 = CameraUtils.GetAngleBetweenXZVectors(v43, a17:GetCameraLookVector())
+
+                                if CameraUtils.IsFinite(x2) then
+                                    if 1e-04 < math.abs(x2) then
+                                        local absoluteValue = math.abs(x2)
+
+                                        if 0.4 * a18 < absoluteValue then
+                                            v31 += Vector2.new(x2, 0)
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                elseif a17.isFollowCamera then
+                    if not isInFirstPerson then
+                        if not v33 then
+                            local v43 = -(a17.lastCameraTransform.Position - v34)
+                            local x2 = CameraUtils.GetAngleBetweenXZVectors(v43, a17:GetCameraLookVector())
+
+                            if CameraUtils.IsFinite(x2) then
+                                if 1e-04 < math.abs(x2) then
+                                    local absoluteValue = math.abs(x2)
+
+                                    if 0.4 * a18 < absoluteValue then
+                                        v31 += Vector2.new(x2, 0)
+                                    end
+                                end
+                            end
                         end
                     end
                 end
             end
+        end
+
+        if a17.isFollowCamera then
+            local v49 = a17:CalculateNewLookVectorFromArg(lookVector, v31)
+            cframe = CFrame.new(v34)
+            v36 = if userFlag then CFrame.lookAlong(cframe.Position - (cameraToSubjectDistance * v49), v49) else CFrame.new(cframe.Position - (cameraToSubjectDistance * v49), cframe.Position) + Vector3.new(0, y, 0)
         else
-            local v27 = a1:CalculateNewLookCFrameFromArg(lookVector_1, v8)
-            local v28 = a1:GetMouseLockOffset()
-            local v29 = (v6 and (v28 + v6.CameraOffset)) or v28
-            local v30 = (v29.X * v27.RightVector) + (v29.Y * v27.UpVector) + v29.Z * v27.LookVector
-            v11 = (CameraUtils_upv_1.IsFiniteVector3(v30) and (v11 + v30)) or v11
+            cframe = CFrame.new(v34)
+            local position = cframe.Position
+            local v51 = a17:CalculateNewLookVectorFromArg(lookVector, v31)
+            v36 = if userFlag then CFrame.lookAlong(position - (cameraToSubjectDistance * v51), v51) else CFrame.new(position - (cameraToSubjectDistance * v51), position)
         end
-        if a1.isFollowCamera then
-            local v24 = a1:CalculateNewLookVectorFromArg(lookVector_1, v8)
-            v4 = CFrame.new(v11)
-            v3 = ((not u3) and (CFrame.new(v4.Position - (v13 * v24), v4.Position) + Vector3.new(0, v9, 0))) or (CFrame.lookAlong(v4.Position - (v13 * v24), v24))
+
+        local cameraToggleOffset = a17:GetCameraToggleOffset(a18)
+        v22 = cframe + cameraToggleOffset
+        v21 = v36 + cameraToggleOffset
+        a17.lastCameraTransform = v21
+        a17.lastCameraFocus = v22
+
+        if not isVehicleSeat and not isSkateboardPlatform or not cameraSubject:IsA("BasePart") then
+            a17.lastSubjectCFrame = nil
         else
-            v4 = CFrame.new(v11)
-            local Position_1 = v4.Position
-            local v25 = a1:CalculateNewLookVectorFromArg(lookVector_1, v8)
-            if u3 then
-                v3 = CFrame.lookAlong(Position_1 - (v13 * v25), v25)
-            else
-                v3 = CFrame.new(Position_1 - (v13 * v25), Position_1)
-            end
+            a17.lastSubjectCFrame = cameraSubject.CFrame
         end
-        local v26 = a1:GetCameraToggleOffset(a2)
-        v4 = v4 + v26
-        v3 = v3 + v26
-        a1.lastCameraTransform = v3
-        a1.lastCameraFocus = v4
-        if not (CameraSubject_1) or not (CameraSubject_1:IsA("BasePart")) then
-            a1.lastSubjectCFrame = nil
-            a1.lastUpdate = time_1
-            return v3, v4
-        end
-        a1.lastSubjectCFrame = CameraSubject_1.CFrame
     end
-    a1.lastUpdate = time_1
-    return v3, v4
+
+    a17.lastUpdate = time
+
+    return v21, v22
 end
-return u4
+
+return v9

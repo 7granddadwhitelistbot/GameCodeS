@@ -1,90 +1,106 @@
-local ConnectionUtil_upv_1 = require(script.Parent.ConnectionUtil)
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-function tbl_upv_1.new()
+local ConnectionUtil = require(script.Parent.ConnectionUtil)
+local Class = {}
+Class.__index = Class
+
+function Class.new()
     --[[
       name: new
-      line: 39
+      line: 42
       upvalues:
-        ConnectionUtil_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        ConnectionUtil (copy, index: 1)
+        Class (copy, index: 2)
     ]]
-    return (setmetatable({_enabled = false, _camera = game.Workspace.CurrentCamera, _callbacks = {}, _connectionUtil = ConnectionUtil_upv_1.new()}, tbl_upv_1))
+    return (setmetatable({_enabled = false, _camera = game.Workspace.CurrentCamera, _callbacks = {}, _connectionUtil = ConnectionUtil.new()}, Class))
 end
-function tbl_upv_1._connectCallbacks(a1)
+
+function Class._connectCallbacks(self)
     --[[
       name: _connectCallbacks
-      line: 52
+      line: 55
     ]]
-    a1._camera = game.Workspace.CurrentCamera
-    if not a1._camera then
+    self._camera = game.Workspace.CurrentCamera
+
+    if not self._camera then
         return
     end
-    for key_1, value_1 in a1._callbacks do
-        a1._connectionUtil:trackConnection(key_1, a1._camera:GetPropertyChangedSignal(key_1):Connect(value_1))
-        value_1()
+
+    for v4, callback in self._callbacks do
+        self._connectionUtil:trackConnection(v4, self._camera:GetPropertyChangedSignal(v4):Connect(callback))
+        callback()
     end
 end
-function tbl_upv_1.Enable(a1)
+
+function Class.Enable(self)
     --[[
       name: Enable
-      line: 65
+      line: 71
     ]]
-    if a1._enabled then
+    if self._enabled then
         return
     end
-    a1._enabled = true
-    a1._cameraChangedConnection = game.Workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(
+
+    self._enabled = true
+    self._cameraChangedConnection = game.Workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(
         function()
             --[[
-              line: 72
+              line: 78
               upvalues:
-                a1 (copy, index: 1)
+                self (copy, index: 1)
             ]]
-            a1:_connectCallbacks()
+            self:_connectCallbacks()
         end
     )
-    a1:_connectCallbacks()
+    self:_connectCallbacks()
 end
-function tbl_upv_1.Disable(a1)
+
+function Class.Disable(self)
     --[[
       name: Disable
-      line: 79
+      line: 85
     ]]
-    if not a1._enabled then
+    if not self._enabled then
         return
     end
-    a1._enabled = false
-    if a1._cameraChangedConnection then
-        a1._cameraChangedConnection:Disconnect()
-        a1._cameraChangedConnection = nil
+
+    self._enabled = false
+
+    if self._cameraChangedConnection then
+        self._cameraChangedConnection:Disconnect()
+        self._cameraChangedConnection = nil
     end
-    a1._connectionUtil:disconnectAll()
+
+    self._connectionUtil:disconnectAll()
 end
-function tbl_upv_1.Connect(a1, a2, a3)
+
+function Class.Connect(self, callbackKey, value)
     --[[
       name: Connect
-      line: 94
+      line: 100
     ]]
-    a1._callbacks[a2] = a3
-    if not a1._camera then
+    self._callbacks[callbackKey] = value
+
+    if not self._camera then
         return
     end
-    a1._connectionUtil:trackConnection(a2, a1._camera:GetPropertyChangedSignal(a2):Connect(a3))
+
+    self._connectionUtil:trackConnection(callbackKey, self._camera:GetPropertyChangedSignal(callbackKey):Connect(value))
 end
-function tbl_upv_1.Disconnect(a1, a2)
+
+function Class.Disconnect(self, callbackKey)
     --[[
       name: Disconnect
-      line: 104
-    ]]
-    a1._connectionUtil:disconnect(a2)
-    a1._callbacks[a2] = nil
-end
-function tbl_upv_1.getCamera(a1)
-    --[[
-      name: getCamera
       line: 110
     ]]
-    return a1._camera
+    self._connectionUtil:disconnect(callbackKey)
+    self._callbacks[callbackKey] = nil
 end
-return tbl_upv_1
+
+function Class.getCamera(self)
+    --[[
+      name: getCamera
+      line: 116
+    ]]
+    return self._camera
+end
+
+return Class

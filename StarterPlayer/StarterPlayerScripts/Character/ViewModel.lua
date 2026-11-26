@@ -1,4659 +1,4616 @@
-local Players_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local RunService_upv_1 = game:GetService("RunService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local Shared_1 = ReplicatedStorage_upv_1:WaitForChild("Shared")
-local Camera_upv_1 = require(Shared_1:WaitForChild("Camera"))
-local resetState = require(Shared_1:WaitForChild("Camera"):WaitForChild("Spring"))
-local Combat_upv_1 = require(Shared_1:WaitForChild("Combat"))
-local Sfx_upv_1 = require(Shared_1:WaitForChild("Sfx"))
-local BladeClips_upv_1 = require(script.Parent:WaitForChild("BladeClips"))
-local BladeSmear_upv_1 = require(script.Parent:WaitForChild("BladeSmear"))
-local ItemClips_upv_1 = require(script.Parent:WaitForChild("ItemClips"))
-local ViewFx_upv_1 = require(script.Parent:WaitForChild("ViewFx"))
-local tbl_upv_1 = {}
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local tbl_upv_2 = {}
-tbl_upv_2.fovRef = 70
-tbl_upv_2.hand = Vector3.new(0.3199999928474426, -0.28999999165534973, -0.6000000238418579)
-tbl_upv_2.touchHand = Vector3.new(-0.05999999865889549, 0.05000000074505806, 0)
-tbl_upv_2.poseHz = 7
-tbl_upv_2.poseDamp = 0.82
-tbl_upv_2.idleHz = 0.3
-tbl_upv_2.idlePos = 0.005
-tbl_upv_2.idleRot = 1
-tbl_upv_2.bobX = 0.03
-tbl_upv_2.bobY = 0.045
-tbl_upv_2.bobRoll = 4
-tbl_upv_2.bobPitch = 2.6
-tbl_upv_2.airK = 0.0024
-tbl_upv_2.airMax = 0.07
-tbl_upv_2.airTiltK = 0.3
-tbl_upv_2.airTiltMax = 9
-tbl_upv_2.airHz = 2.6
-tbl_upv_2.airDamp = 0.55
-tbl_upv_2.landK = 0.05
-tbl_upv_2.landMax = 1.8
-tbl_upv_2.landHz = 5
-tbl_upv_2.landDamp = 0.42
-tbl_upv_2.landDist = 0.07
-tbl_upv_2.swayK = 0.35
-tbl_upv_2.swayMax = 9
-tbl_upv_2.swayHz = 5
-tbl_upv_2.swayDamp = 0.75
-tbl_upv_2.swayShift = 0.15
-tbl_upv_2.mvX = 0.0016
-tbl_upv_2.mvZ = 8e-04
-tbl_upv_2.mvRoll = 0.2
-tbl_upv_2.mvYaw = 0.1
-tbl_upv_2.mvPitch = 0.08
-tbl_upv_2.mvMax = 1.4
-tbl_upv_2.mvRun = 21
-tbl_upv_2.mvHz = 4
-tbl_upv_2.mvDamp = 0.55
-tbl_upv_2.mvAimed = 0.35
-tbl_upv_2.kickHz = 9
-tbl_upv_2.kickDamp = 0.5
-tbl_upv_2.equipHz = 4.2
-tbl_upv_2.equipDamp = 0.52
-tbl_upv_2.equipDrop = 0.42
-tbl_upv_2.equipTilt = 55
-tbl_upv_2.dropTime = 0.14
-tbl_upv_2.slidePos = Vector3.new(-0.019999999552965164, -0.07999999821186066, 0.029999999329447746)
-tbl_upv_2.slideRot = Vector3.new(8, 4, 16)
-tbl_upv_2.slideShake = 0.004
-tbl_upv_2.wallMin = 0.78
-tbl_upv_2.wallMargin = 0.16
-tbl_upv_2.wallPos = Vector3.new(0.019999999552965164, -0.14000000059604645, 0.05000000074505806)
-tbl_upv_2.wallRotMax = 70
-tbl_upv_2.hurtRot = 40
-tbl_upv_2.hurtPos = 0.35
-tbl_upv_2.retHz = 4.6
-tbl_upv_2.retDamp = 0.74
-tbl_upv_2.smearLen = 0.055
-tbl_upv_2.smear = {
-    Sword = {{at = 0.56, alpha = 0.6, width = 0.82, color = Color3.fromRGB(200, 212, 230)}, {at = 0.9, alpha = 0.28, width = 0.2, color = Color3.fromRGB(226, 233, 243)}},
-    Dagger = {{at = 0.56, alpha = 0.58, width = 0.82, color = Color3.fromRGB(176, 222, 236)}, {at = 0.9, alpha = 0.26, width = 0.22, color = Color3.fromRGB(206, 238, 246)}},
-    Axe = {{at = 0.62, alpha = 0.62, width = 0.6, color = Color3.fromRGB(196, 204, 218)}, {at = 0.88, alpha = 0.5, width = 0.26, color = Color3.fromRGB(214, 196, 150)}},
-    Club = {{at = 0.66, alpha = 0.64, width = 0.56, color = Color3.fromRGB(196, 182, 160)}, {at = 0.88, alpha = 0.5, width = 0.26, color = Color3.fromRGB(200, 182, 150)}},
-    Knives = {{at = 0.6, alpha = 0.6, width = 0.8, color = Color3.fromRGB(170, 180, 194)}},
-    Javelin = {{at = 0.85, alpha = 0.55, width = 0.3, color = Color3.fromRGB(176, 172, 160)}},
-    Bomb = {{at = 0.5, alpha = 0.6, width = 0.9, color = Color3.fromRGB(196, 166, 128)}},
-    Scythe = {{at = 0.34, alpha = 0.62, width = 0.62, color = Color3.fromRGB(186, 194, 210)}, {at = 0.6, alpha = 0.45, width = 0.18, color = Color3.fromRGB(210, 216, 228)}},
-    Katana = {{at = 0.58, alpha = 0.6, width = 0.8, color = Color3.fromRGB(178, 204, 230)}, {at = 0.9, alpha = 0.28, width = 0.2, color = Color3.fromRGB(204, 224, 242)}}
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local workspace = game:GetService("Workspace")
+local shared = replicatedStorage:WaitForChild("Shared")
+local Camera = require(shared:WaitForChild("Camera"))
+local Spring = require(shared:WaitForChild("Camera"):WaitForChild("Spring"))
+local Combat = require(shared:WaitForChild("Combat"))
+local Sfx = require(shared:WaitForChild("Sfx"))
+local BladeClips = require(script.Parent:WaitForChild("BladeClips"))
+local BladeSmear = require(script.Parent:WaitForChild("BladeSmear"))
+local ItemClips = require(script.Parent:WaitForChild("ItemClips"))
+local ViewFx = require(script.Parent:WaitForChild("ViewFx"))
+local v14 = {}
+local localPlayer = players.LocalPlayer
+local v16 = {
+    fovRef = 70,
+    hand = Vector3.new(0.3199999928474426, -0.28999999165534973, -0.6000000238418579),
+    touchHand = Vector3.new(-0.05999999865889549, 0.05000000074505806, 0),
+    poseHz = 7,
+    poseDamp = 0.82,
+    idleHz = 0.3,
+    idlePos = 0.005,
+    idleRot = 1,
+    bobX = 0.03,
+    bobY = 0.045,
+    bobRoll = 4,
+    bobPitch = 2.6,
+    airK = 0.0024,
+    airMax = 0.07,
+    airTiltK = 0.3,
+    airTiltMax = 9,
+    airHz = 2.6,
+    airDamp = 0.55,
+    landK = 0.05,
+    landMax = 1.8,
+    landHz = 5,
+    landDamp = 0.42,
+    landDist = 0.07,
+    swayK = 0.35,
+    swayMax = 9,
+    swayHz = 5,
+    swayDamp = 0.75,
+    swayShift = 0.15,
+    mvX = 0.0016,
+    mvZ = 8e-04,
+    mvRoll = 0.2,
+    mvYaw = 0.1,
+    mvPitch = 0.08,
+    mvMax = 1.4,
+    mvRun = 21,
+    mvHz = 4,
+    mvDamp = 0.55,
+    mvAimed = 0.35,
+    kickHz = 9,
+    kickDamp = 0.5,
+    equipHz = 4.2,
+    equipDamp = 0.52,
+    equipDrop = 0.42,
+    equipTilt = 55,
+    dropTime = 0.14,
+    slidePos = Vector3.new(-0.019999999552965164, -0.07999999821186066, 0.029999999329447746),
+    slideRot = Vector3.new(8, 4, 16),
+    slideShake = 0.004,
+    wallMin = 0.78,
+    wallMargin = 0.16,
+    wallPos = Vector3.new(0.019999999552965164, -0.14000000059604645, 0.05000000074505806),
+    wallRotMax = 70,
+    hurtRot = 40,
+    hurtPos = 0.35,
+    retHz = 4.6,
+    retDamp = 0.74,
+    smearLen = 0.055,
+    smear = {
+        Sword = {{at = 0.56, width = 0.82, alpha = 0.6, color = Color3.fromRGB(200, 212, 230)}, {at = 0.9, width = 0.2, alpha = 0.28, color = Color3.fromRGB(226, 233, 243)}},
+        Dagger = {{at = 0.56, width = 0.82, alpha = 0.58, color = Color3.fromRGB(176, 222, 236)}, {at = 0.9, width = 0.22, alpha = 0.26, color = Color3.fromRGB(206, 238, 246)}},
+        Axe = {{at = 0.62, width = 0.6, alpha = 0.62, color = Color3.fromRGB(196, 204, 218)}, {at = 0.88, width = 0.26, alpha = 0.5, color = Color3.fromRGB(214, 196, 150)}},
+        Club = {{at = 0.66, width = 0.56, alpha = 0.64, color = Color3.fromRGB(196, 182, 160)}, {at = 0.88, width = 0.26, alpha = 0.5, color = Color3.fromRGB(200, 182, 150)}},
+        Knives = {{at = 0.6, width = 0.8, alpha = 0.6, color = Color3.fromRGB(170, 180, 194)}},
+        Javelin = {{at = 0.85, width = 0.3, alpha = 0.55, color = Color3.fromRGB(176, 172, 160)}},
+        Bomb = {{at = 0.5, width = 0.9, alpha = 0.6, color = Color3.fromRGB(196, 166, 128)}},
+        Scythe = {{at = 0.34, width = 0.62, alpha = 0.62, color = Color3.fromRGB(186, 194, 210)}, {at = 0.6, width = 0.18, alpha = 0.45, color = Color3.fromRGB(210, 216, 228)}},
+        Katana = {{at = 0.58, width = 0.8, alpha = 0.6, color = Color3.fromRGB(178, 204, 230)}, {at = 0.9, width = 0.2, alpha = 0.28, color = Color3.fromRGB(204, 224, 242)}}
+    },
+    smearAlong = {Scythe = {root = 0.97}},
+    smearItem = {bolas = {{at = 0.85, width = 0.25, alpha = 0.6, color = Color3.fromRGB(150, 116, 80)}}, chakram = {{at = 0.7, width = 0.5, alpha = 0.5, color = Color3.fromRGB(170, 176, 186)}}}
 }
-tbl_upv_2.smearAlong = {Scythe = {root = 0.97}}
-tbl_upv_2.smearItem = {bolas = {{at = 0.85, alpha = 0.6, width = 0.25, color = Color3.fromRGB(150, 116, 80)}}, chakram = {{at = 0.7, alpha = 0.5, width = 0.5, color = Color3.fromRGB(170, 176, 186)}}}
-local tbl_upv_3 = {}
-tbl_upv_3.Sword = {act = "slash", len = 0.62, rot = Vector3.new(-26, 6, -4), pos = Vector3.new(0.029999999329447746, 0, 0), blockFrame = {tip = Vector3.new(-0.8199999928474426, 0.3799999952316284, -0.41999998688697815), edge = Vector3.new(0.10000000149011612, 0.30000001192092896, -1), pos = Vector3.new(0.30000001192092896, -0.27000001072883606, -0.550000011920929)}}
-tbl_upv_3.Shield = {act = "stab", len = 0.355, rot = Vector3.new(0, 18, 4), pos = Vector3.new(-0.019999999552965164, -0.05999999865889549, 0.019999999552965164), block = {Vector3.new(-0.30000001192092896, 0.052000001072883606, 0.23999999463558197), Vector3.new(2, -16, -11)}}
-tbl_upv_3.Dagger = {len = 0.33, rot = Vector3.new(-18, 8, 18), act = "stab", pos = Vector3.new(0.019999999552965164, 0.019999999552965164, 0.019999999552965164)}
-tbl_upv_3.Axe = {act = "chop", len = 0.55, rot = Vector3.new(-26, 14, 14), pos = Vector3.new(0, 0, 0), charge = {Vector3.new(0.05999999865889549, 0.14000000059604645, 0.019999999552965164), Vector3.new(42, -6, -30)}}
-tbl_upv_3.Club = {act = "smash", len = 0.3, rot = Vector3.new(-26, 14, 24), pos = Vector3.new(0.019999999552965164, -0.019999999552965164, 0), charge = {Vector3.new(0.019999999552965164, 0.03999999910593033, 0.019999999552965164), Vector3.new(36, 0, 12)}}
-tbl_upv_3.Gauntlets = {len = 0.24, rot = Vector3.new(62, 14, 24), act = "stab", pos = Vector3.new(0.009999999776482582, -0.05000000074505806, 0.019999999552965164)}
-tbl_upv_3.Katana = {len = 0.68, rot = Vector3.new(-26, 6, 4), act = "slash", pos = Vector3.new(0.029999999329447746, 0, 0)}
-tbl_upv_3.Hatchets = {len = 0.34, rot = Vector3.new(-24, 12, 16), act = "chop", pos = Vector3.new(0.019999999552965164, -0.019999999552965164, 0.019999999552965164)}
-tbl_upv_3.Scythe = {act = "chop", len = 0.95, rot = Vector3.new(-18, 93, -24), chargeIn = 0.15, pos = Vector3.new(0.03999999910593033, -0.05999999865889549, 0.03999999910593033), charge = {Vector3.new(0.09000000357627869, 0.019999999552965164, 0.05000000074505806), Vector3.new(0, -12, -37)}}
-tbl_upv_3.Spear = {act = "thrust", len = 0.9, rot = Vector3.new(-72, 4, -4), pos = Vector3.new(0.019999999552965164, -0.03999999910593033, 0.019999999552965164), charge = {Vector3.new(0.019999999552965164, 0, 0.20000000298023224), Vector3.new(-6, 0, 0)}}
-tbl_upv_3.Bow = {
-    act = "bow",
-    aimPos = Vector3.new(-0.1599999964237213, 0.05000000074505806, 0.029999999329447746),
-    rot = Vector3.new(0, 55, 18),
-    len = 0.54,
-    aimRot = Vector3.new(0, 6, -6),
-    pos = Vector3.new(0, -0.019999999552965164, 0),
-    draw = {Vector3.new(-0.12999999523162842, 0.05999999865889549, 0.05000000074505806), Vector3.new(0, 10, -24)},
-    drawFrame = {tip = Vector3.new(0.4699999988079071, 0.8799999952316284, 0.03999999910593033), edge = Vector3.new(-0.04500000178813934, 0.04500000178813934, -1), pos = Vector3.new(0.1599999964237213, -0.1599999964237213, -0.5199999809265137)},
-    stock = {kick = 1.5, aimPos = Vector3.new(-0.18000000715255737, 0.10000000149011612, 0.03999999910593033), drawFrame = false, len = 0.68, rot = Vector3.new(-6, 6, 0), aimRot = Vector3.new(2, 0, -4), pos = Vector3.new(0, 0, 0.019999999552965164), draw = {Vector3.new(-0.14000000059604645, 0.05999999865889549, 0.11999999731779099), Vector3.new(5, -4, -10)}}
+local v17 = {
+    Sword = {len = 0.62, pos = Vector3.new(0.029999999329447746, 0, 0), rot = Vector3.new(-26, 6, -4), act = "slash", blockFrame = {pos = Vector3.new(0.30000001192092896, -0.27000001072883606, -0.550000011920929), tip = Vector3.new(-0.8199999928474426, 0.3799999952316284, -0.41999998688697815), edge = Vector3.new(0.10000000149011612, 0.30000001192092896, -1)}},
+    Shield = {len = 0.355, pos = Vector3.new(-0.019999999552965164, -0.05999999865889549, 0.019999999552965164), rot = Vector3.new(0, 18, 4), act = "stab", block = {Vector3.new(-0.30000001192092896, 0.052000001072883606, 0.23999999463558197), Vector3.new(2, -16, -11)}},
+    Dagger = {len = 0.33, pos = Vector3.new(0.019999999552965164, 0.019999999552965164, 0.019999999552965164), rot = Vector3.new(-18, 8, 18), act = "stab"},
+    Axe = {len = 0.55, pos = Vector3.new(0, 0, 0), rot = Vector3.new(-26, 14, 14), act = "chop", charge = {Vector3.new(0.05999999865889549, 0.14000000059604645, 0.019999999552965164), Vector3.new(42, -6, -30)}},
+    Club = {len = 0.3, pos = Vector3.new(0.019999999552965164, -0.019999999552965164, 0), rot = Vector3.new(-26, 14, 24), act = "smash", charge = {Vector3.new(0.019999999552965164, 0.03999999910593033, 0.019999999552965164), Vector3.new(36, 0, 12)}},
+    Gauntlets = {len = 0.24, pos = Vector3.new(0.009999999776482582, -0.05000000074505806, 0.019999999552965164), rot = Vector3.new(62, 14, 24), act = "stab"},
+    Katana = {len = 0.68, pos = Vector3.new(0.029999999329447746, 0, 0), rot = Vector3.new(-26, 6, 4), act = "slash"},
+    Hatchets = {len = 0.34, pos = Vector3.new(0.019999999552965164, -0.019999999552965164, 0.019999999552965164), rot = Vector3.new(-24, 12, 16), act = "chop"},
+    Scythe = {len = 0.95, pos = Vector3.new(0.03999999910593033, -0.05999999865889549, 0.03999999910593033), rot = Vector3.new(-18, 93, -24), act = "chop", chargeIn = 0.15, charge = {Vector3.new(0.09000000357627869, 0.019999999552965164, 0.05000000074505806), Vector3.new(0, -12, -37)}},
+    Spear = {len = 0.9, pos = Vector3.new(0.019999999552965164, -0.03999999910593033, 0.019999999552965164), rot = Vector3.new(-72, 4, -4), act = "thrust", charge = {Vector3.new(0.019999999552965164, 0, 0.20000000298023224), Vector3.new(-6, 0, 0)}},
+    Bow = {
+        len = 0.54,
+        pos = Vector3.new(0, -0.019999999552965164, 0),
+        rot = Vector3.new(0, 55, 18),
+        act = "bow",
+        aimPos = Vector3.new(-0.1599999964237213, 0.05000000074505806, 0.029999999329447746),
+        aimRot = Vector3.new(0, 6, -6),
+        draw = {Vector3.new(-0.12999999523162842, 0.05999999865889549, 0.05000000074505806), Vector3.new(0, 10, -24)},
+        drawFrame = {pos = Vector3.new(0.1599999964237213, -0.1599999964237213, -0.5199999809265137), tip = Vector3.new(0.4699999988079071, 0.8799999952316284, 0.03999999910593033), edge = Vector3.new(-0.04500000178813934, 0.04500000178813934, -1)},
+        stock = {len = 0.68, pos = Vector3.new(0, 0, 0.019999999552965164), rot = Vector3.new(-6, 6, 0), kick = 1.5, drawFrame = false, aimPos = Vector3.new(-0.18000000715255737, 0.10000000149011612, 0.03999999910593033), aimRot = Vector3.new(2, 0, -4), draw = {Vector3.new(-0.14000000059604645, 0.05999999865889549, 0.11999999731779099), Vector3.new(5, -4, -10)}}
+    },
+    Crossbow = {len = 0.48, pos = Vector3.new(-0.009999999776482582, 0, 0), rot = Vector3.new(8, 8, -6), act = "gun", kick = 1, aimPos = Vector3.new(-0.25999999046325684, 0.03999999910593033, 0.03999999910593033), aimRot = Vector3.new(-8, -8, 4)},
+    Musket = {len = 0.82, pos = Vector3.new(-0.009999999776482582, 0, 0.019999999552965164), rot = Vector3.new(2, 6, 0), act = "gun", kick = 1.3, aimPos = Vector3.new(-0.25999999046325684, 0.07000000029802322, 0.03999999910593033), aimRot = Vector3.new(0, -6, 0)},
+    Pistol = {len = 0.6, pos = Vector3.new(-0.029999999329447746, 0.029999999329447746, 0), rot = Vector3.new(2, 6, 0), act = "gun", kick = 1, aimPos = Vector3.new(-0.2800000011920929, 0.019999999552965164, 0.03999999910593033), aimRot = Vector3.new(0, -6, 0)},
+    Blunderbuss = {len = 0.6, pos = Vector3.new(-0.009999999776482582, 0, 0.019999999552965164), rot = Vector3.new(2, 6, 0), act = "gun", kick = 1.4, aimPos = Vector3.new(-0.25999999046325684, 0.07000000029802322, 0.03999999910593033), aimRot = Vector3.new(0, -6, 0)},
+    Knives = {len = 0.3, pos = Vector3.new(0.019999999552965164, 0, 0), rot = Vector3.new(-40, 10, -10), act = "throw", aimPos = Vector3.new(-0.11999999731779099, 0.03999999910593033, 0.03999999910593033), aimRot = Vector3.new(0, 0, 0), windup = {Vector3.new(0.05000000074505806, 0.10000000149011612, 0.1599999964237213), Vector3.new(70, 0, 16)}},
+    Javelin = {len = 0.74, pos = Vector3.new(0.019999999552965164, 0.019999999552965164, 0.03999999910593033), rot = Vector3.new(-80, 6, 0), act = "throw", windup = {Vector3.new(0.10000000149011612, 0.2199999988079071, 0.10000000149011612), Vector3.new(-5, 14, 10)}},
+    Sling = {len = 0.66, pos = Vector3.new(-0.03999999910593033, 0.2800000011920929, 0.019999999552965164), rot = Vector3.new(0, 14, 38), act = "throw", aimPos = Vector3.new(-0.11999999731779099, 0.03999999910593033, 0.03999999910593033), aimRot = Vector3.new(0, 0, 0), windup = {Vector3.new(0.05000000074505806, 0.10000000149011612, 0.1599999964237213), Vector3.new(40, 0, 16)}},
+    Bomb = {len = 0.28, pos = Vector3.new(0.019999999552965164, 0.019999999552965164, 0), rot = Vector3.new(-10, 20, 0), act = "throw", windup = {Vector3.new(0.11999999731779099, 0.2800000011920929, 0.05000000074505806), Vector3.new(35, -10, 20)}},
+    Herbs = {len = 0.25, pos = Vector3.new(0.019999999552965164, 0.019999999552965164, 0), rot = Vector3.new(-10, 25, 0), act = "eat", use = {Vector3.new(-0.2199999988079071, 0.08500000089406967, 0.17000000178813934), Vector3.new(-28, 30, 10)}},
+    Trap = {len = 0.38, pos = Vector3.new(-0.019999999552965164, 0, 0), rot = Vector3.new(58, 24, 8), act = "trap"},
+    Horn = {len = 0.4, pos = Vector3.new(0.019999999552965164, 0.019999999552965164, 0), rot = Vector3.new(-10, 25, 0), act = "eat", use = {Vector3.new(-0.2199999988079071, 0, 0.20000000298023224), Vector3.new(-35, -15, -30)}}
 }
-tbl_upv_3.Crossbow = {kick = 1, aimPos = Vector3.new(-0.25999999046325684, 0.03999999910593033, 0.03999999910593033), act = "gun", len = 0.48, rot = Vector3.new(8, 8, -6), aimRot = Vector3.new(-8, -8, 4), pos = Vector3.new(-0.009999999776482582, 0, 0)}
-tbl_upv_3.Musket = {kick = 1.3, aimPos = Vector3.new(-0.25999999046325684, 0.07000000029802322, 0.03999999910593033), act = "gun", len = 0.82, rot = Vector3.new(2, 6, 0), aimRot = Vector3.new(0, -6, 0), pos = Vector3.new(-0.009999999776482582, 0, 0.019999999552965164)}
-tbl_upv_3.Pistol = {kick = 1, aimPos = Vector3.new(-0.2800000011920929, 0.019999999552965164, 0.03999999910593033), act = "gun", len = 0.6, rot = Vector3.new(2, 6, 0), aimRot = Vector3.new(0, -6, 0), pos = Vector3.new(-0.029999999329447746, 0.029999999329447746, 0)}
-tbl_upv_3.Blunderbuss = {kick = 1.4, aimPos = Vector3.new(-0.25999999046325684, 0.07000000029802322, 0.03999999910593033), act = "gun", len = 0.6, rot = Vector3.new(2, 6, 0), aimRot = Vector3.new(0, -6, 0), pos = Vector3.new(-0.009999999776482582, 0, 0.019999999552965164)}
-tbl_upv_3.Knives = {aimPos = Vector3.new(-0.11999999731779099, 0.03999999910593033, 0.03999999910593033), act = "throw", len = 0.3, rot = Vector3.new(-40, 10, -10), aimRot = Vector3.new(0, 0, 0), pos = Vector3.new(0.019999999552965164, 0, 0), windup = {Vector3.new(0.05000000074505806, 0.10000000149011612, 0.1599999964237213), Vector3.new(70, 0, 16)}}
-tbl_upv_3.Javelin = {act = "throw", len = 0.74, rot = Vector3.new(-80, 6, 0), pos = Vector3.new(0.019999999552965164, 0.019999999552965164, 0.03999999910593033), windup = {Vector3.new(0.10000000149011612, 0.2199999988079071, 0.10000000149011612), Vector3.new(-5, 14, 10)}}
-tbl_upv_3.Sling = {aimPos = Vector3.new(-0.11999999731779099, 0.03999999910593033, 0.03999999910593033), act = "throw", len = 0.66, rot = Vector3.new(0, 14, 38), aimRot = Vector3.new(0, 0, 0), pos = Vector3.new(-0.03999999910593033, 0.2800000011920929, 0.019999999552965164), windup = {Vector3.new(0.05000000074505806, 0.10000000149011612, 0.1599999964237213), Vector3.new(40, 0, 16)}}
-tbl_upv_3.Bomb = {act = "throw", len = 0.28, rot = Vector3.new(-10, 20, 0), pos = Vector3.new(0.019999999552965164, 0.019999999552965164, 0), windup = {Vector3.new(0.11999999731779099, 0.2800000011920929, 0.05000000074505806), Vector3.new(35, -10, 20)}}
-tbl_upv_3.Herbs = {act = "eat", len = 0.25, rot = Vector3.new(-10, 25, 0), pos = Vector3.new(0.019999999552965164, 0.019999999552965164, 0), use = {Vector3.new(-0.2199999988079071, 0.08500000089406967, 0.17000000178813934), Vector3.new(-28, 30, 10)}}
-tbl_upv_3.Trap = {len = 0.38, rot = Vector3.new(58, 24, 8), act = "trap", pos = Vector3.new(-0.019999999552965164, 0, 0)}
-tbl_upv_3.Horn = {act = "eat", len = 0.4, rot = Vector3.new(-10, 25, 0), pos = Vector3.new(0.019999999552965164, 0.019999999552965164, 0), use = {Vector3.new(-0.2199999988079071, 0, 0.20000000298023224), Vector3.new(-35, -15, -30)}}
-local tbl_upv_4 = {}
-tbl_upv_4.crossbow = {barrel = Vector3.new(0, 0, 1)}
-tbl_upv_4.beehive = {len = 0.2, pos = Vector3.new(0.029999999329447746, -0.009999999776482582, 0), windup = {Vector3.new(0.2199999988079071, 0.30000001192092896, 0.05000000074505806), Vector3.new(35, -10, 24)}}
-tbl_upv_4.flintlock = {pan = Vector3.new(0.5325999855995178, 0.38659998774528503, 0.1979999989271164), barrel = Vector3.new(0.9272000193595886, -0.37459999322891235, 0)}
-tbl_upv_4.musket = {pan = Vector3.new(0.3840000033378601, 0.38199999928474426, 0.1899999976158142)}
-tbl_upv_4.blunderbuss = {muzzle = Vector3.new(0, 0.25699999928474426, 1.774999976158142), barrel = Vector3.new(0, 0, 1), pan = Vector3.new(-0.11999999731779099, 0.47999998927116394, 0.1120000034570694)}
-tbl_upv_4.bolas = {len = 0.37, rot = Vector3.new(30, 0, 0), pos = Vector3.new(-0.029999999329447746, 0.23999999463558197, 0)}
-tbl_upv_4.javelins = {len = 1.17, pos = Vector3.new(0, 0, 0.05000000074505806)}
-tbl_upv_4.harpoon = {len = 0.8}
-tbl_upv_4.healing_tonic = {pos = Vector3.new(0.029999999329447746, -0.05999999865889549, 0.029999999329447746), use = {Vector3.new(-0.2199999988079071, 0.08500000089406967, 0.20999999344348907), Vector3.new(-28, 30, 10)}}
-tbl_upv_4.bandage = {use = {Vector3.new(-0.2199999988079071, 0.18000000715255737, 0.18000000715255737), Vector3.new(-35, 20, 25)}}
-tbl_upv_4.war_horn = {use = {Vector3.new(-0.30000001192092896, 0, 0.23000000417232513), Vector3.new(-35, -15, -18)}}
-tbl_upv_4.chakram = {rot = Vector3.new(20, 35, 18), pos = Vector3.new(-0.07999999821186066, -0.029999999329447746, 0.019999999552965164)}
-tbl_upv_4.palisade = {len = 0.36, rot = Vector3.new(-58, 0, -10), pos = Vector3.new(0, 0.05999999865889549, 0)}
-tbl_upv_4.smoke_bomb = {windup = {Vector3.new(0.1599999964237213, 0.2800000011920929, 0.05000000074505806), Vector3.new(35, -10, 20)}}
-tbl_upv_4.healing_flask = {windup = {Vector3.new(0.11999999731779099, 0.2800000011920929, 0.05000000074505806), Vector3.new(12, -10, 20)}}
-local tbl_upv_5 = {}
-tbl_upv_5.stab = {dur = 0.2, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.25, Vector3.new(0.009999999776482582, 0.009999999776482582, 0.05000000074505806), Vector3.new(8, 0, 0)}, {0.5, Vector3.new(-0.05000000074505806, 0.019999999552965164, -0.18000000715255737), Vector3.new(-40, 0, -6)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}}
-tbl_upv_5.chop = {dur = 0.4, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.24, Vector3.new(0.019999999552965164, 0.10000000149011612, 0.05999999865889549), Vector3.new(44, 0, 10)}, {0.52, Vector3.new(-0.05000000074505806, -0.12999999523162842, -0.09000000357627869), Vector3.new(-64, 6, -10)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}}
-tbl_upv_5.smash = {dur = 0.46, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.28, Vector3.new(0.019999999552965164, 0.11999999731779099, 0.07000000029802322), Vector3.new(52, 0, 6)}, {0.55, Vector3.new(-0.05999999865889549, -0.1599999964237213, -0.07999999821186066), Vector3.new(-74, 4, -6)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}}
-tbl_upv_5.heavy = {dur = 0.5, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.3, Vector3.new(-0.05999999865889549, -0.20000000298023224, -0.11999999731779099), Vector3.new(-90, 6, -8)}, {0.55, Vector3.new(-0.05000000074505806, -0.17000000178813934, -0.10000000149011612), Vector3.new(-80, 6, -8)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}}
-tbl_upv_5.thrust = {dur = 0.34, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.25, Vector3.new(0.009999999776482582, 0.009999999776482582, 0.10000000149011612), Vector3.new(4, 0, 0)}, {0.48, Vector3.new(-0.05999999865889549, 0.029999999329447746, -0.30000001192092896), Vector3.new(-4, 0, 0)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}}
-tbl_upv_5.lunge = {dur = 0.6, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.15, Vector3.new(-0.07999999821186066, 0.03999999910593033, -0.4000000059604645), Vector3.new(-4, 0, 0)}, {0.62, Vector3.new(-0.07999999821186066, 0.03999999910593033, -0.3799999952316284), Vector3.new(-4, 0, 0)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}}
-tbl_upv_5.throw = {dur = 0.34, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.4, Vector3.new(-0.05999999865889549, 0.019999999552965164, -0.3400000035762787), Vector3.new(-60, 0, -8)}, {1, Vector3.new(-0.05999999865889549, -0.10000000149011612, -0.30000001192092896), Vector3.new(-70, 0, -8)}}}
-tbl_upv_5.place = {dur = 0.36, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.5, Vector3.new(-0.03999999910593033, -0.2199999988079071, -0.1599999964237213), Vector3.new(-40, 0, 0)}, {1, Vector3.new(-0.03999999910593033, -0.30000001192092896, -0.20000000298023224), Vector3.new(-50, 0, 0)}}}
-local tbl_upv_6 = {}
-local u1 = nil
-local u2 = nil
-local function cfgFor(a1)
+local v18 = {
+    crossbow = {barrel = Vector3.new(0, 0, 1)},
+    beehive = {len = 0.2, pos = Vector3.new(0.029999999329447746, -0.009999999776482582, 0), windup = {Vector3.new(0.2199999988079071, 0.30000001192092896, 0.05000000074505806), Vector3.new(35, -10, 24)}},
+    flintlock = {barrel = Vector3.new(0.9272000193595886, -0.37459999322891235, 0), pan = Vector3.new(0.5325999855995178, 0.38659998774528503, 0.1979999989271164)},
+    musket = {pan = Vector3.new(0.3840000033378601, 0.38199999928474426, 0.1899999976158142)},
+    blunderbuss = {barrel = Vector3.new(0, 0, 1), muzzle = Vector3.new(0, 0.25699999928474426, 1.774999976158142), pan = Vector3.new(-0.11999999731779099, 0.47999998927116394, 0.1120000034570694)},
+    bolas = {len = 0.37, pos = Vector3.new(-0.029999999329447746, 0.23999999463558197, 0), rot = Vector3.new(30, 0, 0)},
+    javelins = {len = 1.17, pos = Vector3.new(0, 0, 0.05000000074505806)},
+    harpoon = {len = 0.8},
+    healing_tonic = {pos = Vector3.new(0.029999999329447746, -0.05999999865889549, 0.029999999329447746), use = {Vector3.new(-0.2199999988079071, 0.08500000089406967, 0.20999999344348907), Vector3.new(-28, 30, 10)}},
+    bandage = {use = {Vector3.new(-0.2199999988079071, 0.18000000715255737, 0.18000000715255737), Vector3.new(-35, 20, 25)}},
+    war_horn = {use = {Vector3.new(-0.30000001192092896, 0, 0.23000000417232513), Vector3.new(-35, -15, -18)}},
+    chakram = {pos = Vector3.new(-0.07999999821186066, -0.029999999329447746, 0.019999999552965164), rot = Vector3.new(20, 35, 18)},
+    palisade = {len = 0.36, pos = Vector3.new(0, 0.05999999865889549, 0), rot = Vector3.new(-58, 0, -10)},
+    smoke_bomb = {windup = {Vector3.new(0.1599999964237213, 0.2800000011920929, 0.05000000074505806), Vector3.new(35, -10, 20)}},
+    healing_flask = {windup = {Vector3.new(0.11999999731779099, 0.2800000011920929, 0.05000000074505806), Vector3.new(12, -10, 20)}}
+}
+local v19 = {
+    stab = {dur = 0.2, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.25, Vector3.new(0.009999999776482582, 0.009999999776482582, 0.05000000074505806), Vector3.new(8, 0, 0)}, {0.5, Vector3.new(-0.05000000074505806, 0.019999999552965164, -0.18000000715255737), Vector3.new(-40, 0, -6)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}},
+    chop = {dur = 0.4, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.24, Vector3.new(0.019999999552965164, 0.10000000149011612, 0.05999999865889549), Vector3.new(44, 0, 10)}, {0.52, Vector3.new(-0.05000000074505806, -0.12999999523162842, -0.09000000357627869), Vector3.new(-64, 6, -10)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}},
+    smash = {dur = 0.46, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.28, Vector3.new(0.019999999552965164, 0.11999999731779099, 0.07000000029802322), Vector3.new(52, 0, 6)}, {0.55, Vector3.new(-0.05999999865889549, -0.1599999964237213, -0.07999999821186066), Vector3.new(-74, 4, -6)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}},
+    heavy = {dur = 0.5, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.3, Vector3.new(-0.05999999865889549, -0.20000000298023224, -0.11999999731779099), Vector3.new(-90, 6, -8)}, {0.55, Vector3.new(-0.05000000074505806, -0.17000000178813934, -0.10000000149011612), Vector3.new(-80, 6, -8)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}},
+    thrust = {dur = 0.34, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.25, Vector3.new(0.009999999776482582, 0.009999999776482582, 0.10000000149011612), Vector3.new(4, 0, 0)}, {0.48, Vector3.new(-0.05999999865889549, 0.029999999329447746, -0.30000001192092896), Vector3.new(-4, 0, 0)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}},
+    lunge = {dur = 0.6, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.15, Vector3.new(-0.07999999821186066, 0.03999999910593033, -0.4000000059604645), Vector3.new(-4, 0, 0)}, {0.62, Vector3.new(-0.07999999821186066, 0.03999999910593033, -0.3799999952316284), Vector3.new(-4, 0, 0)}, {1, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}}},
+    throw = {dur = 0.34, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.4, Vector3.new(-0.05999999865889549, 0.019999999552965164, -0.3400000035762787), Vector3.new(-60, 0, -8)}, {1, Vector3.new(-0.05999999865889549, -0.10000000149011612, -0.30000001192092896), Vector3.new(-70, 0, -8)}}},
+    place = {dur = 0.36, keys = {{0, Vector3.new(0, 0, 0), Vector3.new(0, 0, 0)}, {0.5, Vector3.new(-0.03999999910593033, -0.2199999988079071, -0.1599999964237213), Vector3.new(-40, 0, 0)}, {1, Vector3.new(-0.03999999910593033, -0.30000001192092896, -0.20000000298023224), Vector3.new(-50, 0, 0)}}}
+}
+local v20 = {}
+local weapons = nil
+local viewModels = nil
+
+local function cfgFor(key)
     --[[
       name: cfgFor
       line: 412
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v17 (copy, index: 1)
     ]]
-    return tbl_upv_3[a1]
+    return v17[key]
 end
-local function withStock(a1)
-    --[[
-      name: withStock
-      line: 506
-    ]]
-    local stock_1 = a1.stock
-    if not stock_1 then
-        return a1
-    end
-    local v1 = table.clone(a1)
-    for key_1, value_1 in stock_1 do
-        v1[key_1] = value_1
-    end
-    v1.stock = nil
-    return v1
-end
-local function rodOf(a1, a2, a3)
-    --[[
-      name: rodOf
-      line: 539
-    ]]
-    local v2 = a1:FindFirstChild("Ramrod", true)
-    if v2 and v2:IsA("BasePart") and a3 then
-        v2.Size = Vector3.new(v2.Size.X, v2.Size.Y * 1.4, v2.Size.Z * 1.4)
-        local tbl_7 = {}
-        tbl_7.part = v2
-        tbl_7.rest = a2.CFrame:ToObjectSpace(v2.CFrame)
-        tbl_7.len = v2.Size.X
-        tbl_7.fwd = a2.CFrame:VectorToObjectSpace(v2.CFrame.XVector).Unit
-        tbl_7.up = a2.CFrame:VectorToObjectSpace(v2.CFrame.YVector).Unit
-        tbl_7.muzzle = a2.CFrame:PointToObjectSpace(a3.WorldPosition)
-        return tbl_7
-    end
-    return nil
-end
-local function mirrorX(a1)
-    --[[
-      name: mirrorX
-      line: 578
-    ]]
-    local v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14 = a1:GetComponents()
-    return CFrame.new(-v3, v4, v5, v6, -v7, -v8, -v9, v10, v11, -v12, v13, v14)
-end
-local function hammerOf(a1, a2, a3, a4, a5)
-    --[[
-      name: hammerOf
-      line: 522
-    ]]
-    local v15 = a1:FindFirstChild(a3 or "Hammer", true)
-    local v16 = a2:FindFirstChild(a4 or "HammerPivot")
-    if v15 and v15:IsA("BasePart") and v16 and v16:IsA("Attachment") then
-        local tbl_8 = {}
-        tbl_8.part = v15
-        tbl_8.rest = a2.CFrame:ToObjectSpace(v15.CFrame)
-        tbl_8.pivot = a2.CFrame:PointToObjectSpace(v16.WorldPosition)
-        tbl_8.axis = a2.CFrame:VectorToObjectSpace(v16.WorldAxis).Unit
-        tbl_8.fired = tonumber(v15:GetAttribute(a5 or "Fired")) or 35
-        return tbl_8
-    end
-    return nil
-end
-local function canonical(a1, a2, a3, a4, a5, a6, a7)
+
+local function canonical(kind, act, a28, a29, a30, a31, barrel)
     --[[
       name: canonical
       line: 429
     ]]
-    if a1 == "Gauntlets" then
+    if kind == "Gauntlets" then
         return CFrame.identity, nil
     end
-    local function inGrip_1(a8)
+
+    local function inGrip(a34)
         --[[
           name: inGrip
           line: 433
           upvalues:
-            a4 (copy, index: 1)
-            a3 (copy, index: 2)
+            a29 (copy, index: 1)
+            a28 (copy, index: 2)
         ]]
-        return a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(a8))
+        return a29:PointToObjectSpace(a28.CFrame:PointToObjectSpace(a34))
     end
-    local function axisInGrip_1(a9)
+
+    local function axisInGrip(a36)
         --[[
           name: axisInGrip
           line: 436
           upvalues:
-            a4 (copy, index: 1)
+            a29 (copy, index: 1)
         ]]
-        return a4:VectorToObjectSpace(a9)
+        return a29:VectorToObjectSpace(a36)
     end
-    local v17 = a3:FindFirstChild("Muzzle", true) or (a3:FindFirstChild("Tip", true))
-    local v18 = nil
-    local v19 = nil
-    local v20 = nil
-    if a2 ~= "gun" then
-        if a2 ~= "gun" then
-            local v21, v22 = nil, nil
-            if a1 == "Bow" then
-                v21 = {{a5.X, Vector3.new(1, 0, 0)}, {a5.Y, Vector3.new(0, 1, 0)}, {a5.Z, Vector3.new(0, 0, 1)}}
-                table.sort(
-                    v21,
-                    function(a10, a11)
-                        --[[
-                          line: 456
-                        ]]
-                        return a11[1] < a10[1]
-                    end
-                )
-                local v23 = v21[1][2]
-                v22 = (a4.Position - a6.Position):Dot(v23)
-                if v21[1][1] * 0.12 < math.abs(v22) then
-                    v20 = "stock"
-                    local v24
-                    if v22 > 0 then
-                        v24 = -v23
-                    else
-                        v24 = v23
-                    end
-                    v19 = a4:VectorToObjectSpace(v24)
-                    v18 = a4:VectorToObjectSpace(((v23 ~= Vector3.new(0, 1, 0)) and Vector3.new(0, 1, 0)) or (v21[2][2]))
-                else
-                    v18 = a4:VectorToObjectSpace(v23)
-                    v19 = a4:VectorToObjectSpace(v21[2][2])
-                    if v18.Y < -0.01 then
-                        v18 = -v18
-                    end
-                    if v19.Z > 0.01 then
-                        v19 = -v19
-                    end
-                end
-            elseif a1 ~= "Sling" then
-                local v25 = nil
-                if a1 ~= "Trap" then
-                    v25 = a3:FindFirstChild("Tip", true)
-                    if v25 then
-                        local v26 = v25:IsA("Attachment")
-                        local v27 = nil
-                        if v26 then
-                            v27 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v25.WorldPosition))
-                            if v27.Magnitude > 0.1 and v27.Unit.Y > 0.2 then
-                                v18, v19 = v27.Unit, Vector3.new(0, 0, -1)
-                            end
-                        end
-                    end
-                end
+
+    local v37 = a28:FindFirstChild("Muzzle", true) or a28:FindFirstChild("Tip", true)
+    local v38 = nil
+    local v39 = nil
+    local v40 = nil
+
+    if act == "gun" and barrel and 0.05 < barrel.Magnitude then
+        v39 = a29:VectorToObjectSpace(barrel.Unit)
+        v38 = a29:VectorToObjectSpace(Vector3.new(0, 1, 0))
+    elseif act == "gun" and v37 and v37:IsA("Attachment") then
+        local worldPosition = v37.WorldPosition
+        local objectSpaceWorldPosition = a29:PointToObjectSpace(a28.CFrame:PointToObjectSpace(worldPosition))
+
+        if 0.05 < objectSpaceWorldPosition.Magnitude then
+            v39 = objectSpaceWorldPosition.Unit
+            v38 = a29:VectorToObjectSpace(Vector3.new(0, 1, 0))
+        end
+    elseif kind == "Bow" then
+        local v43 = {{a30.X, Vector3.new(1, 0, 0)}, {a30.Y, Vector3.new(0, 1, 0)}, {a30.Z, Vector3.new(0, 0, 1)}}
+
+        table.sort(
+            v43,
+            function(left, right)
+                --[[
+                  line: 456
+                ]]
+                local v46 = left[1]
+                return right[1] < v46
             end
-        elseif v17 then
-            local v28 = nil
-            if v17:IsA("Attachment") then
-                v28 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v17.WorldPosition))
-                if v28.Magnitude > 0.05 then
-                    v19 = v28.Unit
-                    v18 = a4:VectorToObjectSpace(Vector3.new(0, 1, 0))
-                end
-            else
-                local v21, v22 = nil, nil
-                if a1 == "Bow" then
-                    v21 = {{a5.X, Vector3.new(1, 0, 0)}, {a5.Y, Vector3.new(0, 1, 0)}, {a5.Z, Vector3.new(0, 0, 1)}}
-                    table.sort(
-                        v21,
-                        function(a10, a11)
-                            --[[
-                              line: 456
-                            ]]
-                            return a11[1] < a10[1]
-                        end
-                    )
-                    local v23 = v21[1][2]
-                    v22 = (a4.Position - a6.Position):Dot(v23)
-                    if v21[1][1] * 0.12 < math.abs(v22) then
-                        v20 = "stock"
-                        local v24
-                        if v22 > 0 then
-                            v24 = -v23
-                        else
-                            v24 = v23
-                        end
-                        v19 = a4:VectorToObjectSpace(v24)
-                        v18 = a4:VectorToObjectSpace(((v23 ~= Vector3.new(0, 1, 0)) and Vector3.new(0, 1, 0)) or (v21[2][2]))
-                    else
-                        v18 = a4:VectorToObjectSpace(v23)
-                        v19 = a4:VectorToObjectSpace(v21[2][2])
-                        if v18.Y < -0.01 then
-                            v18 = -v18
-                        end
-                        if v19.Z > 0.01 then
-                            v19 = -v19
-                        end
-                    end
-                elseif a1 ~= "Sling" then
-                    local v25 = nil
-                    if a1 ~= "Trap" then
-                        v25 = a3:FindFirstChild("Tip", true)
-                        if v25 then
-                            local v26 = v25:IsA("Attachment")
-                            local v27 = nil
-                            if v26 then
-                                v27 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v25.WorldPosition))
-                                if v27.Magnitude > 0.1 and v27.Unit.Y > 0.2 then
-                                    v18, v19 = v27.Unit, Vector3.new(0, 0, -1)
-                                end
-                            end
-                        end
-                    end
-                end
-            end
+        )
+
+        local vector3 = v43[1][2]
+        local v48 = (a29.Position - a31.Position):Dot(vector3)
+        local absoluteValue = math.abs(v48)
+
+        if v43[1][1] * 0.12 < absoluteValue then
+            v40 = "stock"
+            local vector32 = if 0 < v48 then -vector3 else vector3
+            v39 = a29:VectorToObjectSpace(vector32)
+            local v51 = vector3 ~= Vector3.new(0, 1, 0) and Vector3.new(0, 1, 0) or v43[2][2]
+            v38 = a29:VectorToObjectSpace(v51)
         else
-            local v21, v22 = nil, nil
-            if a1 == "Bow" then
-                v21 = {{a5.X, Vector3.new(1, 0, 0)}, {a5.Y, Vector3.new(0, 1, 0)}, {a5.Z, Vector3.new(0, 0, 1)}}
-                table.sort(
-                    v21,
-                    function(a10, a11)
-                        --[[
-                          line: 456
-                        ]]
-                        return a11[1] < a10[1]
-                    end
-                )
-                local v23 = v21[1][2]
-                v22 = (a4.Position - a6.Position):Dot(v23)
-                if v21[1][1] * 0.12 < math.abs(v22) then
-                    v20 = "stock"
-                    local v24
-                    if v22 > 0 then
-                        v24 = -v23
-                    else
-                        v24 = v23
-                    end
-                    v19 = a4:VectorToObjectSpace(v24)
-                    v18 = a4:VectorToObjectSpace(((v23 ~= Vector3.new(0, 1, 0)) and Vector3.new(0, 1, 0)) or (v21[2][2]))
-                else
-                    v18 = a4:VectorToObjectSpace(v23)
-                    v19 = a4:VectorToObjectSpace(v21[2][2])
-                    if v18.Y < -0.01 then
-                        v18 = -v18
-                    end
-                    if v19.Z > 0.01 then
-                        v19 = -v19
-                    end
-                end
-            elseif a1 ~= "Sling" then
-                local v25 = nil
-                if a1 ~= "Trap" then
-                    v25 = a3:FindFirstChild("Tip", true)
-                    if v25 then
-                        local v26 = v25:IsA("Attachment")
-                        local v27 = nil
-                        if v26 then
-                            v27 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v25.WorldPosition))
-                            if v27.Magnitude > 0.1 and v27.Unit.Y > 0.2 then
-                                v18, v19 = v27.Unit, Vector3.new(0, 0, -1)
-                            end
-                        end
-                    end
-                end
+            v38 = a29:VectorToObjectSpace(vector3)
+            v39 = a29:VectorToObjectSpace(v43[2][2])
+
+            if v38.Y < -0.01 then
+                v38 = -v38
+            end
+
+            if 0.01 < v39.Z then
+                v39 = -v39
             end
         end
-    elseif a7 then
-        if a7.Magnitude > 0.05 then
-            v19 = a4:VectorToObjectSpace(a7.Unit)
-            v18 = a4:VectorToObjectSpace(Vector3.new(0, 1, 0))
-        elseif a2 ~= "gun" then
-            local v21, v22 = nil, nil
-            if a1 == "Bow" then
-                v21 = {{a5.X, Vector3.new(1, 0, 0)}, {a5.Y, Vector3.new(0, 1, 0)}, {a5.Z, Vector3.new(0, 0, 1)}}
-                table.sort(
-                    v21,
-                    function(a10, a11)
-                        --[[
-                          line: 456
-                        ]]
-                        return a11[1] < a10[1]
-                    end
-                )
-                local v23 = v21[1][2]
-                v22 = (a4.Position - a6.Position):Dot(v23)
-                if v21[1][1] * 0.12 < math.abs(v22) then
-                    v20 = "stock"
-                    local v24
-                    if v22 > 0 then
-                        v24 = -v23
-                    else
-                        v24 = v23
-                    end
-                    v19 = a4:VectorToObjectSpace(v24)
-                    v18 = a4:VectorToObjectSpace(((v23 ~= Vector3.new(0, 1, 0)) and Vector3.new(0, 1, 0)) or (v21[2][2]))
-                else
-                    v18 = a4:VectorToObjectSpace(v23)
-                    v19 = a4:VectorToObjectSpace(v21[2][2])
-                    if v18.Y < -0.01 then
-                        v18 = -v18
-                    end
-                    if v19.Z > 0.01 then
-                        v19 = -v19
-                    end
-                end
-            elseif a1 ~= "Sling" then
-                local v25 = nil
-                if a1 ~= "Trap" then
-                    v25 = a3:FindFirstChild("Tip", true)
-                    if v25 then
-                        local v26 = v25:IsA("Attachment")
-                        local v27 = nil
-                        if v26 then
-                            v27 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v25.WorldPosition))
-                            if v27.Magnitude > 0.1 and v27.Unit.Y > 0.2 then
-                                v18, v19 = v27.Unit, Vector3.new(0, 0, -1)
-                            end
-                        end
-                    end
-                end
-            end
-        elseif v17 then
-            local v28 = nil
-            if v17:IsA("Attachment") then
-                v28 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v17.WorldPosition))
-                if v28.Magnitude > 0.05 then
-                    v19 = v28.Unit
-                    v18 = a4:VectorToObjectSpace(Vector3.new(0, 1, 0))
-                end
-            else
-                local v21, v22 = nil, nil
-                if a1 == "Bow" then
-                    v21 = {{a5.X, Vector3.new(1, 0, 0)}, {a5.Y, Vector3.new(0, 1, 0)}, {a5.Z, Vector3.new(0, 0, 1)}}
-                    table.sort(
-                        v21,
-                        function(a10, a11)
-                            --[[
-                              line: 456
-                            ]]
-                            return a11[1] < a10[1]
-                        end
-                    )
-                    local v23 = v21[1][2]
-                    v22 = (a4.Position - a6.Position):Dot(v23)
-                    if v21[1][1] * 0.12 < math.abs(v22) then
-                        v20 = "stock"
-                        local v24
-                        if v22 > 0 then
-                            v24 = -v23
-                        else
-                            v24 = v23
-                        end
-                        v19 = a4:VectorToObjectSpace(v24)
-                        v18 = a4:VectorToObjectSpace(((v23 ~= Vector3.new(0, 1, 0)) and Vector3.new(0, 1, 0)) or (v21[2][2]))
-                    else
-                        v18 = a4:VectorToObjectSpace(v23)
-                        v19 = a4:VectorToObjectSpace(v21[2][2])
-                        if v18.Y < -0.01 then
-                            v18 = -v18
-                        end
-                        if v19.Z > 0.01 then
-                            v19 = -v19
-                        end
-                    end
-                elseif a1 ~= "Sling" then
-                    local v25 = nil
-                    if a1 ~= "Trap" then
-                        v25 = a3:FindFirstChild("Tip", true)
-                        if v25 then
-                            local v26 = v25:IsA("Attachment")
-                            local v27 = nil
-                            if v26 then
-                                v27 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v25.WorldPosition))
-                                if v27.Magnitude > 0.1 and v27.Unit.Y > 0.2 then
-                                    v18, v19 = v27.Unit, Vector3.new(0, 0, -1)
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        else
-            local v21, v22 = nil, nil
-            if a1 == "Bow" then
-                v21 = {{a5.X, Vector3.new(1, 0, 0)}, {a5.Y, Vector3.new(0, 1, 0)}, {a5.Z, Vector3.new(0, 0, 1)}}
-                table.sort(
-                    v21,
-                    function(a10, a11)
-                        --[[
-                          line: 456
-                        ]]
-                        return a11[1] < a10[1]
-                    end
-                )
-                local v23 = v21[1][2]
-                v22 = (a4.Position - a6.Position):Dot(v23)
-                if v21[1][1] * 0.12 < math.abs(v22) then
-                    v20 = "stock"
-                    local v24
-                    if v22 > 0 then
-                        v24 = -v23
-                    else
-                        v24 = v23
-                    end
-                    v19 = a4:VectorToObjectSpace(v24)
-                    v18 = a4:VectorToObjectSpace(((v23 ~= Vector3.new(0, 1, 0)) and Vector3.new(0, 1, 0)) or (v21[2][2]))
-                else
-                    v18 = a4:VectorToObjectSpace(v23)
-                    v19 = a4:VectorToObjectSpace(v21[2][2])
-                    if v18.Y < -0.01 then
-                        v18 = -v18
-                    end
-                    if v19.Z > 0.01 then
-                        v19 = -v19
-                    end
-                end
-            elseif a1 ~= "Sling" then
-                local v25 = nil
-                if a1 ~= "Trap" then
-                    v25 = a3:FindFirstChild("Tip", true)
-                    if v25 then
-                        local v26 = v25:IsA("Attachment")
-                        local v27 = nil
-                        if v26 then
-                            v27 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v25.WorldPosition))
-                            if v27.Magnitude > 0.1 and v27.Unit.Y > 0.2 then
-                                v18, v19 = v27.Unit, Vector3.new(0, 0, -1)
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    elseif a2 ~= "gun" then
-        local v21, v22 = nil, nil
-        if a1 == "Bow" then
-            v21 = {{a5.X, Vector3.new(1, 0, 0)}, {a5.Y, Vector3.new(0, 1, 0)}, {a5.Z, Vector3.new(0, 0, 1)}}
-            table.sort(
-                v21,
-                function(a10, a11)
-                    --[[
-                      line: 456
-                    ]]
-                    return a11[1] < a10[1]
-                end
-            )
-            local v23 = v21[1][2]
-            v22 = (a4.Position - a6.Position):Dot(v23)
-            if v21[1][1] * 0.12 < math.abs(v22) then
-                v20 = "stock"
-                local v24
-                if v22 > 0 then
-                    v24 = -v23
-                else
-                    v24 = v23
-                end
-                v19 = a4:VectorToObjectSpace(v24)
-                v18 = a4:VectorToObjectSpace(((v23 ~= Vector3.new(0, 1, 0)) and Vector3.new(0, 1, 0)) or (v21[2][2]))
-            else
-                v18 = a4:VectorToObjectSpace(v23)
-                v19 = a4:VectorToObjectSpace(v21[2][2])
-                if v18.Y < -0.01 then
-                    v18 = -v18
-                end
-                if v19.Z > 0.01 then
-                    v19 = -v19
-                end
-            end
-        elseif a1 ~= "Sling" then
-            local v25 = nil
-            if a1 ~= "Trap" then
-                v25 = a3:FindFirstChild("Tip", true)
-                if v25 then
-                    local v26 = v25:IsA("Attachment")
-                    local v27 = nil
-                    if v26 then
-                        v27 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v25.WorldPosition))
-                        if v27.Magnitude > 0.1 and v27.Unit.Y > 0.2 then
-                            v18, v19 = v27.Unit, Vector3.new(0, 0, -1)
-                        end
-                    end
-                end
-            end
-        end
-    elseif v17 then
-        local v28 = nil
-        if v17:IsA("Attachment") then
-            v28 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v17.WorldPosition))
-            if v28.Magnitude > 0.05 then
-                v19 = v28.Unit
-                v18 = a4:VectorToObjectSpace(Vector3.new(0, 1, 0))
-            end
-        else
-            local v21, v22 = nil, nil
-            if a1 == "Bow" then
-                v21 = {{a5.X, Vector3.new(1, 0, 0)}, {a5.Y, Vector3.new(0, 1, 0)}, {a5.Z, Vector3.new(0, 0, 1)}}
-                table.sort(
-                    v21,
-                    function(a10, a11)
-                        --[[
-                          line: 456
-                        ]]
-                        return a11[1] < a10[1]
-                    end
-                )
-                local v23 = v21[1][2]
-                v22 = (a4.Position - a6.Position):Dot(v23)
-                if v21[1][1] * 0.12 < math.abs(v22) then
-                    v20 = "stock"
-                    local v24
-                    if v22 > 0 then
-                        v24 = -v23
-                    else
-                        v24 = v23
-                    end
-                    v19 = a4:VectorToObjectSpace(v24)
-                    v18 = a4:VectorToObjectSpace(((v23 ~= Vector3.new(0, 1, 0)) and Vector3.new(0, 1, 0)) or (v21[2][2]))
-                else
-                    v18 = a4:VectorToObjectSpace(v23)
-                    v19 = a4:VectorToObjectSpace(v21[2][2])
-                    if v18.Y < -0.01 then
-                        v18 = -v18
-                    end
-                    if v19.Z > 0.01 then
-                        v19 = -v19
-                    end
-                end
-            elseif a1 ~= "Sling" then
-                local v25 = nil
-                if a1 ~= "Trap" then
-                    v25 = a3:FindFirstChild("Tip", true)
-                    if v25 then
-                        local v26 = v25:IsA("Attachment")
-                        local v27 = nil
-                        if v26 then
-                            v27 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v25.WorldPosition))
-                            if v27.Magnitude > 0.1 and v27.Unit.Y > 0.2 then
-                                v18, v19 = v27.Unit, Vector3.new(0, 0, -1)
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    else
-        local v21, v22 = nil, nil
-        if a1 == "Bow" then
-            v21 = {{a5.X, Vector3.new(1, 0, 0)}, {a5.Y, Vector3.new(0, 1, 0)}, {a5.Z, Vector3.new(0, 0, 1)}}
-            table.sort(
-                v21,
-                function(a10, a11)
-                    --[[
-                      line: 456
-                    ]]
-                    return a11[1] < a10[1]
-                end
-            )
-            local v23 = v21[1][2]
-            v22 = (a4.Position - a6.Position):Dot(v23)
-            if v21[1][1] * 0.12 < math.abs(v22) then
-                v20 = "stock"
-                local v24
-                if v22 > 0 then
-                    v24 = -v23
-                else
-                    v24 = v23
-                end
-                v19 = a4:VectorToObjectSpace(v24)
-                v18 = a4:VectorToObjectSpace(((v23 ~= Vector3.new(0, 1, 0)) and Vector3.new(0, 1, 0)) or (v21[2][2]))
-            else
-                v18 = a4:VectorToObjectSpace(v23)
-                v19 = a4:VectorToObjectSpace(v21[2][2])
-                if v18.Y < -0.01 then
-                    v18 = -v18
-                end
-                if v19.Z > 0.01 then
-                    v19 = -v19
-                end
-            end
-        elseif a1 ~= "Sling" then
-            local v25 = nil
-            if a1 ~= "Trap" then
-                v25 = a3:FindFirstChild("Tip", true)
-                if v25 then
-                    local v26 = v25:IsA("Attachment")
-                    local v27 = nil
-                    if v26 then
-                        v27 = a4:PointToObjectSpace(a3.CFrame:PointToObjectSpace(v25.WorldPosition))
-                        if v27.Magnitude > 0.1 and v27.Unit.Y > 0.2 then
-                            v18, v19 = v27.Unit, Vector3.new(0, 0, -1)
-                        end
-                    end
-                end
+    elseif kind ~= "Sling" and kind ~= "Trap" then
+        local tip = a28:FindFirstChild("Tip", true)
+
+        if tip and tip:IsA("Attachment") then
+            local worldPosition = tip.WorldPosition
+            local objectSpaceWorldPosition = a29:PointToObjectSpace(a28.CFrame:PointToObjectSpace(worldPosition))
+
+            if 0.1 < objectSpaceWorldPosition.Magnitude and 0.2 < objectSpaceWorldPosition.Unit.Y then
+                v38 = objectSpaceWorldPosition.Unit
+                v39 = Vector3.new(0, 0, -1)
             end
         end
     end
-    if v18 and v19 then
-        v17 = v18.Unit
-        v18 = v19 - v17 * v19:Dot(v17)
-        if v18.Magnitude < 0.05 then
-            return CFrame.identity, v20
-        end
-        v18 = v18.Unit
-        if a2 ~= "gun" and v20 ~= "stock" then
-            return CFrame.fromMatrix(Vector3.new(0, 0, 0), v18:Cross(v17), v17, -v18):Inverse(), v20
-        end
-        local Unit_1 = v19.Unit
-        v17 = v17 - Unit_1 * v17:Dot(Unit_1)
-        if v17.Magnitude < 0.05 then
-            return CFrame.identity, v20
-        end
-        v17, v18 = v17.Unit, Unit_1
-        return CFrame.fromMatrix(Vector3.new(0, 0, 0), v18:Cross(v17), v17, -v18):Inverse(), v20
+
+    if not v38 or not v39 then
+        return CFrame.identity, v40
     end
-    return CFrame.identity, v20
+
+    local unit = v38.Unit
+    local v56 = v39 - unit * v39:Dot(unit)
+
+    if v56.Magnitude < 0.05 then
+        return CFrame.identity, v40
+    end
+
+    local unit2 = v56.Unit
+
+    if act == "gun" or v40 == "stock" then
+        unit2 = v39.Unit
+        local v58 = unit - unit2 * unit:Dot(unit2)
+
+        if v58.Magnitude < 0.05 then
+            return CFrame.identity, v40
+        end
+
+        unit = v58.Unit
+    end
+
+    return CFrame.fromMatrix(Vector3.new(0, 0, 0), unit2:Cross(unit), unit, -unit2):Inverse(), v40
 end
-local function prepare(a1, a2)
+
+local function withStock(a60)
+    --[[
+      name: withStock
+      line: 506
+    ]]
+    local stock = a60.stock
+    if not stock then
+        return a60
+    end
+
+    local values = table.clone(a60)
+
+    for valueKey, v64 in stock do
+        values[valueKey] = v64
+    end
+
+    values.stock = nil
+
+    return values
+end
+
+local function hammerOf(a66, a67, a68: string?, a69: string?, a70: string?)
+    --[[
+      name: hammerOf
+      line: 522
+    ]]
+    local part = a66:FindFirstChild(a68 or "Hammer", true)
+    local v72 = a67:FindFirstChild(a69 or "HammerPivot")
+
+    if part and part:IsA("BasePart") and v72 and v72:IsA("Attachment") then
+        return {part = part, rest = a67.CFrame:ToObjectSpace(part.CFrame), pivot = a67.CFrame:PointToObjectSpace(v72.WorldPosition), axis = a67.CFrame:VectorToObjectSpace(v72.WorldAxis).Unit, fired = tonumber(part:GetAttribute(a70
+            or "Fired"))
+            or 35}
+    end
+
+    return nil
+end
+
+local function rodOf(a74, a75, a76)
+    --[[
+      name: rodOf
+      line: 539
+    ]]
+    local ramrod = a74:FindFirstChild("Ramrod", true)
+
+    if not ramrod or not ramrod:IsA("BasePart") or not a76 then
+        return nil
+    end
+
+    ramrod.Size = Vector3.new(ramrod.Size.X, ramrod.Size.Y * 1.4, ramrod.Size.Z * 1.4)
+
+    return {part = ramrod, rest = a75.CFrame:ToObjectSpace(ramrod.CFrame), len = ramrod.Size.X, fwd = a75.CFrame:VectorToObjectSpace(ramrod.CFrame.XVector).Unit, up = a75.CFrame:VectorToObjectSpace(ramrod.CFrame.YVector).Unit, muzzle = a75.CFrame:PointToObjectSpace(a76.WorldPosition)}
+end
+
+local function evalTrack(a79, a80)
+    --[[
+      name: evalTrack
+      line: 558
+    ]]
+    if a80 <= a79[1][1] then
+        return a79[1][2]
+    end
+
+    local v81, v82
+
+    for index = 2, #a79 do
+        v81 = a79[index - 1]
+        v82 = a79[index]
+
+        if a80 <= v82[1] then
+            local v84 = v81[2] <= 1.5
+
+            if v84 ~= (v82[2] <= 1.5) then
+                return v81[2]
+            end
+
+            local v85 = (a80 - v81[1]) / math.max(v82[1] - v81[1], 1e-04)
+            local v86 = v85 * v85 * (3 - (v85 * 2))
+
+            return v81[2] + ((v82[2] - v81[2]) * v86)
+        end
+    end
+
+    return a79[#a79][2]
+end
+
+local function mirrorX(a88)
+    --[[
+      name: mirrorX
+      line: 578
+    ]]
+    local components, v90, v91, v92, v93, v94, v95, v96, v97, v98, v99, v100 = a88:GetComponents()
+    return CFrame.new(-components, v90, v91, v92, -v93, -v94, -v95, v96, v97, -v98, v99, v100)
+end
+
+local function prepare(id, kind)
     --[[
       name: prepare
       line: 583
       upvalues:
-        tbl_upv_6 (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
-        u1 (ref,  index: 3)
-        u2 (ref,  index: 4)
-        tbl_upv_4 (copy, index: 5)
+        v20 (copy, index: 1)
+        v17 (copy, index: 2)
+        weapons (ref,  index: 3)
+        viewModels (ref,  index: 4)
+        v18 (copy, index: 5)
         canonical (copy, index: 6)
-        tbl_upv_2 (copy, index: 7)
-        BladeClips_upv_1 (copy, index: 8)
-        ItemClips_upv_1 (copy, index: 9)
+        v16 (copy, index: 7)
+        BladeClips (copy, index: 8)
+        ItemClips (copy, index: 9)
         hammerOf (copy, index: 10)
         rodOf (copy, index: 11)
     ]]
-    local v29 = tbl_upv_6[a1]
-    if v29 then
-        return v29
+    if const v104 = v20[id] then
+        return v104
     end
-    local u3 = tbl_upv_3[a2]
-    local v30 = u3 and ((u2 and (u2:FindFirstChild(a1))) or (u1 and (u1:FindFirstChild(a1))))
-    if not u3 or not v30 or not v30:IsA("Model") then
+
+    local cfg = v17[kind]
+    local weapons2 = weapons
+    local child = cfg and (viewModels and viewModels:FindFirstChild(id) or weapons2 and weapons2:FindFirstChild(id))
+
+    if not cfg or not child or not child:IsA("Model") then
         return nil
     end
-    local v31 = v30:Clone()
-    for _, value_2 in v31:GetDescendants() do
-        if value_2:IsA("BasePart") then
-            value_2.Anchored = true
-            value_2.CanCollide = false
-            value_2.CanQuery = false
-            value_2.CanTouch = false
-            value_2.CastShadow = false
-            value_2.Massless = true
-            continue
-        end
-        if value_2:IsA("ParticleEmitter") or value_2:IsA("Trail") or value_2:IsA("Beam") or value_2:IsA("Light") then
-            value_2.Enabled = false
-            continue
-        end
-        if value_2:IsA("Script") or value_2:IsA("LocalScript") or value_2:IsA("Sound") then
-            value_2:Destroy()
+
+    local v108 = child:Clone()
+
+    for _, descendant in v108:GetDescendants() do
+        if descendant:IsA("BasePart") then
+            descendant.Anchored = true
+            descendant.CanCollide = false
+            descendant.CanQuery = false
+            descendant.CanTouch = false
+            descendant.CastShadow = false
+            descendant.Massless = true
+        elseif descendant:IsA("ParticleEmitter")
+            or descendant:IsA("Trail")
+            or descendant:IsA("Beam")
+            or descendant:IsA("Light")
+        then
+            descendant.Enabled = false
+        elseif descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("Sound") then
+            descendant:Destroy()
         end
     end
-    local PrimaryPart_upv_1 = v31.PrimaryPart
-    if not (PrimaryPart_upv_1) then
-        local _ = v31:FindFirstChild("Handle")
+
+    local v111 = v108.PrimaryPart or v108:FindFirstChild("Handle")
+
+    if not v111 or not v111:IsA("BasePart") then
+        v108:Destroy()
+        return nil
     end
-    if PrimaryPart_upv_1 and PrimaryPart_upv_1:IsA("BasePart") then
-        v31.PrimaryPart = PrimaryPart_upv_1
-        local v32 = tbl_upv_4[a1]
-        local u4 = PrimaryPart_upv_1:FindFirstChild("RightGripAttachment", true)
-        local function gripRelNow_1()
-            --[[
-              name: gripRelNow
-              line: 617
-              upvalues:
-                u4 (copy, index: 1)
-                PrimaryPart_upv_1 (copy, index: 2)
-            ]]
-            if u4 and u4:IsA("Attachment") then
-                return (PrimaryPart_upv_1.CFrame:ToObjectSpace(u4.WorldCFrame))
-            end
-            return (CFrame.new())
+
+    local part
+    local len
+    local leftFist
+    local drawP
+    local pan2
+    local blockP, blockR
+    local drawR
+    local brace3
+    local v121
+    local strip3
+    v108.PrimaryPart = v111
+    local v123 = v18[id]
+    local rightGripAttachment = v111:FindFirstChild("RightGripAttachment", true)
+
+    local function gripRelNow()
+        --[[
+          name: gripRelNow
+          line: 617
+          upvalues:
+            rightGripAttachment (copy, index: 1)
+            v111 (copy, index: 2)
+        ]]
+        if rightGripAttachment and rightGripAttachment:IsA("Attachment") then
+            return (v111.CFrame:ToObjectSpace(rightGripAttachment.WorldCFrame))
         end
-        local v33 = v31:FindFirstChild("Strip", true)
-        local v34
-        if v33 then
-            v34 = v33.Parent
-        else
-            v34 = nil
-        end
-        if v33 then
-            v33.Parent = nil
-        end
-        local u5 = nil
-        for _, value_3 in v31:GetChildren() do
-            local v35 = value_3:IsA("BasePart")
-            if not (v35) then
+
+        return (CFrame.new())
+    end
+
+    local strip = v108:FindFirstChild("Strip", true)
+    local v127 = if strip then strip.Parent else nil
+
+    if strip then
+        strip.Parent = nil
+    end
+
+    part = nil
+
+    for _, child2 in v108:GetChildren() do
+        if child2:IsA("BasePart") then
+            if child2:GetAttribute("OffHand") ~= true then
                 continue
             end
-            if value_3:GetAttribute("OffHand") == true then
-                u5 = value_3
-            end
+
+            part = child2
         end
-        if u5 then
-            u5.Parent = nil
-        end
-        local v36, v37
-        v36, v37 = v31:GetBoundingBox()
-        if v33 then
-            v33.Parent = v34
-        end
-        if u5 then
-            u5.Parent = v31
-        end
-        local act_1 = u3.act
-        local v38
-        if (u4) and (u4:IsA("Attachment")) then
-            v38 = PrimaryPart_upv_1.CFrame:ToObjectSpace(u4.WorldCFrame)
-        else
-            v38 = CFrame.new()
-        end
-        local tbl_9 = PrimaryPart_upv_1.CFrame:ToObjectSpace(v36)
-        local u6, v39 = canonical(a2, act_1, PrimaryPart_upv_1, v38, v37, tbl_9, v32 and (v32.barrel))
-        if v39 == "stock" then
-            local v40 = u3
-            v36 = v40.stock
-            if v36 then
-                local v41 = table.clone(v40)
-                for key_2, value_4 in v36 do
-                    v41[key_2] = value_4
-                end
-                v41.stock = nil
-                u3 = v41
-            else
-                u3 = v40
-            end
-        end
-        if v32 and (v32.pos or v32.use or v32.windup) then
-            local v42 = table.clone(u3)
-            v42.pos = v42.pos + (v32.pos or Vector3.new(0, 0, 0))
-            v42.use = v32.use or (v42.use)
-            v42.windup = v32.windup or (v42.windup)
-            u3 = v42
-        end
-        local v43 = math.max(v37.X, v37.Y, v37.Z, 0.05)
-        if (v32) and (v32.len) then
-            tbl_9 = v32.len
-        else
-            tbl_9 = u3.len
-        end
-        v31:ScaleTo((math.clamp(tbl_9 / v43, 0.005, 1)))
-        v37 = nil
-        local v44 = nil
-        if u5 then
-            v44 = u5:FindFirstChild("OffHandGrip")
-            local tbl_10 = {rel = 0}
-            tbl_10.part = u5
-            local v45
-            if (v44) and (v44:IsA("Attachment")) then
-                v45 = v44.CFrame:Inverse()
-            else
-                v45 = CFrame.identity
-            end
-            tbl_10.rel = v45
-            u5.Parent = nil
-        end
-        if (u4) and (u4:IsA("Attachment")) then
-            u5 = PrimaryPart_upv_1.CFrame:ToObjectSpace(u4.WorldCFrame)
-        else
-            u5 = CFrame.new()
-        end
-        if (v32) and (v32.rot) then
-            gripRelNow_1 = v32.rot
-        else
-            gripRelNow_1 = Vector3.new(0, 0, 0)
-        end
-        local u7 = CFrame.fromEulerAnglesYXZ(u3.rot.X * 0.017453292519943295, u3.rot.Y * 0.017453292519943295, u3.rot.Z * 0.017453292519943295) * CFrame.fromEulerAnglesYXZ(gripRelNow_1.X * 0.017453292519943295, gripRelNow_1.Y * 0.017453292519943295, gripRelNow_1.Z * 0.017453292519943295)
-        gripRelNow_1 = u7 * u6
-        local v46 = PrimaryPart_upv_1:FindFirstChild("Tip", true)
-        local v47 = PrimaryPart_upv_1:FindFirstChild("RightGripAttachment", true)
-        local v48
-        if v46 and v46:IsA("Attachment") and v47 and v47:IsA("Attachment") then
-            v48 = (v46.WorldPosition - v47.WorldPosition).Magnitude
-        else
-            v48 = u3.len * 0.8
-        end
-        local tbl_9, v49 = v31:GetBoundingBox()
-        local v50 = gripRelNow_1 * u5:Inverse() * PrimaryPart_upv_1.CFrame:ToObjectSpace(tbl_9)
-        local v51 = 0
-        for _, value_5 in {-0.5, 0.5} do
-            for v75, value_6 in {-0.5, 0.5} do
-                for v76, value_7 in {-0.5, 0.5} do
-                    v51 = math.max(v51, -v50:PointToWorldSpace(Vector3.new(value_5 * v49.X, value_6 * v49.Y, value_7 * v49.Z)).Z)
-                end
-            end
-        end
-        local v52 = u6 * u5:Inverse() * PrimaryPart_upv_1.CFrame:ToObjectSpace(tbl_9)
-        tbl_9 = {}
-        for _, value_8 in {-0.5, 0.5} do
-            for v77, value_9 in {-0.5, 0.5} do
-                for v78, value_10 in {-0.5, 0.5} do
-                    table.insert(tbl_9, v52:PointToWorldSpace(Vector3.new(value_8 * v49.X, value_9 * v49.Y, value_10 * v49.Z)))
-                end
-            end
-        end
-        v50 = PrimaryPart_upv_1:FindFirstChild("Muzzle", true)
-        local v53 = nil
-        local v54 = nil
-        if v32 and v32.pan then
-            v54 = Instance.new("Attachment")
-            v54.Name = "ViewPan"
-            local v55 = v32.pan
-            local v56 = (v32.len) or (u3.len)
-            v54.Position = v55 * (v56 / v43)
-            v54.Parent = PrimaryPart_upv_1
-        end
-        if v32 and v32.muzzle then
-            v54 = Instance.new("Attachment")
-            v54.Name = "ViewMuzzle"
-            local v55 = v32.muzzle
-            local v57 = (v32.len) or (u3.len)
-            v54.Position = v55 * (v57 / v43)
-            v54.Parent = PrimaryPart_upv_1
-            v50 = v54
-        end
-        local v58 = -(tbl_upv_2.hand.Z + u3.pos.Z)
-        local function asOffsets_1(a3)
-            --[[
-              name: asOffsets
-              line: 717
-              upvalues:
-                BladeClips_upv_1 (copy, index: 1)
-                u7 (copy, index: 2)
-                tbl_upv_2 (copy, index: 3)
-                u3 (ref,  index: 4)
-            ]]
-            if type(a3) ~= "table" then
-                return nil, nil
-            end
-            local v59 = BladeClips_upv_1.Frame(a3.pos, a3.tip, a3.edge)
-            local v60, v61, v62 = (v59.Rotation * u7:Inverse()):ToEulerAnglesYXZ()
-            return v59.Position - (tbl_upv_2.hand + u3.pos), (Vector3.new(v60, v61, v62))
-        end
-        local v54, v63 = asOffsets_1(u3.blockFrame)
-        local v55, v64 = asOffsets_1(u3.drawFrame)
-        local v66 = 0
-        for _, value_11 in tbl_9 do
-            v66 = math.max(v66, value_11.Z)
-        end
-        local tbl_11 = {}
-        tbl_11.model = v31
-        tbl_11.gripInv = u5:Inverse()
-        tbl_11.pivotRel = PrimaryPart_upv_1.CFrame:ToObjectSpace(v31:GetPivot())
-        tbl_11.kind = a2
-        tbl_11.cfg = u3
-        tbl_11.id = a1
-        tbl_11.style = gripRelNow_1
-        tbl_11.styleRot = u7
-        tbl_11.norm = u6
-        tbl_11.bladeLen = v48
-        tbl_11.blockP = v54
-        tbl_11.blockR = v63
-        tbl_11.drawP = v55
-        tbl_11.drawR = v64
-        tbl_11.brace = v66
-        local v67 = BladeClips_upv_1.SETS[a2] or (ItemClips_upv_1.For(a1, a2))
-        tbl_11.clips = v67
-        local pt_1 = ItemClips_upv_1.ITEMS[a1]
-        tbl_11.drawFrom = (pt_1 and (pt_1.drawFrom)) or (BladeClips_upv_1.DRAW[a2] or (ItemClips_upv_1.DRAW[a2]))
-        tbl_11.corners = tbl_9
-        if (v50) and (v50:IsA("Attachment")) then
-            v67 = v50
-        else
-            v67 = not (v46) or not (v46:IsA("Attachment")) or v46
-        end
-        tbl_11.muzzle = v67
-        v67 = not (v46) or not (v46:IsA("Attachment")) or v46
-        tbl_11.tipAtt = v67
-        v67 = not (v47) or not (v47:IsA("Attachment")) or v47
-        tbl_11.gripAtt = v67
-        tbl_11.pan = v53
-        tbl_11.hammer = hammerOf(v31, PrimaryPart_upv_1)
-        tbl_11.frizzen = hammerOf(v31, PrimaryPart_upv_1, "Frizzen", "FrizzenPivot", "Open")
-        local v68 = not (v50) or not (v50:IsA("Attachment")) or v50
-        tbl_11.rod = rodOf(v31, PrimaryPart_upv_1, v68)
-        if a1 ~= "longbow" then
-            pt_1 = nil
-        else
-            pt_1 = v31:FindFirstChild("Neon", true)
-        end
-        if (pt_1) and (pt_1:IsA("BasePart")) then
-            v67 = {}
-            v67.part = pt_1
-            v67.rest = pt_1.Color
-        else
-            v67 = nil
-        end
-        tbl_11.inlay = v67
-        pt_1 = v31:FindFirstChild("Strip", true)
-        if (pt_1) and (pt_1:IsA("BasePart")) then
-            pt_1.Transparency = 0
-            local tbl_12 = {}
-            tbl_12.part = pt_1
-            tbl_12.size = pt_1.Size
-            tbl_12.rest = PrimaryPart_upv_1.CFrame:ToObjectSpace(pt_1.CFrame)
-            v67 = tbl_12
-        else
-            v67 = nil
-        end
-        tbl_11.strip = v67
-        pt_1 = v31:FindFirstChild("Stone", true)
-        v67 = not (pt_1) or not (pt_1:IsA("BasePart")) or pt_1
-        tbl_11.stone = v67
-        pt_1 = function(a4)
-            --[[
-              name: pt
-              line: 779
-              upvalues:
-                PrimaryPart_upv_1 (copy, index: 1)
-                u6 (copy, index: 2)
-                u5 (copy, index: 3)
-            ]]
-            local v69 = PrimaryPart_upv_1:FindFirstChild(a4)
-            if v69 and v69:IsA("Attachment") then
-                return ((u6 * u5:Inverse()):PointToWorldSpace(v69.Position))
-            end
-            return nil
-        end
-        local NockTop_1 = PrimaryPart_upv_1:FindFirstChild("NockTop")
-        local v70 = not (NockTop_1) or not (NockTop_1:IsA("Attachment")) or (u6 * u5:Inverse()):PointToWorldSpace(NockTop_1.Position)
-        local NockBottom_1 = PrimaryPart_upv_1:FindFirstChild("NockBottom")
-        local v71 = not (NockBottom_1) or not (NockBottom_1:IsA("Attachment")) or (u6 * u5:Inverse()):PointToWorldSpace(NockBottom_1.Position)
-        local Brace_1 = PrimaryPart_upv_1:FindFirstChild("Brace")
-        local v72 = not (Brace_1) or not (Brace_1:IsA("Attachment")) or (u6 * u5:Inverse()):PointToWorldSpace(Brace_1.Position)
-        local NockPoint_1 = PrimaryPart_upv_1:FindFirstChild("NockPoint")
-        local v73 = not (NockPoint_1) or not (NockPoint_1:IsA("Attachment")) or (u6 * u5:Inverse()):PointToWorldSpace(NockPoint_1.Position)
-        local Rest_1 = PrimaryPart_upv_1:FindFirstChild("Rest")
-        local v74 = not (Rest_1) or not (Rest_1:IsA("Attachment")) or (u6 * u5:Inverse()):PointToWorldSpace(Rest_1.Position)
-        if v70 and v71 and v72 and v73 and v74 then
-            local tbl_13 = {}
-            tbl_13.top = v70
-            tbl_13.bottom = v71
-            tbl_13.brace = v72
-            tbl_13.nock = v73
-            tbl_13.rest = v74
-            v67 = tbl_13
-        else
-            v67 = nil
-        end
-        tbl_11.bow = v67
-        pt_1 = function(a5)
-            --[[
-              name: pt
-              line: 789
-              upvalues:
-                PrimaryPart_upv_1 (copy, index: 1)
-                u6 (copy, index: 2)
-                u5 (copy, index: 3)
-            ]]
-            local v75 = PrimaryPart_upv_1:FindFirstChild(a5)
-            if v75 and v75:IsA("Attachment") then
-                return ((u6 * u5:Inverse()):PointToWorldSpace(v75.Position))
-            end
-            return nil
-        end
-        local StringLeft_1 = PrimaryPart_upv_1:FindFirstChild("StringLeft")
-        v70 = not (StringLeft_1) or not (StringLeft_1:IsA("Attachment")) or (u6 * u5:Inverse()):PointToWorldSpace(StringLeft_1.Position)
-        local StringRight_1 = PrimaryPart_upv_1:FindFirstChild("StringRight")
-        v71 = not (StringRight_1) or not (StringRight_1:IsA("Attachment")) or (u6 * u5:Inverse()):PointToWorldSpace(StringRight_1.Position)
-        local Nut_1 = PrimaryPart_upv_1:FindFirstChild("Nut")
-        v72 = not (Nut_1) or not (Nut_1:IsA("Attachment")) or (u6 * u5:Inverse()):PointToWorldSpace(Nut_1.Position)
-        local Brace_2 = PrimaryPart_upv_1:FindFirstChild("Brace")
-        v73 = not (Brace_2) or not (Brace_2:IsA("Attachment")) or (u6 * u5:Inverse()):PointToWorldSpace(Brace_2.Position)
-        if a2 == "Crossbow" and v70 and v71 and v72 and v73 then
-            local tbl_14 = {}
-            tbl_14.left = v70
-            tbl_14.right = v71
-            tbl_14.nut = v72
-            tbl_14.brace = v73
-            v67 = tbl_14
-        else
-            v67 = nil
-        end
-        tbl_11.xbow = v67
-        v67 = not (v46) or not (v46:IsA("Attachment")) or (u6 * u5:Inverse()):PointToWorldSpace(v46.Position)
-        tbl_11.tipCanon = v67
-        tbl_11.handle = PrimaryPart_upv_1
-        tbl_11.leftFist = v37
-        tbl_11.wallDist = (v58 + v51) + tbl_upv_2.wallMargin
-        tbl_11.wallRot = math.min(tbl_upv_2.wallRotMax, math.deg(math.asin(math.clamp(v51 / math.max(u3.len, 0.05), 0, 1))) + 12) * 0.017453292519943295
-        if v37 then
-            v37.part.Parent = v31
-        end
-        v31.Name = "TribesViewModel_" .. a1
-        tbl_upv_6[a1] = tbl_11
-        return tbl_11
     end
-    v31:Destroy()
-    return nil
+
+    if part then
+        part.Parent = nil
+    end
+
+    local boundingBox, v131 = v108:GetBoundingBox()
+
+    if strip then
+        strip.Parent = v127
+    end
+
+    if part then
+        part.Parent = v108
+    end
+
+    local act = cfg.act
+    local v133 = if rightGripAttachment and rightGripAttachment:IsA("Attachment") then v111.CFrame:ToObjectSpace(rightGripAttachment.WorldCFrame) else CFrame.new()
+    local v134 = v111.CFrame:ToObjectSpace(boundingBox)
+    local norm, v136 = canonical(kind, act, v111, v133, v131, v134, (v123 and v123.barrel))
+
+    if v136 == "stock" then
+        local v137 = cfg
+
+        if const stock = v137.stock then
+            local values = table.clone(v137)
+
+            for valueKey, v141 in stock do
+                values[valueKey] = v141
+            end
+
+            values.stock = nil
+            cfg = values
+        else
+            cfg = v137
+        end
+    end
+
+    if v123 and (v123.pos or v123.use or v123.windup) then
+        local values = table.clone(cfg)
+        values.pos += (v123.pos or Vector3.new(0, 0, 0))
+        values.use = v123.use or values.use
+        values.windup = v123.windup or values.windup
+    end
+
+    local v143 = math.max(v131.X, v131.Y, v131.Z, 0.05)
+
+    if v123 and v123.len then
+        len = v123.len
+    else
+        len = cfg.len
+    end
+
+    v108:ScaleTo((math.clamp(len / v143, 0.005, 1)))
+
+    if part then
+        local offHandGrip = part:FindFirstChild("OffHandGrip")
+        local v145 = {part = part, rel = if offHandGrip and offHandGrip:IsA("Attachment") then offHandGrip.CFrame:Inverse() else CFrame.identity}
+        part.Parent = nil
+        leftFist = v145
+    else
+        leftFist = nil
+    end
+
+    local v146 = if rightGripAttachment and rightGripAttachment:IsA("Attachment") then v111.CFrame:ToObjectSpace(rightGripAttachment.WorldCFrame) else CFrame.new()
+    local v147 = if v123 and v123.rot then v123.rot else Vector3.new(0, 0, 0)
+    local styleRot = CFrame.fromEulerAnglesYXZ(cfg.rot.X * 0.017453292519943295, cfg.rot.Y * 0.017453292519943295, cfg.rot.Z * 0.017453292519943295) * CFrame.fromEulerAnglesYXZ(v147.X * 0.017453292519943295, v147.Y * 0.017453292519943295, v147.Z * 0.017453292519943295)
+    local style = styleRot * norm
+    local tip = v111:FindFirstChild("Tip", true)
+    local rightGripAttachment2 = v111:FindFirstChild("RightGripAttachment", true)
+    local v152 = if tip and tip:IsA("Attachment") and rightGripAttachment2 and rightGripAttachment2:IsA("Attachment") then (tip.WorldPosition - rightGripAttachment2.WorldPosition).Magnitude else cfg.len * 0.8
+    local boundingBox2, v154 = v108:GetBoundingBox()
+    local v155 = style * v146:Inverse() * v111.CFrame:ToObjectSpace(boundingBox2)
+    local v156 = 0
+
+    for _, v158 in {-0.5, 0.5} do
+        for _, v160 in {-0.5, 0.5} do
+            for _, v162 in {-0.5, 0.5} do
+                v156 = math.max(v156, -v155:PointToWorldSpace((Vector3.new(v158 * v154.X, v160 * v154.Y, v162 * v154.Z))).Z)
+            end
+        end
+    end
+
+    local v163 = norm * v146:Inverse() * v111.CFrame:ToObjectSpace(boundingBox2)
+    local corners = {}
+
+    for _, v166 in {-0.5, 0.5} do
+        for _, v168 in {-0.5, 0.5} do
+            for _, v170 in {-0.5, 0.5} do
+                table.insert(corners, v163:PointToWorldSpace((Vector3.new(v166 * v154.X, v168 * v154.Y, v170 * v154.Z))))
+            end
+        end
+    end
+
+    local v171 = v111:FindFirstChild("Muzzle", true)
+    local v172 = nil
+
+    if v123 then
+        if v123.pan then
+            local viewPan = Instance.new("Attachment")
+            viewPan.Name = "ViewPan"
+            local pan = v123.pan
+            local len2 = if v123.len then v123.len else cfg.len
+            viewPan.Position = pan * (len2 / v143)
+            viewPan.Parent = v111
+            pan2 = viewPan
+        else
+            pan2 = v172
+        end
+    else
+        pan2 = v172
+    end
+
+    if v123 and v123.muzzle then
+        local viewMuzzle = Instance.new("Attachment")
+        viewMuzzle.Name = "ViewMuzzle"
+        local muzzle = v123.muzzle
+        local len3 = if v123.len then v123.len else cfg.len
+        viewMuzzle.Position = muzzle * (len3 / v143)
+        viewMuzzle.Parent = v111
+        v171 = viewMuzzle
+    end
+
+    local v179 = -(v16.hand.Z + cfg.pos.Z)
+
+    local function asOffsets(a181)
+        --[[
+          name: asOffsets
+          line: 717
+          upvalues:
+            BladeClips (copy, index: 1)
+            styleRot (copy, index: 2)
+            v16 (copy, index: 3)
+            cfg (ref,  index: 4)
+        ]]
+        if type(a181) ~= "table" then
+            return nil, nil
+        end
+
+        local v182 = BladeClips.Frame(a181.pos, a181.tip, a181.edge)
+        local x, y, z = (v182.Rotation * styleRot:Inverse()):ToEulerAnglesYXZ()
+
+        return v182.Position - (v16.hand + cfg.pos), (Vector3.new(x, y, z))
+    end
+
+    blockP, blockR = asOffsets(cfg.blockFrame)
+    drawP, drawR = asOffsets(cfg.drawFrame)
+    local v186 = 0
+    brace3 = v186
+
+    for _, v188 in corners do
+        brace3 = math.max(brace3, v188.Z)
+    end
+
+    local v189 = {model = v108, gripInv = v146:Inverse(), pivotRel = v111.CFrame:ToObjectSpace(v108:GetPivot()), kind = kind, cfg = cfg, id = id, style = style, styleRot = styleRot, norm = norm, bladeLen = v152, blockP = blockP, blockR = blockR, drawP = drawP, drawR = drawR, brace = brace3}
+    local clips = BladeClips.SETS[kind] or ItemClips.For(id, kind)
+    v189.clips = clips
+    local item = ItemClips.ITEMS[id]
+    v189.drawFrom = item and item.drawFrom or BladeClips.DRAW[kind] or ItemClips.DRAW[kind]
+    v189.corners = corners
+
+    if v171 and v171:IsA("Attachment") then
+        v121 = v171
+    else
+        v121 = if tip and tip:IsA("Attachment") then tip else nil
+    end
+
+    v189.muzzle = v121
+    v189.tipAtt = if tip and tip:IsA("Attachment") then tip else nil
+    v189.gripAtt = if rightGripAttachment2 and rightGripAttachment2:IsA("Attachment") then rightGripAttachment2 else nil
+    v189.pan = pan2
+    v189.hammer = hammerOf(v108, v111)
+    v189.frizzen = hammerOf(v108, v111, "Frizzen", "FrizzenPivot", "Open")
+    local v192 = if v171 and v171:IsA("Attachment") then v171 else nil
+    v189.rod = rodOf(v108, v111, v192)
+    local v193 = if id == "longbow" then v108:FindFirstChild("Neon", true) else nil
+    v189.inlay = v193 and v193:IsA("BasePart") and {part = v193, rest = v193.Color} or nil
+    local strip2 = v108:FindFirstChild("Strip", true)
+
+    if strip2 and strip2:IsA("BasePart") then
+        strip2.Transparency = 0
+        strip3 = {part = strip2, size = strip2.Size, rest = v111.CFrame:ToObjectSpace(strip2.CFrame)}
+    else
+        strip3 = nil
+    end
+
+    v189.strip = strip3
+    local stone = v108:FindFirstChild("Stone", true)
+    v189.stone = if stone and stone:IsA("BasePart") then stone else nil
+
+    local function pt(a197)
+        --[[
+          name: pt
+          line: 779
+          upvalues:
+            v111 (copy, index: 1)
+            norm (copy, index: 2)
+            v146 (copy, index: 3)
+        ]]
+        local v198 = v111:FindFirstChild(a197)
+
+        if v198 and v198:IsA("Attachment") then
+            return ((norm * v146:Inverse()):PointToWorldSpace(v198.Position))
+        end
+
+        return nil
+    end
+
+    local nockTop = v111:FindFirstChild("NockTop")
+    local v200 = if nockTop and nockTop:IsA("Attachment") then (norm * v146:Inverse()):PointToWorldSpace(nockTop.Position) else nil
+    local nockBottom = v111:FindFirstChild("NockBottom")
+    local v202 = if nockBottom and nockBottom:IsA("Attachment") then (norm * v146:Inverse()):PointToWorldSpace(nockBottom.Position) else nil
+    local brace = v111:FindFirstChild("Brace")
+    local v204 = if brace and brace:IsA("Attachment") then (norm * v146:Inverse()):PointToWorldSpace(brace.Position) else nil
+    local nockPoint = v111:FindFirstChild("NockPoint")
+    local v206 = if nockPoint and nockPoint:IsA("Attachment") then (norm * v146:Inverse()):PointToWorldSpace(nockPoint.Position) else nil
+    local rest = v111:FindFirstChild("Rest")
+    local v208 = if rest and rest:IsA("Attachment") then (norm * v146:Inverse()):PointToWorldSpace(rest.Position) else nil
+    v189.bow = v200
+        and v202
+        and v204
+        and v206
+        and v208
+        and {top = v200, bottom = v202, brace = v204, nock = v206, rest = v208}
+        or nil
+
+    local function pt2(a210)
+        --[[
+          name: pt
+          line: 789
+          upvalues:
+            v111 (copy, index: 1)
+            norm (copy, index: 2)
+            v146 (copy, index: 3)
+        ]]
+        local v211 = v111:FindFirstChild(a210)
+
+        if v211 and v211:IsA("Attachment") then
+            return ((norm * v146:Inverse()):PointToWorldSpace(v211.Position))
+        end
+
+        return nil
+    end
+
+    local stringLeft = v111:FindFirstChild("StringLeft")
+    local v213 = if stringLeft and stringLeft:IsA("Attachment") then (norm * v146:Inverse()):PointToWorldSpace(stringLeft.Position) else nil
+    local stringRight = v111:FindFirstChild("StringRight")
+    local v215 = if stringRight and stringRight:IsA("Attachment") then (norm * v146:Inverse()):PointToWorldSpace(stringRight.Position) else nil
+    local nut = v111:FindFirstChild("Nut")
+    local v217 = if nut and nut:IsA("Attachment") then (norm * v146:Inverse()):PointToWorldSpace(nut.Position) else nil
+    local brace2 = v111:FindFirstChild("Brace")
+    local v219 = if brace2 and brace2:IsA("Attachment") then (norm * v146:Inverse()):PointToWorldSpace(brace2.Position) else nil
+    v189.xbow = kind == "Crossbow"
+        and v213
+        and v215
+        and v217
+        and v219
+        and {left = v213, right = v215, nut = v217, brace = v219}
+        or nil
+    v189.tipCanon = if tip and tip:IsA("Attachment") then (norm * v146:Inverse()):PointToWorldSpace(tip.Position) else nil
+    v189.handle = v111
+    v189.leftFist = leftFist
+    v189.wallDist = v179 + v156 + v16.wallMargin
+    v189.wallRot = math.min(v16.wallRotMax, math.deg((math.asin((math.clamp(v156 / math.max(cfg.len, 0.05), 0, 1))))) + 12) * 0.017453292519943295
+
+    if leftFist then
+        leftFist.part.Parent = v108
+    end
+
+    v108.Name = "TribesViewModel_" .. id
+    v20[id] = v189
+
+    return v189
 end
-local u8 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.poseHz, tbl_upv_2.poseDamp)
-local u9 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.poseHz, tbl_upv_2.poseDamp)
-local u10 = resetState.new(0, tbl_upv_2.airHz, tbl_upv_2.airDamp)
-local u11 = resetState.new(0, tbl_upv_2.airHz, tbl_upv_2.airDamp)
-local u12 = resetState.new(0, tbl_upv_2.landHz, tbl_upv_2.landDamp)
-local u13 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.swayHz, tbl_upv_2.swayDamp)
-local u14 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.mvHz, tbl_upv_2.mvDamp)
-local u15 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.mvHz, tbl_upv_2.mvDamp)
-local u16 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.kickHz, tbl_upv_2.kickDamp)
-local u17 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.kickHz, tbl_upv_2.kickDamp)
-local u18 = resetState.new(0, tbl_upv_2.equipHz, tbl_upv_2.equipDamp)
-local tbl_upv_15 = {}
-tbl_upv_15.shown = nil
-tbl_upv_15.wantId = nil
-tbl_upv_15.dropAt = nil
-tbl_upv_15.hiddenUntil = 0
-tbl_upv_15.action = nil
-tbl_upv_15.actT0 = 0
-tbl_upv_15.actDur = 1
-tbl_upv_15.actMirror = 1
-tbl_upv_15.block = false
-tbl_upv_15.parry = false
-tbl_upv_15.charge = false
-tbl_upv_15.chargeT0 = 0
-tbl_upv_15.chargeTime = 0.6
-tbl_upv_15.draw = false
-tbl_upv_15.drawT0 = 0
-tbl_upv_15.drawTime = 1
-tbl_upv_15.wind = false
-tbl_upv_15.windT0 = 0
-tbl_upv_15.windTime = 0.5
-tbl_upv_15.windHold = 0
-tbl_upv_15.windK = 0
-tbl_upv_15.windHalf = false
-tbl_upv_15.throwN = 0
-tbl_upv_15.looseAt = nil
-tbl_upv_15.nocked = true
-tbl_upv_15.nockT0 = -10
-tbl_upv_15.shotN = 0
-tbl_upv_15.arrowTip = nil
-tbl_upv_15.inlayLvl = 0
-tbl_upv_15.inlayFrom = Color3.new()
-tbl_upv_15.inlayT0 = -10
-tbl_upv_15.bite = 0
-tbl_upv_15.spinA = 0
-tbl_upv_15.spinT0 = -10
-tbl_upv_15.stringV = 0
-tbl_upv_15.stringT0 = -10
-tbl_upv_15.stripV = 0.25
-tbl_upv_15.useOutUntil = nil
-tbl_upv_15.use = false
-tbl_upv_15.useT0 = 0
-tbl_upv_15.useTime = 1
-tbl_upv_15.reload = false
-tbl_upv_15.reloadT0 = 0
-tbl_upv_15.reloadTime = 1
-tbl_upv_15.grounded = true
-tbl_upv_15.minVy = 0
-tbl_upv_15.lastYaw = nil
-tbl_upv_15.lastPitch = nil
-tbl_upv_15.lastRootY = nil
-tbl_upv_15.vy = 0
-tbl_upv_15.step = 0
-tbl_upv_15.now = 0
-tbl_upv_15.spent = false
-tbl_upv_15.clip = nil
-tbl_upv_15.clipT0 = 0
-tbl_upv_15.clipFrom = CFrame.identity
-tbl_upv_15.clipScale = 1
-tbl_upv_15.lastFrame = nil
-tbl_upv_15.frame = nil
-tbl_upv_15.layerPos = Vector3.new(0, 0, 0)
-tbl_upv_15.layerRot = Vector3.new(0, 0, 0)
-tbl_upv_15.spark = false
-tbl_upv_15.wallPush = 0
-tbl_upv_15.restFrame = CFrame.identity
-tbl_upv_15.rawVel = nil
-tbl_upv_15.clipFromVel = nil
-tbl_upv_15.lastFrameT = 0
-tbl_upv_15.clipName = nil
-tbl_upv_15.clipFx = 1
-tbl_upv_15.fxQueue = {}
-tbl_upv_15.pendingDraw = nil
-tbl_upv_15.vanishAt = nil
-tbl_upv_15.shakeUntil = 0
-tbl_upv_15.embers = false
-tbl_upv_15.fuse = 0
-tbl_upv_15.arrowKind = "Arrow"
-tbl_upv_15.sim = false
-tbl_upv_15.release = nil
-tbl_upv_15.releaseT = 0
-tbl_upv_15.boltIn = true
-tbl_upv_15.boltT0 = -10
-tbl_upv_15.drawHold = 0
-tbl_upv_15.drawHalf = false
-tbl_upv_15.drawFull = false
-tbl_upv_15.chargeFull = false
-tbl_upv_15.hammerTarget = 0
-tbl_upv_15.frizzenTarget = 0
-tbl_upv_15.rodV = 0
-tbl_upv_15.windFull = false
-tbl_upv_15.leftLast = nil
-tbl_upv_15.leftFrom = CFrame.identity
-tbl_upv_15.leftFromVel = nil
-tbl_upv_15.leftVel = nil
-tbl_upv_15.leftFrame = nil
-tbl_upv_15.leftOut = false
-tbl_upv_15.leftVanishAt = nil
-tbl_upv_15.leftCatchT = -10
-tbl_upv_15.lastLungeT = nil
-tbl_upv_15.lastLungeName = nil
-tbl_upv_15.refreshGlintAt = nil
-tbl_upv_15.refreshFF = nil
-tbl_upv_15.leftOutAt = -10
-tbl_upv_15.leftSeenOut = false
-local u19 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.retHz, tbl_upv_2.retDamp)
-local u20 = resetState.new(0, 16, 0.45)
-local u21 = resetState.new(0, 14, 0.4)
-local u22 = resetState.new(Vector3.new(0, 0, 0), tbl_upv_2.retHz, tbl_upv_2.retDamp)
-local function startAction(a1, a2, a3)
+
+local spring = Spring.new(Vector3.new(0, 0, 0), v16.poseHz, v16.poseDamp)
+local spring2 = Spring.new(Vector3.new(0, 0, 0), v16.poseHz, v16.poseDamp)
+local spring3 = Spring.new(0, v16.airHz, v16.airDamp)
+local spring4 = Spring.new(0, v16.airHz, v16.airDamp)
+local spring5 = Spring.new(0, v16.landHz, v16.landDamp)
+local spring6 = Spring.new(Vector3.new(0, 0, 0), v16.swayHz, v16.swayDamp)
+local spring7 = Spring.new(Vector3.new(0, 0, 0), v16.mvHz, v16.mvDamp)
+local spring8 = Spring.new(Vector3.new(0, 0, 0), v16.mvHz, v16.mvDamp)
+local spring9 = Spring.new(Vector3.new(0, 0, 0), v16.kickHz, v16.kickDamp)
+local spring10 = Spring.new(Vector3.new(0, 0, 0), v16.kickHz, v16.kickDamp)
+local spring11 = Spring.new(0, v16.equipHz, v16.equipDamp)
+local v231 = {
+    shown = nil,
+    wantId = nil,
+    dropAt = nil,
+    hiddenUntil = 0,
+    action = nil,
+    actT0 = 0,
+    actDur = 1,
+    actMirror = 1,
+    block = false,
+    parry = false,
+    charge = false,
+    chargeT0 = 0,
+    chargeTime = 0.6,
+    draw = false,
+    drawT0 = 0,
+    drawTime = 1,
+    wind = false,
+    windT0 = 0,
+    windTime = 0.5,
+    windHold = 0,
+    windK = 0,
+    windHalf = false,
+    throwN = 0,
+    looseAt = nil,
+    nocked = true,
+    nockT0 = -10,
+    shotN = 0,
+    arrowTip = nil,
+    inlayLvl = 0,
+    inlayFrom = Color3.new(),
+    inlayT0 = -10,
+    bite = 0,
+    spinA = 0,
+    spinT0 = -10,
+    stringV = 0,
+    stringT0 = -10,
+    stripV = 0.25,
+    useOutUntil = nil,
+    use = false,
+    useT0 = 0,
+    useTime = 1,
+    reload = false,
+    reloadT0 = 0,
+    reloadTime = 1,
+    grounded = true,
+    minVy = 0,
+    lastYaw = nil,
+    lastPitch = nil,
+    lastRootY = nil,
+    vy = 0,
+    step = 0,
+    now = 0,
+    spent = false,
+    clip = nil,
+    clipT0 = 0,
+    clipFrom = CFrame.identity,
+    clipScale = 1,
+    lastFrame = nil,
+    frame = nil,
+    layerPos = Vector3.new(0, 0, 0),
+    layerRot = Vector3.new(0, 0, 0),
+    spark = false,
+    wallPush = 0,
+    restFrame = CFrame.identity,
+    rawVel = nil,
+    clipFromVel = nil,
+    lastFrameT = 0,
+    clipName = nil,
+    clipFx = 1,
+    fxQueue = {},
+    pendingDraw = nil,
+    vanishAt = nil,
+    shakeUntil = 0,
+    embers = false,
+    fuse = 0,
+    arrowKind = "Arrow",
+    sim = false,
+    release = nil,
+    releaseT = 0,
+    boltIn = true,
+    boltT0 = -10,
+    drawHold = 0,
+    drawHalf = false,
+    drawFull = false,
+    chargeFull = false,
+    hammerTarget = 0,
+    frizzenTarget = 0,
+    rodV = 0,
+    windFull = false,
+    leftLast = nil,
+    leftFrom = CFrame.identity,
+    leftFromVel = nil,
+    leftVel = nil,
+    leftFrame = nil,
+    leftOut = false,
+    leftVanishAt = nil,
+    leftCatchT = -10,
+    lastLungeT = nil,
+    lastLungeName = nil,
+    refreshGlintAt = nil,
+    refreshFF = nil,
+    leftOutAt = -10,
+    leftSeenOut = false
+}
+local spring12 = Spring.new(Vector3.new(0, 0, 0), v16.retHz, v16.retDamp)
+local spring13 = Spring.new(0, 16, 0.45)
+local spring14 = Spring.new(0, 14, 0.4)
+local spring15 = Spring.new(Vector3.new(0, 0, 0), v16.retHz, v16.retDamp)
+
+local function resetState()
+    --[[
+      name: resetState
+      line: 917
+      upvalues:
+        spring (copy, index: 1)
+        spring2 (copy, index: 2)
+        spring3 (copy, index: 3)
+        spring4 (copy, index: 4)
+        spring5 (copy, index: 5)
+        spring6 (copy, index: 6)
+        spring7 (copy, index: 7)
+        spring8 (copy, index: 8)
+        spring9 (copy, index: 9)
+        spring10 (copy, index: 10)
+        spring11 (copy, index: 11)
+        spring12 (copy, index: 12)
+        spring15 (copy, index: 13)
+        v231 (copy, index: 14)
+        BladeSmear (copy, index: 15)
+        ViewFx (copy, index: 16)
+    ]]
+    spring:Snap(Vector3.new(0, 0, 0))
+    spring2:Snap(Vector3.new(0, 0, 0))
+    spring3:Snap(0)
+    spring4:Snap(0)
+    spring5:Snap(0)
+    spring6:Snap(Vector3.new(0, 0, 0))
+    spring7:Snap(Vector3.new(0, 0, 0))
+    spring8:Snap(Vector3.new(0, 0, 0))
+    spring9:Snap(Vector3.new(0, 0, 0))
+    spring10:Snap(Vector3.new(0, 0, 0))
+    spring11:Snap(0)
+    spring12:Snap(Vector3.new(0, 0, 0))
+    spring15:Snap(Vector3.new(0, 0, 0))
+    v231.action = nil
+    v231.clip = nil
+    v231.lastFrame = nil
+    v231.frame = nil
+    v231.spark = false
+    v231.rawVel = nil
+    v231.leftLast = nil
+    v231.leftFromVel = nil
+    v231.leftVel = nil
+    v231.leftFrame = nil
+    v231.leftOut = false
+    v231.leftVanishAt = nil
+    v231.leftCatchT = -10
+    v231.leftOutAt = -10
+    v231.leftSeenOut = false
+    v231.lastLungeT = nil
+    v231.lastLungeName = nil
+    v231.refreshGlintAt = nil
+    v231.refreshFF = nil
+    v231.clipName = nil
+    v231.pendingDraw = nil
+    v231.vanishAt = nil
+    v231.drawHold = 0
+    v231.drawHalf = false
+    v231.drawFull = false
+    v231.nocked = true
+    v231.nockT0 = -10
+    v231.shotN = 0
+    v231.looseAt = nil
+    v231.windHold = 0
+    v231.windK = 0
+    v231.windFull = false
+    v231.windHalf = false
+    v231.throwN = 0
+    v231.bite = 0
+    v231.stringV = 0
+    v231.stringT0 = -10
+    v231.stripV = 0.25
+    v231.useOutUntil = nil
+    v231.spinA = 0
+    v231.spinT0 = -10
+    table.clear(v231.fxQueue)
+    BladeSmear.Hide()
+    ViewFx.Hide()
+    v231.embers = false
+    v231.fuse = 0
+    v231.block = false
+    v231.parry = false
+    v231.charge = false
+    v231.draw = false
+    v231.wind = false
+    v231.use = false
+    v231.reload = false
+    v231.dropAt = nil
+    v231.hiddenUntil = 0
+    v231.lastYaw = nil
+    v231.lastPitch = nil
+    v231.lastRootY = nil
+    v231.vy = 0
+    v231.minVy = 0
+    v231.grounded = true
+end
+
+local function startAction(action, a239, a240)
     --[[
       name: startAction
       line: 955
       upvalues:
-        tbl_upv_5 (copy, index: 1)
-        tbl_upv_15 (copy, index: 2)
+        v19 (copy, index: 1)
+        v231 (copy, index: 2)
     ]]
-    local v76 = tbl_upv_5[a1]
-    if not v76 then
+    local v241 = v19[action]
+    if not v241 then
         return
     end
-    tbl_upv_15.action = a1
-    tbl_upv_15.actT0 = tbl_upv_15.now
-    tbl_upv_15.actDur = a2 or (v76.dur)
-    tbl_upv_15.actMirror = a3 or 1
+
+    v231.action = action
+    v231.actT0 = v231.now
+    v231.actDur = a239 or v241.dur
+    v231.actMirror = a240 or 1
 end
+
 local function rise()
     --[[
       name: rise
       line: 966
       upvalues:
-        u18 (copy, index: 1)
+        spring11 (copy, index: 1)
     ]]
-    u18.value = -1
-    u18.velocity = 0
-    u18.target = 0
+    spring11.value = -1
+    spring11.velocity = 0
+    spring11.target = 0
 end
-local function hasClip(a1)
-    --[[
-      name: hasClip
-      line: 997
-      upvalues:
-        tbl_upv_15 (copy, index: 1)
-    ]]
-    local shown_1 = tbl_upv_15.shown
-    return (shown_1 ~= nil) and ((shown_1.clips ~= nil) and (shown_1.clips[a1] ~= nil))
-end
-local function clipTime(a1)
-    --[[
-      name: clipTime
-      line: 1003
-      upvalues:
-        tbl_upv_15 (copy, index: 1)
-    ]]
-    return a1 - tbl_upv_15.clipT0
-end
-local function smooth(a1)
-    --[[
-      name: smooth
-      line: 1010
-    ]]
-    local v77 = math.clamp(a1, 0, 1)
-    return (v77 * v77) * (3 - (v77 * 2))
-end
-local function startClip(a1, a2, a3, a4)
+
+local function startClip(clipName, a245: number?, a246, a247)
     --[[
       name: startClip
       line: 972
       upvalues:
-        tbl_upv_15 (copy, index: 1)
-        u19 (copy, index: 2)
-        u22 (copy, index: 3)
+        v231 (copy, index: 1)
+        spring12 (copy, index: 2)
+        spring15 (copy, index: 3)
     ]]
-    local v78
-    if tbl_upv_15.shown then
-        v78 = tbl_upv_15.shown.clips
-    else
-        v78 = nil
-    end
-    local v79
-    if v78 then
-        v79 = v78[a1]
-    else
-        v79 = nil
-    end
-    if not v79 then
+    local clip = if const v248 = if v231.shown then v231.shown.clips else nil then v248[clipName] else nil
+
+    if not clip then
         return false
     end
-    tbl_upv_15.clip = v79
-    tbl_upv_15.clipName = a1
-    tbl_upv_15.clipFx = 1
-    tbl_upv_15.clipFrom = a3 or (tbl_upv_15.lastFrame or (tbl_upv_15.restFrame))
-    tbl_upv_15.clipFromVel = a3 or tbl_upv_15.rawVel
-    tbl_upv_15.leftFrom = a3 or (tbl_upv_15.leftLast or (tbl_upv_15.restFrame))
-    local v80 = a3 or tbl_upv_15.leftVel
-    tbl_upv_15.leftFromVel = v80
-    local lastFrameT_1 = tbl_upv_15.lastFrameT
-    local v81
-    if not a3 and tbl_upv_15.lastFrame and tbl_upv_15.now - lastFrameT_1 >= 0 and tbl_upv_15.now - lastFrameT_1 < 0.1 then
-        v81 = lastFrameT_1
-    else
-        v81 = tbl_upv_15.now
-    end
-    tbl_upv_15.clipT0 = v81
-    if a4 then
-        v81 = a4
-    elseif a2 and a2 > 0 and v79.contact > 0 then
-        v81 = math.clamp(a2 / v79.contact, 0.6, 1.8)
-    else
-        v81 = 1
-    end
-    tbl_upv_15.clipScale = v81
-    u19:Snap(Vector3.new(0, 0, 0))
-    u22:Snap(Vector3.new(0, 0, 0))
+
+    v231.clip = clip
+    v231.clipName = clipName
+    v231.clipFx = 1
+    v231.clipFrom = a246 or v231.lastFrame or v231.restFrame
+    v231.clipFromVel = if a246 then nil else v231.rawVel
+    v231.leftFrom = a246 or v231.leftLast or v231.restFrame
+    v231.leftFromVel = if a246 then nil else v231.leftVel
+    local lastFrameT = v231.lastFrameT
+    v231.clipT0 = if not a246 and v231.lastFrame and 0 <= v231.now - lastFrameT and v231.now - lastFrameT < 0.1 then lastFrameT else v231.now
+    v231.clipScale = a247
+        or (if a245 and 0 < a245 and 0 < clip.contact then math.clamp(a245 / clip.contact, 0.6, 1.8) else 1)
+    spring12:Snap(Vector3.new(0, 0, 0))
+    spring15:Snap(Vector3.new(0, 0, 0))
+
     return true
 end
-local function evalKeys(a1, a2)
+
+local function hasClip(clipKey)
+    --[[
+      name: hasClip
+      line: 997
+      upvalues:
+        v231 (copy, index: 1)
+    ]]
+    local shown = v231.shown
+    return shown ~= nil and shown.clips ~= nil and (shown.clips[clipKey] ~= nil)
+end
+
+local function clipTime(a255)
+    --[[
+      name: clipTime
+      line: 1003
+      upvalues:
+        v231 (copy, index: 1)
+    ]]
+    return a255 - v231.clipT0
+end
+
+local function smooth(a257: number)
+    --[[
+      name: smooth
+      line: 1010
+    ]]
+    local clampedValue = math.clamp(a257, 0, 1)
+    return clampedValue * clampedValue * (3 - (clampedValue * 2))
+end
+
+local function onEvent(a260, options)
+    --[[
+      name: onEvent
+      line: 1015
+      upvalues:
+        v231 (copy, index: 1)
+        BladeClips (copy, index: 2)
+        ItemClips (copy, index: 3)
+        startClip (copy, index: 4)
+        v19 (copy, index: 5)
+        spring9 (copy, index: 6)
+        spring10 (copy, index: 7)
+        spring13 (copy, index: 8)
+        spring14 (copy, index: 9)
+        v16 (copy, index: 10)
+    ]]
+    local v262 = options or {}
+    local shown = v231.shown
+    local v264 = if shown then shown.kind else nil
+
+    if a260 == "Swing" then
+        local v265
+        local number = tonumber(v262.step) or 1
+        local finisher = v262.finisher == true
+
+        if v264 == "Sword" then
+            v265 = BladeClips.Pick(v264, number, finisher)
+        elseif v264 == "Dagger" then
+            v265 = BladeClips.Pick(v264, number, finisher)
+        elseif v264 then
+            local pick = ItemClips.Pick
+            local v269 = v262.oneHanded == true or v231.leftOut
+            v265 = pick(v264, number, finisher, v269)
+        else
+            v265 = nil
+        end
+
+        if v264 == "Shield" and v265 == "bash" then
+            v231.shotN += 1
+
+            if v231.shotN % 2 == 0 then
+                local shown2 = v231.shown
+
+                if shown2 ~= nil and shown2.clips ~= nil and shown2.clips.bash2 ~= nil then
+                    v265 = "bash2"
+                end
+            end
+        end
+
+        if v265 and startClip(v265, (tonumber(v262.hitDelay))) then
+            return
+        end
+
+        if v264 == "Shield" then
+            local stab = v19.stab
+            if not stab then
+                return
+            end
+
+            v231.action = "stab"
+            v231.actT0 = v231.now
+            v231.actDur = stab.dur
+            v231.actMirror = 1
+
+            return
+        end
+
+        if v264 == "Axe" then
+            local chop = v19.chop
+            if not chop then
+                return
+            end
+
+            v231.action = "chop"
+            v231.actT0 = v231.now
+            v231.actDur = chop.dur
+            v231.actMirror = 1
+
+            return
+        end
+
+        if v264 == "Club" then
+            local smash = v19.smash
+            if not smash then
+                return
+            end
+
+            v231.action = "smash"
+            v231.actT0 = v231.now
+            v231.actDur = smash.dur
+            v231.actMirror = 1
+
+            return
+        end
+
+        if v264 == "Spear" then
+            local thrust = v19.thrust
+            if not thrust then
+                return
+            end
+
+            v231.action = "thrust"
+            v231.actT0 = v231.now
+            v231.actDur = thrust.dur
+            v231.actMirror = 1
+        end
+    elseif a260 == "Parry" then
+        local parry = v231.parry
+        v231.parry = v262.on == true
+
+        if v231.parry and not parry then
+            startClip("parry_in")
+            return
+        end
+
+        if parry and not v231.parry then
+            startClip("parry_out")
+        end
+    elseif a260 == "Parried" then
+        v231.parry = false
+
+        if not startClip("parry_hit") then
+            spring9:Impulse(Vector3.new(0.029999999329447746, -0.03999999910593033, 0.07999999821186066))
+        end
+    else
+        if a260 == "Hurl" then
+            local v276 = if shown and shown.clips then shown.clips.throw else nil
+
+            if v276 and startClip("throw") then
+                v231.leftVanishAt = v231.now + ((v276.vanishLeft or 0.06) * v231.clipScale)
+                return
+            end
+
+            v231.leftOut, v231.leftOutAt = true, v231.now
+
+            return
+        end
+
+        if a260 == "Catch" then
+            if v231.leftOut or v231.leftVanishAt then
+                v231.leftOut = false
+                v231.leftVanishAt = nil
+                v231.leftSeenOut = false
+                v231.leftCatchT = v231.now
+            end
+        elseif a260 == "Block" then
+            local block = v231.block
+            v231.block = v262.on == true
+
+            if v231.block and not block then
+                startClip("block_in")
+                return
+            end
+
+            if block and not v231.block then
+                startClip("block_out")
+            end
+        else
+            if a260 == "Charge" then
+                v231.charge = v262.on == true
+                v231.chargeT0, v231.chargeTime = v231.now, tonumber(v262.time) or 0.6
+                v231.chargeFull = false
+
+                return
+            end
+
+            if a260 == "Heavy" then
+                v231.charge = false
+
+                if not startClip("heavy", (tonumber(v262.hitDelay))) then
+                    local heavy = v19.heavy
+                    if not heavy then
+                        return
+                    end
+
+                    v231.action = "heavy"
+                    v231.actT0 = v231.now
+                    v231.actDur = heavy.dur
+                    v231.actMirror = 1
+                end
+            elseif a260 == "Lunge" then
+                v231.charge = false
+                local number = tonumber(v262.time) or 0.25
+                local v280 = "lunge"
+                local shown3 = v231.shown
+
+                if shown3 ~= nil and shown3.clips ~= nil and shown3.clips.lunge_b ~= nil then
+                    local v282 = v231.now - v231.clipT0
+                    local v283 = not v231.lastLungeT and math.huge or v231.now - v231.lastLungeT
+
+                    if v231.clipName == "sweep_r" and v282 < 0.45
+                        or ((v231.clipName == "lunge" or v231.clipName == "lunge_c")
+                            and 0.22 < v282
+                            and v282 < 0.34)
+                    then
+                        v280 = "lunge_b"
+                    elseif 0 <= v283 and v283 < 1.5 and v231.lastLungeName == "lunge" then
+                        local shown4 = v231.shown
+
+                        if shown4 ~= nil and shown4.clips ~= nil and shown4.clips.lunge_c ~= nil then
+                            v280 = "lunge_c"
+                        end
+                    end
+                end
+
+                v231.lastLungeT = v231.now
+                v231.lastLungeName = v280
+                local lungeRef = v231.shown
+                    and v231.shown.clips
+                    and v231.shown.clips[v280]
+                    and v231.shown.clips[v280].lungeRef
+                    or 0.24
+
+                if v231.refreshGlintAt or v231.refreshFF then
+                    v231.refreshGlintAt = v231.now
+                end
+
+                v231.refreshFF = nil
+
+                if not startClip(v280, nil, nil, (math.clamp(number / lungeRef, 0.6, 2))) then
+                    local v286 = number + 0.3
+                    local lunge = v19.lunge
+                    if not lunge then
+                        return
+                    end
+
+                    v231.action = "lunge"
+                    v231.actT0 = v231.now
+                    v231.actDur = v286 or lunge.dur
+                    v231.actMirror = 1
+                end
+            else
+                if a260 == "Refresh" then
+                    local clip = v231.clip
+
+                    if not clip
+                        or not clip.refreshAt
+                        or not v231.clipScale
+                        or not ((v231.now - v231.clipT0) / v231.clipScale < clip.refreshAt)
+                    then
+                        v231.refreshGlintAt = v231.now
+                        return
+                    end
+
+                    v231.refreshFF = clip.refreshAt
+                    v231.refreshGlintAt = nil
+
+                    return
+                end
+
+                if a260 == "Draw" then
+                    v231.draw = v262.on == true
+                    v231.drawT0, v231.drawTime = v231.now, math.max(0.1, (tonumber(v262.time) or 1))
+
+                    if v231.draw then
+                        local arrow
+
+                        if type(v262.arrow) ~= "string" then
+                            arrow = "Arrow"
+                        else
+                            arrow = v262.arrow
+                        end
+
+                        v231.arrowKind = arrow
+                        v231.drawHalf = false
+                        v231.drawFull = false
+                        v231.drawHold = 0
+
+                        if not v231.nocked then
+                            v231.nocked, v231.nockT0 = true, v231.now
+                        end
+
+                        startClip("nock")
+                    end
+                elseif a260 == "Release" then
+                    local kick
+                    v231.draw = false
+                    v231.nocked = false
+                    v231.drawHold = v231.now + 0.16
+                    local clampedValue = math.clamp((tonumber(v262.charge) or 1), 0.2, 1)
+
+                    if not shown or not shown.cfg.kick then
+                        kick = 1
+                    else
+                        kick = shown.cfg.kick
+                    end
+
+                    local v292 = clampedValue * kick
+
+                    if not startClip("release") then
+                        spring9:Impulse(Vector3.new(0, 0.20000000298023224, 1.2000000476837158) * v292)
+                        spring10:Impulse((Vector3.new(120, 0, 0) * v292) * 0.017453292519943295)
+                    end
+                else
+                    if a260 == "Fire" then
+                        v231.boltIn = false
+                        v231.stringV, v231.stringT0 = 1, v231.now
+                        v231.hammerTarget = 1
+                        spring13.velocity = 30
+                        v231.frizzenTarget = 1
+                        spring14.velocity = 22
+                        local v293 = (v231.clipName == "draw" or v231.clipName == "redraw")
+                            and v231.clip ~= nil
+                            and v231.now - v231.clipT0 < (v231.clip.release * v231.clipScale) * 0.7
+                        local kick
+                        local v295 = false
+
+                        if v293 then
+                            table.insert(v231.fxQueue, "muzzle")
+                        end
+
+                        local v296 = v231
+                        v296.shotN += 1
+
+                        if not v293 and startClip("fire") then
+                            local vector3 = ({Musket = Vector3.new(160, 80, 280), Blunderbuss = Vector3.new(220, 80, 260), Pistol = Vector3.new(340, 60, 220), Crossbow = Vector3.new(130, 50, 90)})[v264
+                                or ""]
+                                or Vector3.new(150, 60, 150)
+                            local random = Random.new((v231.shotN * 7919) + 17)
+                            spring10:Impulse(Vector3.new(random:NextNumber(-1, 1) * vector3.X, random:NextNumber(-1, 1) * vector3.Y, random:NextNumber(-1, 1) * vector3.Z) * 0.017453292519943295)
+
+                            return
+                        end
+
+                        local v299 = (tonumber(v262.kick) or 2) / 3
+
+                        if shown then
+                            if shown.cfg.kick then
+                                kick = shown.cfg.kick
+                            else
+                                v295 = true
+                            end
+                        else
+                            v295 = true
+                        end
+
+                        if v295 then
+                            kick = 1
+                        end
+
+                        local v300 = math.min(v299 * kick, 3.5)
+                        spring9:Impulse(Vector3.new(0, 0.5, 3) * v300)
+                        spring10:Impulse((Vector3.new(420, (math.random() - 0.5) * 40, (math.random() - 0.5) * 40) * v300) * 0.017453292519943295)
+
+                        return
+                    end
+
+                    if a260 == "Reload" then
+                        local reload
+                        local reloadTime = math.max(0.2, (tonumber(v262.time) or 1.2))
+
+                        if shown then
+                            if shown.clips then
+                                reload = shown.clips.reload
+                            else
+                                reload = nil
+                            end
+                        else
+                            reload = nil
+                        end
+
+                        if not reload then
+                            v231.reload = true
+                            v231.reloadT0 = v231.now
+                            v231.reloadTime = reloadTime
+
+                            return
+                        end
+
+                        local v303 = reload.span or reload.release
+                        startClip("reload", nil, nil, (math.clamp(reloadTime / v303, 0.35, 2.5)))
+
+                        return
+                    end
+
+                    if a260 == "ReloadEnd" then
+                        v231.reload = false
+                        return
+                    end
+
+                    if a260 ~= "Windup" then
+                        if a260 == "Throw" then
+                            v231.throwN += 1
+                            local clipKey = shown
+                                and shown.clips
+                                and shown.clips.throw2
+                                and v231.throwN % 2 == 0
+                                and "throw2"
+                                or "throw"
+                            local v305 = if shown and shown.clips then shown.clips[clipKey] else nil
+
+                            if v231.wind then
+                                local vanish
+                                local clampedValue = math.clamp((v231.now - v231.windT0) / v231.windTime, 0, 1)
+                                local clampedValue2 = math.clamp((v231.now - v231.windT0) / 0.12, 0, 1)
+                                local v309 = clampedValue2 * clampedValue2 * (3 - (clampedValue2 * 2)) * 0.75
+                                local clampedValue3 = math.clamp(clampedValue, 0, 1)
+                                v231.windK = v309 + ((clampedValue3 * clampedValue3 * (3 - (clampedValue3 * 2))) * 0.25)
+                                local now = v231.now
+
+                                if v305 and v305.vanish then
+                                    vanish = v305.vanish
+                                else
+                                    vanish = 0.07
+                                end
+
+                                v231.windHold = (now + vanish) + 0.06
+                            end
+
+                            v231.wind = false
+
+                            if v305 and startClip(clipKey) then
+                                if v305.vanish then
+                                    v231.vanishAt = v231.now + (v305.vanish * v231.clipScale)
+                                    v231.hiddenUntil = v231.vanishAt + (ItemClips.HIDE[v264 or ""] or 0.45)
+
+                                    return
+                                end
+
+                                if v305.loose then
+                                    v231.looseAt = v231.now + (v305.loose * v231.clipScale)
+                                end
+                            else
+                                if const throw = v19.throw then
+                                    v231.action = "throw"
+                                    v231.actT0 = v231.now
+                                    v231.actDur = throw.dur
+                                    v231.actMirror = 1
+                                end
+
+                                v231.hiddenUntil = v231.now + 0.5
+                            end
+                        elseif a260 ~= "Use" then
+                            if a260 == "Place" then
+                                local v313 = if shown and shown.clips then shown.clips.place else nil
+
+                                if v313 and startClip("place") then
+                                    v231.vanishAt = v231.now + (v313.vanish or 0.2)
+                                    v231.hiddenUntil = v231.vanishAt + (ItemClips.HIDE[v264 or ""] or 0.5)
+
+                                    return
+                                elseif const place = v19.place then
+                                    v231.action = "place"
+                                    v231.actT0 = v231.now
+                                    v231.actDur = place.dur
+                                    v231.actMirror = 1
+                                end
+
+                                v231.hiddenUntil = v231.now + 0.6
+
+                                return
+                            end
+
+                            if a260 == "Hurt" then
+                                local v315
+
+                                if v262.blocked and v231.block and shown then
+                                    if shown.cfg.blockFrame then
+                                        v231.spark = true
+                                    else
+                                        local shown5 = v231.shown
+
+                                        if shown5 ~= nil
+                                            and shown5.clips ~= nil
+                                            and (shown5.clips.block_hit ~= nil)
+                                        then
+                                            startClip("block_hit")
+                                            table.insert(v231.fxQueue, "rimspark")
+                                        end
+                                    end
+                                end
+
+                                local clampedValue = math.clamp((tonumber(v262.amount) or 10) / 40, 0.2, 1.2)
+
+                                if v262.blocked then
+                                    v315 = 0.5
+                                else
+                                    v315 = 1
+                                end
+
+                                local v318 = clampedValue * v315
+                                spring10:Impulse(((Vector3.new((math.random() - 0.3) * 2, (math.random() - 0.5) * 2, (math.random() - 0.5) * 2.5) * v16.hurtRot) * v318) * 0.017453292519943295)
+                                spring9:Impulse(Vector3.new(0, -v16.hurtPos, v16.hurtPos * 0.6) * v318)
+                            end
+                        else
+                            local use = v231.use
+                            v231.use = v262.on == true
+                            v231.useT0, v231.useTime = v231.now, math.max(0.2, (tonumber(v262.time) or 1))
+
+                            if v231.use and not use then
+                                v231.bite = 0
+                                startClip("use_in")
+
+                                return
+                            end
+
+                            if not v231.use and use then
+                                v231.useOutUntil = v231.now + 0.45
+
+                                if not v262.done then
+                                    startClip("use_out")
+                                    return
+                                end
+
+                                if not startClip("use_done") then
+                                    spring9:Impulse(Vector3.new(0, 0.5, 0))
+                                end
+                            elseif v262.done then
+                                spring9:Impulse(Vector3.new(0, 0.5, 0))
+                            end
+                        end
+                    else
+                        v231.wind = v262.on == true
+                        v231.windFull = false
+                        v231.windHalf = false
+                        v231.windHold = 0
+                        v231.windT0, v231.windTime = v231.now, math.max(0.1, (tonumber(v262.time) or 0.5))
+
+                        if v231.wind then
+                            startClip("windup")
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+local function evalKeys(keys, a322)
     --[[
       name: evalKeys
       line: 1281
     ]]
-    local v82 = #a1
-    if a2 <= a1[1][1] then
-        return a1[1][2], a1[1][3]
-    else
-        local v83, v84, v85, v86 = nil, nil, nil, nil
-        for n_1 = 1, v82 - 1 do
-            v83 = a1[n_1]
-            v84 = a1[n_1 + 1]
-            v85 = v83[1]
-            v86 = v84[1]
-            if not (a2 <= v86) then
-                continue
-            end
-            local v87 = math.clamp((a2 - v85) / math.max(v86 - v85, 1e-04), 0, 1)
-            local v88 = v87 * v87 * (3 - (v87 * 2))
-            return v83[2]:Lerp(v84[2], v88), v83[3]:Lerp(v84[3], v88)
-        end
-        return a1[v82][2], a1[v82][3]
+    local keyKey = #keys
+
+    if a322 <= keys[1][1] then
+        return keys[1][2], keys[1][3]
     end
+
+    local key, key2, v326, v327
+
+    for keyKey2 = 1, keyKey - 1 do
+        key = keys[keyKey2]
+        key2 = keys[keyKey2 + 1]
+        v326 = key[1]
+        v327 = key2[1]
+
+        if a322 <= v327 then
+            local clampedValue = math.clamp((a322 - v326) / math.max(v327 - v326, 1e-04), 0, 1)
+            local alpha = clampedValue * clampedValue * (3 - (clampedValue * 2))
+
+            return key[2]:Lerp(key2[2], alpha), key[3]:Lerp(key2[3], alpha)
+        end
+    end
+
+    return keys[keyKey][2], keys[keyKey][3]
 end
-local function wrap(a1)
+
+local function wrap(a332)
     --[[
       name: wrap
       line: 1297
     ]]
-    return ((a1 + math.pi) % math.tau) - math.pi
+    return ((a332 + math.pi) % math.tau) - math.pi
 end
-local function evalTrack(a1, a2)
+
+local function step(a334)
     --[[
-      name: evalTrack
-      line: 558
+      name: step
+      line: 1303
+      upvalues:
+        v231 (copy, index: 1)
+        v17 (copy, index: 2)
+        v16 (copy, index: 3)
+        prepare (copy, index: 4)
+        spring12 (copy, index: 5)
+        spring15 (copy, index: 6)
+        ViewFx (copy, index: 7)
+        spring13 (copy, index: 8)
+        spring14 (copy, index: 9)
+        spring11 (copy, index: 10)
+        spring5 (copy, index: 11)
+        spring6 (copy, index: 12)
+        spring9 (copy, index: 13)
+        spring10 (copy, index: 14)
+        spring (copy, index: 15)
+        spring2 (copy, index: 16)
+        spring3 (copy, index: 17)
+        spring4 (copy, index: 18)
+        spring7 (copy, index: 19)
+        spring8 (copy, index: 20)
+        v19 (copy, index: 21)
+        evalKeys (copy, index: 22)
+        startClip (copy, index: 23)
+        BladeClips (copy, index: 24)
+        evalTrack (copy, index: 25)
     ]]
-    if a2 <= a1[1][1] then
-        return a1[1][2]
+    local id
+    local lastFrame2
+    local clampedValue = math.clamp(a334.dt, 0.004166666666666667, 0.1)
+    local now = a334.now
+    v231.now = now
+
+    if not a334.visible or not a334.id or not a334.kind or not v17[a334.kind] then
+        id = nil
     else
-        local v89, v90 = nil, nil
-        for n_2 = 2, #a1 do
-            v89 = a1[n_2 - 1]
-            v90 = a1[n_2]
-            if not (a2 <= v90[1]) then
-                continue
-            end
-            local v91 = v89[2] <= 1.5
-            if v91 ~= (v90[2] <= 1.5) then
-                return v89[2]
-            end
-            local v92 = (a2 - v89[1]) / math.max(v90[1] - v89[1], 1e-04)
-            return v89[2] + ((v90[2] - v89[2]) * ((v92 * v92) * (3 - (v92 * 2))))
+        id = a334.id
+    end
+
+    if id ~= v231.wantId then
+        v231.wantId = id
+
+        if v231.shown and v231.shown.id ~= id and not v231.dropAt then
+            v231.dropAt = now
         end
-        return a1[#a1][2]
+    end
+
+    if v231.dropAt and v231.shown and v231.shown.id == v231.wantId then
+        v231.dropAt = nil
+    end
+
+    do
+        local v339 = if v231.shown then v231.shown.id else nil
+
+        do
+            local v340, v341 = false, false
+
+            if v339 ~= v231.wantId then
+                if v231.shown == nil then
+                    v340 = true
+                elseif v231.dropAt ~= nil then
+                    local v342 = now - v231.dropAt
+
+                    if v16.dropTime <= v342 then
+                        v340 = true
+                    end
+                end
+            end
+
+            if v340 then
+                do
+                    local shown
+                    v231.dropAt = nil
+
+                    if v231.wantId then
+                        shown = prepare(v231.wantId, a334.kind)
+                    else
+                        shown = nil
+                    end
+
+                    v231.shown = shown
+                    v231.action = nil
+                    v231.clip = nil
+                    v231.lastFrame = nil
+                    v231.rawVel = nil
+                    v231.clipName = nil
+                    spring12:Snap(Vector3.new(0, 0, 0))
+                    spring15:Snap(Vector3.new(0, 0, 0))
+                    v231.block = false
+                    v231.parry = false
+                    v231.charge = false
+                    v231.draw = false
+                    v231.wind = false
+                    v231.use = false
+                    v231.reload = false
+                    v231.hiddenUntil = 0
+                    v231.vanishAt = nil
+                    v231.drawHold = 0
+                    v231.windHold = 0
+                    v231.looseAt = nil
+                    v231.nocked = false
+                    v231.nockT0 = -10
+                    v231.stringV = 0
+                    v231.stringT0 = -10
+                    table.clear(v231.fxQueue)
+
+                    if v231.embers then
+                        v231.embers = false
+                        ViewFx.Play("embers", CFrame.identity, {on = false})
+                    end
+                end
+
+                if 0 < v231.fuse then
+                    v231.fuse = 0
+                    ViewFx.Play("fuse", CFrame.identity, {on = false})
+                end
+
+                v231.boltIn = true
+                v231.boltT0 = -10
+                v231.hammerTarget = 0.5
+                spring13:Snap(0.5)
+                v231.frizzenTarget = 0
+                spring14:Snap(0)
+
+                if v231.shown then
+                    if v231.shown.drawFrom then
+                        if v231.shown.clips then
+                            if v231.shown.clips.draw then
+                                spring11:Snap(0)
+                                v231.pendingDraw = "draw"
+                            else
+                                v341 = true
+                            end
+                        else
+                            v341 = true
+                        end
+                    else
+                        v341 = true
+                    end
+                end
+            end
+
+            if v341 then
+                spring11.value = -1
+                spring11.velocity = 0
+                spring11.target = 0
+            end
+        end
+    end
+
+    local shown = v231.shown
+    if not shown then
+        return Vector3.new(0, 0, 0), Vector3.new(0, 0, 0), nil
+    end
+
+    local cfg = shown.cfg
+
+    if v231.lastRootY and 0 < clampedValue then
+        local v346 = (a334.rootY - v231.lastRootY) / clampedValue
+
+        if 150 < math.abs(v346) then
+            v346 = 0
+        end
+
+        do
+            local v347 = v231
+            v347.vy += ((v346 - v231.vy) * (1 - math.exp(clampedValue * -14)))
+        end
+    end
+
+    v231.lastRootY = a334.rootY
+
+    if a334.grounded then
+        if not v231.grounded then
+            do
+                local v348 = -v231.minVy
+
+                if 6 < v348 then
+                    spring5:Impulse(-math.min(v348 * v16.landK, v16.landMax))
+                end
+            end
+
+            v231.minVy = 0
+        end
+    else
+        v231.minVy = math.min(v231.minVy, v231.vy)
+    end
+
+    v231.grounded = a334.grounded
+    local lookVector = a334.cam.LookVector
+    local lastYaw = math.atan2(-lookVector.X, -lookVector.Z)
+    local lastPitch = math.asin((math.clamp(lookVector.Y, -1, 1)))
+
+    if v231.lastYaw then
+        local v352 = ((lastYaw - v231.lastYaw) + math.pi) % math.tau - math.pi
+        local v353 = lastPitch - v231.lastPitch
+
+        if math.abs(v352) < 1.2 and math.abs(v353) < 1.2 then
+            spring6.value += (Vector3.new(-v353, -v352, -v352 * 0.5) * v16.swayK)
+        end
+    end
+
+    v231.lastYaw = lastYaw
+    v231.lastPitch = lastPitch
+    local v354 = a334.aiming and cfg.aimPos ~= nil
+    local v355 = v16.hand + cfg.pos
+    local v356 = if a334.touch and not v354 then v16.touchHand else Vector3.new(0, 0, 0)
+    local target = v355 + v356
+    local target2 = Vector3.new(0, 0, 0)
+
+    if v354 then
+        target += cfg.aimPos
+        target2 += (cfg.aimRot or Vector3.new(0, 0, 0)) * 0.017453292519943295
+    end
+
+    if v231.block and shown.blockP and shown.blockR then
+        target += shown.blockP
+        target2 += shown.blockR
+    elseif v231.block and cfg.block then
+        target += cfg.block[1] + Vector3.new(0, math.sin(now * 3) * 0.004, 0)
+        target2 += cfg.block[2] * 0.017453292519943295 + Vector3.new(0, 0, (math.sin(now * 2.3) * 0.5) * 0.017453292519943295)
+    end
+
+    local v359 = 0
+    local v360 = 0
+
+    if v231.charge and cfg.charge then
+        local clampedValue2 = math.clamp((now - v231.chargeT0) / v231.chargeTime, 0, 1)
+        local clampedValue3 = math.clamp(clampedValue2, 0, 1)
+        local v363 = (clampedValue3 * clampedValue3 * (3 - (clampedValue3 * 2))) * 0.15 + 0.85
+
+        if cfg.chargeIn then
+            local v364 = math.clamp((now - v231.chargeT0) / cfg.chargeIn, 0, 1) - 1
+            v363 *= (((v364 * 3.6) * v364) * v364) + 1 + ((v364 * 2.6) * v364)
+        end
+
+        target += cfg.charge[1] * v363
+        target2 += (cfg.charge[2] * 0.017453292519943295) * v363
+        v359 += (clampedValue2 * 0.0028) + 0.0012
+
+        if 1 <= clampedValue2 and not v231.chargeFull then
+            v231.chargeFull = true
+            spring9:Impulse(Vector3.new(0, 1.5, 1.2000000476837158))
+            table.insert(v231.fxQueue, "headglint")
+        end
+    end
+
+    do
+        local v365 = now - (v231.drawHold - 0.16)
+        local v366 = not v231.draw and 0 < v231.drawHold and v365 < 0.36
+
+        if (v231.draw or v366) and (cfg.draw or shown.drawP) then
+            local v367
+
+            do
+                local v368 = not v231.draw and 1 or math.clamp((now - v231.drawT0) / v231.drawTime, 0, 1)
+
+                if v231.draw then
+                    local clampedValue4 = math.clamp((now - v231.drawT0) / 0.14, 0, 1)
+                    local v370 = clampedValue4 * clampedValue4 * (3 - (clampedValue4 * 2)) * 0.7
+                    local clampedValue5 = math.clamp(v368, 0, 1)
+                    v367 = v370 + (clampedValue5 * clampedValue5 * (3 - (clampedValue5 * 2))) * 0.3
+                else
+                    local clampedValue6 = math.clamp((v365 - 0.16) / 0.2, 0, 1)
+                    v367 = 1 - clampedValue6 * clampedValue6 * (3 - (clampedValue6 * 2))
+                end
+
+                if shown.drawP and shown.drawR then
+                    target += shown.drawP * v367
+                    target2 += shown.drawR * v367
+                elseif cfg.draw then
+                    target += cfg.draw[1] * v367
+                    target2 += (cfg.draw[2] * 0.017453292519943295) * v367
+                end
+
+                if v231.draw then
+                    if 1 <= v368 then
+                        v360 = math.clamp((now - v231.drawT0 - v231.drawTime) / 0.5, 0.3, 1) * 7e-04
+                    end
+
+                    do
+                        local v373 = shown.kind == "Bow" and cfg.stock == nil
+
+                        if v373 and 0.5 <= v368 and not v231.drawHalf then
+                            v231.drawHalf = true
+                            spring9:Impulse(Vector3.new(0, -1.100000023841858, 0.8999999761581421))
+                            spring10:Impulse(Vector3.new(-3.4906585216522217, 0, 0))
+                            table.insert(v231.fxQueue, "sfx:Gun_Cock")
+                        end
+                    end
+
+                    if 1 <= v368 and not v231.drawFull then
+                        v231.drawFull = true
+                        spring9:Impulse(Vector3.new(0, -0.800000011920929, 0.6000000238418579))
+                        spring10:Impulse(Vector3.new(-2.268928050994873, 0, 0))
+                        table.insert(v231.fxQueue, "fullglint")
+                    end
+                end
+            end
+        end
+    end
+
+    if v231.wind and cfg.windup then
+        local clampedValue7 = math.clamp((now - v231.windT0) / v231.windTime, 0, 1)
+
+        do
+            local clampedValue8 = math.clamp((now - v231.windT0) / 0.12, 0, 1)
+            local v376 = clampedValue8 * clampedValue8 * (3 - (clampedValue8 * 2)) * 0.75
+            local clampedValue9 = math.clamp(clampedValue7, 0, 1)
+            local v378 = v376 + (clampedValue9 * clampedValue9 * (3 - (clampedValue9 * 2))) * 0.25
+            target += cfg.windup[1] * v378
+            target2 += (cfg.windup[2] * 0.017453292519943295) * v378
+        end
+
+        v359 += (clampedValue7 * 0.003) + 0.001
+
+        if shown.id == "harpoon" and 0.5 <= clampedValue7 and not v231.windHalf then
+            v231.windHalf = true
+            spring9:Impulse(Vector3.new(0, -0.5, 0.4000000059604645))
+            table.insert(v231.fxQueue, "glint")
+            table.insert(v231.fxQueue, "sfx:Crossbow_Crank")
+        end
+
+        if 1 <= clampedValue7 and not v231.windFull then
+            v231.windFull = true
+            spring9:Impulse(Vector3.new(0, -1.600000023841858, 1.2000000476837158))
+            spring10:Impulse(Vector3.new(-2.7925267219543457, 0, 0))
+            table.insert(v231.fxQueue, "glint")
+            table.insert(v231.fxQueue, ((shown.id ~= "harpoon"
+                and (shown.kind ~= "Bomb" and "sfx:Knife_Ready" or "sfx:Equip_Item"))
+                or "sfx:Crossbow_Ready"))
+        end
+    elseif now < v231.windHold and cfg.windup then
+        target += cfg.windup[1] * v231.windK
+        target2 += cfg.windup[2] * 0.017453292519943295 * v231.windK
+    end
+
+    local v379 = 0
+
+    if v231.use and cfg.use then
+        target += cfg.use[1]
+        target2 += cfg.use[2] * 0.017453292519943295
+
+        if 0.15 < now - v231.useT0 and (not shown.clips or not shown.clips.use_loop) then
+            v379 = 1
+        end
+
+        local v380 = now - v231.useT0
+
+        if v231.useTime + 0.3 < v380 then
+            v231.use = false
+        end
+    end
+
+    local v381 = 0
+
+    if v231.reload then
+        local v382 = (now - v231.reloadT0) / v231.reloadTime
+
+        if not (1.15 <= v382) then
+            do
+                local clampedValue10 = math.clamp(v382 / 0.2, 0, 1)
+                local v384 = clampedValue10 * clampedValue10 * (3 - (clampedValue10 * 2))
+                local clampedValue11 = math.clamp((v382 - 0.78) / 0.22, 0, 1)
+                local v386 = v384 * (1 - (clampedValue11 * clampedValue11 * (3 - (clampedValue11 * 2))))
+                target += Vector3.new(-0.03999999910593033, -0.10000000149011612, 0.019999999552965164) * v386
+                target2 += Vector3.new(0.48869219422340393, 0.41887903213500977, 0.593411922454834) * v386
+            end
+
+            if 0.25 < v382 and v382 < 0.75 then
+                v381 = 1
+            end
+        else
+            v231.reload = false
+        end
+    end
+
+    if a334.sliding then
+        target += v16.slidePos
+        target2 += v16.slideRot * 0.017453292519943295
+    end
+
+    do
+        local wall = a334.wall
+
+        if wall and wall < shown.wallDist then
+            local clampedValue12 = math.clamp((shown.wallDist - wall) / math.max(shown.wallDist - v16.wallMin, 0.1), 0, 1)
+            target += v16.wallPos * clampedValue12
+            target2 += Vector3.new(shown.wallRot * clampedValue12, 0, 0)
+        end
+    end
+
+    spring.frequency = v231.useOutUntil and now < v231.useOutUntil and 3.2 or v16.poseHz
+    spring2.frequency = spring.frequency
+    spring.target = target
+    spring2.target = target2
+    spring:Update(clampedValue)
+    spring2:Update(clampedValue)
+
+    do
+        local target3 = math.clamp(-v231.vy * v16.airK, -v16.airMax, v16.airMax)
+        local target4 = math.clamp(-v231.vy * v16.airTiltK, -v16.airTiltMax, v16.airTiltMax) * 0.017453292519943295
+
+        if a334.grounded then
+            target3 = 0
+            target4 = 0
+        end
+
+        spring3.target = target3
+        spring4.target = target4
+        spring3:Update(clampedValue)
+        spring4:Update(clampedValue)
+        spring5:Update(clampedValue)
+        spring6:Update(clampedValue)
+    end
+
+    do
+        local clampedValue13 = 0
+        local clampedValue14 = 0
+
+        if const vel = a334.vel then
+            local rightVector = a334.cam.RightVector
+            local lookVector2 = a334.cam.LookVector
+
+            do
+                local vector3 = Vector3.new(rightVector.X, 0, rightVector.Z)
+                local vector32 = Vector3.new(lookVector2.X, 0, lookVector2.Z)
+
+                if 0.001 < vector3.Magnitude and 0.001 < vector32.Magnitude then
+                    clampedValue13 = math.clamp(vel:Dot(vector3.Unit) / v16.mvRun, -v16.mvMax, v16.mvMax)
+                    clampedValue14 = math.clamp(vel:Dot(vector32.Unit) / v16.mvRun, -v16.mvMax, v16.mvMax)
+                end
+            end
+        end
+
+        local v398 = not a334.aiming and 1 or v16.mvAimed
+
+        do
+            local v399 = v398 * v16.mvRun
+            spring7.target = Vector3.new(-clampedValue13 * v16.mvX, 0, math.abs(clampedValue14) * v16.mvZ) * v399
+            spring8.target = (Vector3.new(-clampedValue14 * v16.mvPitch, clampedValue13 * v16.mvYaw, -clampedValue13 * v16.mvRoll) * v399) * 0.017453292519943295
+        end
+
+        spring7:Update(clampedValue)
+        spring8:Update(clampedValue)
+
+        do
+            local value = spring6.value
+            local v401 = v16.swayMax * 0.017453292519943295
+
+            if v401 < value.Magnitude then
+                spring6.value = value.Unit * v401
+            end
+        end
+    end
+
+    spring9:Update(clampedValue)
+    spring10:Update(clampedValue)
+    spring11:Update(clampedValue)
+    spring13.target = v231.hammerTarget
+    spring13:Update(clampedValue)
+    spring14.target = v231.frizzenTarget
+    spring14:Update(clampedValue)
+    local value = spring.value
+    local value2 = spring2.value
+    local v404 = (now * v16.idleHz) * 2 * math.pi
+    local v405 = value + Vector3.new((math.sin(v404 * 0.5) * v16.idlePos) * 0.6, math.sin(v404) * v16.idlePos, 0)
+    local v406 = value2 + Vector3.new(math.sin(v404 + 0.6) * v16.idleRot, 0, (math.sin(v404 * 0.5) * v16.idleRot) * 0.5) * 0.017453292519943295
+
+    do
+        local bobAmount = a334.bobAmount
+
+        if 0 < bobAmount then
+            local bobPhase = a334.bobPhase
+            local v409 = math.abs((math.cos(bobPhase))) - 0.64
+            v405 += Vector3.new((math.sin(bobPhase) * v16.bobX) * bobAmount, (-v409 * v16.bobY) * bobAmount, 0)
+            v406 += Vector3.new((v409 * v16.bobPitch) * bobAmount, 0, (math.sin(bobPhase) * v16.bobRoll) * bobAmount) * 0.017453292519943295
+        end
+    end
+
+    local v410 = v405 + Vector3.new(0, spring3.value + (spring5.value * v16.landDist), 0)
+    local v411 = v406 + Vector3.new(spring4.value + (spring5.value * 0.12), 0, 0)
+    local value3 = spring6.value
+    local v413 = v411 + value3
+    local v414 = v410 + Vector3.new(-value3.Y * v16.swayShift, value3.X * v16.swayShift, 0) + spring7.value
+    local v415 = v413 + spring8.value
+    local v416 = v414 + spring9.value
+    local v417 = v415 + spring10.value
+
+    if 0 < v359 then
+        v416 += Vector3.new(math.sin(now * 84) * v359, math.sin((now * 71) + 1) * v359, 0)
+    end
+
+    if 0 < v360 then
+        v416 += Vector3.new(math.sin(now * 33) * v360, math.sin((now * 27) + 1) * v360, 0)
+    end
+
+    if a334.sliding then
+        do
+            local slideShake = v16.slideShake
+            v416 += Vector3.new(math.sin(now * 53) * slideShake, math.sin((now * 71) + 2) * slideShake, 0)
+        end
+
+        v417 += Vector3.new(0, 0, (math.sin(now * 39) * 1.6) * 0.017453292519943295)
+    end
+
+    if 0 < v381 then
+        v417 += Vector3.new(math.sin(now * 42) * 5, 0, math.sin((now * 33) + 1) * 7) * 0.017453292519943295
+        v416 += Vector3.new(0, math.abs((math.sin(now * 21))) * 0.012, 0)
+    end
+
+    if 0 < v379 then
+        local absoluteValue = math.abs((math.sin((now - v231.useT0) * 9)))
+        v416 += Vector3.new(0, absoluteValue * 0.022, -absoluteValue * 0.012)
+        v417 += Vector3.new(absoluteValue * 9, 0, 0) * 0.017453292519943295
+    end
+
+    do
+        local v420, v421
+
+        do
+            local v422, v423 = false, false
+
+            if v231.action then
+                local v424 = v19[v231.action]
+                local v425 = (now - v231.actT0) / v231.actDur
+
+                if v424 then
+                    if not (1 <= v425) then
+                        v420, v421 = evalKeys(v424.keys, v425)
+
+                        if v424.mirror and v231.actMirror < 0 then
+                            v420 = Vector3.new(-v420.X, v420.Y, v420.Z)
+                            v421 = Vector3.new(v421.X, -v421.Y, -v421.Z)
+                        end
+
+                        v423 = true
+                    else
+                        v422 = true
+                    end
+                else
+                    v422 = true
+                end
+            end
+
+            if v422 then
+                v231.action = nil
+            end
+
+            if v423 then
+                v416 += v420
+                v417 += v421 * 0.017453292519943295
+            end
+        end
+    end
+
+    local value4 = spring11.value
+    local v427 = v416 + Vector3.new(0, value4 * v16.equipDrop, 0)
+    local v428 = v417 + Vector3.new((-value4 * v16.equipTilt) * 0.017453292519943295, 0, 0)
+
+    if v231.dropAt then
+        local clampedValue15 = math.clamp((now - v231.dropAt) / v16.dropTime, 0, 1)
+        local v430 = clampedValue15 * clampedValue15
+        v427 += Vector3.new(0, -v16.equipDrop * v430, 0)
+        v428 += Vector3.new((-v16.equipTilt * 0.017453292519943295) * v430, 0, 0)
+    end
+
+    if 0 < v231.hiddenUntil and v231.hiddenUntil <= now then
+        v231.hiddenUntil = 0
+        v231.vanishAt = nil
+
+        if v231.action == "throw" or v231.action == "place" then
+            v231.action = nil
+        end
+
+        if not shown.drawFrom or not shown.clips or not shown.clips.redraw and not shown.clips.draw then
+            spring11.value = -1
+            spring11.velocity = 0
+            spring11.target = 0
+        else
+            v231.clip = nil
+            v231.clipName = nil
+            v231.pendingDraw = shown.clips.redraw and "redraw" or "draw"
+        end
+    end
+
+    v231.frame = nil
+    v231.wallPush = 0
+    local value5 = spring.value
+    local value6 = spring2.value
+    local layerPos = v427 - value5
+    local layerRot = v428 - value6
+    v231.layerPos, v231.layerRot = layerPos, layerRot
+    local restFrame = CFrame.new(value5) * CFrame.fromEulerAnglesYXZ(value6.X, value6.Y, value6.Z) * shown.styleRot
+    v231.restFrame = restFrame
+
+    if v231.pendingDraw then
+        local pendingDraw = v231.pendingDraw
+        v231.pendingDraw = nil
+
+        if shown.drawFrom then
+            startClip(pendingDraw, nil, BladeClips.StartFrame(shown.drawFrom, restFrame))
+            v231.clipFromVel = {pos = Vector3.new(0, 3.5, 0), tip = Vector3.new(0, 0, 0), edge = Vector3.new(0, 0, 0)}
+        end
+    end
+
+    if v231.refreshFF then
+        if not v231.clip or not ((now - v231.clipT0) / v231.clipScale < v231.refreshFF) then
+            v231.refreshFF = nil
+            v231.refreshGlintAt = now + 0.05
+        else
+            local v437 = v231
+            v437.clipT0 -= (4 * clampedValue)
+        end
+    end
+
+    if v231.refreshGlintAt and v231.refreshGlintAt <= now then
+        v231.refreshGlintAt = nil
+        table.insert(v231.fxQueue, "headglint")
+        spring9:Impulse(Vector3.new(0, 0.6000000238418579, 0))
+    end
+
+    do
+        local clip = v231.clip
+        v231.rodV = 0
+
+        if clip then
+            local v439 = now - v231.clipT0
+
+            if clip.rod then
+                v231.rodV = evalTrack(clip.rod, v439 / v231.clipScale)
+            end
+
+            if clip.string then
+                v231.stringV = evalTrack(clip.string, v439 / v231.clipScale)
+            end
+
+            if clip.strip then
+                v231.stripV = evalTrack(clip.strip, v439 / v231.clipScale)
+            end
+
+            do
+                if const fx = clip.fx then
+                    while v231.clipFx <= #fx and fx[v231.clipFx][1] * v231.clipScale <= v439 do
+                        do
+                            local v441 = fx[v231.clipFx]
+                            local v442 = v441[2]
+
+                            if v442 == "bolt" then
+                                v231.boltIn = true
+                                v231.boltT0 = now
+                            elseif v442 == "half" then
+                                v231.hammerTarget = 0.5
+                            elseif v442 == "prime" then
+                                v231.frizzenTarget = 0
+                            elseif v442 == "nock" then
+                                v231.nocked = true
+                                v231.nockT0 = now
+                            elseif v442 == "click" then
+                                v231.hammerTarget = 0
+                            end
+
+                            table.insert(v231.fxQueue, v442)
+
+                            if type(v441[3]) == "string" then
+                                local v443
+
+                                do
+                                    local fxQueue = v231.fxQueue
+                                    local v445 = v441[3]
+
+                                    if type(v441[4]) == "number" then
+                                        v443 = "@" .. v441[4]
+                                    else
+                                        v443 = ""
+                                    end
+
+                                    table.insert(fxQueue, "sfx:" .. v445 .. v443)
+                                end
+                            end
+                        end
+
+                        do
+                            local v446 = v231
+                            v446.clipFx += 1
+                        end
+                    end
+                end
+            end
+
+            do
+                local v447 = BladeClips.Eval(clip, v231.clipFrom, v439, v231.clipScale, restFrame, v231.clipFromVel)
+                local v448 = clip.release * v231.clipScale <= v439
+
+                if v448
+                    and not v231.dropAt
+                    and v231.use
+                    and (v231.clipName == "use_in" or v231.clipName == "use_loop")
+                    and startClip("use_loop", nil, v447)
+                then
+                    lastFrame2 = v447
+                elseif v448
+                    and not v231.dropAt
+                    and v231.parry
+                    and (v231.clipName == "parry_in" or v231.clipName == "parry_hold")
+                    and startClip("parry_hold", nil, v447)
+                then
+                    lastFrame2 = v447
+                elseif v448 or v231.dropAt then
+                    spring12:Snap(v447.Position - restFrame.Position)
+                    spring12.target = Vector3.new(0, 0, 0)
+
+                    do
+                        local v449, v450 = (v447.Rotation * restFrame.Rotation:Inverse()):ToAxisAngle()
+                        spring15:Snap(v449 * v450)
+                    end
+
+                    spring15.target = Vector3.new(0, 0, 0)
+
+                    if not v231.dropAt then
+                        local v451 = BladeClips.Eval(clip, v231.clipFrom, math.max(0, v439 - 0.004166666666666667), v231.clipScale, restFrame, v231.clipFromVel)
+                        spring12.velocity = (v447.Position - v451.Position) / 0.004166666666666667 + (clip.vel
+                            or Vector3.new(0, 0, 0))
+                        local v452, v453 = (v447.Rotation * v451.Rotation:Inverse()):ToAxisAngle()
+                        spring15.velocity = v452 * math.min(v453 / 0.004166666666666667, 20)
+                    end
+
+                    v231.clip = nil
+                    v231.clipName = nil
+                    lastFrame2 = restFrame
+                else
+                    lastFrame2 = v447
+                end
+            end
+        else
+            lastFrame2 = restFrame
+        end
+    end
+
+    do
+        local value7, value8
+
+        do
+            local v456 = false
+
+            if not v231.clip then
+                spring12:Update(clampedValue)
+                spring15:Update(clampedValue)
+                value7 = spring12.value
+                value8 = spring15.value
+
+                if 1e-05 < value7.Magnitude then
+                    v456 = true
+                elseif 1e-05 < value8.Magnitude then
+                    v456 = true
+                end
+            end
+
+            if v456 then
+                local v457
+
+                if not (1e-06 < value8.Magnitude) then
+                    v457 = CFrame.identity
+                else
+                    v457 = CFrame.fromAxisAngle(value8.Unit, value8.Magnitude)
+                end
+
+                lastFrame2 = CFrame.new(restFrame.Position + value7) * v457 * restFrame.Rotation
+            end
+        end
+    end
+
+    do
+        local lastFrame = v231.lastFrame
+
+        if lastFrame and 0 < clampedValue then
+            do
+                local function cap(a460, a461)
+                    --[[
+                      name: cap
+                      line: 1794
+                    ]]
+                    if a461 < a460.Magnitude then
+                        return a460.Unit * a461
+                    end
+
+                    return a460
+                end
+            end
+
+            local rawVel = {}
+            local v463 = (lastFrame2.Position - lastFrame.Position) / clampedValue
+            rawVel.pos = if 25 < v463.Magnitude then v463.Unit * 25 else v463
+
+            do
+                local v464 = (lastFrame2.UpVector - lastFrame.UpVector) / clampedValue
+                rawVel.tip = if 40 < v464.Magnitude then v464.Unit * 40 else v464
+            end
+
+            do
+                local v465 = (lastFrame2.LookVector - lastFrame.LookVector) / clampedValue
+                rawVel.edge = if 40 < v465.Magnitude then v465.Unit * 40 else v465
+            end
+
+            v231.rawVel = rawVel
+        end
+    end
+
+    v231.lastFrame = lastFrame2
+    v231.lastFrameT = now
+
+    if shown.id == "bolas" then
+        if (v231.clipName == "draw" or v231.clipName == "redraw") and v231.spinT0 ~= v231.clipT0 then
+            v231.spinT0 = v231.clipT0
+        end
+
+        if v231.clipName ~= "throw" then
+            v231.spinA = 12.566370614359172 * (1 - ((function(...) return (...) ^ 3 end)(((1 - math.clamp((now - v231.spinT0) / 0.7, 0, 1))))))
+        else
+            v231.spinA = (v231.spinA + (((clampedValue * 2) * math.pi) * 4)) % math.tau
+        end
+
+        lastFrame2 *= CFrame.Angles(0, v231.spinA, 0)
+    end
+
+    do
+        local frame = CFrame.new(lastFrame2.Position + layerPos) * CFrame.fromEulerAnglesYXZ(layerRot.X, layerRot.Y, layerRot.Z) * lastFrame2.Rotation
+
+        if const wall = a334.wall then
+            local v468
+
+            do
+                local v469 = 0
+                v468 = v469
+
+                for _, corner in shown.corners do
+                    v468 = math.max(v468, -frame:PointToWorldSpace(corner).Z)
+                end
+            end
+
+            do
+                local v472 = wall - 0.12
+
+                if v472 < v468 then
+                    v231.wallPush = math.min(v468 - v472, (math.max(0, -frame.Position.Z - 0.28)))
+                    frame += Vector3.new(0, 0, v231.wallPush)
+                end
+            end
+        end
+
+        v231.frame = frame
+
+        if v231.leftVanishAt and v231.leftVanishAt <= now then
+            v231.leftOut = true
+            v231.leftVanishAt = nil
+            v231.leftOutAt = now
+        end
+    end
+
+    if a334.offHandOut ~= true then
+        if a334.offHandOut == false and v231.leftOut and (v231.leftSeenOut or 1 < now - v231.leftOutAt) then
+            v231.leftOut = false
+            v231.leftSeenOut = false
+            v231.leftCatchT = now
+        end
+    else
+        v231.leftSeenOut = true
+
+        if not v231.leftOut and not v231.leftVanishAt then
+            v231.leftOut = true
+            v231.leftOutAt = now
+        end
+    end
+
+    if shown.leftFist and v231.leftOut then
+        v231.leftFrame = nil
+    elseif shown.leftFist then
+        do
+            local leftLast2 = restFrame
+
+            do
+                local clip = v231.clip
+
+                if clip and clip.left then
+                    local v475 = clip.leftClip
+                    if not v475 then
+                        v475 = {keys = clip.left, contact = clip.contact, release = clip.release, eyeRoll = clip.eyeRoll}
+                        clip.leftClip = v475
+                    end
+
+                    leftLast2 = BladeClips.Eval(v475, v231.leftFrom, now - v231.clipT0, v231.clipScale, restFrame, v231.leftFromVel)
+                end
+            end
+
+            do
+                local leftLast = v231.leftLast
+
+                if leftLast and 0 < clampedValue then
+                    do
+                        local function cap(a478, a479)
+                            --[[
+                              name: cap
+                              line: 1868
+                            ]]
+                            if a479 < a478.Magnitude then
+                                return a478.Unit * a479
+                            end
+
+                            return a478
+                        end
+                    end
+
+                    local leftVel = {}
+                    local v481 = (leftLast2.Position - leftLast.Position) / clampedValue
+                    leftVel.pos = if 25 < v481.Magnitude then v481.Unit * 25 else v481
+
+                    do
+                        local v482 = (leftLast2.UpVector - leftLast.UpVector) / clampedValue
+                        leftVel.tip = if 40 < v482.Magnitude then v482.Unit * 40 else v482
+                    end
+
+                    do
+                        local v483 = (leftLast2.LookVector - leftLast.LookVector) / clampedValue
+                        leftVel.edge = if 40 < v483.Magnitude then v483.Unit * 40 else v483
+                    end
+
+                    v231.leftVel = leftVel
+                end
+            end
+
+            v231.leftLast = leftLast2
+
+            do
+                local v484 = (now - v231.leftCatchT) / 0.3
+
+                if 0 <= v484 and v484 < 1 then
+                    local v485 = v484 - 1
+                    local v486 = 1 - ((((2.70158 * v485) * v485) * v485) + 1 + ((1.70158 * v485) * v485))
+                    leftLast2 = CFrame.new(leftLast2.Position + (Vector3.new(0.05999999865889549, -0.41999998688697815, 0.03999999910593033) * v486)) * CFrame.fromEulerAnglesYXZ(-0.8726646259971648 * v486, 0, 0.5235987755982988 * v486) * leftLast2.Rotation
+                end
+            end
+
+            do
+                local components, v488, v489, v490, v491, v492, v493, v494, v495, v496, v497, v498 = leftLast2:GetComponents()
+                local cframe = CFrame.new(-components, v488, v489, v490, -v491, -v492, -v493, v494, v495, -v496, v497, v498)
+                v231.leftFrame = CFrame.new(cframe.Position + layerPos + Vector3.new(0, 0, v231.wallPush)) * CFrame.fromEulerAnglesYXZ(layerRot.X, layerRot.Y, layerRot.Z) * cframe.Rotation
+            end
+        end
+    else
+        v231.leftFrame = nil
+    end
+
+    do
+        local v500 = if v231.vanishAt then v231.vanishAt <= now and now < v231.hiddenUntil else now < v231.hiddenUntil
+            and v231.action ~= "throw"
+            and v231.action ~= "place"
+
+        do
+            local v501, v502, v503, v504 = false, false, false, false
+
+            if v500 then
+                return v427, v428, nil
+            end
+
+            if a334.charges then
+                if not (a334.charges <= 0) then
+                    v502 = true
+                else
+                    v231.spent = true
+
+                    if v231.vanishAt then
+                        if not (now < v231.vanishAt) then
+                            v501 = true
+                        end
+                    else
+                        v501 = true
+                    end
+                end
+            else
+                v502 = true
+            end
+
+            if v501 then
+                return v427, v428, nil
+            end
+
+            if v502 and v231.spent then
+                v231.spent = false
+
+                if shown.drawFrom then
+                    if shown.clips then
+                        if shown.clips.redraw then
+                            v504 = true
+                        elseif shown.clips.draw then
+                            v504 = true
+                        else
+                            v503 = true
+                        end
+                    else
+                        v503 = true
+                    end
+                else
+                    v503 = true
+                end
+            end
+
+            if v503 then
+                spring11.value = -1
+                spring11.velocity = 0
+                spring11.target = 0
+            end
+
+            if v504 then
+                local pendingDraw
+
+                if shown.clips.redraw then
+                    pendingDraw = "redraw"
+                else
+                    pendingDraw = "draw"
+                end
+
+                v231.pendingDraw = pendingDraw
+            end
+        end
+
+        return v427, v428, shown
     end
 end
-local u23 = nil
-local u24 = RaycastParams.new()
-u24.FilterType = Enum.RaycastFilterType.Exclude
-u24.RespectCanCollide = true
-local u25 = nil
-local tbl_upv_16 = {}
-local tbl_upv_17 = {}
-local tbl_upv_18 = {}
-local tbl_upv_19 = {}
-local tbl_upv_20 = {}
-local tbl_upv_21 = {}
-local tbl_upv_22 = {}
-local u26 = nil
-local function arrowFor(a1, a2)
+
+local v506 = nil
+local params = RaycastParams.new()
+params.FilterType = Enum.RaycastFilterType.Exclude
+params.RespectCanCollide = true
+local character = nil
+local v509 = {}
+local v510 = {}
+local v511 = {}
+local v512 = {}
+local v513 = {}
+local v514 = {}
+
+local function drawBlade(a516, cframe: CFrame?, a518: number, a519)
+    --[[
+      name: drawBlade
+      line: 1934
+      upvalues:
+        BladeSmear (copy, index: 1)
+        v231 (copy, index: 2)
+        v16 (copy, index: 3)
+        BladeClips (copy, index: 4)
+        v512 (copy, index: 5)
+        v513 (copy, index: 6)
+        v514 (copy, index: 7)
+        v509 (copy, index: 8)
+        v510 (copy, index: 9)
+        v511 (copy, index: 10)
+    ]]
+    BladeSmear.Follow(cframe)
+    local frame = v231.frame
+
+    if v231.spark then
+        v231.spark = false
+
+        if frame then
+            BladeSmear.Spark(a516, cframe, Vector3.new(frame.X, frame.Y, frame.Z * a518) + (frame.UpVector * (a519.bladeLen * 0.55)))
+        end
+    end
+
+    local clip = v231.clip
+    local v522 = if clip then clip.smear else nil
+
+    if not clip or not v522 then
+        BladeSmear.Hide()
+        return
+    end
+
+    local clipScale = v231.clipScale
+    local v524 = v231.now - v231.clipT0
+    local v525 = v522[1] * clipScale
+    local v526 = v522[2] * clipScale
+    local v527 = v16.smearLen * clipScale
+    local v528 = math.min(v524, v526)
+    local v529 = math.max(v525, v524 - v527)
+
+    if v528 - v529 < 0.004 then
+        BladeSmear.Hide()
+        return
+    end
+
+    local v530 = not (v526 < v524) and 1 or math.clamp(1 - ((v524 - v526) / v527), 0, 1)
+    local segments = BladeSmear.SEGMENTS
+    local v532 = v231.layerPos + Vector3.new(0, 0, v231.wallPush)
+    local layerRot = v231.layerRot
+    local v534 = CFrame.fromEulerAnglesYXZ(layerRot.X, layerRot.Y, layerRot.Z)
+    local v535 = v16.smearAlong[a519.kind]
+
+    for index = 0, segments do
+        local v537 = BladeClips.Eval(clip, v231.clipFrom, v529 + (((v528 - v529) * index) / segments), clipScale, v231.restFrame, v231.clipFromVel)
+        local v538 = v537.Position + v532
+        v512[index + 1] = Vector3.new(v538.X, v538.Y, v538.Z * a518)
+
+        if v535 then
+            local v539 = index + 1
+            v512[v539] += (v534 * v537.UpVector * (a519.bladeLen * v535.root))
+            v513[index + 1] = v534 * v537.LookVector
+        else
+            v513[index + 1] = v534 * v537.UpVector
+        end
+    end
+
+    local v540 = v16.smearItem[a519.id] or v16.smear[a519.kind] or v16.smear.Sword
+
+    for v541, v542 in v540 do
+        if BladeSmear.LAYERS < v541 then
+            break
+        end
+
+        local v543 = a519.bladeLen * v542.at
+        local v544 = a519.bladeLen * v542.width * (clip.smearWidth or 1)
+
+        for index = 1, segments + 1 do
+            v514[index] = v512[index] + (v513[index] * v543)
+        end
+
+        for index = 1, segments + 1 do
+            local v547 = v514[math.min(segments + 1, index + 1)] - v514[math.max(1, index - 1)]
+            local v548 = v513[index]
+            local v549 = v547 - v548 * v547:Dot(v548)
+
+            if v549.Magnitude < 1e-05 then
+                v549 = v548:Cross(Vector3.new(0, 0, 1))
+            end
+
+            v509[index] = CFrame.fromMatrix(v514[index], v549.Unit, v548)
+            local v550 = (index - 1) / segments
+            v510[index] = v544 * (0.3 + (0.7 * v550))
+            v511[index] = 1 - (((1 - v542.alpha) * (v550 ^ 1.4)) * v530)
+        end
+
+        BladeSmear.Draw(a516, cframe, v541, v509, v510, v511, v542.color)
+    end
+end
+
+local v551 = {}
+local v552 = nil
+
+local function arrowFor(childName, a555: number)
     --[[
       name: arrowFor
       line: 2008
       upvalues:
-        tbl_upv_22 (copy, index: 1)
-        ReplicatedStorage_upv_1 (copy, index: 2)
-        u2 (ref,  index: 3)
+        v551 (copy, index: 1)
+        replicatedStorage (copy, index: 2)
+        viewModels (ref,  index: 3)
     ]]
-    local v93 = a1 .. ":" .. tostring(a2 or 0.36)
-    local v94 = tbl_upv_22[v93]
-    if v94 then
-        return v94
+    local v556 = childName .. ":" .. tostring((a555 or 0.36))
+
+    if const v557 = v551[v556] then
+        return v557
     end
-    local Assets_1 = ReplicatedStorage_upv_1:FindFirstChild("Assets")
-    local v95 = Assets_1 and (Assets_1:FindFirstChild("VFX"))
-    local v96 = v95
-    local _ = v96 and (v95:FindFirstChild("Projectiles"))
-    if a1 == "ViewArrow" and (u2) then
-        v95 = u2:FindFirstChild("Arrow")
+
+    local instance
+    local assets = replicatedStorage:FindFirstChild("Assets")
+    local vfx = assets and assets:FindFirstChild("VFX")
+    local projectiles = vfx and vfx:FindFirstChild("Projectiles")
+
+    if childName == "ViewArrow" and viewModels then
+        instance = viewModels:FindFirstChild("Arrow")
     else
-        v95 = v96 and (v96:FindFirstChild(a1) or (v96:FindFirstChild("Arrow")))
+        instance = projectiles and (projectiles:FindFirstChild(childName) or projectiles:FindFirstChild("Arrow"))
     end
-    if not v95 or not v95:IsA("Model") then
+
+    if not instance or not instance:IsA("Model") then
         return nil
     end
-    local v97 = v95:Clone()
-    for v99, value_12 in v97:GetDescendants() do
-        if value_12:IsA("BasePart") then
-            value_12.Anchored = true
-            value_12.CanCollide = false
-            value_12.CanQuery = false
-            value_12.CanTouch = false
-            value_12.CastShadow = false
-            if a1 ~= "Bolt" or not (math.min(value_12.Color.R, value_12.Color.G, value_12.Color.B) > 0.5) then
-                continue
+
+    local instance2 = instance:Clone()
+
+    for _, descendant in instance2:GetDescendants() do
+        if descendant:IsA("BasePart") then
+            descendant.Anchored = true
+            descendant.CanCollide = false
+            descendant.CanQuery = false
+            descendant.CanTouch = false
+            descendant.CastShadow = false
+
+            if childName == "Bolt" then
+                if not (0.5 < math.min(descendant.Color.R, descendant.Color.G, descendant.Color.B)) then
+                    continue
+                end
+
+                descendant.Color = Color3.fromRGB(120, 124, 130)
+
+                if not descendant:IsA("MeshPart") then
+                    continue
+                end
+
+                descendant.TextureID = ""
             end
-            value_12.Color = Color3.fromRGB(120, 124, 130)
-            if value_12:IsA("MeshPart") then
-                value_12.TextureID = ""
-            end
-        else
-            if value_12:IsA("ParticleEmitter") then
-                value_12.LockedToPart = true
-                continue
-            end
-            if value_12:IsA("Trail") or value_12:IsA("Beam") or value_12:IsA("Light") then
-                value_12.Enabled = false
-                continue
-            end
-            if value_12:IsA("Script") or value_12:IsA("LocalScript") or value_12:IsA("Sound") then
-                value_12:Destroy()
-            end
+        elseif descendant:IsA("ParticleEmitter") then
+            descendant.LockedToPart = true
+        elseif descendant:IsA("Trail") or descendant:IsA("Beam") or descendant:IsA("Light") then
+            descendant.Enabled = false
+        elseif descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("Sound") then
+            descendant:Destroy()
         end
     end
-    local v100, v98 = v97:GetBoundingBox()
-    v97:ScaleTo((math.clamp((a2 or 0.36) / math.max(v98.X, v98.Y, v98.Z, 0.05), 0.005, 1)))
-    v97.Name = "TribesViewArrow_" .. a1
-    v98 = v97:GetBoundingBox()
-    local tbl_23 = {model = v97, centre = v97:GetPivot():ToObjectSpace(v98)}
-    tbl_upv_22[v93] = tbl_23
-    return tbl_23
+
+    local _, v566
+    _, v566 = instance2:GetBoundingBox()
+    instance2:ScaleTo((math.clamp((a555 or 0.36) / math.max(v566.X, v566.Y, v566.Z, 0.05), 0.005, 1)))
+    instance2.Name = "TribesViewArrow_" .. childName
+    v566 = instance2:GetBoundingBox()
+    local v567 = {model = instance2, centre = instance2:GetPivot():ToObjectSpace(v566)}
+    v551[v556] = v567
+
+    return v567
 end
-local tbl_upv_24 = {ringTime = 0.15, thick = 0.0035, ring = 0.02, ringHz = 18}
-tbl_upv_24.color = Color3.fromRGB(196, 180, 140)
-local tbl_upv_25 = {}
-local function stringPart(a1)
+
+local function drawBolt(parent, cframe: CFrame?, a571)
+    --[[
+      name: drawBolt
+      line: 2060
+      upvalues:
+        v231 (copy, index: 1)
+        arrowFor (copy, index: 2)
+    ]]
+    if a571.kind ~= "Crossbow" or not v231.boltIn or not v231.frame or not a571.muzzle then
+        return nil
+    end
+
+    local v572 = arrowFor("Bolt", 0.347)
+    if not v572 then
+        return nil
+    end
+
+    local frame = v231.frame
+    local lookVector = frame.LookVector
+    local objectSpaceWorldPosition = cframe:PointToObjectSpace(a571.muzzle.WorldPosition)
+    local clampedValue = math.clamp((v231.now - v231.boltT0) / 0.1, 0, 1)
+    local v577 = objectSpaceWorldPosition - lookVector * (0.1735 + (0.24 * (1 - (clampedValue * clampedValue * (3 - (clampedValue * 2))))))
+    v572.model:PivotTo(cframe * (CFrame.lookAt(v577, v577 + lookVector, frame.UpVector) * v572.centre:Inverse()))
+
+    if v572.model.Parent ~= parent then
+        v572.model.Parent = parent
+    end
+
+    return v572.model
+end
+
+local v578 = {thick = 0.0035, ring = 0.02, ringHz = 18, ringTime = 0.15, color = Color3.fromRGB(196, 180, 140)}
+local v579 = {}
+
+local function stringPart(key)
     --[[
       name: stringPart
       line: 2085
       upvalues:
-        tbl_upv_25 (copy, index: 1)
-        tbl_upv_24 (copy, index: 2)
+        v579 (copy, index: 1)
+        v578 (copy, index: 2)
     ]]
-    local v99 = tbl_upv_25[a1]
-    if not (v99) then
-        v99 = Instance.new("Part")
-        v99.Name = "TribesViewString"
-        v99.Anchored = true
-        v99.CanCollide = false
-        v99.CanQuery = false
-        v99.CanTouch = false
-        v99.CastShadow = false
-        v99.Material = Enum.Material.SmoothPlastic
-        v99.Color = tbl_upv_24.color
-        v99.Size = Vector3.new(tbl_upv_24.thick, tbl_upv_24.thick, 0.1)
-        tbl_upv_25[a1] = v99
+    local v582 = v579[key]
+    if not v582 then
+        v582 = Instance.new("Part")
+        v582.Name = "TribesViewString"
+        v582.Anchored = true
+        v582.CanCollide = false
+        v582.CanQuery = false
+        v582.CanTouch = false
+        v582.CastShadow = false
+        v582.Material = Enum.Material.SmoothPlastic
+        v582.Color = v578.color
+        v582.Size = Vector3.new(v578.thick, v578.thick, 0.1)
+        v579[key] = v582
     end
-    return v99
+
+    return v582
 end
+
 local function hideStrings()
     --[[
       name: hideStrings
       line: 2102
       upvalues:
-        tbl_upv_25 (copy, index: 1)
+        v579 (copy, index: 1)
     ]]
-    for _, value_13 in tbl_upv_25 do
-        value_13.Parent = nil
+    for _, v585 in v579 do
+        v585.Parent = nil
     end
 end
-local function drawBolt(a1, a2, a3)
-    --[[
-      name: drawBolt
-      line: 2060
-      upvalues:
-        tbl_upv_15 (copy, index: 1)
-        arrowFor (copy, index: 2)
-    ]]
-    if a3.kind == "Crossbow" and tbl_upv_15.boltIn and tbl_upv_15.frame and a3.muzzle then
-        local v100 = arrowFor("Bolt", 0.347)
-        if not v100 then
-            return nil
-        end
-        local frame_1 = tbl_upv_15.frame
-        local LookVector_1 = frame_1.LookVector
-        local v101 = a2:PointToObjectSpace(a3.muzzle.WorldPosition)
-        local v102 = math.clamp((tbl_upv_15.now - tbl_upv_15.boltT0) / 0.1, 0, 1)
-        local v103 = v101 - LookVector_1 * (0.1735 + (0.24 * (1 - ((v102 * v102) * (3 - (v102 * 2))))))
-        v100.model:PivotTo(a2 * (CFrame.lookAt(v103, v103 + LookVector_1, frame_1.UpVector) * v100.centre:Inverse()))
-        if v100.model.Parent ~= a1 then
-            v100.model.Parent = a1
-        end
-        return v100.model
-    end
-    return nil
-end
-local function drawArrow(a1, a2, a3, a4)
+
+local function drawArrow(parent, cframe: CFrame?, a589: number, a590)
     --[[
       name: drawArrow
       line: 2108
       upvalues:
-        tbl_upv_15 (copy, index: 1)
+        v231 (copy, index: 1)
         arrowFor (copy, index: 2)
-        u2 (ref,  index: 3)
+        viewModels (ref,  index: 3)
         drawBolt (copy, index: 4)
-        u26 (ref,  index: 5)
-        tbl_upv_25 (copy, index: 6)
-        tbl_upv_24 (copy, index: 7)
+        v552 (ref,  index: 5)
+        v579 (copy, index: 6)
+        v578 (copy, index: 7)
     ]]
-    local bow_1 = a4.bow
-    local v104
-    local v106 = nil
-    if (a4.kind == "Bow") and ((a4.cfg.stock ~= nil) and (tbl_upv_15.nocked and (tbl_upv_15.frame ~= nil))) then
-        if (u2) and (u2:FindFirstChild("Arrow")) then
-            v106 = "ViewArrow"
+    local v591
+    local bow = a590.bow
+    local v593 = a590.kind == "Bow" and a590.cfg.stock ~= nil and v231.nocked and v231.frame ~= nil
+
+    if v593 then
+        local v594 = viewModels and viewModels:FindFirstChild("Arrow") and "ViewArrow" or v231.arrowKind
+        v591 = arrowFor(v594, 0.36)
+    else
+        v591 = nil
+    end
+
+    local v595 = if v591 then v591.model else drawBolt(parent, cframe, a590)
+
+    if v595 ~= v552 then
+        if v552 then
+            v552.Parent = nil
+        end
+
+        v552 = v595
+    end
+
+    local frame = v231.frame
+    if not frame then
+        for _, v598 in v579 do
+            v598.Parent = nil
+        end
+
+        return
+    end
+
+    local v599 = CFrame.new(frame.X, frame.Y, frame.Z * a589) * frame.Rotation
+    local clampedValue = math.clamp((v231.now - v231.drawT0) / v231.drawTime, 0, 1)
+    local v601 = clampedValue * clampedValue * (3 - (clampedValue * 2))
+    local v602 = nil
+
+    if bow then
+        if v231.draw then
+            v602 = bow.nock + Vector3.new(0, 0, 0.12 * v601)
         else
-            v106 = tbl_upv_15.arrowKind
+            local v603 = v231.now - v231.drawHold + 0.16
+            local x = if 0 <= v603 and v603 < v578.ringTime then v578.ring * math.sin(((v603 * v578.ringHz) * 2) * math.pi) * (1 - (v603 / v578.ringTime)) else 0
+            v602 = bow.brace + Vector3.new(x, 0, x * 0.3)
         end
-        v104 = arrowFor(v106, 0.36)
-    else
-        v104 = nil
-    end
-    if v104 then
-        v106 = v104.model
-    else
-        v106 = drawBolt(a1, a2, a4)
-    end
-    if v106 ~= u26 then
-        if u26 then
-            u26.Parent = nil
+
+        local worldSpacePoint = v599:PointToWorldSpace(v602)
+
+        for v606, v607 in {bow.top, bow.bottom} do
+            local v608
+            local worldSpacePoint2 = v599:PointToWorldSpace(v607)
+
+            if const v610 = v579[v606] then
+                v608 = v610
+            else
+                v608 = Instance.new("Part")
+                v608.Name = "TribesViewString"
+                v608.Anchored = true
+                v608.CanCollide = false
+                v608.CanQuery = false
+                v608.CanTouch = false
+                v608.CastShadow = false
+                v608.Material = Enum.Material.SmoothPlastic
+                v608.Color = v578.color
+                v608.Size = Vector3.new(v578.thick, v578.thick, 0.1)
+                v579[v606] = v608
+            end
+
+            local magnitude = (worldSpacePoint - worldSpacePoint2).Magnitude
+            v608.Size = Vector3.new(v578.thick, v578.thick, (math.max(magnitude, 0.001)))
+            v608.CFrame = cframe * CFrame.lookAt((worldSpacePoint2 + worldSpacePoint) * 0.5, worldSpacePoint)
+
+            if v608.Parent ~= parent then
+                v608.Parent = parent
+            end
         end
-        u26 = v106
-    end
-    local frame_2 = tbl_upv_15.frame
-    if frame_2 then
-        local v107 = CFrame.new(frame_2.X, frame_2.Y, frame_2.Z * a3) * frame_2.Rotation
-        local v108 = math.clamp((tbl_upv_15.now - tbl_upv_15.drawT0) / tbl_upv_15.drawTime, 0, 1)
-        local v109 = v108 * v108 * (3 - (v108 * 2))
-        v108 = nil
-        if bow_1 then
-            local v110 = nil
-            if tbl_upv_15.draw then
-                v108 = bow_1.nock + Vector3.new(0, 0, 0.12 * v109)
-            else
-                v110 = tbl_upv_15.now - tbl_upv_15.drawHold + 0.16
-                local v111
-                if (v110 >= 0) and (v110 < tbl_upv_24.ringTime) then
-                    v111 = tbl_upv_24.ring * math.sin(((v110 * tbl_upv_24.ringHz) * 2) * math.pi) * (1 - (v110 / tbl_upv_24.ringTime))
-                else
-                    v111 = 0
-                end
-                v108 = bow_1.brace + Vector3.new(v111, 0, v111 * 0.3)
-            end
-            local v112 = v107:PointToWorldSpace(v108)
-            for key_3, value_14 in {bow_1.top, bow_1.bottom} do
-                local v113 = v107:PointToWorldSpace(value_14)
-                local v114 = tbl_upv_25[key_3]
-                if not (v114) then
-                    v114 = Instance.new("Part")
-                    v114.Name = "TribesViewString"
-                    v114.Anchored = true
-                    v114.CanCollide = false
-                    v114.CanQuery = false
-                    v114.CanTouch = false
-                    v114.CastShadow = false
-                    v114.Material = Enum.Material.SmoothPlastic
-                    v114.Color = tbl_upv_24.color
-                    v114.Size = Vector3.new(tbl_upv_24.thick, tbl_upv_24.thick, 0.1)
-                    tbl_upv_25[key_3] = v114
-                end
-                v114.Size = Vector3.new(tbl_upv_24.thick, tbl_upv_24.thick, math.max((v112 - v113).Magnitude, 0.001))
-                v114.CFrame = a2 * CFrame.lookAt((v113 + v112) * 0.5, v112)
-                if v114.Parent ~= a1 then
-                    v114.Parent = a1
-                end
-            end
-        elseif a4.xbow then
-            local xbow_1 = a4.xbow
-            local v115 = math.clamp(tbl_upv_15.stringV, 0, 1)
-            local v116 = tbl_upv_15.now - tbl_upv_15.stringT0
-            local v117 = xbow_1.brace - xbow_1.nut
-            local v118 = v117:Cross(xbow_1.right - xbow_1.left)
-            local v119 = ((not (v118.Magnitude > 1e-06)) and Vector3.new(0, 1, 0)) or (v118.Unit)
-            if (v116 >= 0) and (v116 < 0.15) then
-                v118 = math.cos(((v116 * 18) * 2) * math.pi) * 0.012 * (1 - (v116 / 0.15))
-            else
-                v118 = 0
-            end
-            v119 = v107:PointToWorldSpace((xbow_1.nut + (v117 * v115)) + (v119 * v118))
-            for key_4, value_15 in {xbow_1.left, xbow_1.right} do
-                v118 = v107:PointToWorldSpace(value_15)
-                local v120 = tbl_upv_25[key_4]
-                if v120 then
-                    v117 = v120
-                else
-                    local v121 = Instance.new("Part")
-                    v121.Name = "TribesViewString"
-                    v121.Anchored = true
-                    v121.CanCollide = false
-                    v121.CanQuery = false
-                    v121.CanTouch = false
-                    v121.CastShadow = false
-                    v121.Material = Enum.Material.SmoothPlastic
-                    v121.Color = tbl_upv_24.color
-                    v121.Size = Vector3.new(tbl_upv_24.thick, tbl_upv_24.thick, 0.1)
-                    tbl_upv_25[key_4] = v121
-                    v117 = v121
-                end
-                local v122 = tbl_upv_24.thick * 1.5
-                v117.Size = Vector3.new(v122, v122, math.max((v119 - v118).Magnitude, 0.001))
-                v117.CFrame = a2 * CFrame.lookAt((v118 + v119) * 0.5, v119)
-                if v117.Parent ~= a1 then
-                    v117.Parent = a1
-                end
-            end
+    elseif a590.xbow then
+        local v612
+        local xbow = a590.xbow
+        local clampedValue2 = math.clamp(v231.stringV, 0, 1)
+        local v615 = v231.now - v231.stringT0
+        local v616 = xbow.brace - xbow.nut
+        local v617 = v616:Cross(xbow.right - xbow.left)
+
+        if not (1e-06 < v617.Magnitude) then
+            v612 = Vector3.new(0, 1, 0)
         else
-            for _, value_16 in tbl_upv_25 do
-                value_16.Parent = nil
-            end
+            v612 = v617.Unit
         end
-        if v104 and v106 then
-            local v123 = math.clamp((tbl_upv_15.now - tbl_upv_15.nockT0) / 0.1, 0, 1)
-            local v124 = 1 - (v123 * v123) * (3 - (v123 * 2))
-            local v111
-            if (bow_1) and (v108) then
-                local v125 = v107:PointToWorldSpace(v108 + Vector3.new(0, -0.07 * v124, 0))
-                v123, v111 = (v107:PointToWorldSpace(bow_1.rest) - v125).Unit, v125
+
+        local v618 = if 0 <= v615 and v615 < 0.15 then math.cos(((v615 * 18) * 2) * math.pi) * 0.012 * (1 - (v615 / 0.15)) else 0
+        local worldSpacePoint = v599:PointToWorldSpace(xbow.nut + (v616 * clampedValue2) + (v612 * v618))
+        local v620
+
+        for v621, v622 in {xbow.left, xbow.right} do
+            local v623
+            local worldSpacePoint3 = v599:PointToWorldSpace(v622)
+            v620 = v579[v621]
+
+            if v620 then
+                v623 = v620
             else
-                local v126 = v107 * Vector3.new(-0.012, -0.07 * v124, (a4.brace - 0.005) + (0.12 * v109))
-                v123, v111 = frame_2.LookVector, v126
+                v623 = Instance.new("Part")
+                v623.Name = "TribesViewString"
+                v623.Anchored = true
+                v623.CanCollide = false
+                v623.CanQuery = false
+                v623.CanTouch = false
+                v623.CastShadow = false
+                v623.Material = Enum.Material.SmoothPlastic
+                v623.Color = v578.color
+                v623.Size = Vector3.new(v578.thick, v578.thick, 0.1)
+                v579[v621] = v623
             end
-            tbl_upv_15.arrowTip = v111 + (v123 * 0.36)
-            if v104.centre.Position.Z < 0 and u2 and u2:FindFirstChild("Arrow") then
-                v106:PivotTo(a2 * CFrame.lookAt(v111, v111 + v123, frame_2.UpVector))
-            else
-                local v127 = v111 + v123 * 0.18
-                v106:PivotTo(a2 * (CFrame.lookAt(v127, v127 + v123, frame_2.UpVector) * v104.centre:Inverse()))
+
+            local magnitude = (worldSpacePoint - worldSpacePoint3).Magnitude
+            local v626 = v578.thick * 1.5
+            v623.Size = Vector3.new(v626, v626, (math.max(magnitude, 0.001)))
+            v623.CFrame = cframe * CFrame.lookAt((worldSpacePoint3 + worldSpacePoint) * 0.5, worldSpacePoint)
+
+            if v623.Parent ~= parent then
+                v623.Parent = parent
             end
-            if v106.Parent ~= a1 then
-                v106.Parent = a1
-            end
-            return
         end
     else
-        for _, value_17 in tbl_upv_25 do
-            value_17.Parent = nil
+        for _, v628 in v579 do
+            v628.Parent = nil
         end
+    end
+
+    if not v591 or not v595 then
+        return
+    end
+
+    local v629, v630
+    local clampedValue3 = math.clamp((v231.now - v231.nockT0) / 0.1, 0, 1)
+    local v632 = 1 - clampedValue3 * clampedValue3 * (3 - (clampedValue3 * 2))
+
+    if bow and v602 then
+        v629 = v599:PointToWorldSpace(v602 + Vector3.new(0, -0.07 * v632, 0))
+        v630 = (v599:PointToWorldSpace(bow.rest) - v629).Unit
+    else
+        local z = a590.brace - 0.005 + 0.12 * v601
+        v629 = v599 * Vector3.new(-0.012, -0.07 * v632, z)
+        v630 = frame.LookVector
+    end
+
+    v231.arrowTip = v629 + (v630 * 0.36)
+
+    if not (v591.centre.Position.Z < 0) or not viewModels or not viewModels:FindFirstChild("Arrow") then
+        local v634 = v629 + v630 * 0.18
+        v595:PivotTo(cframe * (CFrame.lookAt(v634, v634 + v630, frame.UpVector) * v591.centre:Inverse()))
+    else
+        v595:PivotTo(cframe * CFrame.lookAt(v629, v629 + v630, frame.UpVector))
+    end
+
+    if v595.Parent ~= parent then
+        v595.Parent = parent
     end
 end
-local tbl_upv_26 = {fire_bomb = true}
-local tbl_upv_27 = {Hatchets = true, Gauntlets = true, Spear = true}
-local function itemPoint(a1, a2, a3)
+
+local v635 = {fire_bomb = true}
+
+local function itemPoint(cframe: CFrame?, a638, a639: string)
     --[[
       name: itemPoint
       line: 2208
       upvalues:
-        tbl_upv_15 (copy, index: 1)
+        v231 (copy, index: 1)
     ]]
-    local v128 = tbl_upv_15.frame or (CFrame.identity)
-    local v129
-    if a3 ~= "tip" then
-        v129 = a2.muzzle
+    local v640
+    local v641
+    local v642 = v231.frame or CFrame.identity
+
+    if a639 ~= "tip" then
+        v640 = a638.muzzle
     else
-        v129 = a2.tipAtt or (a2.muzzle)
+        v640 = a638.tipAtt or a638.muzzle
     end
-    local v130
-    if a2.gripAtt then
-        v130 = a2.gripAtt.WorldPosition
+
+    local v643 = if a638.gripAtt then a638.gripAtt.WorldPosition else a638.model:GetPivot().Position
+    local v644 = if v640 then v640.WorldPosition else v643
+    local objectSpacePoint = cframe:PointToObjectSpace(v644)
+
+    if a638.cfg.act == "gun" or a639 == "barrel" then
+        v641 = v642.LookVector
     else
-        v130 = a2.model:GetPivot().Position
+        local objectSpacePoint2 = cframe:PointToObjectSpace(v643)
+        v641 = if 0.001 < (objectSpacePoint - objectSpacePoint2).Magnitude then (objectSpacePoint - objectSpacePoint2).Unit else v642.LookVector
     end
-    local v131
-    if v129 then
-        v131 = v129.WorldPosition
-    else
-        v131 = v130
-    end
-    local v132 = a1:PointToObjectSpace(v131)
-    local v133
-    if a2.cfg.act == "gun" then
-        v133 = v128.LookVector
-    else
-        local v134 = nil
-        if a3 ~= "barrel" then
-            v134 = a1:PointToObjectSpace(v130)
-            if (v132 - v134).Magnitude > 0.001 then
-                v133 = (v132 - v134).Unit
-            else
-                v133 = v128.LookVector
-            end
-        else
-            v133 = v128.LookVector
-        end
-    end
-    return CFrame.lookAt(v132, v132 + v133)
+
+    return CFrame.lookAt(objectSpacePoint, objectSpacePoint + v641)
 end
-local function viewEffects(a1, a2, a3)
-    --[[
-      name: viewEffects
-      line: 2263
-      upvalues:
-        ViewFx_upv_1 (copy, index: 1)
-        tbl_upv_15 (copy, index: 2)
-        itemPoint (copy, index: 3)
-        tbl_upv_2 (copy, index: 4)
-        u26 (ref,  index: 5)
-        Sfx_upv_1 (copy, index: 6)
-        tbl_upv_26 (copy, index: 7)
-    ]]
-    ViewFx_upv_1.Follow(a1, a2)
-    local fxQueue_1 = tbl_upv_15.fxQueue
-    if #fxQueue_1 > 0 then
-        local v135, v136, _ = nil, nil, nil
-        local v137 = nil
-        local v138 = nil
-        local v139 = nil
-        for v154, value_18 in fxQueue_1 do
-            if value_18 == "muzzle" then
-                local Play_1 = ViewFx_upv_1.Play
-                local v140 = itemPoint(a2, a3, "barrel")
-                v137 = {style = 0}
-                v137.style = ((a3.kind == "Blunderbuss") and "blunderbuss") or (((a3.kind ~= "Pistol") and "musket") or "pistol")
-                Play_1("muzzle", v140, v137)
-                continue
-            end
-            if value_18 == "pan" then
-                local v141 = tbl_upv_15.frame or (CFrame.identity)
-                if a3.gripAtt then
-                    v138 = a2:PointToObjectSpace(a3.gripAtt.WorldPosition)
-                else
-                    v138 = v141.Position
-                end
-                local v142 = ((not (a3.pan)) and (v138 + (v141.UpVector * 0.035) + v141.LookVector * 0.05)) or (a2:PointToObjectSpace(a3.pan.WorldPosition))
-                ViewFx_upv_1.Play("pan", CFrame.lookAt(v142, v142 + v141.UpVector))
-            elseif value_18 == "headglint" then
-                local v143 = tbl_upv_15.frame or (CFrame.identity)
-                if a3.gripAtt then
-                    v138 = a2:PointToObjectSpace(a3.gripAtt.WorldPosition)
-                else
-                    v138 = v143.Position
-                end
-                v135 = v138 + v143.UpVector * (((value_18 ~= "headglint") and (a3.cfg.len * 0.8)) or (a3.bladeLen * 0.85))
-                v137 = tbl_upv_2.smearAlong[a3.kind]
-                if value_18 == "headglint" then
-                    v135 = (v137 and (v138 + (v143.UpVector * (a3.bladeLen * v137.root)) + v143.LookVector * (a3.bladeLen * 0.3))) or v135
-                end
-                local v144 = math.tan(math.rad(a1.FieldOfView) / 2)
-                local v145 = a1.ViewportSize.X / math.max(a1.ViewportSize.Y, 1)
-                for v155 = 1, 6 do
-                    v139 = -v135.Z
-                    if not (v139 > 0.05) or not (math.abs(v135.X / ((v139 * v144) * v145)) < 0.9) or not (math.abs(v135.Y / (v139 * v144)) < 0.9) then
-                        v135 = v138 + (v135 - v138) * 0.8
-                        continue
-                    end
-                    break
-                end
-                v135 = v135.Unit * math.min(v135.Magnitude - 0.03, 0.5)
-                ViewFx_upv_1.Play(((value_18 ~= "headglint") and "block_spark") or ((v137 and "flare") or "glint"), CFrame.lookAt(v135, v135 + v143.UpVector))
-                continue
-            elseif value_18 == "rimspark" then
-                local v143 = tbl_upv_15.frame or (CFrame.identity)
-                if a3.gripAtt then
-                    v138 = a2:PointToObjectSpace(a3.gripAtt.WorldPosition)
-                else
-                    v138 = v143.Position
-                end
-                v135 = v138 + v143.UpVector * (((value_18 ~= "headglint") and (a3.cfg.len * 0.8)) or (a3.bladeLen * 0.85))
-                v137 = tbl_upv_2.smearAlong[a3.kind]
-                if value_18 == "headglint" then
-                    v135 = (v137 and (v138 + (v143.UpVector * (a3.bladeLen * v137.root)) + v143.LookVector * (a3.bladeLen * 0.3))) or v135
-                end
-                local v144 = math.tan(math.rad(a1.FieldOfView) / 2)
-                local v145 = a1.ViewportSize.X / math.max(a1.ViewportSize.Y, 1)
-                for v155 = 1, 6 do
-                    v139 = -v135.Z
-                    if not (v139 > 0.05) or not (math.abs(v135.X / ((v139 * v144) * v145)) < 0.9) or not (math.abs(v135.Y / (v139 * v144)) < 0.9) then
-                        v135 = v138 + (v135 - v138) * 0.8
-                        continue
-                    end
-                    break
-                end
-                v135 = v135.Unit * math.min(v135.Magnitude - 0.03, 0.5)
-                ViewFx_upv_1.Play(((value_18 ~= "headglint") and "block_spark") or ((v137 and "flare") or "glint"), CFrame.lookAt(v135, v135 + v143.UpVector))
-            elseif value_18 ~= "fullglint" then
-                if value_18 == "bolt" then
-                    ViewFx_upv_1.Play("glint", itemPoint(a2, a3, "muzzle"))
-                    continue
-                end
-                if string.sub(value_18, 1, 4) ~= "sfx:" then
-                    if value_18 ~= "click" or not (a3.pan) then
-                        if value_18 == "twang" then
-                            ViewFx_upv_1.Play(value_18, itemPoint(a2, a3, "muzzle"))
-                            continue
-                        end
-                        if value_18 == "snap" then
-                            ViewFx_upv_1.Play(value_18, itemPoint(a2, a3, "muzzle"))
-                            continue
-                        end
-                        if value_18 == "powder" then
-                            ViewFx_upv_1.Play(value_18, itemPoint(a2, a3, "muzzle"))
-                            continue
-                        end
-                        if value_18 == "puff" then
-                            ViewFx_upv_1.Play(value_18, itemPoint(a2, a3, "muzzle"))
-                            continue
-                        end
-                        if value_18 == "click" then
-                            ViewFx_upv_1.Play(value_18, itemPoint(a2, a3, "muzzle"))
-                            continue
-                        end
-                        if value_18 == "ring" then
-                            ViewFx_upv_1.Play(value_18, itemPoint(a2, a3, "muzzle"))
-                            continue
-                        end
-                        if value_18 == "sparkle" then
-                            ViewFx_upv_1.Play(((a3.id ~= "healing_tonic") and "sparkle") or "gold", itemPoint(a2, a3, "tip"))
-                            continue
-                        end
-                        if value_18 ~= "crumbs" or a3.id ~= "healing_tonic" then
-                            if value_18 == "knock" then
-                                local Position_1 = itemPoint(a2, a3, "tip").Position
-                                ViewFx_upv_1.Play("flare", CFrame.new(0, Position_1.Y, Position_1.Z))
-                                continue
-                            end
-                            if value_18 ~= "beat" then
-                                ViewFx_upv_1.Play(value_18, itemPoint(a2, a3, "tip"))
-                                continue
-                            end
-                        end
-                        ViewFx_upv_1.Play("crumbs", itemPoint(a2, a3, "tip"))
-                        tbl_upv_15.bite = tbl_upv_15.bite + 1
-                        if tbl_upv_15.bite % 2 == 1 then
-                            ViewFx_upv_1.Play("gold", itemPoint(a2, a3, "tip"))
-                            continue
-                        end
-                    end
-                    local v146 = a2:PointToObjectSpace(a3.pan.WorldPosition)
-                    ViewFx_upv_1.Play("click", CFrame.lookAt(v146, v146 + Vector3.new(0, 1, 0)))
-                    continue
-                else
-                    if tbl_upv_15.sim then
-                        continue
-                    end
-                    local v147, v148 = string.match(value_18, "^sfx:([^@]+)@?(.*)$")
-                    local Play_2 = Sfx_upv_1.Play
-                    v137 = v147 or (string.sub(value_18, 5))
-                    local v149 = nil
-                    if tonumber(v148) then
-                        v136 = {}
-                        v136.pitch = tonumber(v148)
-                    else
-                        v136 = nil
-                    end
-                    Play_2(v137, v149, v136)
-                end
-            else
-                local v150 = tbl_upv_15.frame or (CFrame.identity)
-                if a3.gripAtt then
-                    v138 = a2:PointToObjectSpace(a3.gripAtt.WorldPosition)
-                else
-                    v138 = v150.Position
-                end
-                v135 = v138 + v150.LookVector * (((a3.cfg.stock ~= nil) and (0.288 - a3.brace)) or (a3.cfg.len * 0.5))
-                if a3.cfg.stock == nil or not (tbl_upv_15.arrowTip) or not (u26) then
-                    ViewFx_upv_1.Play("glint", CFrame.lookAt(v135, v135 + v150.LookVector))
-                    continue
-                end
-                if u26.Parent then
-                    v135 = tbl_upv_15.arrowTip
-                end
-                ViewFx_upv_1.Play("glint", CFrame.lookAt(v135, v135 + v150.LookVector))
-            end
-        end
-        table.clear(fxQueue_1)
-    end
-    if a3.cfg.act == "gun" then
-        ViewFx_upv_1.Track("muzzle", itemPoint(a2, a3, "barrel"))
-    end
-    local v151 = tbl_upv_26[a3.id] == true
-    if v151 ~= tbl_upv_15.embers then
-        tbl_upv_15.embers = v151
-        ViewFx_upv_1.Play("embers", itemPoint(a2, a3, "tip"), {on = v151})
-    end
-    if v151 then
-        ViewFx_upv_1.Track("embers", itemPoint(a2, a3, "tip"))
-    end
-    local v152 = ((a3.id ~= "smoke_bomb") and 0) or (((tbl_upv_15.wind) and 2) or 1)
-    if v152 ~= tbl_upv_15.fuse then
-        tbl_upv_15.fuse = v152
-        local Play_3 = ViewFx_upv_1.Play
-        local v153 = itemPoint(a2, a3, "tip")
-        local tbl_28 = {on = 0, rate = 0}
-        tbl_28.on = v152 > 0
-        tbl_28.rate = v152 * 18
-        Play_3("fuse", v153, tbl_28)
-    end
-    if not (v152 > 0) then
-        return
-    end
-    ViewFx_upv_1.Track("fuse", itemPoint(a2, a3, "tip"))
-end
-local function drawStreak(a1, a2)
+
+local v647 = {Spear = true, Gauntlets = true, Hatchets = true}
+
+local function drawStreak(a649: number, a650)
     --[[
       name: drawStreak
       line: 2229
       upvalues:
-        tbl_upv_15 (copy, index: 1)
-        tbl_upv_27 (copy, index: 2)
-        ViewFx_upv_1 (copy, index: 3)
-        BladeClips_upv_1 (copy, index: 4)
+        v231 (copy, index: 1)
+        v647 (copy, index: 2)
+        ViewFx (copy, index: 3)
+        BladeClips (copy, index: 4)
     ]]
-    local clip_upv_1 = tbl_upv_15.clip
-    local v154
-    if clip_upv_1 then
-        v154 = clip_upv_1.smear
-    else
-        v154 = nil
-    end
-    if tbl_upv_27[a2.kind] and clip_upv_1 and v154 and a2.tipCanon then
-        local clipScale_upv_1 = tbl_upv_15.clipScale
-        local v155 = tbl_upv_15.now - tbl_upv_15.clipT0
-        if not (v155 < v154[1] * clipScale_upv_1) and not ((v154[2] * clipScale_upv_1) + 0.035 < v155) then
-            local u27 = tbl_upv_15.layerPos + Vector3.new(0, 0, tbl_upv_15.wallPush)
-            local layerRot_1 = tbl_upv_15.layerRot
-            local u28 = CFrame.fromEulerAnglesYXZ(layerRot_1.X, layerRot_1.Y, layerRot_1.Z)
-            local leftClip_upv_1 = clip_upv_1.leftClip
-            local u29 = (clip_upv_1.smearLeft == true) and ((a2.leftFist ~= nil) and (leftClip_upv_1 ~= nil))
-            local v156 = math.min(v155, v154[2] * clipScale_upv_1)
-            local v157 = math.max(v154[1] * clipScale_upv_1, v155 - 0.035)
-            local Streak_1 = ViewFx_upv_1.Streak
-            local function tipAt_1(a3)
+    local clip = v231.clip
+    local v652 = if clip then clip.smear else nil
+
+    if v647[a650.kind] and clip and v652 then
+        if a650.tipCanon then
+            local clipScale = v231.clipScale
+            local v654 = v231.now - v231.clipT0
+
+            if v654 < v652[1] * clipScale or (v652[2] * clipScale) + 0.035 < v654 then
+                ViewFx.Streak(nil, nil)
+                return
+            end
+
+            local v655
+            local v656
+            local v657 = v231.layerPos + Vector3.new(0, 0, v231.wallPush)
+            local layerRot = v231.layerRot
+            local v659 = CFrame.fromEulerAnglesYXZ(layerRot.X, layerRot.Y, layerRot.Z)
+            local leftClip = clip.leftClip
+            local v661 = clip.smearLeft == true and a650.leftFist ~= nil and leftClip ~= nil
+
+            local function tipAt(a663: number)
                 --[[
                   name: tipAt
                   line: 2246
                   upvalues:
-                    u29 (copy, index: 1)
-                    BladeClips_upv_1 (copy, index: 2)
-                    leftClip_upv_1 (copy, index: 3)
-                    tbl_upv_15 (copy, index: 4)
-                    clipScale_upv_1 (copy, index: 5)
-                    u27 (copy, index: 6)
-                    a2 (copy, index: 7)
-                    a1 (copy, index: 8)
-                    u28 (copy, index: 9)
-                    clip_upv_1 (copy, index: 10)
+                    v661 (copy, index: 1)
+                    BladeClips (copy, index: 2)
+                    leftClip (copy, index: 3)
+                    v231 (copy, index: 4)
+                    clipScale (copy, index: 5)
+                    v657 (copy, index: 6)
+                    a650 (copy, index: 7)
+                    a649 (copy, index: 8)
+                    v659 (copy, index: 9)
+                    clip (copy, index: 10)
                 ]]
-                if u29 then
-                    local v158, v159, v160, v161, v162, v163, v164, v165, v166, v167, v168, v169 = BladeClips_upv_1.Eval(leftClip_upv_1, tbl_upv_15.leftFrom, a3, clipScale_upv_1, tbl_upv_15.restFrame, tbl_upv_15.leftFromVel):GetComponents()
-                    local v170 = CFrame.new(-v158, v159, v160, v161, -v162, -v163, -v164, v165, v166, -v167, v168, v169)
-                    local v171 = v170.Position + u27
-                    local tipCanon_1 = a2.tipCanon
-                    return Vector3.new(v171.X, v171.Y, v171.Z * a1) + (u28 * v170.Rotation):VectorToWorldSpace(Vector3.new(-tipCanon_1.X, tipCanon_1.Y, tipCanon_1.Z))
-                else
-                    local v172 = BladeClips_upv_1.Eval(clip_upv_1, tbl_upv_15.clipFrom, a3, clipScale_upv_1, tbl_upv_15.restFrame, tbl_upv_15.clipFromVel)
-                    local v173 = v172.Position + u27
-                    return Vector3.new(v173.X, v173.Y, v173.Z * a1) + (u28 * v172.Rotation):VectorToWorldSpace(a2.tipCanon)
+                if v661 then
+                    local v664 = BladeClips.Eval(leftClip, v231.leftFrom, a663, clipScale, v231.restFrame, v231.leftFromVel)
+                    local components, v666, v667, v668, v669, v670, v671, v672, v673, v674, v675, v676 = v664:GetComponents()
+                    local cframe = CFrame.new(-components, v666, v667, v668, -v669, -v670, -v671, v672, v673, -v674, v675, v676)
+                    local v678 = cframe.Position + v657
+                    local tipCanon = a650.tipCanon
+
+                    return Vector3.new(v678.X, v678.Y, v678.Z * a649) + (v659 * cframe.Rotation):VectorToWorldSpace((Vector3.new(-tipCanon.X, tipCanon.Y, tipCanon.Z)))
                 end
+
+                local v680 = BladeClips.Eval(clip, v231.clipFrom, a663, clipScale, v231.restFrame, v231.clipFromVel)
+                local v681 = v680.Position + v657
+
+                return Vector3.new(v681.X, v681.Y, v681.Z * a649) + (v659 * v680.Rotation):VectorToWorldSpace(a650.tipCanon)
             end
-            local v174 = tipAt_1(v157)
-            local v175 = tipAt_1(v156)
-            Streak_1(v174, v175, ((v154[2] * clipScale_upv_1 < v155) and (1 - (v155 - (v154[2] * clipScale_upv_1)) / 0.035)) or 1, ((a2.kind == "Gauntlets") and (a2.cfg.len * 0.2)) or (((a2.kind == "Hatchets") and (a2.cfg.len * 0.45)) or nil))
+
+            local v682 = math.min(v654, v652[2] * clipScale)
+            local v683 = math.max(v652[1] * clipScale, v654 - 0.035)
+            local streak = ViewFx.Streak
+            local v685 = tipAt(v683)
+            local v686 = tipAt(v682)
+
+            if v652[2] * clipScale < v654 then
+                v655 = 1 - (v654 - (v652[2] * clipScale)) / 0.035
+            else
+                v655 = 1
+            end
+
+            if a650.kind ~= "Gauntlets" then
+                v656 = if a650.kind == "Hatchets" then a650.cfg.len * 0.45 else nil
+            else
+                v656 = a650.cfg.len * 0.2
+            end
+
+            streak(v685, v686, v655, v656)
+
             return
         end
-        ViewFx_upv_1.Streak(nil, nil)
-        return
     end
-    ViewFx_upv_1.Streak(nil, nil)
+
+    ViewFx.Streak(nil, nil)
 end
-local function drawBlade(a1, a2, a3, a4)
+
+local function viewEffects(a688, cframe: CFrame?, a690)
     --[[
-      name: drawBlade
-      line: 1934
+      name: viewEffects
+      line: 2263
       upvalues:
-        BladeSmear_upv_1 (copy, index: 1)
-        tbl_upv_15 (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
-        BladeClips_upv_1 (copy, index: 4)
-        tbl_upv_19 (copy, index: 5)
-        tbl_upv_20 (copy, index: 6)
-        tbl_upv_21 (copy, index: 7)
-        tbl_upv_16 (copy, index: 8)
-        tbl_upv_17 (copy, index: 9)
-        tbl_upv_18 (copy, index: 10)
+        ViewFx (copy, index: 1)
+        v231 (copy, index: 2)
+        itemPoint (copy, index: 3)
+        v16 (copy, index: 4)
+        v552 (ref,  index: 5)
+        Sfx (copy, index: 6)
+        v635 (copy, index: 7)
     ]]
-    BladeSmear_upv_1.Follow(a2)
-    local frame_3 = tbl_upv_15.frame
-    if tbl_upv_15.spark then
-        tbl_upv_15.spark = false
-        if frame_3 then
-            BladeSmear_upv_1.Spark(a1, a2, Vector3.new(frame_3.X, frame_3.Y, frame_3.Z * a3) + (frame_3.UpVector * (a4.bladeLen * 0.55)))
-        end
-    end
-    local clip_2 = tbl_upv_15.clip
-    local v176
-    if clip_2 then
-        v176 = clip_2.smear
-    else
-        v176 = nil
-    end
-    if clip_2 and v176 then
-        local clipScale_2 = tbl_upv_15.clipScale
-        local v177 = tbl_upv_15.now - tbl_upv_15.clipT0
-        local v178 = v176[2] * clipScale_2
-        local v179 = tbl_upv_2.smearLen * clipScale_2
-        local v180 = math.min(v177, v178)
-        local v181 = math.max(v176[1] * clipScale_2, v177 - v179)
-        if v180 - v181 < 0.004 then
-            BladeSmear_upv_1.Hide()
-        else
-            local v182 = ((not (v178 < v177)) and 1) or (math.clamp(1 - ((v177 - v178) / v179), 0, 1))
-            local SEGMENTS_1 = BladeSmear_upv_1.SEGMENTS
-            local v183 = tbl_upv_15.layerPos + Vector3.new(0, 0, tbl_upv_15.wallPush)
-            local layerRot_2 = tbl_upv_15.layerRot
-            local v184 = CFrame.fromEulerAnglesYXZ(layerRot_2.X, layerRot_2.Y, layerRot_2.Z)
-            local v185 = tbl_upv_2.smearAlong[a4.kind]
-            for n_3 = 0, SEGMENTS_1 do
-                v177 = BladeClips_upv_1.Eval(clip_2, tbl_upv_15.clipFrom, v181 + (((v180 - v181) * n_3) / SEGMENTS_1), clipScale_2, tbl_upv_15.restFrame, tbl_upv_15.clipFromVel)
-                local v186 = v177.Position + v183
-                tbl_upv_19[n_3 + 1] = Vector3.new(v186.X, v186.Y, v186.Z * a3)
-                if v185 then
-                    local v187 = n_3 + 1
-                    tbl_upv_19[v187] = tbl_upv_19[v187] + (v184 * v177.UpVector * (a4.bladeLen * v185.root))
-                    tbl_upv_20[n_3 + 1] = v184 * v177.LookVector
-                else
-                    tbl_upv_20[n_3 + 1] = v184 * v177.UpVector
-                end
-            end
-            for key_5, value_19 in tbl_upv_2.smearItem[a4.id] or (tbl_upv_2.smear[a4.kind] or (tbl_upv_2.smear.Sword)) do
-                if BladeSmear_upv_1.LAYERS < key_5 then
-                    break
-                end
-                local v188 = a4.bladeLen * value_19.width * (clip_2.smearWidth or 1)
-                for n_4 = 1, SEGMENTS_1 + 1 do
-                    tbl_upv_21[n_4] = tbl_upv_19[n_4] + (tbl_upv_20[n_4] * (a4.bladeLen * value_19.at))
-                end
-                for n_5 = 1, SEGMENTS_1 + 1 do
-                    local v189 = tbl_upv_21[math.min(SEGMENTS_1 + 1, n_5 + 1)] - tbl_upv_21[math.max(1, n_5 - 1)]
-                    local v190 = tbl_upv_20[n_5]
-                    v183 = v189 - v190 * v189:Dot(v190)
-                    if v183.Magnitude < 1e-05 then
-                        v183 = v190:Cross(Vector3.new(0, 0, 1))
+    ViewFx.Follow(a688, cframe)
+    local fxQueue = v231.fxQueue
+
+    if 0 < #fxQueue then
+        local _, _, _
+
+        for _, text in fxQueue do
+            if text == "muzzle" then
+                local play = ViewFx.Play
+                local cframe2 = itemPoint(cframe, a690, "barrel")
+                play("muzzle", cframe2, {style = (a690.kind ~= "Blunderbuss"
+                    and (a690.kind ~= "Pistol" and "musket" or "pistol"))
+                    or "blunderbuss"})
+            elseif text ~= "pan" then
+                if text == "headglint" or text == "rimspark" then
+                    local v699
+                    local v700 = v231.frame or CFrame.identity
+                    local v701 = if a690.gripAtt then cframe:PointToObjectSpace(a690.gripAtt.WorldPosition) else v700.Position
+                    local upVector = v700.UpVector
+                    local v703 = if text == "headglint" then a690.bladeLen * 0.85 else a690.cfg.len * 0.8
+                    local v704 = v701 + upVector * v703
+                    local v705 = v16.smearAlong[a690.kind]
+
+                    if text == "headglint" and v705 then
+                        v704 = v701 + (v700.UpVector * (a690.bladeLen * v705.root)) + v700.LookVector * (a690.bladeLen * 0.3)
                     end
-                    tbl_upv_16[n_5] = CFrame.fromMatrix(tbl_upv_21[n_5], v183.Unit, v190)
-                    local v191 = (n_5 - 1) / SEGMENTS_1
-                    tbl_upv_17[n_5] = v188 * (0.3 + (0.7 * v191))
-                    tbl_upv_18[n_5] = 1 - (((1 - value_19.alpha) * (v191 ^ 1.4)) * v182)
+
+                    local v706 = math.tan(math.rad(a688.FieldOfView) / 2)
+                    local v707 = a688.ViewportSize.X / math.max(a688.ViewportSize.Y, 1)
+                    v699 = v704
+
+                    for _ = 1, 6 do
+                        local v709 = -v699.Z
+
+                        if 0.05 < v709
+                            and math.abs(v699.X / ((v709 * v706) * v707)) < 0.9
+                            and math.abs(v699.Y / (v709 * v706)) < 0.9
+                        then
+                            break
+                        end
+
+                        v699 = v701 + (v699 - v701) * 0.8
+                    end
+
+                    local v710 = v699.Unit * math.min(v699.Magnitude - 0.03, 0.5)
+                    ViewFx.Play(((text == "headglint" and (v705 and "flare" or "glint")) or "block_spark"), CFrame.lookAt(v710, v710 + v700.UpVector))
+                elseif text == "fullglint" then
+                    local v711 = v231.frame or CFrame.identity
+                    local v712 = if a690.gripAtt then cframe:PointToObjectSpace(a690.gripAtt.WorldPosition) else v711.Position
+                    local lookVector = v711.LookVector
+                    local v714 = if a690.cfg.stock == nil then a690.cfg.len * 0.5 else 0.288 - a690.brace
+                    local v715 = v712 + lookVector * v714
+
+                    if a690.cfg.stock == nil or not v231.arrowTip or not v552 or not v552.Parent then
+                        ViewFx.Play("glint", CFrame.lookAt(v715, v715 + v711.LookVector))
+                    else
+                        v715 = v231.arrowTip
+                        ViewFx.Play("glint", CFrame.lookAt(v715, v715 + v711.LookVector))
+                    end
+                elseif text ~= "bolt" then
+                    if string.sub(text, 1, 4) == "sfx:" then
+                        if not v231.sim then
+                            local v716
+                            local v717, v718 = string.match(text, "^sfx:([^@]+)@?(.*)$")
+                            local play = Sfx.Play
+                            local v720 = v717 or string.sub(text, 5)
+
+                            if tonumber(v718) then
+                                v716 = {pitch = tonumber(v718)}
+                            else
+                                v716 = nil
+                            end
+
+                            play(v720, nil, v716)
+                        end
+                    elseif text == "click" and a690.pan then
+                        local objectSpaceWorldPosition = cframe:PointToObjectSpace(a690.pan.WorldPosition)
+                        ViewFx.Play("click", CFrame.lookAt(objectSpaceWorldPosition, objectSpaceWorldPosition + Vector3.new(0, 1, 0)))
+                    elseif text == "twang"
+                        or text == "snap"
+                        or text == "powder"
+                        or text == "puff"
+                        or text == "click"
+                        or text == "ring"
+                    then
+                        ViewFx.Play(text, itemPoint(cframe, a690, "muzzle"))
+                    elseif text == "sparkle" then
+                        local play = ViewFx.Play
+                        local v723 = a690.id ~= "healing_tonic" and "sparkle" or "gold"
+                        play(v723, itemPoint(cframe, a690, "tip"))
+                    elseif text == "crumbs" and a690.id == "healing_tonic" then
+                        ViewFx.Play("crumbs", itemPoint(cframe, a690, "tip"))
+                        v231.bite += 1
+
+                        if v231.bite % 2 == 1 then
+                            ViewFx.Play("gold", itemPoint(cframe, a690, "tip"))
+                        end
+                    elseif text == "knock" then
+                        local position = itemPoint(cframe, a690, "tip").Position
+                        ViewFx.Play("flare", CFrame.new(0, position.Y, position.Z))
+                    elseif text ~= "beat" then
+                        ViewFx.Play(text, itemPoint(cframe, a690, "tip"))
+                    end
+                else
+                    ViewFx.Play("glint", itemPoint(cframe, a690, "muzzle"))
                 end
-                BladeSmear_upv_1.Draw(a1, a2, key_5, tbl_upv_16, tbl_upv_17, tbl_upv_18, value_19.color)
+            else
+                local v725 = v231.frame or CFrame.identity
+                local v726 = if a690.gripAtt then cframe:PointToObjectSpace(a690.gripAtt.WorldPosition) else v725.Position
+                local v727 = if a690.pan then cframe:PointToObjectSpace(a690.pan.WorldPosition) else v726 + (v725.UpVector * 0.035) + v725.LookVector * 0.05
+                ViewFx.Play("pan", CFrame.lookAt(v727, v727 + v725.UpVector))
             end
         end
-    else
-        BladeSmear_upv_1.Hide()
+
+        table.clear(fxQueue)
+    end
+
+    if a690.cfg.act == "gun" then
+        ViewFx.Track("muzzle", itemPoint(cframe, a690, "barrel"))
+    end
+
+    local v728 = v635[a690.id] == true
+
+    if v728 ~= v231.embers then
+        v231.embers = v728
+        ViewFx.Play("embers", itemPoint(cframe, a690, "tip"), {on = v728})
+    end
+
+    if v728 then
+        ViewFx.Track("embers", itemPoint(cframe, a690, "tip"))
+    end
+
+    local fuse = a690.id ~= "smoke_bomb" and 0 or v231.wind and 2 or 1
+
+    if fuse ~= v231.fuse then
+        v231.fuse = fuse
+        local play = ViewFx.Play
+        local cframe3 = itemPoint(cframe, a690, "tip")
+        play("fuse", cframe3, {on = 0 < fuse, rate = fuse * 18})
+    end
+
+    if 0 < fuse then
+        ViewFx.Track("fuse", itemPoint(cframe, a690, "tip"))
     end
 end
-local function place(a1, a2, a3, a4, a5, a6)
+
+local function place(parent, cframe: CFrame?, a735, a736, a737, a738)
     --[[
       name: place
       line: 2366
       upvalues:
-        u23 (ref,  index: 1)
-        BladeSmear_upv_1 (copy, index: 2)
-        tbl_upv_25 (copy, index: 3)
-        u26 (ref,  index: 4)
-        tbl_upv_15 (copy, index: 5)
-        ViewFx_upv_1 (copy, index: 6)
-        tbl_upv_2 (copy, index: 7)
-        u20 (copy, index: 8)
-        u21 (copy, index: 9)
+        v506 (ref,  index: 1)
+        BladeSmear (copy, index: 2)
+        v579 (copy, index: 3)
+        v552 (ref,  index: 4)
+        v231 (copy, index: 5)
+        ViewFx (copy, index: 6)
+        v16 (copy, index: 7)
+        spring13 (copy, index: 8)
+        spring14 (copy, index: 9)
         drawBlade (copy, index: 10)
         drawArrow (copy, index: 11)
         viewEffects (copy, index: 12)
         drawStreak (copy, index: 13)
     ]]
-    local v192
-    if a6 then
-        v192 = a6.model
-    else
-        v192 = nil
-    end
-    if v192 ~= u23 then
-        if u23 then
-            u23.Parent = nil
+    local v739 = if a738 then a738.model else nil
+
+    if v739 ~= v506 then
+        if v506 then
+            v506.Parent = nil
         end
-        u23 = v192
+
+        v506 = v739
     end
-    if a6 then
-        local v193, v194, v195, v196, v197, v198 = nil, nil, nil, nil, nil, nil
-        if v192 then
-            local v199 = math.tan((tbl_upv_2.fovRef * 0.5) * 0.017453292519943295) / math.tan((math.clamp(a3, 20, 110) * 0.5) * 0.017453292519943295)
-            local frame_4 = tbl_upv_15.frame
-            local v200 = (frame_4 and (a2 * CFrame.new(frame_4.X, frame_4.Y, frame_4.Z * v199) * frame_4.Rotation * a6.norm)) or ((a2 * CFrame.new(a4.X, a4.Y, a4.Z * v199)) * CFrame.fromEulerAnglesYXZ(a5.X, a5.Y, a5.Z) * a6.style)
-            v192:PivotTo((v200 * a6.gripInv) * a6.pivotRel)
-            v193 = a6.leftFist
-            local v201 = nil
-            if v193 then
-                v201 = tbl_upv_15.leftFrame
-                if v201 then
-                    local v202 = a2 * CFrame.new(v201.X, v201.Y, v201.Z * v199)
-                    local v203, v204 = nil, nil
-                    local v205, v206, v203, v207, v208, v209, v210, v211, v212, v213, v214, v204 = a6.norm:GetComponents()
-                    v193.part.CFrame = (v202 * v201.Rotation) * CFrame.new(-v205, v206, v203, v207, -v208, -v209, -v210, v211, v212, -v213, v214, v204) * v193.rel
-                    v193.part.LocalTransparencyModifier = 0
-                else
-                    v193.part.LocalTransparencyModifier = 1
-                end
-            end
-            v194 = a6.inlay
-            if v194 then
-                local v215 = ((not (tbl_upv_15.draw)) and 0) or (((tbl_upv_15.drawFull) and 3) or (((tbl_upv_15.drawHalf) and 2) or 1))
-                if v215 ~= tbl_upv_15.inlayLvl then
-                    tbl_upv_15.inlayFrom = v194.part.Color
-                    tbl_upv_15.inlayLvl = v215
-                    tbl_upv_15.inlayT0 = tbl_upv_15.now
-                end
-                v194.part.Color = tbl_upv_15.inlayFrom:Lerp(({[0] = v194.rest, Color3.fromRGB(60, 90, 92), Color3.fromRGB(95, 150, 152), Color3.fromRGB(140, 205, 206)})[v215], math.clamp((tbl_upv_15.now - tbl_upv_15.inlayT0) / 0.05, 0, 1))
-            end
-            v195 = a6.strip
-            if v195 then
-                local stripV_1 = tbl_upv_15.stripV
-                v195.part.Size = Vector3.new(v195.size.X, v195.size.Y * stripV_1, v195.size.Z)
-                v195.part.CFrame = (a6.handle.CFrame * v195.rest) * CFrame.new(0, (-v195.size.Y * (stripV_1 - 1)) / 2, 0)
-            end
-            if a6.stone then
-                local v216 = (tbl_upv_15.looseAt ~= nil) and ((tbl_upv_15.looseAt <= tbl_upv_15.now) and (tbl_upv_15.now < tbl_upv_15.looseAt + 0.38))
-                local stone_1 = a6.stone
-                local v217
-                if v216 then
-                    v217 = 1
-                else
-                    v217 = 0
-                end
-                stone_1.LocalTransparencyModifier = v217
-            end
-            v196 = a6.hammer
-            if v196 then
-                local v218 = math.clamp(u20.value, -0.2, 1.25)
-                v196.part.CFrame = ((a6.handle.CFrame * CFrame.new(v196.pivot)) * CFrame.fromAxisAngle(v196.axis, (v218 * v196.fired) * 0.017453292519943295)) * CFrame.new(-v196.pivot) * v196.rest
-            end
-            v197 = a6.frizzen
-            if v197 then
-                local v219 = math.clamp(u21.value, -0.1, 1.2)
-                v197.part.CFrame = ((a6.handle.CFrame * CFrame.new(v197.pivot)) * CFrame.fromAxisAngle(v197.axis, (v219 * v197.fired) * 0.017453292519943295)) * CFrame.new(-v197.pivot) * v197.rest
-            end
-            v198 = a6.rod
-            local v220 = nil
-            if v198 then
-                v220 = tbl_upv_15.rodV
-                local CFrame_1 = a6.handle.CFrame
-                if v220 <= 1.5 then
-                    v198.part.CFrame = CFrame_1 * CFrame.new(v198.fwd * (math.min(v220, 1) * 1.3 * v198.len)) * v198.rest
-                else
-                    v198.part.CFrame = CFrame_1 * CFrame.fromMatrix(v198.muzzle + (v198.fwd * (((v220 - 2) * v198.len) - (v198.len * 0.5))), -v198.fwd, v198.up)
-                end
-            end
-            if v192.Parent ~= a1 then
-                v192.Parent = a1
-            end
-            if tbl_upv_2.smearItem[a6.id] or tbl_upv_2.smear[a6.kind] then
-                drawBlade(a1, a2, v199, a6)
+
+    if a738 and v739 then
+        local v740
+        local v741 = math.tan((v16.fovRef * 0.5) * 0.017453292519943295) / math.tan((math.clamp(a735, 20, 110) * 0.5) * 0.017453292519943295)
+        v740 = if const frame = v231.frame then (cframe * CFrame.new(frame.X, frame.Y, frame.Z * v741)) * frame.Rotation * a738.norm else cframe * CFrame.new(a736.X, a736.Y, a736.Z * v741) * CFrame.fromEulerAnglesYXZ(a737.X, a737.Y, a737.Z) * a738.style
+        v739:PivotTo(v740 * a738.gripInv * a738.pivotRel)
+
+        if const leftFist = a738.leftFist then
+            if const leftFrame = v231.leftFrame then
+                local part = leftFist.part
+                local v746 = cframe * CFrame.new(leftFrame.X, leftFrame.Y, leftFrame.Z * v741) * leftFrame.Rotation
+                local components, v748, v749, v750, v751, v752, v753, v754, v755, v756, v757, v758 = a738.norm:GetComponents()
+                part.CFrame = v746 * CFrame.new(-components, v748, v749, v750, -v751, -v752, -v753, v754, v755, -v756, v757, v758) * leftFist.rel
+                leftFist.part.LocalTransparencyModifier = 0
             else
-                BladeSmear_upv_1.Hide()
+                leftFist.part.LocalTransparencyModifier = 1
             end
-            drawArrow(a1, a2, v199, a6)
-            viewEffects(a1, a2, a6)
-            drawStreak(v199, a6)
-            local v221 = nil
-            if tbl_upv_15.leftVanishAt and a6.leftFist and tbl_upv_15.leftFrame then
-                v221 = a6.leftFist.part.Position
-            elseif u26 and u26.Parent then
-                if a6.kind ~= "Bow" then
-                    if a6.kind ~= "Sling" and a6.id ~= "bolas" or not (a6.tipAtt) then
-                        if a6.muzzle then
-                            v221 = a6.muzzle.WorldPosition
+        end
+
+        if const inlay = a738.inlay then
+            local inlayLvl = v231.draw and (v231.drawFull and 3 or v231.drawHalf and 2 or 1) or 0
+
+            if inlayLvl ~= v231.inlayLvl then
+                v231.inlayFrom, v231.inlayLvl, v231.inlayT0 = inlay.part.Color, inlayLvl, v231.now
+            end
+
+            local v761 = {[0] = inlay.rest, Color3.fromRGB(60, 90, 92), Color3.fromRGB(95, 150, 152), Color3.fromRGB(140, 205, 206)}
+            inlay.part.Color = v231.inlayFrom:Lerp(v761[inlayLvl], (math.clamp((v231.now - v231.inlayT0) / 0.05, 0, 1)))
+        end
+
+        if const strip = a738.strip then
+            local stripV = v231.stripV
+            strip.part.Size = Vector3.new(strip.size.X, strip.size.Y * stripV, strip.size.Z)
+            strip.part.CFrame = a738.handle.CFrame * strip.rest * CFrame.new(0, (-strip.size.Y * (stripV - 1)) / 2, 0)
+        end
+
+        if a738.stone then
+            local v764 = false
+
+            if v231.looseAt ~= nil then
+                v764 = false
+                local now = v231.now
+
+                if v231.looseAt <= now then
+                    v764 = v231.now < v231.looseAt + 0.38
+                end
+            end
+
+            a738.stone.LocalTransparencyModifier = v764 and 1 or 0
+        end
+
+        if const hammer = a738.hammer then
+            local v767 = math.clamp(spring13.value, -0.2, 1.25) * hammer.fired * 0.017453292519943295
+            local cFrame = a738.handle.CFrame
+            hammer.part.CFrame = (cFrame * CFrame.new(hammer.pivot)) * CFrame.fromAxisAngle(hammer.axis, v767) * CFrame.new(-hammer.pivot) * hammer.rest
+        end
+
+        if const frizzen = a738.frizzen then
+            local v770 = math.clamp(spring14.value, -0.1, 1.2) * frizzen.fired * 0.017453292519943295
+            local cFrame = a738.handle.CFrame
+            frizzen.part.CFrame = (cFrame * CFrame.new(frizzen.pivot)) * CFrame.fromAxisAngle(frizzen.axis, v770) * CFrame.new(-frizzen.pivot) * frizzen.rest
+        end
+
+        local boundingBox, v773, position
+        local v775
+        local v776
+        local v777, v778, v779, v780, v781, v782 = false, false, false, false, false, false
+
+        if const rod = a738.rod then
+            local rodV = v231.rodV
+            local cFrame = a738.handle.CFrame
+
+            if not (rodV <= 1.5) then
+                local v786 = (rodV - 2) * rod.len
+                rod.part.CFrame = cFrame * CFrame.fromMatrix(rod.muzzle + (rod.fwd * (v786 - (rod.len * 0.5))), -rod.fwd, rod.up)
+            else
+                rod.part.CFrame = cFrame * CFrame.new(rod.fwd * (math.min(rodV, 1) * 1.3 * rod.len)) * rod.rest
+            end
+        end
+
+        if v739.Parent ~= parent then
+            v739.Parent = parent
+        end
+
+        if v16.smearItem[a738.id] then
+            v777 = true
+        elseif v16.smear[a738.kind] then
+            v777 = true
+        else
+            BladeSmear.Hide()
+        end
+
+        if v777 then
+            drawBlade(parent, cframe, v741, a738)
+        end
+
+        drawArrow(parent, cframe, v741, a738)
+        viewEffects(parent, cframe, a738)
+        drawStreak(v741, a738)
+
+        if v231.leftVanishAt then
+            if a738.leftFist then
+                if v231.leftFrame then
+                    v776 = a738.leftFist.part.Position
+                else
+                    v778 = true
+                end
+            else
+                v778 = true
+            end
+        else
+            v778 = true
+        end
+
+        if v778 then
+            if v552 then
+                if v552.Parent then
+                    if a738.kind ~= "Bow" then
+                        v780 = true
+                    else
+                        boundingBox, v773 = v552:GetBoundingBox()
+                        position = boundingBox.Position
+
+                        if v231.frame then
+                            v775 = cframe:VectorToWorldSpace(v231.frame.LookVector)
                         else
-                            v221 = v192:GetBoundingBox().Position
+                            v775 = boundingBox.LookVector
                         end
-                        local v222 = os.clock()
-                        tbl_upv_15.release = v221
-                        tbl_upv_15.releaseT = v222
-                        return
+
+                        v779 = true
                     end
-                    v221 = a6.tipAtt.WorldPosition
                 else
-                    local v223, v224 = u26:GetBoundingBox()
-                    local Position_2 = v223.Position
-                    local v225
-                    if tbl_upv_15.frame then
-                        v225 = a2:VectorToWorldSpace(tbl_upv_15.frame.LookVector)
-                    else
-                        v225 = v223.LookVector
-                    end
-                    v221 = Position_2 + v225 * (v224.Z * 0.5)
+                    v780 = true
                 end
             else
-                if a6.kind ~= "Sling" and a6.id ~= "bolas" or not (a6.tipAtt) then
-                    if a6.muzzle then
-                        v221 = a6.muzzle.WorldPosition
-                    else
-                        v221 = v192:GetBoundingBox().Position
-                    end
-                    local v222 = os.clock()
-                    tbl_upv_15.release = v221
-                    tbl_upv_15.releaseT = v222
-                    return
-                end
-                v221 = a6.tipAtt.WorldPosition
+                v780 = true
             end
-            local v222 = os.clock()
-            tbl_upv_15.release = v221
-            tbl_upv_15.releaseT = v222
-            return
         end
-    end
-    BladeSmear_upv_1.Hide()
-    for _, value_20 in tbl_upv_25 do
-        value_20.Parent = nil
-    end
-    if u26 then
-        u26.Parent = nil
-        u26 = nil
-    end
-    if tbl_upv_15.embers then
-        tbl_upv_15.embers = false
-        ViewFx_upv_1.Play("embers", CFrame.identity, {on = false})
-    end
-    if not (tbl_upv_15.fuse > 0) then
+
+        if v779 then
+            v776 = position + v775 * (v773.Z * 0.5)
+        end
+
+        if v780 then
+            if a738.kind == "Sling" then
+                v781 = true
+            elseif a738.id ~= "bolas" then
+                v782 = true
+            else
+                v781 = true
+            end
+        end
+
+        if v781 then
+            if a738.tipAtt then
+                v776 = a738.tipAtt.WorldPosition
+            else
+                v782 = true
+            end
+        end
+
+        if v782 then
+            if a738.muzzle then
+                v776 = a738.muzzle.WorldPosition
+            else
+                v776 = v739:GetBoundingBox().Position
+            end
+        end
+
+        v231.release, v231.releaseT = v776, os.clock()
+
         return
     end
-    tbl_upv_15.fuse = 0
-    ViewFx_upv_1.Play("fuse", CFrame.identity, {on = false})
+
+    BladeSmear.Hide()
+
+    for _, v788 in v579 do
+        v788.Parent = nil
+    end
+
+    if v552 then
+        v552.Parent = nil
+        v552 = nil
+    end
+
+    if v231.embers then
+        v231.embers = false
+        ViewFx.Play("embers", CFrame.identity, {on = false})
+    end
+
+    if 0 < v231.fuse then
+        v231.fuse = 0
+        ViewFx.Play("fuse", CFrame.identity, {on = false})
+    end
 end
+
 local function hide()
     --[[
       name: hide
       line: 2489
       upvalues:
-        u23 (ref,  index: 1)
-        tbl_upv_25 (copy, index: 2)
-        u26 (ref,  index: 3)
-        BladeSmear_upv_1 (copy, index: 4)
-        ViewFx_upv_1 (copy, index: 5)
-        tbl_upv_15 (copy, index: 6)
+        v506 (ref,  index: 1)
+        v579 (copy, index: 2)
+        v552 (ref,  index: 3)
+        BladeSmear (copy, index: 4)
+        ViewFx (copy, index: 5)
+        v231 (copy, index: 6)
     ]]
-    if u23 then
-        u23.Parent = nil
-        u23 = nil
+    if v506 then
+        v506.Parent = nil
+        v506 = nil
     end
-    for _, value_21 in tbl_upv_25 do
-        value_21.Parent = nil
+
+    for _, v791 in v579 do
+        v791.Parent = nil
     end
-    if u26 then
-        u26.Parent = nil
-        u26 = nil
+
+    if v552 then
+        v552.Parent = nil
+        v552 = nil
     end
-    BladeSmear_upv_1.Hide()
-    ViewFx_upv_1.Hide()
-    tbl_upv_15.embers = false
-    tbl_upv_15.fuse = 0
+
+    BladeSmear.Hide()
+    ViewFx.Hide()
+    v231.embers = false
+    v231.fuse = 0
 end
-local u30 = false
-local u31 = false
-local UserInputService_upv_1 = game:GetService("UserInputService")
+
+local frozen = false
+local v793 = false
+local userInputService = game:GetService("UserInputService")
+
 local function touchPreferred()
     --[[
       name: touchPreferred
       line: 2511
+      upvalues:
+        userInputService (copy, index: 1)
     ]]
-    local success_1, v226 = pcall(function() end)
-    local v227 = success_1 and ((typeof(v226) == "EnumItem") and (v226.Name == "Touch"))
-    return v227
+    local success, preferredInput = pcall(
+        function()
+            --[[
+              line: 2512
+              upvalues:
+                userInputService (copy, index: 1)
+            ]]
+            return userInputService.PreferredInput
+        end
+    )
+    return success and typeof(preferredInput) == "EnumItem" and preferredInput.Name == "Touch"
 end
-local function drawnRootY(a1)
+
+local function drawnRootY(a799)
     --[[
       name: drawnRootY
       line: 2518
-    ]]
-    local success_2, v228 = pcall(function() end)
-    if success_2 and typeof(v228) == "CFrame" then
-        return v228.Position.Y
-    end
-    return a1.Position.Y
-end
-local function liveInput(a1)
-    --[[
-      name: liveInput
-      line: 2528
       upvalues:
-        Workspace_upv_1 (copy, index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-        Camera_upv_1 (copy, index: 3)
-        Combat_upv_1 (copy, index: 4)
-        u25 (ref,  index: 5)
-        u24 (copy, index: 6)
+        Camera (copy, index: 1)
     ]]
-    local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
-    local Character_1 = LocalPlayer_upv_1.Character
-    local _ = Character_1 and (Character_1:FindFirstChild("HumanoidRootPart"))
-    local v229 = Character_1 and (Character_1:FindFirstChildOfClass("Humanoid"))
-    if not CurrentCamera_1 or not Character_1 or not Character_1 or not Character_1:IsA("BasePart") or not v229 then
-        return nil, CurrentCamera_1
-    end
-    local v230 = Camera_upv_1.InFirstPerson and (Camera_upv_1.InFirstPerson() == true)
-    local v231 = Character_1:FindFirstChildOfClass("Tool")
-    local v232 = v231 and (v231:GetAttribute("WeaponId"))
-    local v233 = nil
-    if type(v232) == "string" then
-        local v234 = v231 and (v231:GetAttribute("Kind"))
-        if type(v234) ~= "string" then
-            v233 = Combat_upv_1.Kind(v231)
-        else
-            v233 = v234
-        end
-    end
-    local v235 = nil
-    if v231 and (tonumber(v231:GetAttribute("MaxCharges")) or 0) > 0 then
-        local v234 = tonumber(v231:GetAttribute("Charges"))
-    else
-        local v234 = v235
-    end
-    local CFrame_2 = CurrentCamera_1.CFrame
-    local v236 = nil
-    local v237 = nil
-    if v230 then
-        if u25 ~= Character_1 then
-            u25 = Character_1
-            local tbl_29 = {Character_1}
-            for v244, value_22 in {"FX", "Projectiles"} do
-                local v238 = Workspace_upv_1:FindFirstChild(value_22)
-                if v238 then
-                    table.insert(tbl_29, v238)
-                end
-            end
-            u24.FilterDescendantsInstances = tbl_29
-        end
-        v237 = Workspace_upv_1:Spherecast(CFrame_2.Position, 0.15, CFrame_2.LookVector * 1.8, u24)
-        if v237 then
-            v236 = v237.Distance
-        else
-            v236 = nil
-        end
-    end
-    local v239 = 0
-    local v240 = 0
-    if Camera_upv_1.GetViewBob then
-        Camera_upv_1.GetViewBob()
-    end
-    local tbl_30 = {visible = 0, sliding = 0, charges = 0, bobAmount = 0, cam = 0, id = 0, grounded = 0, vel = 0, touch = 0, aiming = 0, rootY = 0, fov = 0, wall = 0, kind = 0, offHandOut = 0, bobPhase = 0}
-    tbl_30.dt = a1
-    tbl_30.now = os.clock()
-    local v241 = v230 and ((Character_1.Health > 0) and (LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true))
-    tbl_30.visible = v241
-    if type(v231) ~= "string" then
-        v241 = nil
-    else
-        v241 = v231
-    end
-    tbl_30.id = v241
-    tbl_30.kind = v233
-    tbl_30.charges = nil
-    tbl_30.cam = CFrame_2
-    tbl_30.fov = CurrentCamera_1.FieldOfView
-    tbl_30.grounded = Character_1.FloorMaterial ~= Enum.Material.Air
-    local success_3, v242 = pcall(
+    local success, result = pcall(
         function()
             --[[
               line: 2519
               upvalues:
-                Camera_upv_1 (copy, index: 1)
+                Camera (copy, index: 1)
             ]]
-            if Camera_upv_1.GetDrawnRoot then
-                return (Camera_upv_1.GetDrawnRoot())
+            if Camera.GetDrawnRoot then
+                return (Camera.GetDrawnRoot())
             end
+
             return nil
         end
     )
-    if (success_3) and typeof(v242) == "CFrame" then
-        v241 = v242.Position.Y
-    else
-        v241 = Character_1.Position.Y
+
+    if success and typeof(result) == "CFrame" then
+        return result.Position.Y
     end
-    tbl_30.rootY = v241
-    v241 = Character_1:GetAttribute("Sliding") == true
-    tbl_30.sliding = v241
-    v241 = Camera_upv_1.IsAiming and (Camera_upv_1.IsAiming() == true)
-    tbl_30.aiming = v241
-    if v231 then
-        v241 = v231:GetAttribute("Thrown") == true
-    else
-        v241 = nil
-    end
-    tbl_30.offHandOut = v241
-    tbl_30.bobPhase = v239
-    tbl_30.bobAmount = v240
-    tbl_30.wall = v236
-    local success_4, v243 = pcall(function() end)
-    v241 = success_4 and ((typeof(v243) == "EnumItem") and (v243.Name == "Touch"))
-    tbl_30.touch = v241
-    tbl_30.vel = Character_1.AssemblyLinearVelocity
-    return tbl_30, CurrentCamera_1
+
+    return a799.Position.Y
 end
-local u32 = 0
-local u33 = 0
-local u34 = 0
-local function step(a1)
+
+local function liveInput(dt: number)
     --[[
-      name: step
-      line: 1303
+      name: liveInput
+      line: 2528
       upvalues:
-        tbl_upv_15 (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
-        prepare (copy, index: 4)
-        u19 (copy, index: 5)
-        u22 (copy, index: 6)
-        ViewFx_upv_1 (copy, index: 7)
-        u20 (copy, index: 8)
-        u21 (copy, index: 9)
-        u18 (copy, index: 10)
-        u12 (copy, index: 11)
-        u13 (copy, index: 12)
-        u16 (copy, index: 13)
-        u17 (copy, index: 14)
-        u8 (copy, index: 15)
-        u9 (copy, index: 16)
-        u10 (copy, index: 17)
-        u11 (copy, index: 18)
-        u14 (copy, index: 19)
-        u15 (copy, index: 20)
-        tbl_upv_5 (copy, index: 21)
-        evalKeys (copy, index: 22)
-        startClip (copy, index: 23)
-        BladeClips_upv_1 (copy, index: 24)
-        evalTrack (copy, index: 25)
+        workspace (copy, index: 1)
+        localPlayer (copy, index: 2)
+        Camera (copy, index: 3)
+        Combat (copy, index: 4)
+        character (ref,  index: 5)
+        params (copy, index: 6)
+        userInputService (copy, index: 7)
     ]]
-    local v244 = math.clamp(a1.dt, 0.004166666666666667, 0.1)
-    local now_1 = a1.now
-    tbl_upv_15.now = now_1
-    local v245
-    if a1.visible and a1.id and a1.kind and tbl_upv_3[a1.kind] then
-        v245 = a1.id
-    else
-        v245 = nil
+    local camera = workspace.CurrentCamera
+    local character2 = localPlayer.Character
+    local humanoidRootPart = character2 and character2:FindFirstChild("HumanoidRootPart")
+    local humanoid = character2 and character2:FindFirstChildOfClass("Humanoid")
+
+    if not camera or not character2 or not humanoidRootPart or not humanoidRootPart:IsA("BasePart") or not humanoid then
+        return nil, camera
     end
-    if v245 ~= tbl_upv_15.wantId then
-        tbl_upv_15.wantId = v245
-        if tbl_upv_15.shown and tbl_upv_15.shown.id ~= v245 and not (tbl_upv_15.dropAt) then
-            tbl_upv_15.dropAt = now_1
-        end
-    end
-    if tbl_upv_15.dropAt and tbl_upv_15.shown and tbl_upv_15.shown.id == tbl_upv_15.wantId then
-        tbl_upv_15.dropAt = nil
-    end
-    local v246
-    if tbl_upv_15.shown then
-        v246 = tbl_upv_15.shown.id
-    else
-        v246 = nil
-    end
-    if v246 ~= tbl_upv_15.wantId and (tbl_upv_15.shown == nil or tbl_upv_15.dropAt ~= nil and tbl_upv_2.dropTime <= now_1 - tbl_upv_15.dropAt) then
-        tbl_upv_15.dropAt = nil
-        local v247
-        if tbl_upv_15.wantId then
-            v247 = prepare(tbl_upv_15.wantId, a1.kind)
+
+    local v808
+    local weaponId
+    local y
+    local v811 = Camera.InFirstPerson and Camera.InFirstPerson() == true
+    local tool = character2:FindFirstChildOfClass("Tool")
+    local weaponId2 = tool and tool:GetAttribute("WeaponId")
+    local v814 = nil
+
+    if type(weaponId2) == "string" then
+        local kind = tool and tool:GetAttribute("Kind")
+
+        if type(kind) ~= "string" then
+            v814 = Combat.Kind(weaponId2)
         else
-            v247 = nil
-        end
-        tbl_upv_15.shown = v247
-        tbl_upv_15.action = nil
-        tbl_upv_15.clip = nil
-        tbl_upv_15.lastFrame = nil
-        tbl_upv_15.rawVel = nil
-        tbl_upv_15.clipName = nil
-        u19:Snap(Vector3.new(0, 0, 0))
-        u22:Snap(Vector3.new(0, 0, 0))
-        tbl_upv_15.block = false
-        tbl_upv_15.parry = false
-        tbl_upv_15.charge = false
-        tbl_upv_15.draw = false
-        tbl_upv_15.wind = false
-        tbl_upv_15.use = false
-        tbl_upv_15.reload = false
-        tbl_upv_15.hiddenUntil = 0
-        tbl_upv_15.vanishAt = nil
-        tbl_upv_15.drawHold = 0
-        tbl_upv_15.windHold = 0
-        tbl_upv_15.looseAt = nil
-        tbl_upv_15.nocked = false
-        tbl_upv_15.nockT0 = -10
-        tbl_upv_15.stringV = 0
-        tbl_upv_15.stringT0 = -10
-        table.clear(tbl_upv_15.fxQueue)
-        if tbl_upv_15.embers then
-            tbl_upv_15.embers = false
-            ViewFx_upv_1.Play("embers", CFrame.identity, {on = false})
-        end
-        if tbl_upv_15.fuse > 0 then
-            tbl_upv_15.fuse = 0
-            ViewFx_upv_1.Play("fuse", CFrame.identity, {on = false})
-        end
-        tbl_upv_15.boltIn = true
-        tbl_upv_15.boltT0 = -10
-        tbl_upv_15.hammerTarget = 0.5
-        u20:Snap(0.5)
-        tbl_upv_15.frizzenTarget = 0
-        u21:Snap(0)
-        if tbl_upv_15.shown then
-            if tbl_upv_15.shown.drawFrom and tbl_upv_15.shown.clips and tbl_upv_15.shown.clips.draw then
-                u18:Snap(0)
-                tbl_upv_15.pendingDraw = "draw"
-            else
-                u18.value = -1
-                u18.velocity = 0
-                u18.target = 0
-            end
+            v814 = kind
         end
     end
-    local shown_2 = tbl_upv_15.shown
-    if not shown_2 then
-        return Vector3.new(0, 0, 0), Vector3.new(0, 0, 0), nil
-    end
-    local v248 = shown_2.cfg
-    if tbl_upv_15.lastRootY and v244 > 0 then
-        local v249 = (a1.rootY - tbl_upv_15.lastRootY) / v244
-        local v250 = ((math.abs(v249) > 150) and 0) or v249
-        local v251 = tbl_upv_15
-        v251.vy = v251.vy + ((v250 - tbl_upv_15.vy) * (1 - math.exp(v244 * -14)))
-    end
-    tbl_upv_15.lastRootY = a1.rootY
-    if a1.grounded then
-        local v252 = nil
-        if not (tbl_upv_15.grounded) then
-            v252 = -tbl_upv_15.minVy
-            if v252 > 6 then
-                u12:Impulse(-math.min(v252 * tbl_upv_2.landK, tbl_upv_2.landMax))
-            end
-            tbl_upv_15.minVy = 0
+
+    local v816 = nil
+
+    if tool then
+        local number = tonumber(tool:GetAttribute("MaxCharges")) or 0
+
+        if not (0 < number) then
+            v808 = v816
+        else
+            v808 = tonumber(tool:GetAttribute("Charges"))
         end
     else
-        tbl_upv_15.minVy = math.min(tbl_upv_15.minVy, tbl_upv_15.vy)
+        v808 = v816
     end
-    tbl_upv_15.grounded = a1.grounded
-    local LookVector_2 = a1.cam.LookVector
-    local v253 = math.atan2(-LookVector_2.X, -LookVector_2.Z)
-    local v254 = math.asin(math.clamp(LookVector_2.Y, -1, 1))
-    local v255 = nil
-    if tbl_upv_15.lastYaw then
-        v255 = ((v253 - tbl_upv_15.lastYaw) + math.pi) % math.tau - math.pi
-        local v256 = v254 - tbl_upv_15.lastPitch
-        if math.abs(v255) < 1.2 and math.abs(v256) < 1.2 then
-            u13.value = u13.value + (Vector3.new(-v256, -v255, -v255 * 0.5) * tbl_upv_2.swayK)
+
+    local cFrame = camera.CFrame
+    local v819 = nil
+
+    if v811 then
+        if character ~= character2 then
+            character = character2
+            local filterDescendantsInstances = {character2}
+
+            for _, childName in {"FX", "Projectiles"} do
+                if const child = workspace:FindFirstChild(childName) then
+                    table.insert(filterDescendantsInstances, child)
+                end
+            end
+
+            params.FilterDescendantsInstances = filterDescendantsInstances
         end
+
+        v819 = if const raycastResult = workspace:Spherecast(cFrame.Position, 0.15, cFrame.LookVector * 1.8, params) then raycastResult.Distance else nil
     end
-    tbl_upv_15.lastYaw = v253
-    tbl_upv_15.lastPitch = v254
-    v254 = a1.aiming and (v248.aimPos ~= nil)
-    local v257
-    if not (a1.touch) or v254 then
-        v257 = Vector3.new(0, 0, 0)
+
+    local bobPhase = 0
+    local bobAmount = 0
+
+    if Camera.GetViewBob then
+        bobPhase, bobAmount = Camera.GetViewBob()
+    end
+
+    local v827 = {dt = dt, now = os.clock()}
+    local visible = v811 and 0 < humanoid.Health and localPlayer:GetAttribute("ReplayPlaying") ~= true
+    v827.visible = visible
+
+    if type(weaponId2) ~= "string" then
+        weaponId = nil
     else
-        v257 = tbl_upv_2.touchHand
+        weaponId = weaponId2
     end
-    v253 = tbl_upv_2.hand + v248.pos + v257
-    local v258 = Vector3.new(0, 0, 0)
-    if v254 then
-        v253 = v253 + v248.aimPos
-        v258 = v258 + (v248.aimRot or Vector3.new(0, 0, 0)) * 0.017453292519943295
-    end
-    if tbl_upv_15.block and shown_2.blockP and shown_2.blockR then
-        v253 = v253 + shown_2.blockP
-        v258 = v258 + shown_2.blockR
-    elseif tbl_upv_15.block and v248.block then
-        v253 = v253 + (v248.block[1] + Vector3.new(0, math.sin(now_1 * 3) * 0.004, 0))
-        v258 = v258 + ((v248.block[2] * 0.017453292519943295) + Vector3.new(0, 0, (math.sin(now_1 * 2.3) * 0.5) * 0.017453292519943295))
-    end
-    v254 = 0
-    local v259 = 0
-    if tbl_upv_15.charge and v248.charge then
-        local v260 = math.clamp((now_1 - tbl_upv_15.chargeT0) / tbl_upv_15.chargeTime, 0, 1)
-        local v261 = math.clamp(v260, 0, 1)
-        local v262 = ((v261 * v261) * (3 - (v261 * 2))) * 0.15 + 0.85
-        if v248.chargeIn then
-            local v263 = math.clamp((now_1 - tbl_upv_15.chargeT0) / v248.chargeIn, 0, 1) - 1
-            v262 = v262 * (((((v263 * 3.6) * v263) * v263) + 1) + ((v263 * 2.6) * v263))
-        end
-        v253 = v253 + v248.charge[1] * v262
-        local v264 = v258 + (v248.charge[2] * 0.017453292519943295) * v262
-        v254 = v254 + ((v260 * 0.0028) + 0.0012)
-        if v260 >= 1 and not tbl_upv_15.chargeFull then
-            tbl_upv_15.chargeFull = true
-            u16:Impulse(Vector3.new(0, 1.5, 1.2000000476837158))
-            table.insert(tbl_upv_15.fxQueue, "headglint")
-        end
-        v258 = v264
-    end
-    local v265 = now_1 - (tbl_upv_15.drawHold - 0.16)
-    local v266 = not tbl_upv_15.draw
-    if v266 then
-        v266 = false
-        if tbl_upv_15.drawHold > 0 then
-            if v265 < 0.36 then
-                local _ = true
-            else
-                local _ = false
+
+    v827.id = weaponId
+    v827.kind = v814
+    v827.charges = v808
+    v827.cam = cFrame
+    v827.fov = camera.FieldOfView
+    v827.grounded = humanoid.FloorMaterial ~= Enum.Material.Air
+
+    local success, result = pcall(
+        function()
+            --[[
+              line: 2519
+              upvalues:
+                Camera (copy, index: 1)
+            ]]
+            if Camera.GetDrawnRoot then
+                return (Camera.GetDrawnRoot())
             end
+
+            return nil
         end
-    end
-    if (tbl_upv_15.draw or v266) and (v248.draw or shown_2.drawP) then
-        local v267 = ((not (tbl_upv_15.draw)) and 1) or (math.clamp((now_1 - tbl_upv_15.drawT0) / tbl_upv_15.drawTime, 0, 1))
-        local v268
-        if tbl_upv_15.draw then
-            local v269 = math.clamp((now_1 - tbl_upv_15.drawT0) / 0.14, 0, 1)
-            local v270 = math.clamp(v267, 0, 1)
-            v268 = ((v269 * v269) * (3 - (v269 * 2))) * 0.7 + ((v270 * v270) * (3 - (v270 * 2))) * 0.3
-        else
-            local v271 = math.clamp((v265 - 0.16) / 0.2, 0, 1)
-            v268 = 1 - (v271 * v271) * (3 - (v271 * 2))
-        end
-        if (shown_2.drawP) and (shown_2.drawR) then
-            v253 = v253 + shown_2.drawP * v268
-            v258 = v258 + shown_2.drawR * v268
-        elseif v248.draw then
-            v253 = v253 + v248.draw[1] * v268
-            v258 = v258 + v248.draw[2] * 0.017453292519943295 * v268
-        end
-        if tbl_upv_15.draw then
-            v259 = ((v267 >= 1) and (math.clamp(((now_1 - tbl_upv_15.drawT0) - tbl_upv_15.drawTime) / 0.5, 0.3, 1) * 7e-04)) or v259
-            if (shown_2.kind == "Bow") and (v248.stock == nil) and v267 >= 0.5 and not (tbl_upv_15.drawHalf) then
-                tbl_upv_15.drawHalf = true
-                u16:Impulse(Vector3.new(0, -1.100000023841858, 0.8999999761581421))
-                u17:Impulse(Vector3.new(-3.4906585216522217, 0, 0))
-                table.insert(tbl_upv_15.fxQueue, "sfx:Gun_Cock")
-            end
-            if v267 >= 1 and not tbl_upv_15.drawFull then
-                tbl_upv_15.drawFull = true
-                u16:Impulse(Vector3.new(0, -0.800000011920929, 0.6000000238418579))
-                u17:Impulse(Vector3.new(-2.268928050994873, 0, 0))
-                table.insert(tbl_upv_15.fxQueue, "fullglint")
-            end
-        end
-    end
-    if (tbl_upv_15.wind) and (v248.windup) then
-        local v272 = math.clamp((now_1 - tbl_upv_15.windT0) / tbl_upv_15.windTime, 0, 1)
-        local v273 = math.clamp((now_1 - tbl_upv_15.windT0) / 0.12, 0, 1)
-        local v274 = math.clamp(v272, 0, 1)
-        local v275 = ((v273 * v273) * (3 - (v273 * 2))) * 0.75 + ((v274 * v274) * (3 - (v274 * 2))) * 0.25
-        v253 = v253 + v248.windup[1] * v275
-        local v276 = v258 + (v248.windup[2] * 0.017453292519943295) * v275
-        v254 = v254 + ((v272 * 0.003) + 0.001)
-        if shown_2.id == "harpoon" and v272 >= 0.5 and not (tbl_upv_15.windHalf) then
-            tbl_upv_15.windHalf = true
-            u16:Impulse(Vector3.new(0, -0.5, 0.4000000059604645))
-            table.insert(tbl_upv_15.fxQueue, "glint")
-            table.insert(tbl_upv_15.fxQueue, "sfx:Crossbow_Crank")
-        end
-        if v272 >= 1 and not tbl_upv_15.windFull then
-            tbl_upv_15.windFull = true
-            u16:Impulse(Vector3.new(0, -1.600000023841858, 1.2000000476837158))
-            u17:Impulse(Vector3.new(-2.7925267219543457, 0, 0))
-            table.insert(tbl_upv_15.fxQueue, "glint")
-            table.insert(tbl_upv_15.fxQueue, ((shown_2.id == "harpoon") and "sfx:Crossbow_Ready") or (((shown_2.kind ~= "Bomb") and "sfx:Knife_Ready") or "sfx:Equip_Item"))
-        end
-        v258 = v276
-    elseif now_1 < tbl_upv_15.windHold and v248.windup then
-        v253 = v253 + v248.windup[1] * tbl_upv_15.windK
-        v258 = v258 + v248.windup[2] * 0.017453292519943295 * tbl_upv_15.windK
-    end
-    local v277 = 0
-    if tbl_upv_15.use and v248.use then
-        v253 = v253 + v248.use[1]
-        local v278 = v258 + v248.use[2] * 0.017453292519943295
-        if now_1 - tbl_upv_15.useT0 > 0.15 and (not (shown_2.clips) or not (shown_2.clips.use_loop)) then
-            v277 = 1
-        end
-        if tbl_upv_15.useTime + 0.3 < now_1 - tbl_upv_15.useT0 then
-            tbl_upv_15.use = false
-        end
-        v258 = v278
-    end
-    local v279 = 0
-    local vel_1
-    if tbl_upv_15.reload then
-        vel_1 = (now_1 - tbl_upv_15.reloadT0) / tbl_upv_15.reloadTime
-        if vel_1 >= 1.15 then
-            tbl_upv_15.reload = false
-            v248 = v279
-        else
-            local v280 = math.clamp(vel_1 / 0.2, 0, 1)
-            local v281 = math.clamp((vel_1 - 0.78) / 0.22, 0, 1)
-            local v282 = (v280 * v280) * (3 - (v280 * 2)) * (1 - ((v281 * v281) * (3 - (v281 * 2))))
-            v253 = v253 + Vector3.new(-0.03999999910593033, -0.10000000149011612, 0.019999999552965164) * v282
-            local v283 = v258 + Vector3.new(0.48869219422340393, 0.41887903213500977, 0.593411922454834) * v282
-            if vel_1 > 0.25 then
-                v248 = vel_1 < 0.75 and 1 or v279
-                v258 = v283
-            else
-                v258, v248 = v283, v279
-            end
-        end
+    )
+
+    if success and typeof(result) == "CFrame" then
+        y = result.Position.Y
     else
-        v248 = v279
+        y = humanoidRootPart.Position.Y
     end
-    if a1.sliding then
-        v253 = v253 + tbl_upv_2.slidePos
-        v258 = v258 + tbl_upv_2.slideRot * 0.017453292519943295
-    end
-    local wall_1 = a1.wall
-    if wall_1 and wall_1 < shown_2.wallDist then
-        local v284 = math.clamp((shown_2.wallDist - wall_1) / math.max(shown_2.wallDist - tbl_upv_2.wallMin, 0.1), 0, 1)
-        v253 = v253 + tbl_upv_2.wallPos * v284
-        v258 = v258 + Vector3.new(shown_2.wallRot * v284, 0, 0)
-    end
-    local v285
-    if (tbl_upv_15.useOutUntil) and (now_1 < tbl_upv_15.useOutUntil) then
-        v285 = 3.2
-    else
-        v285 = tbl_upv_2.poseHz
-    end
-    u8.frequency = v285
-    u9.frequency = u8.frequency
-    u8.target = v253
-    u9.target = v258
-    u8:Update(v244)
-    u9:Update(v244)
-    local _ = math.clamp(-tbl_upv_15.vy * tbl_upv_2.airK, -tbl_upv_2.airMax, tbl_upv_2.airMax)
-    local v286 = math.clamp(-tbl_upv_15.vy * tbl_upv_2.airTiltK, -tbl_upv_2.airTiltMax, tbl_upv_2.airTiltMax) * 0.017453292519943295
-    if a1.grounded then
-        vel_1, v286 = 0, 0
-    end
-    u10.target = vel_1
-    u11.target = v286
-    u10:Update(v244)
-    u11:Update(v244)
-    u12:Update(v244)
-    u13:Update(v244)
-    local value_23 = 0
-    local value_24 = 0
-    vel_1 = a1.vel
-    local v287 = nil
-    if vel_1 then
-        local RightVector_1 = a1.cam.RightVector
-        local LookVector_3 = a1.cam.LookVector
-        v287 = Vector3.new(RightVector_1.X, 0, RightVector_1.Z)
-        local v288 = Vector3.new(LookVector_3.X, 0, LookVector_3.Z)
-        if v287.Magnitude > 0.001 and v288.Magnitude > 0.001 then
-            value_23, value_24 = math.clamp(vel_1:Dot(v287.Unit) / tbl_upv_2.mvRun, -tbl_upv_2.mvMax, tbl_upv_2.mvMax), math.clamp(vel_1:Dot(v288.Unit) / tbl_upv_2.mvRun, -tbl_upv_2.mvMax, tbl_upv_2.mvMax)
+
+    v827.rootY = y
+    local sliding = character2:GetAttribute("Sliding") == true
+    v827.sliding = sliding
+    local aiming = Camera.IsAiming and Camera.IsAiming() == true
+    v827.aiming = aiming
+    v827.offHandOut = if tool then tool:GetAttribute("Thrown") == true else nil
+    v827.bobPhase = bobPhase
+    v827.bobAmount = bobAmount
+    v827.wall = v819
+    local success2, preferredInput = pcall(
+        function()
+            --[[
+              line: 2512
+              upvalues:
+                userInputService (copy, index: 1)
+            ]]
+            return userInputService.PreferredInput
         end
-    end
-    vel_1 = (((not (a1.aiming)) and 1) or (tbl_upv_2.mvAimed)) * tbl_upv_2.mvRun
-    u14.target = Vector3.new(-value_23 * tbl_upv_2.mvX, 0, math.abs(value_24) * tbl_upv_2.mvZ) * vel_1
-    u15.target = (Vector3.new(-value_24 * tbl_upv_2.mvPitch, value_23 * tbl_upv_2.mvYaw, -value_23 * tbl_upv_2.mvRoll) * vel_1) * 0.017453292519943295
-    u14:Update(v244)
-    u15:Update(v244)
-    v258 = u13.value
-    v253 = tbl_upv_2.swayMax * 0.017453292519943295
-    if v253 < v258.Magnitude then
-        u13.value = v258.Unit * v253
-    end
-    u16:Update(v244)
-    u17:Update(v244)
-    u18:Update(v244)
-    u20.target = tbl_upv_15.hammerTarget
-    u20:Update(v244)
-    u21.target = tbl_upv_15.frizzenTarget
-    u21:Update(v244)
-    value_23 = (now_1 * tbl_upv_2.idleHz) * 2 * math.pi
-    v258 = u8.value + Vector3.new((math.sin(value_23 * 0.5) * tbl_upv_2.idlePos) * 0.6, math.sin(value_23) * tbl_upv_2.idlePos, 0)
-    v253 = u9.value + Vector3.new(math.sin(value_23 + 0.6) * tbl_upv_2.idleRot, 0, (math.sin(value_23 * 0.5) * tbl_upv_2.idleRot) * 0.5) * 0.017453292519943295
-    local bobAmount_1 = a1.bobAmount
-    if bobAmount_1 > 0 then
-        v285 = a1.bobPhase
-        local v289 = math.abs(math.cos(v285)) - 0.64
-        v258, v253 = v258 + Vector3.new((math.sin(v285) * tbl_upv_2.bobX) * bobAmount_1, (-v289 * tbl_upv_2.bobY) * bobAmount_1, 0), v253 + Vector3.new((v289 * tbl_upv_2.bobPitch) * bobAmount_1, 0, (math.sin(v285) * tbl_upv_2.bobRoll) * bobAmount_1) * 0.017453292519943295
-    end
-    local v290 = v258 + Vector3.new(0, u10.value + (u12.value * tbl_upv_2.landDist), 0)
-    local v291 = v253 + Vector3.new(u11.value + (u12.value * 0.12), 0, 0)
-    value_23 = u13.value
-    local v292 = v290 + Vector3.new(-value_23.Y * tbl_upv_2.swayShift, value_23.X * tbl_upv_2.swayShift, 0) + u14.value + u16.value
-    local v293 = (v291 + value_23) + u15.value + u17.value
-    if v254 > 0 then
-        v292 = v292 + Vector3.new(math.sin(now_1 * 84) * v254, math.sin((now_1 * 71) + 1) * v254, 0)
-    end
-    v258 = ((v259 > 0) and (v292 + Vector3.new(math.sin(now_1 * 33) * v259, math.sin((now_1 * 27) + 1) * v259, 0))) or v292
-    if a1.sliding then
-        local slideShake_1 = tbl_upv_2.slideShake
-        local v294 = v258 + Vector3.new(math.sin(now_1 * 53) * slideShake_1, math.sin((now_1 * 71) + 2) * slideShake_1, 0)
-        v253, v258 = v293 + Vector3.new(0, 0, (math.sin(now_1 * 39) * 1.6) * 0.017453292519943295), v294
-    else
-        v253 = v293
-    end
-    if v248 > 0 then
-        local v295 = v253 + Vector3.new(math.sin(now_1 * 42) * 5, 0, math.sin((now_1 * 33) + 1) * 7) * 0.017453292519943295
-        v258, v253 = v258 + Vector3.new(0, math.abs(math.sin(now_1 * 21)) * 0.012, 0), v295
-    end
-    if v277 > 0 then
-        local v296 = math.abs(math.sin((now_1 - tbl_upv_15.useT0) * 9))
-        v258, v253 = v258 + Vector3.new(0, v296 * 0.022, -v296 * 0.012), v253 + Vector3.new(v296 * 9, 0, 0) * 0.017453292519943295
-    end
-    local v297 = nil
-    if tbl_upv_15.action then
-        v297 = tbl_upv_5[tbl_upv_15.action]
-        v254 = (now_1 - tbl_upv_15.actT0) / tbl_upv_15.actDur
-        if not (v297) or v254 >= 1 then
-            tbl_upv_15.action = nil
-        else
-            local value_24, v299 = evalKeys(v297.keys, v254)
-            if v297.mirror and tbl_upv_15.actMirror < 0 then
-                value_24, v299 = Vector3.new(-value_24.X, value_24.Y, value_24.Z), Vector3.new(v299.X, -v299.Y, -v299.Z)
-            end
-            v258, v253 = v258 + value_24, v253 + v299 * 0.017453292519943295
-        end
-    end
-    v248 = u18.value
-    local v301 = v258 + Vector3.new(0, v248 * tbl_upv_2.equipDrop, 0)
-    local v302 = v253 + Vector3.new((-v248 * tbl_upv_2.equipTilt) * 0.017453292519943295, 0, 0)
-    if tbl_upv_15.dropAt then
-        local v303 = math.clamp((now_1 - tbl_upv_15.dropAt) / tbl_upv_2.dropTime, 0, 1)
-        local v304 = v303 * v303
-        local v350 = v301 + Vector3.new(0, -tbl_upv_2.equipDrop * v304, 0)
-        local v351 = v302 + Vector3.new((-tbl_upv_2.equipTilt * 0.017453292519943295) * v304, 0, 0)
-    end
-    if tbl_upv_15.hiddenUntil > 0 and tbl_upv_15.hiddenUntil <= now_1 then
-        tbl_upv_15.hiddenUntil = 0
-        tbl_upv_15.vanishAt = nil
-        if tbl_upv_15.action == "throw" or tbl_upv_15.action == "place" then
-            tbl_upv_15.action = nil
-        end
-        if shown_2.drawFrom and shown_2.clips and (shown_2.clips.redraw or shown_2.clips.draw) then
-            tbl_upv_15.clip = nil
-            tbl_upv_15.clipName = nil
-            tbl_upv_15.pendingDraw = ((shown_2.clips.redraw) and "redraw") or "draw"
-        else
-            u18.value = -1
-            u18.velocity = 0
-            u18.target = 0
-        end
-    end
-    tbl_upv_15.frame = nil
-    tbl_upv_15.wallPush = 0
-    value_24 = u8.value
-    local v305 = u9.value
-    local v306 = v301 - value_24
-    local v307 = v302 - v305
-    tbl_upv_15.layerPos = v306
-    tbl_upv_15.layerRot = v307
-    local v308 = CFrame.new(value_24) * CFrame.fromEulerAnglesYXZ(v305.X, v305.Y, v305.Z) * shown_2.styleRot
-    tbl_upv_15.restFrame = v308
-    if tbl_upv_15.pendingDraw then
-        local pendingDraw_1 = tbl_upv_15.pendingDraw
-        tbl_upv_15.pendingDraw = nil
-        if shown_2.drawFrom then
-            startClip(pendingDraw_1, nil, BladeClips_upv_1.StartFrame(shown_2.drawFrom, v308))
-            tbl_upv_15.clipFromVel = {tip = Vector3.new(0, 0, 0), edge = Vector3.new(0, 0, 0), pos = Vector3.new(0, 3.5, 0)}
-        end
-    end
-    if tbl_upv_15.refreshFF then
-        if (tbl_upv_15.clip) and ((now_1 - tbl_upv_15.clipT0) / tbl_upv_15.clipScale < tbl_upv_15.refreshFF) then
-            tbl_upv_15.clipT0 = tbl_upv_15.clipT0 - (4 * v244)
-        else
-            tbl_upv_15.refreshFF = nil
-            tbl_upv_15.refreshGlintAt = now_1 + 0.05
-        end
-    end
-    if tbl_upv_15.refreshGlintAt and tbl_upv_15.refreshGlintAt <= now_1 then
-        tbl_upv_15.refreshGlintAt = nil
-        table.insert(tbl_upv_15.fxQueue, "headglint")
-        u16:Impulse(Vector3.new(0, 0.6000000238418579, 0))
-    end
-    local clip_3 = tbl_upv_15.clip
-    tbl_upv_15.rodV = 0
-    local v309 = nil
-    local v322 = nil
-    if clip_3 then
-        local v310 = now_1 - tbl_upv_15.clipT0
-        if clip_3.rod then
-            tbl_upv_15.rodV = evalTrack(clip_3.rod, v310 / tbl_upv_15.clipScale)
-        end
-        if clip_3.string then
-            tbl_upv_15.stringV = evalTrack(clip_3.string, v310 / tbl_upv_15.clipScale)
-        end
-        if clip_3.strip then
-            tbl_upv_15.stripV = evalTrack(clip_3.strip, v310 / tbl_upv_15.clipScale)
-        end
-        v309 = clip_3.fx
-        if v309 then
-            while tbl_upv_15.clipFx <= #v309 do
-                if not (v309[tbl_upv_15.clipFx][1] * tbl_upv_15.clipScale <= v310) then
-                    break
-                end
-                v322 = v309[tbl_upv_15.clipFx]
-                v322 = v322[2]
-                if v322 == "bolt" then
-                    tbl_upv_15.boltIn = true
-                    tbl_upv_15.boltT0 = now_1
-                elseif v322 == "half" then
-                    tbl_upv_15.hammerTarget = 0.5
-                elseif v322 == "prime" then
-                    tbl_upv_15.frizzenTarget = 0
-                elseif v322 == "nock" then
-                    tbl_upv_15.nocked = true
-                    tbl_upv_15.nockT0 = now_1
-                elseif v322 == "click" then
-                    tbl_upv_15.hammerTarget = 0
-                end
-                table.insert(tbl_upv_15.fxQueue, v322)
-                if type(v322[3]) == "string" then
-                    local fxQueue_2 = tbl_upv_15.fxQueue
-                    local v313 = v322[3]
-                    local v314 = ((type(v322[4]) ~= "number") and "") or ("@" .. v322[4])
-                    table.insert(fxQueue_2, "sfx:" .. v313 .. v314)
-                end
-                local v315 = tbl_upv_15
-                v315.clipFx = v315.clipFx + 1
-            end
-        end
-        local v316 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, v310, tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-        if clip_3.release * tbl_upv_15.clipScale <= v310 then
-            v322 = true
-        else
-            v322 = false
-        end
-        if v322 and not tbl_upv_15.dropAt and tbl_upv_15.use then
-            if tbl_upv_15.clipName == "use_in" then
-                if startClip("use_loop", nil, v316) then
-                    v305 = v316
-                elseif v322 and not tbl_upv_15.dropAt and tbl_upv_15.parry then
-                    if tbl_upv_15.clipName ~= "parry_in" and tbl_upv_15.clipName ~= "parry_hold" then
-                        if v322 or tbl_upv_15.dropAt then
-                            u19:Snap(v316.Position - v308.Position)
-                            u19.target = Vector3.new(0, 0, 0)
-                            local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                            u22:Snap(v317 * v318)
-                            u22.target = Vector3.new(0, 0, 0)
-                            if not (tbl_upv_15.dropAt) then
-                                local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                                u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
-                                local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                                u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
-                            end
-                            tbl_upv_15.clip = nil
-                            tbl_upv_15.clipName = nil
-                            v305 = v308
-                        else
-                            v305 = v316
-                        end
-                    elseif not startClip("parry_hold", nil, v316) and (v322 or tbl_upv_15.dropAt) then
-                        u19:Snap(v316.Position - v308.Position)
-                        u19.target = Vector3.new(0, 0, 0)
-                        local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                        u22:Snap(v317 * v318)
-                        u22.target = Vector3.new(0, 0, 0)
-                        if not (tbl_upv_15.dropAt) then
-                            local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                            u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
-                            local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                            u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
-                        end
-                        tbl_upv_15.clip = nil
-                        tbl_upv_15.clipName = nil
-                        v305 = v308
-                    else
-                        v305 = v316
-                    end
-                elseif v322 or tbl_upv_15.dropAt then
-                    u19:Snap(v316.Position - v308.Position)
-                    u19.target = Vector3.new(0, 0, 0)
-                    local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                    u22:Snap(v317 * v318)
-                    u22.target = Vector3.new(0, 0, 0)
-                    if not (tbl_upv_15.dropAt) then
-                        local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                        u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
-                        local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                        u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
-                    end
-                    tbl_upv_15.clip = nil
-                    tbl_upv_15.clipName = nil
-                    v305 = v308
-                else
-                    v305 = v316
-                end
-            elseif tbl_upv_15.clipName == "use_loop" and startClip("use_loop", nil, v316) then
-                v305 = v316
-            elseif v322 and not tbl_upv_15.dropAt and tbl_upv_15.parry then
-                if tbl_upv_15.clipName ~= "parry_in" and tbl_upv_15.clipName ~= "parry_hold" then
-                    if v322 or tbl_upv_15.dropAt then
-                        u19:Snap(v316.Position - v308.Position)
-                        u19.target = Vector3.new(0, 0, 0)
-                        local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                        u22:Snap(v317 * v318)
-                        u22.target = Vector3.new(0, 0, 0)
-                        if not (tbl_upv_15.dropAt) then
-                            local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                            u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
-                            local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                            u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
-                        end
-                        tbl_upv_15.clip = nil
-                        tbl_upv_15.clipName = nil
-                        v305 = v308
-                    else
-                        v305 = v316
-                    end
-                elseif not startClip("parry_hold", nil, v316) and (v322 or tbl_upv_15.dropAt) then
-                    u19:Snap(v316.Position - v308.Position)
-                    u19.target = Vector3.new(0, 0, 0)
-                    local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                    u22:Snap(v317 * v318)
-                    u22.target = Vector3.new(0, 0, 0)
-                    if not (tbl_upv_15.dropAt) then
-                        local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                        u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
-                        local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                        u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
-                    end
-                    tbl_upv_15.clip = nil
-                    tbl_upv_15.clipName = nil
-                    v305 = v308
-                else
-                    v305 = v316
-                end
-            elseif v322 or tbl_upv_15.dropAt then
-                u19:Snap(v316.Position - v308.Position)
-                u19.target = Vector3.new(0, 0, 0)
-                local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                u22:Snap(v317 * v318)
-                u22.target = Vector3.new(0, 0, 0)
-                if not (tbl_upv_15.dropAt) then
-                    local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                    u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
-                    local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                    u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
-                end
-                tbl_upv_15.clip = nil
-                tbl_upv_15.clipName = nil
-                v305 = v308
-            else
-                v305 = v316
-            end
-        elseif v322 and not tbl_upv_15.dropAt and tbl_upv_15.parry then
-            if tbl_upv_15.clipName ~= "parry_in" and tbl_upv_15.clipName ~= "parry_hold" then
-                if v322 or tbl_upv_15.dropAt then
-                    u19:Snap(v316.Position - v308.Position)
-                    u19.target = Vector3.new(0, 0, 0)
-                    local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                    u22:Snap(v317 * v318)
-                    u22.target = Vector3.new(0, 0, 0)
-                    if not (tbl_upv_15.dropAt) then
-                        local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                        u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
-                        local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                        u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
-                    end
-                    tbl_upv_15.clip = nil
-                    tbl_upv_15.clipName = nil
-                    v305 = v308
-                else
-                    v305 = v316
-                end
-            elseif not startClip("parry_hold", nil, v316) and (v322 or tbl_upv_15.dropAt) then
-                u19:Snap(v316.Position - v308.Position)
-                u19.target = Vector3.new(0, 0, 0)
-                local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-                u22:Snap(v317 * v318)
-                u22.target = Vector3.new(0, 0, 0)
-                if not (tbl_upv_15.dropAt) then
-                    local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                    u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
-                    local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                    u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
-                end
-                tbl_upv_15.clip = nil
-                tbl_upv_15.clipName = nil
-                v305 = v308
-            else
-                v305 = v316
-            end
-        elseif v322 or tbl_upv_15.dropAt then
-            u19:Snap(v316.Position - v308.Position)
-            u19.target = Vector3.new(0, 0, 0)
-            local v317, v318 = (v316.Rotation * v308.Rotation:Inverse()):ToAxisAngle()
-            u22:Snap(v317 * v318)
-            u22.target = Vector3.new(0, 0, 0)
-            if not (tbl_upv_15.dropAt) then
-                local v319 = BladeClips_upv_1.Eval(clip_3, tbl_upv_15.clipFrom, math.max(0, v310 - 0.004166666666666667), tbl_upv_15.clipScale, v308, tbl_upv_15.clipFromVel)
-                u19.velocity = ((v316.Position - v319.Position) / 0.004166666666666667) + (clip_3.vel or Vector3.new(0, 0, 0))
-                local v320, v321 = (v316.Rotation * v319.Rotation:Inverse()):ToAxisAngle()
-                u22.velocity = v320 * math.min(v321 / 0.004166666666666667, 20)
-            end
-            tbl_upv_15.clip = nil
-            tbl_upv_15.clipName = nil
-            v305 = v308
-        else
-            v305 = v316
-        end
-    else
-        v305 = v308
-    end
-    if not (tbl_upv_15.clip) then
-        u19:Update(v244)
-        u22:Update(v244)
-        v322 = u19.value
-        local value_25 = u22.value
-        if v322.Magnitude > 1e-05 or value_25.Magnitude > 1e-05 then
-            if value_25.Magnitude > 1e-06 then
-                v309 = CFrame.fromAxisAngle(value_25.Unit, value_25.Magnitude)
-            else
-                v309 = CFrame.identity
-            end
-            v305 = CFrame.new(v308.Position + v322) * v309 * v308.Rotation
-        end
-    end
-    local lastFrame_1 = tbl_upv_15.lastFrame
-    if lastFrame_1 then
-        local v323, v324, v325 = nil, nil, nil
-        if v244 > 0 then
-            local function cap_1(a2, a3)
-                --[[
-                  name: cap
-                  line: 1794
-                ]]
-                if a3 < a2.Magnitude then
-                    return a2.Unit * a3
-                end
-                return a2
-            end
-            local tbl_31 = {tip = 0, edge = 0, pos = 0}
-            v323 = (v305.Position - lastFrame_1.Position) / v244
-            local v326
-            if v323.Magnitude > 25 then
-                v326 = v323.Unit * 25
-            else
-                v326 = v323
-            end
-            tbl_31.pos = v326
-            v324 = (v305.UpVector - lastFrame_1.UpVector) / v244
-            if v324.Magnitude > 40 then
-                v326 = v324.Unit * 40
-            else
-                v326 = v324
-            end
-            tbl_31.tip = v326
-            v325 = (v305.LookVector - lastFrame_1.LookVector) / v244
-            if v325.Magnitude > 40 then
-                v326 = v325.Unit * 40
-            end
-            tbl_31.edge = v325
-            tbl_upv_15.rawVel = tbl_31
-        end
-    end
-    tbl_upv_15.lastFrame = v305
-    tbl_upv_15.lastFrameT = now_1
-    if shown_2.id == "bolas" then
-        if (tbl_upv_15.clipName == "draw" or tbl_upv_15.clipName == "redraw") and tbl_upv_15.spinT0 ~= tbl_upv_15.clipT0 then
-            tbl_upv_15.spinT0 = tbl_upv_15.clipT0
-        end
-        if tbl_upv_15.clipName ~= "throw" then
-            tbl_upv_15.spinA = 12.566370614359172 * (1 - ((1 - math.clamp((now_1 - tbl_upv_15.spinT0) / 0.7, 0, 1)) ^ 3))
-        else
-            tbl_upv_15.spinA = (tbl_upv_15.spinA + (((v244 * 2) * math.pi) * 4)) % math.tau
-        end
-        v305 = v305 * CFrame.Angles(0, tbl_upv_15.spinA, 0)
-    end
-    local v327 = CFrame.new(v305.Position + v306) * CFrame.fromEulerAnglesYXZ(v307.X, v307.Y, v307.Z) * v305.Rotation
-    local wall_2 = a1.wall
-    local v328 = nil
-    if wall_2 then
-        local v312 = 0
-        for v352, value_26 in shown_2.corners do
-            v312 = math.max(v312, -v327:PointToWorldSpace(value_26).Z)
-        end
-        v328 = wall_2 - 0.12
-        if v328 < v312 then
-            tbl_upv_15.wallPush = math.min(v312 - v328, math.max(0, -v327.Position.Z - 0.28))
-            v327 = v327 + Vector3.new(0, 0, tbl_upv_15.wallPush)
-        end
-    end
-    tbl_upv_15.frame = v327
-    if tbl_upv_15.leftVanishAt and tbl_upv_15.leftVanishAt <= now_1 then
-        tbl_upv_15.leftOut = true
-        tbl_upv_15.leftVanishAt = nil
-        tbl_upv_15.leftOutAt = now_1
-    end
-    if a1.offHandOut == true then
-        tbl_upv_15.leftSeenOut = true
-        if not (tbl_upv_15.leftOut) and not (tbl_upv_15.leftVanishAt) then
-            tbl_upv_15.leftOut = true
-            tbl_upv_15.leftOutAt = now_1
-        end
-    elseif a1.offHandOut == false and tbl_upv_15.leftOut and (tbl_upv_15.leftSeenOut or now_1 - tbl_upv_15.leftOutAt > 1) then
-        tbl_upv_15.leftOut = false
-        tbl_upv_15.leftSeenOut = false
-        tbl_upv_15.leftCatchT = now_1
-    end
-    if (shown_2.leftFist) and (tbl_upv_15.leftOut) then
-        tbl_upv_15.leftFrame = nil
-    else
-        local v330 = nil
-        if shown_2.leftFist then
-            v305 = tbl_upv_15.clip
-            if v305 and v305.left then
-                local v331 = v305.leftClip
-                if not (v331) then
-                    local tbl_32 = {keys = v305.left, contact = v305.contact, release = v305.release, eyeRoll = v305.eyeRoll}
-                    v305.leftClip = tbl_32
-                    v331 = tbl_32
-                end
-                v327 = BladeClips_upv_1.Eval(v331, tbl_upv_15.leftFrom, now_1 - tbl_upv_15.clipT0, tbl_upv_15.clipScale, v308, tbl_upv_15.leftFromVel)
-            end
-            v305 = tbl_upv_15.leftLast
-            if v305 then
-                local v332, v333, v334 = nil, nil, nil
-                if v244 > 0 then
-                    local function cap_2(a4, a5)
-                        --[[
-                          name: cap
-                          line: 1868
-                        ]]
-                        if a5 < a4.Magnitude then
-                            return a4.Unit * a5
-                        end
-                        return a4
-                    end
-                    local tbl_33 = {tip = 0, edge = 0, pos = 0}
-                    v332 = (v327.Position - v305.Position) / v244
-                    local v335
-                    if v332.Magnitude > 25 then
-                        v335 = v332.Unit * 25
-                    else
-                        v335 = v332
-                    end
-                    tbl_33.pos = v335
-                    v333 = (v308.UpVector - v305.UpVector) / v244
-                    if v333.Magnitude > 40 then
-                        v335 = v333.Unit * 40
-                    else
-                        v335 = v333
-                    end
-                    tbl_33.tip = v335
-                    v334 = (v308.LookVector - v305.LookVector) / v244
-                    if v334.Magnitude > 40 then
-                        v335 = v334.Unit * 40
-                    end
-                    tbl_33.edge = v334
-                    tbl_upv_15.leftVel = tbl_33
-                end
-            end
-            tbl_upv_15.leftLast = v308
-            v330 = (now_1 - tbl_upv_15.leftCatchT) / 0.3
-            if v330 >= 0 and v330 < 1 then
-                local v353 = v330 - 1
-                local v354 = 1 - (2.70158 * (v330 - 1) * (v330 - 1) * (v330 - 1) + 1 + 1.70158 * (v330 - 1) * (v330 - 1))
-                v327 = CFrame.new(v308.Position + Vector3.new(0.05999999865889549, -0.41999998688697815, 0.03999999910593033) * (1 - (2.70158 * (v330 - 1) * (v330 - 1) * (v330 - 1) + 1 + 1.70158 * (v330 - 1) * (v330 - 1)))) * CFrame.fromEulerAnglesYXZ(-0.8726646259971648 * (1 - (2.70158 * (v330 - 1) * (v330 - 1) * (v330 - 1) + 1 + 1.70158 * (v330 - 1) * (v330 - 1))), 0, 0.5235987755982988 * (1 - (2.70158 * (v330 - 1) * (v330 - 1) * (v330 - 1) + 1 + 1.70158 * (v330 - 1) * (v330 - 1))))
-                    * v308.Rotation
-            else
-                v327 = v308
-            end
-            local v336, v337, v338, v339, v340, v341, v342, v343, v344, v345, v346, v347 = v327:GetComponents()
-            local v348 = CFrame.new(-v336, v337, v338, v339, -v340, -v341, -v342, v343, v344, -v345, v346, v347)
-            tbl_upv_15.leftFrame = CFrame.new((v348.Position + v306) + Vector3.new(0, 0, tbl_upv_15.wallPush)) * CFrame.fromEulerAnglesYXZ(v307.X, v307.Y, v307.Z) * v348.Rotation
-        else
-            tbl_upv_15.leftFrame = nil
-        end
-    end
-    if tbl_upv_15.vanishAt then
-        v244 = false
-        if tbl_upv_15.vanishAt <= now_1 then
-            v244 = now_1 < tbl_upv_15.hiddenUntil
-        end
-    else
-        v244 = (now_1 < tbl_upv_15.hiddenUntil) and ((tbl_upv_15.action ~= "throw") and (tbl_upv_15.action ~= "place"))
-    end
-    if v244 then
-        return v301, v302, nil
-    end
-    if (a1.charges) and (a1.charges <= 0) then
-        tbl_upv_15.spent = true
-        if not (tbl_upv_15.vanishAt) or not (now_1 < tbl_upv_15.vanishAt) then
-            return v301, v302, nil
-        end
-    elseif tbl_upv_15.spent then
-        tbl_upv_15.spent = false
-        if shown_2.drawFrom and shown_2.clips and (shown_2.clips.redraw or shown_2.clips.draw) then
-            tbl_upv_15.pendingDraw = ((shown_2.clips.redraw) and "redraw") or "draw"
-        else
-            u18.value = -1
-            u18.velocity = 0
-            u18.target = 0
-        end
-    end
-    return v301, v302, shown_2
+    )
+    v827.touch = success2 and typeof(preferredInput) == "EnumItem" and preferredInput.Name == "Touch"
+    v827.vel = humanoidRootPart.AssemblyLinearVelocity
+
+    return v827, camera
 end
-local function renderFrame(a1)
+
+local total = 0
+local count = 0
+local v837 = 0
+
+local function renderFrame(dt: number)
     --[[
       name: renderFrame
       line: 2595
       upvalues:
         liveInput (copy, index: 1)
-        u23 (ref,  index: 2)
-        tbl_upv_25 (copy, index: 3)
-        u26 (ref,  index: 4)
-        BladeSmear_upv_1 (copy, index: 5)
-        ViewFx_upv_1 (copy, index: 6)
-        tbl_upv_15 (copy, index: 7)
+        v506 (ref,  index: 2)
+        v579 (copy, index: 3)
+        v552 (ref,  index: 4)
+        BladeSmear (copy, index: 5)
+        ViewFx (copy, index: 6)
+        v231 (copy, index: 7)
         step (copy, index: 8)
         place (copy, index: 9)
     ]]
-    local v350, v351 = liveInput(a1)
-    if v350 and v351 then
-        if v350.visible then
-            local v352, v353, v354 = step(v350)
-            place(v351, v350.cam, v350.fov, v352, v353, v354)
-        else
-            if tbl_upv_15.shown or u23 then
-                tbl_upv_15.shown = nil
-                tbl_upv_15.wantId = nil
-                tbl_upv_15.dropAt = nil
-                if u23 then
-                    u23.Parent = nil
-                    u23 = nil
-                end
-                for _, value_27 in tbl_upv_25 do
-                    value_27.Parent = nil
-                end
-                if u26 then
-                    u26.Parent = nil
-                    u26 = nil
-                end
-                BladeSmear_upv_1.Hide()
-                ViewFx_upv_1.Hide()
-                tbl_upv_15.embers = false
-                tbl_upv_15.fuse = 0
-            end
-            tbl_upv_15.lastYaw = nil
-            tbl_upv_15.lastPitch = nil
-            tbl_upv_15.lastRootY = nil
+    local v840, parent = liveInput(dt)
+
+    if v840 and parent then
+        if v840.visible then
+            local v842, v843, v844 = step(v840)
+            place(parent, v840.cam, v840.fov, v842, v843, v844)
+
+            return
         end
-    else
-        if u23 then
-            u23.Parent = nil
-            u23 = nil
+
+        if not v231.shown and not v506 then
+            v231.lastYaw = nil
+            v231.lastPitch = nil
+            v231.lastRootY = nil
+
+            return
         end
-        for _, value_28 in tbl_upv_25 do
-            value_28.Parent = nil
+
+        v231.shown = nil
+        v231.wantId = nil
+        v231.dropAt = nil
+
+        if v506 then
+            v506.Parent = nil
+            v506 = nil
         end
-        if u26 then
-            u26.Parent = nil
-            u26 = nil
+
+        for _, v846 in v579 do
+            v846.Parent = nil
         end
-        BladeSmear_upv_1.Hide()
-        ViewFx_upv_1.Hide()
-        tbl_upv_15.embers = false
-        tbl_upv_15.fuse = 0
+
+        if v552 then
+            v552.Parent = nil
+            v552 = nil
+        end
+
+        BladeSmear.Hide()
+        ViewFx.Hide()
+        v231.embers = false
+        v231.fuse = 0
+        v231.lastYaw = nil
+        v231.lastPitch = nil
+        v231.lastRootY = nil
+
+        return
     end
+
+    if v506 then
+        v506.Parent = nil
+        v506 = nil
+    end
+
+    for _, v848 in v579 do
+        v848.Parent = nil
+    end
+
+    if v552 then
+        v552.Parent = nil
+        v552 = nil
+    end
+
+    BladeSmear.Hide()
+    ViewFx.Hide()
+    v231.embers = false
+    v231.fuse = 0
 end
-local function render(a1)
+
+local function render(deltaTime: number)
     --[[
       name: render
       line: 2614
       upvalues:
-        u30 (ref,  index: 1)
-        u31 (ref,  index: 2)
+        frozen (ref,  index: 1)
+        v793 (ref,  index: 2)
         renderFrame (copy, index: 3)
-        u32 (ref,  index: 4)
-        u33 (ref,  index: 5)
-        u34 (ref,  index: 6)
+        total (ref,  index: 4)
+        count (ref,  index: 5)
+        v837 (ref,  index: 6)
     ]]
-    if (u30) or (u31) then
+    if frozen or v793 then
         return
     end
-    local v355 = os.clock()
-    renderFrame(a1)
-    local v356 = os.clock() - v355
-    u32 = u32 + v356
-    u33 = u33 + 1
-    u34 = math.max(u34, v356)
+
+    local timestamp = os.clock()
+    renderFrame(deltaTime)
+    local elapsedTime = os.clock() - timestamp
+    total += elapsedTime
+    count += 1
+    v837 = math.max(v837, elapsedTime)
 end
-resetState = function()
-    --[[
-      name: resetState
-      line: 917
-      upvalues:
-        u8 (copy, index: 1)
-        u9 (copy, index: 2)
-        u10 (copy, index: 3)
-        u11 (copy, index: 4)
-        u12 (copy, index: 5)
-        u13 (copy, index: 6)
-        u14 (copy, index: 7)
-        u15 (copy, index: 8)
-        u16 (copy, index: 9)
-        u17 (copy, index: 10)
-        u18 (copy, index: 11)
-        u19 (copy, index: 12)
-        u22 (copy, index: 13)
-        tbl_upv_15 (copy, index: 14)
-        BladeSmear_upv_1 (copy, index: 15)
-        ViewFx_upv_1 (copy, index: 16)
-    ]]
-    u8:Snap(Vector3.new(0, 0, 0))
-    u9:Snap(Vector3.new(0, 0, 0))
-    u10:Snap(0)
-    u11:Snap(0)
-    u12:Snap(0)
-    u13:Snap(Vector3.new(0, 0, 0))
-    u14:Snap(Vector3.new(0, 0, 0))
-    u15:Snap(Vector3.new(0, 0, 0))
-    u16:Snap(Vector3.new(0, 0, 0))
-    u17:Snap(Vector3.new(0, 0, 0))
-    u18:Snap(0)
-    u19:Snap(Vector3.new(0, 0, 0))
-    u22:Snap(Vector3.new(0, 0, 0))
-    tbl_upv_15.action = nil
-    tbl_upv_15.clip = nil
-    tbl_upv_15.lastFrame = nil
-    tbl_upv_15.frame = nil
-    tbl_upv_15.spark = false
-    tbl_upv_15.rawVel = nil
-    tbl_upv_15.leftLast = nil
-    tbl_upv_15.leftFromVel = nil
-    tbl_upv_15.leftVel = nil
-    tbl_upv_15.leftFrame = nil
-    tbl_upv_15.leftOut = false
-    tbl_upv_15.leftVanishAt = nil
-    tbl_upv_15.leftCatchT = -10
-    tbl_upv_15.leftOutAt = -10
-    tbl_upv_15.leftSeenOut = false
-    tbl_upv_15.lastLungeT = nil
-    tbl_upv_15.lastLungeName = nil
-    tbl_upv_15.refreshGlintAt = nil
-    tbl_upv_15.refreshFF = nil
-    tbl_upv_15.clipName = nil
-    tbl_upv_15.pendingDraw = nil
-    tbl_upv_15.vanishAt = nil
-    tbl_upv_15.drawHold = 0
-    tbl_upv_15.drawHalf = false
-    tbl_upv_15.drawFull = false
-    tbl_upv_15.nocked = true
-    tbl_upv_15.nockT0 = -10
-    tbl_upv_15.shotN = 0
-    tbl_upv_15.looseAt = nil
-    tbl_upv_15.windHold = 0
-    tbl_upv_15.windK = 0
-    tbl_upv_15.windFull = false
-    tbl_upv_15.windHalf = false
-    tbl_upv_15.throwN = 0
-    tbl_upv_15.bite = 0
-    tbl_upv_15.stringV = 0
-    tbl_upv_15.stringT0 = -10
-    tbl_upv_15.stripV = 0.25
-    tbl_upv_15.useOutUntil = nil
-    tbl_upv_15.spinA = 0
-    tbl_upv_15.spinT0 = -10
-    table.clear(tbl_upv_15.fxQueue)
-    BladeSmear_upv_1.Hide()
-    ViewFx_upv_1.Hide()
-    tbl_upv_15.embers = false
-    tbl_upv_15.fuse = 0
-    tbl_upv_15.block = false
-    tbl_upv_15.parry = false
-    tbl_upv_15.charge = false
-    tbl_upv_15.draw = false
-    tbl_upv_15.wind = false
-    tbl_upv_15.use = false
-    tbl_upv_15.reload = false
-    tbl_upv_15.dropAt = nil
-    tbl_upv_15.hiddenUntil = 0
-    tbl_upv_15.lastYaw = nil
-    tbl_upv_15.lastPitch = nil
-    tbl_upv_15.lastRootY = nil
-    tbl_upv_15.vy = 0
-    tbl_upv_15.minVy = 0
-    tbl_upv_15.grounded = true
-end
-function tbl_upv_1.SetExternal(a1)
+
+function v14.SetExternal(external)
     --[[
       name: SetExternal
       line: 2636
       upvalues:
-        u31 (ref,  index: 1)
+        v793 (ref,  index: 1)
         resetState (copy, index: 2)
-        tbl_upv_15 (copy, index: 3)
-        u23 (ref,  index: 4)
-        tbl_upv_25 (copy, index: 5)
-        u26 (ref,  index: 6)
-        BladeSmear_upv_1 (copy, index: 7)
-        ViewFx_upv_1 (copy, index: 8)
+        v231 (copy, index: 3)
+        v506 (ref,  index: 4)
+        v579 (copy, index: 5)
+        v552 (ref,  index: 6)
+        BladeSmear (copy, index: 7)
+        ViewFx (copy, index: 8)
     ]]
-    if u31 == a1 then
+    if v793 == external then
         return
     end
-    u31 = a1
+
+    v793 = external
     resetState()
-    tbl_upv_15.shown = nil
-    tbl_upv_15.wantId = nil
-    if u23 then
-        u23.Parent = nil
-        u23 = nil
+    v231.shown = nil
+    v231.wantId = nil
+
+    if v506 then
+        v506.Parent = nil
+        v506 = nil
     end
-    for _, value_29 in tbl_upv_25 do
-        value_29.Parent = nil
+
+    for _, v855 in v579 do
+        v855.Parent = nil
     end
-    if u26 then
-        u26.Parent = nil
-        u26 = nil
+
+    if v552 then
+        v552.Parent = nil
+        v552 = nil
     end
-    BladeSmear_upv_1.Hide()
-    ViewFx_upv_1.Hide()
-    tbl_upv_15.embers = false
-    tbl_upv_15.fuse = 0
+
+    BladeSmear.Hide()
+    ViewFx.Hide()
+    v231.embers = false
+    v231.fuse = 0
 end
-function tbl_upv_1.ReleasePoint()
+
+function v14.ReleasePoint()
     --[[
       name: ReleasePoint
       line: 2649
       upvalues:
-        tbl_upv_15 (copy, index: 1)
+        v231 (copy, index: 1)
     ]]
-    if tbl_upv_15.release and os.clock() - tbl_upv_15.releaseT < 0.5 then
-        return tbl_upv_15.release
+    if v231.release and os.clock() - v231.releaseT < 0.5 then
+        return v231.release
     end
+
     return nil
 end
-function tbl_upv_1.ReleaseDelay()
+
+function v14.ReleaseDelay()
     --[[
       name: ReleaseDelay
       line: 2655
       upvalues:
-        tbl_upv_15 (copy, index: 1)
+        v231 (copy, index: 1)
     ]]
-    local v357 = tbl_upv_15.vanishAt or (tbl_upv_15.looseAt or (tbl_upv_15.leftVanishAt))
-    if v357 then
-        return (math.max(0, v357 - os.clock()))
-    end
-    return 0
+    return if const v856 = v231.vanishAt or v231.looseAt or v231.leftVanishAt then (math.max(0, v856 - os.clock())) else 0
 end
-function tbl_upv_1.IsExternal()
+
+function v14.IsExternal()
     --[[
       name: IsExternal
       line: 2660
       upvalues:
-        u31 (ref, index: 1)
+        v793 (ref, index: 1)
     ]]
-    return u31
+    return v793
 end
-function tbl_upv_1.ExternalFrame(a1)
+
+function v14.ExternalFrame(a857)
     --[[
       name: ExternalFrame
       line: 2665
       upvalues:
-        u31 (ref,  index: 1)
-        Workspace_upv_1 (copy, index: 2)
-        tbl_upv_15 (copy, index: 3)
-        u23 (ref,  index: 4)
-        tbl_upv_25 (copy, index: 5)
-        u26 (ref,  index: 6)
-        BladeSmear_upv_1 (copy, index: 7)
-        ViewFx_upv_1 (copy, index: 8)
+        v793 (ref,  index: 1)
+        workspace (copy, index: 2)
+        v231 (copy, index: 3)
+        v506 (ref,  index: 4)
+        v579 (copy, index: 5)
+        v552 (ref,  index: 6)
+        BladeSmear (copy, index: 7)
+        ViewFx (copy, index: 8)
         step (copy, index: 9)
-        UserInputService_upv_1 (copy, index: 10)
+        userInputService (copy, index: 10)
         place (copy, index: 11)
     ]]
-    if not u31 then
+    if not v793 then
         return
     end
-    local CurrentCamera_2 = Workspace_upv_1.CurrentCamera
-    if not CurrentCamera_2 then
+
+    local camera = workspace.CurrentCamera
+    if not camera then
         return
     end
-    if a1.visible then
-        local CFrame_3 = CurrentCamera_2.CFrame
-        local tbl_34 = {visible = true, touch = 0}
-        tbl_34.dt = a1.dt
-        tbl_34.now = os.clock()
-        tbl_34.id = a1.id
-        tbl_34.kind = a1.kind
-        tbl_34.charges = a1.charges
-        tbl_34.cam = CFrame_3
-        tbl_34.fov = CurrentCamera_2.FieldOfView
-        tbl_34.grounded = a1.grounded
-        tbl_34.rootY = a1.rootY
-        tbl_34.sliding = a1.sliding
-        tbl_34.aiming = a1.aiming
-        tbl_34.bobPhase = a1.bobPhase
-        tbl_34.bobAmount = a1.bobAmount
-        tbl_34.wall = a1.wall
-        local success_5, v358 = pcall(
+
+    if a857.visible then
+        local cFrame = camera.CFrame
+        local v860 = {visible = true, dt = a857.dt, now = os.clock(), id = a857.id, kind = a857.kind, charges = a857.charges, cam = cFrame, fov = camera.FieldOfView, grounded = a857.grounded, rootY = a857.rootY, sliding = a857.sliding, aiming = a857.aiming, bobPhase = a857.bobPhase, bobAmount = a857.bobAmount, wall = a857.wall}
+        local success, preferredInput = pcall(
             function()
                 --[[
                   line: 2512
                   upvalues:
-                    UserInputService_upv_1 (copy, index: 1)
+                    userInputService (copy, index: 1)
                 ]]
-                return UserInputService_upv_1.PreferredInput
+                return userInputService.PreferredInput
             end
         )
-        tbl_34.touch = success_5 and typeof(v358) == "EnumItem" and v358.Name == "Touch"
-        local v360, v361, v362 = step(tbl_34)
-        place(CurrentCamera_2, CFrame_3, CurrentCamera_2.FieldOfView, v360, v361, v362)
-    else
-        if tbl_upv_15.shown or u23 then
-            tbl_upv_15.shown = nil
-            tbl_upv_15.wantId = nil
-            tbl_upv_15.dropAt = nil
-            if u23 then
-                u23.Parent = nil
-                u23 = nil
-            end
-            for _, value_30 in tbl_upv_25 do
-                value_30.Parent = nil
-            end
-            if u26 then
-                u26.Parent = nil
-                u26 = nil
-            end
-            BladeSmear_upv_1.Hide()
-            ViewFx_upv_1.Hide()
-            tbl_upv_15.embers = false
-            tbl_upv_15.fuse = 0
-        end
-        tbl_upv_15.lastYaw = nil
-        tbl_upv_15.lastPitch = nil
-        tbl_upv_15.lastRootY = nil
+        local touch = success and typeof(preferredInput) == "EnumItem" and preferredInput.Name == "Touch"
+        v860.touch = touch
+        local v864, v865, v866 = step(v860)
+        place(camera, cFrame, camera.FieldOfView, v864, v865, v866)
+
+        return
     end
+
+    if v231.shown or v506 then
+        v231.shown = nil
+        v231.wantId = nil
+        v231.dropAt = nil
+
+        if v506 then
+            v506.Parent = nil
+            v506 = nil
+        end
+
+        for _, v868 in v579 do
+            v868.Parent = nil
+        end
+
+        if v552 then
+            v552.Parent = nil
+            v552 = nil
+        end
+
+        BladeSmear.Hide()
+        ViewFx.Hide()
+        v231.embers = false
+        v231.fuse = 0
+    end
+
+    v231.lastYaw = nil
+    v231.lastPitch = nil
+    v231.lastRootY = nil
 end
-local function onEvent(a1, a2)
-    --[[
-      name: onEvent
-      line: 1015
-      upvalues:
-        tbl_upv_15 (copy, index: 1)
-        BladeClips_upv_1 (copy, index: 2)
-        ItemClips_upv_1 (copy, index: 3)
-        startClip (copy, index: 4)
-        tbl_upv_5 (copy, index: 5)
-        u16 (copy, index: 6)
-        u17 (copy, index: 7)
-        u20 (copy, index: 8)
-        u21 (copy, index: 9)
-        tbl_upv_2 (copy, index: 10)
-    ]]
-    local v363 = a2 or {}
-    local shown_3 = tbl_upv_15.shown
-    local v364
-    if shown_3 then
-        v364 = shown_3.kind
-    else
-        v364 = nil
-    end
-    if a1 == "Swing" then
-        local v365 = tonumber(v363.step) or 1
-        local v366 = v363.finisher == true
-        local v367
-        if v364 == "Sword" or v364 == "Dagger" then
-            v367 = BladeClips_upv_1.Pick(v364, v365, v366)
-        elseif v364 then
-            local Pick_1 = ItemClips_upv_1.Pick
-            local v368 = true
-            if v363.oneHanded ~= true then
-                v368 = tbl_upv_15.leftOut
-            end
-            v367 = Pick_1(v364, v365, v366, v368)
-        else
-            v367 = nil
-        end
-        if v364 == "Shield" and v367 == "bash" then
-            tbl_upv_15.shotN = tbl_upv_15.shotN + 1
-            if tbl_upv_15.shotN % 2 == 0 then
-                local _ = tbl_upv_15.shown
-                v367 = tbl_upv_15.shown ~= nil and tbl_upv_15.shown.clips ~= nil and tbl_upv_15.shown.clips.bash2 ~= nil and "bash2" or v367
-            end
-        end
-        if v367 and startClip(v367, tonumber(v363.hitDelay)) then
-            return
-        end
-        local v369 = nil
-        if v364 ~= "Shield" then
-            local v370 = nil
-            if v364 ~= "Axe" then
-                local v371 = nil
-                if v364 == "Club" then
-                    v371 = tbl_upv_5.smash
-                    if v371 then
-                        tbl_upv_15.action = "smash"
-                        tbl_upv_15.actT0 = tbl_upv_15.now
-                        tbl_upv_15.actDur = v371.dur
-                        tbl_upv_15.actMirror = 1
-                    end
-                elseif v364 == "Spear" then
-                    local thrust_1 = tbl_upv_5.thrust
-                    if thrust_1 then
-                        tbl_upv_15.action = "thrust"
-                        tbl_upv_15.actT0 = tbl_upv_15.now
-                        tbl_upv_15.actDur = thrust_1.dur
-                        tbl_upv_15.actMirror = 1
-                    end
-                end
-            else
-                v370 = tbl_upv_5.chop
-                if v370 then
-                    tbl_upv_15.action = "chop"
-                    tbl_upv_15.actT0 = tbl_upv_15.now
-                    tbl_upv_15.actDur = v370.dur
-                    tbl_upv_15.actMirror = 1
-                end
-            end
-        else
-            v369 = tbl_upv_5.stab
-            if v369 then
-                tbl_upv_15.action = "stab"
-                tbl_upv_15.actT0 = tbl_upv_15.now
-                tbl_upv_15.actDur = v369.dur
-                tbl_upv_15.actMirror = 1
-            end
-        end
-    elseif a1 == "Parry" then
-        local parry_1 = tbl_upv_15.parry
-        tbl_upv_15.parry = v363.on == true
-        if (not tbl_upv_15.parry or (parry_1)) and parry_1 then
-            if (tbl_upv_15.parry) then
-                return
-            end
-            startClip("parry_out")
-        end
-        startClip("parry_in")
-    elseif a1 == "Parried" then
-        tbl_upv_15.parry = false
-        if (startClip("parry_hit")) then
-            return
-        end
-        u16:Impulse(Vector3.new(0.029999999329447746, -0.03999999910593033, 0.07999999821186066))
-    elseif a1 == "Hurl" then
-        local v365 = not (shown_3) or not (shown_3.clips) or shown_3.clips.throw
-        if v365 and startClip("throw") then
-            tbl_upv_15.leftVanishAt = tbl_upv_15.now + ((v365.vanishLeft or 0.06) * tbl_upv_15.clipScale)
-        else
-            tbl_upv_15.leftOut = true
-            tbl_upv_15.leftOutAt = tbl_upv_15.now
-        end
-    elseif a1 ~= "Catch" then
-        if a1 == "Block" then
-            local block_1 = tbl_upv_15.block
-            tbl_upv_15.block = v363.on == true
-            if (not tbl_upv_15.block or (block_1)) and block_1 then
-                if (tbl_upv_15.block) then
-                    return
-                end
-                startClip("block_out")
-            end
-            startClip("block_in")
-        elseif a1 == "Charge" then
-            tbl_upv_15.charge = v363.on == true
-            local v372 = tonumber(v363.time) or 0.6
-            tbl_upv_15.chargeT0 = tbl_upv_15.now
-            tbl_upv_15.chargeTime = v372
-            tbl_upv_15.chargeFull = false
-        elseif a1 == "Heavy" then
-            tbl_upv_15.charge = false
-            if not (startClip("heavy", tonumber(v363.hitDelay))) then
-                local heavy_1 = tbl_upv_5.heavy
-                if not heavy_1 then
-                    return
-                end
-                tbl_upv_15.action = "heavy"
-                tbl_upv_15.actT0 = tbl_upv_15.now
-                tbl_upv_15.actDur = heavy_1.dur
-                tbl_upv_15.actMirror = 1
-            end
-        elseif a1 ~= "Lunge" then
-            local v373 = nil
-            if a1 == "Refresh" then
-                v373 = tbl_upv_15.clip
-                if v373 and v373.refreshAt and tbl_upv_15.clipScale and (tbl_upv_15.now - tbl_upv_15.clipT0) / tbl_upv_15.clipScale < v373.refreshAt then
-                    tbl_upv_15.refreshFF = v373.refreshAt
-                    tbl_upv_15.refreshGlintAt = nil
-                    return
-                end
-                tbl_upv_15.refreshGlintAt = tbl_upv_15.now
-            elseif a1 == "Draw" then
-                tbl_upv_15.draw = v363.on == true
-                local v374 = math.max(0.1, tonumber(v363.time) or 1)
-                tbl_upv_15.drawT0 = tbl_upv_15.now
-                tbl_upv_15.drawTime = v374
-                if tbl_upv_15.draw then
-                    tbl_upv_15.arrowKind = type(v363.arrow) ~= "string" and "Arrow" or v363.arrow
-                    tbl_upv_15.drawHalf = false
-                    tbl_upv_15.drawFull = false
-                    tbl_upv_15.drawHold = 0
-                    if not (tbl_upv_15.nocked) then
-                        tbl_upv_15.nocked = true
-                        tbl_upv_15.nockT0 = tbl_upv_15.now
-                    end
-                    startClip("nock")
-                end
-            elseif a1 == "Release" then
-                tbl_upv_15.draw = false
-                tbl_upv_15.nocked = false
-                tbl_upv_15.drawHold = tbl_upv_15.now + 0.16
-                local v376 = math.clamp(tonumber(v363.charge) or 1, 0.2, 1)
-                local v377
-                if (shown_3) and (shown_3.cfg.kick) then
-                    v377 = shown_3.cfg.kick
-                else
-                    v377 = 1
-                end
-                local v378 = v376 * v377
-                if (startClip("release")) then
-                    return
-                end
-                u16:Impulse(Vector3.new(0, 0.20000000298023224, 1.2000000476837158) * v378)
-                u17:Impulse((Vector3.new(120, 0, 0) * v378) * 0.017453292519943295)
-            elseif a1 == "Fire" then
-                tbl_upv_15.boltIn = false
-                local now_2 = tbl_upv_15.now
-                tbl_upv_15.stringV = 1
-                tbl_upv_15.stringT0 = now_2
-                tbl_upv_15.hammerTarget = 1
-                u20.velocity = 30
-                tbl_upv_15.frizzenTarget = 1
-                u21.velocity = 22
-                local v379
-                if tbl_upv_15.clipName == "draw" then
-                    v379 = (tbl_upv_15.clip ~= nil) and (tbl_upv_15.now - tbl_upv_15.clipT0 < (tbl_upv_15.clip.release * tbl_upv_15.clipScale) * 0.7)
-                else
-                    v379 = false
-                    if tbl_upv_15.clipName == "redraw" then
-                        v379 = (tbl_upv_15.clip ~= nil) and (tbl_upv_15.now - tbl_upv_15.clipT0 < (tbl_upv_15.clip.release * tbl_upv_15.clipScale) * 0.7)
-                    end
-                end
-                if v379 then
-                    table.insert(tbl_upv_15.fxQueue, "muzzle")
-                end
-                tbl_upv_15.shotN = tbl_upv_15.shotN + 1
-                if not (v379) and startClip("fire") then
-                    local v380 = ({Crossbow = Vector3.new(130, 50, 90), Musket = Vector3.new(160, 80, 280), Pistol = Vector3.new(340, 60, 220), Blunderbuss = Vector3.new(220, 80, 260)})[v364 or ""] or Vector3.new(150, 60, 150)
-                    local v381 = Random.new((tbl_upv_15.shotN * 7919) + 17)
-                    u17:Impulse(Vector3.new(v381:NextNumber(-1, 1) * v380.X, v381:NextNumber(-1, 1) * v380.Y, v381:NextNumber(-1, 1) * v380.Z) * 0.017453292519943295)
-                    return
-                end
-                local v382 = (tonumber(v363.kick) or 2) / 3
-                local lunge_1
-                if (shown_3) and (shown_3.cfg.kick) then
-                    lunge_1 = shown_3.cfg.kick
-                else
-                    lunge_1 = 1
-                end
-                local v383 = math.min(v382 * lunge_1, 3.5)
-                u16:Impulse(Vector3.new(0, 0.5, 3) * v383)
-                u17:Impulse((Vector3.new(420, (math.random() - 0.5) * 40, (math.random() - 0.5) * 40) * v383) * 0.017453292519943295)
-            elseif a1 == "Reload" then
-                local v384 = math.max(0.2, tonumber(v363.time) or 1.2)
-                local v366 = not (shown_3) or not (shown_3.clips) or shown_3.clips.reload
-                if v366 then
-                    startClip("reload", nil, nil, (math.clamp(v384 / (v366.span or (v366.release)), 0.35, 2.5)))
-                else
-                    tbl_upv_15.reload = true
-                    tbl_upv_15.reloadT0 = tbl_upv_15.now
-                    tbl_upv_15.reloadTime = v384
-                end
-            elseif a1 == "ReloadEnd" then
-                tbl_upv_15.reload = false
-            elseif a1 ~= "Windup" then
-                local v385 = nil
-                if a1 == "Throw" then
-                    tbl_upv_15.throwN = tbl_upv_15.throwN + 1
-                    local v386
-                    if shown_3 and shown_3.clips and shown_3.clips.throw2 then
-                        if tbl_upv_15.throwN % 2 ~= 0 then
-                            v386 = "throw"
-                        else
-                            v386 = "throw2"
-                        end
-                    else
-                        v386 = "throw"
-                    end
-                    local v366 = not (shown_3) or not (shown_3.clips) or shown_3.clips[v386]
-                    if tbl_upv_15.wind then
-                        local v387 = math.clamp((tbl_upv_15.now - tbl_upv_15.windT0) / tbl_upv_15.windTime, 0, 1)
-                        local v388 = math.clamp((tbl_upv_15.now - tbl_upv_15.windT0) / 0.12, 0, 1)
-                        local v389 = math.clamp(v387, 0, 1)
-                        tbl_upv_15.windK = (((v388 * v388) * (3 - (v388 * 2))) * 0.75) + (((v389 * v389) * (3 - (v389 * 2))) * 0.25)
-                        local now_3 = tbl_upv_15.now
-                        if (v366) and (v366.vanish) then
-                            v388 = v366.vanish
-                        else
-                            v388 = 0.07
-                        end
-                        tbl_upv_15.windHold = (now_3 + v388) + 0.06
-                    end
-                    tbl_upv_15.wind = false
-                    if v366 and startClip(v386) then
-                        if v366.vanish then
-                            tbl_upv_15.vanishAt = tbl_upv_15.now + (v366.vanish * tbl_upv_15.clipScale)
-                            tbl_upv_15.hiddenUntil = tbl_upv_15.vanishAt + (ItemClips_upv_1.HIDE[v364 or ""] or 0.45)
-                        elseif v366.loose then
-                            tbl_upv_15.looseAt = tbl_upv_15.now + (v366.loose * tbl_upv_15.clipScale)
-                        end
-                        return
-                    end
-                    v385 = tbl_upv_5.throw
-                    if v385 then
-                        tbl_upv_15.action = "throw"
-                        tbl_upv_15.actT0 = tbl_upv_15.now
-                        tbl_upv_15.actDur = v385.dur
-                        tbl_upv_15.actMirror = 1
-                    end
-                    tbl_upv_15.hiddenUntil = tbl_upv_15.now + 0.5
-                elseif a1 ~= "Use" then
-                    local v390 = nil
-                    if a1 == "Place" then
-                        local v365 = not (shown_3) or not (shown_3.clips) or shown_3.clips.place
-                        if not v365 or not startClip("place") then
-                            v390 = tbl_upv_5.place
-                            if v390 then
-                                tbl_upv_15.action = "place"
-                                tbl_upv_15.actT0 = tbl_upv_15.now
-                                tbl_upv_15.actDur = v390.dur
-                                tbl_upv_15.actMirror = 1
-                            end
-                            tbl_upv_15.hiddenUntil = tbl_upv_15.now + 0.6
-                            return
-                        end
-                        tbl_upv_15.vanishAt = tbl_upv_15.now + (v365.vanish or 0.2)
-                        tbl_upv_15.hiddenUntil = tbl_upv_15.vanishAt + (ItemClips_upv_1.HIDE[v364 or ""] or 0.5)
-                    elseif a1 == "Hurt" then
-                        if v363.blocked and tbl_upv_15.block and shown_3 then
-                            if shown_3.cfg.blockFrame then
-                                tbl_upv_15.spark = true
-                            else
-                                local shown_4 = tbl_upv_15.shown
-                                if (shown_4 ~= nil) and ((shown_4.clips ~= nil) and (shown_4.clips.block_hit ~= nil)) then
-                                    startClip("block_hit")
-                                    table.insert(tbl_upv_15.fxQueue, "rimspark")
-                                end
-                            end
-                        end
-                        local v391 = math.clamp((tonumber(v363.amount) or 10) / 40, 0.2, 1.2)
-                        local v392 = v391 * (((v363.blocked) and 0.5) or 1)
-                        u17:Impulse(((Vector3.new((math.random() - 0.3) * 2, (math.random() - 0.5) * 2, (math.random() - 0.5) * 2.5) * tbl_upv_2.hurtRot) * v392) * 0.017453292519943295)
-                        u16:Impulse(Vector3.new(0, -tbl_upv_2.hurtPos, tbl_upv_2.hurtPos * 0.6) * v392)
-                    end
-                else
-                    local use_1 = tbl_upv_15.use
-                    tbl_upv_15.use = v363.on == true
-                    local v393 = math.max(0.2, tonumber(v363.time) or 1)
-                    tbl_upv_15.useT0 = tbl_upv_15.now
-                    tbl_upv_15.useTime = v393
-                    if not tbl_upv_15.use or (use_1) then
-                        if not (tbl_upv_15.use) and use_1 then
-                            tbl_upv_15.useOutUntil = tbl_upv_15.now + 0.45
-                            if v363.done then
-                                if not startClip("use_done") then
-                                    u16:Impulse(Vector3.new(0, 0.5, 0))
-                                end
-                            else
-                                startClip("use_out")
-                            end
-                            return
-                        end
-                        if v363.done then
-                            u16:Impulse(Vector3.new(0, 0.5, 0))
-                        end
-                    end
-                    tbl_upv_15.bite = 0
-                    startClip("use_in")
-                end
-            else
-                tbl_upv_15.wind = v363.on == true
-                tbl_upv_15.windFull = false
-                tbl_upv_15.windHalf = false
-                tbl_upv_15.windHold = 0
-                local v394 = math.max(0.1, tonumber(v363.time) or 0.5)
-                tbl_upv_15.windT0 = tbl_upv_15.now
-                tbl_upv_15.windTime = v394
-                if not tbl_upv_15.wind then
-                    return
-                end
-                startClip("windup")
-            end
-        else
-            tbl_upv_15.charge = false
-            local v395 = tonumber(v363.time) or 0.25
-            local v396 = "lunge"
-            local shown_5 = tbl_upv_15.shown
-            local v400 = nil
-            if (shown_5 ~= nil) and ((shown_5.clips ~= nil) and (shown_5.clips.lunge_b ~= nil)) then
-                v400 = tbl_upv_15.now - tbl_upv_15.clipT0
-                local v397 = ((tbl_upv_15.lastLungeT) and (tbl_upv_15.now - tbl_upv_15.lastLungeT)) or math.huge
-                local v398
-                if tbl_upv_15.clipName == "sweep_r" then
-                    v398 = true
-                    if not (v400 < 0.45) then
-                        if tbl_upv_15.clipName == "lunge" then
-                            v398 = (v400 > 0.22) and (v400 < 0.34)
-                        else
-                            local v399 = false
-                            if tbl_upv_15.clipName ~= "lunge_c" then
-                                v398 = v399
-                            else
-                                v398 = (v400 > 0.22) and (v400 < 0.34)
-                            end
-                        end
-                    end
-                elseif tbl_upv_15.clipName == "lunge" then
-                    v398 = (v400 > 0.22) and (v400 < 0.34)
-                else
-                    local v399 = false
-                    if tbl_upv_15.clipName ~= "lunge_c" then
-                        v398 = v399
-                    else
-                        v398 = (v400 > 0.22) and (v400 < 0.34)
-                    end
-                end
-                if v398 then
-                    v396 = "lunge_b"
-                elseif v397 >= 0 and v397 < 1.5 and tbl_upv_15.lastLungeName == "lunge" then
-                    v400 = tbl_upv_15.shown
-                    v396 = tbl_upv_15.shown ~= nil and tbl_upv_15.shown.clips ~= nil and tbl_upv_15.shown.clips.lunge_c ~= nil and "lunge_c" or v396
-                end
-            end
-            tbl_upv_15.lastLungeT = tbl_upv_15.now
-            tbl_upv_15.lastLungeName = v396
-            if tbl_upv_15.shown and tbl_upv_15.shown.clips then
-                v400 = tbl_upv_15.shown.clips[v396] and tbl_upv_15.shown.clips[v396].lungeRef or 0.24
-            else
-                v400 = 0.24
-            end
-            if tbl_upv_15.refreshGlintAt or tbl_upv_15.refreshFF then
-                tbl_upv_15.refreshGlintAt = tbl_upv_15.now
-            end
-            tbl_upv_15.refreshFF = nil
-            if not (startClip(v396, nil, nil, math.clamp(v395 / v400, 0.6, 2))) then
-                local lunge_1 = tbl_upv_5.lunge
-                if not lunge_1 then
-                    return
-                end
-                tbl_upv_15.action = "lunge"
-                tbl_upv_15.actT0 = tbl_upv_15.now
-                tbl_upv_15.actDur = (v395 + 0.3) or (lunge_1.dur)
-                tbl_upv_15.actMirror = 1
-            end
-        end
-    elseif tbl_upv_15.leftOut or tbl_upv_15.leftVanishAt then
-        tbl_upv_15.leftOut = false
-        tbl_upv_15.leftVanishAt = nil
-        tbl_upv_15.leftSeenOut = false
-        tbl_upv_15.leftCatchT = tbl_upv_15.now
-    end
-end
-function tbl_upv_1.ExternalEvent(a1, a2)
+
+function v14.ExternalEvent(a869, options)
     --[[
       name: ExternalEvent
       line: 2692
       upvalues:
-        u31 (ref,  index: 1)
-        tbl_upv_15 (copy, index: 2)
+        v793 (ref,  index: 1)
+        v231 (copy, index: 2)
         onEvent (copy, index: 3)
     ]]
-    if not u31 then
-        return
+    if v793 then
+        v231.now = os.clock()
+        onEvent(a869, options)
     end
-    tbl_upv_15.now = os.clock()
-    onEvent(a1, a2)
 end
-local function simulate(a1)
+
+local function simulate(options)
     --[[
       name: simulate
       line: 2706
       upvalues:
-        Workspace_upv_1 (copy, index: 1)
-        u30 (ref,  index: 2)
-        tbl_upv_15 (copy, index: 3)
+        workspace (copy, index: 1)
+        frozen (ref,  index: 2)
+        v231 (copy, index: 3)
         resetState (copy, index: 4)
-        ViewFx_upv_1 (copy, index: 5)
+        ViewFx (copy, index: 5)
         onEvent (copy, index: 6)
         step (copy, index: 7)
-        Combat_upv_1 (copy, index: 8)
+        Combat (copy, index: 8)
         place (copy, index: 9)
     ]]
-    local CurrentCamera_3 = Workspace_upv_1.CurrentCamera
-    if not CurrentCamera_3 then
+    local v873
+    local camera = workspace.CurrentCamera
+    if not camera then
         return {err = "no camera"}
     end
-    u30 = true
-    tbl_upv_15.sim = true
+
+    frozen = true
+    v231.sim = true
     resetState()
-    ViewFx_upv_1.Freeze(true)
-    tbl_upv_15.shown = nil
-    tbl_upv_15.wantId = nil
-    local id_1 = a1.id
-    local CFrame_4 = CurrentCamera_3.CFrame
-    local v401 = tonumber(a1.t) or 0
-    local v402 = a1.events or {}
-    local tbl_35 = {}
-    local v403 = tonumber(a1.speed) or 0
-    local v404 = 0
-    local v405 = 0
-    local v406 = Vector3.new(0, 0, 0)
-    local v407 = Vector3.new(0, 0, 0)
-    local v408 = nil
-    local v409 = -0.8
-    local v410 = nil
-    while v409 <= v401 + 0.004166666666666667 do
-        local v411 = true
-        v410 = 0
-        for _, value_31 in a1.air or {} do
-            if value_31[1] <= v409 then
-                v410, v411 = value_31[2], value_31[3]
+    ViewFx.Freeze(true)
+    v231.shown = nil
+    v231.wantId = nil
+    local id = options.id
+    local cFrame = camera.CFrame
+    local number = tonumber(options.t) or 0
+    local v878 = options.events or {}
+    local v879 = {}
+    local number2 = tonumber(options.speed) or 0
+    local bobPhase = 0
+    local total = 0
+    local v883 = Vector3.new(0, 0, 0)
+    local v884 = Vector3.new(0, 0, 0)
+    local v885 = -0.8
+    v873 = nil
+
+    while v885 <= number + 0.004166666666666667 do
+        local grounded = true
+        local v887 = 0
+        local v888 = options.air or {}
+
+        for _, v890 in v888 do
+            if v890[1] <= v885 then
+                v887 = v890[2]
+                grounded = v890[3]
             end
         end
-        v405 = v405 + v410 * 0.016666666666666666
-        if v409 >= 0 then
-            v404 = (v411 and ((v404 + ((((v403 * 0.016666666666666666) / 7) * 2) * math.pi)) % 12.566370614359172)) or v404
+
+        total += v887 * 0.016666666666666666
+
+        if 0 <= v885 and grounded then
+            bobPhase = (bobPhase + ((((number2 * 0.016666666666666666) / 7) * 2) * math.pi)) % 12.566370614359172
         end
-        if (v409 >= 0) and (v411) then
-            v410 = math.clamp((v403 - 1) / 20, 0, 1.25)
-        else
-            v410 = 0
+
+        local bobAmount = if 0 <= v885 and grounded then math.clamp((number2 - 1) / 20, 0, 1.25) else 0
+        v231.now = v885 + 1000
+        local v892 = v885 + 0.016666666666666666
+
+        if number + 0.004166666666666667 < v892 then
+            table.clear(v231.fxQueue)
         end
-        tbl_upv_15.now = v409 + 1000
-        if v401 + 0.004166666666666667 < v409 + 0.016666666666666666 then
-            table.clear(tbl_upv_15.fxQueue)
-        end
-        for key_6, value_32 in v402 do
-            if tbl_35[key_6] then
-                continue
+
+        for v893, v894 in v878 do
+            if not v879[v893] and v894[1] <= v885 then
+                v879[v893] = true
+                onEvent(v894[2], v894[3])
             end
-            if value_32[1] <= v409 then
-                tbl_35[key_6] = true
-                onEvent(value_32[2], value_32[3])
-            end
         end
-        local switch_1 = a1.switch
-        local v412 = nil
-        if not (switch_1) or not (switch_1[1] <= v409) then
-            v412 = id_1
-            local slide_1 = a1.slide
-            local v413 = (slide_1 ~= nil) and ((slide_1[1] <= v409) and (v409 < slide_1[2]))
-            local tbl_36 = {visible = true, bobAmount = 0, grounded = 0, dt = 0.016666666666666666, aiming = 0, rootY = 0, fov = 0, wall = 0, sliding = 0, bobPhase = 0}
-            tbl_36.now = v409 + 1000
-            tbl_36.id = v412
-            tbl_36.kind = Combat_upv_1.Kind(v412)
-            tbl_36.cam = CFrame_4
-            local v414 = tonumber(a1.fov) or (CurrentCamera_3.FieldOfView)
-            tbl_36.fov = v414
-            tbl_36.grounded = v411
-            tbl_36.rootY = v405
-            tbl_36.sliding = v413
-            if a1.aiming ~= true then
-                tbl_36.aiming = false
-                tbl_36.bobPhase = v404
-                tbl_36.bobAmount = v410
-                tbl_36.wall = a1.wall
-                local v415, v416, v417 = step(tbl_36)
-                v409 = v409 + 0.016666666666666666
-                v406, v407, v408 = v415, v416, v417
-                continue
-            end
-            tbl_36.aiming = false
-            tbl_36.bobPhase = v404
-            tbl_36.bobAmount = v410
-            tbl_36.wall = a1.wall
-            local v415, v416, v417 = step(tbl_36)
-            v409 = v409 + 0.016666666666666666
-            v406, v407, v408 = v415, v416, v417
-        end
-        v412 = switch_1[2]
-        local slide_1 = a1.slide
-        local v413 = (slide_1 ~= nil) and ((slide_1[1] <= v409) and (v409 < slide_1[2]))
-        local tbl_36 = {visible = true, bobAmount = 0, grounded = 0, dt = 0.016666666666666666, aiming = 0, rootY = 0, fov = 0, wall = 0, sliding = 0, bobPhase = 0}
-        tbl_36.now = v409 + 1000
-        tbl_36.id = v412
-        tbl_36.kind = Combat_upv_1.Kind(v412)
-        tbl_36.cam = CFrame_4
-        local v414 = tonumber(a1.fov) or (CurrentCamera_3.FieldOfView)
-        tbl_36.fov = v414
-        tbl_36.grounded = v411
-        tbl_36.rootY = v405
-        tbl_36.sliding = v413
-        if a1.aiming ~= true or v409 >= 0 or a1.aiming == true and not (v409 >= 0) then
-            tbl_36.aiming = false
-            tbl_36.bobPhase = v404
-            tbl_36.bobAmount = v410
-            tbl_36.wall = a1.wall
-            local v415, v416, v417 = step(tbl_36)
-            v409 = v409 + 0.016666666666666666
-            v406, v407, v408 = v415, v416, v417
-        end
+
+        local switch = options.switch
+        local v896 = if switch and switch[1] <= v885 then switch[2] else id
+        local slide = options.slide
+        local sliding = slide ~= nil and slide[1] <= v885 and v885 < slide[2]
+        local v899 = {dt = 0.016666666666666666, visible = true, charges = nil, now = v885 + 1000, id = v896, kind = Combat.Kind(v896), cam = cFrame}
+        local v900 = tonumber(options.fov) or camera.FieldOfView
+        v899.fov = v900
+        v899.grounded = grounded
+        v899.rootY = total
+        v899.sliding = sliding
+        v899.aiming = options.aiming == true and 0 <= v885
+        v899.bobPhase = bobPhase
+        v899.bobAmount = bobAmount
+        v899.wall = options.wall
+        local v883, v884, v901 = step(v899)
+        v885 += 0.016666666666666666
+        v873 = v901
     end
-    local v418 = tonumber(a1.fov) or (CurrentCamera_3.FieldOfView)
-    place(CurrentCamera_3, CFrame_4, v418, v406, v407, v408)
-    local tbl_37 = {shown = 0, rot = 0, pos = 0}
-    tbl_37.shown = v408 ~= nil
-    tbl_37.pos = {v406.X, v406.Y, v406.Z}
-    tbl_37.rot = {v407.X / 0.017453292519943295, v407.Y / 0.017453292519943295, v407.Z / 0.017453292519943295}
-    return tbl_37
+
+    local v902 = tonumber(options.fov) or camera.FieldOfView
+    place(camera, cFrame, v902, v883, v884, v873)
+
+    return {shown = v873 ~= nil, pos = {v883.X, v883.Y, v883.Z}, rot = {v884.X / 0.017453292519943295, v884.Y / 0.017453292519943295, v884.Z / 0.017453292519943295}}
 end
-local u35 = false
-function tbl_upv_1.Start()
+
+local hasRun = false
+
+function v14.Start()
     --[[
       name: Start
       line: 2776
       upvalues:
-        u35 (ref,  index: 1)
-        ViewFx_upv_1 (copy, index: 2)
-        ReplicatedStorage_upv_1 (copy, index: 3)
-        u1 (ref,  index: 4)
-        u2 (ref,  index: 5)
-        LocalPlayer_upv_1 (copy, index: 6)
+        hasRun (ref,  index: 1)
+        ViewFx (copy, index: 2)
+        replicatedStorage (copy, index: 3)
+        weapons (ref,  index: 4)
+        viewModels (ref,  index: 5)
+        localPlayer (copy, index: 6)
         resetState (copy, index: 7)
-        tbl_upv_15 (copy, index: 8)
-        u23 (ref,  index: 9)
-        tbl_upv_25 (copy, index: 10)
-        u26 (ref,  index: 11)
-        BladeSmear_upv_1 (copy, index: 12)
-        tbl_upv_1 (copy, index: 13)
-        u30 (ref,  index: 14)
-        u31 (ref,  index: 15)
+        v231 (copy, index: 8)
+        v506 (ref,  index: 9)
+        v579 (copy, index: 10)
+        v552 (ref,  index: 11)
+        BladeSmear (copy, index: 12)
+        v14 (copy, index: 13)
+        frozen (ref,  index: 14)
+        v793 (ref,  index: 15)
         onEvent (copy, index: 16)
-        RunService_upv_1 (copy, index: 17)
+        runService (copy, index: 17)
         render (copy, index: 18)
         simulate (copy, index: 19)
-        tbl_upv_3 (copy, index: 20)
-        tbl_upv_4 (copy, index: 21)
-        tbl_upv_6 (copy, index: 22)
-        BladeClips_upv_1 (copy, index: 23)
-        tbl_upv_2 (copy, index: 24)
-        u19 (copy, index: 25)
-        u22 (copy, index: 26)
-        ItemClips_upv_1 (copy, index: 27)
-        u33 (ref,  index: 28)
-        u32 (ref,  index: 29)
-        u34 (ref,  index: 30)
+        v17 (copy, index: 20)
+        v18 (copy, index: 21)
+        v20 (copy, index: 22)
+        BladeClips (copy, index: 23)
+        v16 (copy, index: 24)
+        spring12 (copy, index: 25)
+        spring15 (copy, index: 26)
+        ItemClips (copy, index: 27)
+        count (ref,  index: 28)
+        total (ref,  index: 29)
+        v837 (ref,  index: 30)
     ]]
-    if u35 then
+    if hasRun then
         return
     end
-    u35 = true
-    ViewFx_upv_1.Preload()
-    local v419 = ReplicatedStorage_upv_1:WaitForChild("Assets", 30)
-    local v420 = v419 and (v419:WaitForChild("Weapons", 30))
-    u1 = v420
-    local v421 = v419 and (v419:FindFirstChild("ViewModels"))
-    u2 = v421
+
+    hasRun = true
+    ViewFx.Preload()
+    local assets = replicatedStorage:WaitForChild("Assets", 30)
+    weapons = assets and assets:WaitForChild("Weapons", 30)
+    viewModels = assets and assets:FindFirstChild("ViewModels")
+
     task.spawn(
         function()
             --[[
               line: 2786
               upvalues:
-                u2 (ref, index: 1)
-                u1 (ref, index: 2)
+                viewModels (ref, index: 1)
+                weapons (ref, index: 2)
             ]]
-            local tbl_upv_38 = {}
-            for _, value_33 in {u2, u1} do
-                if value_33 then
-                    table.insert(tbl_upv_38, value_33)
+            local contentIdList = {}
+
+            for _, instance in {viewModels, weapons} do
+                if instance then
+                    table.insert(contentIdList, instance)
                 end
             end
+
             pcall(
                 function()
                     --[[
                       line: 2793
                       upvalues:
-                        tbl_upv_38 (copy, index: 1)
+                        contentIdList (copy, index: 1)
                     ]]
-                    game:GetService("ContentProvider"):PreloadAsync(tbl_upv_38)
+                    game:GetService("ContentProvider"):PreloadAsync(contentIdList)
                 end
             )
         end
     )
-    LocalPlayer_upv_1.CharacterAdded:Connect(
+
+    localPlayer.CharacterAdded:Connect(
         function()
             --[[
               line: 2797
               upvalues:
                 resetState (copy, index: 1)
-                tbl_upv_15 (copy, index: 2)
-                u23 (ref,  index: 3)
-                tbl_upv_25 (copy, index: 4)
-                u26 (ref,  index: 5)
-                BladeSmear_upv_1 (copy, index: 6)
-                ViewFx_upv_1 (copy, index: 7)
+                v231 (copy, index: 2)
+                v506 (ref,  index: 3)
+                v579 (copy, index: 4)
+                v552 (ref,  index: 5)
+                BladeSmear (copy, index: 6)
+                ViewFx (copy, index: 7)
             ]]
             resetState()
-            tbl_upv_15.shown = nil
-            tbl_upv_15.wantId = nil
-            if u23 then
-                u23.Parent = nil
-                u23 = nil
+            v231.shown = nil
+            v231.wantId = nil
+
+            if v506 then
+                v506.Parent = nil
+                v506 = nil
             end
-            for _, value_34 in tbl_upv_25 do
-                value_34.Parent = nil
+
+            for _, v909 in v579 do
+                v909.Parent = nil
             end
-            if u26 then
-                u26.Parent = nil
-                u26 = nil
+
+            if v552 then
+                v552.Parent = nil
+                v552 = nil
             end
-            BladeSmear_upv_1.Hide()
-            ViewFx_upv_1.Hide()
-            tbl_upv_15.embers = false
-            tbl_upv_15.fuse = 0
+
+            BladeSmear.Hide()
+            ViewFx.Hide()
+            v231.embers = false
+            v231.fuse = 0
         end
     )
+
     task.spawn(
         function()
             --[[
               line: 2804
               upvalues:
-                LocalPlayer_upv_1 (copy, index: 1)
-                tbl_upv_1 (copy, index: 2)
-                u30 (ref,  index: 3)
-                u31 (ref,  index: 4)
-                tbl_upv_15 (copy, index: 5)
+                localPlayer (copy, index: 1)
+                v14 (copy, index: 2)
+                frozen (ref,  index: 3)
+                v793 (ref,  index: 4)
+                v231 (copy, index: 5)
                 onEvent (copy, index: 6)
             ]]
-            local v422 = LocalPlayer_upv_1:WaitForChild("PlayerScripts"):WaitForChild("Combat", 60)
-            local _ = v422 and (v422:WaitForChild("Controller", 30))
-            local v423 = v422 and (v422:WaitForChild("Effects", 30))
-            if v423 then
-                local v424 = nil
-                if v423:IsA("ModuleScript") then
-                    local success_6, v424 = pcall(require, v423)
-                    if success_6 and type(v424) == "table" and type(v424.SetViewHandOff) == "function" then
-                        v424.SetViewHandOff(tbl_upv_1.ReleasePoint, tbl_upv_1.ReleaseDelay)
-                    end
+            local combat = localPlayer:WaitForChild("PlayerScripts"):WaitForChild("Combat", 60)
+            local controller = combat and combat:WaitForChild("Controller", 30)
+            local effects = combat and combat:WaitForChild("Effects", 30)
+
+            if effects and effects:IsA("ModuleScript") then
+                local success, result = pcall(require, effects)
+
+                if success and type(result) == "table" and type(result.SetViewHandOff) == "function" then
+                    result.SetViewHandOff(v14.ReleasePoint, v14.ReleaseDelay)
                 end
             end
-            if not v422 then
-                return
-            end
-            if v422:IsA("ModuleScript") then
-                local success_7, v425 = pcall(require, v422)
-                if not success_7 or type(v425) ~= "table" or type(v425.OnViewEvent) ~= "function" then
-                    return
-                end
-                v425.OnViewEvent(
-                    function(a1, a2)
-                        --[[
-                          line: 2818
-                          upvalues:
-                            u30 (ref,  index: 1)
-                            u31 (ref,  index: 2)
-                            tbl_upv_15 (copy, index: 3)
-                            onEvent (copy, index: 4)
-                        ]]
-                        if (u30) or (u31) then
-                            return
+
+            if controller and controller:IsA("ModuleScript") then
+                local success, result = pcall(require, controller)
+
+                if success and type(result) == "table" and type(result.OnViewEvent) == "function" then
+                    result.OnViewEvent(
+                        function(a917, options)
+                            --[[
+                              line: 2818
+                              upvalues:
+                                frozen (ref,  index: 1)
+                                v793 (ref,  index: 2)
+                                v231 (copy, index: 3)
+                                onEvent (copy, index: 4)
+                            ]]
+                            if not frozen and not v793 then
+                                v231.now = os.clock()
+                                onEvent(a917, options)
+                            end
                         end
-                        tbl_upv_15.now = os.clock()
-                        onEvent(a1, a2)
-                    end
-                )
+                    )
+                end
             end
         end
     )
-    RunService_upv_1:BindToRenderStep("TribesViewModel", Enum.RenderPriority.Camera.Value + 2, render)
-    if RunService_upv_1:IsStudio() then
-        local v426 = Instance.new("BindableFunction")
-        v426.Name = "ViewModelDebug"
-        v426.OnInvoke = function(a3, a4)
+
+    runService:BindToRenderStep("TribesViewModel", Enum.RenderPriority.Camera.Value + 2, render)
+
+    if runService:IsStudio() then
+        local viewModelDebug = Instance.new("BindableFunction")
+        viewModelDebug.Name = "ViewModelDebug"
+
+        viewModelDebug.OnInvoke = function(a920, options)
             --[[
               line: 2831
               upvalues:
                 simulate (copy, index: 1)
-                u30 (ref,  index: 2)
-                tbl_upv_15 (copy, index: 3)
-                ViewFx_upv_1 (copy, index: 4)
+                frozen (ref,  index: 2)
+                v231 (copy, index: 3)
+                ViewFx (copy, index: 4)
                 resetState (copy, index: 5)
-                u23 (ref,  index: 6)
-                tbl_upv_25 (copy, index: 7)
-                u26 (ref,  index: 8)
-                BladeSmear_upv_1 (copy, index: 9)
-                tbl_upv_3 (copy, index: 10)
-                tbl_upv_4 (copy, index: 11)
-                tbl_upv_6 (copy, index: 12)
-                BladeClips_upv_1 (copy, index: 13)
-                tbl_upv_2 (copy, index: 14)
-                u19 (copy, index: 15)
-                u22 (copy, index: 16)
-                ItemClips_upv_1 (copy, index: 17)
-                u33 (ref,  index: 18)
-                u32 (ref,  index: 19)
-                u34 (ref,  index: 20)
+                v506 (ref,  index: 6)
+                v579 (copy, index: 7)
+                v552 (ref,  index: 8)
+                BladeSmear (copy, index: 9)
+                v17 (copy, index: 10)
+                v18 (copy, index: 11)
+                v20 (copy, index: 12)
+                BladeClips (copy, index: 13)
+                v16 (copy, index: 14)
+                spring12 (copy, index: 15)
+                spring15 (copy, index: 16)
+                ItemClips (copy, index: 17)
+                count (ref,  index: 18)
+                total (ref,  index: 19)
+                v837 (ref,  index: 20)
             ]]
-            local key_7
-            if a3 == "Sim" then
-                return (simulate(a4))
-            elseif a3 == "Live" then
-                u30 = false
-                tbl_upv_15.sim = false
-                ViewFx_upv_1.Freeze(false)
+            if a920 == "Sim" then
+                return (simulate(options))
+            end
+
+            if a920 == "Live" then
+                frozen = false
+                v231.sim = false
+                ViewFx.Freeze(false)
                 resetState()
-                tbl_upv_15.shown = nil
-                tbl_upv_15.wantId = nil
-                if u23 then
-                    u23.Parent = nil
-                    u23 = nil
+                v231.shown = nil
+                v231.wantId = nil
+
+                if v506 then
+                    v506.Parent = nil
+                    v506 = nil
                 end
-                for key_7, value_35 in tbl_upv_25 do
-                    value_35.Parent = nil
+
+                for _, v923 in v579 do
+                    v923.Parent = nil
                 end
-                if u26 then
-                    u26.Parent = nil
-                    u26 = nil
+
+                if v552 then
+                    v552.Parent = nil
+                    v552 = nil
                 end
-                BladeSmear_upv_1.Hide()
-                ViewFx_upv_1.Hide()
-                tbl_upv_15.embers = false
-                tbl_upv_15.fuse = 0
-                return true
-            elseif a3 == "Tune" then
-                local v427 = a4 or {}
-                local kind_1 = v427.kind
-                local v428 = kind_1 and (tbl_upv_3[v427.kind])
-                if v428 then
-                    if v427.rot then
-                        v428.rot = Vector3.new(v427.rot[1], v427.rot[2], v427.rot[3])
-                    end
-                    if v427.pos then
-                        kind_1.pos = Vector3.new(v427.pos[1], v427.pos[2], v427.pos[3])
-                    end
-                    if v427.len then
-                        kind_1.len = v427.len
-                    end
-                    if v427.aimPos then
-                        kind_1.aimPos = Vector3.new(v427.aimPos[1], v427.aimPos[2], v427.aimPos[3])
-                    end
-                    if v427.aimRot then
-                        kind_1.aimRot = Vector3.new(v427.aimRot[1], v427.aimRot[2], v427.aimRot[3])
-                    end
-                    if type(v427.stock) == "table" then
-                        local function v3(a5)
-                            --[[
-                              name: v3
-                              line: 2866
-                            ]]
-                            if type(a5) == "table" and type(a5[1]) == "number" then
-                                return (Vector3.new(a5[1], a5[2], a5[3]))
-                            end
-                            return a5
-                        end
-                        key_7 = kind_1.stock or {}
-                        local v429 = nil
-                        local v430 = nil
-                        for key_8, value_36 in v427.stock do
-                            if type(value_36) ~= "table" or type(value_36[1]) ~= "table" then
-                                if type(value_36) ~= "table" then
-                                    v429 = value_36
-                                    key_7[key_8] = v429
-                                    continue
-                                end
-                                if type(value_36[1]) ~= "number" then
-                                    v429 = value_36
-                                else
-                                    v429 = Vector3.new(value_36[1], value_36[2], value_36[3])
-                                end
-                                key_7[key_8] = v429
-                            end
-                            v429 = {}
-                            v430 = value_36[1]
-                            if type(v430) ~= "table" or type(v430[1]) ~= "number" then
-                                local v431 = value_36[2]
-                                if type(v431) ~= "table" then
-                                    v430 = v431
-                                    v429[2] = v430
-                                    key_7[key_8] = v429
-                                    continue
-                                end
-                                if type(v431[1]) ~= "number" then
-                                    v430 = v431
-                                else
-                                    v430 = Vector3.new(v431[1], v431[2], v431[3])
-                                end
-                                v429[2] = v430
-                                key_7[key_8] = v429
-                            end
-                            local v431 = value_36[2]
-                            if type(v431) == "table" and type(v431[1]) == "number" then
-                                v430 = Vector3.new(v431[1], v431[2], v431[3])
-                            else
-                                v430 = v431
-                            end
-                            v429[2] = v430
-                            key_7[key_8] = v429
-                        end
-                        kind_1.stock = key_7
-                    end
-                end
-                if v427.id then
-                    local v432 = tbl_upv_4[v427.id]
-                    local id_2 = v427.id
-                    local tbl_39 = {len = 0, rot = 0, barrel = 0, pos = 0}
-                    local v433
-                    if v427.fix then
-                        v433 = Vector3.new(v427.fix[1], v427.fix[2], v427.fix[3])
-                    else
-                        v433 = nil
-                    end
-                    tbl_39.rot = v433
-                    local v434
-                    if v427.fixPos then
-                        v434 = Vector3.new(v427.fixPos[1], v427.fixPos[2], v427.fixPos[3])
-                    else
-                        v434 = nil
-                    end
-                    tbl_39.pos = v434
-                    tbl_39.len = v427.fixLen
-                    local v435
-                    if v427.barrel then
-                        v435 = Vector3.new(v427.barrel[1], v427.barrel[2], v427.barrel[3])
-                    else
-                        v435 = v432 and (v432.barrel)
-                    end
-                    tbl_39.barrel = v435
-                    tbl_upv_4[id_2] = tbl_39
-                end
-                for key_9, value_37 in tbl_upv_6 do
-                    if v427.id and key_9 == v427.id or kind_1 and value_37.kind == v427.kind then
-                        value_37.model:Destroy()
-                        tbl_upv_6[key_9] = nil
-                    end
-                end
-                return true
-            elseif a3 ~= "Clips" then
-                local v436 = nil
-                if a3 ~= "ItemClip" then
-                    if a3 ~= "State" then
-                        return nil
-                    end
-                    local tbl_40 = {want = 0, charge = 0, action = 0, shown = 0, frames = 0, reload = 0, draw = 0, parent = 0, msPerFrame = 0, use = 0, wind = 0, block = 0, maxFrameMs = 0, frozen = 0}
-                    tbl_40.shown = tbl_upv_15.shown and (tbl_upv_15.shown.id)
-                    tbl_40.want = tbl_upv_15.wantId
-                    tbl_40.frozen = u30
-                    tbl_40.action = tbl_upv_15.action
-                    tbl_40.block = tbl_upv_15.block
-                    tbl_40.charge = tbl_upv_15.charge
-                    tbl_40.draw = tbl_upv_15.draw
-                    tbl_40.wind = tbl_upv_15.wind
-                    tbl_40.use = tbl_upv_15.use
-                    tbl_40.reload = tbl_upv_15.reload
-                    tbl_40.parent = u23 and (u23.Parent and (u23.Parent.Name))
-                    tbl_40.msPerFrame = ((u33 > 0) and (u32 / u33 * 1000)) or 0
-                    tbl_40.maxFrameMs = u34 * 1000
-                    tbl_40.frames = u33
-                    return tbl_40
-                else
-                    local v427 = a4 or {}
-                    v436 = ItemClips_upv_1.SETS[v427.kind]
-                    if v436 and type(v427.draw) == "table" then
-                        ItemClips_upv_1.DRAW[v427.kind] = v427.draw
-                        for _, value_38 in tbl_upv_6 do
-                            if value_38.kind == v427.kind then
-                                value_38.drawFrom = v427.draw
-                            end
-                        end
-                    end
-                    if v436 and type(v427.name) == "string" and type(v427.clip) == "table" then
-                        v436[v427.name] = v427.clip
-                        return true
-                    end
-                    return v436 ~= nil
-                end
-            else
-                local v427 = a4 or {}
-                for _, value_39 in {"SWORD", "DAGGER"} do
-                    if type(v427[value_39]) ~= "table" then
-                        continue
-                    end
-                    for key_10, value_40 in v427[value_39] do
-                        BladeClips_upv_1[value_39][key_10] = value_40
-                    end
-                end
-                if type(v427.T) == "table" then
-                    for key_11, value_41 in v427.T do
-                        tbl_upv_2[key_11] = value_41
-                    end
-                    u19.frequency = tbl_upv_2.retHz
-                    u19.damping = tbl_upv_2.retDamp
-                    u22.frequency = tbl_upv_2.retHz
-                    u22.damping = tbl_upv_2.retDamp
-                end
+
+                BladeSmear.Hide()
+                ViewFx.Hide()
+                v231.embers = false
+                v231.fuse = 0
+
                 return true
             end
+
+            if a920 ~= "Tune" then
+                if a920 == "Clips" then
+                    local v924 = options or {}
+
+                    for _, bladeClipName in {"SWORD", "DAGGER"} do
+                        if type(v924[bladeClipName]) == "table" then
+                            for v927, v928 in v924[bladeClipName] do
+                                BladeClips[bladeClipName][v927] = v928
+                            end
+                        end
+                    end
+
+                    if type(v924.T) == "table" then
+                        for v929, v930 in v924.T do
+                            v16[v929] = v930
+                        end
+
+                        spring12.frequency, spring12.damping = v16.retHz, v16.retDamp
+                        spring15.frequency, spring15.damping = v16.retHz, v16.retDamp
+                    end
+
+                    return true
+                end
+
+                if a920 ~= "ItemClip" then
+                    local msPerFrame
+
+                    if a920 ~= "State" then
+                        return nil
+                    end
+
+                    local v932 = {shown = v231.shown and v231.shown.id, want = v231.wantId, frozen = frozen, action = v231.action, block = v231.block, charge = v231.charge, draw = v231.draw, wind = v231.wind, use = v231.use, reload = v231.reload}
+                    v932.parent = v506 and v506.Parent and v506.Parent.Name
+
+                    if not (0 < count) then
+                        msPerFrame = 0
+                    else
+                        msPerFrame = total / count * 1000
+                    end
+
+                    v932.msPerFrame = msPerFrame
+                    v932.maxFrameMs = v837 * 1000
+                    v932.frames = count
+
+                    return v932
+                end
+
+                local v933 = options or {}
+                local set = ItemClips.SETS[v933.kind]
+
+                if set and type(v933.draw) == "table" then
+                    ItemClips.DRAW[v933.kind] = v933.draw
+
+                    for _, v936 in v20 do
+                        if v936.kind == v933.kind then
+                            v936.drawFrom = v933.draw
+                        end
+                    end
+                end
+
+                if set and type(v933.name) == "string" and type(v933.clip) == "table" then
+                    set[v933.name] = v933.clip
+                    return true
+                end
+
+                return set ~= nil
+            end
+
+            local v937 = options or {}
+            local v938 = v937.kind and v17[v937.kind]
+            if v938 then
+                if v937.rot then
+                    v938.rot = Vector3.new(v937.rot[1], v937.rot[2], v937.rot[3])
+                end
+
+                if v937.pos then
+                    v938.pos = Vector3.new(v937.pos[1], v937.pos[2], v937.pos[3])
+                end
+
+                if v937.len then
+                    v938.len = v937.len
+                end
+
+                if v937.aimPos then
+                    v938.aimPos = Vector3.new(v937.aimPos[1], v937.aimPos[2], v937.aimPos[3])
+                end
+
+                if v937.aimRot then
+                    v938.aimRot = Vector3.new(v937.aimRot[1], v937.aimRot[2], v937.aimRot[3])
+                end
+
+                if type(v937.stock) == "table" then
+                    local function v3(a940)
+                        --[[
+                          name: v3
+                          line: 2866
+                        ]]
+                        if type(a940) == "table" and type(a940[1]) == "number" then
+                            return (Vector3.new(a940[1], a940[2], a940[3]))
+                        end
+
+                        return a940
+                    end
+
+                    local v941 = v938.stock or {}
+
+                    for v942, v943 in v937.stock do
+                        local v944
+
+                        if type(v943) ~= "table" or type(v943[1]) ~= "table" then
+                            if type(v943) ~= "table" or type(v943[1]) ~= "number" then
+                                v944 = v943
+                            else
+                                v944 = Vector3.new(v943[1], v943[2], v943[3])
+                            end
+                        else
+                            v944 = {}
+                            local v945 = v943[1]
+
+                            if type(v945) == "table" and type(v945[1]) == "number" then
+                                v945 = Vector3.new(v945[1], v945[2], v945[3])
+                            end
+
+                            local v946 = v943[2]
+
+                            if type(v946) == "table" and type(v946[1]) == "number" then
+                                v946 = Vector3.new(v946[1], v946[2], v946[3])
+                            end
+
+                            v944[1], v944[2] = v945, v946
+                        end
+
+                        v941[v942] = v944
+                    end
+
+                    v938.stock = v941
+                end
+            end
+
+            if v937.id then
+                local v947 = v18[v937.id]
+                local id = v937.id
+                local v949 = {rot = if v937.fix then Vector3.new(v937.fix[1], v937.fix[2], v937.fix[3]) else nil, pos = if v937.fixPos then Vector3.new(v937.fixPos[1], v937.fixPos[2], v937.fixPos[3]) else nil}
+                v949.len = v937.fixLen
+
+                if v937.barrel then
+                    v947 = Vector3.new(v937.barrel[1], v937.barrel[2], v937.barrel[3])
+                else
+                    v947 = v947 and v947.barrel
+                end
+
+                v949.barrel = v947
+                v18[id] = v949
+            end
+
+            for v950, v951 in v20 do
+                if v937.id and v950 == v937.id or v938 and v951.kind == v937.kind then
+                    v951.model:Destroy()
+                    v20[v950] = nil
+                end
+            end
+
+            return true
         end
-        v426.Parent = LocalPlayer_upv_1
+
+        viewModelDebug.Parent = localPlayer
     end
 end
-return tbl_upv_1
+
+return v14

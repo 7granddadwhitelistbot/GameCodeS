@@ -1,733 +1,834 @@
-local ContentProvider_upv_1 = game:GetService("ContentProvider")
-local Lighting_upv_1 = game:GetService("Lighting")
-local Players_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local TweenService_upv_1 = game:GetService("TweenService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local tbl_1 = {}
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local tbl_upv_2 = {{height = 16, transparency = 0.3, speed = 0.045, tile = 34}, {height = 10.5, transparency = 0.38, speed = -0.07, tile = 21}}
-local u1 = nil
-local u2 = nil
-local tbl_upv_3 = {}
-local tbl_upv_4 = {}
-local tbl_upv_5 = {}
-local tbl_upv_6 = {}
-local tbl_upv_7 = {}
-local tbl_upv_8 = {}
-local tbl_upv_9 = {}
-local tbl_upv_10 = {}
-local u3 = nil
-local tbl_upv_11 = {}
-local u4 = false
-local u5 = -1
-local u6 = 0
-local u7 = 0
-local u8 = -1
-local u9 = -1
-local u10 = nil
-local u11 = false
-local u12 = RaycastParams.new()
-u12.FilterType = Enum.RaycastFilterType.Include
-u12.RespectCanCollide = true
-local u13 = "pending"
-local function num(a1, a2, a3)
+local contentProvider = game:GetService("ContentProvider")
+local lighting = game:GetService("Lighting")
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+local workspace = game:GetService("Workspace")
+local v7 = {}
+local localPlayer = players.LocalPlayer
+local v9 = {{height = 16, tile = 34, speed = 0.045, transparency = 0.3}, {height = 10.5, tile = 21, speed = -0.07, transparency = 0.38}}
+local folder = nil
+local part = nil
+local v12 = {}
+local v13 = {}
+local v14 = {}
+local v15 = {}
+local v16 = {}
+local v17 = {}
+local v18 = {}
+local v19 = {}
+local child = nil
+local v21 = {}
+local v22 = false
+local v23 = -1
+local timestamp = 0
+local timestamp2 = 0
+local v26 = -1
+local v27 = -1
+local colorCorrectionEffect = nil
+local v29 = false
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Include
+raycastParams.RespectCanCollide = true
+local v31 = "pending"
+
+local function num(a33, a34, a35)
     --[[
       name: num
       line: 88
     ]]
-    local v1 = a1:GetAttribute(a2)
-    if type(v1) == "number" and v1 == v1 then
-        return v1
+    local v36 = a33:GetAttribute(a34)
+
+    if type(v36) == "number" and v36 == v36 then
+        return v36
     end
-    return a3
+
+    return a35
 end
+
 local function styleBeams()
     --[[
       name: styleBeams
       line: 93
       upvalues:
-        tbl_upv_8 (copy, index: 1)
-        u13 (ref,  index: 2)
-        tbl_upv_6 (copy, index: 3)
-        tbl_upv_7 (copy, index: 4)
+        v17 (copy, index: 1)
+        v31 (ref,  index: 2)
+        v15 (copy, index: 3)
+        v16 (copy, index: 4)
     ]]
-    for key_1, value_1 in tbl_upv_8 do
-        local v2 = value_1.visible and (u13 == "ok")
-        for _, value_2 in tbl_upv_6 do
-            value_2[key_1].Enabled = v2
+    for v38, v39 in v17 do
+        local enabled = v39.visible and v31 == "ok"
+
+        for _, v42 in v15 do
+            v42[v38].Enabled = enabled
         end
-        tbl_upv_7[key_1].Enabled = value_1.visible
+
+        v16[v38].Enabled = v39.visible
     end
 end
-local function emitter(a1, a2)
+
+local function emitter(parent: Instance?, properties)
     --[[
       name: emitter
       line: 103
     ]]
-    local v3 = Instance.new("ParticleEmitter")
-    for key_2, value_3 in a2 do
-        v3[key_2] = value_3
+    local particleEmitter = Instance.new("ParticleEmitter")
+
+    for v47, v48 in properties do
+        particleEmitter[v47] = v48
     end
-    v3.Parent = a1
-    return v3
+
+    particleEmitter.Parent = parent
+
+    return particleEmitter
 end
-local function invisiblePart(a1)
+
+local function invisiblePart(name: string)
     --[[
       name: invisiblePart
       line: 112
     ]]
-    local v4 = Instance.new("Part")
-    v4.Name = a1
-    v4.Anchored = true
-    v4.CanCollide = false
-    v4.CanQuery = false
-    v4.CanTouch = false
-    v4.CastShadow = false
-    v4.Transparency = 1
-    v4.Size = Vector3.new(8, 1, 1.5)
-    return v4
+    local part = Instance.new("Part")
+    part.Name = name
+    part.Anchored = true
+    part.CanCollide = false
+    part.CanQuery = false
+    part.CanTouch = false
+    part.CastShadow = false
+    part.Transparency = 1
+    part.Size = Vector3.new(8, 1, 1.5)
+    return part
 end
+
+local function makeSegment(parent: Folder)
+    --[[
+      name: makeSegment
+      line: 125
+    ]]
+    local ringSegment = Instance.new("Part")
+    ringSegment.Name = "RingSegment"
+    ringSegment.Anchored = true
+    ringSegment.CanCollide = false
+    ringSegment.CanQuery = false
+    ringSegment.CanTouch = false
+    ringSegment.CastShadow = false
+    ringSegment.Transparency = 1
+    ringSegment.Size = Vector3.new(8, 1, 1.5)
+    local v55 = {
+        Name = "Licks",
+        Texture = "rbxassetid://109193145976179",
+        Drag = 1,
+        LightEmission = 0.35,
+        LightInfluence = 0,
+        ZOffset = 1,
+        Shape = Enum.ParticleEmitterShape.Box,
+        EmissionDirection = Enum.NormalId.Top,
+        Orientation = Enum.ParticleOrientation.FacingCameraWorldUp,
+        Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 236, 214)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 190, 150)), ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 120, 90))}),
+        Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(0.18, 0.05), NumberSequenceKeypoint.new(0.7, 0.25), NumberSequenceKeypoint.new(1, 1)}),
+        Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 4), NumberSequenceKeypoint.new(0.35, 7, 1.5), NumberSequenceKeypoint.new(1, 2.5)}),
+        Squash = NumberSequence.new(-0.35),
+        Lifetime = NumberRange.new(0.8, 1.25),
+        Speed = NumberRange.new(6, 10),
+        SpreadAngle = Vector2.new(5, 5),
+        Rotation = NumberRange.new(-8, 8),
+        RotSpeed = NumberRange.new(-10, 10)
+    }
+    local licks = Instance.new("ParticleEmitter")
+
+    for v57, v58 in v55 do
+        licks[v57] = v58
+    end
+
+    licks.Parent = ringSegment
+    local v59 = {
+        Name = "Embers",
+        Acceleration = Vector3.new(0, 1.5, 0),
+        Drag = 0.6,
+        LightEmission = 0.4,
+        LightInfluence = 0,
+        Shape = Enum.ParticleEmitterShape.Box,
+        EmissionDirection = Enum.NormalId.Top,
+        Color = ColorSequence.new(Color3.fromRGB(255, 150, 60), Color3.fromRGB(230, 70, 30)),
+        Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.8, 0.2), NumberSequenceKeypoint.new(1, 1)}),
+        Size = NumberSequence.new(0.25, 0.08),
+        Lifetime = NumberRange.new(1.6, 2.8),
+        Speed = NumberRange.new(10, 18),
+        SpreadAngle = Vector2.new(22, 22)
+    }
+    local embers = Instance.new("ParticleEmitter")
+
+    for v61, v62 in v59 do
+        embers[v61] = v62
+    end
+
+    embers.Parent = ringSegment
+    local ringSmoke = Instance.new("Part")
+    ringSmoke.Name = "RingSmoke"
+    ringSmoke.Anchored = true
+    ringSmoke.CanCollide = false
+    ringSmoke.CanQuery = false
+    ringSmoke.CanTouch = false
+    ringSmoke.CastShadow = false
+    ringSmoke.Transparency = 1
+    ringSmoke.Size = Vector3.new(8, 1, 1.5)
+    local v64 = {
+        Name = "Smoke",
+        Texture = "rbxassetid://8030839542",
+        Drag = 0.35,
+        LightEmission = 0,
+        LightInfluence = 1,
+        ZOffset = -1,
+        Shape = Enum.ParticleEmitterShape.Box,
+        EmissionDirection = Enum.NormalId.Top,
+        Color = ColorSequence.new(Color3.fromRGB(70, 55, 48), Color3.fromRGB(46, 40, 38)),
+        Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.15, 0.55), NumberSequenceKeypoint.new(0.7, 0.7), NumberSequenceKeypoint.new(1, 1)}),
+        Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 7), NumberSequenceKeypoint.new(1, 16)}),
+        Lifetime = NumberRange.new(2.6, 3.6),
+        Speed = NumberRange.new(5, 7),
+        SpreadAngle = Vector2.new(12, 12),
+        Rotation = NumberRange.new(-180, 180),
+        RotSpeed = NumberRange.new(-15, 15)
+    }
+    local smoke = Instance.new("ParticleEmitter")
+
+    for v66, v67 in v64 do
+        smoke[v66] = v67
+    end
+
+    smoke.Parent = ringSmoke
+    ringSegment.Parent = parent
+    ringSmoke.Parent = parent
+
+    return {visible = true, part = ringSegment, smokePart = ringSmoke, licks = licks, embers = embers, smoke = smoke}
+end
+
 local function clear()
     --[[
       name: clear
       line: 212
       upvalues:
-        u1 (ref,  index: 1)
-        u2 (ref,  index: 2)
-        tbl_upv_3 (copy, index: 3)
-        tbl_upv_4 (copy, index: 4)
-        tbl_upv_5 (copy, index: 5)
-        tbl_upv_6 (copy, index: 6)
-        tbl_upv_7 (copy, index: 7)
-        tbl_upv_8 (copy, index: 8)
-        tbl_upv_9 (copy, index: 9)
-        tbl_upv_10 (copy, index: 10)
-        u5 (ref,  index: 11)
-        u9 (ref,  index: 12)
-        u8 (ref,  index: 13)
+        folder (ref,  index: 1)
+        part (ref,  index: 2)
+        v12 (copy, index: 3)
+        v13 (copy, index: 4)
+        v14 (copy, index: 5)
+        v15 (copy, index: 6)
+        v16 (copy, index: 7)
+        v17 (copy, index: 8)
+        v18 (copy, index: 9)
+        v19 (copy, index: 10)
+        v23 (ref,  index: 11)
+        v27 (ref,  index: 12)
+        v26 (ref,  index: 13)
     ]]
-    if u1 then
-        u1:Destroy()
+    if folder then
+        folder:Destroy()
     end
-    u1 = nil
-    u2 = nil
-    table.clear(tbl_upv_3)
-    table.clear(tbl_upv_4)
-    table.clear(tbl_upv_5)
-    table.clear(tbl_upv_6)
-    table.clear(tbl_upv_7)
-    table.clear(tbl_upv_8)
-    table.clear(tbl_upv_9)
-    table.clear(tbl_upv_10)
-    u5 = -1
-    u9 = -1
-    u8 = -1
+
+    folder = nil
+    part = nil
+    table.clear(v12)
+    table.clear(v13)
+    table.clear(v14)
+    table.clear(v15)
+    table.clear(v16)
+    table.clear(v17)
+    table.clear(v18)
+    table.clear(v19)
+    v23 = -1
+    v27 = -1
+    v26 = -1
 end
-local function makeBeam(a1, a2, a3)
+
+local function makeBeam(attachment0: Attachment?, attachment1: Attachment?, name: string)
     --[[
       name: makeBeam
       line: 231
     ]]
-    local v5 = Instance.new("Beam")
-    v5.Name = a3
-    v5.Attachment0 = a1
-    v5.Attachment1 = a2
-    v5.FaceCamera = false
-    v5.Segments = 1
-    return v5
+    local beam = Instance.new("Beam")
+    beam.Name = name
+    beam.Attachment0 = attachment0
+    beam.Attachment1 = attachment1
+    beam.FaceCamera = false
+    beam.Segments = 1
+    return beam
 end
-local function makeSegment(a1)
-    --[[
-      name: makeSegment
-      line: 125
-    ]]
-    local v6 = Instance.new("Part")
-    v6.Name = "RingSegment"
-    v6.Anchored = true
-    v6.CanCollide = false
-    v6.CanQuery = false
-    v6.CanTouch = false
-    v6.CastShadow = false
-    v6.Transparency = 1
-    v6.Size = Vector3.new(8, 1, 1.5)
-    local tbl_12 = {Drag = 1, ZOffset = 1, LightInfluence = 0, Texture = "rbxassetid://109193145976179", LightEmission = 0.35, Name = "Licks"}
-    tbl_12.Shape = Enum.ParticleEmitterShape.Box
-    tbl_12.EmissionDirection = Enum.NormalId.Top
-    tbl_12.Orientation = Enum.ParticleOrientation.FacingCameraWorldUp
-    tbl_12.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 236, 214)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 190, 150)), ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 120, 90))})
-    tbl_12.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(0.18, 0.05), NumberSequenceKeypoint.new(0.7, 0.25), NumberSequenceKeypoint.new(1, 1)})
-    tbl_12.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 4), NumberSequenceKeypoint.new(0.35, 7, 1.5), NumberSequenceKeypoint.new(1, 2.5)})
-    tbl_12.Squash = NumberSequence.new(-0.35)
-    tbl_12.Lifetime = NumberRange.new(0.8, 1.25)
-    tbl_12.Speed = NumberRange.new(6, 10)
-    tbl_12.SpreadAngle = Vector2.new(5, 5)
-    tbl_12.Rotation = NumberRange.new(-8, 8)
-    tbl_12.RotSpeed = NumberRange.new(-10, 10)
-    local v7 = Instance.new("ParticleEmitter")
-    for key_3, value_4 in tbl_12 do
-        v7[key_3] = value_4
-    end
-    v7.Parent = v6
-    local tbl_13 = {Acceleration = Vector3.new(0, 1.5, 0), Drag = 0.6, LightInfluence = 0, LightEmission = 0.4, Name = "Embers"}
-    tbl_13.Shape = Enum.ParticleEmitterShape.Box
-    tbl_13.EmissionDirection = Enum.NormalId.Top
-    tbl_13.Color = ColorSequence.new(Color3.fromRGB(255, 150, 60), Color3.fromRGB(230, 70, 30))
-    tbl_13.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.8, 0.2), NumberSequenceKeypoint.new(1, 1)})
-    tbl_13.Size = NumberSequence.new(0.25, 0.08)
-    tbl_13.Lifetime = NumberRange.new(1.6, 2.8)
-    tbl_13.Speed = NumberRange.new(10, 18)
-    tbl_13.SpreadAngle = Vector2.new(22, 22)
-    local v8 = Instance.new("ParticleEmitter")
-    for key_4, value_5 in tbl_13 do
-        v8[key_4] = value_5
-    end
-    v8.Parent = v6
-    tbl_13 = Instance.new("Part")
-    tbl_13.Name = "RingSmoke"
-    tbl_13.Anchored = true
-    tbl_13.CanCollide = false
-    tbl_13.CanQuery = false
-    tbl_13.CanTouch = false
-    tbl_13.CastShadow = false
-    tbl_13.Transparency = 1
-    tbl_13.Size = Vector3.new(8, 1, 1.5)
-    local tbl_14 = {LightInfluence = 1, LightEmission = 0, Drag = 0.35, ZOffset = -1, Name = "Smoke", Texture = "rbxassetid://8030839542"}
-    tbl_14.Shape = Enum.ParticleEmitterShape.Box
-    tbl_14.EmissionDirection = Enum.NormalId.Top
-    tbl_14.Color = ColorSequence.new(Color3.fromRGB(70, 55, 48), Color3.fromRGB(46, 40, 38))
-    tbl_14.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.15, 0.55), NumberSequenceKeypoint.new(0.7, 0.7), NumberSequenceKeypoint.new(1, 1)})
-    tbl_14.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 7), NumberSequenceKeypoint.new(1, 16)})
-    tbl_14.Lifetime = NumberRange.new(2.6, 3.6)
-    tbl_14.Speed = NumberRange.new(5, 7)
-    tbl_14.SpreadAngle = Vector2.new(12, 12)
-    tbl_14.Rotation = NumberRange.new(-180, 180)
-    tbl_14.RotSpeed = NumberRange.new(-15, 15)
-    local v9 = Instance.new("ParticleEmitter")
-    for key_5, value_6 in tbl_14 do
-        v9[key_5] = value_6
-    end
-    v9.Parent = tbl_13
-    v6.Parent = a1
-    tbl_13.Parent = a1
-    tbl_14 = {visible = true}
-    tbl_14.part = v6
-    tbl_14.smokePart = tbl_13
-    tbl_14.licks = v7
-    tbl_14.embers = v8
-    tbl_14.smoke = v9
-    return tbl_14
-end
-local function build(a1, a2)
+
+local function build(clampedValue: number, vector3: Vector3)
     --[[
       name: build
       line: 241
       upvalues:
-        u2 (ref,  index: 1)
-        tbl_upv_2 (copy, index: 2)
-        tbl_upv_3 (copy, index: 3)
-        tbl_upv_5 (copy, index: 4)
-        tbl_upv_6 (copy, index: 5)
-        tbl_upv_4 (copy, index: 6)
-        tbl_upv_7 (copy, index: 7)
-        tbl_upv_8 (copy, index: 8)
+        part (ref,  index: 1)
+        v9 (copy, index: 2)
+        v12 (copy, index: 3)
+        v14 (copy, index: 4)
+        v15 (copy, index: 5)
+        v13 (copy, index: 6)
+        v16 (copy, index: 7)
+        v17 (copy, index: 8)
         makeSegment (copy, index: 9)
-        tbl_upv_9 (copy, index: 10)
-        tbl_upv_10 (copy, index: 11)
-        Workspace_upv_1 (copy, index: 12)
-        u1 (ref,  index: 13)
+        v18 (copy, index: 10)
+        v19 (copy, index: 11)
+        workspace (copy, index: 12)
+        folder (ref,  index: 13)
         styleBeams (copy, index: 14)
     ]]
-    local v10 = Instance.new("Folder")
-    v10.Name = "CoreRingOfFire"
-    local v11 = Instance.new("Part")
-    v11.Name = "RingAnchor"
-    v11.Anchored = true
-    v11.CanCollide = false
-    v11.CanQuery = false
-    v11.CanTouch = false
-    v11.CastShadow = false
-    v11.Transparency = 1
-    v11.Size = Vector3.new(8, 1, 1.5)
-    v11.Size = Vector3.new(1, 1, 1)
-    v11.CFrame = CFrame.new(a2)
-    v11.Parent = v10
-    u2 = v11
-    for key_6, value_7 in tbl_upv_2 do
-        local tbl_15 = {}
-        for n_1 = 1, a1 do
-            local v12 = Instance.new("Attachment")
-            v12.Name = ("L%*_%*"):format(key_6, n_1)
-            v12.Parent = v11
-            tbl_15[n_1] = v12
+    local coreRingOfFire = Instance.new("Folder")
+    coreRingOfFire.Name = "CoreRingOfFire"
+
+    local ringAnchor = Instance.new("Part")
+    ringAnchor.Name = "RingAnchor"
+    ringAnchor.Anchored = true
+    ringAnchor.CanCollide = false
+    ringAnchor.CanQuery = false
+    ringAnchor.CanTouch = false
+    ringAnchor.CastShadow = false
+    ringAnchor.Transparency = 1
+    ringAnchor.Size = Vector3.new(8, 1, 1.5)
+    ringAnchor.Size = Vector3.new(1, 1, 1)
+    ringAnchor.CFrame = CFrame.new(vector3)
+    ringAnchor.Parent = coreRingOfFire
+    part = ringAnchor
+
+    for v79, v80 in v9 do
+        local v81 = {}
+
+        for index = 1, clampedValue do
+            local attachment = Instance.new("Attachment")
+            attachment.Name = `L{v79}_{index}`
+            attachment.Parent = ringAnchor
+            v81[index] = attachment
         end
-        tbl_upv_3[key_6] = tbl_15
-        local tbl_16 = {}
-        for n_2 = 1, a1 do
-            local v13 = ("Wall%*_%*"):format(key_6, n_2)
-            local v14 = Instance.new("Beam")
-            v14.Name = v13
-            v14.Attachment0 = tbl_15[n_2]
-            v14.Attachment1 = tbl_15[(n_2 % a1) + 1]
-            v14.FaceCamera = false
-            v14.Segments = 1
-            v14.Width0 = value_7.height
-            v14.Width1 = value_7.height
-            v14.Texture = "rbxassetid://82559613851503"
-            v14.TextureMode = Enum.TextureMode.Wrap
-            v14.TextureLength = value_7.tile
-            v14.TextureSpeed = value_7.speed
-            v14.Color = ColorSequence.new(Color3.fromRGB(255, 240, 228))
-            v14.Transparency = NumberSequence.new(value_7.transparency)
-            v14.LightEmission = 0.25
-            v14.LightInfluence = 0
-            v14.Brightness = 1
-            v14.ZOffset = key_6 - 1
-            v14.Enabled = false
-            v14.Parent = v11
-            tbl_16[n_2] = v14
-            table.insert(tbl_upv_5, v14)
+
+        v12[v79] = v81
+        local v84 = {}
+
+        for index = 1, clampedValue do
+            local attachment0 = v81[index]
+            local attachment1 = v81[(index % clampedValue) + 1]
+            local formattedText = `Wall{v79}_{index}`
+            local beam = Instance.new("Beam")
+            beam.Name = formattedText
+            beam.Attachment0 = attachment0
+            beam.Attachment1 = attachment1
+            beam.FaceCamera = false
+            beam.Segments = 1
+            beam.Width0 = v80.height
+            beam.Width1 = v80.height
+            beam.Texture = "rbxassetid://82559613851503"
+            beam.TextureMode = Enum.TextureMode.Wrap
+            beam.TextureLength = v80.tile
+            beam.TextureSpeed = v80.speed
+            beam.Color = ColorSequence.new(Color3.fromRGB(255, 240, 228))
+            beam.Transparency = NumberSequence.new(v80.transparency)
+            beam.LightEmission = 0.25
+            beam.LightInfluence = 0
+            beam.Brightness = 1
+            beam.ZOffset = v79 - 1
+            beam.Enabled = false
+            beam.Parent = ringAnchor
+            v84[index] = beam
+            table.insert(v14, beam)
         end
-        tbl_upv_6[key_6] = tbl_16
+
+        v15[v79] = v84
     end
-    for n_3 = 1, a1 do
-        local v15 = Instance.new("Attachment")
-        v15.Name = ("S_%*"):format(n_3)
-        v15.Parent = v11
-        tbl_upv_4[n_3] = v15
+
+    for index = 1, clampedValue do
+        local attachment = Instance.new("Attachment")
+        attachment.Name = `S_{index}`
+        attachment.Parent = ringAnchor
+        v13[index] = attachment
     end
-    for n_4 = 1, a1 do
-        local v16 = ("Scorch%*"):format(n_4)
-        local v17 = Instance.new("Beam")
-        v17.Name = v16
-        v17.Attachment0 = tbl_upv_4[n_4]
-        v17.Attachment1 = tbl_upv_4[(n_4 % a1) + 1]
-        v17.FaceCamera = false
-        v17.Segments = 1
-        v17.Width0 = 3
-        v17.Width1 = 3
-        v17.Color = ColorSequence.new(Color3.fromRGB(36, 28, 25))
-        v17.Transparency = NumberSequence.new(0.12)
-        v17.LightEmission = 0
-        v17.LightInfluence = 1
-        v17.Parent = v11
-        tbl_upv_7[n_4] = v17
+
+    for index = 1, clampedValue do
+        local attachment0 = v13[index]
+        local attachment1 = v13[(index % clampedValue) + 1]
+        local formattedText = `Scorch{index}`
+        local beam = Instance.new("Beam")
+        beam.Name = formattedText
+        beam.Attachment0 = attachment0
+        beam.Attachment1 = attachment1
+        beam.FaceCamera = false
+        beam.Segments = 1
+        beam.Width0 = 3
+        beam.Width1 = 3
+        beam.Color = ColorSequence.new(Color3.fromRGB(36, 28, 25))
+        beam.Transparency = NumberSequence.new(0.12)
+        beam.LightEmission = 0
+        beam.LightInfluence = 1
+        beam.Parent = ringAnchor
+        v16[index] = beam
     end
-    for _ = 1, a1 do
-        table.insert(tbl_upv_8, (makeSegment(v10)))
-        table.insert(tbl_upv_9, 0)
-        table.insert(tbl_upv_10, false)
+
+    for _ = 1, clampedValue do
+        table.insert(v17, (makeSegment(coreRingOfFire)))
+        table.insert(v18, 0)
+        table.insert(v19, false)
     end
-    v10.Parent = Workspace_upv_1
-    u1 = v10
+
+    coreRingOfFire.Parent = workspace
+    folder = coreRingOfFire
     styleBeams()
 end
-local function setTint(a1)
-    --[[
-      name: setTint
-      line: 326
-      upvalues:
-        u11 (ref,  index: 1)
-        u10 (ref,  index: 2)
-        Lighting_upv_1 (copy, index: 3)
-        TweenService_upv_1 (copy, index: 4)
-    ]]
-    if a1 == u11 then
-        return
-    end
-    u11 = a1
-    if not (u10) then
-        local v18 = Instance.new("ColorCorrectionEffect")
-        v18.Name = "CoreRingHeat"
-        v18.TintColor = Color3.new(1, 1, 1)
-        v18.Enabled = false
-        v18.Parent = Lighting_upv_1
-        u10 = v18
-    end
-    local u14 = u10
-    u14.Enabled = true
-    local v19 = TweenInfo.new(0.4)
-    local tbl_17 = {TintColor = 0, Saturation = 0}
-    local v20
-    if a1 then
-        v20 = Color3.fromRGB(255, 226, 206)
-    else
-        v20 = Color3.new(1, 1, 1)
-    end
-    tbl_17.TintColor = v20
-    tbl_17.Saturation = (a1 and 0.08) or 0
-    local v21 = TweenService_upv_1:Create(u10, v19, tbl_17)
-    v21.Completed:Connect(
-        function(a2)
-            --[[
-              line: 345
-              upvalues:
-                u11 (ref,  index: 1)
-                u14 (copy, index: 2)
-            ]]
-            if a2 ~= Enum.PlaybackState.Completed or (u11) then
-                return
-            end
-            u14.Enabled = false
-        end
-    )
-    v21:Play()
-end
-local function sampleGround(a1, a2, a3)
-    --[[
-      name: sampleGround
-      line: 354
-      upvalues:
-        Workspace_upv_1 (copy, index: 1)
-        u12 (copy, index: 2)
-    ]]
-    local v22 = Workspace_upv_1:Raycast(Vector3.new(a2, a1.Y + 110, a3), Vector3.new(0, -150, 0), u12)
-    if not v22 then
-        return 0, false
-    end
-    local v23 = v22.Position.Y - a1.Y
-    if v23 <= 6 then
-        return math.max(v23, -12), false
-    end
-    local Instance_1 = v22.Instance
-    if Instance_1:IsA("BasePart") and v22.Normal.Y > 0.8 then
-        local Size_1 = Instance_1.Size
-        local tbl_18 = {Size_1.X, Size_1.Y, Size_1.Z}
-        table.sort(tbl_18)
-        if tbl_18[2] >= 14 then
-            return v23, false
-        end
-    end
-    return v23, true
-end
-local function sampleAll(a1, a2, a3, a4)
-    --[[
-      name: sampleAll
-      line: 375
-      upvalues:
-        u12 (copy, index: 1)
-        sampleGround (copy, index: 2)
-        tbl_upv_9 (copy, index: 3)
-        tbl_upv_10 (copy, index: 4)
-    ]]
-    local Map_1 = a1:FindFirstChild("Map")
-    u12.FilterDescendantsInstances = (Map_1 and {Map_1}) or {}
-    local v24 = table.create(a4, false)
-    for n_5 = 1, a4 do
-        local v25 = ((n_5 - 1) / a4) * 2 * math.pi
-        local v26, v27 = sampleGround(a2, a2.X + (math.cos(v25) * a3), a2.Z + (math.sin(v25) * a3))
-        tbl_upv_9[n_5] = v26
-        v24[n_5] = v27
-    end
-    for n_6 = 1, a4 do
-        local v28 = ((n_6 - 0.5) / a4) * 2 * math.pi
-        local _, v29 = sampleGround(a2, a2.X + (math.cos(v28) * a3), a2.Z + (math.sin(v28) * a3))
-        tbl_upv_10[n_6] = v29 or (v24[n_6] or (v24[(n_6 % a4) + 1]))
-    end
-end
-local function layout(a1, a2, a3)
-    --[[
-      name: layout
-      line: 393
-      upvalues:
-        u1 (ref,  index: 1)
-        clear (copy, index: 2)
-        build (copy, index: 3)
-        tbl_upv_8 (copy, index: 4)
-        u2 (ref,  index: 5)
-        u7 (ref,  index: 6)
-        u8 (ref,  index: 7)
-        sampleAll (copy, index: 8)
-        tbl_upv_10 (copy, index: 9)
-        styleBeams (copy, index: 10)
-        tbl_upv_2 (copy, index: 11)
-        tbl_upv_3 (copy, index: 12)
-        tbl_upv_9 (copy, index: 13)
-        tbl_upv_4 (copy, index: 14)
-        Workspace_upv_1 (copy, index: 15)
-        u9 (ref,  index: 16)
-        LocalPlayer_upv_1 (copy, index: 17)
-        setTint (copy, index: 18)
-    ]]
-    local v30 = a1:GetAttribute("RingCenterX")
-    local v31
-    if type(v30) == "number" and v30 == v30 then
-        v31 = v30
-    else
-        v31 = 0
-    end
-    local v32 = a1:GetAttribute("RingCenterY")
-    if type(v32) == "number" and v32 == v32 then
-        v30 = v32
-    else
-        v30 = 0
-    end
-    local v33 = a1:GetAttribute("RingCenterZ")
-    if type(v33) == "number" and v33 == v33 then
-        v32 = v33
-    else
-        v32 = 0
-    end
-    local v34 = Vector3.new(v31, v30, v32)
-    if not (u1) or not (u1.Parent) then
-        clear()
-        local v35 = a1:GetAttribute("RingStartRadius")
-        if type(v35) == "number" and v35 == v35 then
-            v32 = v35
-        else
-            v32 = a2
-        end
-        build(math.clamp(math.floor((math.tau * math.max(a2, v32) / 10) + 0.5), 16, 48), v34)
-        a3 = true
-    end
-    local v36 = #tbl_upv_8
-    if (u2.Position - v34).Magnitude > 0.01 then
-        u2.CFrame = CFrame.new(v34)
-    end
-    v30 = os.clock()
-    v32 = false
-    if v30 - u7 >= 0.1 then
-        local v37 = true
-        if math.abs(a2 - u8) > 0.25 then
-            v32 = v37
-        else
-            v32 = 1 <= v30 - u7
-        end
-    end
-    if a3 or v32 then
-        u7 = v30
-        u8 = a2
-        sampleAll(a1, v34, a2, v36)
-        v33 = false
-        for key_7, value_8 in tbl_upv_8 do
-            local v38 = not tbl_upv_10[key_7]
-            if value_8.visible ~= v38 then
-                value_8.visible = v38
-                value_8.licks.Enabled = v38
-                value_8.embers.Enabled = v38
-                value_8.smoke.Enabled = v38
-                v33 = true
-            end
-        end
-        if v33 or a3 then
-            styleBeams()
-        end
-    end
-    for key_8, value_9 in tbl_upv_2 do
-        local v39 = tbl_upv_3[key_8]
-        for n_7 = 1, v36 do
-            local v40 = ((n_7 - 1) / v36) * 2 * math.pi
-            local v41 = math.cos(v40)
-            local v42 = math.sin(v40)
-            v39[n_7].CFrame = CFrame.fromMatrix(Vector3.new(v41 * a2, tbl_upv_9[n_7] + ((value_9.height * 0.5) - 0.6), v42 * a2), Vector3.new(-v42, 0, v41), Vector3.new(0, 1, 0))
-        end
-    end
-    local v43 = a2 + 1.5 + 0.3
-    for n_8 = 1, v36 do
-        local v44 = ((n_8 - 1) / v36) * 2 * math.pi
-        local v45 = math.cos(v44)
-        local v46 = math.sin(v44)
-        tbl_upv_4[n_8].CFrame = CFrame.fromMatrix(Vector3.new(v45 * v43, tbl_upv_9[n_8] + 0.12, v46 * v43), Vector3.new(-v46, 0, v45), Vector3.new(v45, 0, v46))
-        local v47 = n_8
-    end
-    local v48 = a2 * 2 * math.sin(math.pi / v36)
-    local v49 = a2 * math.cos(math.pi / v36)
-    local v50 = table.create(v36 * 2)
-    local v47 = table.create(v36 * 2)
-    for key_9, value_10 in tbl_upv_8 do
-        local v51 = ((key_9 - 0.5) / v36) * 2 * math.pi
-        local v52 = math.cos(v51)
-        local v53 = math.sin(v51)
-        local v54 = v34 + Vector3.new(v52 * v49, ((tbl_upv_9[key_9] + tbl_upv_9[(key_9 % v36) + 1]) * 0.5) + 0.6, v53 * v49)
-        local v55 = CFrame.fromMatrix(Vector3.new(0, 0, 0), Vector3.new(-v53, 0, v52), Vector3.new(0, 1, 0))
-        table.insert(v50, value_10.part)
-        table.insert(v47, v55 + v54)
-        table.insert(v50, value_10.smokePart)
-        table.insert(v47, (v55 + v54) + Vector3.new(0, 11, 0))
-    end
-    Workspace_upv_1:BulkMoveTo(v50, v47, Enum.BulkMoveMode.FireCFrameChanged)
-    if math.abs(v48 - u9) > 0.4 then
-        u9 = v48
-        for _, value_11 in tbl_upv_8 do
-            value_11.part.Size = Vector3.new(v48, 1, 1.5)
-            value_11.smokePart.Size = Vector3.new(v48, 1, 2)
-            value_11.licks.Rate = v48 * 0.8
-            value_11.embers.Rate = v48 * 0.08
-            value_11.smoke.Rate = v48 * 0.12
-        end
-    end
-    local Character_1 = LocalPlayer_upv_1.Character
-    local v56 = Character_1 and (Character_1:FindFirstChild("HumanoidRootPart"))
-    if not v56 then
-        return
-    end
-    if v56:IsA("BasePart") then
-        local v57 = (a2 < Vector2.new(v56.Position.X - v34.X, v56.Position.Z - v34.Z).Magnitude) and (LocalPlayer_upv_1:GetAttribute("Alive") == true)
-        setTint(v57)
-    end
-end
-local function currentRadius(a1)
+
+local function currentRadius(child: Instance?)
     --[[
       name: currentRadius
       line: 308
       upvalues:
-        Workspace_upv_1 (copy, index: 1)
+        workspace (copy, index: 1)
     ]]
-    local v58 = a1:GetAttribute("RingRadius")
-    local v59
-    if type(v58) == "number" and v58 == v58 then
-        v59 = v58
+    local ringRadius
+    local v101
+    local v102
+    local ringShrinkStart
+    local ringShrinkEnd
+    local ringRadius2 = child:GetAttribute("RingRadius")
+
+    if type(ringRadius2) ~= "number" or ringRadius2 ~= ringRadius2 then
+        ringRadius = 0
     else
-        v59 = 0
+        ringRadius = ringRadius2
     end
-    if v59 <= 0 then
+
+    if ringRadius <= 0 then
         return 0
     end
-    local v60 = a1:GetAttribute("RingStartRadius")
-    if type(v60) == "number" and v60 == v60 then
-        v58 = v60
+
+    local ringStartRadius = child:GetAttribute("RingStartRadius")
+
+    if type(ringStartRadius) ~= "number" or ringStartRadius ~= ringStartRadius then
+        v101 = ringRadius
     else
-        v58 = v59
+        v101 = ringStartRadius
     end
-    local v61 = a1:GetAttribute("RingMinRadius")
-    if type(v61) == "number" and v61 == v61 then
-        v60 = v61
+
+    local ringMinRadius = child:GetAttribute("RingMinRadius")
+
+    if type(ringMinRadius) ~= "number" or ringMinRadius ~= ringMinRadius then
+        v102 = ringRadius
     else
-        v60 = v59
+        v102 = ringMinRadius
     end
-    local v62 = a1:GetAttribute("RingShrinkStart")
-    if type(v62) == "number" and v62 == v62 then
-        v61 = v62
+
+    local ringShrinkStart2 = child:GetAttribute("RingShrinkStart")
+
+    if type(ringShrinkStart2) ~= "number" or ringShrinkStart2 ~= ringShrinkStart2 then
+        ringShrinkStart = 0
     else
-        v61 = 0
+        ringShrinkStart = ringShrinkStart2
     end
-    local v63 = a1:GetAttribute("RingShrinkEnd")
-    if type(v63) == "number" and v63 == v63 then
-        v62 = v63
+
+    local ringShrinkEnd2 = child:GetAttribute("RingShrinkEnd")
+
+    if type(ringShrinkEnd2) ~= "number" or ringShrinkEnd2 ~= ringShrinkEnd2 then
+        ringShrinkEnd = 0
     else
-        v62 = 0
+        ringShrinkEnd = ringShrinkEnd2
     end
-    if v61 < v62 then
-        return (math.clamp(v58 + ((v60 - v58) * math.clamp((Workspace_upv_1:GetServerTimeNow() - v61) / (v62 - v61), 0, 1)), v59 - 3, v59 + 3))
+
+    if ringShrinkStart < ringShrinkEnd then
+        local clampedValue = math.clamp((workspace:GetServerTimeNow() - ringShrinkStart) / (ringShrinkEnd - ringShrinkStart), 0, 1)
+        return (math.clamp(v101 + ((v102 - v101) * clampedValue), ringRadius - 3, ringRadius + 3))
     end
-    return v59
+
+    return ringRadius
 end
+
+local function setTint(tint: boolean)
+    --[[
+      name: setTint
+      line: 326
+      upvalues:
+        v29 (ref,  index: 1)
+        colorCorrectionEffect (ref,  index: 2)
+        lighting (copy, index: 3)
+        tweenService (copy, index: 4)
+    ]]
+    if tint == v29 then
+        return
+    end
+
+    v29 = tint
+
+    if not colorCorrectionEffect then
+        local coreRingHeat = Instance.new("ColorCorrectionEffect")
+        coreRingHeat.Name = "CoreRingHeat"
+        coreRingHeat.TintColor = Color3.new(1, 1, 1)
+        coreRingHeat.Enabled = false
+        coreRingHeat.Parent = lighting
+        colorCorrectionEffect = coreRingHeat
+    end
+
+    local colorCorrectionEffect2 = colorCorrectionEffect
+    colorCorrectionEffect2.Enabled = true
+    local tweenInfo = TweenInfo.new(0.4)
+    local propertyTable = {TintColor = if tint then Color3.fromRGB(255, 226, 206) else Color3.new(1, 1, 1)}
+    propertyTable.Saturation = tint and 0.08 or 0
+    local tween = tweenService:Create(colorCorrectionEffect2, tweenInfo, propertyTable)
+
+    tween.Completed:Connect(
+        function(playbackState: Enum.PlaybackState)
+            --[[
+              line: 345
+              upvalues:
+                v29 (ref,  index: 1)
+                colorCorrectionEffect2 (copy, index: 2)
+            ]]
+            if playbackState == Enum.PlaybackState.Completed and not v29 then
+                colorCorrectionEffect2.Enabled = false
+            end
+        end
+    )
+
+    tween:Play()
+end
+
+local function sampleGround(vector3: Vector3, x, z)
+    --[[
+      name: sampleGround
+      line: 354
+      upvalues:
+        workspace (copy, index: 1)
+        raycastParams (copy, index: 2)
+    ]]
+    local raycastResult = workspace:Raycast(Vector3.new(x, vector3.Y + 110, z), Vector3.new(0, -150, 0), raycastParams)
+    if not raycastResult then
+        return 0, false
+    end
+
+    local v124 = raycastResult.Position.Y - vector3.Y
+
+    if v124 <= 6 then
+        return math.max(v124, -12), false
+    end
+
+    local instance = raycastResult.Instance
+
+    if instance:IsA("BasePart") and 0.8 < raycastResult.Normal.Y then
+        local size = instance.Size
+        local v127 = {size.X, size.Y, size.Z}
+        table.sort(v127)
+
+        if 14 <= v127[2] then
+            return v124, false
+        end
+    end
+
+    return v124, true
+end
+
+local function sampleAll(child: Instance?, vector3: Vector3, a131, size: number)
+    --[[
+      name: sampleAll
+      line: 375
+      upvalues:
+        raycastParams (copy, index: 1)
+        sampleGround (copy, index: 2)
+        v18 (copy, index: 3)
+        v19 (copy, index: 4)
+    ]]
+    local map = child:FindFirstChild("Map")
+    raycastParams.FilterDescendantsInstances = map and {map} or {}
+    local values = table.create(size, false)
+
+    for valueKey = 1, size do
+        local v136 = ((valueKey - 1) / size) * 2 * math.pi
+        local v137, v138 = sampleGround(vector3, vector3.X + (math.cos(v136) * a131), vector3.Z + (math.sin(v136) * a131))
+        v18[valueKey] = v137
+        values[valueKey] = v138
+    end
+
+    for valueKey = 1, size do
+        local v140 = ((valueKey - 0.5) / size) * 2 * math.pi
+        local _, v142 = sampleGround(vector3, vector3.X + (math.cos(v140) * a131), vector3.Z + (math.sin(v140) * a131))
+        local valueKey2 = valueKey % size + 1
+        v19[valueKey] = v142 or values[valueKey] or values[valueKey2]
+    end
+end
+
+local function layout(child: Instance?, a146, a147: boolean)
+    --[[
+      name: layout
+      line: 393
+      upvalues:
+        folder (ref,  index: 1)
+        clear (copy, index: 2)
+        build (copy, index: 3)
+        v17 (copy, index: 4)
+        part (ref,  index: 5)
+        timestamp2 (ref,  index: 6)
+        v26 (ref,  index: 7)
+        sampleAll (copy, index: 8)
+        v19 (copy, index: 9)
+        styleBeams (copy, index: 10)
+        v9 (copy, index: 11)
+        v12 (copy, index: 12)
+        v18 (copy, index: 13)
+        v13 (copy, index: 14)
+        workspace (copy, index: 15)
+        v27 (ref,  index: 16)
+        localPlayer (copy, index: 17)
+        setTint (copy, index: 18)
+    ]]
+    local ringCenterX
+    local ringCenterY
+    local ringCenterZ
+    local v151
+    local ringCenterX2 = child:GetAttribute("RingCenterX")
+
+    if type(ringCenterX2) ~= "number" or ringCenterX2 ~= ringCenterX2 then
+        ringCenterX = 0
+    else
+        ringCenterX = ringCenterX2
+    end
+
+    local ringCenterY2 = child:GetAttribute("RingCenterY")
+
+    if type(ringCenterY2) ~= "number" or ringCenterY2 ~= ringCenterY2 then
+        ringCenterY = 0
+    else
+        ringCenterY = ringCenterY2
+    end
+
+    local ringCenterZ2 = child:GetAttribute("RingCenterZ")
+
+    if type(ringCenterZ2) ~= "number" or ringCenterZ2 ~= ringCenterZ2 then
+        ringCenterZ = 0
+    else
+        ringCenterZ = ringCenterZ2
+    end
+
+    local vector3 = Vector3.new(ringCenterX, ringCenterY, ringCenterZ)
+
+    if not folder or not folder.Parent then
+        local v156
+        clear()
+        local ringStartRadius = child:GetAttribute("RingStartRadius")
+
+        if type(ringStartRadius) ~= "number" or ringStartRadius ~= ringStartRadius then
+            v156 = a146
+        else
+            v156 = ringStartRadius
+        end
+
+        build(math.clamp(math.floor((math.tau * math.max(a146, v156) / 10) + 0.5), 16, 48), vector3)
+        v151 = true
+    else
+        v151 = a147
+    end
+
+    local endIndex = #v17
+    local part2 = part
+
+    if 0.01 < (part2.Position - vector3).Magnitude then
+        part2.CFrame = CFrame.new(vector3)
+    end
+
+    local timestamp = os.clock()
+    local v161 = 0.1 <= timestamp - timestamp2 and (0.25 < math.abs(a146 - v26) or 1 <= timestamp - timestamp2)
+
+    if v151 or v161 then
+        timestamp2 = timestamp
+        v26 = a146
+        sampleAll(child, vector3, a146, endIndex)
+        local v162 = false
+
+        for v163, v164 in v17 do
+            local v165 = not v19[v163]
+
+            if v164.visible ~= v165 then
+                v164.visible = v165
+                v164.licks.Enabled = v165
+                v164.embers.Enabled = v165
+                v164.smoke.Enabled = v165
+                v162 = true
+            end
+        end
+
+        if v162 or v151 then
+            styleBeams()
+        end
+    end
+
+    for v166, v167 in v9 do
+        local v168 = v12[v166]
+        local v169 = v167.height * 0.5 - 0.6
+
+        for index = 1, endIndex do
+            local v171 = ((index - 1) / endIndex) * 2 * math.pi
+            local z = math.cos(v171)
+            local v173 = math.sin(v171)
+            v168[index].CFrame = CFrame.fromMatrix(Vector3.new(z * a146, v18[index] + v169, v173 * a146), Vector3.new(-v173, 0, z), Vector3.new(0, 1, 0))
+        end
+    end
+
+    local v174 = a146 + 1.5 + 0.3
+
+    for index = 1, endIndex do
+        local v176 = ((index - 1) / endIndex) * 2 * math.pi
+        local v177 = math.cos(v176)
+        local z = math.sin(v176)
+        v13[index].CFrame = CFrame.fromMatrix(Vector3.new(v177 * v174, v18[index] + 0.12, z * v174), Vector3.new(-z, 0, v177), (Vector3.new(v177, 0, z)))
+    end
+
+    local x = a146 * 2 * math.sin(math.pi / endIndex)
+    local v180 = a146 * math.cos(math.pi / endIndex)
+    local partList = table.create(endIndex * 2)
+    local cframeList = table.create(endIndex * 2)
+
+    for v183, v184 in v17 do
+        local v185 = ((v183 - 0.5) / endIndex) * 2 * math.pi
+        local z = math.cos(v185)
+        local v187 = math.sin(v185)
+        local v188 = (v18[v183] + v18[(v183 % endIndex) + 1]) * 0.5
+        local vector32 = vector3 + Vector3.new(z * v180, v188 + 0.6, v187 * v180)
+        local v190 = CFrame.fromMatrix(Vector3.new(0, 0, 0), Vector3.new(-v187, 0, z), Vector3.new(0, 1, 0))
+        table.insert(partList, v184.part)
+        table.insert(cframeList, v190 + vector32)
+        table.insert(partList, v184.smokePart)
+        table.insert(cframeList, (v190 + vector32) + Vector3.new(0, 11, 0))
+    end
+
+    workspace:BulkMoveTo(partList, cframeList, Enum.BulkMoveMode.FireCFrameChanged)
+
+    if 0.4 < math.abs(x - v27) then
+        v27 = x
+
+        for _, v192 in v17 do
+            v192.part.Size = Vector3.new(x, 1, 1.5)
+            v192.smokePart.Size = Vector3.new(x, 1, 2)
+            v192.licks.Rate = x * 0.8
+            v192.embers.Rate = x * 0.08
+            v192.smoke.Rate = x * 0.12
+        end
+    end
+
+    local character = localPlayer.Character
+    local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+
+    if humanoidRootPart and humanoidRootPart:IsA("BasePart") then
+        local alive = a146 < Vector2.new(humanoidRootPart.Position.X - vector3.X, humanoidRootPart.Position.Z - vector3.Z).Magnitude
+            and localPlayer:GetAttribute("Alive") == true
+        setTint(alive)
+    end
+end
+
 local function step()
     --[[
       name: step
       line: 481
       upvalues:
-        u3 (ref,  index: 1)
+        child (ref,  index: 1)
         currentRadius (copy, index: 2)
-        u4 (ref,  index: 3)
+        v22 (ref,  index: 3)
         clear (copy, index: 4)
         setTint (copy, index: 5)
-        u5 (ref,  index: 6)
-        u6 (ref,  index: 7)
+        v23 (ref,  index: 6)
+        timestamp (ref,  index: 7)
         layout (copy, index: 8)
     ]]
-    local v64
-    if (u3) and (u3.Parent) then
-        v64 = currentRadius(u3)
-    else
-        v64 = 0
-    end
-    if not (v64 <= 0) and u3 then
-        u4 = true
-        local v65 = os.clock()
-        local v66 = math.abs(v64 - u5) >= 0.05
-        local v67 = v65 - u6
-        local v68
-        if v66 then
-            v68 = 0.03333333333333333
-        else
-            v68 = 0.1
+    local child2 = child
+    local v198 = if child2 and child2.Parent then currentRadius(child2) else 0
+
+    if not (v198 <= 0) and child2 then
+        v22 = true
+        local timestamp2 = os.clock()
+        local v200 = 0.05 <= math.abs(v198 - v23)
+        local v201 = timestamp2 - timestamp
+        local v202 = v200 and 0.03333333333333333 or 0.1
+
+        if v201 < v202 then
+            return
         end
-        if not (v67 < v68) then
-            u6 = v65
-            u5 = v64
-            layout(u3, v64, false)
-        end
+
+        timestamp = timestamp2
+        v23 = v198
+        layout(child2, v198, false)
+
         return
     end
-    if not u4 then
-        return
+
+    if v22 then
+        v22 = false
+        clear()
+        setTint(false)
     end
-    u4 = false
-    clear()
-    setTint(false)
 end
+
 local function bindArena()
     --[[
       name: bindArena
       line: 503
       upvalues:
-        tbl_upv_11 (copy, index: 1)
-        u3 (ref,  index: 2)
+        v21 (copy, index: 1)
+        child (ref,  index: 2)
         clear (copy, index: 3)
-        u4 (ref,  index: 4)
+        v22 (ref,  index: 4)
         setTint (copy, index: 5)
-        LocalPlayer_upv_1 (copy, index: 6)
-        Workspace_upv_1 (copy, index: 7)
+        localPlayer (copy, index: 6)
+        workspace (copy, index: 7)
     ]]
-    for _, value_12 in tbl_upv_11 do
-        value_12:Disconnect()
+    for _, v205 in v21 do
+        v205:Disconnect()
     end
-    table.clear(tbl_upv_11)
-    u3 = nil
+
+    table.clear(v21)
+    child = nil
     clear()
-    u4 = false
+    v22 = false
     setTint(false)
-    local v69 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
-    local u15
-    if v69 then
-        u15 = LocalPlayer_upv_1:GetAttribute("MatchId")
-    else
-        u15 = LocalPlayer_upv_1:GetAttribute("Spectating")
-    end
-    if type(u15) ~= "string" then
+    local v206 = localPlayer:GetAttribute("State") == "Match"
+    local v207 = if v206 then localPlayer:GetAttribute("MatchId") else localPlayer:GetAttribute("Spectating")
+
+    if type(v207) ~= "string" or v207 == "" then
         return
     end
-    if u15 ~= "" then
-        local Arenas_1 = Workspace_upv_1:FindFirstChild("Arenas")
-        local v70 = Arenas_1 and (Arenas_1:FindFirstChild(u15))
-        if v70 then
-            u3 = v70
-        elseif Arenas_1 then
-            table.insert(
-                tbl_upv_11,
-                Arenas_1.ChildAdded:Connect(
-                    function(a1)
-                        --[[
-                          line: 523
-                          upvalues:
-                            u15 (copy, index: 1)
-                            u3 (ref,  index: 2)
-                        ]]
-                        if a1.Name ~= u15 then
-                            return
-                        end
-                        u3 = a1
+
+    local arenas = workspace:FindFirstChild("Arenas")
+
+    if const child2 = arenas and arenas:FindFirstChild(v207) then
+        child = child2
+        return
+    end
+
+    if arenas then
+        table.insert(
+            v21,
+            arenas.ChildAdded:Connect(
+                function(child2: Instance)
+                    --[[
+                      line: 523
+                      upvalues:
+                        v207 (copy, index: 1)
+                        child (ref,  index: 2)
+                    ]]
+                    if child2.Name == v207 then
+                        child = child2
                     end
-                )
+                end
             )
-        end
+        )
     end
 end
-function tbl_1.Start()
+
+function v7.Start()
     --[[
       name: Start
       line: 531
       upvalues:
-        u13 (ref,  index: 1)
-        ContentProvider_upv_1 (copy, index: 2)
-        RunService_upv_1 (copy, index: 3)
+        v31 (ref,  index: 1)
+        contentProvider (copy, index: 2)
+        runService (copy, index: 3)
         styleBeams (copy, index: 4)
-        LocalPlayer_upv_1 (copy, index: 5)
+        localPlayer (copy, index: 5)
         bindArena (copy, index: 6)
-        Workspace_upv_1 (copy, index: 7)
-        u3 (ref,  index: 8)
-        u4 (ref,  index: 9)
+        workspace (copy, index: 7)
+        child (ref,  index: 8)
+        v22 (ref,  index: 9)
         step (copy, index: 10)
     ]]
     task.spawn(
@@ -735,95 +836,105 @@ function tbl_1.Start()
             --[[
               line: 532
               upvalues:
-                u13 (ref,  index: 1)
-                ContentProvider_upv_1 (copy, index: 2)
-                RunService_upv_1 (copy, index: 3)
+                v31 (ref,  index: 1)
+                contentProvider (copy, index: 2)
+                runService (copy, index: 3)
                 styleBeams (copy, index: 4)
             ]]
-            local v71 = 0
-            v71 = nil
-            while u13 ~= "ok" do
-                local u16 = nil
-                local tbl_upv_19 = {}
-                for _, value_13 in {"rbxassetid://82559613851503", "rbxassetid://109193145976179"} do
-                    local v72 = Instance.new("Beam")
-                    v72.Texture = value_13
-                    table.insert(tbl_upv_19, v72)
+            local count = 0
+
+            while v31 ~= "ok" do
+                local v212 = nil
+                local contentIdList = {}
+
+                for _, texture in {"rbxassetid://82559613851503", "rbxassetid://109193145976179"} do
+                    local beam = Instance.new("Beam")
+                    beam.Texture = texture
+                    table.insert(contentIdList, beam)
                 end
+
                 pcall(
                     function()
                         --[[
                           line: 545
                           upvalues:
-                            ContentProvider_upv_1 (copy, index: 1)
-                            tbl_upv_19 (copy, index: 2)
-                            u16 (ref,  index: 3)
+                            contentProvider (copy, index: 1)
+                            contentIdList (copy, index: 2)
+                            v212 (ref,  index: 3)
                         ]]
-                        ContentProvider_upv_1:PreloadAsync(
-                            tbl_upv_19,
-                            function(a1, a2)
+                        contentProvider:PreloadAsync(
+                            contentIdList,
+                            function(a217, a218)
                                 --[[
                                   line: 546
                                   upvalues:
-                                    u16 (ref, index: 1)
+                                    v212 (ref, index: 1)
                                 ]]
-                                if a1 ~= "rbxassetid://82559613851503" then
-                                    return
+                                if a217 == "rbxassetid://82559613851503" then
+                                    v212 = a218
                                 end
-                                u16 = a2
                             end
                         )
                     end
                 )
-                for _, value_14 in tbl_upv_19 do
-                    value_14:Destroy()
+
+                for _, v220 in contentIdList do
+                    v220:Destroy()
                 end
-                v71 = v71 + 1
-                if u16 == Enum.AssetFetchStatus.Success then
-                    u13 = "ok"
-                elseif v71 == 3 then
-                    u13 = "failed"
-                    local v73 = RunService_upv_1:IsStudio()
-                    if v73 then
+
+                count += 1
+                local success = Enum.AssetFetchStatus.Success
+
+                if v212 == success then
+                    v31 = "ok"
+                elseif count == 3 then
+                    v31 = "failed"
+
+                    if runService:IsStudio() then
                         print("[RingOfFire] wall texture not loaded yet; the ring shows particles until it does")
                     end
                 end
+
                 styleBeams()
-                if u13 ~= "ok" then
-                    task.wait((math.min(30, v71 * 3)))
+
+                if v31 ~= "ok" then
+                    task.wait((math.min(30, count * 3)))
                 end
             end
         end
     )
-    LocalPlayer_upv_1:GetAttributeChangedSignal("MatchId"):Connect(bindArena)
-    LocalPlayer_upv_1:GetAttributeChangedSignal("State"):Connect(bindArena)
-    LocalPlayer_upv_1:GetAttributeChangedSignal("Spectating"):Connect(bindArena)
+
+    localPlayer:GetAttributeChangedSignal("MatchId"):Connect(bindArena)
+    localPlayer:GetAttributeChangedSignal("State"):Connect(bindArena)
+    localPlayer:GetAttributeChangedSignal("Spectating"):Connect(bindArena)
+
     task.spawn(
         function()
             --[[
               line: 573
               upvalues:
-                Workspace_upv_1 (copy, index: 1)
+                workspace (copy, index: 1)
                 bindArena (copy, index: 2)
             ]]
-            Workspace_upv_1:WaitForChild("Arenas", 60)
+            workspace:WaitForChild("Arenas", 60)
             bindArena()
         end
     )
-    RunService_upv_1.Heartbeat:Connect(
+
+    runService.Heartbeat:Connect(
         function()
             --[[
               line: 577
               upvalues:
-                u3 (ref,  index: 1)
-                u4 (ref,  index: 2)
+                child (ref,  index: 1)
+                v22 (ref,  index: 2)
                 step (copy, index: 3)
             ]]
-            if not u3 and not u4 then
-                return
+            if child or v22 then
+                step()
             end
-            step()
         end
     )
 end
-return tbl_1
+
+return v7

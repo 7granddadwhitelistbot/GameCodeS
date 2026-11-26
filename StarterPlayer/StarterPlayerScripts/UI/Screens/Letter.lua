@@ -1,1110 +1,1347 @@
-local GuiService_upv_1 = game:GetService("GuiService")
-local RunService_upv_1 = game:GetService("RunService")
-local Players_upv_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local StarterGui_upv_1 = game:GetService("StarterGui")
-local TextChatService_upv_1 = game:GetService("TextChatService")
-local Letters_1 = require(ReplicatedStorage_upv_1:WaitForChild("Shared"):WaitForChild("Letters"))
-local tbl_1 = {}
-local u1 = Color3.fromRGB(240, 228, 200)
-local u2 = Color3.fromRGB(222, 202, 162)
-local u3 = Color3.fromRGB(46, 34, 26)
-local u4 = Font.fromEnum(Enum.Font.PatrickHand)
-local u5 = Letters_1.Current()
-local tbl_upv_2 = {}
-tbl_upv_2.heading = u5.heading
-tbl_upv_2.body = u5.body
-tbl_upv_2.signature = u5.signature
-local author_upv_1 = u5.author
-local u6 = Color3.fromRGB(226, 208, 170)
-local u7 = Color3.fromRGB(216, 196, 154)
-local u8 = u6:Lerp(u3, 0.3)
-local u9 = Color3.fromRGB(66, 50, 38)
-local u10 = Color3.fromRGB(80, 62, 47)
-local u11 = Color3.fromRGB(212, 158, 70)
-local u12 = Color3.fromRGB(246, 234, 208)
-local u13 = nil
+local guiService = game:GetService("GuiService")
+local runService = game:GetService("RunService")
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local starterGui = game:GetService("StarterGui")
+local textChatService = game:GetService("TextChatService")
+local Letters = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Letters"))
+local v8 = {}
+local startValue = Color3.fromRGB(240, 228, 200)
+local targetValue = Color3.fromRGB(222, 202, 162)
+local targetValue2 = Color3.fromRGB(46, 34, 26)
+local fontFace = Font.fromEnum(Enum.Font.PatrickHand)
+local v13 = Letters.Current()
+local v14 = {heading = v13.heading, body = v13.body, signature = v13.signature}
+local author = v13.author
+local startValue2 = Color3.fromRGB(226, 208, 170)
+local color3 = Color3.fromRGB(216, 196, 154)
+local interpolatedValue = startValue2:Lerp(targetValue2, 0.3)
+local color32 = Color3.fromRGB(66, 50, 38)
+local color33 = Color3.fromRGB(80, 62, 47)
+local color34 = Color3.fromRGB(212, 158, 70)
+local color35 = Color3.fromRGB(246, 234, 208)
+local v23 = nil
+
 local function hideChat()
     --[[
       name: hideChat
       line: 58
       upvalues:
-        u13 (ref, index: 1)
+        v23 (ref,  index: 1)
+        textChatService (copy, index: 2)
+        starterGui (copy, index: 3)
     ]]
-    if u13 then
+    if v23 then
         return
     end
-    local tbl_3 = {}
-    pcall(function() end)
-    u13 = tbl_3
+
+    local v25 = {}
+
+    pcall(
+        function()
+            --[[
+              line: 63
+              upvalues:
+                textChatService (copy, index: 1)
+                v25 (copy, index: 2)
+                starterGui (copy, index: 3)
+            ]]
+            local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+            if chatWindowConfiguration then
+                v25.window = chatWindowConfiguration.Enabled
+                chatWindowConfiguration.Enabled = false
+            end
+
+            if chatInputBarConfiguration then
+                v25.bar = chatInputBarConfiguration.Enabled
+                chatInputBarConfiguration.Enabled = false
+            end
+
+            v25.core = starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
+            starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+        end
+    )
+
+    v23 = v25
 end
+
 local function restoreChat()
     --[[
       name: restoreChat
       line: 79
       upvalues:
-        u13 (ref, index: 1)
+        v23 (ref,  index: 1)
+        textChatService (copy, index: 2)
+        starterGui (copy, index: 3)
     ]]
-    local v1 = u13
-    if not v1 then
+    local v29 = v23
+    if not v29 then
         return
     end
-    u13 = nil
-    pcall(function() end)
+
+    v23 = nil
+
+    pcall(
+        function()
+            --[[
+              line: 85
+              upvalues:
+                textChatService (copy, index: 1)
+                v29 (copy, index: 2)
+                starterGui (copy, index: 3)
+            ]]
+            local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+            if chatWindowConfiguration and v29.window ~= nil then
+                chatWindowConfiguration.Enabled = v29.window
+            end
+
+            if chatInputBarConfiguration and v29.bar ~= nil then
+                chatInputBarConfiguration.Enabled = v29.bar
+            end
+
+            if v29.core ~= nil then
+                starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, v29.core)
+            end
+        end
+    )
 end
-function tbl_1.Init(a1)
+
+function v8.Init(a32)
     --[[
       name: Init
       line: 100
       upvalues:
-        u2 (copy, index: 1)
-        u1 (copy, index: 2)
-        u4 (copy, index: 3)
-        u3 (copy, index: 4)
-        tbl_upv_2 (copy, index: 5)
-        Players_upv_1 (copy, index: 6)
-        author_upv_1 (copy, index: 7)
-        u5 (copy, index: 8)
-        u6 (copy, index: 9)
-        u8 (copy, index: 10)
-        ReplicatedStorage_upv_1 (copy, index: 11)
-        u10 (ref,  index: 12)
-        u9 (ref,  index: 13)
-        u7 (copy, index: 14)
-        u11 (ref,  index: 15)
-        u12 (ref,  index: 16)
-        RunService_upv_1 (copy, index: 17)
-        GuiService_upv_1 (copy, index: 18)
-        u13 (ref,  index: 19)
-        TextChatService_upv_1 (copy, index: 20)
-        StarterGui_upv_1 (copy, index: 21)
+        targetValue (copy, index: 1)
+        startValue (copy, index: 2)
+        fontFace (copy, index: 3)
+        targetValue2 (copy, index: 4)
+        v14 (copy, index: 5)
+        players (copy, index: 6)
+        author (copy, index: 7)
+        v13 (copy, index: 8)
+        startValue2 (copy, index: 9)
+        interpolatedValue (copy, index: 10)
+        replicatedStorage (copy, index: 11)
+        color33 (ref,  index: 12)
+        color32 (ref,  index: 13)
+        color3 (copy, index: 14)
+        color34 (ref,  index: 15)
+        color35 (ref,  index: 16)
+        runService (copy, index: 17)
+        guiService (copy, index: 18)
+        v23 (ref,  index: 19)
+        textChatService (copy, index: 20)
+        starterGui (copy, index: 21)
     ]]
-    local UI_upv_1 = a1.UI
-    local u14 = UI_upv_1.new("Frame", {Visible = false, Name = "Letter", Size = UDim2.fromScale(1, 1), Parent = a1.Canvas.Menus})
-    local tbl_4 = {Name = "Outside", AutoButtonColor = false, Selectable = false, Text = "", BackgroundTransparency = 1}
-    tbl_4.Size = UDim2.fromScale(1, 1)
-    tbl_4.Parent = u14
-    UI_upv_1.new("TextButton", tbl_4).Activated:Connect(
+    local ui = a32.UI
+    local colors = a32.Theme.Colors
+    local parent = ui.new("Frame", {Name = "Letter", Visible = false, Size = UDim2.fromScale(1, 1), Parent = a32.Canvas.Menus})
+    local newUi = ui.new
+    local v37 = {Name = "Outside", BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Selectable = false, Size = UDim2.fromScale(1, 1), Parent = parent}
+    newUi("TextButton", v37).Activated:Connect(
         function()
             --[[
               line: 115
               upvalues:
-                a1 (copy, index: 1)
+                a32 (copy, index: 1)
             ]]
-            a1.MenuManager.Close("Letter")
+            a32.MenuManager.Close("Letter")
         end
     )
-    local u15 = UI_upv_1.new("Frame", {Name = "Sheet", Rotation = -0.8, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromOffset(640, 420), Parent = u14})
-    UI_upv_1.new("Frame", {Name = "Shadow", Position = UDim2.fromOffset(10, 14), Size = UDim2.fromScale(1, 1), BackgroundColor3 = a1.Theme.Colors.Void, BackgroundTransparency = 0.55, [1] = UI_upv_1.Corner(UDim.new(0, 10)), Parent = u15})
-    local tbl_5 = {}
-    tbl_5.Name = "Paper"
-    tbl_5.Size = UDim2.fromScale(1, 1)
-    tbl_5.BackgroundColor3 = Color3.new(1, 1, 1)
-    tbl_5.Text = ""
-    tbl_5.AutoButtonColor = false
-    tbl_5.Selectable = false
-    tbl_5[1], tbl_5[2] = UI_upv_1.Corner(UDim.new(0, 10)), UI_upv_1.Stroke(u2, 2, 0.1)
-    tbl_5.Parent = u15
-    local v2 = UI_upv_1.new("TextButton", tbl_5)
-    UI_upv_1.new("UIGradient", {Rotation = 70, Color = ColorSequence.new({ColorSequenceKeypoint.new(0, u1), ColorSequenceKeypoint.new(0.7, u1:Lerp(u2, 0.25)), ColorSequenceKeypoint.new(1, u2)}), Parent = v2})
-    v2.Activated:Connect(function()
+    local parent2 = ui.new("Frame", {Name = "Sheet", Rotation = -0.8, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromOffset(640, 420), Parent = parent})
+    ui.new("Frame", {Name = "Shadow", Position = UDim2.fromOffset(10, 14), Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.55, (ui.Corner(UDim.new(0, 10))), Parent = parent2})
+    local parent3 = ui.new("TextButton", {Name = "Paper", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), Text = "", AutoButtonColor = false, Selectable = false, ui.Corner(UDim.new(0, 10)), (ui.Stroke(targetValue, 2, 0.1)), Parent = parent2})
+    ui.new("UIGradient", {Rotation = 70, Color = ColorSequence.new({ColorSequenceKeypoint.new(0, startValue), ColorSequenceKeypoint.new(0.7, startValue:Lerp(targetValue, 0.25)), ColorSequenceKeypoint.new(1, targetValue)}), Parent = parent3})
+    parent3.Activated:Connect(function()
         --[[
           line: 158
         ]]
     end)
-    local u16 = UI_upv_1.new("Frame", {Name = "Body", Size = UDim2.fromScale(1, 1), [1] = UI_upv_1.Padding(40, 46, 30, 46), Parent = v2})
-    UI_upv_1.new("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 18), Parent = u16})
-    local function line(a2, a3, a4, a5)
+    local parent4 = ui.new("Frame", {Name = "Body", Size = UDim2.fromScale(1, 1), (ui.Padding(40, 46, 30, 46)), Parent = parent3})
+    ui.new("UIListLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 18), Parent = parent4})
+
+    local function line(name, text, textSize: number, layoutOrder)
         --[[
           name: line
           line: 167
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            u4 (copy, index: 2)
-            u3 (copy, index: 3)
-            u16 (copy, index: 4)
+            ui (copy, index: 1)
+            fontFace (copy, index: 2)
+            targetValue2 (copy, index: 3)
+            parent4 (copy, index: 4)
         ]]
-        return UI_upv_1.new("TextLabel", {TextWrapped = true, Name = a2, Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = a3, FontFace = u4, TextSize = a4, TextColor3 = u3, TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = a5, Parent = u16})
+        return ui.new("TextLabel", {TextWrapped = true, Name = name, Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = text, FontFace = fontFace, TextSize = textSize, TextColor3 = targetValue2, TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = layoutOrder, Parent = parent4})
     end
-    line("Heading", tbl_upv_2.heading, 52, 1)
-    for key_1, value_1 in tbl_upv_2.body do
-        line("Para" .. key_1, value_1, 34, 1 + key_1)
+
+    line("Heading", v14.heading, 52, 1)
+
+    for v46, text in v14.body do
+        line("Para" .. v46, text, 34, 1 + v46)
     end
-    local v3 = UI_upv_1.new("Frame", {LayoutOrder = 10, Name = "Signature", Size = UDim2.new(1, 0, 0, 72), Parent = u16})
-    local v4 = UI_upv_1.new("Frame", {Name = "Sign", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.fromScale(1, 0.5), Size = UDim2.fromOffset(0, 72), AutomaticSize = Enum.AutomaticSize.X, Parent = v3})
-    UI_upv_1.new("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 14), SortOrder = Enum.SortOrder.LayoutOrder, Parent = v4})
-    UI_upv_1.new("TextLabel", {LayoutOrder = 1, Name = "Name", TextSize = 46, Size = UDim2.fromOffset(0, 60), AutomaticSize = Enum.AutomaticSize.X, Text = tbl_upv_2.signature, FontFace = u4, TextColor3 = u3, Parent = v4})
-    local tbl_6 = {}
-    tbl_6.Name = "Headshot"
-    tbl_6.Size = UDim2.fromOffset(68, 68)
-    tbl_6.BackgroundColor3 = u2
-    tbl_6.Image = ""
-    tbl_6.LayoutOrder = 2
-    tbl_6[1], tbl_6[2] = UI_upv_1.Corner(UDim.new(1, 0)), UI_upv_1.Stroke(u3, 2, 0.35)
-    tbl_6.Parent = v4
-    local u17 = UI_upv_1.new("ImageLabel", tbl_6)
+
+    local parent5 = ui.new("Frame", {Name = "Signature", LayoutOrder = 10, Size = UDim2.new(1, 0, 0, 72), Parent = parent4})
+    local parent6 = ui.new("Frame", {Name = "Sign", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.fromScale(1, 0.5), Size = UDim2.fromOffset(0, 72), AutomaticSize = Enum.AutomaticSize.X, Parent = parent5})
+    ui.new("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 14), SortOrder = Enum.SortOrder.LayoutOrder, Parent = parent6})
+    ui.new("TextLabel", {Name = "Name", TextSize = 46, LayoutOrder = 1, Size = UDim2.fromOffset(0, 60), AutomaticSize = Enum.AutomaticSize.X, Text = v14.signature, FontFace = fontFace, TextColor3 = targetValue2, Parent = parent6})
+    local ui2 = ui.new("ImageLabel", {Name = "Headshot", Size = UDim2.fromOffset(68, 68), BackgroundColor3 = targetValue, Image = "", LayoutOrder = 2, ui.Corner(UDim.new(1, 0)), (ui.Stroke(targetValue2, 2, 0.35)), Parent = parent6})
+
     task.spawn(
         function()
             --[[
               line: 230
               upvalues:
-                Players_upv_1 (copy, index: 1)
-                author_upv_1 (copy, index: 2)
-                u17 (copy, index: 3)
+                players (copy, index: 1)
+                author (copy, index: 2)
+                ui2 (copy, index: 3)
             ]]
-            local success_1, v5 = pcall(
+            local success, image = pcall(
                 function()
                     --[[
                       line: 231
                       upvalues:
-                        Players_upv_1 (copy, index: 1)
-                        author_upv_1 (copy, index: 2)
+                        players (copy, index: 1)
+                        author (copy, index: 2)
                     ]]
-                    return Players_upv_1:GetUserThumbnailAsync(author_upv_1, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size150x150)
+                    return players:GetUserThumbnailAsync(author, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size150x150)
                 end
             )
-            if not success_1 or type(v5) ~= "string" then
-                return
+
+            if success and type(image) == "string" then
+                ui2.Image = image
             end
-            u17.Image = v5
         end
     )
-    local Remotes_upv_1 = a1.Remotes
-    local State_upv_1 = a1.State
-    local id_upv_1 = u5.id
-    local u18 = u5.reactions ~= false
-    local u19 = UI_upv_1.new("TextButton", {Name = "Reaction", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -8, 0.5, 0), Size = UDim2.fromOffset(0, 72), AutomaticSize = Enum.AutomaticSize.X, BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Visible = u18, [1] = UI_upv_1.Padding(0, 8, 0, 8), Parent = v3})
-    UI_upv_1.new("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center, Parent = u19})
-    local u20 = UI_upv_1.new("Frame", {Name = "Pill", Size = UDim2.fromOffset(0, 54), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = u6, [1] = UI_upv_1.Corner(UDim.new(1, 0)), Parent = u19})
-    local u21 = UI_upv_1.Stroke(u8, 1.5, 0)
-    u21.Parent = u20
-    local u22 = UI_upv_1.Padding(0, 18, 0, 14)
-    u22.Parent = u20
-    UI_upv_1.new("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, Parent = u20})
-    local u23 = UI_upv_1.GetScaleObj(u20, "HoverScale")
-    local v6 = UI_upv_1.new("TextLabel", {LayoutOrder = 1, Name = "Icon", Text = "\240\159\145\141", TextSize = 34, Size = UDim2.fromOffset(38, 38), TextColor3 = u3, Parent = u20})
-    local u24 = v6
-    local u25 = UI_upv_1.GetScaleObj(u24, "PopScale")
-    local u26 = UI_upv_1.new("TextLabel", {LayoutOrder = 2, Text = "", Name = "Count", Visible = false, TextSize = 27, Size = UDim2.fromOffset(0, 34), AutomaticSize = Enum.AutomaticSize.X, FontFace = a1.Theme.Fonts.Bold, TextColor3 = u3, Parent = u20})
-    local u27 = nil
-    local u28 = false
-    local u29 = false
-    local u30 = -math.huge
-    local u31 = false
-    local u32 = false
-    local u33 = nil
-    local tbl_upv_7 = {}
-    local u34 = nil
+
+    local remotes = a32.Remotes
+    local state = a32.State
+    local v55 = v13.id
+    local reactions = v13.reactions ~= false
+    local parent7 = ui.new("TextButton", {Name = "Reaction", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -8, 0.5, 0), Size = UDim2.fromOffset(0, 72), AutomaticSize = Enum.AutomaticSize.X, BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Visible = reactions, (ui.Padding(0, 8, 0, 8)), Parent = parent5})
+    ui.new("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center, Parent = parent7})
+    local parent8 = ui.new("Frame", {Name = "Pill", Size = UDim2.fromOffset(0, 54), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = startValue2, (ui.Corner(UDim.new(1, 0))), Parent = parent7})
+    local v59 = ui.Stroke(interpolatedValue, 1.5, 0)
+    v59.Parent = parent8
+
+    local v60 = ui.Padding(0, 18, 0, 14)
+    v60.Parent = parent8
+    ui.new("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder, Parent = parent8})
+    local scaleObj = ui.GetScaleObj(parent8, "HoverScale")
+    local ui3 = ui.new("TextLabel", {Name = "Icon", Text = "👍", TextSize = 34, LayoutOrder = 1, Size = UDim2.fromOffset(38, 38), TextColor3 = targetValue2, Parent = parent8})
+    local scaleObj2 = ui.GetScaleObj(ui3, "PopScale")
+    local ui4 = ui.new("TextLabel", {Name = "Count", Text = "", TextSize = 27, LayoutOrder = 2, Visible = false, Size = UDim2.fromOffset(0, 34), AutomaticSize = Enum.AutomaticSize.X, FontFace = a32.Theme.Fonts.Bold, TextColor3 = targetValue2, Parent = parent8})
+    local v65 = nil
+    local reacted = false
+    local inflight = false
+    local timestamp = -math.huge
+    local v69 = false
+    local v70 = false
+    local instance = nil
+    local v72 = {}
+    local v73 = nil
+
     local function valueObj()
         --[[
           name: valueObj
           line: 322
           upvalues:
-            u33 (ref,  index: 1)
-            ReplicatedStorage_upv_1 (copy, index: 2)
-            id_upv_1 (copy, index: 3)
-            tbl_upv_7 (ref,  index: 4)
-            u34 (ref,  index: 5)
+            instance (ref,  index: 1)
+            replicatedStorage (copy, index: 2)
+            v55 (copy, index: 3)
+            v72 (ref,  index: 4)
+            v73 (ref,  index: 5)
         ]]
-        if u33 and u33.Parent then
-            return u33
+        if instance and instance.Parent then
+            return instance
         end
-        local LetterReactions_1 = ReplicatedStorage_upv_1:FindFirstChild("LetterReactions")
-        local v7 = LetterReactions_1 and (LetterReactions_1:FindFirstChild(id_upv_1))
-        if v7 and v7:IsA("IntValue") and v7 ~= u33 then
-            u33 = v7
-            for _, value_2 in tbl_upv_7 do
-                value_2:Disconnect()
+
+        local instance2 = replicatedStorage:FindFirstChild("LetterReactions")
+        instance2 = instance2 and instance2:FindFirstChild(v55)
+
+        if instance2 and instance2:IsA("IntValue") and instance2 ~= instance then
+            instance = instance2
+
+            for _, v77 in v72 do
+                v77:Disconnect()
             end
-            tbl_upv_7 = {
-                LetterReactions_1.Changed:Connect(
+
+            v72 = {
+                instance2.Changed:Connect(
                     function()
                         --[[
                           line: 334
                           upvalues:
-                            u34 (ref, index: 1)
+                            v73 (ref, index: 1)
                         ]]
-                        u34()
+                        v73()
                     end
                 ),
-                LetterReactions_1:GetAttributeChangedSignal("Ready"):Connect(
+                instance2:GetAttributeChangedSignal("Ready"):Connect(
                     function()
                         --[[
                           line: 337
                           upvalues:
-                            u34 (ref, index: 1)
+                            v73 (ref, index: 1)
                         ]]
-                        u34()
+                        v73()
                     end
                 )
             }
         end
-        if u33 and u33.Parent then
-            return u33
+
+        if instance and instance.Parent then
+            return instance
         end
+
         return nil
     end
+
     local function profileReacted()
         --[[
           name: profileReacted
           line: 345
           upvalues:
-            State_upv_1 (copy, index: 1)
-            id_upv_1 (copy, index: 2)
+            state (copy, index: 1)
+            v55 (copy, index: 2)
         ]]
-        local v8 = State_upv_1.Profile and (State_upv_1.Profile.reactions)
-        local v9 = false
-        if type(v8) == "table" then
-            v9 = v8[id_upv_1] == true
-        end
-        return v9
+        local reactions = state.Profile and state.Profile.reactions
+        return type(reactions) == "table" and reactions[v55] == true
     end
+
     local function shownCount()
         --[[
           name: shownCount
           line: 351
           upvalues:
             valueObj (copy, index: 1)
-            u27 (ref,  index: 2)
-            u28 (ref,  index: 3)
+            v65 (ref,  index: 2)
+            reacted (ref,  index: 3)
         ]]
-        local v10 = valueObj()
-        local v11 = ((not v10) and 0) or (v10.Value)
-        local v12 = (v10 ~= nil) and (v10:GetAttribute("Ready") == true)
-        if u27 ~= nil and u28 ~= u27 then
-            local _ = u28 and 1 or -1
-            v11 = v11 + (u28 and 1 or -1)
+        local instance = valueObj()
+        local v82 = not instance and 0 or instance.Value
+        local ready = instance ~= nil and instance:GetAttribute("Ready") == true
+
+        if v65 ~= nil and reacted ~= v65 then
+            local v84 = reacted and 1 or -1
+            v82 += v84
         end
-        return math.max(0, v11), v12
+
+        return math.max(0, v82), ready
     end
-    local function formatCount(a6)
+
+    local function formatCount(a86)
         --[[
           name: formatCount
           line: 361
           upvalues:
-            UI_upv_1 (copy, index: 1)
+            ui (copy, index: 1)
         ]]
-        if a6 >= 1e+05 then
-            return (UI_upv_1.FormatCompact(a6))
+        if 1e+05 <= a86 then
+            return (ui.FormatCompact(a86))
         end
-        return (UI_upv_1.FormatNumber(a6))
+
+        return (ui.FormatNumber(a86))
     end
-    u34 = function()
+
+    v73 = function()
         --[[
           line: 365
           upvalues:
             valueObj (copy, index: 1)
-            u27 (ref,  index: 2)
-            u28 (ref,  index: 3)
-            u26 (copy, index: 4)
-            UI_upv_1 (copy, index: 5)
-            u22 (copy, index: 6)
-            u20 (copy, index: 7)
-            u32 (ref,  index: 8)
-            u10 (ref,  index: 9)
-            u9 (ref,  index: 10)
-            u7 (copy, index: 11)
-            u6 (copy, index: 12)
-            u21 (copy, index: 13)
-            u11 (ref,  index: 14)
-            u8 (copy, index: 15)
-            u12 (ref,  index: 16)
-            u3 (copy, index: 17)
+            v65 (ref,  index: 2)
+            reacted (ref,  index: 3)
+            ui4 (copy, index: 4)
+            ui (copy, index: 5)
+            v60 (copy, index: 6)
+            parent8 (copy, index: 7)
+            v70 (ref,  index: 8)
+            color33 (ref,  index: 9)
+            color32 (ref,  index: 10)
+            color3 (copy, index: 11)
+            startValue2 (copy, index: 12)
+            v59 (copy, index: 13)
+            color34 (ref,  index: 14)
+            interpolatedValue (copy, index: 15)
+            color35 (ref,  index: 16)
+            targetValue2 (copy, index: 17)
         ]]
-        local v13 = valueObj()
-        local v14 = ((not v13) and 0) or (v13.Value)
-        local v15 = (v13 ~= nil) and (v13:GetAttribute("Ready") == true)
-        if u27 ~= nil and u28 ~= u27 then
-            local _ = u28 and 1 or -1
-            v14 = v14 + (u28 and 1 or -1)
+        local backgroundColor3
+        local instance = valueObj()
+        local v89 = not instance and 0 or instance.Value
+        local ready = instance ~= nil and instance:GetAttribute("Ready") == true
+
+        if v65 ~= nil and reacted ~= v65 then
+            local v91 = reacted and 1 or -1
+            v89 += v91
         end
-        local v16 = math.max(0, v14)
-        v13 = v15 and (v16 > 0)
-        local v17
-        if v16 >= 1e+05 then
-            v17 = UI_upv_1.FormatCompact(v16)
+
+        local v92 = math.max(0, v89)
+        local visible = ready and 0 < v92
+        ui4.Text = if 1e+05 <= v92 then ui.FormatCompact(v92) else ui.FormatNumber(v92)
+        ui4.Visible = visible
+        local newUDim = UDim.new
+        local v95 = visible and 18 or 14
+        v60.PaddingRight = newUDim(0, v95)
+        local v96 = reacted
+
+        if v96 then
+            backgroundColor3 = if v70 then color33 else color32
         else
-            v17 = UI_upv_1.FormatNumber(v16)
+            backgroundColor3 = if v70 then color3 else startValue2
         end
-        u26.Text = v17
-        u26.Visible = v13
-        local new_1 = UDim.new
-        local v18
-        if v13 then
-            v18 = 18
-        else
-            v18 = 14
-        end
-        u22.PaddingRight = new_1(0, v18)
-        local v19 = u28
-        local v20
-        if v19 then
-            if u32 then
-                v20 = u10
-            else
-                v20 = u9
-            end
-        elseif u32 then
-            v20 = u7
-        else
-            v20 = u6
-        end
-        u20.BackgroundColor3 = v20
-        local v21
-        if u28 then
-            v21 = u11
-        else
-            v21 = u8
-        end
-        u21.Color = v21
-        u21.Thickness = (v19 and 2) or 1.5
-        if u28 then
-            v21 = u12
-        else
-            v21 = u3
-        end
-        u26.TextColor3 = v21
+
+        parent8.BackgroundColor3 = backgroundColor3
+        v59.Color = if v96 then color34 else interpolatedValue
+        v59.Thickness = v96 and 2 or 1.5
+        ui4.TextColor3 = if v96 then color35 else targetValue2
     end
-    local u35 = nil
-    u35 = function()
+
+    local v97 = nil
+
+    v97 = function()
         --[[
           line: 379
           upvalues:
-            u29 (ref,  index: 1)
-            u18 (copy, index: 2)
-            u27 (ref,  index: 3)
-            u28 (ref,  index: 4)
-            u30 (ref,  index: 5)
-            u31 (ref,  index: 6)
-            u35 (ref,  index: 7)
-            Remotes_upv_1 (copy, index: 8)
-            id_upv_1 (copy, index: 9)
-            u34 (ref,  index: 10)
+            inflight (ref,  index: 1)
+            reactions (copy, index: 2)
+            v65 (ref,  index: 3)
+            reacted (ref,  index: 4)
+            timestamp (ref,  index: 5)
+            v69 (ref,  index: 6)
+            v97 (ref,  index: 7)
+            remotes (copy, index: 8)
+            v55 (copy, index: 9)
+            v73 (ref,  index: 10)
         ]]
-        if (u29) or not u18 or u27 == nil then
-            return
-        end
-        if u28 ~= u27 then
-            local v22 = u30 + 0.25 - os.clock()
-            if v22 > 0 then
-                if not (u31) then
-                    u31 = true
-                    task.delay(
-                        v22,
-                        function()
-                            --[[
-                              line: 387
-                              upvalues:
-                                u31 (ref, index: 1)
-                                u35 (ref, index: 2)
-                            ]]
-                            u31 = false
-                            u35()
-                        end
-                    )
-                end
-            else
-                u29 = true
-                u30 = os.clock()
-                local u36 = u28
+        if not inflight and reactions and v65 ~= nil and reacted ~= v65 then
+            local v98 = timestamp + 0.25 - os.clock()
+
+            if not (0 < v98) then
+                inflight = true
+                timestamp = os.clock()
+                local v99 = reacted
+
                 task.spawn(
                     function()
                         --[[
                           line: 397
                           upvalues:
-                            Remotes_upv_1 (copy, index: 1)
-                            id_upv_1 (copy, index: 2)
-                            u36 (copy, index: 3)
-                            u29 (ref,  index: 4)
-                            u27 (ref,  index: 5)
-                            u28 (ref,  index: 6)
-                            u34 (ref,  index: 7)
-                            u35 (ref,  index: 8)
+                            remotes (copy, index: 1)
+                            v55 (copy, index: 2)
+                            v99 (copy, index: 3)
+                            inflight (ref,  index: 4)
+                            v65 (ref,  index: 5)
+                            reacted (ref,  index: 6)
+                            v73 (ref,  index: 7)
+                            v97 (ref,  index: 8)
                         ]]
-                        local v23, v24, v25 = Remotes_upv_1.Invoke("LetterAction", "React", id_upv_1, u36)
-                        u29 = false
-                        if (v23) and type(v25) == "boolean" then
-                            u27 = v25
-                            if v24 ~= true and u28 == u36 then
-                                u28 = v25
+                        local v100, v101, v102 = remotes.Invoke("LetterAction", "React", v55, v99)
+                        inflight = false
+
+                        if not v100 or type(v102) ~= "boolean" then
+                            if reacted == v99 then
+                                reacted = v65
                             end
-                        elseif u28 == u36 then
-                            u28 = u27
+                        else
+                            v65 = v102
+
+                            if v101 ~= true and reacted == v99 then
+                                reacted = v102
+                            end
                         end
-                        u34()
-                        u35()
+
+                        v73()
+                        v97()
+                    end
+                )
+
+                return
+            end
+
+            if not v69 then
+                v69 = true
+
+                task.delay(
+                    v98,
+                    function()
+                        --[[
+                          line: 387
+                          upvalues:
+                            v69 (ref, index: 1)
+                            v97 (ref, index: 2)
+                        ]]
+                        v69 = false
+                        v97()
                     end
                 )
             end
         end
     end
-    local function pop(a7)
+
+    local function pop(a104)
         --[[
           name: pop
           line: 413
           upvalues:
-            u25 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-            a1 (copy, index: 3)
-            u26 (copy, index: 4)
+            scaleObj2 (copy, index: 1)
+            ui (copy, index: 2)
+            a32 (copy, index: 3)
+            ui4 (copy, index: 4)
         ]]
-        if a7 then
-            u25.Scale = 1
-            local tbl_8 = {Scale = 1.45}
-            UI_upv_1.Tween(u25, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_8)
+        if a104 then
+            scaleObj2.Scale = 1
+            local v105 = {Scale = 1.45}
+            ui.Tween(scaleObj2, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), v105)
+
             task.delay(
                 0.08,
                 function()
                     --[[
                       line: 417
                       upvalues:
-                        UI_upv_1 (copy, index: 1)
-                        u25 (copy, index: 2)
+                        ui (copy, index: 1)
+                        scaleObj2 (copy, index: 2)
                     ]]
-                    local tbl_9 = {Scale = 1}
-                    UI_upv_1.Tween(u25, TweenInfo.new(0.34, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_9)
+                    local v106 = {Scale = 1}
+                    ui.Tween(scaleObj2, TweenInfo.new(0.34, Enum.EasingStyle.Back, Enum.EasingDirection.Out), v106)
                 end
             )
         else
-            u25.Scale = 0.8
-            UI_upv_1.Tween(u25, a1.Theme.Tween.PopSmall, {Scale = 1})
+            scaleObj2.Scale = 0.8
+            ui.Tween(scaleObj2, a32.Theme.Tween.PopSmall, {Scale = 1})
         end
-        if not u26.Visible then
-            return
+
+        if ui4.Visible then
+            ui.Bump(ui4, 0.16)
         end
-        UI_upv_1.Bump(u26, 0.16)
     end
+
     local function tap()
         --[[
           name: tap
           line: 429
           upvalues:
-            u18 (copy, index: 1)
-            u27 (ref,  index: 2)
-            State_upv_1 (copy, index: 3)
-            id_upv_1 (copy, index: 4)
-            u28 (ref,  index: 5)
-            a1 (copy, index: 6)
-            u34 (ref,  index: 7)
+            reactions (copy, index: 1)
+            v65 (ref,  index: 2)
+            state (copy, index: 3)
+            v55 (copy, index: 4)
+            reacted (ref,  index: 5)
+            a32 (copy, index: 6)
+            v73 (ref,  index: 7)
             pop (copy, index: 8)
-            u35 (ref,  index: 9)
+            v97 (ref,  index: 9)
         ]]
-        if not u18 then
+        if not reactions then
             return
         end
-        if u27 == nil then
-            local v26 = State_upv_1.Profile and (State_upv_1.Profile.reactions)
-            local v27 = false
-            if type(v26) == "table" then
-                v27 = v26[id_upv_1] == true
-            end
-            u27 = v27
-            u28 = u27
+
+        if v65 == nil then
+            local reactions2 = state.Profile and state.Profile.reactions
+            v65 = type(reactions2) == "table" and reactions2[v55] == true
+            reacted = v65
         end
-        u28 = not u28
-        a1.Sounds.Play("Click")
-        u34()
-        pop(u28)
-        u35()
+
+        reacted = not reacted
+        a32.Sounds.Play("Click")
+        v73()
+        pop(reacted)
+        v97()
     end
-    u19.Activated:Connect(tap)
-    u19.MouseEnter:Connect(
+
+    parent7.Activated:Connect(tap)
+
+    parent7.MouseEnter:Connect(
         function()
             --[[
               line: 444
               upvalues:
-                UI_upv_1 (copy, index: 1)
-                u32 (ref,  index: 2)
-                u23 (copy, index: 3)
-                a1 (copy, index: 4)
-                u34 (ref,  index: 5)
+                ui (copy, index: 1)
+                v70 (ref,  index: 2)
+                scaleObj (copy, index: 3)
+                a32 (copy, index: 4)
+                v73 (ref,  index: 5)
             ]]
-            if UI_upv_1.Touch then
+            if ui.Touch then
                 return
             end
-            u32 = true
-            UI_upv_1.Tween(u23, a1.Theme.Tween.PopSmall, {Scale = 1.05})
-            u34()
+
+            v70 = true
+            ui.Tween(scaleObj, a32.Theme.Tween.PopSmall, {Scale = 1.05})
+            v73()
         end
     )
-    u19.MouseLeave:Connect(
+
+    parent7.MouseLeave:Connect(
         function()
             --[[
               line: 452
               upvalues:
-                u32 (ref,  index: 1)
-                UI_upv_1 (copy, index: 2)
-                u23 (copy, index: 3)
-                a1 (copy, index: 4)
-                u34 (ref,  index: 5)
+                v70 (ref,  index: 1)
+                ui (copy, index: 2)
+                scaleObj (copy, index: 3)
+                a32 (copy, index: 4)
+                v73 (ref,  index: 5)
             ]]
-            u32 = false
-            UI_upv_1.Tween(u23, a1.Theme.Tween.PopSmall, {Scale = 1})
-            u34()
+            v70 = false
+            ui.Tween(scaleObj, a32.Theme.Tween.PopSmall, {Scale = 1})
+            v73()
         end
     )
-    u19.MouseButton1Down:Connect(
+
+    parent7.MouseButton1Down:Connect(
         function()
             --[[
               line: 457
               upvalues:
-                UI_upv_1 (copy, index: 1)
-                u23 (copy, index: 2)
-                a1 (copy, index: 3)
+                ui (copy, index: 1)
+                scaleObj (copy, index: 2)
+                a32 (copy, index: 3)
             ]]
-            UI_upv_1.Tween(u23, a1.Theme.Tween.Instant, {Scale = 0.93})
+            ui.Tween(scaleObj, a32.Theme.Tween.Instant, {Scale = 0.93})
         end
     )
-    u19.MouseButton1Up:Connect(
+
+    parent7.MouseButton1Up:Connect(
         function()
             --[[
               line: 460
               upvalues:
-                UI_upv_1 (copy, index: 1)
-                u23 (copy, index: 2)
-                a1 (copy, index: 3)
-                u32 (ref,  index: 4)
+                ui (copy, index: 1)
+                scaleObj (copy, index: 2)
+                a32 (copy, index: 3)
+                v70 (ref,  index: 4)
             ]]
-            local Tween_1 = UI_upv_1.Tween
-            local PopSmall_1 = a1.Theme.Tween.PopSmall
-            local tbl_10 = {Scale = 0}
-            tbl_10.Scale = (u32 and 1.05) or 1
-            Tween_1(u23, PopSmall_1, tbl_10)
+            local scale
+            local tween = ui.Tween
+            local popSmall = a32.Theme.Tween.PopSmall
+            local v112 = {}
+
+            if v70 then
+                scale = 1.05
+            else
+                scale = 1
+            end
+
+            v112.Scale = scale
+            tween(scaleObj, popSmall, v112)
         end
     )
+
     task.spawn(
         function()
             --[[
               line: 464
               upvalues:
-                ReplicatedStorage_upv_1 (copy, index: 1)
-                id_upv_1 (copy, index: 2)
-                u34 (ref,  index: 3)
+                replicatedStorage (copy, index: 1)
+                v55 (copy, index: 2)
+                v73 (ref,  index: 3)
             ]]
-            local v28 = ReplicatedStorage_upv_1:WaitForChild("LetterReactions", 30)
-            if v28 then
-                v28:WaitForChild(id_upv_1, 30)
+            if const letterReactions = replicatedStorage:WaitForChild("LetterReactions", 30) then
+                letterReactions:WaitForChild(v55, 30)
             end
-            u34()
+
+            v73()
         end
     )
-    State_upv_1.ProfileChanged:Connect(
+
+    state.ProfileChanged:Connect(
         function()
             --[[
               line: 471
               upvalues:
-                u29 (ref,  index: 1)
-                u28 (ref,  index: 2)
-                u27 (ref,  index: 3)
-                State_upv_1 (copy, index: 4)
-                id_upv_1 (copy, index: 5)
-                u34 (ref,  index: 6)
+                inflight (ref,  index: 1)
+                reacted (ref,  index: 2)
+                v65 (ref,  index: 3)
+                state (copy, index: 4)
+                v55 (copy, index: 5)
+                v73 (ref,  index: 6)
             ]]
-            if (u29) then
-                return
-            end
-            if u28 == u27 then
-                local v29 = State_upv_1.Profile and (State_upv_1.Profile.reactions)
-                local v30 = false
-                if type(v29) == "table" then
-                    v30 = v29[id_upv_1] == true
-                end
-                u27 = v30
-                u28 = u27
-                u34()
+            if not inflight and reacted == v65 then
+                local reactions = state.Profile and state.Profile.reactions
+                v65 = type(reactions) == "table" and reactions[v55] == true
+                reacted = v65
+                v73()
             end
         end
     )
-    local v31 = nil
-    if State_upv_1.HasProfile then
-        v31 = State_upv_1.Profile and (State_upv_1.Profile.reactions)
-        u27 = false
-        if type(v31) == "table" then
-            if v31[id_upv_1] == true then
-                u27 = true
-            else
-                u27 = false
-            end
-        end
+
+    if state.HasProfile then
+        local reactions2 = state.Profile and state.Profile.reactions
+        v65 = type(reactions2) == "table" and reactions2[v55] == true
     else
-        u27 = nil
+        v65 = nil
     end
-    if u27 == true then
-        u28 = true
+
+    if v65 == true then
+        reacted = true
     else
-        u28 = false
+        reacted = false
     end
-    u34()
-    local function watch(a8)
+
+    v73()
+
+    local function watch(a117)
         --[[
           name: watch
           line: 484
           upvalues:
-            u18 (copy, index: 1)
+            reactions (copy, index: 1)
+            remotes (copy, index: 2)
+            v55 (copy, index: 3)
+            inflight (ref,  index: 4)
+            v65 (ref,  index: 5)
+            reacted (ref,  index: 6)
+            v73 (ref,  index: 7)
         ]]
-        if not u18 then
+        if not reactions then
             return
         end
-        task.spawn(function() end)
+
+        task.spawn(
+            function()
+                --[[
+                  line: 488
+                  upvalues:
+                    remotes (copy, index: 1)
+                    v55 (copy, index: 2)
+                    a117 (copy, index: 3)
+                    inflight (ref,  index: 4)
+                    v65 (ref,  index: 5)
+                    reacted (ref,  index: 6)
+                    v73 (ref,  index: 7)
+                ]]
+                local v118, v119, _, v121 = remotes.Invoke("LetterAction", "Watch", v55, a117)
+
+                if a117
+                    and v118
+                    and v119 == true
+                    and type(v121) == "boolean"
+                    and not inflight
+                    and (v65 == nil or reacted == v65)
+                then
+                    v65 = v121
+                    reacted = v121
+                end
+
+                v73()
+            end
+        )
     end
-    a1.Debug.letter = function(a9, a10)
+
+    a32.Debug.letter = function(a122, a123)
         --[[
           line: 498
           upvalues:
-            u18 (copy, index: 1)
-            u27 (ref,  index: 2)
-            State_upv_1 (copy, index: 3)
-            id_upv_1 (copy, index: 4)
-            u28 (ref,  index: 5)
-            a1 (copy, index: 6)
-            u34 (ref,  index: 7)
+            reactions (copy, index: 1)
+            v65 (ref,  index: 2)
+            state (copy, index: 3)
+            v55 (copy, index: 4)
+            reacted (ref,  index: 5)
+            a32 (copy, index: 6)
+            v73 (ref,  index: 7)
             pop (copy, index: 8)
-            u35 (ref,  index: 9)
-            RunService_upv_1 (copy, index: 10)
-            u9 (ref,  index: 11)
-            u10 (ref,  index: 12)
-            u11 (ref,  index: 13)
-            u12 (ref,  index: 14)
+            v97 (ref,  index: 9)
+            runService (copy, index: 10)
+            color32 (ref,  index: 11)
+            color33 (ref,  index: 12)
+            color34 (ref,  index: 13)
+            color35 (ref,  index: 14)
             valueObj (copy, index: 15)
-            u19 (copy, index: 16)
-            u14 (copy, index: 17)
-            u29 (ref,  index: 18)
-            u26 (copy, index: 19)
-            u24 (ref,  index: 20)
-            u20 (copy, index: 21)
-            UI_upv_1 (copy, index: 22)
+            parent7 (copy, index: 16)
+            parent (copy, index: 17)
+            inflight (ref,  index: 18)
+            ui4 (copy, index: 19)
+            ui3 (ref,  index: 20)
+            parent8 (copy, index: 21)
+            ui (copy, index: 22)
         ]]
-        if a9 ~= "tap" then
-            if a9 == "palette" and RunService_upv_1:IsStudio() then
-                local v32, v33, _, v34 = nil, nil, nil, nil
-                if type(a10) == "table" then
-                    local function c(a11, a12)
-                        --[[
-                          name: c
-                          line: 503
-                        ]]
-                        if type(a11) ~= "table" then
-                            return a12
-                        end
-                        return (Color3.fromRGB(a11[1], a11[2], a11[3]))
-                    end
-                    v32 = a10.on
-                    local v35 = u9
-                    local v36
-                    if type(v32) ~= "table" then
-                        v36 = v35
-                    else
-                        v36 = Color3.fromRGB(v32[1], v32[2], v32[3])
-                    end
-                    v33 = a10.hover
-                    local v37 = u10
-                    if type(v33) ~= "table" then
-                        v32 = v37
-                    else
-                        v32 = Color3.fromRGB(v33[1], v33[2], v33[3])
-                    end
-                    u9 = v36
-                    u10 = v32
-                    v32 = a10.edge
-                    local v38 = u11
-                    local v39
-                    if type(v32) ~= "table" then
-                        v39 = v38
-                    else
-                        v39 = Color3.fromRGB(v32[1], v32[2], v32[3])
-                    end
-                    v34 = a10.text
-                    local v40 = u12
-                    if type(v34) ~= "table" then
-                        v32 = v40
-                    else
-                        v32 = Color3.fromRGB(v34[1], v34[2], v34[3])
-                    end
-                    u11 = v39
-                    u12 = v32
-                    u34()
+        if a122 == "tap" then
+            if reactions then
+                if v65 == nil then
+                    local reactions2 = state.Profile and state.Profile.reactions
+                    v65 = type(reactions2) == "table" and reactions2[v55] == true
+                    reacted = v65
                 end
+
+                reacted = not reacted
+                a32.Sounds.Play("Click")
+                v73()
+                pop(reacted)
+                v97()
             end
-        elseif u18 then
-            if u27 == nil then
-                local v41 = State_upv_1.Profile and (State_upv_1.Profile.reactions)
-                local v42 = false
-                if type(v41) == "table" then
-                    v42 = v41[id_upv_1] == true
+        elseif a122 == "palette" and runService:IsStudio() and type(a123) == "table" then
+            local color3
+            local color36
+            local color37
+            local color38
+
+            local function c(a130, a131)
+                --[[
+                  name: c
+                  line: 503
+                ]]
+                if type(a130) ~= "table" then
+                    return a131
                 end
-                u27 = v42
-                u28 = u27
+
+                return (Color3.fromRGB(a130[1], a130[2], a130[3]))
             end
-            u28 = not u28
-            a1.Sounds.Play("Click")
-            u34()
-            pop(u28)
-            u35()
+
+            local on = a123.on
+            local color39 = color32
+
+            if type(on) ~= "table" then
+                color3 = color39
+            else
+                color3 = Color3.fromRGB(on[1], on[2], on[3])
+            end
+
+            local hover = a123.hover
+            local color310 = color33
+
+            if type(hover) ~= "table" then
+                color36 = color310
+            else
+                color36 = Color3.fromRGB(hover[1], hover[2], hover[3])
+            end
+
+            color32 = color3
+            color33 = color36
+            local edge = a123.edge
+            local color311 = color34
+
+            if type(edge) ~= "table" then
+                color37 = color311
+            else
+                color37 = Color3.fromRGB(edge[1], edge[2], edge[3])
+            end
+
+            local text = a123.text
+            local color312 = color35
+
+            if type(text) ~= "table" then
+                color38 = color312
+            else
+                color38 = Color3.fromRGB(text[1], text[2], text[3])
+            end
+
+            color34 = color37
+            color35 = color38
+            v73()
         end
-        local v43 = valueObj()
-        local tbl_11 = {visible = 0, inflight = 0, chip = 0, text = 0, scale = 0, pill = 0, hit = 0, reacted = 0, centre = 0, countVisible = 0, value = 0, ready = 0, icon = 0, confirmed = 0}
-        tbl_11.id = id_upv_1
-        tbl_11.chip = (u19.Parent ~= nil) and (u19.Visible)
-        tbl_11.visible = u14.Visible
-        tbl_11.reacted = u28
-        tbl_11.confirmed = ((u27 == nil) and "unknown") or u27
-        tbl_11.inflight = u29
-        tbl_11.text = u26.Text
-        tbl_11.countVisible = u26.Visible
-        local v44, v45
-        if v43 then
-            v44 = v43.Value
-            v45 = v43
-        else
-            v44, v45 = false, v43
-        end
-        tbl_11.value = v44
-        v44 = (v43 ~= nil) and (v45:GetAttribute("Ready") == true)
-        tbl_11.ready = v44
-        local v46
-        if u24:IsA("TextLabel") then
-            v46 = u24.Text
-        else
-            v46 = u24.Image
-        end
-        tbl_11.icon = v46
-        tbl_11.hit = {u19.AbsoluteSize.X, u19.AbsoluteSize.Y}
-        tbl_11.pill = {u20.AbsoluteSize.X, u20.AbsoluteSize.Y}
-        tbl_11.scale = UI_upv_1.Scale
-        tbl_11.centre = {u19.AbsolutePosition.X + (u19.AbsoluteSize.X / 2), u19.AbsolutePosition.Y + (u19.AbsoluteSize.Y / 2)}
-        return tbl_11
+
+        local instance = valueObj()
+        local v141 = {id = v55}
+        v141.chip = parent7.Parent ~= nil and parent7.Visible
+        v141.visible = parent.Visible
+        v141.reacted = reacted
+        v141.confirmed = v65 == nil and "unknown" or v65
+        v141.inflight = inflight
+        v141.text = ui4.Text
+        v141.countVisible = ui4.Visible
+        v141.value = if instance then instance.Value else false
+        local ready = instance ~= nil and instance:GetAttribute("Ready") == true
+        v141.ready = ready
+        v141.icon = if ui3:IsA("TextLabel") then ui3.Text else ui3.Image
+        v141.hit = {parent7.AbsoluteSize.X, parent7.AbsoluteSize.Y}
+        v141.pill = {parent8.AbsoluteSize.X, parent8.AbsoluteSize.Y}
+        v141.scale = ui.Scale
+        v141.centre = {parent7.AbsolutePosition.X + (parent7.AbsoluteSize.X / 2), parent7.AbsolutePosition.Y + (parent7.AbsoluteSize.Y / 2)}
+
+        return v141
     end
-    local tbl_12 = {IconName = "cross", IconScale = 0.4, Transparency = 0.15, Name = "Close", Sound = "Close"}
-    tbl_12.AnchorPoint = Vector2.new(1, 0)
-    tbl_12.Position = UDim2.new(1, -14, 0, 14)
-    tbl_12.Size = UDim2.fromOffset(52, 52)
-    tbl_12.Color = Color3.fromRGB(58, 44, 34)
-    tbl_12.Parent = v2
-    UI_upv_1.IconButton(tbl_12).Activated:Connect(
+
+    local iconButton = ui.IconButton
+    local v144 = {Name = "Close", IconName = "cross", IconScale = 0.4, Transparency = 0.15, Sound = "Close", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 14), Size = UDim2.fromOffset(52, 52), Color = Color3.fromRGB(58, 44, 34), Parent = parent3}
+    iconButton(v144).Activated:Connect(
         function()
             --[[
               line: 542
               upvalues:
-                a1 (copy, index: 1)
+                a32 (copy, index: 1)
             ]]
-            a1.MenuManager.Close("Letter")
+            a32.MenuManager.Close("Letter")
         end
     )
-    local u37 = 420
-    local u38 = UI_upv_1.new("UIScale", {Parent = u15})
-    local u39 = u16:FindFirstChildOfClass("UIListLayout")
+    local ceilingValue = 420
+    local ui5 = ui.new("UIScale", {Parent = parent2})
+    local uiListLayout = parent4:FindFirstChildOfClass("UIListLayout")
+
     local function barButtonsRight()
         --[[
           name: barButtonsRight
           line: 554
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            GuiService_upv_1 (copy, index: 2)
-            a1 (copy, index: 3)
-            u14 (copy, index: 4)
+            ui (copy, index: 1)
+            guiService (copy, index: 2)
+            a32 (copy, index: 3)
+            parent (copy, index: 4)
         ]]
-        local v47 = math.max(UI_upv_1.Scale, 0.01)
-        if UI_upv_1.DebugDevice then
-            return (UI_upv_1.TopInset() - 4) * 4.5
+        local v149 = math.max(ui.Scale, 0.01)
+
+        if ui.DebugDevice then
+            return (ui.TopInset() - 4) * 4.5
         end
-        local success_2, v48 = pcall(
+
+        local success, topbarInset = pcall(
             function()
                 --[[
                   line: 561
                   upvalues:
-                    GuiService_upv_1 (copy, index: 1)
+                    guiService (copy, index: 1)
                 ]]
-                return GuiService_upv_1.TopbarInset
+                return guiService.TopbarInset
             end
         )
-        local v49 = a1.TopbarSettings and (a1.TopbarSettings.Button)
-        local v50 = v49 and (v49:FindFirstAncestorOfClass("ScreenGui"))
-        if v50 then
-            v49 = v50.AbsolutePosition.X - u14.AbsolutePosition.X
-        else
-            v49 = 0
+        local button = a32.TopbarSettings and a32.TopbarSettings.Button
+        local v154 = if const firstAncestorOfClass = button and button:FindFirstAncestorOfClass("ScreenGui") then firstAncestorOfClass.AbsolutePosition.X - parent.AbsolutePosition.X else 0
+
+        if success and topbarInset and not (topbarInset.Width <= 0) then
+            return ((v154 + topbarInset.Min.X) / v149) + 8
         end
-        if success_2 and v48 and not (v48.Width <= 0) then
-            return ((v49 + v48.Min.X) / v47) + 8
-        end
+
         return 0
     end
+
     local function layout()
         --[[
           name: layout
           line: 572
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            u38 (copy, index: 2)
-            u39 (copy, index: 3)
-            u37 (ref,  index: 4)
-            u15 (copy, index: 5)
+            ui (copy, index: 1)
+            ui5 (copy, index: 2)
+            uiListLayout (copy, index: 3)
+            ceilingValue (ref,  index: 4)
+            parent2 (copy, index: 5)
             barButtonsRight (copy, index: 6)
-            u19 (copy, index: 7)
+            parent7 (copy, index: 7)
         ]]
-        local v51 = UI_upv_1.CanvasSize()
-        local v52 = math.max(UI_upv_1.Scale * u38.Scale, 0.01)
-        local v53 = (u39 and (u39.AbsoluteContentSize.Y / v52)) or 0
-        if v53 > 50 then
-            u37 = math.ceil(v53 + 78)
+        local v156
+        local v157
+        local v158
+        local v159 = ui.CanvasSize()
+        local v160 = math.max(ui.Scale * ui5.Scale, 0.01)
+
+        if uiListLayout then
+            v156 = uiListLayout.AbsoluteContentSize.Y / v160
+        else
+            v156 = 0
         end
-        u15.Size = UDim2.fromOffset(640, u37)
-        local v54 = math.min(1, (v51.Y - 24) / u37, (v51.X - 32) / 640)
-        local v55 = ((barButtonsRight() < (v51.X - (v54 * 640)) / 2) and 12) or (UI_upv_1.TopInset())
-        local v56 = math.min(v54, ((v51.Y - v55) - 12) / u37)
-        u38.Scale = v56
-        u15.Position = UDim2.fromOffset(v51.X / 2, math.max(v51.Y / 2, v55 + (u37 * v56 / 2)))
-        local v57 = math.max(UI_upv_1.Scale * v56, 0.01)
-        local v58 = ((not (UI_upv_1.Touch)) and 72) or (math.max(72, math.ceil(46 / v57)))
-        u19.Size = UDim2.fromOffset(0, v58)
+
+        if 50 < v156 then
+            ceilingValue = math.ceil(v156 + 78)
+        end
+
+        parent2.Size = UDim2.fromOffset(640, ceilingValue)
+        local v161 = math.min(1, (v159.Y - 24) / ceilingValue, (v159.X - 32) / 640)
+        local v162 = (v159.X - (v161 * 640)) / 2
+
+        if barButtonsRight() < v162 then
+            v157 = 12
+        else
+            v157 = ui.TopInset()
+        end
+
+        local scale = math.min(v161, ((v159.Y - v157) - 12) / ceilingValue)
+        ui5.Scale = scale
+        local v164 = ceilingValue * scale
+        local v165 = math.max(v159.Y / 2, v157 + (v164 / 2))
+        parent2.Position = UDim2.fromOffset(v159.X / 2, v165)
+        v165 = math.max(ui.Scale * scale, 0.01)
+        local udim2FromOffset = UDim2.fromOffset
+
+        if ui.Touch then
+            v158 = math.max(72, (math.ceil(46 / v165)))
+        else
+            v158 = 72
+        end
+
+        parent7.Size = udim2FromOffset(0, v158)
     end
+
     layout()
-    UI_upv_1.LayoutChanged:Connect(layout)
-    UI_upv_1.ScaleChanged:Connect(layout)
-    UI_upv_1.TouchChanged:Connect(layout)
-    if u39 then
-        local u40 = false
-        local AbsoluteContentSize_upv_1 = u39.AbsoluteContentSize
-        local u41 = 0
-        local u42 = 0
-        u39:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(
+    ui.LayoutChanged:Connect(layout)
+    ui.ScaleChanged:Connect(layout)
+    ui.TouchChanged:Connect(layout)
+
+    if uiListLayout then
+        local v167 = false
+        local absoluteContentSize = uiListLayout.AbsoluteContentSize
+        local v169 = 0
+        local timestamp2 = 0
+
+        uiListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(
             function()
                 --[[
                   line: 606
                   upvalues:
-                    u40 (ref,  index: 1)
-                    u39 (copy, index: 2)
-                    AbsoluteContentSize_upv_1 (ref,  index: 3)
-                    u42 (ref,  index: 4)
-                    u41 (ref,  index: 5)
+                    v167 (ref,  index: 1)
+                    uiListLayout (copy, index: 2)
+                    absoluteContentSize (ref,  index: 3)
+                    timestamp2 (ref,  index: 4)
+                    v169 (ref,  index: 5)
                     layout (copy, index: 6)
                 ]]
-                if (u40) then
+                if v167 or (uiListLayout.AbsoluteContentSize - absoluteContentSize).Magnitude < 0.5 then
                     return
                 end
-                if not ((u39.AbsoluteContentSize - AbsoluteContentSize_upv_1).Magnitude < 0.5) then
-                    local v59 = os.clock()
-                    if v59 - u42 > 0.5 then
-                        u41 = 0
-                    end
-                    if (u41 >= 6) then
-                        return
-                    end
-                    u41 = u41 + 1
-                    u42 = v59
-                    u40 = true
-                    task.delay(
-                        0,
-                        function()
-                            --[[
-                              line: 620
-                              upvalues:
-                                u40 (ref,  index: 1)
-                                AbsoluteContentSize_upv_1 (ref,  index: 2)
-                                u39 (copy, index: 3)
-                                layout (copy, index: 4)
-                            ]]
-                            u40 = false
-                            AbsoluteContentSize_upv_1 = u39.AbsoluteContentSize
-                            layout()
-                        end
-                    )
+
+                local timestamp = os.clock()
+
+                if 0.5 < timestamp - timestamp2 then
+                    v169 = 0
                 end
+
+                if 6 <= v169 then
+                    return
+                end
+
+                v169 += 1
+                timestamp2 = timestamp
+                v167 = true
+
+                task.delay(
+                    0,
+                    function()
+                        --[[
+                          line: 620
+                          upvalues:
+                            v167 (ref,  index: 1)
+                            absoluteContentSize (ref,  index: 2)
+                            uiListLayout (copy, index: 3)
+                            layout (copy, index: 4)
+                        ]]
+                        v167 = false
+                        absoluteContentSize = uiListLayout.AbsoluteContentSize
+                        layout()
+                    end
+                )
             end
         )
     end
-    local function hideOthers(a13)
+
+    local function hideOthers(a173)
         --[[
           name: hideOthers
           line: 628
           upvalues:
-            a1 (copy, index: 1)
-            u13 (ref,  index: 2)
+            a32 (copy, index: 1)
+            v23 (ref,  index: 2)
+            textChatService (copy, index: 3)
+            starterGui (copy, index: 4)
         ]]
-        a1.SetHudHidden("Letter", a13)
-        if a1.TopbarSettings and a1.TopbarSettings.SetHidden then
-            a1.TopbarSettings.SetHidden("Letter", a13)
+        a32.SetHudHidden("Letter", a173)
+
+        if a32.TopbarSettings and a32.TopbarSettings.SetHidden then
+            a32.TopbarSettings.SetHidden("Letter", a173)
         end
-        if a13 then
-            if u13 then
+
+        if a173 then
+            if v23 then
                 return
             end
-            local tbl_13 = {}
-            pcall(function() end)
-            u13 = tbl_13
-        else
-            local v60 = u13
-            if not v60 then
-                return
-            end
-            u13 = nil
-            pcall(function() end)
-        end
-    end
-    local u43 = 0
-    local tbl_14 = {}
-    function tbl_14.open()
-        --[[
-          name: open
-          line: 642
-          upvalues:
-            u43 (ref,  index: 1)
-            a1 (copy, index: 2)
-            u13 (ref,  index: 3)
-            TextChatService_upv_1 (copy, index: 4)
-            StarterGui_upv_1 (copy, index: 5)
-            layout (copy, index: 6)
-            u14 (copy, index: 7)
-            u15 (copy, index: 8)
-            UI_upv_1 (copy, index: 9)
-            u18 (copy, index: 10)
-        ]]
-        u43 = u43 + 1
-        a1.SetHudHidden("Letter", true)
-        if a1.TopbarSettings and a1.TopbarSettings.SetHidden then
-            a1.TopbarSettings.SetHidden("Letter", true)
-        end
-        if not (u13) then
-            local tbl_upv_15 = {}
+
+            local v174 = {}
+
             pcall(
                 function()
                     --[[
                       line: 63
                       upvalues:
-                        TextChatService_upv_1 (copy, index: 1)
-                        tbl_upv_15 (copy, index: 2)
-                        StarterGui_upv_1 (copy, index: 3)
+                        textChatService (copy, index: 1)
+                        v174 (copy, index: 2)
+                        starterGui (copy, index: 3)
                     ]]
-                    local v61 = TextChatService_upv_1:FindFirstChildOfClass("ChatWindowConfiguration")
-                    local v62 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                    if v61 then
-                        tbl_upv_15.window = v61.Enabled
-                        v61.Enabled = false
+                    local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                    local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                    if chatWindowConfiguration then
+                        v174.window = chatWindowConfiguration.Enabled
+                        chatWindowConfiguration.Enabled = false
                     end
-                    if v62 then
-                        tbl_upv_15.bar = v62.Enabled
-                        v62.Enabled = false
+
+                    if chatInputBarConfiguration then
+                        v174.bar = chatInputBarConfiguration.Enabled
+                        chatInputBarConfiguration.Enabled = false
                     end
-                    tbl_upv_15.core = StarterGui_upv_1:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
-                    StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+
+                    v174.core = starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
+                    starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
                 end
             )
-            u13 = tbl_upv_15
-        end
-        layout()
-        u14.Visible = true
-        u15.Rotation = -4
-        local Position_1 = u15.Position
-        u15.Position = Position_1 + UDim2.fromOffset(0, 40)
-        UI_upv_1.Tween(u15, TweenInfo.new(0.42, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Rotation = -0.8, Position = Position_1})
-        UI_upv_1.FadeIn(u15, TweenInfo.new(0.2))
-        a1.Sounds.Play("Open")
-        if not u18 then
+
+            v23 = v174
+
             return
         end
-        local _ = true
-        task.spawn(function() end)
+
+        local v177 = v23
+        if not v177 then
+            return
+        end
+
+        v23 = nil
+
+        pcall(
+            function()
+                --[[
+                  line: 85
+                  upvalues:
+                    textChatService (copy, index: 1)
+                    v177 (copy, index: 2)
+                    starterGui (copy, index: 3)
+                ]]
+                local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                if chatWindowConfiguration and v177.window ~= nil then
+                    chatWindowConfiguration.Enabled = v177.window
+                end
+
+                if chatInputBarConfiguration and v177.bar ~= nil then
+                    chatInputBarConfiguration.Enabled = v177.bar
+                end
+
+                if v177.core ~= nil then
+                    starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, v177.core)
+                end
+            end
+        )
     end
-    function tbl_14.close(a14)
-        --[[
-          name: close
-          line: 655
-          upvalues:
-            u43 (ref,  index: 1)
-            a1 (copy, index: 2)
-            u13 (ref,  index: 3)
-            TextChatService_upv_1 (copy, index: 4)
-            StarterGui_upv_1 (copy, index: 5)
-            u18 (copy, index: 6)
-            Remotes_upv_1 (copy, index: 7)
-            id_upv_1 (copy, index: 8)
-            u29 (ref,  index: 9)
-            u27 (ref,  index: 10)
-            u28 (ref,  index: 11)
-            u34 (ref,  index: 12)
-            u14 (copy, index: 13)
-            UI_upv_1 (copy, index: 14)
-            u15 (copy, index: 15)
-        ]]
-        u43 = u43 + 1
-        local u44 = u43
-        a1.SetHudHidden("Letter", false)
-        if a1.TopbarSettings and a1.TopbarSettings.SetHidden then
-            a1.TopbarSettings.SetHidden("Letter", false)
-        end
-        local u45 = u13
-        if u45 then
-            u13 = nil
-            pcall(
-                function()
-                    --[[
-                      line: 85
-                      upvalues:
-                        TextChatService_upv_1 (copy, index: 1)
-                        u45 (copy, index: 2)
-                        StarterGui_upv_1 (copy, index: 3)
-                    ]]
-                    local v63 = TextChatService_upv_1:FindFirstChildOfClass("ChatWindowConfiguration")
-                    local v64 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                    if v63 and u45.window ~= nil then
-                        v63.Enabled = u45.window
-                    end
-                    if v64 and u45.bar ~= nil then
-                        v64.Enabled = u45.bar
-                    end
-                    if u45.core == nil then
-                        return
-                    end
-                    StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, u45.core)
+
+    local count = 0
+
+    a32.MenuManager.Register(
+        "Letter",
+        {
+            open = (function()
+                --[[
+                  name: open
+                  line: 642
+                  upvalues:
+                    count (ref,  index: 1)
+                    a32 (copy, index: 2)
+                    v23 (ref,  index: 3)
+                    textChatService (copy, index: 4)
+                    starterGui (copy, index: 5)
+                    layout (copy, index: 6)
+                    parent (copy, index: 7)
+                    parent2 (copy, index: 8)
+                    ui (copy, index: 9)
+                    reactions (copy, index: 10)
+                    remotes (copy, index: 11)
+                    v55 (copy, index: 12)
+                    inflight (ref,  index: 13)
+                    v65 (ref,  index: 14)
+                    reacted (ref,  index: 15)
+                    v73 (ref,  index: 16)
+                ]]
+                count += 1
+                a32.SetHudHidden("Letter", true)
+
+                if a32.TopbarSettings and a32.TopbarSettings.SetHidden then
+                    a32.TopbarSettings.SetHidden("Letter", true)
                 end
-            )
-        end
-        if u18 then
-            local u46 = false
-            task.spawn(
-                function()
-                    --[[
-                      line: 488
-                      upvalues:
-                        Remotes_upv_1 (copy, index: 1)
-                        id_upv_1 (copy, index: 2)
-                        u46 (copy, index: 3)
-                        u29 (ref,  index: 4)
-                        u27 (ref,  index: 5)
-                        u28 (ref,  index: 6)
-                        u34 (ref,  index: 7)
-                    ]]
-                    local v65, v66, _, v67 = Remotes_upv_1.Invoke("LetterAction", "Watch", id_upv_1, u46)
-                    if u46 and v65 and v66 == true and type(v67) == "boolean" and not (u29) and (u27 == nil or u28 == u27) then
-                        u27 = v67
-                        u28 = v67
-                    end
-                    u34()
+
+                if not v23 then
+                    local v181 = {}
+
+                    pcall(
+                        function()
+                            --[[
+                              line: 63
+                              upvalues:
+                                textChatService (copy, index: 1)
+                                v181 (copy, index: 2)
+                                starterGui (copy, index: 3)
+                            ]]
+                            local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                            if chatWindowConfiguration then
+                                v181.window = chatWindowConfiguration.Enabled
+                                chatWindowConfiguration.Enabled = false
+                            end
+
+                            if chatInputBarConfiguration then
+                                v181.bar = chatInputBarConfiguration.Enabled
+                                chatInputBarConfiguration.Enabled = false
+                            end
+
+                            v181.core = starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
+                            starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+                        end
+                    )
+
+                    v23 = v181
                 end
-            )
-        end
-        if a14 then
-            u14.Visible = false
-        else
-            UI_upv_1.FadeOut(u15, TweenInfo.new(0.16))
-            task.delay(
-                0.17,
-                function()
-                    --[[
-                      line: 665
-                      upvalues:
-                        u44 (copy, index: 1)
-                        u43 (ref,  index: 2)
-                        u14 (copy, index: 3)
-                    ]]
-                    if u44 ~= u43 then
-                        return
-                    end
-                    u14.Visible = false
+
+                layout()
+                parent.Visible = true
+                parent2.Rotation = -4
+                local position = parent2.Position
+                parent2.Position = position + UDim2.fromOffset(0, 40)
+                ui.Tween(parent2, TweenInfo.new(0.42, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Rotation = -0.8, Position = position})
+                ui.FadeIn(parent2, TweenInfo.new(0.2))
+                a32.Sounds.Play("Open")
+
+                if not reactions then
+                    return
                 end
-            )
-        end
-    end
-    a1.MenuManager.Register("Letter", tbl_14)
+
+                local v185 = true
+
+                task.spawn(
+                    function()
+                        --[[
+                          line: 488
+                          upvalues:
+                            remotes (copy, index: 1)
+                            v55 (copy, index: 2)
+                            v185 (copy, index: 3)
+                            inflight (ref,  index: 4)
+                            v65 (ref,  index: 5)
+                            reacted (ref,  index: 6)
+                            v73 (ref,  index: 7)
+                        ]]
+                        local v186, v187, _, v189 = remotes.Invoke("LetterAction", "Watch", v55, v185)
+
+                        if v185
+                            and v186
+                            and v187 == true
+                            and type(v189) == "boolean"
+                            and not inflight
+                            and (v65 == nil or reacted == v65)
+                        then
+                            v65 = v189
+                            reacted = v189
+                        end
+
+                        v73()
+                    end
+                )
+            end),
+            close = (function(a190)
+                --[[
+                  name: close
+                  line: 655
+                  upvalues:
+                    count (ref,  index: 1)
+                    a32 (copy, index: 2)
+                    v23 (ref,  index: 3)
+                    textChatService (copy, index: 4)
+                    starterGui (copy, index: 5)
+                    reactions (copy, index: 6)
+                    remotes (copy, index: 7)
+                    v55 (copy, index: 8)
+                    inflight (ref,  index: 9)
+                    v65 (ref,  index: 10)
+                    reacted (ref,  index: 11)
+                    v73 (ref,  index: 12)
+                    parent (copy, index: 13)
+                    ui (copy, index: 14)
+                    parent2 (copy, index: 15)
+                ]]
+                count += 1
+                local v191 = count
+                a32.SetHudHidden("Letter", false)
+
+                if a32.TopbarSettings and a32.TopbarSettings.SetHidden then
+                    a32.TopbarSettings.SetHidden("Letter", false)
+                end
+
+                if const v192 = v23 then
+                    v23 = nil
+
+                    pcall(
+                        function()
+                            --[[
+                              line: 85
+                              upvalues:
+                                textChatService (copy, index: 1)
+                                v192 (copy, index: 2)
+                                starterGui (copy, index: 3)
+                            ]]
+                            local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                            if chatWindowConfiguration and v192.window ~= nil then
+                                chatWindowConfiguration.Enabled = v192.window
+                            end
+
+                            if chatInputBarConfiguration and v192.bar ~= nil then
+                                chatInputBarConfiguration.Enabled = v192.bar
+                            end
+
+                            if v192.core ~= nil then
+                                starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, v192.core)
+                            end
+                        end
+                    )
+                end
+
+                if reactions then
+                    local v195 = false
+
+                    task.spawn(
+                        function()
+                            --[[
+                              line: 488
+                              upvalues:
+                                remotes (copy, index: 1)
+                                v55 (copy, index: 2)
+                                v195 (copy, index: 3)
+                                inflight (ref,  index: 4)
+                                v65 (ref,  index: 5)
+                                reacted (ref,  index: 6)
+                                v73 (ref,  index: 7)
+                            ]]
+                            local v196, v197, _, v199 = remotes.Invoke("LetterAction", "Watch", v55, v195)
+
+                            if v195
+                                and v196
+                                and v197 == true
+                                and type(v199) == "boolean"
+                                and not inflight
+                                and (v65 == nil or reacted == v65)
+                            then
+                                v65 = v199
+                                reacted = v199
+                            end
+
+                            v73()
+                        end
+                    )
+                end
+
+                if a190 then
+                    parent.Visible = false
+                    return
+                end
+
+                ui.FadeOut(parent2, TweenInfo.new(0.16))
+
+                task.delay(
+                    0.17,
+                    function()
+                        --[[
+                          line: 665
+                          upvalues:
+                            v191 (copy, index: 1)
+                            count (ref,  index: 2)
+                            parent (copy, index: 3)
+                        ]]
+                        if v191 == count then
+                            parent.Visible = false
+                        end
+                    end
+                )
+            end)
+        }
+    )
 end
-return tbl_1
+
+return v8

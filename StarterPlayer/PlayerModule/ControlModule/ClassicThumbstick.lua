@@ -1,337 +1,390 @@
-local GuiService_upv_1 = game:GetService("GuiService")
-local Players_1 = game:GetService("Players")
-local v1 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil")
-local u1 = v1.getUserFlag("UserPlayerScriptsCCLIntegrationD")
-local u2 = v1.getUserFlag("UserPlayerScriptsClassicThumbstickRenameUI")
-local u3 = v1.getUserFlag("UserAbilitiesUserInterfaceC")
-local u4 = v1.getUserFlag("UserPlayerScriptsResetDTTouchOnCreate")
-local ThumbstickAction_upv_1 = script.Parent.Parent:WaitForChild("InputContexts"):WaitForChild("TransformerContext"):WaitForChild("ThumbstickAction")
-local u5 = Vector2.new(-1, -1)
-local AvatarAbilitiesInterface_upv_1 = require(script.Parent:WaitForChild("AvatarAbilitiesInterface"))
-local u6
-if u1 then
-    u6 = AvatarAbilitiesInterface_upv_1.get(Players_1.LocalPlayer)
-else
-    u6 = nil
-end
-local ActionController_upv_1 = require(script.Parent:WaitForChild("ActionController"))
-local u7 = setmetatable({}, ActionController_upv_1)
-u7.__index = u7
-function u7.new(a1)
+local guiService = game:GetService("GuiService")
+local players = game:GetService("Players")
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v4 = CommonUtils.get("FlagUtil")
+local userFlag = v4.getUserFlag("UserPlayerScriptsCCLIntegrationD")
+    or v4.getUserFlag("UserPlayerScriptsCCLIntegrationDGA")
+local userFlag2 = v4.getUserFlag("UserPlayerScriptsClassicThumbstickRenameUI")
+local userFlag3 = v4.getUserFlag("UserAbilitiesUserInterfaceC")
+local userFlag4 = v4.getUserFlag("UserPlayerScriptsResetDTTouchOnCreate")
+local transformerContext = script.Parent.Parent:WaitForChild("InputContexts"):WaitForChild("TransformerContext")
+local thumbstickAction = transformerContext:WaitForChild("ThumbstickAction")
+local vector2 = Vector2.new(-1, -1)
+local AvatarAbilitiesInterface = require(script.Parent:WaitForChild("AvatarAbilitiesInterface"))
+local v13 = if userFlag then AvatarAbilitiesInterface.get(players.LocalPlayer) else nil
+local ActionController = require(script.Parent:WaitForChild("ActionController"))
+local v15 = setmetatable({}, ActionController)
+v15.__index = v15
+
+function v15.new(data)
     --[[
       name: new
-      line: 30
+      line: 34
       upvalues:
-        ActionController_upv_1 (copy, index: 1)
-        u7 (copy, index: 2)
+        ActionController (copy, index: 1)
+        v15 (copy, index: 2)
     ]]
-    local v2 = setmetatable(ActionController_upv_1.new(), u7)
-    v2.data = a1
-    v2.enabled = false
-    v2.isTouchActive = false
-    v2.isFollowStick = false
-    v2.thumbstickFrame = nil
-    v2.screenPos = nil
-    v2.stickImage = nil
-    v2.thumbstickSize = nil
-    return v2
+    local v17 = setmetatable(ActionController.new(), v15)
+    v17.data = data
+    v17.enabled = false
+    v17.isTouchActive = false
+    v17.isFollowStick = false
+    v17.thumbstickFrame = nil
+    v17.screenPos = nil
+    v17.stickImage = nil
+    v17.thumbstickSize = nil
+    return v17
 end
-local function setupThumbstickInput(a1)
+
+local function setupThumbstickInput(a19)
     --[[
       name: setupThumbstickInput
-      line: 47
+      line: 51
       upvalues:
-        ThumbstickAction_upv_1 (copy, index: 1)
+        thumbstickAction (copy, index: 1)
     ]]
-    for _, value_1 in ThumbstickAction_upv_1:GetChildren() do
-        if value_1.Name == "DynamicTouchBinding" or value_1.Name == "ClassicTouchBinding" then
-            value_1:Destroy()
+    for _, child in thumbstickAction:GetChildren() do
+        if child.Name == "DynamicTouchBinding" or child.Name == "ClassicTouchBinding" then
+            child:Destroy()
         end
     end
-    local v3 = Instance.new("InputBinding")
-    v3.Name = "ClassicTouchBinding"
-    v3.KeyCode = Enum.KeyCode.TouchPosition
-    v3.UIModifier = a1.thumbstickButton
-    v3.Parent = ThumbstickAction_upv_1
+
+    local classicTouchBinding = Instance.new("InputBinding")
+    classicTouchBinding.Name = "ClassicTouchBinding"
+    classicTouchBinding.KeyCode = Enum.KeyCode.TouchPosition
+    classicTouchBinding.UIModifier = a19.thumbstickButton
+    classicTouchBinding.Parent = thumbstickAction
 end
-local function enableThumbstickInput(a1, a2)
+
+local function enableThumbstickInput(a24, a25)
     --[[
       name: enableThumbstickInput
-      line: 60
+      line: 64
       upvalues:
         setupThumbstickInput (copy, index: 1)
-        ThumbstickAction_upv_1 (copy, index: 2)
+        thumbstickAction (copy, index: 2)
     ]]
-    if a2 then
-        setupThumbstickInput(a1)
-        a1.thumbstickStateChangedConn = ThumbstickAction_upv_1.StateChanged:Connect(a1.onStateChanged)
-        ThumbstickAction_upv_1.Enabled = true
-    else
-        ThumbstickAction_upv_1.Enabled = false
-        if a1.thumbstickStateChangedConn then
-            a1.thumbstickStateChangedConn:Disconnect()
-            a1.thumbstickStateChangedConn = nil
-        end
+    if a25 then
+        setupThumbstickInput(a24)
+        a24.thumbstickStateChangedConn = thumbstickAction.StateChanged:Connect(a24.onStateChanged)
+        thumbstickAction.Enabled = true
+
+        return
+    end
+
+    thumbstickAction.Enabled = false
+
+    if a24.thumbstickStateChangedConn then
+        a24.thumbstickStateChangedConn:Disconnect()
+        a24.thumbstickStateChangedConn = nil
     end
 end
-function u7.Enable(a1, a2, a3)
+
+function v15.Enable(a26, a27, a28)
     --[[
       name: Enable
-      line: 74
+      line: 78
       upvalues:
-        ActionController_upv_1 (copy, index: 1)
-        u4 (copy, index: 2)
+        ActionController (copy, index: 1)
+        userFlag4 (copy, index: 2)
         setupThumbstickInput (copy, index: 3)
-        ThumbstickAction_upv_1 (copy, index: 4)
+        thumbstickAction (copy, index: 4)
     ]]
-    if a2 == nil then
+    if a27 == nil then
         return false
-    elseif a1.enabled ~= a2 then
-        ActionController_upv_1.Enable(a1, a2)
-        a1.isJumping = false
-        if a2 then
-            if not (a1.thumbstickFrame) then
-                a1:Create(a3)
-            end
-            if u4 then
-                setupThumbstickInput(a1)
-            end
-            a1.thumbstickStateChangedConn = ThumbstickAction_upv_1.StateChanged:Connect(a1.onStateChanged)
-            ThumbstickAction_upv_1.Enabled = true
-            a1.thumbstickFrame.Visible = true
-        else
-            ThumbstickAction_upv_1.Enabled = false
-            if a1.thumbstickStateChangedConn then
-                a1.thumbstickStateChangedConn:Disconnect()
-                a1.thumbstickStateChangedConn = nil
-            end
-            a1.thumbstickFrame.Visible = false
-            a1:OnInputEnded()
-        end
-        a1.enabled = a2
-    else
+    end
+
+    local enabled = not not a27
+    a27 = enabled
+
+    if a26.enabled == a27 then
         return true
     end
+
+    ActionController.Enable(a26, a27)
+    a26.isJumping = false
+
+    if a27 then
+        if not a26.thumbstickFrame then
+            a26:Create(a28)
+        end
+
+        if userFlag4 then
+            setupThumbstickInput(a26)
+            a26.thumbstickStateChangedConn = thumbstickAction.StateChanged:Connect(a26.onStateChanged)
+            thumbstickAction.Enabled = true
+        else
+            a26.thumbstickStateChangedConn = thumbstickAction.StateChanged:Connect(a26.onStateChanged)
+            thumbstickAction.Enabled = true
+        end
+
+        a26.thumbstickFrame.Visible = true
+    else
+        if userFlag4 then
+            thumbstickAction.Enabled = false
+
+            if a26.thumbstickStateChangedConn then
+                a26.thumbstickStateChangedConn:Disconnect()
+                a26.thumbstickStateChangedConn = nil
+            end
+        else
+            thumbstickAction.Enabled = false
+
+            if a26.thumbstickStateChangedConn then
+                a26.thumbstickStateChangedConn:Disconnect()
+                a26.thumbstickStateChangedConn = nil
+            end
+        end
+
+        a26.thumbstickFrame.Visible = false
+        a26:OnInputEnded()
+    end
+
+    a26.enabled = enabled
 end
-function u7.OnInputEnded(a1)
+
+function v15.OnInputEnded(a30)
     --[[
       name: OnInputEnded
-      line: 112
+      line: 119
     ]]
-    a1.isTouchActive = false
-    a1.thumbstickFrame.Position = a1.screenPos
-    a1.stickImage.Position = UDim2.new(0, (a1.thumbstickFrame.Size.X.Offset / 2) - (a1.thumbstickSize / 4), 0, (a1.thumbstickFrame.Size.Y.Offset / 2) - (a1.thumbstickSize / 4))
-    local ClassicThumbstickScriptableBinding_1 = a1.data.controlModule.actions.MoveAction:FindFirstChild("ClassicThumbstickScriptableBinding")
-    if ClassicThumbstickScriptableBinding_1 then
-        ClassicThumbstickScriptableBinding_1:Fire(Vector2.zero)
+    a30.isTouchActive = false
+    a30.thumbstickFrame.Position = a30.screenPos
+    a30.stickImage.Position = UDim2.new(0, (a30.thumbstickFrame.Size.X.Offset / 2) - (a30.thumbstickSize / 4), 0, a30.thumbstickFrame.Size.Y.Offset / 2 - (a30.thumbstickSize / 4))
+
+    if const classicThumbstickScriptableBinding = a30.data.controlModule.actions.MoveAction:FindFirstChild("ClassicThumbstickScriptableBinding") then
+        classicThumbstickScriptableBinding:Fire(Vector2.zero)
     end
-    a1.isJumping = false
-    a1.thumbstickFrame.Position = a1.screenPos
+
+    a30.isJumping = false
+    a30.thumbstickFrame.Position = a30.screenPos
 end
-function u7.Create(a1, a2)
+
+function v15.Create(a32, parent)
     --[[
       name: Create
-      line: 125
+      line: 137
       upvalues:
-        ThumbstickAction_upv_1 (copy, index: 1)
-        u2 (copy, index: 2)
-        u1 (copy, index: 3)
-        u6 (copy, index: 4)
-        AvatarAbilitiesInterface_upv_1 (copy, index: 5)
-        u4 (copy, index: 6)
-        u3 (copy, index: 7)
-        u5 (copy, index: 8)
-        GuiService_upv_1 (copy, index: 9)
+        thumbstickAction (copy, index: 1)
+        userFlag2 (copy, index: 2)
+        userFlag (copy, index: 3)
+        v13 (copy, index: 4)
+        AvatarAbilitiesInterface (copy, index: 5)
+        userFlag4 (copy, index: 6)
+        userFlag3 (copy, index: 7)
+        vector2 (copy, index: 8)
+        guiService (copy, index: 9)
     ]]
-    if a1.thumbstickFrame then
-        ThumbstickAction_upv_1.Enabled = false
-        if a1.thumbstickStateChangedConn then
-            a1.thumbstickStateChangedConn:Disconnect()
-            a1.thumbstickStateChangedConn = nil
+    if a32.thumbstickFrame then
+        thumbstickAction.Enabled = false
+
+        if a32.thumbstickStateChangedConn then
+            a32.thumbstickStateChangedConn:Disconnect()
+            a32.thumbstickStateChangedConn = nil
         end
-        a1.thumbstickFrame:Destroy()
-        a1.thumbstickFrame = nil
-        if a1.absoluteSizeChangedConn then
-            a1.absoluteSizeChangedConn:Disconnect()
-            a1.absoluteSizeChangedConn = nil
+
+        a32.thumbstickFrame:Destroy()
+        a32.thumbstickFrame = nil
+
+        if a32.absoluteSizeChangedConn then
+            a32.absoluteSizeChangedConn:Disconnect()
+            a32.absoluteSizeChangedConn = nil
         end
-        if a1.avatarAbilitiesEnabledChangedConn then
-            a1.avatarAbilitiesEnabledChangedConn:Disconnect()
-            a1.avatarAbilitiesEnabledChangedConn = nil
+
+        if a32.avatarAbilitiesEnabledChangedConn then
+            a32.avatarAbilitiesEnabledChangedConn:Disconnect()
+            a32.avatarAbilitiesEnabledChangedConn = nil
         end
     end
-    a1.thumbstickFrame = Instance.new("Frame")
-    a1.thumbstickFrame.Name = (u2 and "ClassicThumbstickFrame") or "ThumbstickFrame"
-    a1.thumbstickFrame.Active = true
-    a1.thumbstickFrame.Visible = false
-    a1.thumbstickFrame.BackgroundTransparency = 1
-    local u8 = Instance.new("ImageLabel")
-    u8.Name = "OuterImage"
-    u8.Image = "rbxasset://textures/ui/TouchControlsSheet.png"
-    u8.ImageRectOffset = Vector2.new()
-    u8.ImageRectSize = Vector2.new(220, 220)
-    u8.BackgroundTransparency = 1
-    u8.Position = UDim2.new(0, 0, 0, 0)
-    a1.stickImage = Instance.new("ImageLabel")
-    a1.stickImage.Name = "StickImage"
-    a1.stickImage.Image = "rbxasset://textures/ui/TouchControlsSheet.png"
-    a1.stickImage.ImageRectOffset = Vector2.new(220, 0)
-    a1.stickImage.ImageRectSize = Vector2.new(111, 111)
-    a1.stickImage.BackgroundTransparency = 1
-    a1.stickImage.ZIndex = 2
+
+    a32.thumbstickFrame = Instance.new("Frame")
+    a32.thumbstickFrame.Name = userFlag2 and "ClassicThumbstickFrame" or "ThumbstickFrame"
+    a32.thumbstickFrame.Active = true
+    a32.thumbstickFrame.Visible = false
+    a32.thumbstickFrame.BackgroundTransparency = 1
+    local outerImage = Instance.new("ImageLabel")
+    outerImage.Name = "OuterImage"
+    outerImage.Image = "rbxasset://textures/ui/TouchControlsSheet.png"
+    outerImage.ImageRectOffset = Vector2.new()
+    outerImage.ImageRectSize = Vector2.new(220, 220)
+    outerImage.BackgroundTransparency = 1
+    outerImage.Position = UDim2.new(0, 0, 0, 0)
+    a32.stickImage = Instance.new("ImageLabel")
+    a32.stickImage.Name = "StickImage"
+    a32.stickImage.Image = "rbxasset://textures/ui/TouchControlsSheet.png"
+    a32.stickImage.ImageRectOffset = Vector2.new(220, 0)
+    a32.stickImage.ImageRectSize = Vector2.new(111, 111)
+    a32.stickImage.BackgroundTransparency = 1
+    a32.stickImage.ZIndex = 2
+
     local function ResizeThumbstick()
         --[[
           name: ResizeThumbstick
-          line: 168
+          line: 180
           upvalues:
-            a2 (copy, index: 1)
-            u1 (copy, index: 2)
-            u6 (copy, index: 3)
-            AvatarAbilitiesInterface_upv_1 (copy, index: 4)
-            a1 (copy, index: 5)
-            u8 (copy, index: 6)
+            parent (copy, index: 1)
+            userFlag (copy, index: 2)
+            v13 (copy, index: 3)
+            AvatarAbilitiesInterface (copy, index: 4)
+            a32 (copy, index: 5)
+            outerImage (copy, index: 6)
         ]]
-        local v4 = math.min(a2.AbsoluteSize.X, a2.AbsoluteSize.Y) <= 500
-        local v5
-        if u1 then
-            v5 = u6:isEnabled()
+        local v36 = math.min(parent.AbsoluteSize.X, parent.AbsoluteSize.Y) <= 500
+        local isEnabled = if userFlag then v13:isEnabled() else AvatarAbilitiesInterface.isEnabled()
+
+        if isEnabled then
+            local v38 = v36 and 64 or 100
+            local v39 = v36 and 64 or 112
+            a32.thumbstickSize = v36 and 72 or 120
+            a32.screenPos = UDim2.new(0, v38, 1, -a32.thumbstickSize - v39)
         else
-            v5 = AvatarAbilitiesInterface_upv_1.isEnabled()
+            a32.thumbstickSize = v36 and 70 or 120
+            a32.screenPos = v36 and UDim2.new(0, (a32.thumbstickSize / 2) - 10, 1, -a32.thumbstickSize - 20)
+                or UDim2.new(0, a32.thumbstickSize / 2, 1, -a32.thumbstickSize * 1.75)
         end
-        if v5 then
-            local v6 = (v4 and 64) or 100
-            local v7 = (v4 and 64) or 112
-            a1.thumbstickSize = (v4 and 72) or 120
-            a1.screenPos = UDim2.new(0, v6, 1, -a1.thumbstickSize - v7)
-        else
-            a1.thumbstickSize = (v4 and 70) or 120
-            a1.screenPos = v4 and UDim2.new(0, (a1.thumbstickSize / 2) - 10, 1, -a1.thumbstickSize - 20) or UDim2.new(0, a1.thumbstickSize / 2, 1, -a1.thumbstickSize * 1.75)
-        end
-        a1.thumbstickFrame.Size = UDim2.new(0, a1.thumbstickSize, 0, a1.thumbstickSize)
-        a1.thumbstickFrame.Position = a1.screenPos
-        u8.Size = UDim2.new(0, a1.thumbstickSize, 0, a1.thumbstickSize)
-        a1.stickImage.Size = UDim2.new(0, a1.thumbstickSize / 2, 0, a1.thumbstickSize / 2)
-        a1.stickImage.Position = UDim2.new(0, (a1.thumbstickSize / 2) - (a1.thumbstickSize / 4), 0, (a1.thumbstickSize / 2) - (a1.thumbstickSize / 4))
+
+        a32.thumbstickFrame.Size = UDim2.new(0, a32.thumbstickSize, 0, a32.thumbstickSize)
+        a32.thumbstickFrame.Position = a32.screenPos
+        outerImage.Size = UDim2.new(0, a32.thumbstickSize, 0, a32.thumbstickSize)
+        a32.stickImage.Size = UDim2.new(0, a32.thumbstickSize / 2, 0, a32.thumbstickSize / 2)
+        a32.stickImage.Position = UDim2.new(0, (a32.thumbstickSize / 2) - (a32.thumbstickSize / 4), 0, a32.thumbstickSize / 2 - (a32.thumbstickSize / 4))
     end
+
     ResizeThumbstick()
-    a1.absoluteSizeChangedConn = a2:GetPropertyChangedSignal("AbsoluteSize"):Connect(ResizeThumbstick)
-    if u1 then
-        a1.avatarAbilitiesEnabledChangedConn = u6:GetEnabledChangedSignal():Connect(ResizeThumbstick)
+    a32.absoluteSizeChangedConn = parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(ResizeThumbstick)
+
+    if userFlag then
+        a32.avatarAbilitiesEnabledChangedConn = v13:GetEnabledChangedSignal():Connect(ResizeThumbstick)
     else
-        a1.avatarAbilitiesEnabledChangedConn = AvatarAbilitiesInterface_upv_1.GetEnabledChangedSignal():Connect(ResizeThumbstick)
+        a32.avatarAbilitiesEnabledChangedConn = AvatarAbilitiesInterface.GetEnabledChangedSignal():Connect(ResizeThumbstick)
     end
-    u8.Parent = a1.thumbstickFrame
-    a1.stickImage.Parent = a1.thumbstickFrame
-    a1.thumbstickButton = Instance.new("ImageButton")
-    a1.thumbstickButton.Name = "ClassicThumbstickUIModifier"
-    a1.thumbstickButton.BackgroundTransparency = 1
-    a1.thumbstickButton.ImageTransparency = 1
-    a1.thumbstickButton.AutoButtonColor = false
-    a1.thumbstickButton.Size = UDim2.new(1, 0, 1, 0)
-    a1.thumbstickButton.ZIndex = a1.thumbstickFrame.ZIndex
-    a1.thumbstickButton.Visible = true
-    a1.thumbstickButton.Active = false
-    a1.thumbstickButton.Parent = a1.thumbstickFrame
-    if not (u4) then
-        ResizeThumbstick = Instance.new("InputBinding")
-        ResizeThumbstick.Name = "ClassicTouchBinding"
-        ResizeThumbstick.KeyCode = Enum.KeyCode.TouchPosition
-        ResizeThumbstick.UIModifier = a1.thumbstickButton
-        ResizeThumbstick.Parent = ThumbstickAction_upv_1
+
+    outerImage.Parent = a32.thumbstickFrame
+    a32.stickImage.Parent = a32.thumbstickFrame
+    a32.thumbstickButton = Instance.new("ImageButton")
+    a32.thumbstickButton.Name = "ClassicThumbstickUIModifier"
+    a32.thumbstickButton.BackgroundTransparency = 1
+    a32.thumbstickButton.ImageTransparency = 1
+    a32.thumbstickButton.AutoButtonColor = false
+    a32.thumbstickButton.Size = UDim2.new(1, 0, 1, 0)
+    a32.thumbstickButton.ZIndex = a32.thumbstickFrame.ZIndex
+    a32.thumbstickButton.Visible = true
+    a32.thumbstickButton.Active = false
+    a32.thumbstickButton.Parent = a32.thumbstickFrame
+
+    if not userFlag4 then
+        local classicTouchBinding = Instance.new("InputBinding")
+        classicTouchBinding.Name = "ClassicTouchBinding"
+        classicTouchBinding.KeyCode = Enum.KeyCode.TouchPosition
+        classicTouchBinding.UIModifier = a32.thumbstickButton
+        classicTouchBinding.Parent = thumbstickAction
     end
-    local u9 = nil
-    local function MoveStick(a3)
-        --[[
-          name: MoveStick
-          line: 246
-          upvalues:
-            u9 (ref,  index: 1)
-            a1 (copy, index: 2)
-            u3 (copy, index: 3)
-            a2 (copy, index: 4)
-        ]]
-        local v9 = Vector2.new(a3.X - u9.X, a3.Y - u9.Y)
-        local magnitude_1 = v9.magnitude
-        local v10 = a1.thumbstickFrame.AbsoluteSize.X / 2
-        if (a1.isFollowStick) and (v10 < magnitude_1) then
-            local v11 = v9.unit * v10
-            if u3 then
-                local AbsolutePosition_1 = a2.AbsolutePosition
-                a1.thumbstickFrame.Position = UDim2.new(0, ((a3.X - AbsolutePosition_1.X) - (a1.thumbstickFrame.AbsoluteSize.X / 2)) - v11.X, 0, ((a3.Y - AbsolutePosition_1.Y) - (a1.thumbstickFrame.AbsoluteSize.Y / 2)) - v11.Y)
-            else
-                a1.thumbstickFrame.Position = UDim2.new(0, (a3.X - (a1.thumbstickFrame.AbsoluteSize.X / 2)) - v11.X, 0, (a3.Y - (a1.thumbstickFrame.AbsoluteSize.Y / 2)) - v11.Y)
-            end
-        else
-            v9 = v9.unit * math.min(magnitude_1, v10)
-        end
-        a1.stickImage.Position = UDim2.new(0, v9.X + (a1.stickImage.AbsoluteSize.X / 2), 0, v9.Y + (a1.stickImage.AbsoluteSize.Y / 2))
-    end
-    local function DoMove(a4)
+
+    local vector22 = nil
+
+    local function DoMove(vector2: Vector2)
         --[[
           name: DoMove
-          line: 226
+          line: 246
           upvalues:
-            a1 (copy, index: 1)
+            a32 (copy, index: 1)
         ]]
-        local v12 = a4 / (a1.thumbstickSize / 2)
-        local magnitude_2 = v12.magnitude
-        local v13 = ((not (magnitude_2 < 0.05)) and (v12.unit * math.min(1, (magnitude_2 - 0.05) / 0.95))) or (Vector2.new())
-        local v14 = Vector2.new(v13.X, -v13.Y)
-        local ClassicThumbstickScriptableBinding_2 = a1.data.controlModule.actions.MoveAction:FindFirstChild("ClassicThumbstickScriptableBinding")
-        if not ClassicThumbstickScriptableBinding_2 then
-            return
+        local v44 = vector2 / (a32.thumbstickSize / 2)
+        local magnitude = v44.magnitude
+        local v46 = if magnitude < 0.05 then Vector2.new() else v44.unit * math.min(1, (magnitude - 0.05) / 0.95)
+        local vector22 = Vector2.new(v46.X, -v46.Y)
+
+        if const classicThumbstickScriptableBinding = a32.data.controlModule.actions.MoveAction:FindFirstChild("ClassicThumbstickScriptableBinding") then
+            classicThumbstickScriptableBinding:Fire(vector22)
         end
-        ClassicThumbstickScriptableBinding_2:Fire(v14)
     end
-    a1.onStateChanged = function(a5)
+
+    local function MoveStick(vector3: Vector3)
         --[[
-          line: 269
+          name: MoveStick
+          line: 266
           upvalues:
-            u5 (copy, index: 1)
-            GuiService_upv_1 (copy, index: 2)
-            a1 (copy, index: 3)
-            u3 (copy, index: 4)
-            a2 (copy, index: 5)
-            u9 (ref,  index: 6)
+            vector22 (ref,  index: 1)
+            a32 (copy, index: 2)
+            userFlag3 (copy, index: 3)
+            parent (copy, index: 4)
+        ]]
+        local v51 = Vector2.new(vector3.X - vector22.X, vector3.Y - vector22.Y)
+        local magnitude = v51.magnitude
+        local v53 = a32.thumbstickFrame.AbsoluteSize.X / 2
+
+        if not a32.isFollowStick or not (v53 < magnitude) then
+            local v54 = math.min(magnitude, v53)
+            v51 = v51.unit * v54
+        else
+            local v55 = v51.unit * v53
+
+            if userFlag3 then
+                local absolutePosition = parent.AbsolutePosition
+                a32.thumbstickFrame.Position = UDim2.new(0, ((vector3.X - absolutePosition.X) - (a32.thumbstickFrame.AbsoluteSize.X / 2)) - v55.X, 0, (vector3.Y - absolutePosition.Y) - (a32.thumbstickFrame.AbsoluteSize.Y / 2) - v55.Y)
+            else
+                a32.thumbstickFrame.Position = UDim2.new(0, (vector3.X - (a32.thumbstickFrame.AbsoluteSize.X / 2)) - v55.X, 0, vector3.Y - (a32.thumbstickFrame.AbsoluteSize.Y / 2) - v55.Y)
+            end
+        end
+
+        a32.stickImage.Position = UDim2.new(0, v51.X + (a32.stickImage.AbsoluteSize.X / 2), 0, v51.Y + (a32.stickImage.AbsoluteSize.Y / 2))
+    end
+
+    a32.onStateChanged = function(a57)
+        --[[
+          line: 300
+          upvalues:
+            vector2 (copy, index: 1)
+            guiService (copy, index: 2)
+            a32 (copy, index: 3)
+            userFlag3 (copy, index: 4)
+            parent (copy, index: 5)
+            vector22 (ref,  index: 6)
             DoMove (copy, index: 7)
             MoveStick (copy, index: 8)
         ]]
-        if a5 == u5 then
-            if a1.isTouchActive then
-                a1:OnInputEnded()
+        if a57 == vector2 then
+            if a32.isTouchActive then
+                a32:OnInputEnded()
             end
         else
-            local Min_1 = GuiService_upv_1:GetInsetArea(Enum.ScreenInsets.None).Min
-            local v15 = Vector3.new(a5.X + Min_1.X, a5.Y + Min_1.Y, 0)
-            if a1.isTouchActive then
-                u9 = Vector2.new(a1.thumbstickFrame.AbsolutePosition.X + (a1.thumbstickFrame.AbsoluteSize.X / 2), a1.thumbstickFrame.AbsolutePosition.Y + (a1.thumbstickFrame.AbsoluteSize.Y / 2))
-                DoMove((Vector2.new(v15.X - u9.X, v15.Y - u9.Y)))
-                MoveStick(v15)
+            local min = guiService:GetInsetArea(Enum.ScreenInsets.None).Min
+            local vector3 = Vector3.new(a57.X + min.X, a57.Y + min.Y, 0)
+
+            if a32.isTouchActive then
+                vector22 = Vector2.new(a32.thumbstickFrame.AbsolutePosition.X + (a32.thumbstickFrame.AbsoluteSize.X / 2), a32.thumbstickFrame.AbsolutePosition.Y + (a32.thumbstickFrame.AbsoluteSize.Y / 2))
+                local vector23 = Vector2.new(vector3.X - vector22.X, vector3.Y - vector22.Y)
+                DoMove(vector23)
+                MoveStick(vector3)
             else
-                a1.isTouchActive = true
-                if u3 then
-                    local AbsolutePosition_2 = a2.AbsolutePosition
-                    a1.thumbstickFrame.Position = UDim2.new(0, (v15.X - AbsolutePosition_2.X) - (a1.thumbstickFrame.Size.X.Offset / 2), 0, (v15.Y - AbsolutePosition_2.Y) - (a1.thumbstickFrame.Size.Y.Offset / 2))
+                a32.isTouchActive = true
+
+                if userFlag3 then
+                    local absolutePosition = parent.AbsolutePosition
+                    a32.thumbstickFrame.Position = UDim2.new(0, (vector3.X - absolutePosition.X) - (a32.thumbstickFrame.Size.X.Offset / 2), 0, vector3.Y - absolutePosition.Y - (a32.thumbstickFrame.Size.Y.Offset / 2))
                 else
-                    a1.thumbstickFrame.Position = UDim2.new(0, v15.X - (a1.thumbstickFrame.Size.X.Offset / 2), 0, v15.Y - (a1.thumbstickFrame.Size.Y.Offset / 2))
+                    a32.thumbstickFrame.Position = UDim2.new(0, vector3.X - (a32.thumbstickFrame.Size.X.Offset / 2), 0, vector3.Y - (a32.thumbstickFrame.Size.Y.Offset / 2))
                 end
-                u9 = Vector2.new(a1.thumbstickFrame.AbsolutePosition.X + (a1.thumbstickFrame.AbsoluteSize.X / 2), a1.thumbstickFrame.AbsolutePosition.Y + (a1.thumbstickFrame.AbsoluteSize.Y / 2))
+
+                vector22 = Vector2.new(a32.thumbstickFrame.AbsolutePosition.X + (a32.thumbstickFrame.AbsoluteSize.X / 2), a32.thumbstickFrame.AbsolutePosition.Y + (a32.thumbstickFrame.AbsoluteSize.Y / 2))
             end
         end
     end
-    GuiService_upv_1.MenuOpened:Connect(
+
+    guiService.MenuOpened:Connect(
         function()
             --[[
-              line: 308
+              line: 343
               upvalues:
-                a1 (copy, index: 1)
+                a32 (copy, index: 1)
             ]]
-            if not a1.isTouchActive then
-                return
+            if a32.isTouchActive then
+                a32:OnInputEnded()
             end
-            a1:OnInputEnded()
         end
     )
-    a1.thumbstickFrame.Parent = a2
+
+    a32.thumbstickFrame.Parent = parent
 end
-return u7
+
+return v15

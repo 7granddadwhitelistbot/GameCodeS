@@ -1,155 +1,174 @@
-local v1 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil")
-local ZoomController_upv_1 = require(script.Parent:WaitForChild("ZoomController"))
-local u1 = v1.getUserFlag("UserFixCameraFPError")
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-local u2 = CFrame.new()
-local function cframeToAxis(a1)
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v2 = CommonUtils.get("FlagUtil")
+local ZoomController = require(script.Parent:WaitForChild("ZoomController"))
+local userFlag = v2.getUserFlag("UserFixCameraFPError")
+local Class = {}
+Class.__index = Class
+local identityCFrame = CFrame.new()
+
+local function cframeToAxis(a8)
     --[[
       name: cframeToAxis
-      line: 17
+      line: 18
     ]]
-    local v2, v3 = a1:ToAxisAngle()
-    return v2 * v3
+    local v9, v10 = a8:ToAxisAngle()
+    return v9 * v10
 end
-local function axisToCFrame(a1)
+
+local function axisToCFrame(a12)
     --[[
       name: axisToCFrame
-      line: 22
+      line: 23
       upvalues:
-        u2 (copy, index: 1)
+        identityCFrame (copy, index: 1)
     ]]
-    local Magnitude_1 = a1.Magnitude
-    if Magnitude_1 > 1e-05 then
-        return CFrame.fromAxisAngle(a1, Magnitude_1)
+    local magnitude = a12.Magnitude
+
+    if 1e-05 < magnitude then
+        return CFrame.fromAxisAngle(a12, magnitude)
     end
-    return u2
+
+    return identityCFrame
 end
-local function extractRotation(a1)
+
+local function extractRotation(a15)
     --[[
       name: extractRotation
-      line: 30
+      line: 31
     ]]
-    local _, v13, v14, v4, v5, v6, v7, v8, v9, v10, v11, v12 = a1:GetComponents()
-    return CFrame.new(0, 0, 0, v4, v5, v6, v7, v8, v9, v10, v11, v12)
+    local _, _, _, v19, v20, v21, v22, v23, v24, v25, v26, v27 = a15:GetComponents()
+    return CFrame.new(0, 0, 0, v19, v20, v21, v22, v23, v24, v25, v26, v27)
 end
-function tbl_upv_1.new()
+
+function Class.new()
     --[[
       name: new
-      line: 35
+      line: 36
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    return (setmetatable({}, tbl_upv_1))
+    return (setmetatable({lastCFrame = nil}, Class))
 end
-function tbl_upv_1.Step(a1, a2, a3)
+
+function Class.Step(self, a29, lastCFrame)
     --[[
       name: Step
-      line: 41
+      line: 42
       upvalues:
-        u2 (copy, index: 1)
+        identityCFrame (copy, index: 1)
     ]]
-    local v13 = a1.lastCFrame or a3
-    a1.lastCFrame = a3
-    local Position_upv_1 = a3.Position
-    local _, v34, v35, v14, v15, v16, v17, v18, v19, v20, v21, v22 = a3:GetComponents()
-    local u3 = CFrame.new(0, 0, 0, v14, v15, v16, v17, v18, v19, v20, v21, v22)
-    local Position_2 = v13.Position
-    local v36, v37, v38, v23, v24, v25, v26, v27, v28, v29, v30, v31 = v13:GetComponents()
-    local u4 = (Position_upv_1 - Position_2) / a2
-    local v32, v33 = (u3 * CFrame.new(0, 0, 0, v23, v24, v25, v26, v27, v28, v29, v30, v31):inverse()):ToAxisAngle()
-    local u5 = v32 * v33 / a2
-    local tbl_2 = {}
-    function tbl_2.extrapolate(a4)
-        --[[
-          name: extrapolate
-          line: 56
-          upvalues:
-            u4 (copy, index: 1)
-            Position_upv_1 (copy, index: 2)
-            u5 (copy, index: 3)
-            u2 (copy, index: 4)
-            u3 (copy, index: 5)
-        ]]
-        local v34 = u4 * a4 + Position_upv_1
-        local v35 = u5 * a4
-        local Magnitude_2 = v35.Magnitude
-        local v36
-        if Magnitude_2 > 1e-05 then
-            v36 = CFrame.fromAxisAngle(v35, Magnitude_2)
-        else
-            v36 = u2
-        end
-        return (v36 * u3) + v34
-    end
-    tbl_2.posVelocity = u4
-    tbl_2.rotVelocity = u5
-    return tbl_2
+    local v31 = self.lastCFrame or lastCFrame
+    self.lastCFrame = lastCFrame
+    local position = lastCFrame.Position
+    local _, _, _, v36, v37, v38, v39, v40, v41, v42, v43, v44 = lastCFrame:GetComponents()
+    local cframe = CFrame.new(0, 0, 0, v36, v37, v38, v39, v40, v41, v42, v43, v44)
+    local position2 = v31.Position
+    local _, _, _, v50, v51, v52, v53, v54, v55, v56, v57, v58 = v31:GetComponents()
+    local cframe2 = CFrame.new(0, 0, 0, v50, v51, v52, v53, v54, v55, v56, v57, v58)
+    local posVelocity = (position - position2) / a29
+    local v61, v62 = (cframe * cframe2:inverse()):ToAxisAngle()
+    local rotVelocity = v61 * v62 / a29
+
+    return {
+        extrapolate = (function(a64)
+            --[[
+              name: extrapolate
+              line: 57
+              upvalues:
+                posVelocity (copy, index: 1)
+                position (copy, index: 2)
+                rotVelocity (copy, index: 3)
+                identityCFrame (copy, index: 4)
+                cframe (copy, index: 5)
+            ]]
+            local v65 = posVelocity * a64 + position
+            local v66 = rotVelocity * a64
+            local magnitude = v66.Magnitude
+            local v68 = if 1e-05 < magnitude then CFrame.fromAxisAngle(v66, magnitude) else identityCFrame
+
+            return (v68 * cframe) + v65
+        end),
+        posVelocity = posVelocity,
+        rotVelocity = rotVelocity
+    }
 end
-function tbl_upv_1.Reset(a1)
+
+function Class.Reset(self)
     --[[
       name: Reset
-      line: 69
+      line: 70
     ]]
-    a1.lastCFrame = nil
+    self.lastCFrame = nil
 end
-local BaseOcclusion_upv_1 = require(script.Parent:WaitForChild("BaseOcclusion"))
-local u6 = setmetatable({}, BaseOcclusion_upv_1)
-u6.__index = u6
-function u6.new()
+
+local BaseOcclusion = require(script.Parent:WaitForChild("BaseOcclusion"))
+local v71 = setmetatable({}, BaseOcclusion)
+v71.__index = v71
+
+function v71.new()
     --[[
       name: new
-      line: 79
+      line: 81
       upvalues:
-        BaseOcclusion_upv_1 (copy, index: 1)
-        u6 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        BaseOcclusion (copy, index: 1)
+        v71 (copy, index: 2)
+        Class (copy, index: 3)
     ]]
-    local v37 = setmetatable(BaseOcclusion_upv_1.new(), u6)
-    v37.focusExtrapolator = tbl_upv_1.new()
-    return v37
+    local v72 = setmetatable(BaseOcclusion.new(), v71)
+    v72.focusExtrapolator = Class.new()
+    return v72
 end
-function u6.GetOcclusionMode(a1)
+
+function v71.GetOcclusionMode(a73)
     --[[
       name: GetOcclusionMode
-      line: 85
+      line: 87
     ]]
     return Enum.DevCameraOcclusionMode.Zoom
 end
-function u6.Enable(a1, a2)
+
+function v71.Enable(a74, a75)
     --[[
       name: Enable
-      line: 89
+      line: 91
     ]]
-    a1.focusExtrapolator:Reset()
+    a74.focusExtrapolator:Reset()
 end
-function u6.Update(a1, a2, a3, a4, a5)
+
+function v71.Update(a76, a77, a78, a79)
     --[[
       name: Update
-      line: 93
+      line: 95
       upvalues:
-        u1 (copy, index: 1)
-        ZoomController_upv_1 (copy, index: 2)
+        userFlag (copy, index: 1)
+        ZoomController (copy, index: 2)
     ]]
-    local v38 = (u1 and (CFrame.lookAlong(a4.Position, -a3.LookVector) * CFrame.new(0, 0, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1))) or (CFrame.new(a4.Position, a3.Position) * CFrame.new(0, 0, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1))
-    return v38 * CFrame.new(0, 0, ZoomController_upv_1.Update(a2, v38, a1.focusExtrapolator:Step(a2, v38))), a4
+    local v80 = if userFlag then CFrame.lookAlong(a79.Position, -a78.LookVector) * CFrame.new(0, 0, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1) else CFrame.new(a79.Position, a78.Position) * CFrame.new(0, 0, 0, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+    local v81 = a76.focusExtrapolator:Step(a77, v80)
+    local z = ZoomController.Update(a77, v80, v81)
+
+    return v80 * CFrame.new(0, 0, z), a79
 end
-function u6.CharacterAdded(a1, a2, a3)
+
+function v71.CharacterAdded(a83, a84, a85)
     --[[
       name: CharacterAdded
-      line: 117
+      line: 112
     ]]
 end
-function u6.CharacterRemoving(a1, a2, a3)
+
+function v71.CharacterRemoving(a86, a87, a88)
     --[[
       name: CharacterRemoving
-      line: 121
+      line: 116
     ]]
 end
-function u6.OnCameraSubjectChanged(a1, a2)
+
+function v71.OnCameraSubjectChanged(a89, a90)
     --[[
       name: OnCameraSubjectChanged
-      line: 124
+      line: 118
     ]]
 end
-return u6
+
+return v71

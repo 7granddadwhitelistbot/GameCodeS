@@ -1,153 +1,172 @@
-local Players_upv_1 = game:GetService("Players")
-local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-while not (LocalPlayer_upv_1) do
-    Players_upv_1.ChildAdded:wait()
-    LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
+local localPlayer
+local players = game:GetService("Players")
+localPlayer = players.LocalPlayer
+
+while not localPlayer do
+    players.ChildAdded:wait()
+    localPlayer = players.LocalPlayer
 end
-local Parent_1 = script.Parent.Parent
-local ChatSettings_upv_1 = require(Parent_1:WaitForChild("ChatSettings"))
-local ChatConstants_1 = require(Parent_1:WaitForChild("ChatConstants"))
-local Util_upv_1 = require(script.Parent:WaitForChild("Util"))
-local u1 = utf8.char(57344)
-local ChatLocalization_upv_1 = nil
+
+local parent = script.Parent.Parent
+local ChatSettings = require(parent:WaitForChild("ChatSettings"))
+local ChatConstants = require(parent:WaitForChild("ChatConstants"))
+local Util = require(script.Parent:WaitForChild("Util"))
+local text = utf8.char(57344)
+local ChatLocalization = nil
 pcall(
     function()
         --[[
           line: 22
           upvalues:
-            ChatLocalization_upv_1 (ref, index: 1)
+            ChatLocalization (ref, index: 1)
         ]]
-        ChatLocalization_upv_1 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
+        ChatLocalization = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
     end
 )
-function IsPlayerVerified(a1)
+
+function IsPlayerVerified(userId)
     --[[
       name: IsPlayerVerified
       line: 24
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    local u2 = Players_upv_1:GetPlayerByUserId(a1)
-    if not u2 then
+    local player = players:GetPlayerByUserId(userId)
+    if not player then
         return false
     end
-    local success_1, v1 = pcall(
+
+    local success, hasVerifiedBadge = pcall(
         function()
             --[[
               line: 31
               upvalues:
-                u2 (copy, index: 1)
+                player (copy, index: 1)
             ]]
-            return u2.HasVerifiedBadge
+            return player.HasVerifiedBadge
         end
     )
-    if success_1 then
-        return v1
+    if success then
+        return hasVerifiedBadge
     end
+
     return false
 end
-function AppendVerifiedBadge(a1)
+
+function AppendVerifiedBadge(a13)
     --[[
       name: AppendVerifiedBadge
       line: 38
       upvalues:
-        u1 (copy, index: 1)
+        text (copy, index: 1)
     ]]
-    return a1 .. u1
+    return a13 .. text
 end
-function CreateMessageLabel(a1, a2)
+
+function CreateMessageLabel(a14, a15)
     --[[
       name: CreateMessageLabel
       line: 42
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
-        LocalPlayer_upv_1 (ref,  index: 3)
-        ChatLocalization_upv_1 (ref,  index: 4)
+        ChatSettings (copy, index: 1)
+        Util (copy, index: 2)
+        localPlayer (ref,  index: 3)
+        ChatLocalization (ref,  index: 4)
     ]]
-    local FromSpeaker_1 = a1.FromSpeaker
-    local v2
-    if (ChatSettings_upv_1.PlayerDisplayNamesEnabled) and (a1.SpeakerDisplayName) then
-        v2 = a1.SpeakerDisplayName
+    local v16
+    local UpdateTextFunction
+    local v18
+    local fromSpeaker = a14.FromSpeaker
+    local v20 = if ChatSettings.PlayerDisplayNamesEnabled and a14.SpeakerDisplayName then a14.SpeakerDisplayName else fromSpeaker
+
+    if IsPlayerVerified(a14.SpeakerUserId) then
+        v20 = AppendVerifiedBadge(v20)
+    end
+
+    local _ = a14.Message
+    local v22 = a14.ExtraData or {}
+    local v23 = v22.Font or ChatSettings.DefaultFont
+    local v24 = v22.TextSize or ChatSettings.ChatWindowTextSize
+    local v25 = v22.NameColor or ChatSettings.DefaultNameColor
+    local v26 = v22.ChatColor or ChatSettings.DefaultMessageColor
+    local v27 = v22.ChannelColor or v26
+    local formattedText = string.format("[%s]:", v20)
+    Util:GetStringTextBounds(formattedText, v23, v24)
+    local v29 = Util:GetNumberOfSpaces(formattedText, v23, v24) + 1
+    local baseMessage, v31 = Util:CreateBaseMessage("", v23, v24, v26)
+    local v32 = Util:AddNameButtonToBaseMessage(v31, v25, formattedText, fromSpeaker)
+
+    if a15 == a14.OriginalChannel then
+        v18, v16 = v29, nil
     else
-        v2 = FromSpeaker_1
-    end
-    local v3 = IsPlayerVerified(a1.SpeakerUserId)
-    v2 = v3 and AppendVerifiedBadge(v2)
-    local v4 = a1.ExtraData or {}
-    v3 = v4.Font or (ChatSettings_upv_1.DefaultFont)
-    local v5 = v4.TextSize or (ChatSettings_upv_1.ChatWindowTextSize)
-    local v6 = v4.NameColor or (ChatSettings_upv_1.DefaultNameColor)
-    local v7 = v4.ChatColor or (ChatSettings_upv_1.DefaultMessageColor)
-    local v8 = v4.ChannelColor or v7
-    local v9 = string.format("[%s]:", v2)
-    v2 = Util_upv_1:GetStringTextBounds(v9, v3, v5)
-    local u3 = Util_upv_1:GetNumberOfSpaces(v9, v3, v5) + 1
-    local u4, u5 = Util_upv_1:CreateBaseMessage("", v3, v5, v7)
-    local v10 = Util_upv_1:AddNameButtonToBaseMessage(u5, v6, v9, FromSpeaker_1)
-    v6 = nil
-    if a2 ~= a1.OriginalChannel then
-        local v11 = a1.OriginalChannel
-        if a1.FromSpeaker == LocalPlayer_upv_1.Name then
-            v4 = v11
-        else
-            v4 = string.format("From %s", a1.FromSpeaker)
+        local v33 = a14.OriginalChannel
+
+        if a14.FromSpeaker ~= localPlayer.Name then
+            v33 = string.format("From %s", a14.FromSpeaker)
         end
-        if ChatLocalization_upv_1.tryLocalize then
-            v11 = ChatLocalization_upv_1:tryLocalize(v4)
-        else
-            v11 = v4
-        end
-        v2 = string.format("{%s}", v11)
-        v6 = Util_upv_1:AddChannelButtonToBaseMessage(u5, v8, v2, a1.OriginalChannel)
-        v10.Position = UDim2.new(0, v6.Size.X.Offset + Util_upv_1:GetStringTextBounds(" ", v3, v5).X, 0, 0)
-        u3 = u3 + Util_upv_1:GetNumberOfSpaces(v2, v3, v5) + 1
+
+        local v34 = if ChatLocalization.tryLocalize then ChatLocalization:tryLocalize(v33) else v33
+        local formattedText2 = string.format("{%s}", v34)
+        v16 = Util:AddChannelButtonToBaseMessage(v31, v27, formattedText2, a14.OriginalChannel)
+        v32.Position = UDim2.new(0, v16.Size.X.Offset + Util:GetStringTextBounds(" ", v23, v24).X, 0, 0)
+        v18 = v29 + Util:GetNumberOfSpaces(formattedText2, v23, v24) + 1
     end
-    local function UpdateTextFunction(a3)
+
+    UpdateTextFunction = function(a36)
         --[[
           name: UpdateTextFunction
           line: 92
           upvalues:
-            a1 (copy, index: 1)
-            u5 (copy, index: 2)
-            Util_upv_1 (copy, index: 3)
-            u3 (ref,  index: 4)
+            a14 (copy, index: 1)
+            v31 (copy, index: 2)
+            Util (copy, index: 3)
+            v18 (ref,  index: 4)
         ]]
-        if a1.IsFiltered then
-            u5.Text = Util_upv_1:CreateLeadingSpaces(u3) .. Util_upv_1:SanitizeForRichText(a3.Message)
-        else
-            u5.Text = Util_upv_1:CreateLeadingSpaces(u3) .. string.rep("_", a3.MessageLengthUtf8 or (a3.MessageLength))
+        if a14.IsFiltered then
+            v31.Text = Util:CreateLeadingSpaces(v18) .. Util:SanitizeForRichText(a36.Message)
+            return
         end
+
+        local v37 = a36.MessageLengthUtf8 or a36.MessageLength
+        v31.Text = Util:CreateLeadingSpaces(v18) .. string.rep("_", v37)
     end
-    UpdateTextFunction(a1)
-    local tbl_1 = {}
-    tbl_1[v10] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
-    tbl_1[u5] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
-    if v6 then
-        tbl_1[v6] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
+
+    UpdateTextFunction(a14)
+    local v38 = {}
+    v38[v32] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
+    v38[v31] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
+
+    if v16 then
+        v38[v16] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
     end
-    local v12, v13, v14 = Util_upv_1:CreateFadeFunctions(tbl_1)
-    local tbl_2 = {}
-    tbl_2[Util_upv_1.KEY_BASE_FRAME] = u4
-    tbl_2[Util_upv_1.KEY_BASE_MESSAGE] = u5
-    tbl_2[Util_upv_1.KEY_UPDATE_TEXT_FUNC] = UpdateTextFunction
-    tbl_2[Util_upv_1.KEY_GET_HEIGHT] = function(a4)
+
+    local fadeFunctions, v40, v41 = Util:CreateFadeFunctions(v38)
+    local v42 = {}
+    v42[Util.KEY_BASE_FRAME] = baseMessage
+    v42[Util.KEY_BASE_MESSAGE] = v31
+    v42[Util.KEY_UPDATE_TEXT_FUNC] = UpdateTextFunction
+
+    v42[Util.KEY_GET_HEIGHT] = function(a43)
         --[[
           name: GetHeightFunction
           line: 103
           upvalues:
-            Util_upv_1 (copy, index: 1)
-            u5 (copy, index: 2)
-            u4 (copy, index: 3)
+            Util (copy, index: 1)
+            v31 (copy, index: 2)
+            baseMessage (copy, index: 3)
         ]]
-        return Util_upv_1:GetMessageHeight(u5, u4, a4)
+        return Util:GetMessageHeight(v31, baseMessage, a43)
     end
-    tbl_2[Util_upv_1.KEY_FADE_IN] = v12
-    tbl_2[Util_upv_1.KEY_FADE_OUT] = v13
-    tbl_2[Util_upv_1.KEY_UPDATE_ANIMATION] = v14
-    return tbl_2
+
+    v42[Util.KEY_FADE_IN] = fadeFunctions
+    v42[Util.KEY_FADE_OUT] = v40
+    v42[Util.KEY_UPDATE_ANIMATION] = v41
+
+    return v42
 end
-local tbl_3 = {}
-tbl_3[Util_upv_1.KEY_MESSAGE_TYPE] = ChatConstants_1.MessageTypeWhisper
-tbl_3[Util_upv_1.KEY_CREATOR_FUNCTION] = CreateMessageLabel
-return tbl_3
+
+local v44 = {}
+v44[Util.KEY_MESSAGE_TYPE] = ChatConstants.MessageTypeWhisper
+v44[Util.KEY_CREATOR_FUNCTION] = CreateMessageLabel
+
+return v44

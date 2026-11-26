@@ -1,7 +1,45 @@
-local tbl_upv_1 = {}
-local Unlocks_upv_1 = require(script.Parent:WaitForChild("Unlocks"))
-local Ranks_upv_1 = require(script.Parent:WaitForChild("Ranks"))
-local success_1, _ = pcall(
+local Weapons
+
+local function Context(a3)
+    --[[
+      name: Context
+      line: 700
+    ]]
+    local v4
+    local loadout
+    local rankBest
+
+    if type(a3) ~= "table" or type(a3.dropStats) ~= "table" then
+        v4 = {}
+    else
+        v4 = a3.dropStats
+    end
+
+    local v7 = {total = tonumber(v4.total) or 0, sinceUnlock = tonumber(v4.sinceUnlock) or 0, first = v4.first == true}
+
+    if type(a3) ~= "table" then
+        loadout = nil
+    else
+        loadout = a3.loadout
+    end
+
+    v7.loadout = loadout
+
+    if type(a3) == "table" and type(a3.rankBest) == "number" then
+        rankBest = a3.rankBest
+    else
+        rankBest = nil
+    end
+
+    v7.rankBest = rankBest
+
+    return v7
+end
+
+local v8 = {}
+local Unlocks = require(script.Parent:WaitForChild("Unlocks"))
+local Ranks = require(script.Parent:WaitForChild("Ranks"))
+local success, Weapons2 = pcall(
     function()
         --[[
           line: 55
@@ -9,1111 +47,1200 @@ local success_1, _ = pcall(
         return (require(script.Parent:WaitForChild("Weapons")))
     end
 )
-local u1 = (success_1) or nil
-tbl_upv_1.MAX_LEVEL = 5
-tbl_upv_1.BONUS_PER_LEVEL = 0.02
-tbl_upv_1.BONUS_CAP = 0.08
-tbl_upv_1.SIZES = table.freeze({small = table.freeze({unlock = 10, upgrade = table.freeze({10, 20, 40, 80})}), medium = table.freeze({unlock = 20, upgrade = table.freeze({20, 40, 80, 160})}), large = table.freeze({unlock = 40, upgrade = table.freeze({40, 80, 160, 320})}), starter = table.freeze({unlock = 0, upgrade = table.freeze({10, 20, 40, 80})})})
-tbl_upv_1.DROPS = table.freeze(
+
+if success then
+    Weapons = Weapons2
+else
+    Weapons = nil
+end
+
+v8.MAX_LEVEL = 5
+v8.BONUS_PER_LEVEL = 0.02
+v8.BONUS_CAP = 0.08
+v8.SIZES = table.freeze({small = table.freeze({unlock = 10, upgrade = table.freeze({10, 20, 40, 80})}), medium = table.freeze({unlock = 20, upgrade = table.freeze({20, 40, 80, 160})}), large = table.freeze({unlock = 40, upgrade = table.freeze({40, 80, 160, 320})}), starter = table.freeze({unlock = 0, upgrade = table.freeze({10, 20, 40, 80})})})
+v8.DROPS = table.freeze(
     {
-        xpPerShard = 5,
-        pity = 6,
         goldenChance = 0.05,
+        pity = 6,
         pityFill = 8,
+        xpPerShard = 5,
         order = table.freeze({"drop", "victory", "golden"}),
         kinds = table.freeze(
             {
-                drop = table.freeze({min = 4, stacks = 2, name = "Drop", max = 5}),
-                victory = table.freeze({min = 5, stacks = 3, name = "Victory Drop", max = 7}),
-                golden = table.freeze({min = 13, stacks = 4, name = "Golden Drop", max = 17, lockedStack = true}),
-                tribe1 = table.freeze({min = 4, stacks = 2, name = "Tribe Chest", max = 5}),
-                tribe2 = table.freeze({min = 5, stacks = 3, name = "Tribe Chest", max = 7}),
-                tribe3 = table.freeze({min = 8, stacks = 3, name = "Tribe Chest", max = 10}),
-                tribe4 = table.freeze({min = 9, stacks = 4, name = "Tribe Chest", max = 11}),
-                tribe5 = table.freeze({min = 13, stacks = 4, name = "Tribe Chest", max = 17, lockedStack = true})
+                drop = table.freeze({name = "Drop", stacks = 2, min = 4, max = 5}),
+                victory = table.freeze({name = "Victory Drop", stacks = 3, min = 5, max = 7}),
+                golden = table.freeze({name = "Golden Drop", stacks = 4, min = 13, max = 17, lockedStack = true}),
+                tribe1 = table.freeze({name = "Tribe Chest", stacks = 2, min = 4, max = 5}),
+                tribe2 = table.freeze({name = "Tribe Chest", stacks = 3, min = 5, max = 7}),
+                tribe3 = table.freeze({name = "Tribe Chest", stacks = 3, min = 8, max = 10}),
+                tribe4 = table.freeze({name = "Tribe Chest", stacks = 4, min = 9, max = 11}),
+                tribe5 = table.freeze({name = "Tribe Chest", stacks = 4, min = 13, max = 17, lockedStack = true})
             }
         ),
         bonus = table.freeze({min = 4, max = 6}),
-        weights = table.freeze({nearUnlock = 1.25, nearAt = 0.5, locked = 1.25, carried = 2, owned = 1}),
+        weights = table.freeze({locked = 1.25, owned = 1, nearUnlock = 1.25, nearAt = 0.5, carried = 2}),
         first = table.freeze({item = "crossbow", drops = 3})
     }
 )
-function tbl_upv_1.IsKnown(a1)
+
+function v8.IsKnown(a13)
     --[[
       name: IsKnown
       line: 131
       upvalues:
-        Unlocks_upv_1 (copy, index: 1)
+        Unlocks (copy, index: 1)
     ]]
-    return Unlocks_upv_1.IsKnown(a1)
+    return Unlocks.IsKnown(a13)
 end
-function tbl_upv_1.AllIds()
+
+function v8.AllIds()
     --[[
       name: AllIds
       line: 135
       upvalues:
-        Unlocks_upv_1 (copy, index: 1)
+        Unlocks (copy, index: 1)
     ]]
-    return Unlocks_upv_1.AllIds()
+    return Unlocks.AllIds()
 end
-function tbl_upv_1.Size(a1)
+
+function v8.Size(a14)
     --[[
       name: Size
       line: 139
       upvalues:
-        Unlocks_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        Unlocks (copy, index: 1)
+        v8 (copy, index: 2)
     ]]
-    local v1 = Unlocks_upv_1.SizeOf(a1)
-    if tbl_upv_1.SIZES[v1] then
-        return v1
+    local sizeKey = Unlocks.SizeOf(a14)
+
+    if v8.SIZES[sizeKey] then
+        return sizeKey
     end
+
     return "medium"
 end
-local tbl_upv_2 = {}
-function tbl_upv_1.Stat(a1)
+
+local v16 = {}
+
+function v8.Stat(key)
     --[[
       name: Stat
       line: 146
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        u1 (ref,  index: 2)
-        Unlocks_upv_1 (copy, index: 3)
+        v16 (copy, index: 1)
+        Weapons (ref,  index: 2)
+        Unlocks (copy, index: 3)
     ]]
-    if type(a1) ~= "string" then
+    if type(key) ~= "string" then
         return false
     end
-    local v2 = tbl_upv_2[a1]
-    if v2 ~= nil then
-        return v2
+
+    local v18 = v16[key]
+    if v18 ~= nil then
+        return v18
     end
-    v2 = "damage"
-    local v3 = u1 and (u1.Get(a1))
-    if v3 then
-        local v4 = v3.tuning or {}
-        if v3.category == "armor" then
-            v2 = "armor"
-        elseif v3.category ~= "healing" then
-            if type(v4.damage) == "number" and v4.damage > 0 or type(v4.splash) == "table" and (v4.splash.damage or 0) > 0 or type(v4.bees) == "table" and (v4.bees.damage or 0) > 0 or type(v4.burn) == "table" then
-                v2 = "damage"
-                tbl_upv_2[a1] = v2
-                return v2
+
+    local v19 = "damage"
+
+    if const v20 = Weapons and Weapons.Get(key) then
+        local v21 = v20.tuning or {}
+
+        if v20.category == "armor" then
+            v19 = "armor"
+        elseif v20.category == "healing" then
+            v19 = "healing"
+        elseif type(v21.damage) == "number" and 0 < v21.damage then
+            v19 = "damage"
+        elseif type(v21.splash) ~= "table" or not (0 < (v21.splash.damage or 0)) then
+            if type(v21.bees) == "table" and 0 < (v21.bees.damage or 0) or type(v21.burn) == "table" then
+                v19 = "damage"
+            else
+                v19 = false
             end
-            v2 = false
         else
-            v2 = "healing"
+            v19 = "damage"
         end
-    else
-        local v5 = Unlocks_upv_1.IsAmmo(a1)
-        if v5 then
-            v2 = false
-        end
+    elseif Unlocks.IsAmmo(key) then
+        v19 = false
     end
-    tbl_upv_2[a1] = v2
-    return v2
+
+    v16[key] = v19
+
+    return v19
 end
-function tbl_upv_1.MaxLevel(a1)
+
+function v8.MaxLevel(a22)
     --[[
       name: MaxLevel
       line: 177
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    if tbl_upv_1.Stat(a1) then
-        return tbl_upv_1.MAX_LEVEL
+    if v8.Stat(a22) then
+        return v8.MAX_LEVEL
     end
+
     return 1
 end
-function tbl_upv_1.UnlockCost(a1)
+
+function v8.UnlockCost(a23)
     --[[
       name: UnlockCost
       line: 181
       upvalues:
-        Unlocks_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        Unlocks (copy, index: 1)
+        v8 (copy, index: 2)
     ]]
-    if Unlocks_upv_1.IsStarter(a1) then
+    if Unlocks.IsStarter(a23) then
         return 0
     end
-    return tbl_upv_1.SIZES[tbl_upv_1.Size(a1)].unlock
+
+    return v8.SIZES[v8.Size(a23)].unlock
 end
-function tbl_upv_1.UpgradeCost(a1, a2)
+
+function v8.UpgradeCost(a24, a25: number)
     --[[
       name: UpgradeCost
       line: 188
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    if type(a2) == "number" and not (a2 < 1) and not (tbl_upv_1.MaxLevel(a1) <= a2) then
-        return tbl_upv_1.SIZES[tbl_upv_1.Size(a1)].upgrade[math.floor(a2)]
+    if type(a25) == "number" and not (a25 < 1) and not (v8.MaxLevel(a24) <= a25) then
+        return v8.SIZES[v8.Size(a24)].upgrade[math.floor(a25)]
     end
+
     return nil
 end
-local function defaultLevel(a1)
+
+local function defaultLevel(a27)
     --[[
       name: defaultLevel
       line: 198
       upvalues:
-        Unlocks_upv_1 (copy, index: 1)
+        Unlocks (copy, index: 1)
     ]]
-    if Unlocks_upv_1.IsStarter(a1) then
+    if Unlocks.IsStarter(a27) then
         return 1
     end
+
     return 0
 end
-function tbl_upv_1.Level(a1, a2)
+
+function v8.Level(a28, key)
     --[[
       name: Level
       line: 202
       upvalues:
-        Unlocks_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        Unlocks (copy, index: 1)
+        v8 (copy, index: 2)
     ]]
-    if type(a2) ~= "string" then
+    if type(key) ~= "string" then
         return 0
     end
-    local v6 = (type(a1) == "table") and (a1[a2])
-    local v7
-    if type(v6) == "table" and type(v6.level) == "number" then
-        v7 = math.floor(v6.level)
+
+    local flooredValue
+    local v31 = type(a28) == "table" and a28[key]
+
+    if type(v31) ~= "table" or type(v31.level) ~= "number" then
+        flooredValue = 0
     else
-        v7 = 0
+        flooredValue = math.floor(v31.level)
     end
-    local v8 = ((Unlocks_upv_1.IsStarter(a2)) and 1) or 0
-    return (math.clamp(math.max(v7, v8), 0, tbl_upv_1.MaxLevel(a2)))
+
+    local v32 = Unlocks.IsStarter(key) and 1 or 0
+
+    return (math.clamp(math.max(flooredValue, v32), 0, v8.MaxLevel(key)))
 end
-function tbl_upv_1.ShardsOf(a1, a2)
+
+function v8.ShardsOf(a33, key)
     --[[
       name: ShardsOf
       line: 211
     ]]
-    local v9 = (type(a1) == "table") and ((type(a2) == "string") and (a1[a2]))
-    local v10
-    if type(v9) == "table" and type(v9.shards) == "number" and v9.shards == v9.shards then
-        v10 = math.floor(v9.shards)
+    local flooredValue
+    local v36 = type(a33) == "table" and type(key) == "string" and a33[key]
+
+    if type(v36) ~= "table" or type(v36.shards) ~= "number" or v36.shards ~= v36.shards then
+        flooredValue = 0
     else
-        v10 = 0
+        flooredValue = math.floor(v36.shards)
     end
-    return (math.max(0, v10))
+
+    return (math.max(0, flooredValue))
 end
-function tbl_upv_1.Owns(a1, a2)
+
+function v8.Owns(a37, a38)
     --[[
       name: Owns
       line: 217
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    local v11 = tbl_upv_1.Level(a1, a2) >= 1
-    return v11
+    return 1 <= v8.Level(a37, a38)
 end
-function tbl_upv_1.Progress(a1, a2)
+
+function v8.Progress(a39, a40)
     --[[
       name: Progress
       line: 221
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    local v12 = tbl_upv_1.Level(a1, a2)
-    local v13 = tbl_upv_1.ShardsOf(a1, a2)
-    if v12 == 0 then
-        return v13, tbl_upv_1.UnlockCost(a2), "unlock"
+    local v41 = v8.Level(a39, a40)
+    local v42 = v8.ShardsOf(a39, a40)
+
+    if v41 == 0 then
+        return v42, v8.UnlockCost(a40), "unlock"
     end
-    local v14 = tbl_upv_1.UpgradeCost(a2, v12)
-    if v14 then
-        return v13, v14, "upgrade"
+
+    local v43 = v8.UpgradeCost(a40, v41)
+    if not v43 then
+        return v42, 0, "max"
     end
-    return v13, 0, "max"
+
+    return v42, v43, "upgrade"
 end
-function tbl_upv_1.CanUpgrade(a1, a2)
+
+function v8.CanUpgrade(a44, a45)
     --[[
       name: CanUpgrade
       line: 234
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    local v15, v16, v17 = tbl_upv_1.Progress(a1, a2)
-    return (v17 == "upgrade") and (v16 <= v15)
+    local v46, v47, v48 = v8.Progress(a44, a45)
+    return (v48 == "upgrade") and (v47 <= v46)
 end
-function tbl_upv_1.ReadyCount(a1)
+
+function v8.ReadyCount(a49)
     --[[
       name: ReadyCount
       line: 239
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    local v18 = 0
-    for _, value_1 in tbl_upv_1.AllIds() do
-        v18 = (tbl_upv_1.CanUpgrade(a1, value_1) and (v18 + 1)) or v18
+    local count = 0
+
+    for _, v52 in v8.AllIds() do
+        if v8.CanUpgrade(a49, v52) then
+            count += 1
+        end
     end
-    return v18
+
+    return count
 end
-function tbl_upv_1.ToMax(a1, a2)
+
+function v8.ToMax(a53, a54)
     --[[
       name: ToMax
       line: 250
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    local v19 = tbl_upv_1.Level(a1, a2)
-    local v20 = tbl_upv_1.MaxLevel(a2)
-    if v20 <= v19 then
+    local v55 = v8.Level(a53, a54)
+    local v56 = v8.MaxLevel(a54)
+
+    if v56 <= v55 then
         return 0
     end
-    local v21 = ((v19 ~= 0) and 0) or (tbl_upv_1.UnlockCost(a2))
-    for n_1 = math.max(v19, 1), v20 - 1 do
-        v21 = v21 + (tbl_upv_1.UpgradeCost(a2, n_1) or 0)
+
+    local v57 = v55 ~= 0 and 0 or v8.UnlockCost(a54)
+
+    for index = math.max(v55, 1), v56 - 1 do
+        v57 += v8.UpgradeCost(a54, index) or 0
     end
-    return (math.max(0, v21 - tbl_upv_1.ShardsOf(a1, a2)))
+
+    return (math.max(0, v57 - v8.ShardsOf(a53, a54)))
 end
-function tbl_upv_1.Bonus(a1)
+
+function v8.Bonus(a59: number)
     --[[
       name: Bonus
       line: 263
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    if type(a1) == "number" and not (a1 <= 1) then
-        return math.min(tbl_upv_1.BONUS_PER_LEVEL * (math.floor(a1) - 1), tbl_upv_1.BONUS_CAP) + 1
+    if type(a59) == "number" and not (a59 <= 1) then
+        return math.min(v8.BONUS_PER_LEVEL * (math.floor(a59) - 1), v8.BONUS_CAP) + 1
     end
+
     return 1
 end
-function tbl_upv_1.BonusText(a1, a2)
+
+function v8.BonusText(a60, a61)
     --[[
       name: BonusText
       line: 270
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    local v22 = tbl_upv_1.Stat(a1)
-    if v22 then
-        return (("+%*%% %*"):format(math.floor(((tbl_upv_1.Bonus(a2) - 1) * 100) + 0.5), v22))
-    end
-    return ""
+    return if const v62 = v8.Stat(a60) then (`+{math.floor(((v8.Bonus(a61) - 1) * 100) + 0.5)}% {v62}`) else ""
 end
-function tbl_upv_1.Set(a1, a2, a3, a4)
+
+function v8.Set(a63, key, a65: number, a66)
     --[[
       name: Set
       line: 283
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        Unlocks_upv_1 (copy, index: 2)
+        v8 (copy, index: 1)
+        Unlocks (copy, index: 2)
     ]]
-    local v23 = math.max(0, math.floor(a3))
-    local v24 = math.clamp(math.floor(a4), 0, tbl_upv_1.MaxLevel(a2))
-    local v25 = ((Unlocks_upv_1.IsStarter(a2)) and 1) or 0
-    v24 = math.max(v24, v25)
-    if v23 == 0 then
-        local v26 = ((Unlocks_upv_1.IsStarter(a2)) and 1) or 0
-        if v24 == v26 then
-            a1[a2] = nil
+    local v67
+    local shards = math.max(0, (math.floor(a65)))
+    a66 = math.clamp(math.floor(a66), 0, v8.MaxLevel(key))
+
+    if Unlocks.IsStarter(key) then
+        v67 = 1
+    else
+        v67 = 0
+    end
+
+    local level = math.max(a66, v67)
+
+    if shards == 0 then
+        local v70 = Unlocks.IsStarter(key) and 1 or 0
+
+        if level == v70 then
+            a63[key] = nil
             return
         end
     end
-    a1[a2] = {shards = v23, level = v24}
+
+    a63[key] = {shards = shards, level = level}
 end
-function tbl_upv_1.Upgrade(a1, a2)
+
+function v8.Upgrade(a71, a72)
     --[[
       name: Upgrade
       line: 294
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    if type(a2) == "string" and tbl_upv_1.IsKnown(a2) then
-        local v27 = tbl_upv_1.Level(a1, a2)
-        if v27 == 0 then
-            return false, "Locked", nil
-        end
-        local v28 = tbl_upv_1.UpgradeCost(a2, v27)
-        if not v28 then
-            return false, "Max level", nil
-        end
-        local v29 = tbl_upv_1.ShardsOf(a1, a2)
-        if v29 < v28 then
-            return false, "Not enough shards", nil
-        end
-        tbl_upv_1.Set(a1, a2, v29 - v28, v27 + 1)
-        return true, nil, v27 + 1
+    if type(a72) ~= "string" or not v8.IsKnown(a72) then
+        return false, "Unknown item", nil
     end
-    return false, "Unknown item", nil
+
+    local v73 = v8.Level(a71, a72)
+
+    if v73 == 0 then
+        return false, "Locked", nil
+    end
+
+    local v74 = v8.UpgradeCost(a72, v73)
+    if not v74 then
+        return false, "Max level", nil
+    end
+
+    local v75 = v8.ShardsOf(a71, a72)
+
+    if v75 < v74 then
+        return false, "Not enough shards", nil
+    end
+
+    v8.Set(a71, a72, v75 - v74, v73 + 1)
+
+    return true, nil, v73 + 1
 end
-local function carriedSet(a1)
+
+local function carriedSet(a77)
     --[[
       name: carriedSet
       line: 317
     ]]
-    local tbl_3 = {}
-    if type(a1) == "table" then
-        if type(a1.items) == "table" then
-            for n_2 = 1, 16 do
-                local v30 = a1.items[n_2]
-                if type(v30) ~= "string" then
+    local v78 = {}
+
+    if type(a77) == "table" then
+        if type(a77.items) == "table" then
+            for itemKey = 1, 16 do
+                local item = a77.items[itemKey]
+
+                if type(item) ~= "string" then
                     break
-                else
-                    tbl_3[v30] = true
                 end
+
+                v78[item] = true
             end
         end
-        if type(a1.armor) == "string" then
-            tbl_3[a1.armor] = true
+
+        if type(a77.armor) == "string" then
+            v78[a77.armor] = true
         end
     end
-    return tbl_3
+
+    return v78
 end
-function tbl_upv_1.Pool(a1, a2)
+
+function v8.Pool(a81, a82)
     --[[
       name: Pool
       line: 339
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
         carriedSet (copy, index: 2)
-        Ranks_upv_1 (copy, index: 3)
+        Ranks (copy, index: 3)
     ]]
-    local weights_1 = tbl_upv_1.DROPS.weights
-    local v31 = carriedSet(a2 and (a2.loadout))
-    local tbl_4 = {}
-    local v32 = not (a2) or type(a2.rankBest) ~= "number" or a2.rankBest
-    for _, value_2 in tbl_upv_1.AllIds() do
-        local v33 = tbl_upv_1.Level(a1, value_2)
-        if tbl_upv_1.MaxLevel(value_2) <= v33 then
-            continue
-        end
-        if v33 ~= 0 or not (v32) or Ranks_upv_1.Allows(v32, value_2) then
-            if v33 ~= 0 then
-                local tbl_5 = {locked = false, frac = 0, weight = 0}
-                tbl_5.item = value_2
-                tbl_5.weight = weights_1.owned * (((not (v31[value_2])) and 1) or (weights_1.carried))
-                table.insert(tbl_4, tbl_5)
-            else
-                local v34 = math.max(1, tbl_upv_1.UnlockCost(value_2))
-                local v35 = math.min(1, tbl_upv_1.ShardsOf(a1, value_2) / v34)
-                local tbl_6 = {locked = true, frac = 0, weight = 0}
-                tbl_6.item = value_2
-                tbl_6.weight = weights_1.locked * (((not (weights_1.nearAt <= v35)) and 1) or (weights_1.nearUnlock))
-                tbl_6.frac = v35
-                table.insert(tbl_4, tbl_6)
+    local rankBest
+    local weights = v8.DROPS.weights
+    local v85 = carriedSet((a82 and a82.loadout))
+    local v86 = {}
+
+    if a82 and type(a82.rankBest) == "number" then
+        rankBest = a82.rankBest
+    else
+        rankBest = nil
+    end
+
+    for _, item in v8.AllIds() do
+        local v89 = v8.Level(a81, item)
+
+        if not (v8.MaxLevel(item) <= v89) then
+            if v89 ~= 0 or not rankBest or Ranks.Allows(rankBest, item) then
+                if v89 == 0 then
+                    local nearUnlock
+                    local v91 = math.max(1, v8.UnlockCost(item))
+                    local frac = math.min(1, v8.ShardsOf(a81, item) / v91)
+                    local v93 = {locked = true, item = item}
+                    local locked = weights.locked
+
+                    if weights.nearAt <= frac then
+                        nearUnlock = weights.nearUnlock
+                    else
+                        nearUnlock = 1
+                    end
+
+                    v93.weight = locked * nearUnlock
+                    v93.frac = frac
+                    table.insert(v86, v93)
+                else
+                    local v95 = {locked = false, frac = 0, item = item}
+                    local owned = weights.owned
+                    local v97 = not v85[item] and 1 or weights.carried
+                    v95.weight = owned * v97
+                    table.insert(v86, v95)
+                end
             end
         end
     end
-    return tbl_4
+
+    return v86
 end
-local function weightedPick(a1, a2, a3, a4)
-    --[[
-      name: weightedPick
-      line: 396
-    ]]
-    local v36 = 0
-    for _, value_3 in a1 do
-        if not (a2[value_3.item]) and (value_3.locked or not (a3)) then
-            v36 = v36 + value_3.weight
-        end
-    end
-    if v36 <= 0 then
-        return nil
-    end
-    local v37 = a4:NextNumber() * v36
-    v36 = nil
-    for _, value_4 in a1 do
-        if a2[value_4.item] then
-            continue
-        end
-        if value_4.locked or not (a3) then
-            v37 = v37 - value_4.weight
-            if not (v37 < 0) then
-                v36 = value_4
-                continue
-            end
-            return value_4
-        end
-    end
-    return v36
-end
-local function forcedPick(a1, a2, a3)
+
+local function forcedPick(a99, a100, a101)
     --[[
       name: forcedPick
       line: 367
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    local DROPS_1 = tbl_upv_1.DROPS
-    if a3.first ~= true then
-        if not (DROPS_1.pity <= (tonumber(a3.sinceUnlock) or 0)) then
-            return nil, 0
-        end
-        local v38 = nil
-        local v39 = math.huge
-        for _, value_5 in a2 do
-            if not (value_5.locked) then
-                continue
-            end
-            local v40 = tbl_upv_1.UnlockCost(value_5.item) - tbl_upv_1.ShardsOf(a1, value_5.item)
-            if not (v38) or v38.frac < value_5.frac or value_5.frac == v38.frac and v40 < v39 then
-                v38, v39 = value_5, v40
+    local drops = v8.DROPS
+
+    if a101.first == true and drops.first then
+        for _, v104 in a100 do
+            if v104.item == drops.first.item and v104.locked then
+                local v105 = math.max(1, drops.first.drops - (tonumber(a101.total) or 0))
+                return v104, (math.ceil((v8.UnlockCost(v104.item) - v8.ShardsOf(a99, v104.item)) / v105))
             end
         end
-        if v38 then
-            local v41
-            if v39 <= DROPS_1.pityFill then
-                return v41, v39
-            end
-            return v41, 0
-        end
-        return nil, 0
-    elseif DROPS_1.first then
-        for _, value_6 in a2 do
-            if value_6.item ~= DROPS_1.first.item or not (value_6.locked) then
-                continue
-            end
-            local v42 = math.max(1, DROPS_1.first.drops - (tonumber(a3.total) or 0))
-            return value_6, (math.ceil((tbl_upv_1.UnlockCost(value_6.item) - tbl_upv_1.ShardsOf(a1, value_6.item)) / v42))
-        end
-        if not (DROPS_1.pity <= (tonumber(a3.sinceUnlock) or 0)) then
-            return nil, 0
-        end
-        local v38 = nil
-        local v39 = math.huge
-        for _, value_5 in a2 do
-            if not (value_5.locked) then
-                continue
-            end
-            local v40 = tbl_upv_1.UnlockCost(value_5.item) - tbl_upv_1.ShardsOf(a1, value_5.item)
-            if not (v38) or v38.frac < value_5.frac or value_5.frac == v38.frac and v40 < v39 then
-                v38, v39 = value_5, v40
-            end
-        end
-        if v38 then
-            if v39 <= DROPS_1.pityFill then
-                return v38, v39
-            end
-            return v38, 0
-        end
-        return nil, 0
-    else
-        if not (DROPS_1.pity <= (tonumber(a3.sinceUnlock) or 0)) then
-            return nil, 0
-        end
-        local v38 = nil
-        local v39 = math.huge
-        for _, value_5 in a2 do
-            if not (value_5.locked) then
-                continue
-            end
-            local v40 = tbl_upv_1.UnlockCost(value_5.item) - tbl_upv_1.ShardsOf(a1, value_5.item)
-            if not (v38) or v38.frac < value_5.frac or value_5.frac == v38.frac and v40 < v39 then
-                v38, v39 = value_5, v40
-            end
-        end
-        if v38 then
-            if v39 <= DROPS_1.pityFill then
-                return v38, v39
-            end
-            return v38, 0
-        end
-        return nil, 0
     end
+
+    local number = tonumber(a101.sinceUnlock) or 0
+
+    if drops.pity <= number then
+        local v107
+        local v108 = math.huge
+
+        for _, v110 in a100 do
+            if v110.locked then
+                local v111 = v8.UnlockCost(v110.item) - v8.ShardsOf(a99, v110.item)
+
+                if v107 then
+                    local frac = v110.frac
+
+                    if not (v107.frac < frac) then
+                        if v110.frac ~= v107.frac then
+                            continue
+                        end
+                        if not (v111 < v108) then
+                            continue
+                        end
+                    end
+                end
+
+                v107, v108 = v110, v111
+            end
+        end
+
+        if v107 then
+            if v108 <= drops.pityFill then
+                return v107, v108
+            end
+
+            return v107, 0
+        end
+    end
+
+    return nil, 0
 end
-function tbl_upv_1.Roll(a1, a2, a3, a4)
+
+local function weightedPick(a114, a115, a116: boolean, a117)
+    --[[
+      name: weightedPick
+      line: 396
+    ]]
+    local v118
+    local total = 0
+
+    for _, v121 in a114 do
+        if not a115[v121.item] then
+            if v121.locked or not a116 then
+                total += v121.weight
+            end
+        end
+    end
+
+    if total <= 0 then
+        return nil
+    end
+
+    local v122 = a117:NextNumber() * total
+    v118 = nil
+
+    for _, v124 in a114 do
+        if not a115[v124.item] then
+            if not v124.locked and a116 then
+                continue
+            end
+
+            v122 -= v124.weight
+
+            if v122 < 0 then
+                return v124
+            end
+
+            v118 = v124
+        end
+    end
+
+    return v118
+end
+
+function v8.Roll(a125, kindKey, options, a128)
     --[[
       name: Roll
       line: 422
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
         forcedPick (copy, index: 2)
         weightedPick (copy, index: 3)
     ]]
-    local DROPS_2 = tbl_upv_1.DROPS
-    local v43 = a3 or {}
-    local v44 = DROPS_2.kinds[a2] or (DROPS_2.kinds.drop)
-    local tbl_7 = {}
-    for _ = 1, v44.stacks do
-        table.insert(tbl_7, {bonus = false, n = a4:NextInteger(v44.min, v44.max)})
+    local drops = v8.DROPS
+    local v130 = options or {}
+    local v131 = drops.kinds[kindKey] or drops.kinds.drop
+    local v132 = {}
+
+    for _ = 1, v131.stacks do
+        table.insert(v132, {bonus = false, n = a128:NextInteger(v131.min, v131.max)})
     end
-    if v43.mvp == true then
-        table.insert(tbl_7, {bonus = true, n = a4:NextInteger(DROPS_2.bonus.min, DROPS_2.bonus.max)})
+
+    if v130.mvp == true then
+        table.insert(v132, {bonus = true, n = a128:NextInteger(drops.bonus.min, drops.bonus.max)})
     end
-    for _ = 1, math.clamp(math.floor(tonumber(v43.extra) or 0), 0, 5) do
-        table.insert(tbl_7, {bonus = true, n = a4:NextInteger(DROPS_2.bonus.min, DROPS_2.bonus.max)})
+
+    for _ = 1, math.clamp(math.floor((tonumber(v130.extra) or 0)), 0, 5) do
+        table.insert(v132, {bonus = true, n = a128:NextInteger(drops.bonus.min, drops.bonus.max)})
     end
-    local v45 = tbl_upv_1.Pool(a1, v43)
-    local tbl_8 = {}
-    local tbl_9 = {}
-    local v46 = 0
-    if type(v43.lead) == "table" then
-        local v47 = nil
-        for _, value_7 in v43.lead do
-            v47 = (type(value_7) == "table") and (value_7.item)
-            if type(v47) ~= "string" or not (tbl_upv_1.IsKnown(v47)) or tbl_8[v47] then
-                continue
-            end
-            tbl_8[v47] = true
-            local v48 = math.min(math.max(0, math.floor(tonumber(value_7.shards) or 0)), tbl_upv_1.ToMax(a1, v47))
-            if v48 > 0 then
-                table.insert(tbl_9, {item = v47, shards = v48})
-            end
-        end
-    end
-    local v47, v49, _, v49 = nil, nil, nil, nil
-    for key_1, value_8 in tbl_7 do
-        v47 = nil
-        v49 = value_8.n
-        if key_1 == 1 then
-            local v50, v51 = forcedPick(a1, v45, v43)
-            if not (v50) or tbl_8[v50.item] then
-                v47 = (not (v44.lockedStack)) or (weightedPick(v45, tbl_8, true, a4)) or weightedPick(v45, tbl_8, false, a4)
-                if not (v47) then
-                    v46 = v46 + v49 * DROPS_2.xpPerShard
+
+    local v135 = v8.Pool(a125, v130)
+    local v136 = {}
+    local v137 = {}
+    local total = 0
+
+    if type(v130.lead) == "table" then
+        for _, v140 in v130.lead do
+            local _ = type(v140) == "table" and v140.item
+            local item
+
+            if type(item) == "string" then
+                if not v8.IsKnown(item) then
                     continue
                 end
-                tbl_8[v47.item] = true
-                local v50 = tbl_upv_1.ToMax(a1, v47.item)
-                if v50 < v49 then
-                    v46 = v46 + (v49 - v50) * DROPS_2.xpPerShard
-                    v49 = v50
-                end
-                if v49 > 0 then
-                    local tbl_10 = {bonus = 0}
-                    tbl_10.item = v47.item
-                    tbl_10.shards = v49
-                    tbl_10.bonus = ((value_8.bonus) and true) or nil
-                    table.insert(tbl_9, tbl_10)
+                if v136[item] then
                     continue
                 end
+
+                v136[item] = true
+                local shards = math.min(math.max(0, (math.floor((tonumber(v140.shards) or 0)))), v8.ToMax(a125, item))
+
+                if not (0 < shards) then
+                    continue
+                end
+
+                table.insert(v137, {item = item, shards = shards})
             end
-            v47, v49 = v50, math.max(v49, v51)
-        end
-        if not (v47) then
-            v47 = weightedPick(v45, tbl_8, false, a4)
-        end
-        if not (v47) then
-            v46 = v46 + v49 * DROPS_2.xpPerShard
-            continue
-        end
-        tbl_8[v47.item] = true
-        local v50 = tbl_upv_1.ToMax(a1, v47.item)
-        if v50 < v49 then
-            v46 = v46 + (v49 - v50) * DROPS_2.xpPerShard
-            v49 = v50
-        end
-        if v49 > 0 then
-            local tbl_10 = {bonus = 0}
-            tbl_10.item = v47.item
-            tbl_10.shards = v49
-            tbl_10.bonus = ((value_8.bonus) and true) or nil
-            table.insert(tbl_9, tbl_10)
         end
     end
-    return tbl_9, v46
+
+    local v144
+
+    for v145, v146 in v132 do
+        local v147
+        local v148 = nil
+        local n = v146.n
+
+        if v145 == 1 then
+            local v150
+            v144, v150 = forcedPick(a125, v135, v130)
+
+            if v144 and not v136[v144.item] then
+                v147 = math.max(n, v150)
+                v148 = v144
+            elseif v131.lockedStack then
+                v148 = weightedPick(v135, v136, true, a128)
+                v147 = n
+            else
+                v147 = n
+            end
+        else
+            v147 = n
+        end
+
+        v148 = v148 or weightedPick(v135, v136, false, a128)
+
+        if v148 then
+            v136[v148.item] = true
+            local v151 = v8.ToMax(a125, v148.item)
+
+            if v151 < v147 then
+                total += (v147 - v151) * drops.xpPerShard
+                v147 = v151
+            end
+
+            if 0 < v147 then
+                local bonus
+                local v153 = {item = v148.item, shards = v147}
+
+                if v146.bonus then
+                    bonus = true
+                else
+                    bonus = nil
+                end
+
+                v153.bonus = bonus
+                table.insert(v137, v153)
+            end
+        else
+            total += v147 * drops.xpPerShard
+        end
+    end
+
+    return v137, total
 end
-function tbl_upv_1.Apply(a1, a2)
+
+function v8.Apply(a154, a155)
     --[[
       name: Apply
       line: 489
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    local tbl_11 = {}
-    local v52, v53 = nil, nil
-    local v54 = nil
-    local v55 = nil
-    for _, value_9 in a2 do
-        local item_1 = value_9.item
-        local v56 = tbl_upv_1.Level(a1, item_1)
-        local v57 = tbl_upv_1.ShardsOf(a1, item_1)
-        if v56 ~= 0 then
-            v54 = tbl_upv_1.UpgradeCost(item_1, v56) or 0
+    local v156 = {}
+
+    for _, v158 in a155 do
+        local level, v160
+        local item = v158.item
+        local levelBefore = v8.Level(a154, item)
+        local before = v8.ShardsOf(a154, item)
+        local need = if levelBefore == 0 then v8.UnlockCost(item) else v8.UpgradeCost(item, levelBefore) or 0
+        local after = before + math.max(0, (math.floor(v158.shards)))
+        local unlocked = false
+
+        if levelBefore == 0 and need <= after then
+            level = 1
+            v160 = after - need
+            unlocked = true
         else
-            v54 = tbl_upv_1.UnlockCost(item_1)
+            v160, level = after, levelBefore
         end
-        local v58 = v57 + math.max(0, math.floor(value_9.shards))
-        v52 = v56
-        v53 = false
-        if v56 ~= 0 then
-            v55 = v58
-            tbl_upv_1.Set(a1, item_1, v55, v52)
-            local tbl_12 = {bonus = 0}
-            tbl_12.item = item_1
-            tbl_12.shards = value_9.shards
-            tbl_12.before = v57
-            tbl_12.after = v58
-            tbl_12.need = v54
-            tbl_12.levelBefore = v56
-            tbl_12.level = v52
-            tbl_12.unlocked = v53
-            tbl_12.ready = tbl_upv_1.CanUpgrade(a1, item_1)
-            tbl_12.bonus = value_9.bonus == true
-            table.insert(tbl_11, tbl_12)
-            continue
-        end
-        if v54 <= v58 then
-            v52 = 1
-            v55 = v58 - v54
-            v53 = true
-        else
-            v55 = v58
-        end
-        tbl_upv_1.Set(a1, item_1, v55, v52)
-        local tbl_12 = {bonus = 0}
-        tbl_12.item = item_1
-        tbl_12.shards = value_9.shards
-        tbl_12.before = v57
-        tbl_12.after = v58
-        tbl_12.need = v54
-        tbl_12.levelBefore = v56
-        tbl_12.level = v52
-        tbl_12.unlocked = v53
-        tbl_12.ready = tbl_upv_1.CanUpgrade(a1, item_1)
-        tbl_12.bonus = value_9.bonus == true
-        table.insert(tbl_11, tbl_12)
+
+        v8.Set(a154, item, v160, level)
+        local v167 = {item = item, shards = v158.shards, before = before, after = after, need = need, levelBefore = levelBefore, level = level, unlocked = unlocked, ready = v8.CanUpgrade(a154, item), bonus = v158.bonus == true}
+        table.insert(v156, v167)
     end
-    return tbl_11
+
+    return v156
 end
-function tbl_upv_1.KindFor(a1, a2)
+
+function v8.KindFor(a168, a169)
     --[[
       name: KindFor
       line: 520
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    if a1 then
-        if a2:NextNumber() < tbl_upv_1.DROPS.goldenChance then
-            return "golden", true
-        end
-        return "victory", false
+    if not a168 then
+        return "drop", false
     end
-    return "drop", false
+
+    local v170 = a169:NextNumber()
+
+    if v170 < v8.DROPS.goldenChance then
+        return "golden", true
+    end
+
+    return "victory", false
 end
-local function revealRank(a1)
+
+local function revealRank(a172)
     --[[
       name: revealRank
       line: 530
     ]]
-    if a1.unlocked then
+    if a172.unlocked then
         return 3
-    elseif a1.levelBefore ~= 0 then
-        if a1.ready then
-            return 1
-        end
-        return 0
-    else
+    end
+    if a172.levelBefore == 0 then
         return 2
     end
+    if a172.ready then
+        return 1
+    end
+
+    return 0
 end
-function tbl_upv_1.Drop(a1, a2, a3, a4, a5)
+
+function v8.Drop(a173, options, a175, options2, a177)
     --[[
       name: Drop
       line: 546
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    local v59 = a4 or {}
-    local tbl_13 = {first = 0, total = 0, mvp = 0, rankBest = 0, extra = 0, sinceUnlock = 0, loadout = 0, lead = 0}
-    local v60
-    if v59.mvp == true then
-        v60 = true
-    else
-        v60 = false
+    local v178 = options2 or {}
+    local v179 = {mvp = v178.mvp == true, total = options.total or 0, sinceUnlock = options.sinceUnlock or 0, first = options.first == true, loadout = v178.loadout, extra = v178.extra, rankBest = v178.rankBest, lead = v178.lead}
+    local v180, v181 = v8.Roll(a173, a175, v179, a177)
+    local v182 = v8.Apply(a173, v180)
+    local v183 = {}
+
+    for v184, v185 in v182 do
+        v183[v185] = v184
     end
-    tbl_13.mvp = v60
-    tbl_13.total = a2.total or 0
-    tbl_13.sinceUnlock = a2.sinceUnlock or 0
-    tbl_13.first = a2.first == true
-    tbl_13.loadout = v59.loadout
-    tbl_13.extra = v59.extra
-    tbl_13.rankBest = v59.rankBest
-    tbl_13.lead = v59.lead
-    local v61, v62 = tbl_upv_1.Roll(a1, a3, tbl_13, a5)
-    local v63 = tbl_upv_1.Apply(a1, v61)
-    local tbl_upv_14 = {}
-    for key_2, value_10 in v63 do
-        tbl_upv_14[value_10] = key_2
-    end
+
     table.sort(
-        v63,
-        function(a6, a7)
+        v182,
+        function(left, right)
             --[[
               line: 564
               upvalues:
-                tbl_upv_14 (copy, index: 1)
+                v183 (copy, index: 1)
             ]]
-            local v64 = ((a6.unlocked) and 3) or (((a6.levelBefore == 0) and 2) or (((a6.ready) and 1) or 0))
-            local v65 = ((a7.unlocked) and 3) or (((a7.levelBefore == 0) and 2) or (((a7.ready) and 1) or 0))
-            if v64 == v65 then
-                return tbl_upv_14[a6] < tbl_upv_14[a7]
+            local v188 = left.unlocked and 3 or left.levelBefore ~= 0 and (left.ready and 1 or 0) or 2
+            local v189 = right.unlocked and 3 or right.levelBefore ~= 0 and (right.ready and 1 or 0) or 2
+
+            if v188 ~= v189 then
+                return v188 < v189
             end
-            return v64 < v65
+
+            return v183[left] < v183[right]
         end
     )
-    local v66 = false
-    v59 = v66
-    for _, value_11 in v63 do
-        v59 = v59 or value_11.unlocked
+
+    local unlocked = false
+
+    for _, v192 in v182 do
+        local unlocked2 = unlocked or v192.unlocked
+        unlocked = unlocked2
     end
-    a2.total = (a2.total or 0) + 1
-    a2.sinceUnlock = (v59 and 0) or ((a2.sinceUnlock or 0) + 1)
-    local first_1 = tbl_upv_1.DROPS.first
-    if a2.first == true and (not (first_1) or not (tbl_upv_1.IsKnown(first_1.item)) or tbl_upv_1.Owns(a1, first_1.item)) then
-        a2.first = false
+
+    options.total = (options.total or 0) + 1
+    options.sinceUnlock = unlocked and 0 or (options.sinceUnlock or 0) + 1
+    local first = v8.DROPS.first
+
+    if options.first == true and (not first or not v8.IsKnown(first.item) or v8.Owns(a173, first.item)) then
+        options.first = false
     end
-    return v63, v62, v59
+
+    return v182, v181, unlocked
 end
-function tbl_upv_1.Context(a1)
-    --[[
-      name: Context
-      line: 700
-    ]]
-    local v68
-    if type(a1) == "table" and type(a1.dropStats) == "table" then
-        v68 = a1.dropStats
-    else
-        v68 = {}
-    end
-    local tbl_15 = {rankBest = 0, loadout = 0, first = 0}
-    tbl_15.total = tonumber(v68.total) or 0
-    tbl_15.sinceUnlock = tonumber(v68.sinceUnlock) or 0
-    local v69
-    if v68.first == true then
-        v69 = true
-    else
-        v69 = false
-    end
-    tbl_15.first = v69
-    if type(a1) ~= "table" then
-        v69 = nil
-    else
-        v69 = a1.loadout
-    end
-    tbl_15.loadout = v69
-    if type(a1) == "table" and type(a1.rankBest) == "number" then
-        v69 = a1.rankBest
-    else
-        v69 = nil
-    end
-    tbl_15.rankBest = v69
-    return tbl_15
-end
-local function inclusion(a1, a2, a3)
+
+local function inclusion(a196, kindKey, a198)
     --[[
       name: inclusion
       line: 593
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
         forcedPick (copy, index: 2)
     ]]
-    local DROPS_3 = tbl_upv_1.DROPS
-    local v70 = DROPS_3.kinds[a2] or (DROPS_3.kinds.drop)
-    local v71 = tbl_upv_1.Pool(a1, a3)
-    local stacks_1 = v70.stacks
-    local v72 = ((a3.mvp ~= true) and 0) or 1
-    local v73 = #v71
-    local v74 = table.create(v73, 0)
-    local v75 = 0
-    if v73 == 0 then
+    local has, v200
+    local drops = v8.DROPS
+    local v202 = drops.kinds[kindKey] or drops.kinds.drop
+    local v203 = v8.Pool(a196, a198)
+    local stacks = v202.stacks
+    local v205 = a198.mvp ~= true and 0 or 1
+    local v206 = stacks + v205
+    local size = #v203
+    local values = table.create(size, 0)
+    local v209 = 0
+
+    if size == 0 then
         return {}, 0
     end
-    local v76 = forcedPick(a1, v71, a3)
-    local v77 = 0
-    if v76 then
-        for key_3, value_12 in v71 do
-            if value_12 == v76 then
-                v77 = key_3
+
+    local v210 = v203
+    local v211 = forcedPick(a196, v210, a198)
+    local v212 = 0
+
+    if v211 then
+        local v213 = v203
+
+        for v214, v215 in v213 do
+            if v215 == v211 then
+                v212 = v214
             end
         end
     end
-    v76 = false
-    for _, value_13 in v71 do
-        v76 = v76 or value_13.locked
+
+    local v216 = false
+    local v217 = v203
+    v200 = v216
+
+    for _, v219 in v217 do
+        local v220 = v200 or v219.locked
+        v200 = v220
     end
-    local function has_1(a4, a5)
+
+    has = function(a221, a222)
         --[[
           name: has
           line: 618
         ]]
-        local v80 = math.floor(a4 / (2 ^ (a5 - 1))) % 2 == 1
-        return v80
+        return math.floor(a221 / (2 ^ (function(...) return ... end)(((a222 - 1))))) % 2 == 1
     end
-    if v73 > 50 then
-        local v81 = Random.new(12345)
-        local v82 = 0
-        local tbl_16 = {}
-        for key_4, value_14 in v71 do
-            tbl_16[value_14.item] = key_4
-        end
-        for _ = 1, 20000 do
-            local v84 = false
-            for v96, value_15 in tbl_upv_1.Roll(a1, a2, a3, v81) do
-                local v85 = tbl_16[value_15.item]
-                if v85 then
-                    v74[v85] = v74[v85] + 5e-05
-                    v84 = v84 or v71[v85].locked
-                end
-            end
-            v82 = (v84 and (v82 + 1)) or v82
-            local v85
-        end
-        v75 = v82 / 20000
-    else
-        local v81 = {}
-        v81[0] = 1
-        local v87 = nil
-        for n_3 = 1, math.min(stacks_1 + v72, v73) do
-            local tbl_17 = {}
-            for key_5, value_16 in v81 do
-                v87 = false
-                if n_3 == 1 then
-                    v87 = false
-                    if v70.lockedStack == true then
-                        v87 = v76
-                    end
-                end
-                if n_3 ~= 1 then
-                    local v88 = 0
-                    local v89 = v88
-                    for key_6, value_17 in v71 do
-                        local v90 = math.floor(key_5 / (2 ^ (key_6 - 1))) % 2 == 1
-                        if not (v90) and (value_17.locked or not (v87)) then
-                            v89 = v89 + value_17.weight
+
+    if not (50 < size) then
+        local v223 = {[0] = 1}
+
+        for index = 1, math.min(v206, size) do
+            local v225 = {}
+            local v226, v227
+
+            for v226, v227 in v223 do
+                local v228 = index == 1 and v202.lockedStack == true and v200
+
+                if index ~= 1 or not (0 < v212) then
+                    local v229
+                    local v230 = 0
+                    v229 = v230
+
+                    for v231, v232 in v203 do
+                        if not has(v226, v231) then
+                            if v232.locked or not v228 then
+                                v229 += v232.weight
+                            end
                         end
                     end
-                    if not (v89 > 0) then
-                        continue
-                    end
-                    for key_7, value_18 in v71 do
-                        local v91 = math.floor(key_5 / (2 ^ (key_7 - 1))) % 2 == 1
-                        if not (v91) and (value_18.locked or not (v87)) then
-                            local v92 = key_5 + 2 ^ (key_7 - 1)
-                            tbl_17[v92] = (tbl_17[v92] or 0) + ((value_16 * value_18.weight) / v89)
+
+                    if 0 < v229 then
+                        for v233, v234 in v203 do
+                            local v235, v236
+                            local v237 = false
+
+                            if not has(v226, v233) then
+                                if v234.locked then
+                                    v235, v236 = v233, v234
+                                    v237 = true
+                                elseif not v228 then
+                                    v235, v236 = v233, v234
+                                    v237 = true
+                                end
+                            end
+
+                            if v237 then
+                                local v238 = v226 + 2 ^ (function(...) return ... end)(((v235 - 1)))
+                                local v239 = v225[v238] or 0
+                                v225[v238] = v239 + ((v227 * v236.weight) / v229)
+                            end
                         end
                     end
                 else
-                    if v77 > 0 then
-                        tbl_17[2 ^ (v77 - 1)] = value_16
-                        continue
-                    end
-                    local v88 = 0
-                    local v89 = v88
-                    for key_6, value_17 in v71 do
-                        local v90 = math.floor(key_5 / (2 ^ (key_6 - 1))) % 2 == 1
-                        if not (v90) and (value_17.locked or not (v87)) then
-                            v89 = v89 + value_17.weight
-                        end
-                    end
-                    if not (v89 > 0) then
-                        continue
-                    end
-                    for key_7, value_18 in v71 do
-                        local v91 = math.floor(key_5 / (2 ^ (key_7 - 1))) % 2 == 1
-                        if not (v91) and (value_18.locked or not (v87)) then
-                            local v92 = key_5 + 2 ^ (key_7 - 1)
-                            tbl_17[v92] = (tbl_17[v92] or 0) + ((value_16 * value_18.weight) / v89)
-                        end
-                    end
+                    v225[2 ^ (function(...) return ... end)(((v212 - 1)))] = v227
                 end
             end
-            v81 = tbl_17
+
+            v223 = v225
         end
-        for key_8, value_19 in v81 do
-            local v94 = false
-            for key_9, value_20 in v71 do
-                local v95 = math.floor(key_8 / (2 ^ (key_9 - 1))) % 2 == 1
-                if v95 then
-                    v74[key_9] = v74[key_9] + value_19
-                    v95 = v94 or (value_20.locked)
-                    v94 = v95
+
+        for v240, v241 in v223 do
+            local locked = false
+
+            for valueKey, v244 in v203 do
+                if has(v240, valueKey) then
+                    values[valueKey] += v241
+                    local locked2 = locked or v244.locked
+                    locked = locked2
                 end
             end
-            v75 = (v94 and (v75 + value_19)) or v75
+
+            if locked then
+                v209 += v241
+            end
         end
+    else
+        local random = Random.new(12345)
+        local count = 0
+        local v248 = {}
+
+        for v249, v250 in v203 do
+            v248[v250.item] = v249
+        end
+
+        for _ = 1, 20000 do
+            local v252 = v8.Roll(a196, kindKey, a198, random)
+            local locked = false
+
+            for _, v255 in v252 do
+                if const valueKey = v248[v255.item] then
+                    values[valueKey] += 5e-05
+                    local locked3 = locked or v203[valueKey].locked
+                    locked = locked3
+                end
+            end
+
+            if locked then
+                count += 1
+            end
+        end
+
+        v209 = count / 20000
     end
-    has_1 = {}
-    for key_10, value_21 in v71 do
-        table.insert(has_1, {item = value_21.item, chance = math.clamp(v74[key_10], 0, 1), locked = value_21.locked})
+
+    local v258 = {}
+
+    for valueKey, v260 in v203 do
+        table.insert(v258, {item = v260.item, chance = math.clamp(values[valueKey], 0, 1), locked = v260.locked})
     end
+
     table.sort(
-        has_1,
-        function(a6, a7)
+        v258,
+        function(left, right)
             --[[
               line: 689
             ]]
-            if math.abs(a6.chance - a7.chance) > 1e-09 then
-                return a7.chance < a6.chance
+            if not (1e-09 < math.abs(left.chance - right.chance)) then
+                return left.item < right.item
             end
-            return a6.item < a7.item
+
+            local chance = left.chance
+
+            return right.chance < chance
         end
     )
-    return has_1, (math.clamp(v75, 0, 1))
+
+    return v258, (math.clamp(v209, 0, 1))
 end
-function tbl_upv_1.Odds(a1, a2, a3)
+
+v8.Context = Context
+
+function v8.Odds(a264, kind, a266)
     --[[
       name: Odds
       line: 711
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v8 (copy, index: 1)
         inclusion (copy, index: 2)
     ]]
-    local DROPS_4 = tbl_upv_1.DROPS
-    local tbl_18 = {}
-    for _, value_22 in DROPS_4.order do
-        local v96 = DROPS_4.kinds[value_22]
-        local tbl_19 = {lockedStack = 0}
-        tbl_19.kind = value_22
-        tbl_19.name = v96.name
-        tbl_19.stacks = v96.stacks
-        tbl_19.min = v96.min
-        tbl_19.max = v96.max
-        tbl_19.lockedStack = v96.lockedStack == true
-        table.insert(tbl_18, tbl_19)
+    local drops = v8.DROPS
+    local kinds = {}
+
+    for _, v270 in drops.order do
+        local kind2 = drops.kinds[v270]
+        table.insert(kinds, {kind = v270, name = kind2.name, stacks = kind2.stacks, min = kind2.min, max = kind2.max, lockedStack = kind2.lockedStack == true})
     end
-    local tbl_20 = {}
-    tbl_20.kinds = tbl_18
-    tbl_20.bonus = {min = DROPS_4.bonus.min, max = DROPS_4.bonus.max}
-    tbl_20.goldenChance = DROPS_4.goldenChance
-    tbl_20.pity = DROPS_4.pity
-    if a1 ~= nil and type(a2) == "string" and DROPS_4.kinds[a2] then
-        local v97, v98 = inclusion(a1, a2, a3 or {})
-        tbl_20.kind = a2
-        tbl_20.items = v97
-        tbl_20.lockedChance = v98
+
+    local v272 = {kinds = kinds, bonus = {min = drops.bonus.min, max = drops.bonus.max}, goldenChance = drops.goldenChance, pity = drops.pity}
+
+    if a264 ~= nil and type(kind) == "string" and drops.kinds[kind] then
+        local v273 = a266 or {}
+        local items, lockedChance = inclusion(a264, kind, v273)
+        v272.kind = kind
+        v272.items = items
+        v272.lockedChance = lockedChance
     end
-    return tbl_20
+
+    return v272
 end
-function tbl_upv_1.LevelsFor(a1, a2)
+
+function v8.LevelsFor(a276, a277)
     --[[
       name: LevelsFor
       line: 736
       upvalues:
         carriedSet (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v8 (copy, index: 2)
     ]]
-    local tbl_21 = {}
-    for key_11 in carriedSet(a2) do
-        if tbl_upv_1.IsKnown(key_11) then
-            tbl_21[key_11] = math.max(1, tbl_upv_1.Level(a1, key_11))
+    local v278 = {}
+
+    for v279 in carriedSet(a277) do
+        if v8.IsKnown(v279) then
+            v278[v279] = math.max(1, v8.Level(a276, v279))
         end
     end
-    return tbl_21
+
+    return v278
 end
-local u2 = nil
+
+local v280 = nil
+
 local function catalogue()
     --[[
       name: catalogue
       line: 750
       upvalues:
-        u2 (ref,  index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v280 (ref,  index: 1)
+        v8 (copy, index: 2)
     ]]
-    local v99 = u2
-    if v99 then
-        return v99
+    if const v282 = v280 then
+        return v282
     end
-    local v100 = tbl_upv_1.AllIds()
-    local tbl_22 = {}
-    for key_12, value_23 in v100 do
-        tbl_22[value_23] = key_12
+
+    local ids = v8.AllIds()
+    local index = {}
+
+    for v285, v286 in ids do
+        index[v286] = v285
     end
-    local tbl_23 = {}
-    tbl_23.ids = v100
-    tbl_23.index = tbl_22
-    u2 = tbl_23
-    return tbl_23
+
+    local v287 = {ids = ids, index = index}
+    v280 = v287
+
+    return v287
 end
-local function base36(a1)
+
+local function base36(a289)
     --[[
       name: base36
       line: 766
     ]]
-    local v101 = ""
-    v101 = nil
+    local v290
+    local v291 = ""
+    v290 = a289
+
     repeat
-        local v102 = a1 % 36
-        v101 = string.sub("0123456789abcdefghijklmnopqrstuvwxyz", v102 + 1, v102 + 1) .. v101
-        a1 = a1 // 36
-    until a1 == 0
-    return v101
+        local v292 = v290 % 36
+        v291 = string.sub("0123456789abcdefghijklmnopqrstuvwxyz", v292 + 1, v292 + 1) .. v291
+        v290 //= 36
+    until v290 == 0
+
+    return v291
 end
-function tbl_upv_1.EncodeLevels(a1)
+
+function v8.EncodeLevels(a293)
     --[[
       name: EncodeLevels
       line: 776
       upvalues:
         catalogue (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v8 (copy, index: 2)
     ]]
-    local v103 = catalogue()
-    local tbl_24 = {}
-    if type(a1) == "table" then
-        for key_13, value_24 in a1 do
-            local v104 = (type(key_13) == "string") and (v103.index[key_13])
-            if not (v104) or type(value_24) ~= "number" or not (value_24 >= 2) then
-                continue
+    local v294 = catalogue()
+    local v295 = {}
+
+    if type(a293) == "table" then
+        for v296, v297 in a293 do
+            local i
+            local v299 = false
+
+            if type(v296) == "string" then
+                i = v294.index[v296]
+            else
+                i = v299
             end
-            local tbl_25 = {s = 0}
-            tbl_25.i = v104
-            local v105 = ""
-            local v106 = v104
-            repeat
-                local v107 = v106 % 36
-                v105 = string.sub("0123456789abcdefghijklmnopqrstuvwxyz", v107 + 1, v107 + 1) .. v105
-                v106 = v106 // 36
-            until v106 == 0
-            tbl_25.s = ("%*=%*"):format(v105, math.clamp(math.floor(value_24), 2, tbl_upv_1.MAX_LEVEL))
-            table.insert(tbl_24, tbl_25)
+
+            if i then
+                if type(v297) == "number" and 2 <= v297 then
+                    local v300
+                    local v301 = {s = nil, i = i}
+                    local v302 = ""
+                    v300 = v299
+
+                    repeat
+                        local v303 = v300 % 36
+                        v302 = string.sub("0123456789abcdefghijklmnopqrstuvwxyz", v303 + 1, v303 + 1) .. v302
+                        v300 //= 36
+                    until v300 == 0
+
+                    v301.s = `{v302}={(math.clamp(math.floor(v297), 2, v8.MAX_LEVEL))}`
+                    table.insert(v295, v301)
+                end
+            end
         end
     end
+
     table.sort(
-        tbl_24,
-        function(a2, a3)
+        v295,
+        function(left, right)
             --[[
               line: 787
             ]]
-            return a2.i < a3.i
+            return left.i < right.i
         end
     )
-    local tbl_26 = {}
-    local v109 = 0
-    for _, value_25 in tbl_24 do
-        if (v109 + #value_25.s) + 1 > 51 then
+    local parts = {}
+    local v307 = 0
+    local v308 = v307
+
+    for _, v310 in v295 do
+        if 51 < (v308 + #v310.s) + 1 then
             break
-        else
-            v109 = v109 + (#value_25.s + 1)
-            table.insert(tbl_26, value_25.s)
         end
+
+        v308 += #v310.s + 1
+        table.insert(parts, v310.s)
     end
-    return table.concat(tbl_26, ",")
+
+    return table.concat(parts, ",")
 end
-local tbl_upv_27 = {}
-local u3 = 0
-function tbl_upv_1.DecodeLevels(a1)
+
+local v311 = {}
+local v312 = 0
+
+function v8.DecodeLevels(text: string)
     --[[
       name: DecodeLevels
       line: 805
       upvalues:
-        tbl_upv_27 (copy, index: 1)
+        v311 (copy, index: 1)
         catalogue (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
-        u3 (ref,  index: 4)
+        v8 (copy, index: 3)
+        v312 (ref,  index: 4)
     ]]
-    if type(a1) ~= "string" or a1 == "" then
+    if type(text) ~= "string" or text == "" then
         return {}
+    elseif const v314 = v311[text] then
+        return v314
     end
-    local v110 = tbl_upv_27[a1]
-    if v110 then
-        return v110
-    end
-    local v111 = catalogue()
-    local tbl_28 = {}
-    for key_14, value_26 in string.gmatch(a1, "(%w+)=(%d+)") do
-        local num_1 = tonumber(key_14, 36)
-        local v112 = num_1 and (v111.ids[num_1])
-        if v112 then
-            tbl_28[v112] = math.clamp(tonumber(value_26) or 1, 1, tbl_upv_1.MAX_LEVEL)
+
+    local v315 = catalogue()
+    local v316 = {}
+
+    for v317, v318 in string.gmatch(text, "(%w+)=(%d+)") do
+        local number = tonumber(v317, 36)
+
+        if const v320 = number and v315.ids[number] then
+            v316[v320] = math.clamp((tonumber(v318) or 1), 1, v8.MAX_LEVEL)
         end
     end
-    table.freeze(tbl_28)
-    if u3 > 256 then
-        table.clear(tbl_upv_27)
-        u3 = 0
+
+    table.freeze(v316)
+
+    if 256 < v312 then
+        table.clear(v311)
+        v312 = 0
     end
-    tbl_upv_27[a1] = tbl_28
-    u3 = u3 + 1
-    return tbl_28
+
+    v311[text] = v316
+    v312 += 1
+
+    return v316
 end
-return tbl_upv_1
+
+return v8

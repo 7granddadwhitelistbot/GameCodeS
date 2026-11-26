@@ -1,367 +1,527 @@
-local Lighting_upv_1 = game:GetService("Lighting")
-local Players_upv_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local RunService_upv_1 = game:GetService("RunService")
-local TweenService_upv_1 = game:GetService("TweenService")
-local tbl_1 = {}
-local u1 = Font.new("rbxasset://fonts/families/Oswald.json", Enum.FontWeight.Bold)
-local fromRGB_upv_1 = Color3.fromRGB
-local u2 = fromRGB_upv_1(255, 198, 96)
-local u3 = fromRGB_upv_1(255, 146, 52)
-local u4 = fromRGB_upv_1(255, 98, 50)
-local u5 = fromRGB_upv_1(255, 236, 200)
-local u6 = fromRGB_upv_1(38, 12, 5)
-tbl_1.Color = u3
-local tbl_upv_2 = {Live = true, Overtime = true, PreRound = true}
-local tbl_upv_3 = {}
-tbl_upv_3.count = {Brightness = -0.04, Saturation = 0.1, Contrast = 0.14, TintColor = fromRGB_upv_1(255, 234, 212)}
-tbl_upv_3.live = {Brightness = -0.02, Saturation = 0.07, Contrast = 0.08, TintColor = fromRGB_upv_1(255, 243, 230)}
-tbl_upv_3.off = {Brightness = 0, Saturation = 0, Contrast = 0, TintColor = fromRGB_upv_1(255, 255, 255)}
-local tbl_upv_4 = {live = 0.54, off = 1, count = 0.34}
-function tbl_1.Init(a1)
+local lighting = game:GetService("Lighting")
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+local v6 = {}
+local fontFace = Font.new("rbxasset://fonts/families/Oswald.json", Enum.FontWeight.Bold)
+local color3FromRGB = Color3.fromRGB
+local color3 = color3FromRGB(255, 198, 96)
+local color32 = color3FromRGB(255, 146, 52)
+local color33 = color3FromRGB(255, 98, 50)
+local color34 = color3FromRGB(255, 236, 200)
+local imageColor3 = color3FromRGB(38, 12, 5)
+v6.Color = color32
+local v14 = {PreRound = true, Live = true, Overtime = true}
+local v15 = {count = {Brightness = -0.04, Contrast = 0.14, Saturation = 0.1, TintColor = color3FromRGB(255, 234, 212)}, live = {Brightness = -0.02, Contrast = 0.08, Saturation = 0.07, TintColor = color3FromRGB(255, 243, 230)}, off = {Brightness = 0, Contrast = 0, Saturation = 0, TintColor = color3FromRGB(255, 255, 255)}}
+local v16 = {count = 0.34, live = 0.54, off = 1}
+
+function v6.Init(a17)
     --[[
       name: Init
       line: 62
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        ReplicatedStorage_upv_1 (copy, index: 2)
-        TweenService_upv_1 (copy, index: 3)
-        u6 (copy, index: 4)
-        tbl_upv_2 (copy, index: 5)
-        RunService_upv_1 (copy, index: 6)
-        Lighting_upv_1 (copy, index: 7)
-        tbl_upv_4 (copy, index: 8)
-        tbl_upv_3 (copy, index: 9)
-        u1 (copy, index: 10)
-        u3 (copy, index: 11)
-        fromRGB_upv_1 (copy, index: 12)
-        u2 (copy, index: 13)
-        u5 (copy, index: 14)
-        u4 (copy, index: 15)
+        players (copy, index: 1)
+        replicatedStorage (copy, index: 2)
+        tweenService (copy, index: 3)
+        imageColor3 (copy, index: 4)
+        v14 (copy, index: 5)
+        runService (copy, index: 6)
+        lighting (copy, index: 7)
+        v16 (copy, index: 8)
+        v15 (copy, index: 9)
+        fontFace (copy, index: 10)
+        color32 (copy, index: 11)
+        color3FromRGB (copy, index: 12)
+        color3 (copy, index: 13)
+        color34 (copy, index: 14)
+        color33 (copy, index: 15)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local u7 = UI_upv_1.Assets.Fx or {}
-    local u8 = UI_upv_1.Assets.Icons or {}
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local Sfx_upv_1 = ReplicatedStorage_upv_1:WaitForChild("Shared"):FindFirstChild("Sfx")
-    local success_1, v1 = pcall(
+    local result
+    local ui = a17.UI
+    local theme = a17.Theme
+    local state = a17.State
+    local colors = theme.Colors
+    local v23 = ui.Assets.Fx or {}
+    local v24 = ui.Assets.Icons or {}
+    local localPlayer = players.LocalPlayer
+    local sfx = replicatedStorage:WaitForChild("Shared"):FindFirstChild("Sfx")
+
+    local success, result2 = pcall(
         function()
             --[[
               line: 72
               upvalues:
-                Sfx_upv_1 (copy, index: 1)
+                sfx (copy, index: 1)
             ]]
-            if Sfx_upv_1 then
-                return (require(Sfx_upv_1))
+            if sfx then
+                return (require(sfx))
             end
+
             return nil
         end
     )
-    local u9 = not (success_1) or type(v1) ~= "table" or v1
-    local function playSfx(a2, a3)
+
+    if not success or type(result2) ~= "table" then
+        result = nil
+    else
+        result = result2
+    end
+
+    local function playSfx(a30, a31)
         --[[
           name: playSfx
           line: 77
           upvalues:
-            u9 (ref, index: 1)
+            result (ref, index: 1)
         ]]
-        if not u9 then
-            return
+        if result then
+            pcall(result.Play, a30, nil, a31)
         end
-        pcall(u9.Play, a2, nil, a3)
     end
-    local function duck(a4, a5, a6)
+
+    local function duck(a33, a34, a35)
         --[[
           name: duck
           line: 82
           upvalues:
-            u9 (ref, index: 1)
+            result (ref, index: 1)
         ]]
-        if not u9 or not u9.Duck then
-            return
+        if result and result.Duck then
+            pcall(result.Duck, a33, a34, a35)
         end
-        pcall(u9.Duck, a4, a5, a6)
     end
-    if u9 and u9.Preload then
-        pcall(u9.Preload, {"Match/Final_Round", "Match/Final_Heartbeat", "Music/Final_Round"})
+
+    if result and result.Preload then
+        pcall(result.Preload, {"Match/Final_Round", "Match/Final_Heartbeat", "Music/Final_Round"})
     end
-    local u10 = 1
-    local function tw(a7, a8, a9, a10, a11, a12)
+
+    local pace = 1
+
+    local function tw(instance, a39: number, propertyTable, easingStyle: Enum.EasingStyle, easingDirection: Enum.EasingDirection?, a43: number?)
         --[[
           name: tw
           line: 93
           upvalues:
-            TweenService_upv_1 (copy, index: 1)
-            u10 (ref,  index: 2)
+            tweenService (copy, index: 1)
+            pace (ref,  index: 2)
         ]]
-        local v2 = a8 * u10
-        local v3 = a10 or (Enum.EasingStyle.Quint)
-        local v4 = TweenService_upv_1:Create(a7, TweenInfo.new(v2, v3, a11 or (Enum.EasingDirection.Out), 0, false, (a12 or 0) * u10), a9)
-        v4:Play()
-        return v4
+        local newTweenInfo = TweenInfo.new
+        local v45 = a39 * pace
+        local easingStyle2 = easingStyle or Enum.EasingStyle.Quint
+        local easingDirection2 = easingDirection or Enum.EasingDirection.Out
+        local tween = tweenService:Create(instance, newTweenInfo(v45, easingStyle2, easingDirection2, 0, false, (a43
+            or 0) * pace), propertyTable)
+        tween:Play()
+
+        return tween
     end
-    local function after(a13, a14)
+
+    local function after(a50, a51)
         --[[
           name: after
           line: 98
           upvalues:
-            u10 (ref, index: 1)
+            pace (ref, index: 1)
         ]]
-        task.delay(a13 * u10, a14)
+        task.delay(a50 * pace, a51)
     end
-    local tbl_upv_5 = {}
-    local function strokeFor(a15, a16)
+
+    local v52 = {}
+
+    local function outline(parent, a55, base)
+        --[[
+          name: outline
+          line: 103
+          upvalues:
+            ui (copy, index: 1)
+            imageColor3 (copy, index: 2)
+            v52 (copy, index: 3)
+        ]]
+        local stroke = ui.TextStroke(imageColor3, a55, base)
+        stroke.Parent = parent
+        v52[parent] = {stroke = stroke, base = base}
+    end
+
+    local function strokeFor(key, a60)
         --[[
           name: strokeFor
           line: 108
           upvalues:
-            tbl_upv_5 (copy, index: 1)
+            v52 (copy, index: 1)
         ]]
-        local v5 = tbl_upv_5[a15]
-        if v5 and not (a16 >= 1) then
-            return v5.base + ((1 - v5.base) * a16)
+        local v61 = v52[key]
+
+        if v61 and not (1 <= a60) then
+            return v61.base + ((1 - v61.base) * a60)
         end
+
         return 1
     end
-    local function textSet(a17, a18)
+
+    local function textSet(key, textTransparency)
         --[[
           name: textSet
           line: 112
           upvalues:
-            tbl_upv_5 (copy, index: 1)
+            v52 (copy, index: 1)
         ]]
-        a17.TextTransparency = a18
-        local v6 = tbl_upv_5[a17]
-        if v6 then
-            local stroke_1 = v6.stroke
-            local v7 = tbl_upv_5[a17]
-            local v8
-            if not (v7) or a18 >= 1 then
-                v8 = 1
-            else
-                v8 = v7.base + (1 - v7.base) * a18
-            end
-            stroke_1.Transparency = v8
+        key.TextTransparency = textTransparency
+
+        if const v65 = v52[key] then
+            local stroke = v65.stroke
+            local v67 = v52[key]
+            stroke.Transparency = if v67 and not (1 <= textTransparency) then v67.base + (1 - v67.base) * textTransparency else 1
         end
     end
-    local function isDecider(a19)
+
+    local function textTo(a69, a70: number, textTransparency: number, easingStyle: Enum.EasingStyle, easingDirection: Enum.EasingDirection?, a74: number?)
+        --[[
+          name: textTo
+          line: 119
+          upvalues:
+            tw (copy, index: 1)
+            v52 (copy, index: 2)
+        ]]
+        tw(a69, a70, {TextTransparency = textTransparency}, easingStyle, easingDirection, a74)
+
+        if const v75 = v52[a69] then
+            local stroke = v75.stroke
+            local propertyTable = {}
+            local v78 = v52[a69]
+            propertyTable.Transparency = if v78 and not (1 <= textTransparency) then v78.base + (1 - v78.base) * textTransparency else 1
+            tw(stroke, a70, propertyTable, easingStyle, easingDirection, a74)
+        end
+    end
+
+    local function isDecider(a80)
         --[[
           name: isDecider
           line: 128
           upvalues:
-            State_upv_1 (copy, index: 1)
+            state (copy, index: 1)
         ]]
-        local v9
-        if a19 ~= nil then
-            v9 = a19
+        local v81 = if a80 == nil then state.Match else a80
+
+        if type(v81) ~= "table" or type(v81.teams) ~= "table" then
+            return false
+        end
+
+        local v82
+
+        if type(v81.roundsToWin) ~= "number" then
+            v82 = state.RoundsToWin()
         else
-            v9 = State_upv_1.Match
+            v82 = v81.roundsToWin
         end
-        if type(v9) == "table" and type(v9.teams) == "table" then
-            local v10
-            if type(v9.roundsToWin) ~= "number" then
-                v10 = State_upv_1.RoundsToWin()
-            else
-                v10 = v9.roundsToWin
-            end
-            if v10 < 2 then
-                return false
-            end
-            local v11 = v9.teams[1]
-            local v12 = v9.teams[2]
-            local v13 = (type(v11) == "table") and ((type(v12) == "table") and ((v11.score == v10 - 1) and (v12.score == v10 - 1)))
-            return v13
+
+        if v82 < 2 then
+            return false
         end
-        return false
+
+        local team = v81.teams[1]
+        local team2 = v81.teams[2]
+
+        return type(team) == "table"
+            and type(team2) == "table"
+            and team.score == v82 - 1
+            and team2.score == v82 - 1
     end
-    local _, v14 = UI_upv_1.Screen("TR_FinalRound", -1, a1.PlayerGui, {fullBleed = true})
-    local u11 = UI_upv_1.new("ImageLabel", {Name = "Vignette", ImageTransparency = 1, Visible = false, Size = UDim2.fromScale(1, 1), Image = u7.Vignette or "", ImageColor3 = u6, ScaleType = Enum.ScaleType.Stretch, Parent = v14})
-    local u12 = false
-    local u13 = "off"
-    local u14 = nil
-    local u15 = nil
-    local u16 = 1
-    local off_upv_1 = 1
-    local u17 = -math.huge
-    local u18 = 0.2
-    local u19 = nil
-    local u20 = 0
-    local function pulse(a20)
+
+    local _, parent = ui.Screen("TR_FinalRound", -1, a17.PlayerGui, {fullBleed = true})
+    local ui2 = ui.new("ImageLabel", {Name = "Vignette", ImageTransparency = 1, Visible = false, Size = UDim2.fromScale(1, 1), Image = v23.Vignette
+        or "", ImageColor3 = imageColor3, ScaleType = Enum.ScaleType.Stretch, Parent = parent})
+    local cardUp = false
+    local atmos = "off"
+    local ui3 = nil
+    local tween = nil
+    local v92 = 1
+    local v93 = 1
+    local timestamp = -math.huge
+    local v95 = 0.2
+    local renderSteppedConnection = nil
+    local count = 0
+
+    local function pulse(a99)
         --[[
           name: pulse
           line: 169
         ]]
-        if a20 < 0 then
+        if a99 < 0 then
             return 0
-        elseif a20 < 0.06 then
-            return a20 / 0.06
-        else
-            return (math.exp(-(a20 - 0.06) / 0.14))
         end
+        if a99 < 0.06 then
+            return a99 / 0.06
+        end
+
+        return (math.exp(-(a99 - 0.06) / 0.14))
     end
+
     local function ensureLoop()
         --[[
           name: ensureLoop
           line: 178
           upvalues:
-            u19 (ref,  index: 1)
-            RunService_upv_1 (copy, index: 2)
+            renderSteppedConnection (ref,  index: 1)
+            runService (copy, index: 2)
+            v92 (ref,  index: 3)
+            v93 (ref,  index: 4)
+            timestamp (ref,  index: 5)
+            v95 (ref,  index: 6)
+            atmos (ref,  index: 7)
+            ui2 (copy, index: 8)
         ]]
-        if u19 then
+        if renderSteppedConnection then
             return
         end
-        local v15 = RunService_upv_1.RenderStepped:Connect(function() end)
-        u19 = v15
+
+        renderSteppedConnection = runService.RenderStepped:Connect(
+            function(deltaTime: number)
+                --[[
+                  line: 182
+                  upvalues:
+                    v92 (ref,  index: 1)
+                    v93 (ref,  index: 2)
+                    timestamp (ref,  index: 3)
+                    v95 (ref,  index: 4)
+                    atmos (ref,  index: 5)
+                    ui2 (copy, index: 6)
+                    renderSteppedConnection (ref,  index: 7)
+                ]]
+                v92 += ((v93 - v92) * (1 - math.exp(-deltaTime * 3)))
+                local timestamp2 = os.clock()
+                local v103 = timestamp2 - timestamp
+                local v104 = 0
+
+                if v103 < 1 then
+                    local v105
+                    local v106 = v95
+                    local v107 = v103 < 0 and 0
+                        or (if v103 < 0.06 then v103 / 0.06 else math.exp(-(v103 - 0.06) / 0.14))
+                    local v108 = v106 * v107
+                    local v109 = v95 * 0.6
+                    local v110 = v103 - 0.27
+
+                    if not (v110 < 0) then
+                        v105 = if v110 < 0.06 then v110 / 0.06 else math.exp(-(v110 - 0.06) / 0.14)
+                    else
+                        v105 = 0
+                    end
+
+                    v104 = v108 + v109 * v105
+                end
+
+                local v111 = atmos ~= "live" and 0 or math.sin(timestamp2 * 2.4) * 0.03
+                ui2.ImageTransparency = math.clamp((v92 - v104) + v111, math.min(v92, 0.14), 1)
+
+                if atmos == "off" and 0.995 < v92 and 1 < v103 then
+                    ui2.ImageTransparency = 1
+                    ui2.Visible = false
+
+                    if renderSteppedConnection then
+                        renderSteppedConnection:Disconnect()
+                        renderSteppedConnection = nil
+                    end
+                end
+            end
+        )
     end
-    local function outline(a21, a22, a23)
-        --[[
-          name: outline
-          line: 103
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            u6 (copy, index: 2)
-            tbl_upv_5 (copy, index: 3)
-        ]]
-        local v16 = UI_upv_1.TextStroke(u6, a22, a23)
-        v16.Parent = a21
-        tbl_upv_5[a21] = {stroke = v16, base = a23}
-    end
-    local function setAtmos(a24, a25)
+
+    local function setAtmos(key: string, a114: nil)
         --[[
           name: setAtmos
           line: 204
           upvalues:
-            u13 (ref,  index: 1)
-            u20 (ref,  index: 2)
-            LocalPlayer_upv_1 (copy, index: 3)
-            u14 (ref,  index: 4)
-            UI_upv_1 (copy, index: 5)
-            Lighting_upv_1 (copy, index: 6)
-            u15 (ref,  index: 7)
-            off_upv_1 (ref,  index: 8)
-            tbl_upv_4 (copy, index: 9)
-            u16 (ref,  index: 10)
-            u17 (ref,  index: 11)
-            u11 (copy, index: 12)
-            u19 (ref,  index: 13)
-            RunService_upv_1 (copy, index: 14)
-            tbl_upv_3 (copy, index: 16)
-            TweenService_upv_1 (copy, index: 17)
+            atmos (ref,  index: 1)
+            count (ref,  index: 2)
+            localPlayer (copy, index: 3)
+            ui3 (ref,  index: 4)
+            ui (copy, index: 5)
+            lighting (copy, index: 6)
+            tween (ref,  index: 7)
+            v93 (ref,  index: 8)
+            v16 (copy, index: 9)
+            v92 (ref,  index: 10)
+            timestamp (ref,  index: 11)
+            ui2 (copy, index: 12)
+            renderSteppedConnection (ref,  index: 13)
+            runService (copy, index: 14)
+            v95 (ref,  index: 15)
+            v15 (copy, index: 16)
+            tweenService (copy, index: 17)
         ]]
-        if a24 == u13 and not (a25) then
+        if key == atmos and not a114 then
             return
         end
-        u13 = a24
-        u20 = u20 + 1
-        local u21 = u20
-        local v17 = a24 ~= "off"
-        local v18 = LocalPlayer_upv_1:GetAttribute("FinalRound")
-        local v19
-        if v17 then
-            v19 = true
-        else
-            v19 = nil
+
+        atmos = key
+        count += 1
+        local v115 = count
+        local v116 = key ~= "off"
+        local finalRound = localPlayer:GetAttribute("FinalRound")
+        local v118 = v116 and true or nil
+
+        if finalRound ~= v118 then
+            local finalRound2 = v116 and true or nil
+            localPlayer:SetAttribute("FinalRound", finalRound2)
         end
-        if v18 ~= v19 then
-            LocalPlayer_upv_1:SetAttribute("FinalRound", (v17 and true) or nil)
+
+        if v116 and not ui3 then
+            ui3 = ui.new("ColorCorrectionEffect", {Name = "TR_FinalRoundCC", Parent = lighting})
         end
-        if v17 and not (u14) then
-            local v20 = UI_upv_1.new("ColorCorrectionEffect", {Name = "TR_FinalRoundCC", Parent = Lighting_upv_1})
-            u14 = v20
+
+        if tween then
+            tween:Cancel()
+            tween = nil
         end
-        if u15 then
-            u15:Cancel()
-            u15 = nil
+
+        v93 = v16[key]
+
+        if a114 then
+            v92 = v93
+            timestamp = -math.huge
         end
-        off_upv_1 = tbl_upv_4[a24]
-        if a25 then
-            u16 = off_upv_1
-            u17 = -math.huge
-        end
-        if v17 then
-            u11.Visible = true
-            if not (u19) then
-                local v21 = RunService_upv_1.RenderStepped:Connect(function() end)
-                u19 = v21
-            end
-        elseif a25 then
-            u11.ImageTransparency = 1
-            u11.Visible = false
-            if u19 then
-                u19:Disconnect()
-                u19 = nil
-            end
-        end
-        local v22 = u14
-        if not v22 then
-            return
-        end
-        v22.Enabled = true
-        if a25 then
-            if v17 then
-                for key_1, value_1 in tbl_upv_3[a24] do
-                    v22[key_1] = value_1
-                end
-            else
-                v22:Destroy()
-                u14 = nil
-            end
-        else
-            local v23 = ((a24 == "off") and 0.7) or (((a24 ~= "count") and 1.2) or 0.5)
-            u15 = TweenService_upv_1:Create(v22, TweenInfo.new(v23, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), tbl_upv_3[a24])
-            u15:Play()
-            if (v17) then
-                return
-            end
-            task.delay(
-                v23 + 0.05,
-                function()
-                    --[[
-                      line: 258
-                      upvalues:
-                        u21 (copy, index: 1)
-                        u20 (ref,  index: 2)
-                        u13 (ref,  index: 3)
-                        u14 (ref,  index: 4)
-                    ]]
-                    if u21 ~= u20 or u13 ~= "off" or not u14 then
-                        return
+
+        if v116 then
+            ui2.Visible = true
+
+            renderSteppedConnection = renderSteppedConnection
+                or runService.RenderStepped:Connect(
+                    function(deltaTime: number)
+                        --[[
+                          line: 182
+                          upvalues:
+                            v92 (ref,  index: 1)
+                            v93 (ref,  index: 2)
+                            timestamp (ref,  index: 3)
+                            v95 (ref,  index: 4)
+                            atmos (ref,  index: 5)
+                            ui2 (copy, index: 6)
+                            renderSteppedConnection (ref,  index: 7)
+                        ]]
+                        v92 += ((v93 - v92) * (1 - math.exp(-deltaTime * 3)))
+                        local timestamp2 = os.clock()
+                        local v122 = timestamp2 - timestamp
+                        local v123 = 0
+
+                        if v122 < 1 then
+                            local v124
+                            local v125 = v95
+                            local v126 = v122 < 0 and 0
+                                or (if v122 < 0.06 then v122 / 0.06 else math.exp(-(v122 - 0.06) / 0.14))
+                            local v127 = v125 * v126
+                            local v128 = v95 * 0.6
+                            local v129 = v122 - 0.27
+
+                            if not (v129 < 0) then
+                                v124 = if v129 < 0.06 then v129 / 0.06 else math.exp(-(v129 - 0.06) / 0.14)
+                            else
+                                v124 = 0
+                            end
+
+                            v123 = v127 + v128 * v124
+                        end
+
+                        local v130 = atmos ~= "live" and 0 or math.sin(timestamp2 * 2.4) * 0.03
+                        ui2.ImageTransparency = math.clamp((v92 - v123) + v130, math.min(v92, 0.14), 1)
+
+                        if atmos == "off" and 0.995 < v92 and 1 < v122 then
+                            ui2.ImageTransparency = 1
+                            ui2.Visible = false
+
+                            if renderSteppedConnection then
+                                renderSteppedConnection:Disconnect()
+                                renderSteppedConnection = nil
+                            end
+                        end
                     end
-                    u14:Destroy()
-                    u14 = nil
-                end
-            )
+                )
+        elseif a114 then
+            ui2.ImageTransparency = 1
+            ui2.Visible = false
+
+            if renderSteppedConnection then
+                renderSteppedConnection:Disconnect()
+                renderSteppedConnection = nil
+            end
+        end
+
+        local instance = ui3
+        if not instance then
+            return
+        end
+
+        instance.Enabled = true
+
+        if not a114 then
+            local v132 = key ~= "off" and (key ~= "count" and 1.2 or 0.5) or 0.7
+            tween = tweenService:Create(instance, TweenInfo.new(v132, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), v15[key])
+            tween:Play()
+
+            if not v116 then
+                task.delay(
+                    v132 + 0.05,
+                    function()
+                        --[[
+                          line: 258
+                          upvalues:
+                            v115 (copy, index: 1)
+                            count (ref,  index: 2)
+                            atmos (ref,  index: 3)
+                            ui3 (ref,  index: 4)
+                        ]]
+                        if v115 == count and atmos == "off" and ui3 then
+                            ui3:Destroy()
+                            ui3 = nil
+                        end
+                    end
+                )
+            end
+
+            return
+        end
+
+        if not v116 then
+            instance:Destroy()
+            ui3 = nil
+
+            return
+        end
+
+        for v133, v134 in v15[key] do
+            instance[v133] = v134
         end
     end
+
     local function wanted()
         --[[
           name: wanted
           line: 267
           upvalues:
-            State_upv_1 (copy, index: 1)
-            LocalPlayer_upv_1 (copy, index: 2)
-            u12 (ref,  index: 3)
-            tbl_upv_2 (copy, index: 4)
+            state (copy, index: 1)
+            localPlayer (copy, index: 2)
+            cardUp (ref,  index: 3)
+            v14 (copy, index: 4)
             isDecider (copy, index: 5)
         ]]
-        local Match_1 = State_upv_1.Match
-        if State_upv_1.SeesMatch() and type(Match_1) == "table" and LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-            if u12 then
-                return "count"
-            elseif tbl_upv_2[Match_1.phase] and isDecider(Match_1) then
-                if Match_1.phase ~= "PreRound" then
-                    return "live"
-                end
-                return "count"
-            else
-                return "off"
-            end
+        local match = state.Match
+
+        if not state.SeesMatch() or type(match) ~= "table" or localPlayer:GetAttribute("ReplayPlaying") == true then
+            return "off"
         end
-        return "off"
+        if cardUp then
+            return "count"
+        end
+        if not v14[match.phase] or not isDecider(match) then
+            return "off"
+        end
+        if match.phase == "PreRound" then
+            return "count"
+        end
+
+        return "live"
     end
+
     local function refresh()
         --[[
           name: refresh
@@ -372,203 +532,462 @@ function tbl_1.Init(a1)
         ]]
         setAtmos((wanted()))
     end
-    local function beat(a26)
+
+    local function beat(a139)
         --[[
           name: beat
           line: 284
           upvalues:
-            u17 (ref,  index: 1)
-            u18 (ref,  index: 2)
-            u13 (ref,  index: 3)
-            u19 (ref,  index: 4)
-            RunService_upv_1 (copy, index: 5)
+            timestamp (ref,  index: 1)
+            v95 (ref,  index: 2)
+            atmos (ref,  index: 3)
+            renderSteppedConnection (ref,  index: 4)
+            runService (copy, index: 5)
+            v92 (ref,  index: 6)
+            v93 (ref,  index: 7)
+            ui2 (copy, index: 8)
         ]]
-        u17 = os.clock()
-        u18 = a26
-        if u13 ~= "off" and not u19 then
-            local v24 = RunService_upv_1.RenderStepped:Connect(function() end)
-            u19 = v24
+        timestamp = os.clock()
+        v95 = a139
+
+        if atmos ~= "off" and not renderSteppedConnection then
+            renderSteppedConnection = runService.RenderStepped:Connect(
+                function(deltaTime: number)
+                    --[[
+                      line: 182
+                      upvalues:
+                        v92 (ref,  index: 1)
+                        v93 (ref,  index: 2)
+                        timestamp (ref,  index: 3)
+                        v95 (ref,  index: 4)
+                        atmos (ref,  index: 5)
+                        ui2 (copy, index: 6)
+                        renderSteppedConnection (ref,  index: 7)
+                    ]]
+                    v92 += ((v93 - v92) * (1 - math.exp(-deltaTime * 3)))
+                    local timestamp2 = os.clock()
+                    local v142 = timestamp2 - timestamp
+                    local v143 = 0
+
+                    if v142 < 1 then
+                        local v144
+                        local v145 = v95
+                        local v146 = v142 < 0 and 0
+                            or (if v142 < 0.06 then v142 / 0.06 else math.exp(-(v142 - 0.06) / 0.14))
+                        local v147 = v145 * v146
+                        local v148 = v95 * 0.6
+                        local v149 = v142 - 0.27
+
+                        if not (v149 < 0) then
+                            v144 = if v149 < 0.06 then v149 / 0.06 else math.exp(-(v149 - 0.06) / 0.14)
+                        else
+                            v144 = 0
+                        end
+
+                        v143 = v147 + v148 * v144
+                    end
+
+                    local v150 = atmos ~= "live" and 0 or math.sin(timestamp2 * 2.4) * 0.03
+                    ui2.ImageTransparency = math.clamp((v92 - v143) + v150, math.min(v92, 0.14), 1)
+
+                    if atmos == "off" and 0.995 < v92 and 1 < v142 then
+                        ui2.ImageTransparency = 1
+                        ui2.Visible = false
+
+                        if renderSteppedConnection then
+                            renderSteppedConnection:Disconnect()
+                            renderSteppedConnection = nil
+                        end
+                    end
+                end
+            )
         end
     end
-    local u22 = nil
-    local function fadeEnds(a27)
-        --[[
-          name: fadeEnds
-          line: 353
-        ]]
-        return NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(a27, 0), NumberSequenceKeypoint.new(1 - a27, 0), NumberSequenceKeypoint.new(1, 1)})
-    end
-    local function headlineLabel(a28, a29, a30)
+
+    local v151 = nil
+
+    local function headlineLabel(parent, name: string, zIndex: number)
         --[[
           name: headlineLabel
           line: 337
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            u1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
+            ui (copy, index: 1)
+            fontFace (copy, index: 2)
+            colors (copy, index: 3)
         ]]
-        local v25 = UI_upv_1.new("TextLabel", {TextTransparency = 1, Text = "FINAL ROUND", TextSize = 100, Name = a29, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(1400, 120), FontFace = u1, TextColor3 = Colors_upv_1.Text, ZIndex = a30, Parent = a28})
-        return v25, UI_upv_1.new("UIScale", {Name = "HeadScale", Parent = v25})
+        local parent2 = ui.new("TextLabel", {Text = "FINAL ROUND", TextSize = 100, TextTransparency = 1, Name = name, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(1400, 120), FontFace = fontFace, TextColor3 = colors.Text, ZIndex = zIndex, Parent = parent})
+        local parent3 = parent2
+
+        return parent3, ui.new("UIScale", {Name = "HeadScale", Parent = parent2})
     end
-    local u23 = 0
-    local u24 = 0
-    local u25 = nil
-    local u26 = nil
-    local u27 = 0
-    local u28 = nil
-    local u29 = Random.new()
-    local function shake(a31, a32, a33)
+
+    local function fadeEnds(a159: number)
+        --[[
+          name: fadeEnds
+          line: 353
+        ]]
+        return NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(a159, 0), NumberSequenceKeypoint.new(1 - a159, 0), NumberSequenceKeypoint.new(1, 1)})
+    end
+
+    local function buildCard()
+        --[[
+          name: buildCard
+          line: 362
+          upvalues:
+            ui (copy, index: 1)
+            a17 (copy, index: 2)
+            colors (copy, index: 3)
+            v24 (copy, index: 4)
+            color32 (copy, index: 5)
+            v23 (copy, index: 6)
+            imageColor3 (copy, index: 7)
+            fadeEnds (copy, index: 8)
+            color3FromRGB (copy, index: 9)
+            color3 (copy, index: 10)
+            headlineLabel (copy, index: 11)
+            color34 (copy, index: 12)
+            v52 (copy, index: 13)
+            theme (copy, index: 14)
+            fontFace (copy, index: 15)
+        ]]
+        local ui2 = ui.new("Frame", {Name = "FinalRound", ZIndex = 4, Visible = false, Size = UDim2.fromScale(1, 1), Parent = a17.Canvas.Overlay})
+        local dim = ui.new("Frame", {Name = "Dim", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, Parent = ui2})
+        local ui3 = ui.new("Frame", {Name = "Stage", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.265), Size = UDim2.fromOffset(0, 0), Parent = ui2})
+        local stageScale = ui.new("UIScale", {Name = "StageScale", Parent = ui3})
+        local ui4 = ui.new("Frame", {Name = "Shaker", Size = UDim2.fromOffset(0, 0), Parent = ui3})
+        local glow = ui.new("ImageLabel", {Name = "Glow", ImageTransparency = 1, ZIndex = 1, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(1100, 360), Image = v24.Glow
+            or "", ImageColor3 = color32, Parent = ui4})
+        local ui5 = ui.new("ImageLabel", {Name = "GhostBand", ImageTransparency = 1, ZIndex = 1, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(1500, 198.4), Image = v23.Band
+            or "", ImageColor3 = imageColor3, ScaleType = Enum.ScaleType.Stretch, Parent = ui4})
+        ui.new("UIGradient", {Transparency = fadeEnds(0.25), Parent = ui5})
+        local ui6 = ui.new("ImageLabel", {Name = "Band", ImageTransparency = 0.06, ZIndex = 2, AnchorPoint = Vector2.new(0, 0.5), Size = UDim2.fromOffset(0, 124), Image = v23.Band
+            or "", ImageColor3 = Color3.new(1, 1, 1), ScaleType = Enum.ScaleType.Stretch, Parent = ui4})
+        local bandGrad = ui.new("UIGradient", {Color = ColorSequence.new({ColorSequenceKeypoint.new(0, imageColor3), ColorSequenceKeypoint.new(0.3, color3FromRGB(92, 30, 10)), ColorSequenceKeypoint.new(0.5, color3FromRGB(120, 42, 12)), ColorSequenceKeypoint.new(0.7, color3FromRGB(92, 30, 10)), ColorSequenceKeypoint.new(1, imageColor3)}), Transparency = fadeEnds(0.14), Parent = ui6})
+
+        local function edge(name: string)
+            --[[
+              name: edge
+              line: 419
+              upvalues:
+                ui (copy, index: 1)
+                color3 (copy, index: 2)
+                ui4 (copy, index: 3)
+                fadeEnds (copy, index: 4)
+            ]]
+            local parent = ui.new("Frame", {BorderSizePixel = 0, ZIndex = 3, Name = name, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(0, 3), BackgroundColor3 = color3, Parent = ui4})
+            ui.new("UIGradient", {Transparency = fadeEnds(0.2), Parent = parent})
+
+            return parent
+        end
+
+        local edgeTop = edge("EdgeTop")
+        local edgeBottom = edge("EdgeBottom")
+        local flare = ui.new("ImageLabel", {Name = "Flare", ImageTransparency = 1, ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(900, 96), Image = v23.Flare
+            or "", ImageColor3 = color3, ScaleType = Enum.ScaleType.Stretch, Parent = ui4})
+        local ring = ui.new("ImageLabel", {Name = "Ring", ImageTransparency = 1, ZIndex = 1, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(100, 100), Image = v23.Ring
+            or "", ImageColor3 = color3, Parent = ui4})
+        local aura, auraScale = headlineLabel(ui4, "Aura", 4)
+        aura.TextColor3 = color32
+        local shadow, shadowScale = headlineLabel(ui4, "Shadow", 4)
+        shadow.TextColor3 = colors.Void
+        local v181, headScale = headlineLabel(ui4, "Headline", 5)
+        ui.new("UIGradient", {Rotation = 90, Color = ColorSequence.new(color34, color3), Parent = v181})
+        local stroke = ui.TextStroke(imageColor3, 2, 0.35)
+        stroke.Parent = v181
+        v52[v181] = {base = 0.35, stroke = stroke}
+        local v184, sweepScale = headlineLabel(ui4, "Sweep", 6)
+        v184.TextColor3 = color34
+        local sweepGrad = ui.new("UIGradient", {Rotation = 18, Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.44, 1), NumberSequenceKeypoint.new(0.5, 0.1), NumberSequenceKeypoint.new(0.56, 1), NumberSequenceKeypoint.new(1, 1)}), Offset = Vector2.new(-1, 0), Parent = v184})
+        local ui7 = ui.new("Frame", {Name = "Row", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(0, 132), Size = UDim2.fromOffset(0, 0), Parent = ui4})
+        local boxes = {}
+
+        for index = 1, 2 do
+            local name
+            local v191 = if index == 1 then colors.Ally else colors.Enemy
+            local newUi = ui.new
+            local v193 = {}
+
+            if index == 1 then
+                name = "Mine"
+            else
+                name = "Theirs"
+            end
+
+            v193.Name = name
+            v193.AnchorPoint = Vector2.new(0.5, 0.5)
+            local udim2FromOffset = UDim2.fromOffset
+            local v195 = index ~= 1 and 156 or -156
+            v193.Position = udim2FromOffset(v195, 0)
+            v193.Size = UDim2.fromOffset(92, 84)
+            v193.BackgroundColor3 = Color3.new(1, 1, 1)
+            v193.BackgroundTransparency = 0.05
+            v193.ZIndex = 6
+            v193[1], v193[2], v193[3] = ui.Corner(14), ui.Gradient(theme.Lighten(v191, 0.1), theme.Darken(v191, 0.35), 90), (ui.Stroke(theme.Lighten(v191, 0.4), 2.5, 0.25))
+            v193.Parent = ui7
+            local ui8 = newUi("Frame", v193)
+            local scale = ui.new("UIScale", {Parent = ui8})
+            boxes[index] = {box = ui8, digit = ui.DisplayText({Name = "Score", Text = "2", TextSize = 62, StrokeThickness = 2.5, ZIndex = 7, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1, 1), TextColor3 = colors.Text, StrokeColor = theme.Darken(v191, 0.7), Parent = ui8}), scale = scale}
+        end
+
+        local dash = ui.new("Frame", {Name = "Dash", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(36, 6), BackgroundColor3 = color3, ZIndex = 6, (ui.Corner(3)), Parent = ui7})
+        local digitRing = ui.new("ImageLabel", {Name = "DigitRing", ImageTransparency = 1, ZIndex = 5, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(90, 90), Image = v23.Ring
+            or "", ImageColor3 = color3, Parent = ui7})
+
+        local function digitLabel(name: string, zIndex: number)
+            --[[
+              name: digitLabel
+              line: 537
+              upvalues:
+                ui (copy, index: 1)
+                fontFace (copy, index: 2)
+                colors (copy, index: 3)
+                ui7 (copy, index: 4)
+            ]]
+            local parent = ui.new("TextLabel", {Text = "", TextSize = 100, TextTransparency = 1, Name = name, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(180, 150), FontFace = fontFace, TextColor3 = colors.Text, ZIndex = zIndex, Parent = ui7})
+            local parent2 = parent
+
+            return parent2, ui.new("UIScale", {Parent = parent})
+        end
+
+        local v205, ghostScale = digitLabel("DigitGhost", 6)
+        local v207, digitScale = digitLabel("Digit", 7)
+        local digitGrad = ui.new("UIGradient", {Rotation = 90, Color = ColorSequence.new(color34, color3), Parent = v207})
+        local stroke2 = ui.TextStroke(imageColor3, 2.5, 0.2)
+        stroke2.Parent = v207
+        v52[v207] = {base = 0.2, stroke = stroke2}
+        ui.new("UIGradient", {Rotation = 90, Color = ColorSequence.new(color34, color32), Parent = v205})
+        local fightShadow, fightShadowScale = headlineLabel(ui4, "FightShadow", 4)
+        fightShadow.TextColor3 = colors.Void
+        fightShadow.Text = "FIGHT!"
+        local v213, fightScale = headlineLabel(ui4, "Fight", 5)
+        v213.Text = "FIGHT!"
+        ui.new("UIGradient", {Rotation = 90, Color = ColorSequence.new(color34, color32), Parent = v213})
+        local stroke3 = ui.TextStroke(imageColor3, 2, 0.3)
+        stroke3.Parent = v213
+        v52[v213] = {base = 0.3, stroke = stroke3}
+        local ui9 = ui.new("Frame", {Name = "Particles", ZIndex = 7, Size = UDim2.fromOffset(0, 0), Parent = ui4})
+        local pool = require(script.Parent.Parent.Fx).Pool(ui9, 110, 7)
+
+        return {
+            root = ui2,
+            dim = dim,
+            stage = ui3,
+            stageScale = stageScale,
+            shaker = ui4,
+            glow = glow,
+            ring = ring,
+            band = ui6,
+            bandGrad = bandGrad,
+            ghost = ui5,
+            edgeTop = edgeTop,
+            edgeBottom = edgeBottom,
+            flare = flare,
+            head = v181,
+            headScale = headScale,
+            shadow = shadow,
+            shadowScale = shadowScale,
+            aura = aura,
+            auraScale = auraScale,
+            sweep = v184,
+            sweepScale = sweepScale,
+            sweepGrad = sweepGrad,
+            row = ui7,
+            boxes = boxes,
+            digit = v207,
+            digitScale = digitScale,
+            digitGrad = digitGrad,
+            digitGhost = v205,
+            ghostScale = ghostScale,
+            digitRing = digitRing,
+            dash = dash,
+            fight = v213,
+            fightScale = fightScale,
+            fightShadow = fightShadow,
+            fightShadowScale = fightShadowScale,
+            pool = pool
+        }
+    end
+
+    local count2 = 0
+    local v219 = 0
+    local v220 = nil
+    local v221 = nil
+    local v222 = 0
+    local v223 = nil
+    local random = Random.new()
+
+    local function shake(a226, a227, a228)
         --[[
           name: shake
           line: 619
           upvalues:
-            u23 (ref, index: 1)
+            count2 (ref,  index: 1)
+            pace (ref,  index: 2)
+            random (copy, index: 3)
+            runService (copy, index: 4)
         ]]
-        local _ = u23
-        task.spawn(function() end)
+        local v229 = count2
+
+        task.spawn(
+            function()
+                --[[
+                  line: 621
+                  upvalues:
+                    a228 (copy, index: 1)
+                    pace (ref,  index: 2)
+                    v229 (copy, index: 3)
+                    count2 (ref,  index: 4)
+                    a226 (copy, index: 5)
+                    random (copy, index: 6)
+                    a227 (copy, index: 7)
+                    runService (copy, index: 8)
+                ]]
+                local timestamp = os.clock()
+
+                while os.clock() - timestamp < a228 * pace and v229 == count2 do
+                    local v231 = 1 - (os.clock() - timestamp) / (a228 * pace)
+                    a226.shaker.Position = UDim2.fromOffset((random:NextNumber(-1, 1) * a227) * v231, (random:NextNumber(-1, 1) * a227) * v231)
+                    runService.RenderStepped:Wait()
+                end
+
+                if v229 == count2 then
+                    a226.shaker.Position = UDim2.new()
+                end
+            end
+        )
     end
-    local function burst(a34, a35, a36, a37, a38, a39)
+
+    local function burst(a233, a234: number, at: Vector2, box: Vector2, speed: number, options)
         --[[
           name: burst
           line: 634
           upvalues:
-            u10 (ref,  index: 1)
-            u2 (copy, index: 2)
-            u3 (copy, index: 3)
-            u4 (copy, index: 4)
-            u5 (copy, index: 5)
+            pace (ref,  index: 1)
+            color3 (copy, index: 2)
+            color32 (copy, index: 3)
+            color33 (copy, index: 4)
+            color34 (copy, index: 5)
         ]]
-        local v26 = a39 or {}
-        a34.pool.Pace = u10
-        local pool_1 = a34.pool
-        local tbl_6 = {sparkChance = 0, lifeMult = 0, drag = 0, colors = 0, whiteChance = 0.3, mode = "box", grav = 0, white = 0}
-        tbl_6.at = a36
-        tbl_6.box = a37
-        tbl_6.speed = a38
-        tbl_6.colors = v26.colors or {u2, u3, u4}
-        tbl_6.white = u5
-        tbl_6.sparkChance = v26.sparkChance or 0.6
-        tbl_6.grav = v26.grav
-        tbl_6.drag = v26.drag
-        tbl_6.lifeMult = v26.lifeMult
-        pool_1:Burst(a35, tbl_6)
+        local v239 = options or {}
+        a233.pool.Pace = pace
+        a233.pool:Burst(a234, {mode = "box", whiteChance = 0.3, at = at, box = box, speed = speed, colors = v239.colors
+            or {color3, color32, color33}, white = color34, sparkChance = v239.sparkChance or 0.6, grav = v239.grav, drag = v239.drag, lifeMult = v239.lifeMult})
     end
-    local function hideCard(a40)
+
+    local function hideCard(a241)
         --[[
           name: hideCard
           line: 652
           upvalues:
-            u28 (ref, index: 1)
+            v223 (ref, index: 1)
         ]]
-        if u28 then
-            u28()
-            u28 = nil
+        if v223 then
+            v223()
+            v223 = nil
         end
-        a40.pool:Clear()
-        a40.root.Visible = false
-        a40.shaker.Position = UDim2.new()
+
+        a241.pool:Clear()
+        a241.root.Visible = false
+        a241.shaker.Position = UDim2.new()
     end
-    local tbl_upv_7 = {}
-    local function textTo(a41, a42, a43, a44, a45, a46)
-        --[[
-          name: textTo
-          line: 119
-          upvalues:
-            tw (copy, index: 1)
-            tbl_upv_5 (copy, index: 2)
-        ]]
-        tw(a41, a42, {TextTransparency = a43}, a44, a45, a46)
-        local v27 = tbl_upv_5[a41]
-        if v27 then
-            local stroke_2 = v27.stroke
-            local tbl_8 = {Transparency = 0}
-            local v28 = tbl_upv_5[a41]
-            local v29
-            if not (v28) or a43 >= 1 then
-                v29 = 1
-            else
-                v29 = v28.base + (1 - v28.base) * a43
-            end
-            tbl_8.Transparency = v29
-            tw(stroke_2, a42, tbl_8, a44, a45, a46)
-        end
-    end
-    local function cancelCard(a47)
+
+    local decider = {}
+
+    local function cancelCard(a244)
         --[[
           name: cancelCard
           line: 665
           upvalues:
-            u22 (ref,  index: 1)
-            u12 (ref,  index: 2)
-            u25 (ref,  index: 3)
-            u26 (ref,  index: 4)
-            u23 (ref,  index: 5)
-            u28 (ref,  index: 6)
+            v151 (ref,  index: 1)
+            cardUp (ref,  index: 2)
+            v220 (ref,  index: 3)
+            v221 (ref,  index: 4)
+            count2 (ref,  index: 5)
+            v223 (ref,  index: 6)
             textTo (copy, index: 7)
-            TweenService_upv_1 (copy, index: 8)
-            u10 (ref,  index: 9)
+            tweenService (copy, index: 8)
+            pace (ref,  index: 9)
         ]]
-        local v30 = u12
-        u12 = false
-        u25 = nil
-        u26 = nil
-        u23 = u23 + 1
-        local u30 = u23
-        if not u22 or not u22.root.Visible then
-            return
-        end
-        if not a47 and v30 then
-            if u28 then
-                u28()
-                u28 = nil
-            end
-            for _, value_2 in {u22.head, u22.shadow, u22.sweep, u22.aura, u22.digit, u22.digitGhost, u22.fight, u22.fightShadow} do
-                textTo(value_2, 0.15, 1, Enum.EasingStyle.Quad)
-            end
-            for _, value_3 in {u22.band, u22.ghost, u22.flare, u22.glow, u22.ring, u22.digitRing} do
-                local tbl_9 = {ImageTransparency = 1}
-                TweenService_upv_1:Create(value_3, TweenInfo.new(u10 * 0.15, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_9):Play()
-            end
-            for _, value_4 in u22.boxes do
-                value_4.box.Visible = false
-            end
-            u22.dash.Visible = false
-            local tbl_10 = {BackgroundTransparency = 1}
-            TweenService_upv_1:Create(u22.dim, TweenInfo.new(u10 * 0.2, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_10):Play()
-            task.delay(
-                u10 * 0.22,
-                function()
+        local v245 = v151
+        local v246 = cardUp
+        cardUp = false
+        v220 = nil
+        v221 = nil
+        count2 += 1
+        local v247 = count2
+
+        if v245 and v245.root.Visible then
+            if not a244 and v246 then
+                if v223 then
+                    v223()
+                    v223 = nil
+                end
+
+                for _, v249 in {v245.head, v245.shadow, v245.sweep, v245.aura, v245.digit, v245.digitGhost, v245.fight, v245.fightShadow} do
+                    textTo(v249, 0.15, 1, Enum.EasingStyle.Quad)
+                end
+
+                for _, instance in {v245.band, v245.ghost, v245.flare, v245.glow, v245.ring, v245.digitRing} do
+                    local propertyTable = {ImageTransparency = 1}
+                    local quad = Enum.EasingStyle.Quad
+                    local newTweenInfo = TweenInfo.new
+                    local v255 = pace * 0.15
+                    local easingStyle = quad or Enum.EasingStyle.Quint
+                    local tween = tweenService:Create(instance, newTweenInfo(v255, easingStyle, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable)
+                    tween:Play()
+                end
+
+                for _, box in v245.boxes do
+                    box.box.Visible = false
+                end
+
+                v245.dash.Visible = false
+                local dim = v245.dim
+                local propertyTable = {BackgroundTransparency = 1}
+                local quad = Enum.EasingStyle.Quad
+                local newTweenInfo = TweenInfo.new
+                local v264 = pace * 0.2
+                local easingStyle = quad or Enum.EasingStyle.Quint
+                tweenService:Create(dim, newTweenInfo(v264, easingStyle, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable):Play()
+
+                local v266 = function()
                     --[[
                       line: 691
                       upvalues:
-                        u30 (copy, index: 1)
-                        u23 (ref,  index: 2)
-                        u22 (copy, index: 3)
-                        u28 (ref,  index: 4)
+                        v247 (copy, index: 1)
+                        count2 (ref,  index: 2)
+                        v245 (copy, index: 3)
+                        v223 (ref,  index: 4)
                     ]]
-                    if u30 == u23 then
-                        local v31 = u22
-                        if u28 then
-                            u28()
-                            u28 = nil
+                    if v247 == count2 then
+                        local v267 = v245
+
+                        if v223 then
+                            v223()
+                            v223 = nil
                         end
-                        v31.pool:Clear()
-                        v31.root.Visible = false
-                        v31.shaker.Position = UDim2.new()
+
+                        v267.pool:Clear()
+                        v267.root.Visible = false
+                        v267.shaker.Position = UDim2.new()
                     end
                 end
-            )
-        else
-            if u28 then
-                u28()
-                u28 = nil
+
+                task.delay(pace * 0.22, v266)
+            else
+                if v223 then
+                    v223()
+                    v223 = nil
+                end
+
+                v245.pool:Clear()
+                v245.root.Visible = false
+                v245.shaker.Position = UDim2.new()
             end
-            u22.pool:Clear()
-            u22.root.Visible = false
-            u22.shaker.Position = UDim2.new()
         end
     end
-    function tbl_upv_7.Stop(a48)
+
+    function decider.Stop(a268)
         --[[
           name: Stop
           line: 701
@@ -577,970 +996,1296 @@ function tbl_1.Init(a1)
             setAtmos (copy, index: 2)
             wanted (copy, index: 3)
         ]]
-        cancelCard(a48)
+        cancelCard(a268)
         setAtmos((wanted()))
     end
-    local function buildCard()
-        --[[
-          name: buildCard
-          line: 362
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            a1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-            u8 (copy, index: 4)
-            u3 (copy, index: 5)
-            u7 (copy, index: 6)
-            u6 (copy, index: 7)
-            fadeEnds (copy, index: 8)
-            fromRGB_upv_1 (copy, index: 9)
-            u2 (copy, index: 10)
-            headlineLabel (copy, index: 11)
-            u5 (copy, index: 12)
-            tbl_upv_5 (copy, index: 13)
-            Theme_upv_1 (copy, index: 14)
-            u1 (copy, index: 15)
-        ]]
-        local v32 = UI_upv_1.new("Frame", {Visible = false, Name = "FinalRound", ZIndex = 4, Size = UDim2.fromScale(1, 1), Parent = a1.Canvas.Overlay})
-        local v33 = UI_upv_1.new("Frame", {Name = "Dim", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Void, Parent = v32})
-        local v34 = UI_upv_1.new("Frame", {Name = "Stage", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.265), Size = UDim2.fromOffset(0, 0), Parent = v32})
-        local v35 = UI_upv_1.new("UIScale", {Name = "StageScale", Parent = v34})
-        local u31 = UI_upv_1.new("Frame", {Name = "Shaker", Size = UDim2.fromOffset(0, 0), Parent = v34})
-        local v36 = UI_upv_1.new("ImageLabel", {Name = "Glow", ImageTransparency = 1, ZIndex = 1, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(1100, 360), Image = u8.Glow or "", ImageColor3 = u3, Parent = u31})
-        local v37 = UI_upv_1.new("ImageLabel", {ImageTransparency = 1, Name = "GhostBand", ZIndex = 1, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(1500, 198.4), Image = u7.Band or "", ImageColor3 = u6, ScaleType = Enum.ScaleType.Stretch, Parent = u31})
-        UI_upv_1.new("UIGradient", {Transparency = fadeEnds(0.25), Parent = v37})
-        local v38 = UI_upv_1.new("ImageLabel", {ImageTransparency = 0.06, Name = "Band", ZIndex = 2, AnchorPoint = Vector2.new(0, 0.5), Size = UDim2.fromOffset(0, 124), Image = u7.Band or "", ImageColor3 = Color3.new(1, 1, 1), ScaleType = Enum.ScaleType.Stretch, Parent = u31})
-        local v39 = UI_upv_1.new("UIGradient", {Color = ColorSequence.new({ColorSequenceKeypoint.new(0, u6), ColorSequenceKeypoint.new(0.3, fromRGB_upv_1(92, 30, 10)), ColorSequenceKeypoint.new(0.5, fromRGB_upv_1(120, 42, 12)), ColorSequenceKeypoint.new(0.7, fromRGB_upv_1(92, 30, 10)), ColorSequenceKeypoint.new(1, u6)}), Transparency = fadeEnds(0.14), Parent = v38})
-        local function edge_1(a49)
-            --[[
-              name: edge
-              line: 419
-              upvalues:
-                UI_upv_1 (copy, index: 1)
-                u2 (copy, index: 2)
-                u31 (copy, index: 3)
-                fadeEnds (copy, index: 4)
-            ]]
-            local v40 = UI_upv_1.new("Frame", {ZIndex = 3, BorderSizePixel = 0, Name = a49, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(0, 3), BackgroundColor3 = u2, Parent = u31})
-            UI_upv_1.new("UIGradient", {Transparency = fadeEnds(0.2), Parent = v40})
-            return v40
-        end
-        local v41 = edge_1("EdgeTop")
-        local v42 = edge_1("EdgeBottom")
-        local v43 = UI_upv_1.new("ImageLabel", {ImageTransparency = 1, Name = "Flare", ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(900, 96), Image = u7.Flare or "", ImageColor3 = u2, ScaleType = Enum.ScaleType.Stretch, Parent = u31})
-        local v44 = UI_upv_1.new("ImageLabel", {Name = "Ring", ImageTransparency = 1, ZIndex = 1, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(100, 100), Image = u7.Ring or "", ImageColor3 = u2, Parent = u31})
-        local v45, v46 = headlineLabel(u31, "Aura", 4)
-        v45.TextColor3 = u3
-        local v47, v48 = headlineLabel(u31, "Shadow", 4)
-        v47.TextColor3 = Colors_upv_1.Void
-        local v49, v50 = headlineLabel(u31, "Headline", 5)
-        UI_upv_1.new("UIGradient", {Rotation = 90, Color = ColorSequence.new(u5, u2), Parent = v49})
-        local v51 = UI_upv_1.TextStroke(u6, 2, 0.35)
-        v51.Parent = v49
-        tbl_upv_5[v49] = {base = 0.35, stroke = v51}
-        local v52, v53 = headlineLabel(u31, "Sweep", 6)
-        v52.TextColor3 = u5
-        local v54 = UI_upv_1.new("UIGradient", {Rotation = 18, Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.44, 1), NumberSequenceKeypoint.new(0.5, 0.1), NumberSequenceKeypoint.new(0.56, 1), NumberSequenceKeypoint.new(1, 1)}), Offset = Vector2.new(-1, 0), Parent = v52})
-        local u32 = UI_upv_1.new("Frame", {Name = "Row", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(0, 132), Size = UDim2.fromOffset(0, 0), Parent = u31})
-        local tbl_11 = {}
-        for n_1 = 1, 2 do
-            local v55
-            if n_1 ~= 1 then
-                v55 = Colors_upv_1.Enemy
-            else
-                v55 = Colors_upv_1.Ally
-            end
-            local new_1 = UI_upv_1.new
-            local tbl_12 = {}
-            tbl_12.Name = ((n_1 ~= 1) and "Theirs") or "Mine"
-            tbl_12.AnchorPoint = Vector2.new(0.5, 0.5)
-            tbl_12.Position = UDim2.fromOffset(((n_1 ~= 1) and 156) or -156, 0)
-            tbl_12.Size = UDim2.fromOffset(92, 84)
-            tbl_12.BackgroundColor3 = Color3.new(1, 1, 1)
-            tbl_12.BackgroundTransparency = 0.05
-            tbl_12.ZIndex = 6
-            tbl_12[1], tbl_12[2], tbl_12[3] = UI_upv_1.Corner(14), UI_upv_1.Gradient(Theme_upv_1.Lighten(v55, 0.1), Theme_upv_1.Darken(v55, 0.35), 90), UI_upv_1.Stroke(Theme_upv_1.Lighten(v55, 0.4), 2.5, 0.25)
-            tbl_12.Parent = u32
-            local v56 = new_1("Frame", tbl_12)
-            local v57 = UI_upv_1.new("UIScale", {Parent = v56})
-            tbl_11[n_1] = {box = v56, digit = UI_upv_1.DisplayText({StrokeThickness = 2.5, Text = "2", Name = "Score", ZIndex = 7, TextSize = 62, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1, 1), TextColor3 = Colors_upv_1.Text, StrokeColor = Theme_upv_1.Darken(v55, 0.7), Parent = v56}), scale = v57}
-        end
-        local v58 = UI_upv_1.new("Frame", {Name = "Dash", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(36, 6), BackgroundColor3 = u2, ZIndex = 6, [1] = UI_upv_1.Corner(3), Parent = u32})
-        local v59 = UI_upv_1.new("ImageLabel", {Name = "DigitRing", ImageTransparency = 1, ZIndex = 5, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(90, 90), Image = u7.Ring or "", ImageColor3 = u2, Parent = u32})
-        local function digitLabel_1(a50, a51)
-            --[[
-              name: digitLabel
-              line: 537
-              upvalues:
-                UI_upv_1 (copy, index: 1)
-                u1 (copy, index: 2)
-                Colors_upv_1 (copy, index: 3)
-                u32 (copy, index: 4)
-            ]]
-            local v60 = UI_upv_1.new("TextLabel", {TextTransparency = 1, Text = "", TextSize = 100, Name = a50, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(180, 150), FontFace = u1, TextColor3 = Colors_upv_1.Text, ZIndex = a51, Parent = u32})
-            return v60, UI_upv_1.new("UIScale", {Parent = v60})
-        end
-        local v61, v62 = digitLabel_1("DigitGhost", 6)
-        local v63, v64 = digitLabel_1("Digit", 7)
-        local v65 = UI_upv_1.new("UIGradient", {Rotation = 90, Color = ColorSequence.new(u5, u2), Parent = v63})
-        local v66 = UI_upv_1.TextStroke(u6, 2.5, 0.2)
-        v66.Parent = v63
-        tbl_upv_5[v63] = {base = 0.2, stroke = v66}
-        UI_upv_1.new("UIGradient", {Rotation = 90, Color = ColorSequence.new(u5, u3), Parent = v61})
-        local v67, v68 = headlineLabel(u31, "FightShadow", 4)
-        v67.TextColor3 = Colors_upv_1.Void
-        v67.Text = "FIGHT!"
-        local v69, v70 = headlineLabel(u31, "Fight", 5)
-        v69.Text = "FIGHT!"
-        UI_upv_1.new("UIGradient", {Rotation = 90, Color = ColorSequence.new(u5, u3), Parent = v69})
-        local v71 = UI_upv_1.TextStroke(u6, 2, 0.3)
-        v71.Parent = v69
-        tbl_upv_5[v69] = {base = 0.3, stroke = v71}
-        local v72 = UI_upv_1.new("Frame", {ZIndex = 7, Name = "Particles", Size = UDim2.fromOffset(0, 0), Parent = u31})
-        local tbl_13 = {}
-        tbl_13.root = v32
-        tbl_13.dim = v33
-        tbl_13.stage = v34
-        tbl_13.stageScale = v35
-        tbl_13.shaker = u31
-        tbl_13.glow = v36
-        tbl_13.ring = v44
-        tbl_13.band = v38
-        tbl_13.bandGrad = v39
-        tbl_13.ghost = v37
-        tbl_13.edgeTop = v41
-        tbl_13.edgeBottom = v42
-        tbl_13.flare = v43
-        tbl_13.head = v49
-        tbl_13.headScale = v50
-        tbl_13.shadow = v47
-        tbl_13.shadowScale = v48
-        tbl_13.aura = v45
-        tbl_13.auraScale = v46
-        tbl_13.sweep = v52
-        tbl_13.sweepScale = v53
-        tbl_13.sweepGrad = v54
-        tbl_13.row = u32
-        tbl_13.boxes = tbl_11
-        tbl_13.digit = v63
-        tbl_13.digitScale = v64
-        tbl_13.digitGrad = v65
-        tbl_13.digitGhost = v61
-        tbl_13.ghostScale = v62
-        tbl_13.digitRing = v59
-        tbl_13.dash = v58
-        tbl_13.fight = v69
-        tbl_13.fightScale = v70
-        tbl_13.fightShadow = v67
-        tbl_13.fightShadowScale = v68
-        tbl_13.pool = require(script.Parent.Parent.Fx).Pool(v72, 110, 7)
-        return tbl_13
-    end
-    function tbl_upv_7.Intro(a52)
+
+    function decider.Intro(a269)
         --[[
           name: Intro
           line: 706
           upvalues:
-            u22 (ref,  index: 1)
+            v151 (ref,  index: 1)
             buildCard (copy, index: 2)
-            u12 (ref,  index: 3)
-            u25 (ref,  index: 4)
-            u26 (ref,  index: 5)
-            u23 (ref,  index: 6)
-            u28 (ref,  index: 7)
-            u27 (ref,  index: 8)
+            cardUp (ref,  index: 3)
+            v220 (ref,  index: 4)
+            v221 (ref,  index: 5)
+            count2 (ref,  index: 6)
+            v223 (ref,  index: 7)
+            v222 (ref,  index: 8)
             setAtmos (copy, index: 9)
             wanted (copy, index: 10)
-            UI_upv_1 (copy, index: 11)
-            TweenService_upv_1 (copy, index: 12)
-            u10 (ref,  index: 13)
-            u17 (ref,  index: 14)
-            u18 (ref,  index: 15)
-            u13 (ref,  index: 16)
-            u19 (ref,  index: 17)
-            RunService_upv_1 (copy, index: 18)
-            a1 (copy, index: 22)
-            u3 (copy, index: 23)
-            u2 (copy, index: 24)
-            u4 (copy, index: 25)
-            u5 (copy, index: 26)
-            tbl_upv_5 (copy, index: 27)
+            ui (copy, index: 11)
+            tweenService (copy, index: 12)
+            pace (ref,  index: 13)
+            timestamp (ref,  index: 14)
+            v95 (ref,  index: 15)
+            atmos (ref,  index: 16)
+            renderSteppedConnection (ref,  index: 17)
+            runService (copy, index: 18)
+            v92 (ref,  index: 19)
+            v93 (ref,  index: 20)
+            ui2 (copy, index: 21)
+            a17 (copy, index: 22)
+            color32 (copy, index: 23)
+            color3 (copy, index: 24)
+            color33 (copy, index: 25)
+            color34 (copy, index: 26)
+            v52 (copy, index: 27)
             textTo (copy, index: 28)
-            State_upv_1 (copy, index: 29)
+            state (copy, index: 29)
+            random (copy, index: 30)
             burst (copy, index: 31)
-            u9 (ref,  index: 32)
-            u24 (ref,  index: 33)
-            tbl_upv_7 (copy, index: 34)
+            result (ref,  index: 32)
+            v219 (ref,  index: 33)
+            decider (copy, index: 34)
         ]]
-        local u33 = u22 or (buildCard())
-        u22 = u33
-        u12 = false
-        u25 = nil
-        u26 = nil
-        u23 = u23 + 1
-        if u22 and u22.root.Visible then
-            if u28 then
-                u28()
-                u28 = nil
+        local stroke, v271, stroke2, v273, v274, v275, v276, v277, v278, v279, v280
+        local stroke3, v282, v283
+        local stroke4, v285, v286
+        local v287, v288
+        local v289, v290
+        local v291 = v151 or buildCard()
+        v151 = v291
+        local v292 = v151
+        cardUp = false
+        v220 = nil
+        v221 = nil
+        count2 += 1
+
+        if v292 and v292.root.Visible then
+            if v223 then
+                v223()
+                v223 = nil
             end
-            u22.pool:Clear()
-            u22.root.Visible = false
-            u22.shaker.Position = UDim2.new()
+
+            v292.pool:Clear()
+            v292.root.Visible = false
+            v292.shaker.Position = UDim2.new()
         end
-        u23 = u23 + 1
-        local u34 = u23
-        u12 = true
-        u27 = 0
+
+        count2 += 1
+        local v293 = count2
+        cardUp = true
+        v222 = 0
         setAtmos((wanted()))
-        local Compact_1 = UI_upv_1.Compact
-        u33.stageScale.Scale = (Compact_1 and 0.68) or 1
-        local stage_1 = u33.stage
-        stage_1.Position = UDim2.fromScale(0.5, (Compact_1 and 0.235) or 0.265)
-        u33.shaker.Position = UDim2.new()
-        u33.root.Visible = true
-        u33.dim.BackgroundTransparency = 1
-        local tbl_14 = {BackgroundTransparency = 0.72}
-        TweenService_upv_1:Create(u33.dim, TweenInfo.new(u10 * 0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_14):Play()
-        u17 = os.clock()
-        u18 = 0.28
-        if u13 ~= "off" and not (u19) then
-            local v73 = RunService_upv_1.RenderStepped:Connect(function() end)
-            u19 = v73
-        end
-        u33.band.AnchorPoint = Vector2.new(0, 0.5)
-        u33.band.Position = UDim2.fromOffset(-750, 0)
-        u33.band.Size = UDim2.fromOffset(0, 124)
-        u33.band.ImageTransparency = 0.06
-        local tbl_15 = {}
-        tbl_15.Size = UDim2.fromOffset(1500, 124)
-        TweenService_upv_1:Create(u33.band, TweenInfo.new(u10 * 0.32, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_15):Play()
-        u33.ghost.Size = UDim2.fromOffset(900, 198.4)
-        u33.ghost.ImageTransparency = 1
-        local tbl_16 = {ImageTransparency = 0.5}
-        tbl_16.Size = UDim2.fromOffset(1724.9999999999998, 198.4)
-        TweenService_upv_1:Create(u33.ghost, TweenInfo.new(u10 * 0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_16):Play()
-        for key_2, value_5 in {u33.edgeTop, u33.edgeBottom} do
-            value_5.Position = UDim2.fromOffset(((key_2 ~= 1) and 450) or -450, ((key_2 ~= 1) and 64) or -64)
-            value_5.Size = UDim2.fromOffset(0, 3)
-            value_5.BackgroundTransparency = 0
-            local tbl_17 = {}
-            tbl_17.Size = UDim2.fromOffset(1170, 3)
-            tbl_17.Position = UDim2.fromOffset(0, value_5.Position.Y.Offset)
-            local v74 = u10 * 0.45
-            TweenService_upv_1:Create(value_5, TweenInfo.new(v74, Enum.EasingStyle.Quint or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out or (Enum.EasingDirection.Out), 0, false, 0.08 * u10), tbl_17):Play()
-        end
-        a1.Sounds.Play("Whoosh", {pitch = 0.8, volume = 0.35})
-        u33.pool.Pace = u10
-        local Match_2 = u33.pool:Emit(16, {lifeMin = 1.3, speedMax = 70, base = 0.15, lifeMax = 2.2, drag = 0.6, whiteChance = 0.12, speedMin = 20, kind = "sparkle", mode = "box", grav = -170, size = 11, at = Vector2.new(0, 150), box = Vector2.new(1300, 60), colors = {u3, u2, u4}, white = u5})
-        u28 = Match_2
-        local tbl_18, v75, _, tbl_18 = nil, nil, nil, nil
-        for v97, value_6 in {u33.head, u33.shadow, u33.sweep, u33.aura} do
-            value_6.TextTransparency = 1
-            local v76 = tbl_upv_5[value_6]
-            if not (v76) then
-                v75 = value_6
-                v75.Position = UDim2.fromOffset(0, 0)
-                continue
-            end
-            local stroke_3 = v76.stroke
-            if tbl_upv_5[value_6] or not tbl_upv_5[value_6] then
-                local v77 = 1
-                v75 = value_6
-                stroke_3.Transparency = v77
-                v75.Position = UDim2.fromOffset(0, 0)
-            end
-        end
-        tbl_18 = v78
-        for v98, value_7 in {u33.fight, u33.fightShadow} do
-            value_7.TextTransparency = 1
-            local v79 = tbl_upv_5[value_7]
-            if not (v79) then
-                continue
-            end
-            local stroke_4 = v79.stroke
-            if tbl_upv_5[value_7] or not tbl_upv_5[value_7] then
-                local v80 = 1
-                local v81 = tbl_18
-                stroke_4.Transparency = v80
-                tbl_18 = v81
-            end
-        end
-        u33.shadow.Position = UDim2.fromOffset(0, 7)
-        u33.sweepGrad.Offset = Vector2.new(-1, 0)
-        for v99, value_8 in {u33.headScale, u33.shadowScale, u33.sweepScale} do
-            value_8.Scale = 2.432
-            local tbl_19 = {Scale = 1.28}
-            TweenService_upv_1:Create(value_8, TweenInfo.new(u10 * 0.26, Enum.EasingStyle.Back or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out or (Enum.EasingDirection.Out), 0, false, 0.06 * u10), tbl_19):Play()
-        end
-        u33.auraScale.Scale = 1.28
-        textTo(u33.head, 0.1, 0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.06)
-        tbl_18 = {TextTransparency = 0.5}
-        local shadow_1 = u33.shadow
-        local v82 = u10 * 0.2
-        local v83 = Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint)
-        TweenService_upv_1:Create(shadow_1, TweenInfo.new(v82, v83, Enum.EasingDirection.Out or (Enum.EasingDirection.Out), 0, false, 0.06 * u10), tbl_18):Play()
-        Match_2 = State_upv_1.Match
-        tbl_18 = State_upv_1.MyTeam()
-        local v84, v85 = nil, nil
-        for key_3, value_9 in u33.boxes do
-            if Match_2 then
-                v84 = Match_2.teams
-                if v84 then
-                    local teams_1 = Match_2.teams
-                    if key_3 ~= 1 then
-                        v83 = 3 - tbl_18
-                    else
-                        v83 = tbl_18
+        local compact = ui.Compact
+        v291.stageScale.Scale = compact and 0.68 or 1
+        local stage = v291.stage
+        local udim2FromScale = UDim2.fromScale
+        local v297 = compact and 0.235 or 0.265
+        stage.Position = udim2FromScale(0.5, v297)
+        v291.shaker.Position = UDim2.new()
+        v291.root.Visible = true
+        v291.dim.BackgroundTransparency = 1
+        local propertyTable = {BackgroundTransparency = 0.72}
+        tweenService:Create(v291.dim, TweenInfo.new(pace * 0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable):Play()
+        timestamp = os.clock()
+        v95 = 0.28
+
+        if atmos ~= "off" and not renderSteppedConnection then
+            renderSteppedConnection = runService.RenderStepped:Connect(
+                function(deltaTime: number)
+                    --[[
+                      line: 182
+                      upvalues:
+                        v92 (ref,  index: 1)
+                        v93 (ref,  index: 2)
+                        timestamp (ref,  index: 3)
+                        v95 (ref,  index: 4)
+                        atmos (ref,  index: 5)
+                        ui2 (copy, index: 6)
+                        renderSteppedConnection (ref,  index: 7)
+                    ]]
+                    v92 += ((v93 - v92) * (1 - math.exp(-deltaTime * 3)))
+                    local timestamp2 = os.clock()
+                    local v301 = timestamp2 - timestamp
+                    local v302 = 0
+
+                    if v301 < 1 then
+                        local v303
+                        local v304 = v95
+                        local v305 = v301 < 0 and 0
+                            or (if v301 < 0.06 then v301 / 0.06 else math.exp(-(v301 - 0.06) / 0.14))
+                        local v306 = v304 * v305
+                        local v307 = v95 * 0.6
+                        local v308 = v301 - 0.27
+
+                        if not (v308 < 0) then
+                            v303 = if v308 < 0.06 then v308 / 0.06 else math.exp(-(v308 - 0.06) / 0.14)
+                        else
+                            v303 = 0
+                        end
+
+                        v302 = v306 + v307 * v303
                     end
-                    v84 = teams_1[v83]
+
+                    local v309 = atmos ~= "live" and 0 or math.sin(timestamp2 * 2.4) * 0.03
+                    ui2.ImageTransparency = math.clamp((v92 - v302) + v309, math.min(v92, 0.14), 1)
+
+                    if atmos == "off" and 0.995 < v92 and 1 < v301 then
+                        ui2.ImageTransparency = 1
+                        ui2.Visible = false
+
+                        if renderSteppedConnection then
+                            renderSteppedConnection:Disconnect()
+                            renderSteppedConnection = nil
+                        end
+                    end
+                end
+            )
+        end
+
+        v291.band.AnchorPoint = Vector2.new(0, 0.5)
+        v291.band.Position = UDim2.fromOffset(-750, 0)
+        v291.band.Size = UDim2.fromOffset(0, 124)
+        v291.band.ImageTransparency = 0.06
+        local band = v291.band
+        local propertyTable2 = {Size = UDim2.fromOffset(1500, 124)}
+        tweenService:Create(band, TweenInfo.new(pace * 0.32, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable2):Play()
+        v291.ghost.Size = UDim2.fromOffset(900, 198.4)
+        v291.ghost.ImageTransparency = 1
+        local ghost = v291.ghost
+        local propertyTable3 = {ImageTransparency = 0.5, Size = UDim2.fromOffset(1724.9999999999998, 198.4)}
+        tweenService:Create(ghost, TweenInfo.new(pace * 0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable3):Play()
+
+        for v314, instance in {v291.edgeTop, v291.edgeBottom} do
+            local udim2FromOffset = UDim2.fromOffset
+            local v317 = v314 ~= 1 and 450 or -450
+            local v318 = v314 ~= 1 and 64 or -64
+            instance.Position = udim2FromOffset(v317, v318)
+            instance.Size = UDim2.fromOffset(0, 3)
+            instance.BackgroundTransparency = 0
+            local propertyTable4 = {Size = UDim2.fromOffset(1170, 3), Position = UDim2.fromOffset(0, instance.Position.Y.Offset)}
+            local quint = Enum.EasingStyle.Quint
+            local out = Enum.EasingDirection.Out
+            local newTweenInfo = TweenInfo.new
+            local v323 = pace * 0.45
+            local quint2 = quint or Enum.EasingStyle.Quint
+            local out2 = out or Enum.EasingDirection.Out
+            tweenService:Create(instance, newTweenInfo(v323, quint2, out2, 0, false, 0.08 * pace), propertyTable4):Play()
+        end
+
+        a17.Sounds.Play("Whoosh", {volume = 0.35, pitch = 0.8})
+        v291.pool.Pace = pace
+        v223 = v291.pool:Emit(16, {mode = "box", kind = "sparkle", size = 11, speedMin = 20, speedMax = 70, grav = -170, drag = 0.6, lifeMin = 1.3, lifeMax = 2.2, whiteChance = 0.12, base = 0.15, at = Vector2.new(0, 150), box = Vector2.new(1300, 60), colors = {color32, color3, color33}, white = color34})
+        v282, v283 = v291, v293
+
+        for _, v327 in {v291.head, v291.shadow, v291.sweep, v291.aura} do
+            local v328, v329
+            v327.TextTransparency = 1
+
+            if const v330 = v52[v327] then
+                stroke3 = v330.stroke
+                local _ = v52[v327]
+                local transparency = 1
+                stroke, v271, v273, v274 = stroke3, v327, v282, v283
+                stroke.Transparency = transparency
+                v328, v329 = v273, v274
+            else
+                v271, v328, v329 = v327, v282, v283
+            end
+
+            v271.Position = UDim2.fromOffset(0, 0)
+            v282, v283 = v328, v329
+        end
+
+        v285, v286 = v282, v283
+
+        for _, v334 in {v282.fight, v282.fightShadow} do
+            v334.TextTransparency = 1
+
+            if const v335 = v52[v334] then
+                stroke4 = v335.stroke
+                local _ = v52[v334]
+                local transparency = 1
+                stroke2, v275, v276 = stroke4, v285, v286
+                stroke2.Transparency = transparency
+                v285, v286 = v275, v276
+            end
+        end
+
+        v285.shadow.Position = UDim2.fromOffset(0, 7)
+        v285.sweepGrad.Offset = Vector2.new(-1, 0)
+
+        for _, instance in {v285.headScale, v285.shadowScale, v285.sweepScale} do
+            instance.Scale = 2.432
+            local propertyTable5 = {Scale = 1.28}
+            local back = Enum.EasingStyle.Back
+            local out = Enum.EasingDirection.Out
+            local newTweenInfo = TweenInfo.new
+            local v344 = pace * 0.26
+            local _ = back or Enum.EasingStyle.Quint
+            local out3 = out or Enum.EasingDirection.Out
+            local v347
+            tweenService:Create(instance, newTweenInfo(v344, v347, out3, 0, false, 0.06 * pace), propertyTable5):Play()
+        end
+
+        v285.auraScale.Scale = 1.28
+        textTo(v285.head, 0.1, 0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.06)
+        local shadow = v285.shadow
+        local propertyTable6 = {TextTransparency = 0.5}
+        local quad = Enum.EasingStyle.Quad
+        local out = Enum.EasingDirection.Out
+        local newTweenInfo = TweenInfo.new
+        local v353 = pace * 0.2
+        local easingStyle = quad or Enum.EasingStyle.Quint
+        local out4 = out or Enum.EasingDirection.Out
+        tweenService:Create(shadow, newTweenInfo(v353, easingStyle, out4, 0, false, 0.06 * pace), propertyTable6):Play()
+        local match = state.Match
+        local v357 = state.MyTeam()
+
+        for v358, box in v285.boxes do
+            local v360
+            local match2 = match
+
+            if match2 then
+                local teams = match.teams
+
+                if teams then
+                    local teams2 = match.teams
+                    local teamKey = if v358 == 1 then v357 else 3 - v357
+                    v360 = teams2[teamKey]
+                else
+                    v360 = teams
                 end
             else
-                v84 = Match_2
+                v360 = match2
             end
-            local digit_1 = value_9.digit
-            if not (v84) then
-                v85 = 1
-                digit_1.Text = tostring(v85)
-                local v86
-                v86.box.Visible = false
-                continue
+
+            local digit = box.digit
+            local score = v360 and v360.score or 1
+            digit.Text = tostring(score)
+            box.box.Visible = false
+        end
+
+        v285.dash.Visible = false
+        local digit = v285.digit
+        digit.TextTransparency = 1
+
+        if const v368 = v52[digit] then
+            local stroke5 = v368.stroke
+            local _ = v52[digit]
+            local transparency = 1
+            v277, v278 = v285, v286
+            stroke5.Transparency = transparency
+            v287, v288 = v277, v278
+        else
+            v287, v288 = v285, v286
+        end
+
+        local digitGhost = v287.digitGhost
+        digitGhost.TextTransparency = 1
+
+        if const v373 = v52[digitGhost] then
+            local stroke6 = v373.stroke
+            local _ = v52[digitGhost]
+            local transparency = 1
+            v279, v280 = v287, v288
+            stroke6.Transparency = transparency
+            v289, v290 = v279, v280
+        else
+            v289, v290 = v287, v288
+        end
+
+        v289.digitRing.ImageTransparency = 1
+        v289.row.Position = UDim2.fromOffset(0, 156)
+
+        local v377 = function()
+            --[[
+              line: 798
+              upvalues:
+                v290 (copy, index: 1)
+                count2 (ref,  index: 2)
+                v289 (copy, index: 3)
+                tweenService (copy, index: 4)
+                pace (ref,  index: 5)
+                random (copy, index: 6)
+                runService (copy, index: 7)
+                burst (copy, index: 8)
+                color3 (copy, index: 9)
+                timestamp (ref,  index: 10)
+                v95 (ref,  index: 11)
+                atmos (ref,  index: 12)
+                renderSteppedConnection (ref,  index: 13)
+                v92 (ref,  index: 14)
+                v93 (ref,  index: 15)
+                ui2 (copy, index: 16)
+                result (ref,  index: 17)
+                v221 (ref,  index: 18)
+            ]]
+            if v290 ~= count2 then
+                return
             end
-            v85 = v84.score or 1
-            digit_1.Text = tostring(v85)
-            local v86
-            v86.box.Visible = false
-        end
-        u33.dash.Visible = false
-        local v87 = u33.digit
-        v87.TextTransparency = 1
-        tbl_18 = tbl_upv_5[v87]
-        if tbl_18 then
-            local stroke_5 = tbl_18.stroke
-            local v88 = 1
-            local v89, v90 = stroke_5, v88
-            v89.Transparency = v90
-        end
-        v87 = u33.digitGhost
-        v87.TextTransparency = 1
-        local v91 = tbl_upv_5[v87]
-        if v91 then
-            local stroke_6 = v91.stroke
-            local v92 = 1
-            local v93 = nil
-            local v93, v94 = stroke_6, v92
-            v93.Transparency = v94
-        end
-        u33.digitRing.ImageTransparency = 1
-        u33.row.Position = UDim2.fromOffset(0, 156)
-        task.delay(
-            u10 * 0.3,
-            function()
-                --[[
-                  line: 798
-                  upvalues:
-                    u34 (copy, index: 1)
-                    u23 (ref,  index: 2)
-                    u33 (copy, index: 3)
-                    TweenService_upv_1 (copy, index: 4)
-                    u10 (ref,  index: 5)
-                    RunService_upv_1 (copy, index: 7)
-                    burst (copy, index: 8)
-                    u2 (copy, index: 9)
-                    u17 (ref,  index: 10)
-                    u18 (ref,  index: 11)
-                    u13 (ref,  index: 12)
-                    u19 (ref,  index: 13)
-                    u9 (ref,  index: 17)
-                    u26 (ref,  index: 18)
-                ]]
-                if u34 ~= u23 then
-                    return
-                end
-                for _, value_10 in {u33.headScale, u33.shadowScale, u33.sweepScale} do
-                    value_10.Scale = 1.3824
-                    local tbl_20 = {Scale = 1.28}
-                    TweenService_upv_1:Create(value_10, TweenInfo.new(u10 * 0.24, Enum.EasingStyle.Back or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_20):Play()
-                end
-                local _ = u23
-                local v96 = 0.32
-                local v97 = 11
-                task.spawn(function() end)
-                u33.aura.TextTransparency = 0.3
-                u33.auraScale.Scale = 1.3056
-                local tbl_21 = {Scale = 1.6640000000000001}
-                TweenService_upv_1:Create(u33.auraScale, TweenInfo.new(u10 * 0.6, Enum.EasingStyle.Quart or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_21):Play()
-                local tbl_22 = {TextTransparency = 1}
-                TweenService_upv_1:Create(u33.aura, TweenInfo.new(u10 * 0.6, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_22):Play()
-                burst(u33, 44, Vector2.zero, Vector2.new(605.44, 102.4), 1250)
-                u33.ring.ImageColor3 = u2
-                u33.ring.Size = UDim2.fromOffset(120, 120)
-                u33.ring.ImageTransparency = 0.3
-                local tbl_23 = {ImageTransparency = 1}
-                tbl_23.Size = UDim2.fromOffset(1500, 1500)
-                TweenService_upv_1:Create(u33.ring, TweenInfo.new(u10 * 0.65, Enum.EasingStyle.Quart or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_23):Play()
-                u33.glow.Size = UDim2.fromOffset(675, 210.79999999999998)
-                u33.glow.ImageTransparency = 0.4
-                tbl_23 = {ImageTransparency = 1}
-                tbl_23.Size = UDim2.fromOffset(1080, 322.40000000000003)
-                TweenService_upv_1:Create(u33.glow, TweenInfo.new(u10 * 0.8, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_23):Play()
-                u33.flare.Position = UDim2.fromOffset(-930, 0)
-                u33.flare.ImageTransparency = 1
-                tbl_23 = {}
-                tbl_23.Position = UDim2.fromOffset(930, 0)
-                TweenService_upv_1:Create(u33.flare, TweenInfo.new(u10 * 0.55, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.InOut or (Enum.EasingDirection.Out), 0, false, 0 * u10), tbl_23):Play()
-                tbl_23 = {ImageTransparency = 0.12}
-                TweenService_upv_1:Create(u33.flare, TweenInfo.new(u10 * 0.12, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_23):Play()
-                tbl_23 = {ImageTransparency = 1}
-                TweenService_upv_1:Create(u33.flare, TweenInfo.new(u10 * 0.2, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.In or (Enum.EasingDirection.Out), 0, false, 0.36 * u10), tbl_23):Play()
-                u17 = os.clock()
-                u18 = 0.32
-                if u13 ~= "off" and not (u19) then
-                    local v95 = RunService_upv_1.RenderStepped:Connect(function() end)
-                    u19 = v95
-                end
-                if u9 then
-                    pcall(u9.Play, "Match/Final_Round", nil, nil)
-                end
-                if u9 and u9.Duck then
-                    pcall(u9.Duck, "Music", 0.3, 2.4)
-                end
-                if u9 and u9.Duck then
-                    pcall(u9.Duck, "Ambient", 0.5, 2.4)
-                end
-                tbl_23 = {}
-                tbl_23.Position = UDim2.fromOffset(0, 132)
-                TweenService_upv_1:Create(u33.row, TweenInfo.new(u10 * 0.34, Enum.EasingStyle.Quint or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out or (Enum.EasingDirection.Out), 0, false, 0.06 * u10), tbl_23):Play()
-                for key_4, value_11 in u33.boxes do
-                    value_11.box.Visible = true
-                    value_11.scale.Scale = 0.2
-                    local tbl_24 = {Scale = 1}
-                    TweenService_upv_1:Create(value_11.scale, TweenInfo.new(u10 * 0.34, Enum.EasingStyle.Back or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out or (Enum.EasingDirection.Out), 0, false, ((0.06 + (key_4 * 0.05)) or 0) * u10), tbl_24):Play()
-                end
-                if u26 == nil then
-                    u33.dash.Visible = true
-                    u33.dash.BackgroundTransparency = 1
-                    local tbl_25 = {BackgroundTransparency = 0.15}
-                    TweenService_upv_1:Create(u33.dash, TweenInfo.new(u10 * 0.25, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out or (Enum.EasingDirection.Out), 0, false, 0.1 * u10), tbl_25):Play()
-                end
+
+            for _, instance in {v289.headScale, v289.shadowScale, v289.sweepScale} do
+                instance.Scale = 1.3824
+                local propertyTable = {Scale = 1.28}
+                local back = Enum.EasingStyle.Back
+                local newTweenInfo = TweenInfo.new
+                local v383 = pace * 0.24
+                local easingStyle = back or Enum.EasingStyle.Quint
+                tweenService:Create(instance, newTweenInfo(v383, easingStyle, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable):Play()
             end
-        )
-        task.delay(
-            u10 * 0.58,
-            function()
-                --[[
-                  line: 845
-                  upvalues:
-                    u34 (copy, index: 1)
-                    u23 (ref,  index: 2)
-                    u33 (copy, index: 3)
-                    TweenService_upv_1 (copy, index: 4)
-                    u10 (ref,  index: 5)
-                ]]
-                if u34 ~= u23 then
-                    return
+
+            local v385 = v289
+            local v386 = count2
+            local v387 = 0.32
+            local v388 = 11
+
+            task.spawn(
+                function()
+                    --[[
+                      line: 621
+                      upvalues:
+                        v387 (copy, index: 1)
+                        pace (ref,  index: 2)
+                        v386 (copy, index: 3)
+                        count2 (ref,  index: 4)
+                        v385 (copy, index: 5)
+                        random (copy, index: 6)
+                        v388 (copy, index: 7)
+                        runService (copy, index: 8)
+                    ]]
+                    local timestamp = os.clock()
+
+                    while os.clock() - timestamp < v387 * pace and v386 == count2 do
+                        local v390 = 1 - (os.clock() - timestamp) / (v387 * pace)
+                        v385.shaker.Position = UDim2.fromOffset((random:NextNumber(-1, 1) * v388) * v390, (random:NextNumber(-1, 1) * v388) * v390)
+                        runService.RenderStepped:Wait()
+                    end
+
+                    if v386 == count2 then
+                        v385.shaker.Position = UDim2.new()
+                    end
                 end
-                u33.sweep.TextTransparency = 0.15
-                u33.sweepGrad.Offset = Vector2.new(-1, 0)
-                local tbl_26 = {}
-                tbl_26.Offset = Vector2.new(1, 0)
-                TweenService_upv_1:Create(u33.sweepGrad, TweenInfo.new(u10 * 0.55, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.InOut or (Enum.EasingDirection.Out), 0, false, 0 * u10), tbl_26):Play()
-                task.delay(
-                    u10 * 0.6,
-                    function()
+            )
+
+            v289.aura.TextTransparency = 0.3
+            v289.auraScale.Scale = 1.3056
+            local auraScale = v289.auraScale
+            local propertyTable = {Scale = 1.6640000000000001}
+            local quart = Enum.EasingStyle.Quart
+            local newTweenInfo = TweenInfo.new
+            local v395 = pace * 0.6
+            local easingStyle = quart or Enum.EasingStyle.Quint
+            tweenService:Create(auraScale, newTweenInfo(v395, easingStyle, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable):Play()
+            local aura = v289.aura
+            local propertyTable2 = {TextTransparency = 1}
+            local quad = Enum.EasingStyle.Quad
+            local newTweenInfo2 = TweenInfo.new
+            local v401 = pace * 0.6
+            local easingStyle2 = quad or Enum.EasingStyle.Quint
+            tweenService:Create(aura, newTweenInfo2(v401, easingStyle2, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable2):Play()
+            burst(v289, 44, Vector2.zero, Vector2.new(605.44, 102.4), 1250)
+            v289.ring.ImageColor3 = color3
+            v289.ring.Size = UDim2.fromOffset(120, 120)
+            v289.ring.ImageTransparency = 0.3
+            local ring = v289.ring
+            local v404 = {ImageTransparency = 1, Size = UDim2.fromOffset(1500, 1500)}
+            local quart2 = Enum.EasingStyle.Quart
+            local newTweenInfo3 = TweenInfo.new
+            local v407 = pace * 0.65
+            local easingStyle3 = quart2 or Enum.EasingStyle.Quint
+            tweenService:Create(ring, newTweenInfo3(v407, easingStyle3, Enum.EasingDirection.Out, 0, false, 0 * pace), v404):Play()
+            v289.glow.Size = UDim2.fromOffset(675, 210.79999999999998)
+            v289.glow.ImageTransparency = 0.4
+            local glow = v289.glow
+            v404 = {ImageTransparency = 1, Size = UDim2.fromOffset(1080, 322.40000000000003)}
+            local quad2 = Enum.EasingStyle.Quad
+            local newTweenInfo4 = TweenInfo.new
+            local v412 = pace * 0.8
+            local easingStyle4 = quad2 or Enum.EasingStyle.Quint
+            tweenService:Create(glow, newTweenInfo4(v412, easingStyle4, Enum.EasingDirection.Out, 0, false, 0 * pace), v404):Play()
+            v289.flare.Position = UDim2.fromOffset(-930, 0)
+            v289.flare.ImageTransparency = 1
+            local flare = v289.flare
+            local propertyTable3 = {Position = UDim2.fromOffset(930, 0)}
+            local quad3 = Enum.EasingStyle.Quad
+            local inOut = Enum.EasingDirection.InOut
+            v412 = TweenInfo.new
+            local v418 = pace * 0.55
+            local easingStyle5 = quad3 or Enum.EasingStyle.Quint
+            local easingDirection = inOut or Enum.EasingDirection.Out
+            tweenService:Create(flare, v412(v418, easingStyle5, easingDirection, 0, false, 0 * pace), propertyTable3):Play()
+            local flare2 = v289.flare
+            local propertyTable4 = {ImageTransparency = 0.12}
+            local quad4 = Enum.EasingStyle.Quad
+            local newTweenInfo5 = TweenInfo.new
+            local v425 = pace * 0.12
+            local easingStyle6 = quad4 or Enum.EasingStyle.Quint
+            tweenService:Create(flare2, newTweenInfo5(v425, easingStyle6, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable4):Play()
+            local flare3 = v289.flare
+            local propertyTable5 = {ImageTransparency = 1}
+            local quad5 = Enum.EasingStyle.Quad
+            local inValue = Enum.EasingDirection.In
+            local newTweenInfo6 = TweenInfo.new
+            local v432 = pace * 0.2
+            local easingStyle7 = quad5 or Enum.EasingStyle.Quint
+            local easingDirection2 = inValue or Enum.EasingDirection.Out
+            tweenService:Create(flare3, newTweenInfo6(v432, easingStyle7, easingDirection2, 0, false, 0.36 * pace), propertyTable5):Play()
+            timestamp = os.clock()
+            v95 = 0.32
+
+            if atmos ~= "off" and not renderSteppedConnection then
+                renderSteppedConnection = runService.RenderStepped:Connect(
+                    function(deltaTime: number)
                         --[[
-                          line: 852
+                          line: 182
                           upvalues:
-                            u34 (copy, index: 1)
-                            u23 (ref,  index: 2)
-                            u33 (copy, index: 3)
+                            v92 (ref,  index: 1)
+                            v93 (ref,  index: 2)
+                            timestamp (ref,  index: 3)
+                            v95 (ref,  index: 4)
+                            atmos (ref,  index: 5)
+                            ui2 (copy, index: 6)
+                            renderSteppedConnection (ref,  index: 7)
                         ]]
-                        if u34 ~= u23 then
-                            return
+                        v92 += ((v93 - v92) * (1 - math.exp(-deltaTime * 3)))
+                        local timestamp2 = os.clock()
+                        local v437 = timestamp2 - timestamp
+                        local v438 = 0
+
+                        if v437 < 1 then
+                            local v439
+                            local v440 = v95
+                            local v441 = v437 < 0 and 0
+                                or (if v437 < 0.06 then v437 / 0.06 else math.exp(-(v437 - 0.06) / 0.14))
+                            local v442 = v440 * v441
+                            local v443 = v95 * 0.6
+                            local v444 = v437 - 0.27
+
+                            if not (v444 < 0) then
+                                v439 = if v444 < 0.06 then v444 / 0.06 else math.exp(-(v444 - 0.06) / 0.14)
+                            else
+                                v439 = 0
+                            end
+
+                            v438 = v442 + v443 * v439
                         end
-                        u33.sweep.TextTransparency = 1
+
+                        local v445 = atmos ~= "live" and 0 or math.sin(timestamp2 * 2.4) * 0.03
+                        ui2.ImageTransparency = math.clamp((v92 - v438) + v445, math.min(v92, 0.14), 1)
+
+                        if atmos == "off" and 0.995 < v92 and 1 < v437 then
+                            ui2.ImageTransparency = 1
+                            ui2.Visible = false
+
+                            if renderSteppedConnection then
+                                renderSteppedConnection:Disconnect()
+                                renderSteppedConnection = nil
+                            end
+                        end
                     end
                 )
             end
-        )
-        local v96 = os.clock()
-        u24 = v96 + (u10 * 0.48)
-        task.delay(
-            u10 * 0.48,
-            function()
+
+            if result then
+                pcall(result.Play, "Match/Final_Round", nil, nil)
+            end
+
+            if result and result.Duck then
+                pcall(result.Duck, "Music", 0.3, 2.4)
+            end
+
+            if result and result.Duck then
+                pcall(result.Duck, "Ambient", 0.5, 2.4)
+            end
+
+            local row = v289.row
+            local propertyTable6 = {Position = UDim2.fromOffset(0, 132)}
+            local quint = Enum.EasingStyle.Quint
+            local out = Enum.EasingDirection.Out
+            v425 = TweenInfo.new
+            local v450 = pace * 0.34
+            local quint2 = quint or Enum.EasingStyle.Quint
+            local v452 = out
+
+            if v452 then
+                v452 = v289
+            else
+                v452 = Enum.EasingDirection.Out
+                v452 = v289
+            end
+
+            tweenService:Create(row, v425(v450, quint2, v452, 0, false, 0.06 * pace), propertyTable6):Play()
+
+            for v453, box in v452.boxes do
+                box.box.Visible = true
+                box.scale.Scale = 0.2
+                local scale = box.scale
+                local propertyTable7 = {Scale = 1}
+                local back = Enum.EasingStyle.Back
+                local out2 = Enum.EasingDirection.Out
+                local v459 = 0.06 + v453 * 0.05
+                local newTweenInfo7 = TweenInfo.new
+                local v461 = pace * 0.34
+                local easingStyle8 = back or Enum.EasingStyle.Quint
+                local out3 = out2 or Enum.EasingDirection.Out
+                tweenService:Create(scale, newTweenInfo7(v461, easingStyle8, out3, 0, false, (v459 or 0) * pace), propertyTable7):Play()
+            end
+
+            if v221 == nil then
+                v452.dash.Visible = true
+                v452.dash.BackgroundTransparency = 1
+                local dash = v452.dash
+                local propertyTable8 = {BackgroundTransparency = 0.15}
+                local quad6 = Enum.EasingStyle.Quad
+                local out4 = Enum.EasingDirection.Out
+                local newTweenInfo8 = TweenInfo.new
+                local v469 = pace * 0.25
+                local easingStyle9 = quad6 or Enum.EasingStyle.Quint
+                local out5 = out4 or Enum.EasingDirection.Out
+                tweenService:Create(dash, newTweenInfo8(v469, easingStyle9, out5, 0, false, 0.1 * pace), propertyTable8):Play()
+            end
+        end
+
+        task.delay(pace * 0.3, v377)
+
+        local v472 = function()
+            --[[
+              line: 845
+              upvalues:
+                v290 (copy, index: 1)
+                count2 (ref,  index: 2)
+                v289 (copy, index: 3)
+                tweenService (copy, index: 4)
+                pace (ref,  index: 5)
+            ]]
+            if v290 ~= count2 then
+                return
+            end
+
+            v289.sweep.TextTransparency = 0.15
+            v289.sweepGrad.Offset = Vector2.new(-1, 0)
+            local sweepGrad = v289.sweepGrad
+            local propertyTable = {Offset = Vector2.new(1, 0)}
+            local quad = Enum.EasingStyle.Quad
+            local inOut = Enum.EasingDirection.InOut
+            local newTweenInfo = TweenInfo.new
+            local v478 = pace * 0.55
+            local easingStyle = quad or Enum.EasingStyle.Quint
+            local easingDirection = inOut or Enum.EasingDirection.Out
+            tweenService:Create(sweepGrad, newTweenInfo(v478, easingStyle, easingDirection, 0, false, 0 * pace), propertyTable):Play()
+
+            local v481 = function()
                 --[[
-                  line: 860
+                  line: 852
                   upvalues:
-                    u34 (copy, index: 1)
-                    u23 (ref,  index: 2)
-                    u25 (ref,  index: 3)
-                    tbl_upv_7 (copy, index: 4)
+                    v290 (copy, index: 1)
+                    count2 (ref,  index: 2)
+                    v289 (copy, index: 3)
                 ]]
-                if u34 ~= u23 then
-                    return
-                end
-                if u25 then
-                    local v97 = u25
-                    u25 = nil
-                    tbl_upv_7.Digit(v97)
+                if v290 == count2 then
+                    v289.sweep.TextTransparency = 1
                 end
             end
-        )
+
+            task.delay(pace * 0.6, v481)
+        end
+
+        task.delay(pace * 0.58, v472)
+        v219 = os.clock() + (pace * 0.48)
+
+        local v482 = function()
+            --[[
+              line: 860
+              upvalues:
+                v290 (copy, index: 1)
+                count2 (ref,  index: 2)
+                v220 (ref,  index: 3)
+                decider (copy, index: 4)
+            ]]
+            if v290 == count2 and v220 then
+                local v483 = v220
+                v220 = nil
+                decider.Digit(v483)
+            end
+        end
+
+        task.delay(pace * 0.48, v482)
     end
-    function tbl_upv_7.Digit(a53)
+
+    function decider.Digit(a484)
         --[[
           name: Digit
           line: 871
           upvalues:
-            u22 (ref,  index: 1)
-            u12 (ref,  index: 2)
-            u24 (ref,  index: 3)
-            u25 (ref,  index: 4)
-            u26 (ref,  index: 5)
-            u27 (ref,  index: 6)
-            u2 (copy, index: 7)
-            u3 (copy, index: 8)
-            u4 (copy, index: 9)
-            TweenService_upv_1 (copy, index: 10)
-            u10 (ref,  index: 11)
-            u5 (copy, index: 12)
-            tbl_upv_5 (copy, index: 13)
-            u23 (ref,  index: 14)
-            RunService_upv_1 (copy, index: 16)
+            v151 (ref,  index: 1)
+            cardUp (ref,  index: 2)
+            v219 (ref,  index: 3)
+            v220 (ref,  index: 4)
+            v221 (ref,  index: 5)
+            v222 (ref,  index: 6)
+            color3 (copy, index: 7)
+            color32 (copy, index: 8)
+            color33 (copy, index: 9)
+            tweenService (copy, index: 10)
+            pace (ref,  index: 11)
+            color34 (copy, index: 12)
+            v52 (copy, index: 13)
+            count2 (ref,  index: 14)
+            random (copy, index: 15)
+            runService (copy, index: 16)
             burst (copy, index: 17)
-            u17 (ref,  index: 18)
-            u18 (ref,  index: 19)
-            u13 (ref,  index: 20)
-            u19 (ref,  index: 21)
-            u9 (ref,  index: 25)
+            timestamp (ref,  index: 18)
+            v95 (ref,  index: 19)
+            atmos (ref,  index: 20)
+            renderSteppedConnection (ref,  index: 21)
+            v92 (ref,  index: 22)
+            v93 (ref,  index: 23)
+            ui2 (copy, index: 24)
+            result (ref,  index: 25)
         ]]
-        if not u22 or not u12 then
+        local v485 = v151
+
+        if not v485 or not cardUp then
             return
         end
-        if os.clock() < u24 then
-            u25 = a53
-        elseif a53 ~= u26 then
-            local v98 = u26
-            u26 = a53
-            u27 = u27 + 1
-            local v99 = math.clamp(4 - a53, 1, 3)
-            local v100
-            if a53 >= 3 then
-                v100 = u2
-            elseif a53 ~= 2 then
-                v100 = u4
-            else
-                v100 = u3
+
+        local imageColor3
+
+        if os.clock() < v219 then
+            v220 = a484
+            return
+        end
+
+        if a484 == v221 then
+            return
+        end
+
+        local v487 = v221
+        v221 = a484
+        v222 += 1
+        local clampedValue = math.clamp(4 - a484, 1, 3)
+
+        if not (3 <= a484) then
+            imageColor3 = if a484 == 2 then color32 else color33
+        else
+            imageColor3 = color3
+        end
+
+        v485.dash.Visible = false
+
+        if v487 then
+            v485.digitGhost.Text = tostring(v487)
+            v485.digitGhost.TextTransparency = 0.25
+            v485.ghostScale.Scale = 1.35
+            local ghostScale = v485.ghostScale
+            local propertyTable = {Scale = 2}
+            local quad = Enum.EasingStyle.Quad
+            local newTweenInfo = TweenInfo.new
+            local v493 = pace * 0.3
+            local easingStyle = quad or Enum.EasingStyle.Quint
+            tweenService:Create(ghostScale, newTweenInfo(v493, easingStyle, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable):Play()
+            local digitGhost = v485.digitGhost
+            local propertyTable2 = {TextTransparency = 1}
+            local quad2 = Enum.EasingStyle.Quad
+            local newTweenInfo2 = TweenInfo.new
+            local v499 = pace * 0.3
+            local easingStyle2 = quad2 or Enum.EasingStyle.Quint
+            local tween = tweenService:Create(digitGhost, newTweenInfo2(v499, easingStyle2, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable2)
+            tween:Play()
+        end
+
+        v485.digit.Text = tostring(a484)
+        v485.digitGrad.Color = ColorSequence.new(color34, imageColor3)
+        local digit = v485.digit
+        digit.TextTransparency = 0
+
+        if const v503 = v52[digit] then
+            local stroke = v503.stroke
+            local v505 = v52[digit]
+            stroke.Transparency = if v505 then v505.base + (1 - v505.base) * 0 else 1
+        end
+
+        v485.digitScale.Scale = 2.4
+        local digitScale = v485.digitScale
+        local propertyTable = {Scale = 1.35}
+        local back = Enum.EasingStyle.Back
+        local newTweenInfo = TweenInfo.new
+        local v510 = pace * 0.26
+        local easingStyle = back or Enum.EasingStyle.Quint
+        tweenService:Create(digitScale, newTweenInfo(v510, easingStyle, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable):Play()
+        v485.digitRing.ImageColor3 = imageColor3
+        v485.digitRing.Size = UDim2.fromOffset(90, 90)
+        v485.digitRing.ImageTransparency = 0.3
+        local digitRing = v485.digitRing
+        local propertyTable3 = {ImageTransparency = 1, Size = UDim2.fromOffset(480, 480)}
+        local quart = Enum.EasingStyle.Quart
+        local newTweenInfo3 = TweenInfo.new
+        local v516 = pace * 0.6
+        local easingStyle3 = quart or Enum.EasingStyle.Quint
+        tweenService:Create(digitRing, newTweenInfo3(v516, easingStyle3, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable3):Play()
+
+        for _, box in v485.boxes do
+            box.scale.Scale = 1.1
+            local scale = box.scale
+            local propertyTable4 = {Scale = 1}
+            local quad = Enum.EasingStyle.Quad
+            local newTweenInfo4 = TweenInfo.new
+            local v524 = pace * 0.22
+            local easingStyle4 = quad or Enum.EasingStyle.Quint
+            tweenService:Create(scale, newTweenInfo4(v524, easingStyle4, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable4):Play()
+        end
+
+        local v526 = count2
+
+        local v527 = function()
+            --[[
+              line: 914
+              upvalues:
+                v526 (copy, index: 1)
+                count2 (ref,  index: 2)
+                v485 (copy, index: 3)
+                tweenService (copy, index: 4)
+                pace (ref,  index: 5)
+            ]]
+            if v526 ~= count2 then
+                return
             end
-            u22.dash.Visible = false
-            if v98 then
-                u22.digitGhost.Text = tostring(v98)
-                u22.digitGhost.TextTransparency = 0.25
-                u22.ghostScale.Scale = 1.35
-                local tbl_27 = {Scale = 2}
-                local ghostScale_1 = u22.ghostScale
-                TweenService_upv_1:Create(ghostScale_1, TweenInfo.new(u10 * 0.3, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_27):Play()
-                local tbl_28 = {TextTransparency = 1}
-                TweenService_upv_1:Create(u22.digitGhost, TweenInfo.new(u10 * 0.3, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_28):Play()
+
+            for _, box in v485.boxes do
+                box.scale.Scale = 1.05
+                local scale = box.scale
+                local propertyTable = {Scale = 1}
+                local quad = Enum.EasingStyle.Quad
+                local newTweenInfo = TweenInfo.new
+                local v534 = pace * 0.2
+                local easingStyle = quad or Enum.EasingStyle.Quint
+                local tween = tweenService:Create(scale, newTweenInfo(v534, easingStyle, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable)
+                tween:Play()
             end
-            u22.digit.Text = tostring(a53)
-            u22.digitGrad.Color = ColorSequence.new(u5, v100)
-            local digit_2 = u22.digit
-            digit_2.TextTransparency = 0
-            local v101 = tbl_upv_5[digit_2]
-            local v102 = nil
-            if v101 then
-                local stroke_7 = v101.stroke
-                v102 = tbl_upv_5[digit_2]
-                local v103
-                if v102 then
-                    v103 = v102.base + (1 - v102.base) * 0
-                else
-                    v103 = 1
+        end
+
+        task.delay(pace * 0.27, v527)
+        local v537 = clampedValue * 2 + 3
+        local v538 = count2
+        local v539 = 0.2
+
+        task.spawn(
+            function()
+                --[[
+                  line: 621
+                  upvalues:
+                    v539 (copy, index: 1)
+                    pace (ref,  index: 2)
+                    v538 (copy, index: 3)
+                    count2 (ref,  index: 4)
+                    v485 (copy, index: 5)
+                    random (copy, index: 6)
+                    v537 (copy, index: 7)
+                    runService (copy, index: 8)
+                ]]
+                local timestamp = os.clock()
+
+                while os.clock() - timestamp < v539 * pace and v538 == count2 do
+                    local v541 = 1 - (os.clock() - timestamp) / (v539 * pace)
+                    v485.shaker.Position = UDim2.fromOffset((random:NextNumber(-1, 1) * v537) * v541, (random:NextNumber(-1, 1) * v537) * v541)
+                    runService.RenderStepped:Wait()
                 end
-                stroke_7.Transparency = v103
+
+                if v538 == count2 then
+                    v485.shaker.Position = UDim2.new()
+                end
             end
-            u22.digitScale.Scale = 2.4
-            local tbl_29 = {Scale = 1.35}
-            TweenService_upv_1:Create(u22.digitScale, TweenInfo.new(u10 * 0.26, Enum.EasingStyle.Back or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_29):Play()
-            u22.digitRing.ImageColor3 = v100
-            u22.digitRing.Size = UDim2.fromOffset(90, 90)
-            u22.digitRing.ImageTransparency = 0.3
-            local tbl_30 = {ImageTransparency = 1}
-            tbl_30.Size = UDim2.fromOffset(480, 480)
-            TweenService_upv_1:Create(u22.digitRing, TweenInfo.new(u10 * 0.6, Enum.EasingStyle.Quart or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_30):Play()
-            for _, value_12 in u22.boxes do
-                value_12.scale.Scale = 1.1
-                local tbl_31 = {Scale = 1}
-                TweenService_upv_1:Create(value_12.scale, TweenInfo.new(u10 * 0.22, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_31):Play()
-            end
-            local u35 = u23
-            task.delay(
-                u10 * 0.27,
-                function()
+        )
+
+        burst(v485, (clampedValue * 4) + 8, Vector2.new(0, 132), Vector2.new(90, 110), 700, {sparkChance = 0.8, colors = {imageColor3, color32}})
+        local v542 = clampedValue * 0.05 + 0.16
+        timestamp = os.clock()
+        v95 = v542
+
+        if atmos ~= "off" and not renderSteppedConnection then
+            renderSteppedConnection = runService.RenderStepped:Connect(
+                function(deltaTime: number)
                     --[[
-                      line: 914
+                      line: 182
                       upvalues:
-                        u35 (copy, index: 1)
-                        u23 (ref,  index: 2)
-                        u22 (copy, index: 3)
-                        TweenService_upv_1 (copy, index: 4)
-                        u10 (ref,  index: 5)
+                        v92 (ref,  index: 1)
+                        v93 (ref,  index: 2)
+                        timestamp (ref,  index: 3)
+                        v95 (ref,  index: 4)
+                        atmos (ref,  index: 5)
+                        ui2 (copy, index: 6)
+                        renderSteppedConnection (ref,  index: 7)
                     ]]
-                    if u35 ~= u23 then
-                        return
+                    v92 += ((v93 - v92) * (1 - math.exp(-deltaTime * 3)))
+                    local timestamp2 = os.clock()
+                    local v545 = timestamp2 - timestamp
+                    local v546 = 0
+
+                    if v545 < 1 then
+                        local v547
+                        local v548 = v95
+                        local v549 = v545 < 0 and 0
+                            or (if v545 < 0.06 then v545 / 0.06 else math.exp(-(v545 - 0.06) / 0.14))
+                        local v550 = v548 * v549
+                        local v551 = v95 * 0.6
+                        local v552 = v545 - 0.27
+
+                        if not (v552 < 0) then
+                            v547 = if v552 < 0.06 then v552 / 0.06 else math.exp(-(v552 - 0.06) / 0.14)
+                        else
+                            v547 = 0
+                        end
+
+                        v546 = v550 + v551 * v547
                     end
-                    for _, value_13 in u22.boxes do
-                        value_13.scale.Scale = 1.05
-                        local tbl_32 = {Scale = 1}
-                        TweenService_upv_1:Create(value_13.scale, TweenInfo.new(u10 * 0.2, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_32):Play()
+
+                    local v553 = atmos ~= "live" and 0 or math.sin(timestamp2 * 2.4) * 0.03
+                    ui2.ImageTransparency = math.clamp((v92 - v546) + v553, math.min(v92, 0.14), 1)
+
+                    if atmos == "off" and 0.995 < v92 and 1 < v545 then
+                        ui2.ImageTransparency = 1
+                        ui2.Visible = false
+
+                        if renderSteppedConnection then
+                            renderSteppedConnection:Disconnect()
+                            renderSteppedConnection = nil
+                        end
                     end
                 end
             )
-            local _ = v99 * 2 + 3
-            local v105 = u23
-            local v106 = 0.2
-            task.spawn(function() end)
-            burst(u22, (v99 * 4) + 8, Vector2.new(0, 132), Vector2.new(90, 110), 700, {sparkChance = 0.8, colors = {v100, u3}})
-            u17 = os.clock()
-            u18 = (v99 * 0.05) + 0.16
-            if u13 ~= "off" and not (u19) then
-                local v104 = RunService_upv_1.RenderStepped:Connect(function() end)
-                u19 = v104
-            end
-            if u9 then
-                pcall(u9.Play, "Match/Final_Heartbeat", nil, nil)
-            end
+        end
+
+        if result then
+            pcall(result.Play, "Match/Final_Heartbeat", nil, nil)
         end
     end
-    function tbl_upv_7.Fight()
+
+    function decider.Fight()
         --[[
           name: Fight
           line: 930
           upvalues:
-            u22 (ref,  index: 1)
-            u12 (ref,  index: 2)
-            u23 (ref,  index: 3)
-            u25 (ref,  index: 4)
-            u26 (ref,  index: 5)
-            u28 (ref,  index: 6)
+            v151 (ref,  index: 1)
+            cardUp (ref,  index: 2)
+            count2 (ref,  index: 3)
+            v220 (ref,  index: 4)
+            v221 (ref,  index: 5)
+            v223 (ref,  index: 6)
             setAtmos (copy, index: 7)
             wanted (copy, index: 8)
-            TweenService_upv_1 (copy, index: 9)
-            u10 (ref,  index: 10)
+            tweenService (copy, index: 9)
+            pace (ref,  index: 10)
             textTo (copy, index: 11)
-            tbl_upv_5 (copy, index: 12)
-            u29 (copy, index: 13)
-            RunService_upv_1 (copy, index: 14)
+            v52 (copy, index: 12)
+            random (copy, index: 13)
+            runService (copy, index: 14)
             burst (copy, index: 15)
-            u3 (copy, index: 16)
-            u17 (ref,  index: 17)
-            u18 (ref,  index: 18)
-            u13 (ref,  index: 19)
-            u19 (ref,  index: 20)
-            u16 (ref,  index: 21)
-            off_upv_1 (ref,  index: 22)
-            u11 (copy, index: 23)
+            color32 (copy, index: 16)
+            timestamp (ref,  index: 17)
+            v95 (ref,  index: 18)
+            atmos (ref,  index: 19)
+            renderSteppedConnection (ref,  index: 20)
+            v92 (ref,  index: 21)
+            v93 (ref,  index: 22)
+            ui2 (copy, index: 23)
         ]]
-        if not u22 or not u12 then
+        local v554 = v151
+
+        if not v554 or not cardUp then
             return
         end
-        u23 = u23 + 1
-        local u36 = u23
-        u12 = false
-        u25 = nil
-        u26 = nil
-        if u28 then
-            u28()
-            u28 = nil
+
+        local v555, v556
+        count2 += 1
+        local v557 = count2
+        cardUp = false
+        v220 = nil
+        v221 = nil
+
+        if v223 then
+            v223()
+            v223 = nil
         end
+
         setAtmos((wanted()))
-        u22.band.AnchorPoint = Vector2.new(1, 0.5)
-        u22.band.Position = UDim2.fromOffset(750, 0)
-        local tbl_33 = {ImageTransparency = 0.6}
-        tbl_33.Size = UDim2.fromOffset(0, 124)
-        TweenService_upv_1:Create(u22.band, TweenInfo.new(u10 * 0.26, Enum.EasingStyle.Quint or (Enum.EasingStyle.Quint), Enum.EasingDirection.In or (Enum.EasingDirection.Out), 0, false, 0 * u10), tbl_33):Play()
-        local tbl_34 = {ImageTransparency = 1}
-        local ghost_1 = u22.ghost
-        local v105 = u10 * 0.3
-        TweenService_upv_1:Create(ghost_1, TweenInfo.new(v105, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_34):Play()
-        for _, value_14 in {u22.edgeTop, u22.edgeBottom} do
-            local tbl_35 = {BackgroundTransparency = 1}
-            TweenService_upv_1:Create(value_14, TweenInfo.new(u10 * 0.2, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_35):Play()
+        v554.band.AnchorPoint = Vector2.new(1, 0.5)
+        v554.band.Position = UDim2.fromOffset(750, 0)
+        local band = v554.band
+        local propertyTable = {ImageTransparency = 0.6, Size = UDim2.fromOffset(0, 124)}
+        local quint = Enum.EasingStyle.Quint
+        local inValue = Enum.EasingDirection.In
+        local newTweenInfo = TweenInfo.new
+        local v563 = pace * 0.26
+        local quint2 = quint or Enum.EasingStyle.Quint
+        local easingDirection = inValue or Enum.EasingDirection.Out
+        tweenService:Create(band, newTweenInfo(v563, quint2, easingDirection, 0, false, 0 * pace), propertyTable):Play()
+        local ghost = v554.ghost
+        local propertyTable2 = {ImageTransparency = 1}
+        local quad = Enum.EasingStyle.Quad
+        local newTweenInfo2 = TweenInfo.new
+        local v570 = pace * 0.3
+        local easingStyle = quad or Enum.EasingStyle.Quint
+        tweenService:Create(ghost, newTweenInfo2(v570, easingStyle, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable2):Play()
+
+        for _, instance in {v554.edgeTop, v554.edgeBottom} do
+            local propertyTable3 = {BackgroundTransparency = 1}
+            local quad2 = Enum.EasingStyle.Quad
+            local newTweenInfo3 = TweenInfo.new
+            local v577 = pace * 0.2
+            local easingStyle2 = quad2 or Enum.EasingStyle.Quint
+            tweenService:Create(instance, newTweenInfo3(v577, easingStyle2, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable3):Play()
         end
-        for _, value_15 in {u22.head, u22.shadow} do
-            textTo(value_15, 0.2, 1, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-            local tbl_36 = {}
-            tbl_36.Position = value_15.Position - UDim2.fromOffset(0, 26)
-            TweenService_upv_1:Create(value_15, TweenInfo.new(u10 * 0.2, Enum.EasingStyle.Quint or (Enum.EasingStyle.Quint), Enum.EasingDirection.In or (Enum.EasingDirection.Out), 0, false, 0 * u10), tbl_36):Play()
+
+        for _, instance in {v554.head, v554.shadow} do
+            textTo(instance, 0.2, 1, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
+            local propertyTable4 = {Position = instance.Position - UDim2.fromOffset(0, 26)}
+            local quint3 = Enum.EasingStyle.Quint
+            local inValue2 = Enum.EasingDirection.In
+            local newTweenInfo4 = TweenInfo.new
+            local v585 = pace * 0.2
+            local quint4 = quint3 or Enum.EasingStyle.Quint
+            local easingDirection2 = inValue2 or Enum.EasingDirection.Out
+            tweenService:Create(instance, newTweenInfo4(v585, quint4, easingDirection2, 0, false, 0 * pace), propertyTable4):Play()
         end
-        local sweep_1 = u22.sweep
-        sweep_1.TextTransparency = 1
-        local tbl_37 = tbl_upv_5[sweep_1]
-        local u37
-        if tbl_37 then
-            local stroke_8 = tbl_37.stroke
-            local v106 = 1
-            local v107, v108, _ = stroke_8, v106, u22
-            v107.Transparency = v108
+
+        local sweep = v554.sweep
+        sweep.TextTransparency = 1
+
+        if const v589 = v52[sweep] then
+            local stroke = v589.stroke
+            local _ = v52[sweep]
+            local transparency = 1
+            stroke.Transparency = transparency
+            v555, v556 = v554, v557
         else
-            u37 = u22
+            v555, v556 = v554, v557
         end
-        tbl_37 = {}
-        tbl_37.Position = UDim2.fromOffset(0, 172)
-        local row_1 = u37.row
-        local v109 = u10 * 0.25
-        TweenService_upv_1:Create(row_1, TweenInfo.new(v109, Enum.EasingStyle.Quint or (Enum.EasingStyle.Quint), Enum.EasingDirection.In or (Enum.EasingDirection.Out), 0, false, 0 * u10), tbl_37):Play()
-        for _, value_16 in u37.boxes do
-            local tbl_38 = {Scale = 0}
-            TweenService_upv_1:Create(value_16.scale, TweenInfo.new(u10 * 0.22, Enum.EasingStyle.Quint or (Enum.EasingStyle.Quint), Enum.EasingDirection.In or (Enum.EasingDirection.Out), 0, false, 0 * u10), tbl_38):Play()
+
+        local row = v555.row
+        local propertyTable5 = {Position = UDim2.fromOffset(0, 172)}
+        local quint5 = Enum.EasingStyle.Quint
+        local inValue3 = Enum.EasingDirection.In
+        v570 = TweenInfo.new
+        local v597 = pace * 0.25
+        local quint6 = quint5 or Enum.EasingStyle.Quint
+        local easingDirection3 = inValue3 or Enum.EasingDirection.Out
+        tweenService:Create(row, v570(v597, quint6, easingDirection3, 0, false, 0 * pace), propertyTable5):Play()
+
+        for _, box in v555.boxes do
+            local scale = box.scale
+            local propertyTable6 = {Scale = 0}
+            local quint7 = Enum.EasingStyle.Quint
+            local inValue4 = Enum.EasingDirection.In
+            local newTweenInfo5 = TweenInfo.new
+            local v607 = pace * 0.22
+            local _ = quint7 or Enum.EasingStyle.Quint
+            local easingDirection4 = inValue4 or Enum.EasingDirection.Out
+            local v610
+            tweenService:Create(scale, newTweenInfo5(v607, v610, easingDirection4, 0, false, 0 * pace), propertyTable6):Play()
         end
-        textTo(u37.digit, 0.15, 1, Enum.EasingStyle.Quad)
-        u37.dash.Visible = false
-        local tbl_39 = {BackgroundTransparency = 1}
-        TweenService_upv_1:Create(u37.dim, TweenInfo.new(u10 * 0.35, Enum.EasingStyle.Quad or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_39):Play()
-        u37.fight.Position = UDim2.fromOffset(0, 10)
-        u37.fightShadow.Position = UDim2.fromOffset(0, 17)
-        u37.fightScale.Scale = 2.52
-        u37.fightShadowScale.Scale = 2.52
-        tbl_39 = {Scale = 1.4}
-        TweenService_upv_1:Create(u37.fightScale, TweenInfo.new(u10 * 0.24, Enum.EasingStyle.Back or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out or (Enum.EasingDirection.Out), 0, false, 0.06 * u10), tbl_39):Play()
-        tbl_39 = {Scale = 1.4}
-        TweenService_upv_1:Create(u37.fightShadowScale, TweenInfo.new(u10 * 0.24, Enum.EasingStyle.Back or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out or (Enum.EasingDirection.Out), 0, false, 0.06 * u10), tbl_39):Play()
-        textTo(u37.fight, 0.08, 0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.06)
-        textTo(u37.fightShadow, 0.15, 0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.06)
-        task.delay(
-            u10 * 0.26,
-            function()
-                --[[
-                  line: 975
-                  upvalues:
-                    u36 (copy, index: 1)
-                    u23 (ref,  index: 2)
-                    u37 (copy, index: 3)
-                    u10 (ref,  index: 4)
-                    u29 (copy, index: 5)
-                    RunService_upv_1 (copy, index: 6)
-                    burst (copy, index: 7)
-                    u3 (copy, index: 8)
-                    TweenService_upv_1 (copy, index: 9)
-                    u17 (ref,  index: 10)
-                    u18 (ref,  index: 11)
-                    u13 (ref,  index: 12)
-                    u19 (ref,  index: 13)
-                    u16 (ref,  index: 14)
-                    off_upv_1 (ref,  index: 15)
-                    u11 (copy, index: 16)
-                ]]
-                if u36 ~= u23 then
-                    return
+
+        textTo(v555.digit, 0.15, 1, Enum.EasingStyle.Quad)
+        v555.dash.Visible = false
+        local dim = v555.dim
+        local propertyTable7 = {BackgroundTransparency = 1}
+        local quad3 = Enum.EasingStyle.Quad
+        local newTweenInfo6 = TweenInfo.new
+        local v615 = pace * 0.35
+        local easingStyle3 = quad3 or Enum.EasingStyle.Quint
+        tweenService:Create(dim, newTweenInfo6(v615, easingStyle3, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable7):Play()
+        v555.fight.Position = UDim2.fromOffset(0, 10)
+        v555.fightShadow.Position = UDim2.fromOffset(0, 17)
+        v555.fightScale.Scale = 2.52
+        v555.fightShadowScale.Scale = 2.52
+        local fightScale = v555.fightScale
+        local propertyTable8 = {Scale = 1.4}
+        local back = Enum.EasingStyle.Back
+        local out = Enum.EasingDirection.Out
+        local newTweenInfo7 = TweenInfo.new
+        local v622 = pace * 0.24
+        local easingStyle4 = back or Enum.EasingStyle.Quint
+        local out2 = out or Enum.EasingDirection.Out
+        tweenService:Create(fightScale, newTweenInfo7(v622, easingStyle4, out2, 0, false, 0.06 * pace), propertyTable8):Play()
+        local fightShadowScale = v555.fightShadowScale
+        local propertyTable9 = {Scale = 1.4}
+        local back2 = Enum.EasingStyle.Back
+        local out3 = Enum.EasingDirection.Out
+        local newTweenInfo8 = TweenInfo.new
+        local v630 = pace * 0.24
+        local easingStyle5 = back2 or Enum.EasingStyle.Quint
+        local out4 = out3 or Enum.EasingDirection.Out
+        tweenService:Create(fightShadowScale, newTweenInfo8(v630, easingStyle5, out4, 0, false, 0.06 * pace), propertyTable9):Play()
+        textTo(v555.fight, 0.08, 0, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.06)
+        textTo(v555.fightShadow, 0.15, 0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.06)
+
+        local v633 = function()
+            --[[
+              line: 975
+              upvalues:
+                v556 (copy, index: 1)
+                count2 (ref,  index: 2)
+                v555 (copy, index: 3)
+                pace (ref,  index: 4)
+                random (copy, index: 5)
+                runService (copy, index: 6)
+                burst (copy, index: 7)
+                color32 (copy, index: 8)
+                tweenService (copy, index: 9)
+                timestamp (ref,  index: 10)
+                v95 (ref,  index: 11)
+                atmos (ref,  index: 12)
+                renderSteppedConnection (ref,  index: 13)
+                v92 (ref,  index: 14)
+                v93 (ref,  index: 15)
+                ui2 (copy, index: 16)
+            ]]
+            if v556 ~= count2 then
+                return
+            end
+
+            local v634 = v555
+            local v635 = count2
+            local v636 = 0.28
+            local v637 = 9
+
+            task.spawn(
+                function()
+                    --[[
+                      line: 621
+                      upvalues:
+                        v636 (copy, index: 1)
+                        pace (ref,  index: 2)
+                        v635 (copy, index: 3)
+                        count2 (ref,  index: 4)
+                        v634 (copy, index: 5)
+                        random (copy, index: 6)
+                        v637 (copy, index: 7)
+                        runService (copy, index: 8)
+                    ]]
+                    local timestamp = os.clock()
+
+                    while os.clock() - timestamp < v636 * pace and v635 == count2 do
+                        local v639 = 1 - (os.clock() - timestamp) / (v636 * pace)
+                        v634.shaker.Position = UDim2.fromOffset((random:NextNumber(-1, 1) * v637) * v639, (random:NextNumber(-1, 1) * v637) * v639)
+                        runService.RenderStepped:Wait()
+                    end
+
+                    if v635 == count2 then
+                        v634.shaker.Position = UDim2.new()
+                    end
                 end
-                local u38 = u37
-                local u39 = u23
-                local u40 = 0.28
-                local u41 = 9
-                task.spawn(
-                    function()
+            )
+
+            burst(v555, 34, Vector2.new(0, 10), Vector2.new(361.2, 112), 1150)
+            v555.ring.ImageColor3 = color32
+            v555.ring.Size = UDim2.fromOffset(120, 120)
+            v555.ring.ImageTransparency = 0.35
+            local ring = v555.ring
+            local propertyTable = {ImageTransparency = 1, Size = UDim2.fromOffset(1300, 1300)}
+            local quart = Enum.EasingStyle.Quart
+            local newTweenInfo = TweenInfo.new
+            local v644 = pace * 0.55
+            local easingStyle = quart or Enum.EasingStyle.Quint
+            tweenService:Create(ring, newTweenInfo(v644, easingStyle, Enum.EasingDirection.Out, 0, false, 0 * pace), propertyTable):Play()
+            timestamp = os.clock()
+            v95 = 0.2
+
+            if atmos ~= "off" and not renderSteppedConnection then
+                renderSteppedConnection = runService.RenderStepped:Connect(
+                    function(deltaTime: number)
                         --[[
-                          line: 621
+                          line: 182
                           upvalues:
-                            u40 (copy, index: 1)
-                            u10 (ref,  index: 2)
-                            u39 (copy, index: 3)
-                            u23 (ref,  index: 4)
-                            u38 (copy, index: 5)
-                            u29 (copy, index: 6)
-                            u41 (copy, index: 7)
-                            RunService_upv_1 (copy, index: 8)
+                            v92 (ref,  index: 1)
+                            v93 (ref,  index: 2)
+                            timestamp (ref,  index: 3)
+                            v95 (ref,  index: 4)
+                            atmos (ref,  index: 5)
+                            ui2 (copy, index: 6)
+                            renderSteppedConnection (ref,  index: 7)
                         ]]
-                        local v110 = os.clock()
-                        while os.clock() - v110 < u40 * u10 and u39 == u23 do
-                            local v111 = 1 - (os.clock() - v110) / (u40 * u10)
-                            u38.shaker.Position = UDim2.fromOffset((u29:NextNumber(-1, 1) * u41) * v111, (u29:NextNumber(-1, 1) * u41) * v111)
-                            RunService_upv_1.RenderStepped:Wait()
+                        v92 += ((v93 - v92) * (1 - math.exp(-deltaTime * 3)))
+                        local timestamp2 = os.clock()
+                        local v648 = timestamp2 - timestamp
+                        local v649 = 0
+
+                        if v648 < 1 then
+                            local v650
+                            local v651 = v95
+                            local v652 = v648 < 0 and 0
+                                or (if v648 < 0.06 then v648 / 0.06 else math.exp(-(v648 - 0.06) / 0.14))
+                            local v653 = v651 * v652
+                            local v654 = v95 * 0.6
+                            local v655 = v648 - 0.27
+
+                            if not (v655 < 0) then
+                                v650 = if v655 < 0.06 then v655 / 0.06 else math.exp(-(v655 - 0.06) / 0.14)
+                            else
+                                v650 = 0
+                            end
+
+                            v649 = v653 + v654 * v650
                         end
-                        if u39 ~= u23 then
-                            return
+
+                        local v656 = atmos ~= "live" and 0 or math.sin(timestamp2 * 2.4) * 0.03
+                        ui2.ImageTransparency = math.clamp((v92 - v649) + v656, math.min(v92, 0.14), 1)
+
+                        if atmos == "off" and 0.995 < v92 and 1 < v648 then
+                            ui2.ImageTransparency = 1
+                            ui2.Visible = false
+
+                            if renderSteppedConnection then
+                                renderSteppedConnection:Disconnect()
+                                renderSteppedConnection = nil
+                            end
                         end
-                        u38.shaker.Position = UDim2.new()
                     end
                 )
-                burst(u37, 34, Vector2.new(0, 10), Vector2.new(361.2, 112), 1150)
-                u37.ring.ImageColor3 = u3
-                u37.ring.Size = UDim2.fromOffset(120, 120)
-                u37.ring.ImageTransparency = 0.35
-                local tbl_40 = {ImageTransparency = 1}
-                tbl_40.Size = UDim2.fromOffset(1300, 1300)
-                TweenService_upv_1:Create(u37.ring, TweenInfo.new(u10 * 0.55, Enum.EasingStyle.Quart or (Enum.EasingStyle.Quint), Enum.EasingDirection.Out, 0, false, 0 * u10), tbl_40):Play()
-                u17 = os.clock()
-                u18 = 0.2
-                if u13 ~= "off" and not u19 then
-                    local v112 = RunService_upv_1.RenderStepped:Connect(
-                        function(a54)
-                            --[[
-                              line: 182
-                              upvalues:
-                                u16 (ref,  index: 1)
-                                off_upv_1 (ref,  index: 2)
-                                u17 (ref,  index: 3)
-                                u18 (ref,  index: 4)
-                                u13 (ref,  index: 5)
-                                u11 (copy, index: 6)
-                                u19 (ref,  index: 7)
-                            ]]
-                            u16 = u16 + (off_upv_1 - u16) * (1 - math.exp(-a54 * 3))
-                            local v113 = os.clock()
-                            local v114 = v113 - u17
-                            local v115 = 0
-                            if v114 < 1 then
-                                local v116 = v114 < 0 and 0 or v114 < 0.06 and v114 / 0.06 or math.exp(-(v114 - 0.06) / 0.14)
-                                local v117 = u18 * 0.6
-                                local v118 = v114 - 0.27
-                                local v119 = ((v118 < 0) and 0) or (((v118 < 0.06) and (v118 / 0.06)) or (math.exp(-(v118 - 0.06) / 0.14)))
-                                v115 = u18 * v116 + v117 * v119
-                            end
-                            local v120 = ((u13 ~= "live") and 0) or (math.sin(v113 * 2.4) * 0.03)
-                            u11.ImageTransparency = math.clamp((u16 - v115) + v120, math.min(u16, 0.14), 1)
-                            if u13 ~= "off" or not (u16 > 0.995) or not (v114 > 1) then
-                                return
-                            end
-                            u11.ImageTransparency = 1
-                            u11.Visible = false
-                            if not u19 then
-                                return
-                            end
-                            u19:Disconnect()
-                            u19 = nil
-                        end
-                    )
-                    u19 = v112
-                end
             end
-        )
-        task.delay(
-            u10 * 0.95,
-            function()
+        end
+
+        task.delay(pace * 0.26, v633)
+
+        local v657 = function()
+            --[[
+              line: 987
+              upvalues:
+                v557 (copy, index: 1)
+                count2 (ref,  index: 2)
+                v554 (copy, index: 3)
+                textTo (copy, index: 4)
+                tweenService (copy, index: 5)
+                pace (ref,  index: 6)
+                v223 (ref,  index: 7)
+            ]]
+            if v557 ~= count2 then
+                return
+            end
+
+            for _, instance in {v554.fight, v554.fightShadow} do
+                textTo(instance, 0.25, 1, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
+                local propertyTable = {Position = instance.Position - UDim2.fromOffset(0, 18)}
+                local quint = Enum.EasingStyle.Quint
+                local inValue = Enum.EasingDirection.In
+                local newTweenInfo = TweenInfo.new
+                local v664 = pace * 0.25
+                local quint2 = quint or Enum.EasingStyle.Quint
+                local easingDirection = inValue or Enum.EasingDirection.Out
+                local tween = tweenService:Create(instance, newTweenInfo(v664, quint2, easingDirection, 0, false, 0 * pace), propertyTable)
+                tween:Play()
+            end
+
+            local v668 = function()
                 --[[
-                  line: 987
+                  line: 995
                   upvalues:
-                    u36 (copy, index: 1)
-                    u23 (ref,  index: 2)
-                    u37 (copy, index: 3)
-                    textTo (copy, index: 4)
-                    TweenService_upv_1 (copy, index: 5)
-                    u10 (ref,  index: 6)
-                    u28 (ref,  index: 7)
+                    v557 (copy, index: 1)
+                    count2 (ref,  index: 2)
+                    v554 (copy, index: 3)
+                    v223 (ref,  index: 4)
                 ]]
-                if u36 ~= u23 then
-                    return
-                end
-                for _, value_17 in {u37.fight, u37.fightShadow} do
-                    textTo(value_17, 0.25, 1, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-                    local tbl_41 = {}
-                    tbl_41.Position = value_17.Position - UDim2.fromOffset(0, 18)
-                    TweenService_upv_1:Create(value_17, TweenInfo.new(u10 * 0.25, Enum.EasingStyle.Quint or (Enum.EasingStyle.Quint), Enum.EasingDirection.In or (Enum.EasingDirection.Out), 0, false, 0 * u10), tbl_41):Play()
-                end
-                task.delay(
-                    u10 * 0.3,
-                    function()
-                        --[[
-                          line: 995
-                          upvalues:
-                            u36 (copy, index: 1)
-                            u23 (ref,  index: 2)
-                            u37 (copy, index: 3)
-                            u28 (ref,  index: 4)
-                        ]]
-                        if u36 == u23 then
-                            local v121 = u37
-                            if u28 then
-                                u28()
-                                u28 = nil
-                            end
-                            v121.pool:Clear()
-                            v121.root.Visible = false
-                            v121.shaker.Position = UDim2.new()
-                        end
+                if v557 == count2 then
+                    local v669 = v554
+
+                    if v223 then
+                        v223()
+                        v223 = nil
                     end
-                )
+
+                    v669.pool:Clear()
+                    v669.root.Visible = false
+                    v669.shaker.Position = UDim2.new()
+                end
             end
-        )
+
+            task.delay(pace * 0.3, v668)
+        end
+
+        task.delay(pace * 0.95, v657)
     end
-    tbl_upv_7.IsDecider = isDecider
-    tbl_upv_7.Active = function()
+
+    decider.IsDecider = isDecider
+
+    decider.Active = function()
         --[[
           name: active
           line: 140
           upvalues:
-            State_upv_1 (copy, index: 1)
-            tbl_upv_2 (copy, index: 2)
+            state (copy, index: 1)
+            v14 (copy, index: 2)
             isDecider (copy, index: 3)
         ]]
-        local Match_3 = State_upv_1.Match
-        local v122 = State_upv_1.SeesMatch() and ((type(Match_3) == "table") and ((tbl_upv_2[Match_3.phase] == true) and (isDecider(Match_3))))
-        return v122
+        local match = state.Match
+        return state.SeesMatch() and type(match) == "table" and v14[match.phase] == true and isDecider(match)
     end
-    function tbl_upv_7.Showing()
+
+    function decider.Showing()
         --[[
           name: Showing
           line: 1005
           upvalues:
-            u12 (ref, index: 1)
+            cardUp (ref, index: 1)
         ]]
-        return u12
+        return cardUp
     end
-    a1.Decider = tbl_upv_7
-    a1.OnMatchEvent(
-        function(a55)
+
+    a17.Decider = decider
+
+    a17.OnMatchEvent(
+        function(a671)
             --[[
               line: 1011
               upvalues:
-                tbl_upv_7 (copy, index: 1)
-                u13 (ref,  index: 2)
-                u20 (ref,  index: 3)
-                LocalPlayer_upv_1 (copy, index: 4)
-                u15 (ref,  index: 5)
-                off_upv_1 (ref,  index: 6)
-                tbl_upv_4 (copy, index: 7)
-                u16 (ref,  index: 8)
-                u17 (ref,  index: 9)
-                u11 (copy, index: 10)
-                u19 (ref,  index: 11)
-                u14 (ref,  index: 12)
+                decider (copy, index: 1)
+                atmos (ref,  index: 2)
+                count (ref,  index: 3)
+                localPlayer (copy, index: 4)
+                tween (ref,  index: 5)
+                v93 (ref,  index: 6)
+                v16 (copy, index: 7)
+                v92 (ref,  index: 8)
+                timestamp (ref,  index: 9)
+                ui2 (copy, index: 10)
+                renderSteppedConnection (ref,  index: 11)
+                ui3 (ref,  index: 12)
             ]]
-            if a55 ~= "RoundEnd" and a55 ~= "MatchEnd" and a55 ~= "MatchStart" and a55 ~= "PlayOfTheGame" then
+            if a671 ~= "RoundEnd" and a671 ~= "MatchEnd" and a671 ~= "MatchStart" and a671 ~= "PlayOfTheGame" then
                 return
             end
-            tbl_upv_7.Stop(a55 ~= "RoundEnd")
-            if a55 ~= "MatchStart" then
-                return
+
+            decider.Stop(a671 ~= "RoundEnd")
+
+            if a671 == "MatchStart" then
+                atmos = "off"
+                count += 1
+
+                if localPlayer:GetAttribute("FinalRound") ~= nil then
+                    localPlayer:SetAttribute("FinalRound", nil)
+                end
+
+                if tween then
+                    tween:Cancel()
+                    tween = nil
+                end
+
+                v93 = v16.off
+                v92 = v93
+                timestamp = -math.huge
+                ui2.ImageTransparency = 1
+                ui2.Visible = false
+
+                if renderSteppedConnection then
+                    renderSteppedConnection:Disconnect()
+                    renderSteppedConnection = nil
+                end
+
+                local ui = ui3
+                if not ui then
+                    return
+                end
+
+                ui.Enabled = true
+                ui:Destroy()
+                ui3 = nil
             end
-            u13 = "off"
-            u20 = u20 + 1
-            if LocalPlayer_upv_1:GetAttribute("FinalRound") ~= nil then
-                LocalPlayer_upv_1:SetAttribute("FinalRound", nil)
-            end
-            if u15 then
-                u15:Cancel()
-                u15 = nil
-            end
-            off_upv_1 = tbl_upv_4.off
-            u16 = off_upv_1
-            u17 = -math.huge
-            u11.ImageTransparency = 1
-            u11.Visible = false
-            if u19 then
-                u19:Disconnect()
-                u19 = nil
-            end
-            if not u14 then
-                return
-            end
-            u14.Enabled = true
-            u14:Destroy()
-            u14 = nil
         end
     )
-    State_upv_1.MatchChanged:Connect(
+
+    state.MatchChanged:Connect(
         function()
             --[[
               line: 1019
@@ -1551,263 +2296,281 @@ function tbl_1.Init(a1)
             setAtmos((wanted()))
         end
     )
-    State_upv_1.PlayerStateChanged:Connect(
-        function(a56)
+
+    state.PlayerStateChanged:Connect(
+        function(a673)
             --[[
               line: 1022
               upvalues:
-                State_upv_1 (copy, index: 1)
-                tbl_upv_7 (copy, index: 2)
-                u13 (ref,  index: 3)
-                u20 (ref,  index: 4)
-                LocalPlayer_upv_1 (copy, index: 5)
-                u15 (ref,  index: 6)
-                off_upv_1 (ref,  index: 7)
-                tbl_upv_4 (copy, index: 8)
-                u16 (ref,  index: 9)
-                u17 (ref,  index: 10)
-                u11 (copy, index: 11)
-                u19 (ref,  index: 12)
-                u14 (ref,  index: 13)
+                state (copy, index: 1)
+                decider (copy, index: 2)
+                atmos (ref,  index: 3)
+                count (ref,  index: 4)
+                localPlayer (copy, index: 5)
+                tween (ref,  index: 6)
+                v93 (ref,  index: 7)
+                v16 (copy, index: 8)
+                v92 (ref,  index: 9)
+                timestamp (ref,  index: 10)
+                ui2 (copy, index: 11)
+                renderSteppedConnection (ref,  index: 12)
+                ui3 (ref,  index: 13)
             ]]
-            if a56 == "Match" or (State_upv_1.Watching()) then
-                return
+            if a673 ~= "Match" and not state.Watching() then
+                decider.Stop(true)
+                atmos = "off"
+                count += 1
+
+                if localPlayer:GetAttribute("FinalRound") ~= nil then
+                    localPlayer:SetAttribute("FinalRound", nil)
+                end
+
+                if tween then
+                    tween:Cancel()
+                    tween = nil
+                end
+
+                v93 = v16.off
+                v92 = v93
+                timestamp = -math.huge
+                ui2.ImageTransparency = 1
+                ui2.Visible = false
+
+                if renderSteppedConnection then
+                    renderSteppedConnection:Disconnect()
+                    renderSteppedConnection = nil
+                end
+
+                if const ui = ui3 then
+                    ui.Enabled = true
+                    ui:Destroy()
+                    ui3 = nil
+                end
             end
-            tbl_upv_7.Stop(true)
-            u13 = "off"
-            u20 = u20 + 1
-            if LocalPlayer_upv_1:GetAttribute("FinalRound") ~= nil then
-                LocalPlayer_upv_1:SetAttribute("FinalRound", nil)
-            end
-            if u15 then
-                u15:Cancel()
-                u15 = nil
-            end
-            off_upv_1 = tbl_upv_4.off
-            u16 = off_upv_1
-            u17 = -math.huge
-            u11.ImageTransparency = 1
-            u11.Visible = false
-            if u19 then
-                u19:Disconnect()
-                u19 = nil
-            end
-            if not u14 then
-                return
-            end
-            u14.Enabled = true
-            u14:Destroy()
-            u14 = nil
         end
     )
-    State_upv_1.WatchChanged:Connect(
-        function(a57)
+
+    state.WatchChanged:Connect(
+        function(a675)
             --[[
               line: 1028
               upvalues:
-                State_upv_1 (copy, index: 1)
-                tbl_upv_7 (copy, index: 2)
-                u13 (ref,  index: 3)
-                u20 (ref,  index: 4)
-                LocalPlayer_upv_1 (copy, index: 5)
-                u15 (ref,  index: 6)
-                off_upv_1 (ref,  index: 7)
-                tbl_upv_4 (copy, index: 8)
-                u16 (ref,  index: 9)
-                u17 (ref,  index: 10)
-                u11 (copy, index: 11)
-                u19 (ref,  index: 12)
-                u14 (ref,  index: 13)
+                state (copy, index: 1)
+                decider (copy, index: 2)
+                atmos (ref,  index: 3)
+                count (ref,  index: 4)
+                localPlayer (copy, index: 5)
+                tween (ref,  index: 6)
+                v93 (ref,  index: 7)
+                v16 (copy, index: 8)
+                v92 (ref,  index: 9)
+                timestamp (ref,  index: 10)
+                ui2 (copy, index: 11)
+                renderSteppedConnection (ref,  index: 12)
+                ui3 (ref,  index: 13)
                 setAtmos (copy, index: 14)
                 wanted (copy, index: 15)
             ]]
-            if not (a57) then
-                local v123 = State_upv_1.InMatch()
-                if not (v123) then
-                    tbl_upv_7.Stop(true)
-                    u13 = "off"
-                    u20 = u20 + 1
-                    if LocalPlayer_upv_1:GetAttribute("FinalRound") ~= nil then
-                        LocalPlayer_upv_1:SetAttribute("FinalRound", nil)
-                    end
-                    if u15 then
-                        u15:Cancel()
-                        u15 = nil
-                    end
-                    off_upv_1 = tbl_upv_4.off
-                    u16 = off_upv_1
-                    u17 = -math.huge
-                    u11.ImageTransparency = 1
-                    u11.Visible = false
-                    if u19 then
-                        u19:Disconnect()
-                        u19 = nil
-                    end
-                    if u14 then
-                        u14.Enabled = true
-                        u14:Destroy()
-                        u14 = nil
-                    end
+            if not a675 and not state.InMatch() then
+                decider.Stop(true)
+                atmos = "off"
+                count += 1
+
+                if localPlayer:GetAttribute("FinalRound") ~= nil then
+                    localPlayer:SetAttribute("FinalRound", nil)
+                end
+
+                if tween then
+                    tween:Cancel()
+                    tween = nil
+                end
+
+                v93 = v16.off
+                v92 = v93
+                timestamp = -math.huge
+                ui2.ImageTransparency = 1
+                ui2.Visible = false
+
+                if renderSteppedConnection then
+                    renderSteppedConnection:Disconnect()
+                    renderSteppedConnection = nil
+                end
+
+                if const ui = ui3 then
+                    ui.Enabled = true
+                    ui:Destroy()
+                    ui3 = nil
                 end
             end
+
             setAtmos((wanted()))
         end
     )
-    LocalPlayer_upv_1:GetAttributeChangedSignal("ReplayPlaying"):Connect(
+
+    localPlayer:GetAttributeChangedSignal("ReplayPlaying"):Connect(
         function()
             --[[
               line: 1035
               upvalues:
-                LocalPlayer_upv_1 (copy, index: 1)
-                tbl_upv_7 (copy, index: 2)
-                u13 (ref,  index: 3)
-                u20 (ref,  index: 4)
-                u15 (ref,  index: 5)
-                off_upv_1 (ref,  index: 6)
-                tbl_upv_4 (copy, index: 7)
-                u16 (ref,  index: 8)
-                u17 (ref,  index: 9)
-                u11 (copy, index: 10)
-                u19 (ref,  index: 11)
-                u14 (ref,  index: 12)
+                localPlayer (copy, index: 1)
+                decider (copy, index: 2)
+                atmos (ref,  index: 3)
+                count (ref,  index: 4)
+                tween (ref,  index: 5)
+                v93 (ref,  index: 6)
+                v16 (copy, index: 7)
+                v92 (ref,  index: 8)
+                timestamp (ref,  index: 9)
+                ui2 (copy, index: 10)
+                renderSteppedConnection (ref,  index: 11)
+                ui3 (ref,  index: 12)
                 setAtmos (copy, index: 13)
                 wanted (copy, index: 14)
             ]]
-            if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
+            if localPlayer:GetAttribute("ReplayPlaying") ~= true then
                 setAtmos((wanted()))
-            else
-                tbl_upv_7.Stop(true)
-                u13 = "off"
-                u20 = u20 + 1
-                if LocalPlayer_upv_1:GetAttribute("FinalRound") ~= nil then
-                    LocalPlayer_upv_1:SetAttribute("FinalRound", nil)
-                end
-                if u15 then
-                    u15:Cancel()
-                    u15 = nil
-                end
-                off_upv_1 = tbl_upv_4.off
-                u16 = off_upv_1
-                u17 = -math.huge
-                u11.ImageTransparency = 1
-                u11.Visible = false
-                if u19 then
-                    u19:Disconnect()
-                    u19 = nil
-                end
-                if not u14 then
-                    return
-                end
-                u14.Enabled = true
-                u14:Destroy()
-                u14 = nil
+                return
             end
+
+            decider.Stop(true)
+            atmos = "off"
+            count += 1
+
+            if localPlayer:GetAttribute("FinalRound") ~= nil then
+                localPlayer:SetAttribute("FinalRound", nil)
+            end
+
+            if tween then
+                tween:Cancel()
+                tween = nil
+            end
+
+            v93 = v16.off
+            v92 = v93
+            timestamp = -math.huge
+            ui2.ImageTransparency = 1
+            ui2.Visible = false
+
+            if renderSteppedConnection then
+                renderSteppedConnection:Disconnect()
+                renderSteppedConnection = nil
+            end
+
+            local ui = ui3
+            if not ui then
+                return
+            end
+
+            ui.Enabled = true
+            ui:Destroy()
+            ui3 = nil
         end
     )
+
     setAtmos((wanted()))
-    a1.Debug.finalRound = function(a58, a59)
+
+    a17.Debug.finalRound = function(a678, a679)
         --[[
           line: 1046
           upvalues:
-            tbl_upv_7 (copy, index: 1)
-            u10 (ref,  index: 2)
-            u13 (ref,  index: 3)
-            u12 (ref,  index: 4)
-            State_upv_1 (copy, index: 5)
-            tbl_upv_2 (copy, index: 6)
+            decider (copy, index: 1)
+            pace (ref,  index: 2)
+            atmos (ref,  index: 3)
+            cardUp (ref,  index: 4)
+            state (copy, index: 5)
+            v14 (copy, index: 6)
             isDecider (copy, index: 7)
-            u14 (ref,  index: 8)
-            u11 (copy, index: 9)
-            LocalPlayer_upv_1 (copy, index: 10)
-            u22 (ref,  index: 11)
-            u23 (ref,  index: 12)
+            ui3 (ref,  index: 8)
+            ui2 (copy, index: 9)
+            localPlayer (copy, index: 10)
+            v151 (ref,  index: 11)
+            count2 (ref,  index: 12)
         ]]
-        if a58 == "stop" then
-            tbl_upv_7.Stop(true)
-            u10 = 1
+        if a678 == "stop" then
+            decider.Stop(true)
+            pace = 1
+
             return true
-        elseif a58 ~= "state" then
-            local tbl_42
-            if type(a59) == "number" and (a59 > 0) then
-                tbl_42 = a59
-            else
-                tbl_42 = 1
-            end
-            u10 = tbl_42
-            tbl_upv_7.Intro(((State_upv_1.Match) and (State_upv_1.Match.round)) or 5)
-            local u42 = u23
-            tbl_upv_7.Digit(3)
-            for key_5, value_upv_18 in {2, 1} do
-                task.delay(
-                    key_5 * u10,
-                    function()
-                        --[[
-                          line: 1070
-                          upvalues:
-                            u12 (ref,  index: 1)
-                            u23 (ref,  index: 2)
-                            u42 (ref,  index: 3)
-                            tbl_upv_7 (copy, index: 4)
-                            value_upv_18 (copy, index: 5)
-                        ]]
-                        if not u12 or u23 ~= u42 then
-                            return
-                        end
-                        tbl_upv_7.Digit(value_upv_18)
-                    end
-                )
-            end
-            task.delay(
-                u10 * 3,
-                function()
-                    --[[
-                      line: 1076
-                      upvalues:
-                        u12 (ref,  index: 1)
-                        u23 (ref,  index: 2)
-                        u42 (ref,  index: 3)
-                        tbl_upv_7 (copy, index: 4)
-                    ]]
-                    if not u12 or u23 ~= u42 then
-                        return
-                    end
-                    tbl_upv_7.Fight()
-                end
-            )
-            task.delay(
-                u10 * 4.4,
-                function()
-                    --[[
-                      line: 1081
-                      upvalues:
-                        u10 (ref, index: 1)
-                    ]]
-                    u10 = 1
-                end
-            )
-            return true
-        else
-            local tbl_42 = {attr = 0, vignette = 0, active = 0, cardVisible = 0, cc = 0, decider = 0}
-            tbl_42.atmos = u13
-            tbl_42.cardUp = u12
-            local Match_4 = State_upv_1.Match
-            tbl_42.active = State_upv_1.SeesMatch() and type(Match_4) == "table" and tbl_upv_2[Match_4.phase] == true and isDecider(Match_4)
-            tbl_42.decider = isDecider()
-            local v125
-            if u14 then
-                v125 = string.format("B%.3f C%.3f S%.3f", u14.Brightness, u14.Contrast, u14.Saturation)
-            else
-                v125 = false
-            end
-            tbl_42.cc = v125
-            v125 = ((u11.Visible) and (math.floor((u11.ImageTransparency * 100) + 0.5) / 100)) or false
-            tbl_42.vignette = v125
-            v125 = LocalPlayer_upv_1:GetAttribute("FinalRound") == true
-            tbl_42.attr = v125
-            v125 = (u22 ~= nil) and (u22.root.Visible)
-            tbl_42.cardVisible = v125
-            return tbl_42
         end
+
+        if a678 == "state" then
+            local v680 = {atmos = atmos, cardUp = cardUp}
+            local match = state.Match
+            local active = state.SeesMatch()
+                and type(match) == "table"
+                and v14[match.phase] == true
+                and isDecider(match)
+            v680.active = active
+            v680.decider = isDecider()
+            v680.cc = if ui3 then string.format("B%.3f C%.3f S%.3f", ui3.Brightness, ui3.Contrast, ui3.Saturation) else false
+            v680.vignette = if ui2.Visible then math.floor((ui2.ImageTransparency * 100) + 0.5) / 100 else false
+            local finalRound = localPlayer:GetAttribute("FinalRound") == true
+            v680.attr = finalRound
+            v680.cardVisible = v151 ~= nil and v151.root.Visible
+
+            return v680
+        end
+
+        if type(a679) ~= "number" or not (0 < a679) then
+            pace = 1
+        else
+            pace = a679
+        end
+
+        local intro = decider.Intro
+        local round = state.Match and state.Match.round or 5
+        intro(round)
+        local v686 = count2
+        decider.Digit(3)
+
+        for v687, v688 in {2, 1} do
+            local v689 = function()
+                --[[
+                  line: 1070
+                  upvalues:
+                    cardUp (ref,  index: 1)
+                    count2 (ref,  index: 2)
+                    v686 (ref,  index: 3)
+                    decider (copy, index: 4)
+                    v688 (copy, index: 5)
+                ]]
+                if cardUp and count2 == v686 then
+                    decider.Digit(v688)
+                end
+            end
+
+            task.delay(v687 * pace, v689)
+        end
+
+        local v690 = function()
+            --[[
+              line: 1076
+              upvalues:
+                cardUp (ref,  index: 1)
+                count2 (ref,  index: 2)
+                v686 (ref,  index: 3)
+                decider (copy, index: 4)
+            ]]
+            if cardUp and count2 == v686 then
+                decider.Fight()
+            end
+        end
+
+        task.delay(pace * 3, v690)
+
+        local v691 = function()
+            --[[
+              line: 1081
+              upvalues:
+                pace (ref, index: 1)
+            ]]
+            pace = 1
+        end
+
+        task.delay(pace * 4.4, v691)
+
+        return true
     end
 end
-return tbl_1
+
+return v6

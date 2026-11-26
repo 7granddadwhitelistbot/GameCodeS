@@ -1,293 +1,374 @@
-local CommonUtils_1 = require(script.Parent.Parent:WaitForChild("CommonUtils"))
-local u1 = CommonUtils_1.get("ConnectionUtil")
-local u2 = CommonUtils_1.get("CharacterUtil")
-local v1 = CommonUtils_1.get("FlagUtil")
-local u3 = v1.getUserFlag("UserPlayerScriptsCCLIntegrationD")
-local u4 = v1.getUserFlag("UserPlayerScriptsRefactor1")
-local u5 = v1.getUserFlag("UserPlayerScriptsFixTouchJumpVisibility")
-local _ = game:GetService("Players")
-local AvatarAbilitiesInterface_upv_1 = require(script.Parent:WaitForChild("AvatarAbilitiesInterface"))
-local tbl_upv_1 = {"rbxasset://textures/ui/Input/JumpButtonRegular.png", "rbxasset://textures/ui/Input/JumpButtonPressed.png"}
-local ActionController_upv_1 = require(script.Parent:WaitForChild("ActionController"))
-local u6 = setmetatable({}, ActionController_upv_1)
-u6.__index = u6
-function u6.new(a1)
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v2 = CommonUtils.get("ConnectionUtil")
+local v3 = CommonUtils.get("CharacterUtil")
+local v4 = CommonUtils.get("FlagUtil")
+local userFlag = v4.getUserFlag("UserPlayerScriptsCCLIntegrationD")
+    or v4.getUserFlag("UserPlayerScriptsCCLIntegrationDGA")
+local userFlag2 = v4.getUserFlag("UserPlayerScriptsRefactor1")
+local userFlag3 = v4.getUserFlag("UserPlayerScriptsFixTouchJumpVisibility")
+game:GetService("Players")
+local AvatarAbilitiesInterface = require(script.Parent:WaitForChild("AvatarAbilitiesInterface"))
+local v9 = {"rbxasset://textures/ui/Input/JumpButtonRegular.png", "rbxasset://textures/ui/Input/JumpButtonPressed.png"}
+local ActionController = require(script.Parent:WaitForChild("ActionController"))
+local v11 = setmetatable({}, ActionController)
+v11.__index = v11
+
+function v11.new(data)
     --[[
       name: new
-      line: 61
+      line: 66
       upvalues:
-        ActionController_upv_1 (copy, index: 1)
-        u6 (copy, index: 2)
-        u5 (copy, index: 3)
-        u1 (copy, index: 4)
+        ActionController (copy, index: 1)
+        v11 (copy, index: 2)
+        userFlag3 (copy, index: 3)
+        v2 (copy, index: 4)
     ]]
-    local u7 = setmetatable(ActionController_upv_1.new(), u6)
-    u7.data = a1
-    a1.eventBus:subscribe("ACTIONS_RELOADED"):Connect(
+    local v13 = setmetatable(ActionController.new(), v11)
+    v13.data = data
+
+    v13._actionsReloadedConn = data.eventBus:subscribe("ACTIONS_RELOADED"):Connect(
         function()
             --[[
-              line: 65
+              line: 70
               upvalues:
-                u7 (copy, index: 1)
-                u5 (copy, index: 2)
+                v13 (copy, index: 1)
+                userFlag3 (copy, index: 2)
             ]]
-            u7:Create()
-            if not u5 or not u7._active then
-                return
+            v13:Create()
+
+            if userFlag3 and v13._active then
+                v13._active = false
+                v13:EnableButton(true)
             end
-            u7._active = false
-            u7:EnableButton(true)
         end
     )
-    u7.parentUIFrame = nil
-    u7.jumpButton = nil
-    u7.externallyEnabled = false
-    u7._active = false
-    u7._connectionUtil = u1.new()
-    return u7
+
+    v13.parentUIFrame = nil
+    v13.jumpButton = nil
+    v13.externallyEnabled = false
+    v13._active = false
+    v13._connectionUtil = v2.new()
+
+    return v13
 end
-function u6._reset(a1)
+
+function v11._reset(self)
     --[[
       name: _reset
-      line: 83
+      line: 88
       upvalues:
-        u3 (copy, index: 1)
-        AvatarAbilitiesInterface_upv_1 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        userFlag (copy, index: 1)
+        AvatarAbilitiesInterface (copy, index: 2)
+        v9 (copy, index: 3)
     ]]
-    if not a1.jumpButton then
-        return
+    if self.jumpButton then
+        if not userFlag and AvatarAbilitiesInterface.isEnabled() then
+            self.jumpButton.Image = v9[1]
+            return
+        end
+
+        self.jumpButton.ImageRectOffset = Vector2.new(1, 146)
     end
-    if (u3) or not AvatarAbilitiesInterface_upv_1.isEnabled() then
-        a1.jumpButton.ImageRectOffset = Vector2.new(1, 146)
-    end
-    a1.jumpButton.Image = tbl_upv_1[1]
 end
-function u6.EnableButton(a1, a2)
+
+function v11.EnableButton(self, active)
     --[[
       name: EnableButton
-      line: 96
+      line: 101
     ]]
-    if a2 == a1._active then
+    if active == self._active then
         return
     end
-    if a2 then
-        if not (a1.jumpButton) then
-            a1:Create()
+
+    if active then
+        if not self.jumpButton then
+            self:Create()
         end
-        a1.jumpButton.Visible = true
-    elseif a1.jumpButton then
-        a1.jumpButton.Visible = false
+
+        self.jumpButton.Visible = true
+    elseif self.jumpButton then
+        self.jumpButton.Visible = false
     end
-    a1:_reset()
-    a1._active = a2
+
+    self:_reset()
+    self._active = active
 end
-function u6.UpdateEnabled(a1)
+
+function v11.UpdateEnabled(a17)
     --[[
       name: UpdateEnabled
-      line: 115
+      line: 120
       upvalues:
-        u2 (copy, index: 1)
+        v3 (copy, index: 1)
     ]]
-    local v2 = u2.getChild("Humanoid", "Humanoid")
-    if v2 and a1.externallyEnabled and (v2.UseJumpPower and v2.JumpPower > 0 or not (v2.UseJumpPower) and v2.JumpHeight > 0) and v2:GetStateEnabled(Enum.HumanoidStateType.Jumping) then
-        a1:EnableButton(true)
+    local child = v3.getChild("Humanoid", "Humanoid")
+
+    if not child
+        or not a17.externallyEnabled
+        or (not child.UseJumpPower or not (0 < child.JumpPower))
+            and (child.UseJumpPower or not (0 < child.JumpHeight))
+        or not child:GetStateEnabled(Enum.HumanoidStateType.Jumping)
+    then
+        a17:EnableButton(false)
         return
     end
-    a1:EnableButton(false)
+
+    a17:EnableButton(true)
 end
-function u6._setupConfigurations(a1)
+
+function v11._setupConfigurations(a19)
     --[[
       name: _setupConfigurations
-      line: 124
+      line: 134
       upvalues:
-        u2 (copy, index: 1)
+        v3 (copy, index: 1)
     ]]
     local function update()
         --[[
           name: update
-          line: 125
+          line: 135
           upvalues:
-            a1 (copy, index: 1)
+            a19 (copy, index: 1)
         ]]
-        a1:UpdateEnabled()
+        a19:UpdateEnabled()
     end
-    a1._connectionUtil:trackConnection(
-        "HUMANOID",
-        (u2.onChild(
-            "Humanoid",
-            "Humanoid",
-            function(a2)
-                --[[
-                  line: 130
-                  upvalues:
-                    a1 (copy, index: 1)
-                    update (copy, index: 2)
-                ]]
-                a1:UpdateEnabled()
-                a1:_reset()
-                a1._connectionUtil:trackConnection("HUMANOID_JUMP_POWER", a2:GetPropertyChangedSignal("JumpPower"):Connect(update))
-                a1._connectionUtil:trackConnection("HUMANOID_JUMP_HEIGHT", a2:GetPropertyChangedSignal("JumpHeight"):Connect(update))
-                a1._connectionUtil:trackConnection(
-                    "HUMANOID_STATE_ENABLED_CHANGED",
-                    a2.StateEnabledChanged:Connect(
-                        function(a3, a4)
-                            --[[
-                              line: 143
-                              upvalues:
-                                a1 (copy, index: 1)
-                            ]]
-                            if a3 ~= Enum.HumanoidStateType.Jumping or a4 == a1._active then
-                                return
-                            end
-                            a1:UpdateEnabled()
+
+    local v21 = v3.onChild(
+        "Humanoid",
+        "Humanoid",
+        function(a22)
+            --[[
+              line: 140
+              upvalues:
+                a19 (copy, index: 1)
+                update (copy, index: 2)
+            ]]
+            a19:UpdateEnabled()
+            a19:_reset()
+            a19._connectionUtil:trackConnection("HUMANOID_JUMP_POWER", a22:GetPropertyChangedSignal("JumpPower"):Connect(update))
+            a19._connectionUtil:trackConnection("HUMANOID_JUMP_HEIGHT", a22:GetPropertyChangedSignal("JumpHeight"):Connect(update))
+
+            a19._connectionUtil:trackConnection(
+                "HUMANOID_STATE_ENABLED_CHANGED",
+                a22.StateEnabledChanged:Connect(
+                    function(a23, a24)
+                        --[[
+                          line: 153
+                          upvalues:
+                            a19 (copy, index: 1)
+                        ]]
+                        if a23 == Enum.HumanoidStateType.Jumping and a24 ~= a19._active then
+                            a19:UpdateEnabled()
                         end
-                    )
+                    end
                 )
-            end
-        ))
+            )
+        end
     )
+
+    a19._connectionUtil:trackConnection("HUMANOID", v21)
 end
-function u6.Enable(a1, a2, a3)
+
+function v11.Enable(a25, externallyEnabled, parentUiFrame)
     --[[
       name: Enable
-      line: 155
+      line: 165
       upvalues:
-        ActionController_upv_1 (copy, index: 1)
+        ActionController (copy, index: 1)
     ]]
-    if a3 then
-        a1.parentUIFrame = a3
+    if parentUiFrame then
+        a25.parentUIFrame = parentUiFrame
     end
-    if a1.externallyEnabled == a2 then
+
+    if a25.externallyEnabled == externallyEnabled then
         return
     end
-    a1.externallyEnabled = a2
-    ActionController_upv_1.Enable(a1, a2)
-    a1:UpdateEnabled()
-    if a2 then
-        a1:_setupConfigurations()
-    else
-        a1._connectionUtil:disconnectAll()
+
+    a25.externallyEnabled = externallyEnabled
+    ActionController.Enable(a25, externallyEnabled)
+    a25:UpdateEnabled()
+
+    if externallyEnabled then
+        a25:_setupConfigurations()
+        return
     end
+
+    a25._connectionUtil:disconnectAll()
 end
-function u6.Create(a1)
+
+function v11.Destroy(a28)
+    --[[
+      name: Destroy
+      line: 185
+    ]]
+    if a28._actionsReloadedConn then
+        a28._actionsReloadedConn:Disconnect()
+        a28._actionsReloadedConn = nil
+    end
+
+    if a28.jumpButton then
+        a28.jumpButton:Destroy()
+        a28.jumpButton = nil
+    end
+
+    if a28.absoluteSizeChangedConn then
+        a28.absoluteSizeChangedConn:Disconnect()
+        a28.absoluteSizeChangedConn = nil
+    end
+
+    if a28.avatarAbilitiesEnabledChangedConn then
+        a28.avatarAbilitiesEnabledChangedConn:Disconnect()
+        a28.avatarAbilitiesEnabledChangedConn = nil
+    end
+
+    a28._connectionUtil:disconnectAll()
+    a28.externallyEnabled = false
+    a28._active = false
+    a28.parentUIFrame = nil
+end
+
+function v11.Create(self)
     --[[
       name: Create
-      line: 173
+      line: 208
       upvalues:
-        u3 (copy, index: 1)
-        u4 (copy, index: 2)
-        AvatarAbilitiesInterface_upv_1 (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
+        userFlag (copy, index: 1)
+        userFlag2 (copy, index: 2)
+        AvatarAbilitiesInterface (copy, index: 3)
+        v9 (copy, index: 4)
     ]]
-    if not a1.parentUIFrame then
+    if not self.parentUIFrame then
         return
     end
-    if a1.jumpButton then
-        a1.jumpButton:Destroy()
-        a1.jumpButton = nil
+
+    if self.jumpButton then
+        self.jumpButton:Destroy()
+        self.jumpButton = nil
     end
-    if a1.absoluteSizeChangedConn then
-        a1.absoluteSizeChangedConn:Disconnect()
-        a1.absoluteSizeChangedConn = nil
+
+    if self.absoluteSizeChangedConn then
+        self.absoluteSizeChangedConn:Disconnect()
+        self.absoluteSizeChangedConn = nil
     end
-    if not (u3) and a1.avatarAbilitiesEnabledChangedConn then
-        a1.avatarAbilitiesEnabledChangedConn:Disconnect()
-        a1.avatarAbilitiesEnabledChangedConn = nil
+
+    if not userFlag and self.avatarAbilitiesEnabledChangedConn then
+        self.avatarAbilitiesEnabledChangedConn:Disconnect()
+        self.avatarAbilitiesEnabledChangedConn = nil
     end
-    a1.jumpButton = Instance.new("ImageButton")
-    a1.jumpButton.Name = "JumpButton"
-    a1.jumpButton.Visible = false
-    a1.jumpButton.BackgroundTransparency = 1
-    if u4 then
-        a1.jumpButton.ZIndex = 10
+
+    self.jumpButton = Instance.new("ImageButton")
+    self.jumpButton.Name = "JumpButton"
+    self.jumpButton.Visible = false
+    self.jumpButton.BackgroundTransparency = 1
+
+    if userFlag2 then
+        self.jumpButton.ZIndex = 10
     end
-    if u3 or not (AvatarAbilitiesInterface_upv_1.isEnabled()) then
-        a1.jumpButton.Image = "rbxasset://textures/ui/Input/TouchControlsSheetV2.png"
-        a1.jumpButton.ImageRectOffset = Vector2.new(1, 146)
-        a1.jumpButton.ImageRectSize = Vector2.new(144, 144)
+
+    if userFlag or not AvatarAbilitiesInterface.isEnabled() then
+        self.jumpButton.Image = "rbxasset://textures/ui/Input/TouchControlsSheetV2.png"
+        self.jumpButton.ImageRectOffset = Vector2.new(1, 146)
+        self.jumpButton.ImageRectSize = Vector2.new(144, 144)
     else
-        a1.jumpButton.Image = tbl_upv_1[1]
+        self.jumpButton.Image = v9[1]
     end
+
     local function ResizeJumpButton()
         --[[
           name: ResizeJumpButton
-          line: 211
+          line: 246
           upvalues:
-            a1 (copy, index: 1)
-            u3 (copy, index: 2)
-            AvatarAbilitiesInterface_upv_1 (copy, index: 3)
-            tbl_upv_1 (copy, index: 4)
+            self (copy, index: 1)
+            userFlag (copy, index: 2)
+            AvatarAbilitiesInterface (copy, index: 3)
+            v9 (copy, index: 4)
         ]]
-        local v3 = math.min(a1.parentUIFrame.AbsoluteSize.x, a1.parentUIFrame.AbsoluteSize.y) <= 500
-        if not (u3) and AvatarAbilitiesInterface_upv_1.isEnabled() then
-            local v4 = (v3 and 72) or 120
-            local v5 = (v3 and 64) or 100
-            local v6 = (v3 and 64) or 112
-            a1.jumpButton.Image = tbl_upv_1[1]
-            a1.jumpButton.ImageRectOffset = Vector2.new(0, 0)
-            a1.jumpButton.ImageRectSize = Vector2.new(0, 0)
-            a1.jumpButton.Size = UDim2.new(0, v4, 0, v4)
-            a1.jumpButton.Position = UDim2.new(1, -v4 - v5, 1, -v4 - v6)
+        local v31 = math.min(self.parentUIFrame.AbsoluteSize.x, self.parentUIFrame.AbsoluteSize.y) <= 500
+
+        if not userFlag and AvatarAbilitiesInterface.isEnabled() then
+            local v32 = v31 and 72 or 120
+            local v33 = v31 and 64 or 100
+            local v34 = v31 and 64 or 112
+            local v35 = -v32 - v33
+            local v36 = -v32 - v34
+            self.jumpButton.Image = v9[1]
+            self.jumpButton.ImageRectOffset = Vector2.new(0, 0)
+            self.jumpButton.ImageRectSize = Vector2.new(0, 0)
+            self.jumpButton.Size = UDim2.new(0, v32, 0, v32)
+            self.jumpButton.Position = UDim2.new(1, v35, 1, v36)
+
             return
         end
-        local v7 = (v3 and 70) or 120
-        a1.jumpButton.Image = "rbxasset://textures/ui/Input/TouchControlsSheetV2.png"
-        a1.jumpButton.ImageRectOffset = Vector2.new(1, 146)
-        a1.jumpButton.ImageRectSize = Vector2.new(144, 144)
-        a1.jumpButton.Size = UDim2.new(0, v7, 0, v7)
-        local jumpButton_1 = a1.jumpButton
-        jumpButton_1.Position = v3 and UDim2.new(1, -((v7 * 1.5) - 10), 1, -v7 - 20) or UDim2.new(1, -((v7 * 1.5) - 10), 1, -v7 * 1.75)
+
+        local v37 = v31 and 70 or 120
+        self.jumpButton.Image = "rbxasset://textures/ui/Input/TouchControlsSheetV2.png"
+        self.jumpButton.ImageRectOffset = Vector2.new(1, 146)
+        self.jumpButton.ImageRectSize = Vector2.new(144, 144)
+        self.jumpButton.Size = UDim2.new(0, v37, 0, v37)
+        self.jumpButton.Position = v31 and UDim2.new(1, -((v37 * 1.5) - 10), 1, -v37 - 20)
+            or UDim2.new(1, -((v37 * 1.5) - 10), 1, -v37 * 1.75)
     end
+
     ResizeJumpButton()
-    a1.absoluteSizeChangedConn = a1.parentUIFrame:GetPropertyChangedSignal("AbsoluteSize"):Connect(ResizeJumpButton)
-    if not (u3) then
-        a1.avatarAbilitiesEnabledChangedConn = AvatarAbilitiesInterface_upv_1.GetEnabledChangedSignal():Connect(ResizeJumpButton)
+    self.absoluteSizeChangedConn = self.parentUIFrame:GetPropertyChangedSignal("AbsoluteSize"):Connect(ResizeJumpButton)
+
+    if not userFlag then
+        self.avatarAbilitiesEnabledChangedConn = AvatarAbilitiesInterface.GetEnabledChangedSignal():Connect(ResizeJumpButton)
     end
-    a1.jumpButton.Parent = a1.parentUIFrame
-    if not a1.data.controlModule.actions.JumpAction then
+
+    self.jumpButton.Parent = self.parentUIFrame
+
+    if not self.data.controlModule.actions.JumpAction then
         return
     end
-    a1.data.controlModule.actions.JumpAction:WaitForChild("TouchBinding").UIButton = a1.jumpButton
-    a1.data.controlModule.actions.JumpAction.Pressed:Connect(
+
+    self.data.controlModule.actions.JumpAction:WaitForChild("TouchBinding").UIButton = self.jumpButton
+
+    self.data.controlModule.actions.JumpAction.Pressed:Connect(
         function()
             --[[
-              line: 253
+              line: 290
               upvalues:
-                a1 (copy, index: 1)
-                u3 (copy, index: 2)
-                AvatarAbilitiesInterface_upv_1 (copy, index: 3)
-                tbl_upv_1 (copy, index: 4)
+                self (copy, index: 1)
+                userFlag (copy, index: 2)
+                AvatarAbilitiesInterface (copy, index: 3)
+                v9 (copy, index: 4)
             ]]
-            if not a1.jumpButton then
+            if not self.jumpButton then
                 return
             end
-            if not (u3) and AvatarAbilitiesInterface_upv_1.isEnabled() then
-                a1.jumpButton.Image = tbl_upv_1[2]
-            else
-                a1.jumpButton.ImageRectOffset = Vector2.new(146, 146)
+
+            if not userFlag and AvatarAbilitiesInterface.isEnabled() then
+                self.jumpButton.Image = v9[2]
+                return
             end
+
+            self.jumpButton.ImageRectOffset = Vector2.new(146, 146)
         end
     )
-    a1.data.controlModule.actions.JumpAction.Released:Connect(
+
+    self.data.controlModule.actions.JumpAction.Released:Connect(
         function()
             --[[
-              line: 265
+              line: 302
               upvalues:
-                a1 (copy, index: 1)
-                u3 (copy, index: 2)
-                AvatarAbilitiesInterface_upv_1 (copy, index: 3)
-                tbl_upv_1 (copy, index: 4)
+                self (copy, index: 1)
+                userFlag (copy, index: 2)
+                AvatarAbilitiesInterface (copy, index: 3)
+                v9 (copy, index: 4)
             ]]
-            if not a1.jumpButton then
+            if not self.jumpButton then
                 return
             end
-            if not (u3) and AvatarAbilitiesInterface_upv_1.isEnabled() then
-                a1.jumpButton.Image = tbl_upv_1[1]
-            else
-                a1.jumpButton.ImageRectOffset = Vector2.new(1, 146)
+
+            if not userFlag and AvatarAbilitiesInterface.isEnabled() then
+                self.jumpButton.Image = v9[1]
+                return
             end
+
+            self.jumpButton.ImageRectOffset = Vector2.new(1, 146)
         end
     )
 end
-return u6
+
+return v11

@@ -1,173 +1,152 @@
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local SoundService_upv_1 = game:GetService("SoundService")
-local tbl_1 = {}
-local tbl_upv_2 = {Hover = 0.2, Coin = 0.45, Close = 0.35, Select = 0.45, Notify = 0.35, Open = 0.4, Defeat = 0.5, LevelUp = 0.55, Fanfare = 0.6, Purchase = 0.55, Tick = 0.3, Whoosh = 0.5, Stinger = 0.5, Error = 0.5, Click = 0.45}
-local u1 = nil
-local u2 = 0
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local soundService = game:GetService("SoundService")
+local v3 = {}
+local v4 = {Hover = 0.2, Click = 0.45, Select = 0.45, Open = 0.4, Close = 0.35, Error = 0.5, Purchase = 0.55, Notify = 0.35, Tick = 0.3, Whoosh = 0.5, Coin = 0.45, Fanfare = 0.6, LevelUp = 0.55, Defeat = 0.5, Stinger = 0.5}
+local result = nil
+local timestamp = 0
+
 local function getSfx()
     --[[
       name: getSfx
       line: 31
       upvalues:
-        u1 (ref,  index: 1)
-        u2 (ref,  index: 2)
-        ReplicatedStorage_upv_1 (copy, index: 3)
+        result (ref,  index: 1)
+        timestamp (ref,  index: 2)
+        replicatedStorage (copy, index: 3)
     ]]
-    if u1 then
-        return u1
+    if result then
+        return result
     end
-    if os.clock() - u2 < 5 then
+    if os.clock() - timestamp < 5 then
         return nil
     end
-    u2 = os.clock()
-    local Shared_1 = ReplicatedStorage_upv_1:FindFirstChild("Shared")
-    local v1 = Shared_1 and (Shared_1:FindFirstChild("Sfx"))
-    if v1 and v1:IsA("ModuleScript") then
-        local success_1, v2 = pcall(require, v1)
-        if success_1 and type(v2) == "table" and type(v2.PlayUI) == "function" then
-            u1 = v2
+
+    timestamp = os.clock()
+    local shared = replicatedStorage:FindFirstChild("Shared")
+    local sfx = shared and shared:FindFirstChild("Sfx")
+
+    if sfx and sfx:IsA("ModuleScript") then
+        local success, result2 = pcall(require, sfx)
+
+        if success and type(result2) == "table" and type(result2.PlayUI) == "function" then
+            result = result2
         end
     end
-    return u1
+
+    return result
 end
+
+local function template(childName: string)
+    --[[
+      name: template
+      line: 51
+      upvalues:
+        replicatedStorage (copy, index: 1)
+    ]]
+    local instance = replicatedStorage:FindFirstChild("Assets")
+    instance = instance and instance:FindFirstChild("Sounds")
+    local ui = instance and instance:FindFirstChild("UI")
+    local child = ui and ui:FindFirstChild(childName)
+
+    if child and child:IsA("Sound") then
+        return child
+    end
+
+    return nil
+end
+
 local function group()
     --[[
       name: group
       line: 59
       upvalues:
-        SoundService_upv_1 (copy, index: 1)
+        soundService (copy, index: 1)
     ]]
-    local v3 = nil
-    for _, value_1 in {"UI", "SFX"} do
-        v3 = SoundService_upv_1:FindFirstChild(value_1)
-        if not (v3) or not (v3:IsA("SoundGroup")) then
-            continue
+    local child
+
+    for _, childName in {"UI", "SFX"} do
+        child = soundService:FindFirstChild(childName)
+
+        if child and child:IsA("SoundGroup") then
+            return child
         end
-        return v3
     end
+
     return nil
 end
-local tbl_upv_3 = {}
-local function template(a1)
-    --[[
-      name: template
-      line: 51
-      upvalues:
-        ReplicatedStorage_upv_1 (copy, index: 1)
-    ]]
-    local Assets_1 = ReplicatedStorage_upv_1:FindFirstChild("Assets")
-    local v4 = Assets_1 and (Assets_1:FindFirstChild("Sounds"))
-    local v5 = v4 and (v4:FindFirstChild("UI"))
-    local v6 = v5 and (v5:FindFirstChild(a1))
-    if v6 and v6:IsA("Sound") then
-        return v6
-    end
-    return nil
-end
-function tbl_1.Play(a1, a2)
+
+local v21 = {}
+
+function v3.Play(key: string, a23)
     --[[
       name: Play
       line: 72
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v21 (copy, index: 1)
         getSfx (copy, index: 2)
         template (copy, index: 3)
-        tbl_upv_2 (copy, index: 4)
+        v4 (copy, index: 4)
         group (copy, index: 5)
-        SoundService_upv_1 (copy, index: 6)
+        soundService (copy, index: 6)
     ]]
-    local v7 = os.clock()
-    local v8 = (a2 and (a2.minGap)) or (((a1 == "Hover") and 0.05) or (((a1 ~= "Tick") and 0) or 0.03))
-    if v8 > 0 and tbl_upv_3[a1] and v7 - tbl_upv_3[a1] < v8 then
+    local timestamp = os.clock()
+    local v25 = a23 and a23.minGap or key ~= "Hover" and (key ~= "Tick" and 0 or 0.03) or 0.05
+
+    if 0 < v25 and v21[key] and timestamp - v21[key] < v25 then
         return
     end
-    tbl_upv_3[a1] = v7
-    local v9 = getSfx()
-    if v9 then
-        local v10 = nil
-        if a2 then
-            if not (a2.volume) and not (a2.pitch) or type(v9.Play) ~= "function" then
-                v10 = pcall(v9.PlayUI, "UI/" .. a1)
-                if v10 then
-                    return
-                end
-                local v11 = template(a1)
-                if not v11 then
-                    return
-                end
-                local u3 = v11:Clone()
-                u3.Volume = (a2 and (a2.volume)) or (tbl_upv_2[a1] or 0.5)
-                u3.PlaybackSpeed = (a2 and (a2.pitch)) or 1
-                u3.SoundGroup = group()
-                u3.Parent = SoundService_upv_1
-                u3.Ended:Once(
-                    function()
-                        --[[
-                          line: 100
-                          upvalues:
-                            u3 (copy, index: 1)
-                        ]]
-                        u3:Destroy()
-                    end
-                )
-                u3:Play()
-                task.delay(
-                    math.max(u3.TimeLength, 1) + 2,
-                    function()
-                        --[[
-                          line: 104
-                          upvalues:
-                            u3 (copy, index: 1)
-                        ]]
-                        if not u3.Parent then
-                            return
-                        end
-                        u3:Destroy()
-                    end
-                )
-                return
-            end
-            v10 = pcall(v9.Play, "UI/" .. a1, nil, {group = "UI", volume = a2.volume, pitch = a2.pitch})
+
+    v21[key] = timestamp
+
+    if const sfx = getSfx() then
+        local success
+
+        if not a23 or not a23.volume and not a23.pitch or type(sfx.Play) ~= "function" then
+            success = pcall(sfx.PlayUI, "UI/" .. key)
         else
-            v10 = pcall(v9.PlayUI, "UI/" .. a1)
+            success = pcall(sfx.Play, "UI/" .. key, nil, {group = "UI", volume = a23.volume, pitch = a23.pitch})
         end
-        if v10 then
+
+        if success then
             return
         end
     end
-    local v11 = template(a1)
-    if not v11 then
+
+    local instance = template(key)
+    if not instance then
         return
     end
-    local u3 = v11:Clone()
-    u3.Volume = (a2 and (a2.volume)) or (tbl_upv_2[a1] or 0.5)
-    u3.PlaybackSpeed = (a2 and (a2.pitch)) or 1
-    u3.SoundGroup = group()
-    u3.Parent = SoundService_upv_1
-    u3.Ended:Once(
+
+    local instance2 = instance:Clone()
+    instance2.Volume = a23 and a23.volume or v4[key] or 0.5
+    instance2.PlaybackSpeed = a23 and a23.pitch or 1
+    instance2.SoundGroup = group()
+    instance2.Parent = soundService
+    instance2.Ended:Once(
         function()
             --[[
               line: 100
               upvalues:
-                u3 (copy, index: 1)
+                instance2 (copy, index: 1)
             ]]
-            u3:Destroy()
+            instance2:Destroy()
         end
     )
-    u3:Play()
+    instance2:Play()
+
     task.delay(
-        math.max(u3.TimeLength, 1) + 2,
+        math.max(instance2.TimeLength, 1) + 2,
         function()
             --[[
               line: 104
               upvalues:
-                u3 (copy, index: 1)
+                instance2 (copy, index: 1)
             ]]
-            if not u3.Parent then
-                return
+            if instance2.Parent then
+                instance2:Destroy()
             end
-            u3:Destroy()
         end
     )
 end
-return tbl_1
+
+return v3

@@ -1,480 +1,530 @@
-local Players_upv_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local TweenService_upv_1 = game:GetService("TweenService")
-local Util_upv_1 = require(script.Parent.Util)
-local Effects_upv_1 = require(script.Parent.Effects)
-local Quality_upv_1 = require(script.Parent.Quality)
-local tbl_upv_1 = {}
-local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-tbl_upv_1.POSE = {LeftShoulder = Vector3.new(102, -119, -8), RightShoulder = Vector3.new(102, 64, -24), LeftWrist = Vector3.new(0, 0, 0), RightWrist = Vector3.new(-23, 0, 117), RightElbow = Vector3.new(11, 0, 0), LeftElbow = Vector3.new(0, 0, 0)}
-local u1 = Color3.fromRGB(80, 170, 240)
-local tbl_upv_2 = {}
-local tbl_upv_3 = {}
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+local Util = require(script.Parent.Util)
+local Effects = require(script.Parent.Effects)
+local Quality = require(script.Parent.Quality)
+local v7 = {}
+local localPlayer = players.LocalPlayer
+v7.POSE = {RightShoulder = Vector3.new(102, 64, -24), RightElbow = Vector3.new(11, 0, 0), RightWrist = Vector3.new(-23, 0, 117), LeftShoulder = Vector3.new(102, -119, -8), LeftElbow = Vector3.new(0, 0, 0), LeftWrist = Vector3.new(0, 0, 0)}
+local color3 = Color3.fromRGB(80, 170, 240)
+local v10 = {}
+local targetValues = {}
+
 local function rebuildPose()
     --[[
       name: rebuildPose
       line: 52
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
+        v7 (copy, index: 1)
+        targetValues (copy, index: 2)
     ]]
-    for key_1, value_1 in tbl_upv_1.POSE do
-        tbl_upv_3[key_1] = CFrame.Angles(math.rad(value_1.X), math.rad(value_1.Y), math.rad(value_1.Z))
+    for v13, v14 in v7.POSE do
+        targetValues[v13] = CFrame.Angles(math.rad(v14.X), math.rad(v14.Y), (math.rad(v14.Z)))
     end
 end
+
 rebuildPose()
+
 local function fxFolder()
     --[[
       name: fxFolder
       line: 59
     ]]
-    local v1 = workspace:FindFirstChild("FX") or workspace
-    return v1
+    return workspace:FindFirstChild("FX") or workspace
 end
+
+local function findMotors(char)
+    --[[
+      name: findMotors
+      line: 65
+      upvalues:
+        v7 (copy, index: 1)
+    ]]
+    local v18 = {}
+
+    for v19 in v7.POSE do
+        if const v20 = char:FindFirstChild(v19, true) then
+            if v20:IsA("Motor6D") or v20:IsA("AnimationConstraint") then
+                v18[v19] = v20
+            end
+        end
+    end
+
+    return v18
+end
+
 local function makeShield()
     --[[
       name: makeShield
       line: 76
       upvalues:
-        u1 (copy, index: 1)
+        color3 (copy, index: 1)
     ]]
-    local v2 = Instance.new("Part")
-    v2.Name = "GuardShimmer"
-    v2.Anchored = true
-    v2.CanCollide = false
-    v2.CanQuery = false
-    v2.CanTouch = false
-    v2.CastShadow = false
-    v2.Size = Vector3.new(1, 1, 1)
-    v2.Material = Enum.Material.ForceField
-    v2.Color = u1
-    v2.Transparency = 1
-    local v3 = Instance.new("SpecialMesh")
-    v3.MeshType = Enum.MeshType.Sphere
-    v3.Scale = Vector3.new(3.799999952316284, 4, 1.399999976158142)
-    v3.Parent = v2
-    v2.Parent = workspace:FindFirstChild("FX") or workspace
-    return v2
+    local guardShimmer = Instance.new("Part")
+    guardShimmer.Name = "GuardShimmer"
+    guardShimmer.Anchored = true
+    guardShimmer.CanCollide = false
+    guardShimmer.CanQuery = false
+    guardShimmer.CanTouch = false
+    guardShimmer.CastShadow = false
+    guardShimmer.Size = Vector3.new(1, 1, 1)
+    guardShimmer.Material = Enum.Material.ForceField
+    guardShimmer.Color = color3
+    guardShimmer.Transparency = 1
+
+    local specialMesh = Instance.new("SpecialMesh")
+    specialMesh.MeshType = Enum.MeshType.Sphere
+    specialMesh.Scale = Vector3.new(3.799999952316284, 4, 1.399999976158142)
+    specialMesh.Parent = guardShimmer
+    local instance = workspace:FindFirstChild("FX") or workspace
+    guardShimmer.Parent = instance
+
+    return guardShimmer
 end
-local function findMotors(a1)
-    --[[
-      name: findMotors
-      line: 65
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-    ]]
-    local tbl_4 = {}
-    for key_2 in tbl_upv_1.POSE do
-        local v5 = a1:FindFirstChild(key_2, true)
-        if v5 and (v5:IsA("Motor6D") or v5:IsA("AnimationConstraint")) then
-            tbl_4[key_2] = v5
-        end
-    end
-    return tbl_4
-end
-local function ensure(a1)
-    --[[
-      name: ensure
-      line: 101
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-        findMotors (copy, index: 2)
-    ]]
-    local v6 = tbl_upv_2[a1]
-    if not (v6) then
-        v6 = {lastImpact = 0, target = 0, alpha = 0, char = a1, motors = findMotors(a1)}
-        tbl_upv_2[a1] = v6
-    end
-    return v6
-end
-local function cleanup(a1)
-    --[[
-      name: cleanup
-      line: 118
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-    ]]
-    if a1.shield then
-        a1.shield:Destroy()
-        a1.shield = nil
-    end
-    if a1.highlight then
-        a1.highlight:Destroy()
-        a1.highlight = nil
-    end
-    tbl_upv_2[a1.char] = nil
-end
-function tbl_upv_1.Set(a1, a2)
-    --[[
-      name: Set
-      line: 130
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-        findMotors (copy, index: 2)
-    ]]
-    if not a1 then
-        return
-    end
-    local v7 = tbl_upv_2[a1]
-    if not (v7) then
-        v7 = {lastImpact = 0, target = 0, alpha = 0, char = a1, motors = findMotors(a1)}
-        tbl_upv_2[a1] = v7
-    end
-    v7.target = (a2 and 1) or 0
-    if not a2 then
-        return
-    end
-    v7.motors = findMotors(a1)
-end
-function tbl_upv_1.SetLocal(a1)
-    --[[
-      name: SetLocal
-      line: 142
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-    ]]
-    tbl_upv_1.Set(LocalPlayer_upv_1.Character, a1)
-end
-function tbl_upv_1.IsGuarding(a1)
-    --[[
-      name: IsGuarding
-      line: 146
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-    ]]
-    local v8 = a1 and (tbl_upv_2[a1])
-    local v9 = false
-    if v8 ~= nil then
-        v9 = v8.target > 0
-    end
-    return v9
-end
-local function toolOf(a1)
+
+local function toolOf(key)
     --[[
       name: toolOf
       line: 97
     ]]
-    return a1:FindFirstChildOfClass("Tool")
+    return key:FindFirstChildOfClass("Tool")
 end
-function tbl_upv_1.Impact(a1, a2)
+
+local function ensure(char)
+    --[[
+      name: ensure
+      line: 101
+      upvalues:
+        v10 (copy, index: 1)
+        findMotors (copy, index: 2)
+    ]]
+    local v29 = v10[char]
+    if not v29 then
+        v29 = {target = 0, alpha = 0, shield = nil, highlight = nil, lastImpact = 0, char = char, motors = findMotors(char)}
+        v10[char] = v29
+    end
+
+    return v29
+end
+
+local function cleanup(a31)
+    --[[
+      name: cleanup
+      line: 118
+      upvalues:
+        v10 (copy, index: 1)
+    ]]
+    if a31.shield then
+        a31.shield:Destroy()
+        a31.shield = nil
+    end
+
+    if a31.highlight then
+        a31.highlight:Destroy()
+        a31.highlight = nil
+    end
+
+    v10[a31.char] = nil
+end
+
+function v7.Set(char, a33)
+    --[[
+      name: Set
+      line: 130
+      upvalues:
+        v10 (copy, index: 1)
+        findMotors (copy, index: 2)
+    ]]
+    if not char then
+        return
+    end
+
+    local v34 = v10[char]
+    if not v34 then
+        v34 = {target = 0, alpha = 0, shield = nil, highlight = nil, lastImpact = 0, char = char, motors = findMotors(char)}
+        v10[char] = v34
+    end
+
+    v34.target = a33 and 1 or 0
+
+    if a33 then
+        v34.motors = findMotors(char)
+    end
+end
+
+function v7.SetLocal(localValue)
+    --[[
+      name: SetLocal
+      line: 142
+      upvalues:
+        v7 (copy, index: 1)
+        localPlayer (copy, index: 2)
+    ]]
+    v7.Set(localPlayer.Character, localValue)
+end
+
+function v7.IsGuarding(key)
+    --[[
+      name: IsGuarding
+      line: 146
+      upvalues:
+        v10 (copy, index: 1)
+    ]]
+    local v37 = key and v10[key]
+    return v37 ~= nil and 0 < v37.target
+end
+
+function v7.Impact(key, a39)
     --[[
       name: Impact
       line: 153
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
+        v10 (copy, index: 1)
+        Util (copy, index: 2)
         toolOf (copy, index: 3)
-        Effects_upv_1 (copy, index: 4)
-        TweenService_upv_1 (copy, index: 5)
+        Effects (copy, index: 4)
+        tweenService (copy, index: 5)
     ]]
-    if not a1 then
+    local v40
+
+    if not key then
         return
     end
-    local v10 = tbl_upv_2[a1]
-    local v11 = Util_upv_1.Drawn(toolOf(a1))
-    local v12 = v11
-    local _ = v12 and (v11:FindFirstChild("Tip", true))
-    local v13 = v11 and (v11:FindFirstChild("Handle"))
-    if v12 and v12:IsA("Attachment") and v13 and v13:IsA("BasePart") then
-        v11 = v13.Position:Lerp(v12.WorldPosition, 0.6)
+
+    local v41 = v10[key]
+    local v42 = Util.Drawn(toolOf(key))
+    local tip = v42 and v42:FindFirstChild("Tip", true)
+    local handle = v42 and v42:FindFirstChild("Handle")
+
+    if tip and tip:IsA("Attachment") and handle and handle:IsA("BasePart") then
+        v40 = handle.Position:Lerp(tip.WorldPosition, 0.6)
     else
-        local v14 = Util_upv_1.Drawn(a1:FindFirstChild("HumanoidRootPart"))
-        v11 = v14 and (v14.CFrame * CFrame.new(0, 1, -1.6)).Position
+        local v45 = Util.Drawn(key:FindFirstChild("HumanoidRootPart"))
+        v40 = v45 and (v45.CFrame * CFrame.new(0, 1, -1.6)).Position
     end
-    if v11 then
-        Effects_upv_1.Burst("Block_Spark", CFrame.new(v11), 1.4)
-        Effects_upv_1.Burst("Impact_Sparks", CFrame.new(v11), 1)
-        Util_upv_1.Sound("Block_Hit", v11)
+
+    if v40 then
+        Effects.Burst("Block_Spark", CFrame.new(v40), 1.4)
+        Effects.Burst("Impact_Sparks", CFrame.new(v40), 1)
+        Util.Sound("Block_Hit", v40)
     end
-    local v16, v17 = nil, nil
-    if v10 then
-        v10.lastImpact = os.clock()
-        v16 = v10.shield
-        if v16 then
-            v17 = v16:FindFirstChildOfClass("SpecialMesh")
-            if v17 then
-                v17.Scale = Vector3.new(4.800000190734863, 5, 1.7999999523162842)
-                local tbl_5 = {Scale = Vector3.new(3.799999952316284, 4, 1.399999976158142)}
-                TweenService_upv_1:Create(v17, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_5):Play()
+
+    if v41 then
+        v41.lastImpact = os.clock()
+
+        if const shield = v41.shield then
+            if const specialMesh = shield:FindFirstChildOfClass("SpecialMesh") then
+                specialMesh.Scale = Vector3.new(4.800000190734863, 5, 1.7999999523162842)
+                local propertyTable = {Scale = Vector3.new(3.799999952316284, 4, 1.399999976158142)}
+                tweenService:Create(specialMesh, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable):Play()
             end
         end
-        local highlight_1 = v10.highlight
-        if highlight_1 then
-            highlight_1.OutlineTransparency = 0
+
+        if const highlight = v41.highlight then
+            highlight.OutlineTransparency = 0
         end
     end
-    if not a2 then
-        return
+
+    if a39 then
+        Util.Shake(0.35, 0.12)
+        Util.Recoil(1.6, (math.random() - 0.5) * 1.5)
     end
-    Util_upv_1.Shake(0.35, 0.12)
-    Util_upv_1.Recoil(1.6, (math.random() - 0.5) * 1.5)
 end
+
+local function step(deltaTimeSim: number)
+    --[[
+      name: step
+      line: 196
+      upvalues:
+        v10 (copy, index: 1)
+        targetValues (copy, index: 2)
+        localPlayer (copy, index: 3)
+        Util (copy, index: 4)
+        makeShield (copy, index: 5)
+        Quality (copy, index: 6)
+        color3 (copy, index: 7)
+    ]]
+    for v52, v53 in v10 do
+        if v52:IsDescendantOf(workspace) then
+            local target = v53.target
+            local v55 = if v53.alpha < target then deltaTimeSim / 0.08 else deltaTimeSim / 0.12
+            local target2 = v53.target
+
+            if v53.alpha < target2 then
+                v53.alpha = math.min(v53.target, v53.alpha + v55)
+            else
+                v53.alpha = math.max(v53.target, v53.alpha - v55)
+            end
+
+            if not (v53.alpha <= 0) or not (v53.target <= 0) then
+                local alpha = v53.alpha * v53.alpha * (3 - (v53.alpha * 2))
+
+                for v58, motor in v53.motors do
+                    local targetValue = targetValues[v58]
+
+                    if targetValue and motor.Parent then
+                        motor.Transform = motor.Transform:Lerp(targetValue, alpha)
+                    end
+                end
+
+                if v52 == localPlayer.Character and Util.InFirstPerson() then
+                    if v53.shield then
+                        v53.shield:Destroy()
+                        v53.shield = nil
+                    end
+
+                    if v53.highlight then
+                        v53.highlight:Destroy()
+                        v53.highlight = nil
+                    end
+                else
+                    if v52:FindFirstChild("HumanoidRootPart") then
+                        if not v53.shield then
+                            v53.shield = makeShield()
+                        end
+
+                        v53.shield.Transparency = 1 - (alpha * ((math.clamp(1 - ((os.clock() - v53.lastImpact) / 0.25), 0, 1) * 0.2) + 0.8))
+                    end
+
+                    local v62 = if const v61 = if Quality.highlights then v52:FindFirstChildOfClass("Tool") else nil then Util.Drawn(v61) else nil
+
+                    if v62 then
+                        local v63 = false
+                        local highlight = v53.highlight
+
+                        if highlight then
+                            if highlight.Parent ~= v62 then
+                                v63 = true
+                            end
+                        else
+                            v63 = true
+                        end
+
+                        if v63 then
+                            if highlight then
+                                highlight:Destroy()
+                            end
+
+                            highlight = Instance.new("Highlight")
+                            highlight.Name = "GuardHighlight"
+                            highlight.Adornee = v62
+                            highlight.DepthMode = Enum.HighlightDepthMode.Occluded
+                            highlight.FillColor = color3
+                            highlight.OutlineColor = Color3.fromRGB(90, 185, 250)
+                            highlight.Parent = v62
+                            v53.highlight = highlight
+                        end
+
+                        local highlight2 = highlight
+                        local clampedValue = math.clamp(1 - ((os.clock() - v53.lastImpact) / 0.25), 0, 1)
+                        highlight2.FillTransparency = 1
+                        highlight2.OutlineTransparency = 1 - (alpha * ((clampedValue * 0.45) + 0.55))
+                    end
+                end
+            else
+                if v53.shield then
+                    v53.shield:Destroy()
+                    v53.shield = nil
+                end
+
+                if v53.highlight then
+                    v53.highlight:Destroy()
+                    v53.highlight = nil
+                end
+
+                v10[v53.char] = nil
+            end
+        else
+            if v53.shield then
+                v53.shield:Destroy()
+                v53.shield = nil
+            end
+
+            if v53.highlight then
+                v53.highlight:Destroy()
+                v53.highlight = nil
+            end
+
+            v10[v53.char] = nil
+        end
+    end
+end
+
 local function placeShields()
     --[[
       name: placeShields
       line: 275
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
+        v10 (copy, index: 1)
+        Util (copy, index: 2)
     ]]
-    for key_3, value_2 in tbl_upv_2 do
-        local shield_1 = value_2.shield
-        if not (shield_1) then
-            continue
-        end
-        local v18 = Util_upv_1.Drawn(key_3:FindFirstChild("HumanoidRootPart"))
-        if not (v18) then
-            continue
-        end
-        if v18:IsA("BasePart") then
-            shield_1.CFrame = v18.CFrame * CFrame.new(0, 1.1, -1.6)
+    for v68, v69 in v10 do
+        if const shield = v69.shield then
+            local v71 = Util.Drawn(v68:FindFirstChild("HumanoidRootPart"))
+
+            if v71 and v71:IsA("BasePart") then
+                shield.CFrame = v71.CFrame * CFrame.new(0, 1.1, -1.6)
+            end
         end
     end
 end
-local CollectionService_upv_1 = game:GetService("CollectionService")
-local tbl_upv_6 = {}
-local function watchModel(a1)
+
+local collectionService = game:GetService("CollectionService")
+local v73 = {}
+
+local function watchModel(instance: Instance?)
     --[[
       name: watchModel
       line: 291
       upvalues:
-        tbl_upv_6 (copy, index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        v73 (copy, index: 1)
+        localPlayer (copy, index: 2)
+        v7 (copy, index: 3)
     ]]
-    if (tbl_upv_6[a1]) then
-        return
-    end
-    if a1 ~= LocalPlayer_upv_1.Character then
-        tbl_upv_6[a1] = true
-        local function apply_1()
-            --[[
-              name: apply
-              line: 296
-              upvalues:
-                tbl_upv_1 (copy, index: 1)
-                a1 (copy, index: 2)
-            ]]
-            local Set_1 = tbl_upv_1.Set
-            local v19 = a1:GetAttribute("Blocking") == true
-            Set_1(a1, v19)
-        end
-        a1:GetAttributeChangedSignal("Blocking"):Connect(apply_1)
-        a1.Destroying:Once(
+    if not v73[instance] and instance ~= localPlayer.Character then
+        v73[instance] = true
+        instance:GetAttributeChangedSignal("Blocking"):Connect(
+            function()
+                --[[
+                  name: apply
+                  line: 296
+                  upvalues:
+                    v7 (copy, index: 1)
+                    instance (copy, index: 2)
+                ]]
+                v7.Set(instance, instance:GetAttribute("Blocking") == true)
+            end
+        )
+        instance.Destroying:Once(
             function()
                 --[[
                   line: 300
                   upvalues:
-                    tbl_upv_6 (copy, index: 1)
-                    a1 (copy, index: 2)
+                    v73 (copy, index: 1)
+                    instance (copy, index: 2)
                 ]]
-                tbl_upv_6[a1] = nil
+                v73[instance] = nil
             end
         )
-        if a1:GetAttribute("Blocking") == true then
-            local Set_2 = tbl_upv_1.Set
-            local v20 = a1:GetAttribute("Blocking") == true
-            Set_2(a1, v20)
+
+        if instance:GetAttribute("Blocking") == true then
+            v7.Set(instance, instance:GetAttribute("Blocking") == true)
         end
     end
 end
+
+local function watchPlayer(player: Player)
+    --[[
+      name: watchPlayer
+      line: 308
+      upvalues:
+        localPlayer (copy, index: 1)
+        watchModel (copy, index: 2)
+    ]]
+    if player == localPlayer then
+        return
+    end
+
+    player.CharacterAdded:Connect(watchModel)
+
+    if player.Character then
+        watchModel(player.Character)
+    end
+end
+
 local function reconcile()
     --[[
       name: reconcile
       line: 320
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
-        Players_upv_1 (copy, index: 4)
-        CollectionService_upv_1 (copy, index: 5)
+        localPlayer (copy, index: 1)
+        v10 (copy, index: 2)
+        v7 (copy, index: 3)
+        players (copy, index: 4)
+        collectionService (copy, index: 5)
     ]]
-    local function check_1(a1)
+    local function check(key)
         --[[
           name: check
           line: 321
           upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            tbl_upv_2 (copy, index: 2)
-            tbl_upv_1 (copy, index: 3)
+            localPlayer (copy, index: 1)
+            v10 (copy, index: 2)
+            v7 (copy, index: 3)
         ]]
-        if not a1 or a1 == LocalPlayer_upv_1.Character or not a1:IsDescendantOf(workspace) or a1:GetAttribute("Blocking") ~= true or (tbl_upv_2[a1]) then
-            return
-        end
-        tbl_upv_1.Set(a1, true)
-    end
-    for _, value_3 in Players_upv_1:GetPlayers() do
-        local Character_1 = value_3.Character
-        if not (Character_1) or Character_1 == LocalPlayer_upv_1.Character or not (Character_1:IsDescendantOf(workspace)) or Character_1:GetAttribute("Blocking") ~= true then
-            continue
-        end
-        if not (tbl_upv_2[Character_1]) then
-            tbl_upv_1.Set(Character_1, true)
+        if key
+            and key ~= localPlayer.Character
+            and key:IsDescendantOf(workspace)
+            and key:GetAttribute("Blocking") == true
+            and not v10[key]
+        then
+            v7.Set(key, true)
         end
     end
-    for _, value_4 in {"Combatant", "Bot"} do
-        for v1, value_5 in CollectionService_upv_1:GetTagged(value_4) do
-            if not (value_5:IsA("Model")) or not (value_5) or value_5 == LocalPlayer_upv_1.Character or not (value_5:IsDescendantOf(workspace)) or value_5:GetAttribute("Blocking") ~= true then
+
+    for _, player in players:GetPlayers() do
+        if const character = player.Character then
+            if character == localPlayer.Character then
                 continue
             end
-            if not (tbl_upv_2[value_5]) then
-                tbl_upv_1.Set(value_5, true)
+            if not character:IsDescendantOf(workspace) then
+                continue
+            end
+
+            if character:GetAttribute("Blocking") == true and not v10[character] then
+                v7.Set(character, true)
             end
         end
     end
-end
-local u2 = false
-local function watchPlayer(a1)
-    --[[
-      name: watchPlayer
-      line: 308
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        watchModel (copy, index: 2)
-    ]]
-    if a1 == LocalPlayer_upv_1 then
-        return
-    end
-    a1.CharacterAdded:Connect(watchModel)
-    if a1.Character then
-        watchModel(a1.Character)
-    end
-end
-local function step(a1)
-    --[[
-      name: step
-      line: 196
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
-        Util_upv_1 (copy, index: 4)
-        makeShield (copy, index: 5)
-        Quality_upv_1 (copy, index: 6)
-        u1 (copy, index: 7)
-    ]]
-    local v21, v22 = nil, nil
-    local value_6 = nil
-    for key_4, value_6 in tbl_upv_2 do
-        if key_4:IsDescendantOf(workspace) then
-            local v23 = ((value_6.alpha < value_6.target) and (a1 / 0.08)) or (a1 / 0.12)
-            if value_6.alpha < value_6.target then
-                value_6.alpha = math.min(value_6.target, value_6.alpha + v23)
-            else
-                value_6.alpha = math.max(value_6.target, value_6.alpha - v23)
-            end
-            if value_6.alpha <= 0 and value_6.target <= 0 then
-                if value_6.shield then
-                    value_6.shield:Destroy()
-                    value_6.shield = nil
-                end
-                if value_6.highlight then
-                    value_6.highlight:Destroy()
-                    value_6.highlight = nil
-                end
-                tbl_upv_2[value_6.char] = nil
-            else
-                local v24 = value_6.alpha * value_6.alpha * (3 - (value_6.alpha * 2))
-                for key_5, value_7 in value_6.motors do
-                    local v25 = tbl_upv_3[key_5]
-                    if not (v25) then
-                        continue
-                    end
-                    if value_7.Parent then
-                        value_7.Transform = value_7.Transform:Lerp(v25, v24)
-                    end
-                end
-                if key_4 ~= LocalPlayer_upv_1.Character or not (Util_upv_1.InFirstPerson()) then
-                    v21 = key_4:FindFirstChild("HumanoidRootPart")
-                    if v21 then
-                        if not (value_6.shield) then
-                            value_6.shield = makeShield()
-                        end
-                        value_6.shield.Transparency = 1 - (v24 * ((math.clamp(1 - ((os.clock() - value_6.lastImpact) / 0.25), 0, 1) * 0.2) + 0.8))
-                    else
-                        v23 = v24
-                    end
-                    if Quality_upv_1.highlights then
-                        v21 = key_4:FindFirstChildOfClass("Tool")
-                    else
-                        v21 = nil
-                    end
-                    if v21 then
-                        v22 = Util_upv_1.Drawn(v21)
-                    else
-                        v22 = nil
-                    end
-                    if not (v22) then
-                        continue
-                    end
-                    v21 = value_6.highlight
-                    if not (v21) or v21.Parent ~= v22 then
-                        if v21 then
-                            v21:Destroy()
-                        end
-                        local v26 = Instance.new("Highlight")
-                        v26.Name = "GuardHighlight"
-                        v26.Adornee = v22
-                        v26.DepthMode = Enum.HighlightDepthMode.Occluded
-                        v26.FillColor = u1
-                        v26.OutlineColor = Color3.fromRGB(90, 185, 250)
-                        v26.Parent = v22
-                        value_6.highlight = v26
-                        v21 = v26
-                        local v27 = math.clamp(1 - ((os.clock() - value_6.lastImpact) / 0.25), 0, 1)
-                        v21.FillTransparency = 1
-                        v21.OutlineTransparency = 1 - (v23 * ((v27 * 0.45) + 0.55))
-                    end
-                    local v27 = math.clamp(1 - ((os.clock() - value_6.lastImpact) / 0.25), 0, 1)
-                    v21.FillTransparency = 1
-                    v21.OutlineTransparency = 1 - (v23 * ((v27 * 0.45) + 0.55))
+
+    for _, tag in {"Combatant", "Bot"} do
+        for _, instance in collectionService:GetTagged(tag) do
+            if instance:IsA("Model") then
+                if not instance then
                     continue
                 end
-                if value_6.shield then
-                    value_6.shield:Destroy()
-                    value_6.shield = nil
+                if instance == localPlayer.Character then
+                    continue
                 end
-                if value_6.highlight then
-                    value_6.highlight:Destroy()
-                    value_6.highlight = nil
+                if not instance:IsDescendantOf(workspace) then
+                    continue
+                end
+
+                if instance:GetAttribute("Blocking") == true and not v10[instance] then
+                    v7.Set(instance, true)
                 end
             end
-        else
-            if value_6.shield then
-                value_6.shield:Destroy()
-                value_6.shield = nil
-            end
-            if value_6.highlight then
-                value_6.highlight:Destroy()
-                value_6.highlight = nil
-            end
-            tbl_upv_2[value_6.char] = nil
         end
     end
 end
-function tbl_upv_1.Init()
+
+local hasRun = false
+
+function v7.Init()
     --[[
       name: Init
       line: 339
       upvalues:
-        u2 (ref,  index: 1)
-        RunService_upv_1 (copy, index: 2)
+        hasRun (ref,  index: 1)
+        runService (copy, index: 2)
         step (copy, index: 3)
         placeShields (copy, index: 4)
         reconcile (copy, index: 5)
-        Players_upv_1 (copy, index: 6)
-        LocalPlayer_upv_1 (copy, index: 7)
+        players (copy, index: 6)
+        localPlayer (copy, index: 7)
         watchModel (copy, index: 8)
         watchPlayer (copy, index: 9)
-        CollectionService_upv_1 (copy, index: 10)
+        collectionService (copy, index: 10)
     ]]
-    if u2 then
+    if hasRun then
         return
     end
-    u2 = true
-    RunService_upv_1.PreSimulation:Connect(step)
-    RunService_upv_1:BindToRenderStep("TribesGuardShields", Enum.RenderPriority.Camera.Value - 1, placeShields)
+
+    hasRun = true
+    runService.PreSimulation:Connect(step)
+    runService:BindToRenderStep("TribesGuardShields", Enum.RenderPriority.Camera.Value - 1, placeShields)
+
     task.spawn(
         function()
             --[[
@@ -488,38 +538,44 @@ function tbl_upv_1.Init()
             end
         end
     )
-    for _, value_8 in Players_upv_1:GetPlayers() do
-        if value_8 == LocalPlayer_upv_1 then
-            continue
-        end
-        value_8.CharacterAdded:Connect(watchModel)
-        if value_8.Character then
-            watchModel(value_8.Character)
+
+    for _, player in players:GetPlayers() do
+        if player ~= localPlayer then
+            player.CharacterAdded:Connect(watchModel)
+
+            if not player.Character then
+                continue
+            end
+
+            watchModel(player.Character)
         end
     end
-    Players_upv_1.PlayerAdded:Connect(watchPlayer)
-    for _, value_9 in {"Combatant", "Bot"} do
-        CollectionService_upv_1:GetInstanceAddedSignal(value_9):Connect(
-            function(a1)
+
+    players.PlayerAdded:Connect(watchPlayer)
+
+    for _, tag in {"Combatant", "Bot"} do
+        collectionService:GetInstanceAddedSignal(tag):Connect(
+            function(instance: Instance)
                 --[[
                   line: 357
                   upvalues:
                     watchModel (copy, index: 1)
                 ]]
-                if not a1:IsA("Model") then
-                    return
+                if instance:IsA("Model") then
+                    watchModel(instance)
                 end
-                watchModel(a1)
             end
         )
-        for v1, value_10 in CollectionService_upv_1:GetTagged(value_9) do
-            if value_10:IsA("Model") then
-                watchModel(value_10)
+
+        for _, instance in collectionService:GetTagged(tag) do
+            if instance:IsA("Model") then
+                watchModel(instance)
             end
         end
     end
 end
-function tbl_upv_1.RebuildPose()
+
+function v7.RebuildPose()
     --[[
       name: RebuildPose
       line: 371
@@ -528,4 +584,5 @@ function tbl_upv_1.RebuildPose()
     ]]
     rebuildPose()
 end
-return tbl_upv_1
+
+return v7

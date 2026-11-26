@@ -1,2972 +1,3701 @@
-local Players_upv_1 = game:GetService("Players")
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local RunService_upv_1 = game:GetService("RunService")
-local _ = game:GetService("UserInputService")
-local Shared_1 = ReplicatedStorage_1:WaitForChild("Shared")
-local Net_upv_1 = require(Shared_1.Net)
-local Simulation_upv_1 = require(Shared_1:WaitForChild("Simulation"))
-local Weapons_upv_1 = require(Shared_1.Weapons)
-local Combat_upv_1 = require(Shared_1.Combat)
-local Keybinds_upv_1 = require(Shared_1:WaitForChild("Keybinds"))
-local Loc_upv_1 = require(Shared_1:WaitForChild("Loc"))
-local Util_upv_1 = require(script.Parent.Util)
-local Hud_upv_1 = require(script.Parent.Hud)
-local Effects_upv_1 = require(script.Parent.Effects)
-local Presentation_upv_1 = require(script.Parent.Presentation)
-local Guard_upv_1 = require(script.Parent.Guard)
-local Poses_upv_1 = require(script.Parent.Poses)
-local Metrics_upv_1 = require(script.Parent.Metrics)
-local Touch_upv_1 = require(script.Parent.Touch)
-local Quality_upv_1 = require(script.Parent.Quality)
-local World_upv_1 = require(script.Parent.World)
-local RankFx_upv_1 = require(script.Parent.RankFx)
-local tbl_upv_1 = {}
-tbl_upv_1.Melee = require(script.Parent.Handlers.Melee)
-tbl_upv_1.Bow = require(script.Parent.Handlers.Bow)
-tbl_upv_1.Gun = require(script.Parent.Handlers.Gun)
-tbl_upv_1.Throw = require(script.Parent.Handlers.Throw)
-tbl_upv_1.Use = require(script.Parent.Handlers.Use)
-local tbl_upv_2 = {Crossbow = "Gun", Axe = "Melee", Shield = "Melee", Sword = "Melee", Spear = "Melee", Knives = "Throw", Club = "Melee", Gauntlets = "Melee", Dagger = "Melee", Horn = "Use", Bow = "Bow", Musket = "Gun", Fists = "Melee", Katana = "Melee", Scythe = "Melee", Trap = "Use", Herbs = "Use", Bomb = "Throw", Sling = "Throw", Javelin = "Throw", Blunderbuss = "Gun", Pistol = "Gun", Hatchets = "Melee"}
-local tbl_upv_3 = {}
-local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-local u1 = nil
-local tbl_upv_4 = {lastKillAt = 0, killStreak = 0, shotId = 0, baseSpeed = 1, lastSpeed = -1}
-tbl_upv_4.pressed = {}
-tbl_upv_4.speed = {}
-tbl_upv_4.conns = {}
-local function combatMode()
-    --[[
-      name: combatMode
-      line: 118
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-    ]]
-    local v1 = LocalPlayer_upv_1:GetAttribute("CombatMode")
-    if v1 ~= nil then
-        return v1 == true
-    end
-    local v2 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
-    return v2
-end
-local u2 = nil
-local u3 = 0
-local u4 = 0
-local u5 = 0
-local u6 = setmetatable({}, {__mode = "k"})
-local tbl_upv_5 = {adopted = 0, reasked = 0, stale = 0, denied = 0, resent = 0, requests = 0}
-local u7 = -math.huge
-local u8 = nil
-local tbl_6 = {}
-local tbl_7 = {}
-function tbl_7.__index(a1, a2)
-    --[[
-      name: __index
-      line: 154
-      upvalues:
-        u8 (ref,  index: 1)
-        tbl_upv_4 (copy, index: 2)
-    ]]
-    if u8 then
-        u8.Note(128)
-    end
-    return tbl_upv_4[a2]
-end
-function tbl_7.__newindex(a1, a2, a3)
-    --[[
-      name: __newindex
-      line: 160
-      upvalues:
-        u8 (ref,  index: 1)
-        tbl_upv_4 (copy, index: 2)
-    ]]
-    if u8 then
-        u8.Note(128)
-    end
-    tbl_upv_4[a2] = a3
-end
-local v1 = setmetatable(tbl_6, tbl_7)
-local tbl_upv_8 = {}
-local tbl_upv_9 = {}
-local tbl_10 = {shotId = 0}
-tbl_10.speed = {[tbl_upv_9] = true}
-local tbl_11 = {shotId = 0}
-tbl_11.speed = {[tbl_upv_9] = true}
-local tbl_12 = {shotId = 0}
-tbl_12.speed = {[tbl_upv_9] = true}
-local tbl_13 = {shotId = 0}
-tbl_13.speed = {[tbl_upv_9] = true}
-local tbl_14 = {shotId = 0}
-tbl_14.speed = {[tbl_upv_9] = true}
-local tbl_15 = {shotId = 0}
-tbl_15.speed = {[tbl_upv_9] = true}
-local tbl_16 = {shotId = 0}
-tbl_16.speed = {[tbl_upv_9] = true}
-local tbl_17 = {shotId = 0}
-tbl_17.speed = {[tbl_upv_9] = true}
-local tbl_18 = {shotId = 0}
-tbl_18.speed = {[tbl_upv_9] = true}
-local tbl_19 = {shotId = 0}
-tbl_19.speed = {[tbl_upv_9] = true}
-local tbl_20 = {shotId = 0}
-tbl_20.speed = {[tbl_upv_9] = true}
-local tbl_upv_21 = {tbl_18, tbl_13, tbl_20, tbl_16, tbl_10, tbl_14, tbl_17, tbl_19, tbl_11, tbl_15, tbl_12}
-local tbl_upv_22 = {shotId = 0}
-local function copyDecoy()
-    --[[
-      name: copyDecoy
-      line: 195
-      upvalues:
-        tbl_upv_8 (copy, index: 1)
-        tbl_upv_22 (copy, index: 2)
-        tbl_upv_4 (copy, index: 3)
-        tbl_upv_21 (copy, index: 4)
-        tbl_upv_9 (copy, index: 5)
-        u8 (ref,  index: 6)
-    ]]
-    local v3 = true
-    if tbl_upv_8.lastSwing == tbl_upv_22.lastSwing then
-        v3 = tbl_upv_8.holding ~= tbl_upv_22.holding
-    end
-    local handler_1 = tbl_upv_4.handler
-    local v4
-    if handler_1 then
-        v4 = rawget(handler_1, "lastSwing")
-    else
-        v4 = nil
-    end
-    tbl_upv_8.lastSwing = v4
-    local v5
-    if handler_1 then
-        v5 = rawget(handler_1, "holding")
-    else
-        v5 = nil
-    end
-    tbl_upv_8.holding = v5
-    local v6 = nil
-    for _, value_1 in tbl_upv_21 do
-        if value_1.handler ~= tbl_upv_22.handler or value_1.shotId ~= tbl_upv_22.shotId or value_1.speed[tbl_upv_9] ~= true then
-            v3 = true
-            value_1.speed[tbl_upv_9] = true
-        end
-        if handler_1 then
-            v6 = tbl_upv_8
-        else
-            v6 = nil
-        end
-        value_1.handler = v6
-        value_1.shotId = tbl_upv_4.shotId
-    end
-    if v3 and u8 then
-        u8.Note(256)
-    end
-    local v7
-    if handler_1 then
-        v7 = tbl_upv_8
-    else
-        v7 = nil
-    end
-    tbl_upv_22.handler = v7
-    tbl_upv_22.shotId = tbl_upv_4.shotId
-    tbl_upv_22.lastSwing = tbl_upv_8.lastSwing
-    tbl_upv_22.holding = tbl_upv_8.holding
-end
-local function send(a1, a2)
-    --[[
-      name: send
-      line: 217
-      upvalues:
-        u8 (ref,  index: 1)
-        u6 (copy, index: 2)
-        u1 (ref,  index: 3)
-    ]]
-    if u8 then
-        u8.Caller(8192)
-    end
-    local tool_1 = a2.tool
-    if tool_1 and u6[tool_1] then
-        a2.eq = u6[tool_1]
-    end
-    a2.ct = os.clock()
-    local dir_1 = a2.dir
-    if typeof(dir_1) == "Vector3" then
-        a2.q = ((dir_1.X * 3) + (dir_1.Y * 5)) + (dir_1.Z * 7)
-    end
-    u1:FireServer(a1, a2)
-end
-local tbl_upv_23 = {Charge = "Charge", Use = "Use", Throw = "Charge", Draw = "Charge", Block = "Block", Reload = "Reload", Aim = "Aim"}
-local function applySpeed()
-    --[[
-      name: applySpeed
-      line: 248
-      upvalues:
-        tbl_upv_4 (copy, index: 1)
-        tbl_upv_23 (copy, index: 2)
-        Simulation_upv_1 (copy, index: 3)
-    ]]
-    local tbl_24 = {Charge = false, Use = false, Block = false, Reload = false, Aim = false}
-    for key_1 in tbl_upv_4.speed do
-        local v8 = tbl_upv_23[key_1]
-        if v8 then
-            tbl_24[v8] = true
-        end
-    end
-    for key_2, value_2 in tbl_24 do
-        Simulation_upv_1.SetInput(key_2, value_2)
-    end
-end
-local tbl_upv_25 = {}
-function tbl_upv_3.OnViewEvent(a1)
-    --[[
-      name: OnViewEvent
-      line: 287
-      upvalues:
-        tbl_upv_25 (copy, index: 1)
-    ]]
-    table.insert(tbl_upv_25, a1)
-    return function()
-        --[[
-          line: 289
-          upvalues:
-            tbl_upv_25 (copy, index: 1)
-            a1 (copy, index: 2)
-        ]]
-        local v9 = table.find(tbl_upv_25, a1)
-        if not v9 then
-            return
-        end
-        table.remove(tbl_upv_25, v9)
-    end
-end
-local function presetFor(a1, a2)
-    --[[
-      name: presetFor
-      line: 297
-      upvalues:
-        Presentation_upv_1 (copy, index: 1)
-    ]]
-    return Presentation_upv_1.For(a2, a1)
-end
-local function modelOf(a1)
-    --[[
-      name: modelOf
-      line: 301
-    ]]
-    if typeof(a1) == "Instance" then
-        if a1:IsA("Player") then
-            return a1.Character
-        end
-        if a1:IsA("Model") then
-            return a1
-        end
-    end
-    return nil
-end
-local function rootOf(a1)
-    --[[
-      name: rootOf
-      line: 314
-    ]]
-    local v10
-    if typeof(a1) == "Instance" then
-        if a1:IsA("Player") then
-            v10 = a1.Character
-        elseif a1:IsA("Model") then
-            v10 = a1
-        else
-            v10 = nil
-        end
-    else
-        v10 = nil
-    end
-    local v11 = v10 and (v10:FindFirstChild("HumanoidRootPart"))
-    if v11 and v11:IsA("BasePart") then
-        return v11
-    end
-    return nil
-end
-local function toolOf(a1)
-    --[[
-      name: toolOf
-      line: 320
-    ]]
-    local v12 = (a1 and (a1:FindFirstChildOfClass("Tool"))) or nil
-    return v12
-end
-local function isFar(a1)
-    --[[
-      name: isFar
-      line: 324
-      upvalues:
-        Effects_upv_1 (copy, index: 1)
-    ]]
-    local v13 = (a1 ~= nil) and (Effects_upv_1.NEAR < Effects_upv_1.CamDistance(a1))
-    return v13
-end
-local function dropHandler()
-    --[[
-      name: dropHandler
-      line: 345
-      upvalues:
-        tbl_upv_4 (copy, index: 1)
-        applySpeed (copy, index: 2)
-    ]]
-    local handler_upv_2 = tbl_upv_4.handler
-    if handler_upv_2 then
-        tbl_upv_4.handler = nil
-        pcall(
-            function()
-                --[[
-                  line: 349
-                  upvalues:
-                    handler_upv_2 (copy, index: 1)
-                ]]
-                handler_upv_2:Unequip()
-            end
-        )
-    end
-    table.clear(tbl_upv_4.pressed)
-    table.clear(tbl_upv_4.speed)
-    applySpeed()
-end
-local function nextId()
-    --[[
-      name: nextId
-      line: 237
-      upvalues:
-        tbl_upv_4 (copy, index: 1)
-    ]]
-    tbl_upv_4.shotId = tbl_upv_4.shotId + 1
-    return tbl_upv_4.shotId
-end
-local function emitView(a1, a2)
-    --[[
-      name: emitView
-      line: 277
-      upvalues:
-        tbl_upv_25 (copy, index: 1)
-    ]]
-    for _, value_3 in tbl_upv_25 do
-        local success_1, v14 = pcall(value_3, a1, a2)
-        if not (success_1) then
-            warn("[Combat] view event listener error:", v14)
-        end
-    end
-end
-local function setSpeed(a1, a2)
-    --[[
-      name: setSpeed
-      line: 261
-      upvalues:
-        Util_upv_1 (copy, index: 1)
-        tbl_upv_4 (copy, index: 2)
-        applySpeed (copy, index: 3)
-    ]]
-    local v15 = Util_upv_1.Probe(a1, a2)
-    if v15 ~= nil then
-        return v15
-    end
-    tbl_upv_4.speed[a1] = a2
-    applySpeed()
-    local v16 = Util_upv_1.ProbeValues()
-    if v16 then
-        return v16.k * (a2 or 1)
-    end
-    return nil
-end
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+game:GetService("UserInputService")
+local shared = replicatedStorage:WaitForChild("Shared")
+local Net = require(shared.Net)
+local Simulation = require(shared:WaitForChild("Simulation"))
+local Weapons = require(shared.Weapons)
+local Combat = require(shared.Combat)
+local Keybinds = require(shared:WaitForChild("Keybinds"))
+local Loc = require(shared:WaitForChild("Loc"))
+local Util = require(script.Parent.Util)
+local Hud = require(script.Parent.Hud)
+local Effects = require(script.Parent.Effects)
+local Presentation = require(script.Parent.Presentation)
+local Guard = require(script.Parent.Guard)
+local Poses = require(script.Parent.Poses)
+local Metrics = require(script.Parent.Metrics)
+local Touch = require(script.Parent.Touch)
+local Quality = require(script.Parent.Quality)
+local World = require(script.Parent.World)
+local RankFx = require(script.Parent.RankFx)
+local v22 = {Melee = require(script.Parent.Handlers.Melee), Bow = require(script.Parent.Handlers.Bow), Gun = require(script.Parent.Handlers.Gun), Throw = require(script.Parent.Handlers.Throw), Use = require(script.Parent.Handlers.Use)}
+local v23 = {Fists = "Melee", Sword = "Melee", Axe = "Melee", Spear = "Melee", Dagger = "Melee", Club = "Melee", Shield = "Melee", Gauntlets = "Melee", Scythe = "Melee", Katana = "Melee", Hatchets = "Melee", Bow = "Bow", Crossbow = "Gun", Musket = "Gun", Pistol = "Gun", Blunderbuss = "Gun", Knives = "Throw", Javelin = "Throw", Sling = "Throw", Bomb = "Throw", Herbs = "Use", Trap = "Use", Horn = "Use"}
+local v24 = {}
+local localPlayer = players.LocalPlayer
+local v26 = nil
+local v27 = {char = nil, hum = nil, root = nil, animator = nil, handler = nil, tool = nil, kind = nil, baseSpeed = 1, shotId = 0, lastSpeed = -1, killStreak = 0, lastKillAt = 0, pressed = {}, speed = {}, conns = {}}
+
 local function alive()
     --[[
       name: alive
       line: 112
       upvalues:
-        tbl_upv_4 (copy, index: 1)
+        v27 (copy, index: 1)
     ]]
-    return (tbl_upv_4.hum ~= nil) and ((tbl_upv_4.hum.Health > 0) and ((tbl_upv_4.char ~= nil) and (tbl_upv_4.char.Parent ~= nil)))
+    return v27.hum ~= nil and 0 < v27.hum.Health and v27.char ~= nil and (v27.char.Parent ~= nil)
 end
+
+local function combatMode()
+    --[[
+      name: combatMode
+      line: 118
+      upvalues:
+        localPlayer (copy, index: 1)
+    ]]
+    local combatMode = localPlayer:GetAttribute("CombatMode")
+    if combatMode == nil then
+        return localPlayer:GetAttribute("State") == "Match"
+    end
+
+    return combatMode == true
+end
+
+local v31 = nil
+local count = 0
+local timestamp = 0
+local timestamp2 = 0
+local v35 = setmetatable({}, {__mode = "k"})
+local v36 = {requests = 0, stale = 0, adopted = 0, resent = 0, reasked = 0, denied = 0}
+local timestamp3 = -math.huge
+local InputStats = nil
+
+local _ = setmetatable(
+    {},
+    {
+        __index = (function(self, key)
+            --[[
+              name: __index
+              line: 154
+              upvalues:
+                InputStats (ref,  index: 1)
+                v27 (copy, index: 2)
+            ]]
+            if InputStats then
+                InputStats.Note(128)
+            end
+
+            return v27[key]
+        end),
+        __newindex = (function(self, key, value)
+            --[[
+              name: __newindex
+              line: 160
+              upvalues:
+                InputStats (ref,  index: 1)
+                v27 (copy, index: 2)
+            ]]
+            if InputStats then
+                InputStats.Note(128)
+            end
+
+            v27[key] = value
+        end)
+    }
+)
+
+local v45 = {}
+local v46 = {}
+local v47 = {shotId = 0, speed = {[v46] = true}}
+local v48 = {shotId = 0, speed = {[v46] = true}}
+local v49 = {shotId = 0, speed = {[v46] = true}}
+local v50 = {shotId = 0, speed = {[v46] = true}}
+local v51 = {shotId = 0, speed = {[v46] = true}}
+local v52 = {shotId = 0, speed = {[v46] = true}}
+local v53 = {shotId = 0, speed = {[v46] = true}}
+local v54 = {shotId = 0, speed = {[v46] = true}}
+local v55 = {shotId = 0, speed = {[v46] = true}}
+local v56 = {shotId = 0, speed = {[v46] = true}}
+local v57 = {shotId = 0, speed = {[v46] = true}}
+local v58 = {v55, v50, v57, v53, v47, v51, v54, v56, v48, v52, v49}
+local v59 = {shotId = 0}
+
+local function copyDecoy()
+    --[[
+      name: copyDecoy
+      line: 195
+      upvalues:
+        v45 (copy, index: 1)
+        v59 (copy, index: 2)
+        v27 (copy, index: 3)
+        v58 (copy, index: 4)
+        v46 (copy, index: 5)
+        InputStats (ref,  index: 6)
+    ]]
+    local v61 = v45.lastSwing ~= v59.lastSwing or v45.holding ~= v59.holding
+    local handler = v27.handler
+    v45.lastSwing = if handler then rawget(handler, "lastSwing") else nil
+    v45.holding = if handler then rawget(handler, "holding") else nil
+
+    for _, v64 in v58 do
+        if v64.handler ~= v59.handler or v64.shotId ~= v59.shotId or v64.speed[v46] ~= true then
+            v61 = true
+            v64.speed[v46] = true
+        end
+
+        v64.handler = if handler then v45 else nil
+        v64.shotId = v27.shotId
+    end
+
+    if v61 and InputStats then
+        InputStats.Note(256)
+    end
+
+    v59.handler = if handler then v45 else nil
+    v59.shotId = v27.shotId
+    v59.lastSwing = v45.lastSwing
+    v59.holding = v45.holding
+end
+
+local function send(a66, a67)
+    --[[
+      name: send
+      line: 217
+      upvalues:
+        InputStats (ref,  index: 1)
+        v35 (copy, index: 2)
+        v26 (ref,  index: 3)
+    ]]
+    if InputStats then
+        InputStats.Caller(8192)
+    end
+
+    local tool = a67.tool
+
+    if tool and v35[tool] then
+        a67.eq = v35[tool]
+    end
+
+    a67.ct = os.clock()
+    local dir = a67.dir
+
+    if typeof(dir) == "Vector3" then
+        a67.q = (dir.X * 3) + (dir.Y * 5) + (dir.Z * 7)
+    end
+
+    v26:FireServer(a66, a67)
+end
+
+local function nextId()
+    --[[
+      name: nextId
+      line: 237
+      upvalues:
+        v27 (copy, index: 1)
+    ]]
+    v27.shotId += 1
+    return v27.shotId
+end
+
+local v71 = {Aim = "Aim", Draw = "Charge", Throw = "Charge", Charge = "Charge", Block = "Block", Reload = "Reload", Use = "Use"}
+
+local function applySpeed()
+    --[[
+      name: applySpeed
+      line: 248
+      upvalues:
+        v27 (copy, index: 1)
+        v71 (copy, index: 2)
+        Simulation (copy, index: 3)
+    ]]
+    local v73 = {Aim = false, Charge = false, Block = false, Reload = false, Use = false}
+
+    for v74 in v27.speed do
+        if const v75 = v71[v74] then
+            v73[v75] = true
+        end
+    end
+
+    for v76, v77 in v73 do
+        Simulation.SetInput(v76, v77)
+    end
+end
+
+local function setSpeed(key, value)
+    --[[
+      name: setSpeed
+      line: 261
+      upvalues:
+        Util (copy, index: 1)
+        v27 (copy, index: 2)
+        applySpeed (copy, index: 3)
+    ]]
+    local v81 = Util.Probe(key, value)
+    if v81 ~= nil then
+        return v81
+    end
+
+    v27.speed[key] = value
+    applySpeed()
+    return if const v82 = Util.ProbeValues() then v82.k * (value or 1) else nil
+end
+
+local v83 = {}
+
+local function emitView(a85, a86)
+    --[[
+      name: emitView
+      line: 277
+      upvalues:
+        v83 (copy, index: 1)
+    ]]
+    for _, v88 in v83 do
+        local success, result = pcall(v88, a85, a86)
+        if not success then
+            warn("[Combat] view event listener error:", result)
+        end
+    end
+end
+
+function v24.OnViewEvent(target)
+    --[[
+      name: OnViewEvent
+      line: 287
+      upvalues:
+        v83 (copy, index: 1)
+    ]]
+    table.insert(v83, target)
+    return function()
+        --[[
+          line: 289
+          upvalues:
+            v83 (copy, index: 1)
+            target (copy, index: 2)
+        ]]
+        if const index = table.find(v83, target) then
+            table.remove(v83, index)
+        end
+    end
+end
+
+local function presetFor(a94, a95)
+    --[[
+      name: presetFor
+      line: 297
+      upvalues:
+        Presentation (copy, index: 1)
+    ]]
+    return Presentation.For(a95, a94)
+end
+
+local function modelOf(a97)
+    --[[
+      name: modelOf
+      line: 301
+    ]]
+    if typeof(a97) ~= "Instance" then
+        return nil
+    end
+    if a97:IsA("Player") then
+        return a97.Character
+    end
+    if a97:IsA("Model") then
+        return a97
+    end
+
+    return nil
+end
+
+local function rootOf(a99)
+    --[[
+      name: rootOf
+      line: 314
+    ]]
+    local v100
+
+    if typeof(a99) == "Instance" then
+        if a99:IsA("Player") then
+            v100 = a99.Character
+        else
+            v100 = if a99:IsA("Model") then a99 else nil
+        end
+    else
+        v100 = nil
+    end
+
+    local humanoidRootPart = v100 and v100:FindFirstChild("HumanoidRootPart")
+
+    if humanoidRootPart and humanoidRootPart:IsA("BasePart") then
+        return humanoidRootPart
+    end
+
+    return nil
+end
+
+local function toolOf(a103)
+    --[[
+      name: toolOf
+      line: 320
+    ]]
+    return a103 and a103:FindFirstChildOfClass("Tool") or nil
+end
+
+local function isFar(a105)
+    --[[
+      name: isFar
+      line: 324
+      upvalues:
+        Effects (copy, index: 1)
+    ]]
+    return a105 ~= nil and Effects.NEAR < Effects.CamDistance(a105)
+end
+
+local function nameOf(character)
+    --[[
+      name: nameOf
+      line: 328
+      upvalues:
+        players (copy, index: 1)
+    ]]
+    if not character then
+        return nil
+    end
+
+    local displayName = character:GetAttribute("DisplayName")
+
+    return if type(displayName) == "string" and displayName ~= "" then displayName elseif const player = players:GetPlayerFromCharacter(character) then player.DisplayName elseif character:HasTag("TrainingDummy") then "Dummy" else character.Name
+end
+
+local function dropHandler()
+    --[[
+      name: dropHandler
+      line: 345
+      upvalues:
+        v27 (copy, index: 1)
+        applySpeed (copy, index: 2)
+    ]]
+    if const handler = v27.handler then
+        v27.handler = nil
+        pcall(
+            function()
+                --[[
+                  line: 349
+                  upvalues:
+                    handler (copy, index: 1)
+                ]]
+                handler:Unequip()
+            end
+        )
+    end
+
+    table.clear(v27.pressed)
+    table.clear(v27.speed)
+    applySpeed()
+end
+
 local function refreshEquipped()
     --[[
       name: refreshEquipped
       line: 358
       upvalues:
-        tbl_upv_4 (copy, index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
+        v27 (copy, index: 1)
+        localPlayer (copy, index: 2)
         dropHandler (copy, index: 3)
-        Hud_upv_1 (copy, index: 4)
-        Touch_upv_1 (copy, index: 5)
-        u2 (ref,  index: 6)
-        Combat_upv_1 (copy, index: 7)
-        Weapons_upv_1 (copy, index: 8)
+        Hud (copy, index: 4)
+        Touch (copy, index: 5)
+        v31 (ref,  index: 6)
+        Combat (copy, index: 7)
+        Weapons (copy, index: 8)
         applySpeed (copy, index: 9)
-        tbl_upv_1 (copy, index: 10)
-        tbl_upv_2 (copy, index: 11)
-        Presentation_upv_1 (copy, index: 12)
+        v22 (copy, index: 10)
+        v23 (copy, index: 11)
+        Presentation (copy, index: 12)
         send (copy, index: 13)
         nextId (copy, index: 14)
         setSpeed (copy, index: 15)
         alive (copy, index: 16)
         emitView (copy, index: 17)
-        Util_upv_1 (copy, index: 18)
+        Util (copy, index: 18)
     ]]
-    local char_1 = tbl_upv_4.char
-    if char_1 and (tbl_upv_4.hum ~= nil) and ((tbl_upv_4.hum.Health > 0) and ((tbl_upv_4.char ~= nil) and (tbl_upv_4.char.Parent ~= nil))) then
-        local v17 = LocalPlayer_upv_1:GetAttribute("CombatMode")
-        local v18
-        if v17 ~= nil then
-            v18 = v17 == true
-        else
-            v18 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
-        end
-        if v18 then
-            local v19
-            if (u2) and u2.Parent == char_1 then
-                v19 = u2
-            else
-                v19 = char_1:FindFirstChildOfClass("Tool")
-            end
-            if v19 == tbl_upv_4.tool and tbl_upv_4.handler then
-                return
-            end
-            dropHandler()
-            tbl_upv_4.tool = v19
-            v17 = Combat_upv_1.FISTS_ID
-            local v20 = nil
-            if v19 then
-                v20 = v19:GetAttribute("WeaponId")
-                if type(v20) == "string" and Weapons_upv_1.Get(v20) then
-                    v17 = v20
-                    local v21 = Weapons_upv_1.Get(v17)
-                    local v22 = Combat_upv_1.Tuning(v17)
-                    local v23 = Combat_upv_1.Kind(v17) or "Fists"
-                    tbl_upv_4.kind = v23
-                    tbl_upv_4.baseSpeed = v22.speedMult or 1
-                    applySpeed()
-                    local v24 = tbl_upv_1[tbl_upv_2[v23] or ""]
-                    if v24 then
-                        local u9 = v24.new({player = LocalPlayer_upv_1, char = char_1, hum = tbl_upv_4.hum, root = tbl_upv_4.root, animator = tbl_upv_4.animator, tool = v19, weaponId = v17, def = v21, tuning = v22, kind = v23, preset = Presentation_upv_1.For(v17, v23), send = send, nextId = nextId, setSpeed = setSpeed, alive = alive, emit = emitView})
-                        tbl_upv_4.handler = u9
-                        Hud_upv_1.SetPips(0, 0)
-                        Hud_upv_1.SetArc(nil)
-                        local SetWeapon_1 = Touch_upv_1.SetWeapon
-                        local v25
-                        if v19 then
-                            v25 = v23
-                        else
-                            v25 = nil
-                        end
-                        SetWeapon_1(v25, v22)
-                        local success_2, v26 = pcall(
-                            function()
-                                --[[
-                                  line: 420
-                                  upvalues:
-                                    u9 (copy, index: 1)
-                                ]]
-                                u9:Equip()
-                            end
-                        )
-                        if not (success_2) then
-                            warn("[Combat] equip error:", v26)
-                        end
-                        local v27 = Util_upv_1.GuardRecovery(v19)
-                        if v27 > 0 then
-                            Hud_upv_1.SetArc(v27, Color3.fromRGB(150, 196, 236))
-                        end
-                    else
-                        Hud_upv_1.SetStyle("Dot")
-                    end
+    local char = v27.char
+
+    if char and v27.hum ~= nil and 0 < v27.hum.Health and v27.char ~= nil and v27.char.Parent ~= nil then
+        local combatMode = localPlayer:GetAttribute("CombatMode")
+        local v115 = if combatMode == nil then localPlayer:GetAttribute("State") == "Match" else combatMode == true
+        if v115 then
+            local v116 = if v31 and v31.Parent == char then v31 else char:FindFirstChildOfClass("Tool")
+
+            if v116 == v27.tool then
+                if v27.handler then
                     return
                 end
-                Hud_upv_1.SetStyle("Dot")
+            end
+
+            dropHandler()
+            v27.tool = v116
+            local v117 = Combat.FISTS_ID
+
+            if v116 then
+                v117 = v116:GetAttribute("WeaponId")
+
+                if type(v117) ~= "string" or not Weapons.Get(v117) then
+                    Hud.SetStyle("Dot")
+                    return
+                end
+            end
+
+            local def = Weapons.Get(v117)
+            local tuning = Combat.Tuning(v117)
+            local kind = Combat.Kind(v117) or "Fists"
+            v27.kind = kind
+            v27.baseSpeed = tuning.speedMult or 1
+            applySpeed()
+            local v121 = v22[v23[kind] or ""]
+            if not v121 then
+                Hud.SetStyle("Dot")
                 return
             end
-            local v21 = Weapons_upv_1.Get(v17)
-            local v22 = Combat_upv_1.Tuning(v17)
-            local v23 = Combat_upv_1.Kind(v17) or "Fists"
-            tbl_upv_4.kind = v23
-            tbl_upv_4.baseSpeed = v22.speedMult or 1
-            applySpeed()
-            local v24 = tbl_upv_1[tbl_upv_2[v23] or ""]
-            if v24 then
-                local u9 = v24.new({player = LocalPlayer_upv_1, char = char_1, hum = tbl_upv_4.hum, root = tbl_upv_4.root, animator = tbl_upv_4.animator, tool = v19, weaponId = v17, def = v21, tuning = v22, kind = v23, preset = Presentation_upv_1.For(v17, v23), send = send, nextId = nextId, setSpeed = setSpeed, alive = alive, emit = emitView})
-                tbl_upv_4.handler = u9
-                Hud_upv_1.SetPips(0, 0)
-                Hud_upv_1.SetArc(nil)
-                local SetWeapon_1 = Touch_upv_1.SetWeapon
-                local v25
-                if v19 then
-                    v25 = v23
-                else
-                    v25 = nil
+
+            local v122 = {player = localPlayer, char = char, hum = v27.hum, root = v27.root, animator = v27.animator, tool = v116, weaponId = v117, def = def, tuning = tuning, kind = kind, preset = Presentation.For(v117, kind), send = send, nextId = nextId, setSpeed = setSpeed, alive = alive, emit = emitView}
+            local handler = v121.new(v122)
+            v27.handler = handler
+            Hud.SetPips(0, 0)
+            Hud.SetArc(nil)
+            local setWeapon = Touch.SetWeapon
+            local v125 = if v116 then kind else nil
+            setWeapon(v125, tuning)
+            local success, result = pcall(
+                function()
+                    --[[
+                      line: 420
+                      upvalues:
+                        handler (copy, index: 1)
+                    ]]
+                    handler:Equip()
                 end
-                SetWeapon_1(v25, v22)
-                local success_2, v26 = pcall(
-                    function()
-                        --[[
-                          line: 420
-                          upvalues:
-                            u9 (copy, index: 1)
-                        ]]
-                        u9:Equip()
-                    end
-                )
-                if not (success_2) then
-                    warn("[Combat] equip error:", v26)
-                end
-                local v27 = Util_upv_1.GuardRecovery(v19)
-                if v27 > 0 then
-                    Hud_upv_1.SetArc(v27, Color3.fromRGB(150, 196, 236))
-                end
-            else
-                Hud_upv_1.SetStyle("Dot")
+            )
+            if not success then
+                warn("[Combat] equip error:", result)
             end
+
+            local v128 = Util.GuardRecovery(v116)
+
+            if 0 < v128 then
+                Hud.SetArc(v128, Color3.fromRGB(150, 196, 236))
+            end
+
             return
         end
     end
-    tbl_upv_4.baseSpeed = 1
+
+    v27.baseSpeed = 1
     dropHandler()
-    tbl_upv_4.tool = nil
-    tbl_upv_4.kind = nil
-    Hud_upv_1.SetStyle("Dot")
-    Hud_upv_1.SetPips(0, 0)
-    Hud_upv_1.SetArc(nil)
-    Touch_upv_1.SetWeapon(nil)
+    v27.tool = nil
+    v27.kind = nil
+    Hud.SetStyle("Dot")
+    Hud.SetPips(0, 0)
+    Hud.SetArc(nil)
+    Touch.SetWeapon(nil)
 end
-local function isWeaponTool(a1)
+
+local function isWeaponTool(a130)
     --[[
       name: isWeaponTool
       line: 435
     ]]
-    local v28 = (a1 ~= nil) and (a1:IsA("Tool") and (type(a1:GetAttribute("WeaponId")) == "string"))
-    return v28
+    return a130 ~= nil and a130:IsA("Tool") and type(a130:GetAttribute("WeaponId")) == "string"
 end
-local function acked()
-    --[[
-      name: acked
-      line: 458
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-    ]]
-    local v29 = LocalPlayer_upv_1:GetAttribute("EquipAck")
-    if type(v29) ~= "number" then
-        return 0
-    end
-    return v29
-end
-local function equipPending()
-    --[[
-      name: equipPending
-      line: 464
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        u3 (ref,  index: 2)
-        u4 (ref,  index: 3)
-    ]]
-    local v30 = false
-    local v31 = LocalPlayer_upv_1:GetAttribute("EquipAck")
-    local v32
-    if type(v31) ~= "number" then
-        v32 = 0
-    else
-        v32 = v31
-    end
-    if v32 < u3 then
-        v30 = os.clock() - u4 < 4
-    end
-    return v30
-end
+
 local function backpack()
     --[[
       name: backpack
       line: 442
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
     ]]
-    local v33 = LocalPlayer_upv_1:GetAttribute("CombatDrawToken")
-    local v34 = nil
-    for _, value_4 in LocalPlayer_upv_1:GetChildren() do
-        local v35 = value_4:IsA("Backpack")
-        if not (v35) then
-            continue
-        end
-        v34 = v34 or value_4
-        for v36, value_5 in value_4:GetChildren() do
-            if value_5:GetAttribute("DrawToken") ~= v33 then
-                continue
+    local instance
+    local combatDrawToken = localPlayer:GetAttribute("CombatDrawToken")
+
+    for _, child in localPlayer:GetChildren() do
+        if child:IsA("Backpack") then
+            instance = instance or child
+
+            for _, child2 in child:GetChildren() do
+                if child2:GetAttribute("DrawToken") == combatDrawToken then
+                    return child
+                end
             end
-            return value_4
         end
     end
-    return v34
+
+    return instance
 end
+
+local function acked()
+    --[[
+      name: acked
+      line: 458
+      upvalues:
+        localPlayer (copy, index: 1)
+    ]]
+    local equipAck = localPlayer:GetAttribute("EquipAck")
+
+    if type(equipAck) ~= "number" then
+        return 0
+    end
+
+    return equipAck
+end
+
+local function equipPending()
+    --[[
+      name: equipPending
+      line: 464
+      upvalues:
+        localPlayer (copy, index: 1)
+        count (ref,  index: 2)
+        timestamp (ref,  index: 3)
+    ]]
+    local equipAck
+    local equipAck2 = localPlayer:GetAttribute("EquipAck")
+
+    if type(equipAck2) ~= "number" then
+        equipAck = 0
+    else
+        equipAck = equipAck2
+    end
+
+    return equipAck < count and os.clock() - timestamp < 4
+end
+
+local function toolInSlot(equipSlot)
+    --[[
+      name: toolInSlot
+      line: 468
+      upvalues:
+        v27 (copy, index: 1)
+        backpack (copy, index: 2)
+    ]]
+    local v145 = {v27.char, (backpack())}
+
+    for _, v147 in v145 do
+        if v147 then
+            for _, child in v147:GetChildren() do
+                local v150 = child ~= nil and child:IsA("Tool") and type(child:GetAttribute("WeaponId")) == "string"
+
+                if v150 and child:GetAttribute("SlotIndex") == equipSlot then
+                    return child
+                end
+            end
+        end
+    end
+
+    return nil
+end
+
 local function enforceWant()
     --[[
       name: enforceWant
       line: 482
       upvalues:
-        tbl_upv_4 (copy, index: 1)
-        u2 (ref,  index: 2)
+        v27 (copy, index: 1)
+        v31 (ref,  index: 2)
         backpack (copy, index: 3)
     ]]
-    local char_2 = tbl_upv_4.char
-    local hum_1 = tbl_upv_4.hum
-    if not char_2 or not hum_1 or hum_1.Health <= 0 or not u2 then
+    local char = v27.char
+    local hum = v27.hum
+    local v154 = v31
+
+    if not char or not hum or hum.Health <= 0 or not v154 then
         return
     end
-    local v36 = backpack()
-    if u2.Parent ~= char_2 and u2.Parent ~= v36 then
-        u2 = nil
+
+    local parent = backpack()
+
+    if v154.Parent ~= char and v154.Parent ~= parent then
+        v31 = nil
         return
     end
-    if u2.Parent ~= char_2 then
-        hum_1:EquipTool(u2)
+
+    if v154.Parent ~= char then
+        hum:EquipTool(v154)
     end
-    if not v36 then
-        return
-    end
-    for _, value_6 in char_2:GetChildren() do
-        if value_6 == u2 then
-            continue
-        end
-        local v37 = (value_6 ~= nil) and (value_6:IsA("Tool") and (type(value_6:GetAttribute("WeaponId")) == "string"))
-        if v37 then
-            value_6.Parent = v36
+
+    if parent then
+        for _, child in char:GetChildren() do
+            if child ~= v154 then
+                local v158 = child ~= nil and child:IsA("Tool") and type(child:GetAttribute("WeaponId")) == "string"
+                if not v158 then
+                    continue
+                end
+
+                child.Parent = parent
+            end
         end
     end
 end
+
 local function sendEquip()
     --[[
       name: sendEquip
       line: 504
       upvalues:
-        u2 (ref,  index: 1)
-        u1 (ref,  index: 2)
-        u5 (ref,  index: 3)
+        v31 (ref,  index: 1)
+        v26 (ref,  index: 2)
+        timestamp2 (ref,  index: 3)
         send (copy, index: 4)
-        u3 (ref,  index: 5)
+        count (ref,  index: 5)
     ]]
-    local v38 = u2
-    if not v38 or not u1 then
-        return
+    local v160 = v31
+
+    if v160 and v26 then
+        timestamp2 = os.clock()
+        send("Equip", {tool = v160, seq = count})
     end
-    u5 = os.clock()
-    send("Equip", {tool = v38, seq = u3})
 end
-local function requestEquip(a1)
+
+local function requestEquip(key)
     --[[
       name: requestEquip
       line: 513
       upvalues:
-        u2 (ref,  index: 1)
-        u3 (ref,  index: 2)
-        u6 (copy, index: 3)
-        u4 (ref,  index: 4)
-        tbl_upv_5 (copy, index: 5)
+        v31 (ref,  index: 1)
+        count (ref,  index: 2)
+        v35 (copy, index: 3)
+        timestamp (ref,  index: 4)
+        v36 (copy, index: 5)
         enforceWant (copy, index: 6)
-        u1 (ref,  index: 7)
-        u5 (ref,  index: 8)
+        v26 (ref,  index: 7)
+        timestamp2 (ref,  index: 8)
         send (copy, index: 9)
     ]]
-    u2 = a1
-    u3 = u3 + 1
-    u6[a1] = u3
-    u4 = os.clock()
-    tbl_upv_5.requests = tbl_upv_5.requests + 1
+    v31 = key
+    count += 1
+    v35[key] = count
+    timestamp = os.clock()
+    v36.requests += 1
     enforceWant()
-    local v39 = u2
-    if not v39 or not u1 then
-        return
+    local v163 = v31
+
+    if v163 and v26 then
+        timestamp2 = os.clock()
+        send("Equip", {tool = v163, seq = count})
     end
-    u5 = os.clock()
-    send("Equip", {tool = v39, seq = u3})
 end
-local function toolInSlot(a1)
-    --[[
-      name: toolInSlot
-      line: 468
-      upvalues:
-        tbl_upv_4 (copy, index: 1)
-        backpack (copy, index: 2)
-    ]]
-    local tbl_26 = {tbl_upv_4.char, backpack()}
-    for _, value_7 in tbl_26 do
-        if not (value_7) then
-            continue
-        end
-        for v41, value_8 in value_7:GetChildren() do
-            local v40 = (value_8 ~= nil) and (value_8:IsA("Tool") and (type(value_8:GetAttribute("WeaponId")) == "string"))
-            if not (v40) or value_8:GetAttribute("SlotIndex") ~= a1 then
-                continue
-            end
-            return value_8
-        end
-    end
-    return nil
-end
+
 local function reconcileEquip()
     --[[
       name: reconcileEquip
       line: 524
       upvalues:
-        tbl_upv_4 (copy, index: 1)
+        v27 (copy, index: 1)
         backpack (copy, index: 2)
-        u2 (ref,  index: 3)
-        LocalPlayer_upv_1 (copy, index: 4)
-        u3 (ref,  index: 5)
-        u4 (ref,  index: 6)
+        v31 (ref,  index: 3)
+        localPlayer (copy, index: 4)
+        count (ref,  index: 5)
+        timestamp (ref,  index: 6)
         enforceWant (copy, index: 7)
         toolInSlot (copy, index: 8)
-        tbl_upv_5 (copy, index: 9)
-        u6 (copy, index: 10)
-        u7 (ref,  index: 11)
-        u1 (ref,  index: 12)
-        u5 (ref,  index: 13)
+        v36 (copy, index: 9)
+        v35 (copy, index: 10)
+        timestamp3 (ref,  index: 11)
+        v26 (ref,  index: 12)
+        timestamp2 (ref,  index: 13)
         send (copy, index: 14)
     ]]
-    local char_3 = tbl_upv_4.char
-    local hum_2 = tbl_upv_4.hum
-    if not char_3 or not hum_2 then
+    local char = v27.char
+    local hum = v27.hum
+
+    if not char or not hum or hum.Health <= 0 then
         return
     end
-    if not (hum_2.Health <= 0) then
-        local v41 = backpack()
-        if u2 and u2.Parent ~= char_3 and u2.Parent ~= v41 then
-            u2 = nil
-        end
-        local v42 = false
-        local v43 = LocalPlayer_upv_1:GetAttribute("EquipAck")
-        local v44
-        if type(v43) ~= "number" then
-            v44 = 0
-        else
-            v44 = v43
-        end
-        if v44 < u3 then
-            v42 = os.clock() - u4 < 4
-        end
-        if v42 then
-            enforceWant()
-        else
-            local v45 = LocalPlayer_upv_1:GetAttribute("EquipSlot")
-            if type(v45) == "number" and (v45 > 0) then
-                v42 = toolInSlot(v45)
-            else
-                v42 = nil
+
+    local equipAck
+    local v168
+    local instance = backpack()
+
+    if v31 and v31.Parent ~= char and v31.Parent ~= instance then
+        v31 = nil
+    end
+
+    local equipAck2 = localPlayer:GetAttribute("EquipAck")
+
+    if type(equipAck2) ~= "number" then
+        equipAck = 0
+    else
+        equipAck = equipAck2
+    end
+
+    if equipAck < count and os.clock() - timestamp < 4 then
+        enforceWant()
+        return
+    end
+
+    local equipSlot = localPlayer:GetAttribute("EquipSlot")
+
+    if type(equipSlot) == "number" and 0 < equipSlot then
+        v168 = toolInSlot(equipSlot)
+    else
+        v168 = nil
+    end
+
+    if v168 then
+        if v31 ~= v168 then
+            if v31 ~= nil then
+                v36.adopted += 1
             end
-            if v42 then
-                if u2 ~= v42 then
-                    if u2 ~= nil then
-                        tbl_upv_5.adopted = tbl_upv_5.adopted + 1
-                    end
-                    u2 = v42
-                    u6[v42] = u6[v42] or u3
-                end
-                enforceWant()
-            elseif u2 and os.clock() - u7 > 2 then
-                u7 = os.clock()
-                tbl_upv_5.reasked = tbl_upv_5.reasked + 1
-                local v47 = u2
-                u2 = v47
-                u3 = u3 + 1
-                u6[v47] = u3
-                u4 = os.clock()
-                tbl_upv_5.requests = tbl_upv_5.requests + 1
-                enforceWant()
-                local v48 = u2
-                if v48 and u1 then
-                    u5 = os.clock()
-                    send("Equip", {tool = v48, seq = u3})
-                end
-            end
+
+            v31 = v168
+            local v172 = v35[v168] or count
+            v35[v168] = v172
+        end
+
+        enforceWant()
+
+        return
+    end
+
+    if v31 and 2 < os.clock() - timestamp3 then
+        timestamp3 = os.clock()
+        v36.reasked += 1
+        local v173 = v31
+        v31 = v173
+        count += 1
+        v35[v173] = count
+        timestamp = os.clock()
+        v36.requests += 1
+        enforceWant()
+        local v174 = v31
+
+        if v174 and v26 then
+            timestamp2 = os.clock()
+            send("Equip", {tool = v174, seq = count})
         end
     end
 end
-local u10 = false
+
+local isBusy = false
+
 local function queueReconcile()
     --[[
       name: queueReconcile
       line: 558
       upvalues:
-        u10 (ref, index: 1)
+        isBusy (ref,  index: 1)
+        reconcileEquip (copy, index: 2)
+        refreshEquipped (copy, index: 3)
     ]]
-    if u10 then
+    if isBusy then
         return
     end
-    u10 = true
-    task.defer(function() end)
+
+    isBusy = true
+
+    task.defer(
+        function()
+            --[[
+              line: 563
+              upvalues:
+                isBusy (ref,  index: 1)
+                reconcileEquip (copy, index: 2)
+                refreshEquipped (copy, index: 3)
+            ]]
+            isBusy = false
+            reconcileEquip()
+            refreshEquipped()
+        end
+    )
 end
-local function onToolAdded(a1)
+
+local function onToolAdded(a178)
     --[[
       name: onToolAdded
       line: 574
       upvalues:
-        u2 (ref,  index: 1)
-        tbl_upv_4 (copy, index: 2)
-        tbl_upv_5 (copy, index: 3)
-        u10 (ref,  index: 4)
+        v31 (ref,  index: 1)
+        v27 (copy, index: 2)
+        v36 (copy, index: 3)
+        isBusy (ref,  index: 4)
+        reconcileEquip (copy, index: 5)
+        refreshEquipped (copy, index: 6)
     ]]
-    if a1 == u2 then
-        return
-    end
-    if a1.Parent == tbl_upv_4.char then
-        local v49 = (a1 ~= nil) and (a1:IsA("Tool") and (type(a1:GetAttribute("WeaponId")) == "string"))
-        if not v49 then
-            return
+    if a178 ~= v31 and a178.Parent == v27.char then
+        local v179 = a178 ~= nil and a178:IsA("Tool") and type(a178:GetAttribute("WeaponId")) == "string"
+        if v179 then
+            v36.stale += 1
+
+            if not isBusy then
+                isBusy = true
+
+                task.defer(
+                    function()
+                        --[[
+                          line: 563
+                          upvalues:
+                            isBusy (ref,  index: 1)
+                            reconcileEquip (copy, index: 2)
+                            refreshEquipped (copy, index: 3)
+                        ]]
+                        isBusy = false
+                        reconcileEquip()
+                        refreshEquipped()
+                    end
+                )
+            end
         end
-        tbl_upv_5.stale = tbl_upv_5.stale + 1
-        if u10 then
-            return
-        end
-        u10 = true
-        task.defer(function() end)
     end
 end
-function tbl_upv_3.Equip(a1)
+
+function v24.Equip(key)
     --[[
       name: Equip
       line: 584
       upvalues:
-        tbl_upv_4 (copy, index: 1)
+        v27 (copy, index: 1)
         backpack (copy, index: 2)
-        u2 (ref,  index: 3)
-        u3 (ref,  index: 4)
-        u6 (copy, index: 5)
-        u4 (ref,  index: 6)
-        tbl_upv_5 (copy, index: 7)
+        v31 (ref,  index: 3)
+        count (ref,  index: 4)
+        v35 (copy, index: 5)
+        timestamp (ref,  index: 6)
+        v36 (copy, index: 7)
         enforceWant (copy, index: 8)
-        u1 (ref,  index: 9)
-        u5 (ref,  index: 10)
+        v26 (ref,  index: 9)
+        timestamp2 (ref,  index: 10)
         send (copy, index: 11)
         refreshEquipped (copy, index: 12)
     ]]
-    local char_4 = tbl_upv_4.char
-    local hum_3 = tbl_upv_4.hum
-    if a1 and char_4 and hum_3 and not (hum_3.Health <= 0) then
-        local v50 = (a1 ~= nil) and (a1:IsA("Tool") and (type(a1:GetAttribute("WeaponId")) == "string"))
-        if v50 then
-            local v51 = backpack()
-            if a1.Parent ~= char_4 and a1.Parent ~= v51 then
+    local char = v27.char
+    local hum = v27.hum
+
+    if key and char and hum and not (hum.Health <= 0) then
+        local v183 = key ~= nil and key:IsA("Tool") and type(key:GetAttribute("WeaponId")) == "string"
+        if v183 then
+            local instance = backpack()
+
+            if key.Parent ~= char and key.Parent ~= instance then
                 return false
             end
-            if a1 == u2 and a1.Parent == char_4 then
-                return true
+
+            if key == v31 then
+                if key.Parent == char then
+                    return true
+                end
             end
-            u2 = a1
-            u3 = u3 + 1
-            u6[a1] = u3
-            u4 = os.clock()
-            tbl_upv_5.requests = tbl_upv_5.requests + 1
+
+            v31 = key
+            count += 1
+            v35[key] = count
+            timestamp = os.clock()
+            v36.requests += 1
             enforceWant()
-            local v52 = u2
-            if v52 and u1 then
-                u5 = os.clock()
-                send("Equip", {tool = v52, seq = u3})
+            local v185 = v31
+
+            if v185 and v26 then
+                timestamp2 = os.clock()
+                send("Equip", {tool = v185, seq = count})
             end
+
             refreshEquipped()
+
             return true
         end
     end
+
     return false
 end
-function tbl_upv_3.Wanted()
+
+function v24.Wanted()
     --[[
       name: Wanted
       line: 602
       upvalues:
-        u2 (ref, index: 1)
+        v31 (ref, index: 1)
     ]]
-    return u2
+    return v31
 end
-local function onCharacter(a1)
+
+local function onCharacter(char: Model?)
     --[[
       name: onCharacter
       line: 606
       upvalues:
-        tbl_upv_4 (copy, index: 1)
+        v27 (copy, index: 1)
         dropHandler (copy, index: 2)
-        u2 (ref,  index: 3)
-        Util_upv_1 (copy, index: 4)
-        Combat_upv_1 (copy, index: 5)
-        u1 (ref,  index: 6)
-        tbl_upv_5 (copy, index: 7)
-        u10 (ref,  index: 8)
+        v31 (ref,  index: 3)
+        Util (copy, index: 4)
+        Combat (copy, index: 5)
+        v26 (ref,  index: 6)
+        v36 (copy, index: 7)
+        isBusy (ref,  index: 8)
+        reconcileEquip (copy, index: 9)
         refreshEquipped (copy, index: 10)
-        Hud_upv_1 (copy, index: 11)
-        Touch_upv_1 (copy, index: 12)
+        Hud (copy, index: 11)
+        Touch (copy, index: 12)
         applySpeed (copy, index: 13)
     ]]
-    for _, value_9 in tbl_upv_4.conns do
-        value_9:Disconnect()
+    for _, conn in v27.conns do
+        conn:Disconnect()
     end
-    table.clear(tbl_upv_4.conns)
+
+    table.clear(v27.conns)
     dropHandler()
-    tbl_upv_4.char = a1
-    u2 = nil
-    tbl_upv_4.tool = nil
-    tbl_upv_4.lastSpeed = -1
-    tbl_upv_4.killStreak = 0
-    local v53 = a1:WaitForChild("Humanoid", 10)
-    local v54 = a1:WaitForChild("HumanoidRootPart", 10)
-    if not v53 then
+    v27.char = char
+    v31 = nil
+    v27.tool = nil
+    v27.lastSpeed = -1
+    v27.killStreak = 0
+    local humanoid = char:WaitForChild("Humanoid", 10)
+    local instance = char:WaitForChild("HumanoidRootPart", 10)
+
+    if not humanoid or not instance then
         return
     end
-    if v54 then
-        tbl_upv_4.hum = v53
-        tbl_upv_4.root = v54
-        v54 = v53:FindFirstChildOfClass("Animator") or (v53:WaitForChild("Animator", 5))
-        tbl_upv_4.animator = not (v54) or not (v54:IsA("Animator")) or v54
-        if tbl_upv_4.animator then
-            task.spawn(Util_upv_1.Preload, tbl_upv_4.animator)
-        end
-        table.insert(
-            tbl_upv_4.conns,
-            a1.ChildAdded:Connect(
-                function(a2)
-                    --[[
-                      line: 632
-                      upvalues:
-                        Combat_upv_1 (copy, index: 1)
-                        a1 (copy, index: 2)
-                        u1 (ref,  index: 3)
-                        u2 (ref,  index: 4)
-                        tbl_upv_4 (copy, index: 5)
-                        tbl_upv_5 (copy, index: 6)
-                        u10 (ref,  index: 7)
-                        refreshEquipped (copy, index: 9)
-                    ]]
-                    if a2:IsA("Tool") then
-                        Combat_upv_1.BindOffHand(a2, a1)
-                        local v56 = nil
-                        if u1 then
-                            v56 = (a2 ~= nil) and (a2:IsA("Tool") and (type(a2:GetAttribute("WeaponId")) == "string"))
-                            if v56 and a2 ~= u2 and a2.Parent == tbl_upv_4.char then
-                                local v57 = (a2 ~= nil) and (a2:IsA("Tool") and (type(a2:GetAttribute("WeaponId")) == "string"))
-                                if v57 then
-                                    tbl_upv_5.stale = tbl_upv_5.stale + 1
-                                    if not (u10) then
-                                        u10 = true
-                                        task.defer(function() end)
-                                    end
+
+    v27.hum = humanoid
+    v27.root = instance
+    local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator", 5)
+    v27.animator = if animator and animator:IsA("Animator") then animator else nil
+
+    if v27.animator then
+        task.spawn(Util.Preload, v27.animator)
+    end
+
+    table.insert(
+        v27.conns,
+        char.ChildAdded:Connect(
+            function(child: Instance)
+                --[[
+                  line: 632
+                  upvalues:
+                    Combat (copy, index: 1)
+                    char (copy, index: 2)
+                    v26 (ref,  index: 3)
+                    v31 (ref,  index: 4)
+                    v27 (copy, index: 5)
+                    v36 (copy, index: 6)
+                    isBusy (ref,  index: 7)
+                    reconcileEquip (copy, index: 8)
+                    refreshEquipped (copy, index: 9)
+                ]]
+                if child:IsA("Tool") then
+                    Combat.BindOffHand(child, char)
+
+                    if v26 then
+                        local v194 = child ~= nil
+                            and child:IsA("Tool")
+                            and type(child:GetAttribute("WeaponId")) == "string"
+
+                        if v194 and child ~= v31 and child.Parent == v27.char then
+                            local v195 = child ~= nil
+                                and child:IsA("Tool")
+                                and type(child:GetAttribute("WeaponId")) == "string"
+                            if v195 then
+                                v36.stale += 1
+
+                                if not isBusy then
+                                    isBusy = true
+
+                                    task.defer(
+                                        function()
+                                            --[[
+                                              line: 563
+                                              upvalues:
+                                                isBusy (ref,  index: 1)
+                                                reconcileEquip (copy, index: 2)
+                                                refreshEquipped (copy, index: 3)
+                                            ]]
+                                            isBusy = false
+                                            reconcileEquip()
+                                            refreshEquipped()
+                                        end
+                                    )
                                 end
                             end
                         end
-                        task.defer(refreshEquipped)
                     end
-                end
-            )
-        )
-        table.insert(
-            tbl_upv_4.conns,
-            a1.ChildRemoved:Connect(
-                function(a3)
-                    --[[
-                      line: 641
-                      upvalues:
-                        u2 (ref,  index: 1)
-                        u10 (ref,  index: 2)
-                        refreshEquipped (copy, index: 4)
-                    ]]
-                    if not a3:IsA("Tool") then
-                        return
-                    end
-                    if a3 == u2 and not (u10) then
-                        u10 = true
-                        task.defer(function() end)
-                    end
+
                     task.defer(refreshEquipped)
                 end
-            )
+            end
         )
-        table.insert(
-            tbl_upv_4.conns,
-            v53.Died:Connect(
-                function()
-                    --[[
-                      line: 649
-                      upvalues:
-                        dropHandler (copy, index: 1)
-                        Hud_upv_1 (copy, index: 2)
-                        Touch_upv_1 (copy, index: 3)
-                    ]]
-                    dropHandler()
-                    Hud_upv_1.SetStyle("Dot")
-                    Hud_upv_1.SetPips(0, 0)
-                    Hud_upv_1.SetArc(nil)
-                    Touch_upv_1.SetWeapon(nil)
-                end
-            )
-        )
-        applySpeed()
-        v54 = a1:FindFirstChildOfClass("Tool")
-        if v54 and u1 then
-            local v58 = (v54 ~= nil) and (v54:IsA("Tool") and (type(v54:GetAttribute("WeaponId")) == "string"))
-            if v58 and v54 ~= u2 and v54.Parent == tbl_upv_4.char then
-                local v59 = (v54 ~= nil) and (v54:IsA("Tool") and (type(v54:GetAttribute("WeaponId")) == "string"))
-                if v59 then
-                    tbl_upv_5.stale = tbl_upv_5.stale + 1
-                    if not (u10) then
-                        u10 = true
-                        task.defer(function() end)
-                    end
-                end
-            end
-        end
-        refreshEquipped()
-    end
-end
-local u11 = nil
-local function autoDraw()
-    --[[
-      name: autoDraw
-      line: 696
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        u11 (ref,  index: 2)
-    ]]
-    local v60 = LocalPlayer_upv_1:GetAttribute("CombatDrawToken")
-    if type(v60) ~= "number" or v60 == u11 then
-        return
-    end
-    u11 = v60
-    task.spawn(function() end)
-end
-local tbl_upv_27 = {Reload = "Reload", Aim = "Secondary", Attack = "Primary"}
-local tbl_upv_28 = {last = "", n = 0}
-local function mapInput(a1)
-    --[[
-      name: mapInput
-      line: 744
-      upvalues:
-        Keybinds_upv_1 (copy, index: 1)
-        tbl_upv_27 (copy, index: 2)
-    ]]
-    local v61 = nil
-    for _, value_10 in Keybinds_upv_1.PadActionsOf(a1) do
-        v61 = tbl_upv_27[value_10]
-        if not (v61) then
-            continue
-        end
-        return v61
-    end
-    local UserInputType_1 = a1.UserInputType
-    if UserInputType_1 ~= Enum.UserInputType.Keyboard and UserInputType_1 ~= Enum.UserInputType.MouseButton1 and UserInputType_1 ~= Enum.UserInputType.MouseButton2 and UserInputType_1 ~= Enum.UserInputType.MouseButton3 then
-        return nil
-    end
-    local v62 = Keybinds_upv_1.ActionOf(a1)
-    if v62 then
-        return tbl_upv_27[v62]
-    end
-    return nil
-end
-local function handlerInput(a1, a2)
-    --[[
-      name: handlerInput
-      line: 765
-      upvalues:
-        tbl_upv_4 (copy, index: 1)
-        tbl_upv_28 (copy, index: 2)
-    ]]
-    local handler_upv_3 = tbl_upv_4.handler
-    if not handler_upv_3 then
-        return
-    end
-    tbl_upv_28.n = tbl_upv_28.n + 1
-    tbl_upv_28.last = a1 .. ((a2 and "+") or "-")
-    local success_3, v63 = pcall(
-        function()
-            --[[
-              line: 772
-              upvalues:
-                handler_upv_3 (copy, index: 1)
-                a1 (copy, index: 2)
-                a2 (copy, index: 3)
-            ]]
-            handler_upv_3:Input(a1, a2)
-        end
     )
-    if (success_3) then
-        return
-    end
-    warn("[Combat] input error:", v63)
-end
-local function onInputEnded(a1, a2)
-    --[[
-      name: onInputEnded
-      line: 795
-      upvalues:
-        mapInput (copy, index: 1)
-        tbl_upv_4 (copy, index: 2)
-        handlerInput (copy, index: 3)
-    ]]
-    local v64 = mapInput(a1)
-    if not v64 or not tbl_upv_4.pressed[v64] then
-        return
-    end
-    tbl_upv_4.pressed[v64] = nil
-    handlerInput(v64, false)
-end
-local function dispatch(a1, a2)
-    --[[
-      name: dispatch
-      line: 805
-      upvalues:
-        u8 (ref,  index: 1)
-        tbl_upv_4 (copy, index: 2)
-        Util_upv_1 (copy, index: 3)
-        handlerInput (copy, index: 4)
-    ]]
-    if u8 then
-        u8.Caller(8192)
-    end
-    if a2 then
-        if tbl_upv_4.handler and (tbl_upv_4.hum ~= nil) and ((tbl_upv_4.hum.Health > 0) and ((tbl_upv_4.char ~= nil) and (tbl_upv_4.char.Parent ~= nil))) and not (Util_upv_1.IsMouseUnlocked()) then
-            tbl_upv_4.pressed[a1] = true
-            handlerInput(a1, a2)
-            return
-        end
-        return
-    end
-    if not tbl_upv_4.pressed[a1] then
-        return
-    end
-    tbl_upv_4.pressed[a1] = nil
-    handlerInput(a1, a2)
-end
-tbl_upv_3.Dispatch = dispatch
-local u12 = false
-local function interrupt()
-    --[[
-      name: interrupt
-      line: 828
-      upvalues:
-        u12 (ref,  index: 1)
-        tbl_upv_4 (copy, index: 2)
-    ]]
-    if u12 then
-        return
-    end
-    local handler_4 = tbl_upv_4.handler
-    if not handler_4 then
-        return
-    end
-    if type(handler_4.Interrupt) == "function" then
-        pcall(function() end)
-    end
-end
-local u13 = 0
-local function nameOf(a1)
-    --[[
-      name: nameOf
-      line: 328
-      upvalues:
-        Players_upv_1 (copy, index: 1)
-    ]]
-    if not a1 then
-        return nil
-    end
-    local v65 = a1:GetAttribute("DisplayName")
-    if type(v65) == "string" and v65 ~= "" then
-        return v65
-    end
-    local v66 = Players_upv_1:GetPlayerFromCharacter(a1)
-    if v66 then
-        return v66.DisplayName
-    elseif a1:HasTag("TrainingDummy") then
-        return "Dummy"
-    else
-        return a1.Name
-    end
-end
-local function onHitConfirm(a1)
-    --[[
-      name: onHitConfirm
-      line: 844
-      upvalues:
-        Util_upv_1 (copy, index: 1)
-        Hud_upv_1 (copy, index: 2)
-        Effects_upv_1 (copy, index: 3)
-        Combat_upv_1 (copy, index: 4)
-        tbl_upv_4 (copy, index: 5)
-        nameOf (copy, index: 6)
-        Loc_upv_1 (copy, index: 7)
-        Presentation_upv_1 (copy, index: 8)
-        u13 (ref,  index: 9)
-    ]]
-    if type(a1) ~= "table" then
-        return
-    end
-    local v67
-    if typeof(a1.position) ~= "Vector3" then
-        v67 = nil
-    else
-        v67 = a1.position
-    end
-    local v68 = tonumber(a1.amount) or 0
-    local v69 = true
-    if a1.headshot ~= true then
-        v69 = a1.crit == true
-    end
-    local victim_1 = a1.victim
-    local v70 = tonumber(a1.armor) or 0
-    if a1.armorBroken then
-        Util_upv_1.Sound("Shield_Break")
-    end
-    if v67 and v68 > 0 then
-        local v71
-        if a1.dot then
-            v71 = "dot"
-        elseif a1.killed then
-            v71 = "kill"
-        elseif v69 then
-            v71 = "crit"
-        elseif a1.blocked then
-            v71 = "blocked"
-        elseif (v70 > 0) and (v68 - v70 < 0.5) then
-            v71 = "armor"
-        else
-            v71 = "health"
-        end
-        local v72 = a1.dot or ((a1.headshot) and "HEADSHOT") or (((a1.crit) and "BACKSTAB") or (((a1.blocked) and "BLOCKED") or (((a1.armorBroken) and "ARMOR BROKEN") or nil)))
-        Hud_upv_1.DamageNumber(v67, v68, v71, victim_1, v72)
-    end
-    if a1.dot then
-        return
-    end
-    local v73 = Effects_upv_1.ConsumePrediction(victim_1)
-    local v74 = os.clock()
-    local v75 = Combat_upv_1.Kind(a1.weaponId)
-    local v76 = Combat_upv_1.IsMelee(v75)
-    local v77 = nil
-    if a1.killed then
-        Hud_upv_1.Hitmarker("kill")
-        Util_upv_1.Sound(((a1.headshot) and "Kill_Confirm_Headshot") or "Kill_Confirm")
-        tbl_upv_4.killStreak = ((v74 - tbl_upv_4.lastKillAt <= 4) and (tbl_upv_4.killStreak + 1)) or 1
-        tbl_upv_4.lastKillAt = v74
-        v77 = nameOf(victim_1)
-        local v78
-        if v77 then
-            v78 = string.upper(v77)
-        else
-            v78 = nil
-        end
-        if tbl_upv_4.killStreak >= 2 then
-            local v79 = ((tbl_upv_4.killStreak ~= 2) and "TRIPLE ELIMINATION") or "DOUBLE ELIMINATION"
-            local v80
-            if (v78) and (a1.headshot) then
-                v80 = ("%* \194\183 %*"):format(v78, Loc_upv_1.T("HEADSHOT"))
-            elseif v78 then
-                v80 = v78
-            elseif a1.headshot then
-                v80 = Loc_upv_1.T("HEADSHOT")
-            else
-                v80 = nil
-            end
-            Hud_upv_1.KillBanner(v79, v80)
-        else
-            local KillBanner_1 = Hud_upv_1.KillBanner
-            local v81 = ((not v78) and "ELIMINATED") or (("ELIMINATED %*"):format(v78))
-            local v82
-            if a1.headshot then
-                v82 = Loc_upv_1.T("HEADSHOT")
-            else
-                v82 = nil
-            end
-            KillBanner_1(v81, v82)
-        end
-        Util_upv_1.Shake(0.35, 0.18)
-    else
-        Hud_upv_1.Hitmarker((v69 and "crit") or "hit")
-        if a1.headshot then
-            Util_upv_1.Sound("Hitmarker_Headshot")
-        elseif a1.crit then
-            Util_upv_1.Sound(Presentation_upv_1.For(a1.weaponId, v75).critSound or "Hitmarker_Crit")
-        elseif v74 - u13 > 0.06 then
-            u13 = v74
-            Util_upv_1.Sound((v76 and "Hitmarker") or "Hitmarker_Ranged")
-        end
-    end
-    if not v67 or not v76 or v73 then
-        return
-    end
-    Util_upv_1.Sound(Presentation_upv_1.For(a1.weaponId, v75).hitSound or "Hit_Melee", v67)
-end
-local function onDamageTaken(a1)
-    --[[
-      name: onDamageTaken
-      line: 915
-      upvalues:
-        Hud_upv_1 (copy, index: 1)
-        RankFx_upv_1 (copy, index: 2)
-        Util_upv_1 (copy, index: 3)
-        u12 (ref,  index: 4)
-        tbl_upv_4 (copy, index: 5)
-        emitView (copy, index: 6)
-        Guard_upv_1 (copy, index: 7)
-    ]]
-    if type(a1) ~= "table" then
-        return
-    end
-    local v83 = tonumber(a1.amount) or 0
-    local fromPosition_1 = a1.fromPosition
-    if a1.damageType ~= "Burn" then
-        if a1.damageType ~= "World" and a1.weaponId ~= "ring" then
-            if a1.damageType ~= "Sting" then
-                if typeof(fromPosition_1) == "Vector3" then
-                    Hud_upv_1.DamageFrom(fromPosition_1, v83 >= 40)
-                end
-                local v84 = tonumber(a1.armor) or 0
-                if not (u12) then
-                    local tbl_29 = {blocked = 0}
-                    tbl_29.amount = v83
-                    tbl_29.blocked = a1.blocked == true
-                    emitView("Hurt", tbl_29)
-                end
-                if a1.interrupted then
-                    local v85 = nil
-                    if not (u12) then
-                        v85 = tbl_upv_4.handler
-                        if v85 and type(v85.Interrupt) == "function" then
-                            pcall(function() end)
-                        end
-                    end
-                    Hud_upv_1.Toast("INTERRUPTED", Color3.fromRGB(255, 150, 90), 0.9)
-                end
-                if a1.armorBroken then
-                    Util_upv_1.Sound("Shield_Break")
-                    Hud_upv_1.Toast("ARMOR BROKEN", Color3.fromRGB(200, 210, 225), 1.1)
-                end
-                if a1.guardBroken then
-                    local v86 = nil
-                    if not (u12) then
-                        v86 = tbl_upv_4.handler
-                        if v86 and type(v86.Interrupt) == "function" then
-                            pcall(function() end)
-                        end
-                    end
-                    Util_upv_1.Sound("Shield_Break")
-                    Hud_upv_1.Toast("SHIELD BROKEN", Color3.fromRGB(110, 190, 255), 1.3)
-                end
-                if a1.blocked then
-                    Hud_upv_1.Hurt(math.min(0.35, v83 / 60), Color3.fromRGB(110, 190, 255))
-                    Hud_upv_1.BlockPulse()
-                    if not (u12) then
-                        Guard_upv_1.Impact(tbl_upv_4.char, true)
-                    end
-                elseif (v84 > 0) and (v83 - v84 < 0.5) then
-                    Hud_upv_1.Hurt(math.min(0.3, v83 / 70), Color3.fromRGB(170, 185, 205))
-                    Util_upv_1.Shake(math.clamp(v83 / 70, 0.15, 0.6), 0.2)
-                    Util_upv_1.Sound("Impact_Metal")
-                else
-                    Hud_upv_1.Hurt(v83 / 35, nil)
-                    Util_upv_1.Shake(math.clamp(v83 / 45, 0.2, 1.1), 0.28)
-                    Util_upv_1.Recoil(math.clamp(v83 / 12, 0.5, 4), (math.random() - 0.5) * 3)
-                    Util_upv_1.Sound(((v83 >= 30) and "Damage_Receive_Heavy") or "Damage_Receive")
-                end
-                if type(a1.stagger) == "number" and a1.stagger > 0 then
-                    local v87 = nil
-                    if not (u12) then
-                        v87 = tbl_upv_4.handler
-                        if v87 and type(v87.Interrupt) == "function" then
-                            pcall(function() end)
-                        end
-                    end
-                    Hud_upv_1.Toast("STAGGERED", Color3.fromRGB(255, 170, 90), a1.stagger + 0.2)
-                end
-                if a1.damageType == "Trap" then
-                    local v88 = nil
-                    if not (u12) then
-                        v88 = tbl_upv_4.handler
-                        if v88 and type(v88.Interrupt) == "function" then
-                            pcall(function() end)
-                        end
-                    end
-                    Hud_upv_1.Toast("TRAPPED!", Color3.fromRGB(255, 120, 90), 1.4)
-                end
-            else
-                Hud_upv_1.Hurt(0.18, Color3.fromRGB(220, 160, 40))
-                RankFx_upv_1.Stung()
-                Util_upv_1.Sound("Damage_Receive", nil, {PlaybackSpeed = 1.18, Volume = 0.6})
-                if a1.interrupted then
-                    local v89 = nil
-                    if not (u12) then
-                        v89 = tbl_upv_4.handler
-                        if v89 and type(v89.Interrupt) == "function" then
-                            pcall(function() end)
-                        end
-                    end
-                    Hud_upv_1.Toast("INTERRUPTED", Color3.fromRGB(255, 150, 90), 0.9)
-                end
-            end
-            return
-        end
-        Hud_upv_1.Hurt(0.25, Color3.fromRGB(255, 110, 40))
-    else
-        Hud_upv_1.Hurt(0.2, Color3.fromRGB(255, 120, 40))
-    end
-end
-local tbl_upv_30 = {}
-local tbl_upv_31 = {}
-task.spawn(
-    function()
-        --[[
-          line: 992
-          upvalues:
-            tbl_upv_30 (copy, index: 1)
-            tbl_upv_31 (copy, index: 2)
-        ]]
-        task.wait(10)
-        for key_3 in tbl_upv_30 do
-            if not (key_3.Parent) then
-                tbl_upv_30[key_3] = nil
-            end
-        end
-        for key_4 in tbl_upv_31 do
-            if not (key_4.Parent) then
-                tbl_upv_31[key_4] = nil
-            end
-        end
-    end
-)
-local function onCombatFX(a1, a2)
-    --[[
-      name: onCombatFX
-      line: 1008
-      upvalues:
-        tbl_upv_4 (copy, index: 1)
-        Effects_upv_1 (copy, index: 2)
-        Combat_upv_1 (copy, index: 3)
-        Presentation_upv_1 (copy, index: 4)
-        Util_upv_1 (copy, index: 5)
-        Quality_upv_1 (copy, index: 6)
-        Poses_upv_1 (copy, index: 7)
-        tbl_upv_30 (copy, index: 8)
-        Hud_upv_1 (copy, index: 9)
-        RankFx_upv_1 (copy, index: 10)
-        u12 (ref,  index: 11)
-        emitView (copy, index: 12)
-        Guard_upv_1 (copy, index: 13)
-        tbl_upv_31 (copy, index: 14)
-        tbl_upv_5 (copy, index: 15)
-        u2 (ref,  index: 16)
-        LocalPlayer_upv_1 (copy, index: 17)
-        u3 (ref,  index: 18)
-        u4 (ref,  index: 19)
-        u6 (copy, index: 20)
-        enforceWant (copy, index: 21)
-        u1 (ref,  index: 22)
-        u5 (ref,  index: 23)
-        send (copy, index: 24)
-    ]]
-    if type(a1) ~= "string" or type(a2) ~= "table" then
-        return
-    end
-    local char_5 = tbl_upv_4.char
-    local v90 = nil
-    if a1 ~= "Swing" then
-        local v91 = nil
-        if a1 == "Projectile" then
-            v91 = a2.shooter
-            local v92
-            if typeof(v91) == "Instance" then
-                if v91:IsA("Player") then
-                    v92 = v91.Character
-                elseif v91:IsA("Model") then
-                    v92 = v91
-                else
-                    v92 = nil
-                end
-            else
-                v92 = nil
-            end
-            if v92 and v92 == char_5 and a2.deflected ~= true then
-                return
-            end
-            if typeof(a2.origin) == "Vector3" and typeof(a2.velocity) == "Vector3" and type(a2.key) == "string" then
-                local v93 = tonumber(a2.gravity) or 0
-                local num_1 = tonumber(a2.pellets)
-                if (num_1) and (num_1 > 1) then
-                    local velocity_1 = a2.velocity
-                    Effects_upv_1.Pellets(a2.key, a2.kind, a2.origin, velocity_1.Unit, velocity_1.Magnitude, v93, num_1, tonumber(a2.spread) or 6, tonumber(a2.seed) or 0, v92)
-                else
-                    Effects_upv_1.Projectile(a2.key, a2.kind, a2.origin, a2.velocity, v93, v92)
-                end
-                local v94 = Combat_upv_1.Kind(a2.weaponId)
-                local v95 = Presentation_upv_1.For(a2.weaponId, v94 or "Bow")
-                local origin_1 = a2.origin
-                local v96 = (origin_1 ~= nil) and (Effects_upv_1.NEAR < Effects_upv_1.CamDistance(origin_1))
-                local v97 = not v96
-                if v97 and (v95.flash or v95.puff) then
-                    local Muzzle_1 = Effects_upv_1.Muzzle
-                    local v98 = CFrame.lookAt(a2.origin, a2.origin + a2.velocity)
-                    local v99
-                    if v94 ~= "Pistol" then
-                        v99 = true
-                    else
-                        v99 = false
-                    end
-                    Muzzle_1(v98, v99, v95.puff ~= false)
-                end
-                if v92 and v95.kick then
-                    Poses_upv_1.Kick(v92, v95.kick * 5)
-                end
-                v94 = os.clock()
-                local v100 = v92 or workspace
-                if not (v94 - (tbl_upv_30[v100] or 0) > 0.08) then
-                    return
-                end
-                tbl_upv_30[v100] = v94
-                if not v97 and not v95.flash then
-                    return
-                end
-                Util_upv_1.Sound(v95.fireSound or (v95.throwSound or "Bow_Release"), a2.origin)
-            end
-        elseif a1 == "ProjectileHit" then
-            Effects_upv_1.ResolveProjectile(a2)
-        elseif a1 ~= "Explosion" then
-            if a1 ~= "Smoke" then
-                local v101 = nil
-                if a1 ~= "Horn" then
-                    local v102 = nil
-                    if a1 == "Chakram" then
-                        v102 = a2.shooter
-                        local v92
-                        if typeof(v102) == "Instance" then
-                            if v102:IsA("Player") then
-                                v92 = v102.Character
-                            elseif v102:IsA("Model") then
-                                v92 = v102
-                            else
-                                v92 = nil
-                            end
-                        else
-                            v92 = nil
-                        end
-                        if v92 ~= char_5 and typeof(a2.origin) == "Vector3" and typeof(a2.dir) == "Vector3" and type(a2.key) == "string" then
-                            Effects_upv_1.Chakram(a2.key, a2.origin, a2.dir, tonumber(a2.speed) or 110, tonumber(a2.range) or 45, tonumber(a2.catch) or 4.5, v92)
-                            local origin_2 = a2.origin
-                            local v103 = (origin_2 ~= nil) and (Effects_upv_1.NEAR < Effects_upv_1.CamDistance(origin_2))
-                            if v103 then
-                                return
-                            end
-                            Util_upv_1.Sound("Knife_Throw", a2.origin)
-                        end
-                    elseif a1 ~= "ChakramTurn" then
-                        if a1 ~= "ChakramEnd" then
-                            if a1 ~= "FirePatch" then
-                                if a1 ~= "Wall" then
-                                    if a1 ~= "HealPool" then
-                                        if a1 ~= "Caltrops" then
-                                            local v104 = nil
-                                            if a1 == "CaltropsEnd" then
-                                                v104 = tonumber(a2.id)
-                                                if not v104 then
-                                                    return
-                                                end
-                                                Effects_upv_1.CaltropsEnd(v104)
-                                            elseif a1 == "Swarm" then
-                                                RankFx_upv_1.Swarm(a2)
-                                            elseif a1 == "SwarmTarget" then
-                                                RankFx_upv_1.SwarmTarget(a2)
-                                            elseif a1 == "SwarmSync" then
-                                                RankFx_upv_1.SwarmSync(a2)
-                                            elseif a1 == "SwarmEnd" then
-                                                RankFx_upv_1.SwarmEnd(a2)
-                                            elseif a1 == "HatchetDrop" then
-                                                RankFx_upv_1.HatchetDrop(a2)
-                                            elseif a1 == "HatchetEnd" then
-                                                RankFx_upv_1.HatchetEnd(a2)
-                                            elseif a1 ~= "ParryStart" then
-                                                local v105, v106 = nil, nil
-                                                if a1 == "Parry" then
-                                                    RankFx_upv_1.Parried(a2)
-                                                    v105 = a2.target
-                                                    local v107
-                                                    if typeof(v105) == "Instance" then
-                                                        if v105:IsA("Player") then
-                                                            v107 = v105.Character
-                                                        elseif v105:IsA("Model") then
-                                                            v107 = v105
-                                                        else
-                                                            v107 = nil
-                                                        end
-                                                    else
-                                                        v107 = nil
-                                                    end
-                                                    v106 = a2.attacker
-                                                    if typeof(v106) == "Instance" then
-                                                        if v106:IsA("Player") then
-                                                            v90 = v106.Character
-                                                        elseif v106:IsA("Model") then
-                                                            v90 = v106
-                                                        else
-                                                            v90 = nil
-                                                        end
-                                                    else
-                                                        v90 = nil
-                                                    end
-                                                    if v107 ~= nil and v107 == char_5 then
-                                                        local handler_upv_5
-                                                        if not (u12) then
-                                                            Hud_upv_1.Flash(Color3.fromRGB(150, 196, 236), 0.5, 0.25)
-                                                            Hud_upv_1.Toast(((a2.ranged) and "DEFLECTED") or "PARRIED", Color3.fromRGB(170, 214, 245), 0.9)
-                                                            Util_upv_1.Shake(0.25, 0.12)
-                                                            local tbl_32 = {ranged = 0}
-                                                            tbl_32.ranged = a2.ranged == true
-                                                            emitView("Parried", tbl_32)
-                                                            handler_upv_5 = tbl_upv_4.handler
-                                                            if handler_upv_5 and type(handler_upv_5.ParryUsed) == "function" then
-                                                                pcall(
-                                                                    function()
-                                                                        --[[
-                                                                          line: 1194
-                                                                          upvalues:
-                                                                            handler_upv_5 (copy, index: 1)
-                                                                        ]]
-                                                                        handler_upv_5:ParryUsed()
-                                                                    end
-                                                                )
-                                                            end
-                                                            return
-                                                        end
-                                                    end
-                                                    if v90 == nil or v90 ~= char_5 or u12 then
-                                                        return
-                                                    end
-                                                    if a2.staggered then
-                                                        local v108 = nil
-                                                        if not (u12) then
-                                                            v108 = tbl_upv_4.handler
-                                                            if v108 and type(v108.Interrupt) == "function" then
-                                                                pcall(function() end)
-                                                            end
-                                                        end
-                                                        Hud_upv_1.Toast("PARRIED \194\183 STAGGERED", Color3.fromRGB(255, 170, 90), (tonumber(a2.stagger) or 0.5) + 0.3)
-                                                        Util_upv_1.Shake(0.4, 0.18)
-                                                    else
-                                                        Hud_upv_1.Toast("PARRIED", Color3.fromRGB(255, 170, 90), 0.9)
-                                                    end
-                                                elseif a1 ~= "TrapSnap" then
-                                                    local v109, v110 = nil, nil
-                                                    if a1 == "Hit" then
-                                                        v109 = a2.target
-                                                        local v92
-                                                        if typeof(v109) == "Instance" then
-                                                            if v109:IsA("Player") then
-                                                                v92 = v109.Character
-                                                            elseif v109:IsA("Model") then
-                                                                v92 = v109
-                                                            else
-                                                                v92 = nil
-                                                            end
-                                                        else
-                                                            v92 = nil
-                                                        end
-                                                        if typeof(a2.position) ~= "Vector3" then
-                                                            v109 = nil
-                                                        else
-                                                            v109 = a2.position
-                                                        end
-                                                        v110 = a2.attacker
-                                                        local v111
-                                                        if typeof(v110) == "Instance" then
-                                                            if v110:IsA("Player") then
-                                                                v111 = v110.Character
-                                                            elseif v110:IsA("Model") then
-                                                                v111 = v110
-                                                            else
-                                                                v111 = nil
-                                                            end
-                                                        else
-                                                            v111 = nil
-                                                        end
-                                                        if v111 == nil then
-                                                            v110 = (v92 ~= nil) and (v92 == char_5)
-                                                        else
-                                                            v110 = true
-                                                            if v111 ~= char_5 then
-                                                                v110 = (v92 ~= nil) and (v92 == char_5)
-                                                            end
-                                                        end
-                                                        local v112 = nil
-                                                        if not (v110) then
-                                                            v112 = (v109 ~= nil) and (Effects_upv_1.NEAR < Effects_upv_1.CamDistance(v109))
-                                                            if v112 then
-                                                                return
-                                                            end
-                                                        end
-                                                        if a2.damageType ~= "Burn" and v92 ~= char_5 then
-                                                            local HitFlash_1 = Effects_upv_1.HitFlash
-                                                            local v113
-                                                            if a2.blocked then
-                                                                v113 = Color3.fromRGB(110, 190, 255)
-                                                            else
-                                                                v113 = nil
-                                                            end
-                                                            HitFlash_1(v92, v113)
-                                                        end
-                                                        if v109 and a2.damageType ~= "Burn" then
-                                                            if typeof(a2.source) == "Vector3" and ((v109 - a2.source).Magnitude > 0.1) then
-                                                                v110 = (v109 - a2.source).Unit
-                                                            else
-                                                                v110 = nil
-                                                            end
-                                                            local v114
-                                                            if a2.blocked then
-                                                                v114 = "blocked"
-                                                            elseif a2.headshot or a2.crit then
-                                                                v114 = "headshot"
-                                                            else
-                                                                v114 = "health"
-                                                            end
-                                                            local CharacterImpact_1 = Effects_upv_1.CharacterImpact
-                                                            local v115 = true
-                                                            if a2.headshot ~= true then
-                                                                v115 = a2.killed == true
-                                                            end
-                                                            CharacterImpact_1(v109, v110, v115, v114)
-                                                        end
-                                                        if a2.blocked and v92 and v92 ~= char_5 then
-                                                            Guard_upv_1.Impact(v92, false)
-                                                            if a2.guardBroken and v109 then
-                                                                Util_upv_1.Sound("Shield_Break", v109)
-                                                            end
-                                                        end
-                                                        if v109 and a2.armor then
-                                                            Effects_upv_1.ArmorHit(v109, a2.armorBroken == true)
-                                                        end
-                                                        if not v109 or v111 == char_5 or v92 == char_5 or a2.damageType ~= "Melee" then
-                                                            return
-                                                        end
-                                                        Util_upv_1.Sound(Presentation_upv_1.For(a2.weaponId, Combat_upv_1.Kind(a2.weaponId) or "Sword").hitSound or "Hit_Melee", v109)
-                                                    elseif a1 ~= "Death" then
-                                                        if a1 ~= "Heal" then
-                                                            if a1 ~= "Status" then
-                                                                local v118 = nil
-                                                                if a1 ~= "Charge" then
-                                                                    local v119 = nil
-                                                                    if a1 ~= "Reload" then
-                                                                        local v120 = nil
-                                                                        if a1 ~= "Block" then
-                                                                            local v121 = nil
-                                                                            if a1 ~= "Use" then
-                                                                                local v122 = nil
-                                                                                if a1 == "Equip" then
-                                                                                    v122 = a2.attacker
-                                                                                    local v92
-                                                                                    if typeof(v122) == "Instance" then
-                                                                                        if v122:IsA("Player") then
-                                                                                            v92 = v122.Character
-                                                                                        elseif v122:IsA("Model") then
-                                                                                            v92 = v122
-                                                                                        else
-                                                                                            v92 = nil
-                                                                                        end
-                                                                                    else
-                                                                                        v92 = nil
-                                                                                    end
-                                                                                    if not v92 or v92 == char_5 then
-                                                                                        return
-                                                                                    end
-                                                                                    local v123 = Presentation_upv_1.For(a2.weaponId, Combat_upv_1.Kind(a2.weaponId) or "Sword")
-                                                                                    local Sound_1 = Util_upv_1.Sound
-                                                                                    local v124 = v123.equip or "Equip_Item"
-                                                                                    local v125
-                                                                                    if typeof(v92) == "Instance" then
-                                                                                        if v92:IsA("Player") then
-                                                                                            v125 = v92.Character
-                                                                                        elseif v92:IsA("Model") then
-                                                                                            v125 = v92
-                                                                                        else
-                                                                                            v125 = nil
-                                                                                        end
-                                                                                    else
-                                                                                        v125 = nil
-                                                                                    end
-                                                                                    local v126 = v125 and (v125:FindFirstChild("HumanoidRootPart"))
-                                                                                    local v127 = not (v126) or not (v126:IsA("BasePart")) or v126
-                                                                                    Sound_1(v124, v127, {Volume = 0.7})
-                                                                                elseif a1 == "Denied" then
-                                                                                    local v128 = nil
-                                                                                    if a2.reason ~= "NotEquipped" then
-                                                                                        v128 = tbl_upv_4.handler
-                                                                                        if v128 and type(v128.OnDenied) == "function" then
-                                                                                            v128:OnDenied(a2.reason)
-                                                                                        end
-                                                                                        if a2.reason ~= "NoCharges" then
-                                                                                            return
-                                                                                        end
-                                                                                        Hud_upv_1.Toast("NONE LEFT THIS ROUND", Color3.fromRGB(255, 120, 90))
-                                                                                    else
-                                                                                        tbl_upv_5.denied = tbl_upv_5.denied + 1
-                                                                                        if u2 and u2.Parent == tbl_upv_4.char then
-                                                                                            v122 = false
-                                                                                            local v129 = LocalPlayer_upv_1:GetAttribute("EquipAck")
-                                                                                            local v130
-                                                                                            if type(v129) ~= "number" then
-                                                                                                v130 = 0
-                                                                                            else
-                                                                                                v130 = v129
-                                                                                            end
-                                                                                            if v130 < u3 then
-                                                                                                v122 = os.clock() - u4 < 4
-                                                                                            end
-                                                                                            if not (v122) then
-                                                                                                u3 = u3 + 1
-                                                                                                u6[u2] = u3
-                                                                                                v122 = os.clock()
-                                                                                                u4 = v122
-                                                                                                tbl_upv_5.requests = tbl_upv_5.requests + 1
-                                                                                                enforceWant()
-                                                                                                local v131 = u2
-                                                                                                if v131 and u1 then
-                                                                                                    u5 = os.clock()
-                                                                                                    send("Equip", {tool = v131, seq = u3})
-                                                                                                end
-                                                                                            end
-                                                                                        end
-                                                                                    end
-                                                                                end
-                                                                            else
-                                                                                v121 = a2.attacker
-                                                                                local v92
-                                                                                if typeof(v121) == "Instance" then
-                                                                                    if v121:IsA("Player") then
-                                                                                        v92 = v121.Character
-                                                                                    elseif v121:IsA("Model") then
-                                                                                        v92 = v121
-                                                                                    else
-                                                                                        v92 = nil
-                                                                                    end
-                                                                                else
-                                                                                    v92 = nil
-                                                                                end
-                                                                                if not v92 or v92 == char_5 then
-                                                                                    return
-                                                                                end
-                                                                                local v132 = Combat_upv_1.Kind(a2.weaponId) or "Herbs"
-                                                                                local v133 = Presentation_upv_1.For(a2.weaponId, v132)
-                                                                                if v132 == "Trap" and not (Util_upv_1.IsTeammate(v92)) then
-                                                                                    return
-                                                                                end
-                                                                                local Sound_2 = Util_upv_1.Sound
-                                                                                local v134 = v133.useSound or "Bandage_Wrap"
-                                                                                local v125
-                                                                                if typeof(a2.position) ~= "Vector3" then
-                                                                                    local v135
-                                                                                    if typeof(v92) == "Instance" then
-                                                                                        if v92:IsA("Player") then
-                                                                                            v135 = v92.Character
-                                                                                        elseif v92:IsA("Model") then
-                                                                                            v135 = v92
-                                                                                        else
-                                                                                            v135 = nil
-                                                                                        end
-                                                                                    else
-                                                                                        v135 = nil
-                                                                                    end
-                                                                                    local v136 = v135 and (v135:FindFirstChild("HumanoidRootPart"))
-                                                                                    v125 = not (v136) or not (v136:IsA("BasePart")) or v136
-                                                                                else
-                                                                                    v125 = a2.position
-                                                                                end
-                                                                                Sound_2(v134, v125)
-                                                                            end
-                                                                        else
-                                                                            v120 = a2.attacker
-                                                                            local v92
-                                                                            if typeof(v120) == "Instance" then
-                                                                                if v120:IsA("Player") then
-                                                                                    v92 = v120.Character
-                                                                                elseif v120:IsA("Model") then
-                                                                                    v92 = v120
-                                                                                else
-                                                                                    v92 = nil
-                                                                                end
-                                                                            else
-                                                                                v92 = nil
-                                                                            end
-                                                                            if not v92 or v92 == char_5 or not a2.on then
-                                                                                return
-                                                                            end
-                                                                            local v137 = os.clock()
-                                                                            if not (v137 - (tbl_upv_31[v92] or -math.huge) >= 0.5) then
-                                                                                return
-                                                                            end
-                                                                            tbl_upv_31[v92] = v137
-                                                                            local Sound_3 = Util_upv_1.Sound
-                                                                            local v138 = "Block_Up"
-                                                                            local v125
-                                                                            if typeof(v92) == "Instance" then
-                                                                                if v92:IsA("Player") then
-                                                                                    v125 = v92.Character
-                                                                                elseif v92:IsA("Model") then
-                                                                                    v125 = v92
-                                                                                else
-                                                                                    v125 = nil
-                                                                                end
-                                                                            else
-                                                                                v125 = nil
-                                                                            end
-                                                                            local v139 = v125 and (v125:FindFirstChild("HumanoidRootPart"))
-                                                                            local v96 = not (v139) or not (v139:IsA("BasePart")) or v139
-                                                                            Sound_3(v138, v96)
-                                                                        end
-                                                                    else
-                                                                        v119 = a2.attacker
-                                                                        local u14
-                                                                        if typeof(v119) == "Instance" then
-                                                                            if v119:IsA("Player") then
-                                                                                u14 = v119.Character
-                                                                            elseif v119:IsA("Model") then
-                                                                                u14 = v119
-                                                                            else
-                                                                                u14 = nil
-                                                                            end
-                                                                        else
-                                                                            u14 = nil
-                                                                        end
-                                                                        if not u14 or u14 == char_5 then
-                                                                            return
-                                                                        end
-                                                                        local u15 = Presentation_upv_1.For(a2.weaponId, Combat_upv_1.Kind(a2.weaponId) or "Crossbow")
-                                                                        task.delay(
-                                                                            0.5,
-                                                                            function()
-                                                                                --[[
-                                                                                  line: 1293
-                                                                                  upvalues:
-                                                                                    Util_upv_1 (copy, index: 1)
-                                                                                    u15 (copy, index: 2)
-                                                                                    u14 (copy, index: 3)
-                                                                                ]]
-                                                                                local Sound_4 = Util_upv_1.Sound
-                                                                                local v140 = u15.reloadSound or "Crossbow_Reload"
-                                                                                local v141
-                                                                                if typeof(u14) == "Instance" then
-                                                                                    if u14:IsA("Player") then
-                                                                                        v141 = u14.Character
-                                                                                    elseif u14:IsA("Model") then
-                                                                                        v141 = u14
-                                                                                    else
-                                                                                        v141 = nil
-                                                                                    end
-                                                                                else
-                                                                                    v141 = nil
-                                                                                end
-                                                                                local v142 = v141 and (v141:FindFirstChild("HumanoidRootPart"))
-                                                                                local v143 = not (v142) or not (v142:IsA("BasePart")) or v142
-                                                                                Sound_4(v140, v143)
-                                                                            end
-                                                                        )
-                                                                    end
-                                                                else
-                                                                    v118 = a2.attacker
-                                                                    local v92
-                                                                    if typeof(v118) == "Instance" then
-                                                                        if v118:IsA("Player") then
-                                                                            v92 = v118.Character
-                                                                        elseif v118:IsA("Model") then
-                                                                            v92 = v118
-                                                                        else
-                                                                            v92 = nil
-                                                                        end
-                                                                    else
-                                                                        v92 = nil
-                                                                    end
-                                                                    if not v92 or v92 == char_5 or not a2.on then
-                                                                        return
-                                                                    end
-                                                                    local v144
-                                                                    if typeof(v92) == "Instance" then
-                                                                        if v92:IsA("Player") then
-                                                                            v144 = v92.Character
-                                                                        elseif v92:IsA("Model") then
-                                                                            v144 = v92
-                                                                        else
-                                                                            v144 = nil
-                                                                        end
-                                                                    else
-                                                                        v144 = nil
-                                                                    end
-                                                                    local v145 = v144 and (v144:FindFirstChild("HumanoidRootPart"))
-                                                                    v90 = not (v145) or not (v145:IsA("BasePart")) or v145
-                                                                    local v146 = Presentation_upv_1.For(a2.weaponId, Combat_upv_1.Kind(a2.weaponId))
-                                                                    if a2.kind ~= "Draw" then
-                                                                        if a2.kind ~= "Heavy" and a2.kind ~= "Lunge" then
-                                                                            if a2.kind == "Throw" then
-                                                                                Util_upv_1.Sound(v146.windupSound or "Throw_Windup", v90)
-                                                                            end
-                                                                            return
-                                                                        end
-                                                                        Util_upv_1.Sound(v146.chargeSound or "Charge_Up", v90)
-                                                                    else
-                                                                        Util_upv_1.Sound(v146.drawSound or "Bow_Draw", v90)
-                                                                    end
-                                                                end
-                                                            else
-                                                                local v117 = a2.target
-                                                                local v92
-                                                                if typeof(v117) == "Instance" then
-                                                                    if v117:IsA("Player") then
-                                                                        v92 = v117.Character
-                                                                    elseif v117:IsA("Model") then
-                                                                        v92 = v117
-                                                                    else
-                                                                        v92 = nil
-                                                                    end
-                                                                else
-                                                                    v92 = nil
-                                                                end
-                                                                local v147
-                                                                if typeof(v92) == "Instance" then
-                                                                    if v92:IsA("Player") then
-                                                                        v147 = v92.Character
-                                                                    elseif v92:IsA("Model") then
-                                                                        v147 = v92
-                                                                    else
-                                                                        v147 = nil
-                                                                    end
-                                                                else
-                                                                    v147 = nil
-                                                                end
-                                                                local v148 = v147 and (v147:FindFirstChild("HumanoidRootPart"))
-                                                                v117 = not (v148) or not (v148:IsA("BasePart")) or v148
-                                                                if v92 == char_5 then
-                                                                    if a2.status ~= "Caltrops" then
-                                                                        Effects_upv_1.Status(v92, a2.status, tonumber(a2.duration) or 1)
-                                                                        if (v92 ~= char_5 or a2.status ~= "Burn") and v92 == char_5 then
-                                                                            if a2.status ~= "Snare" then
-                                                                                return
-                                                                            end
-                                                                            Hud_upv_1.Toast("SNARED", Color3.fromRGB(226, 196, 140), 1.2)
-                                                                        end
-                                                                        Hud_upv_1.Toast("BURNING", Color3.fromRGB(255, 140, 60), 1)
-                                                                    else
-                                                                        if v92 and v92:IsA("Model") then
-                                                                            Effects_upv_1.CaltropStep(v92)
-                                                                        end
-                                                                        if v92 == char_5 then
-                                                                            Hud_upv_1.Toast("CALTROPS", Color3.fromRGB(214, 180, 140), 0.9)
-                                                                        end
-                                                                    end
-                                                                end
-                                                                if v117 then
-                                                                    local Position_1 = v117.Position
-                                                                    v147 = (Position_1 ~= nil) and (Effects_upv_1.NEAR < Effects_upv_1.CamDistance(Position_1))
-                                                                    if not v147 then
-                                                                        if a2.status ~= "Caltrops" then
-                                                                            Effects_upv_1.Status(v92, a2.status, tonumber(a2.duration) or 1)
-                                                                            if (v92 ~= char_5 or a2.status ~= "Burn") and v92 == char_5 then
-                                                                                if a2.status ~= "Snare" then
-                                                                                    return
-                                                                                end
-                                                                                Hud_upv_1.Toast("SNARED", Color3.fromRGB(226, 196, 140), 1.2)
-                                                                            end
-                                                                            Hud_upv_1.Toast("BURNING", Color3.fromRGB(255, 140, 60), 1)
-                                                                        else
-                                                                            if v92 and v92:IsA("Model") then
-                                                                                Effects_upv_1.CaltropStep(v92)
-                                                                            end
-                                                                            if v92 ~= char_5 then
-                                                                                return
-                                                                            end
-                                                                            Hud_upv_1.Toast("CALTROPS", Color3.fromRGB(214, 180, 140), 0.9)
-                                                                        end
-                                                                    end
-                                                                end
-                                                            end
-                                                        else
-                                                            local v116 = a2.target
-                                                            local v92
-                                                            if typeof(v116) == "Instance" then
-                                                                if v116:IsA("Player") then
-                                                                    v92 = v116.Character
-                                                                elseif v116:IsA("Model") then
-                                                                    v92 = v116
-                                                                else
-                                                                    v92 = nil
-                                                                end
-                                                            else
-                                                                v92 = nil
-                                                            end
-                                                            local v149
-                                                            if typeof(v92) == "Instance" then
-                                                                if v92:IsA("Player") then
-                                                                    v149 = v92.Character
-                                                                elseif v92:IsA("Model") then
-                                                                    v149 = v92
-                                                                else
-                                                                    v149 = nil
-                                                                end
-                                                            else
-                                                                v149 = nil
-                                                            end
-                                                            local v150 = v149 and (v149:FindFirstChild("HumanoidRootPart"))
-                                                            v116 = not (v150) or not (v150:IsA("BasePart")) or v150
-                                                            if v92 ~= char_5 and v116 then
-                                                                local Position_2 = v116.Position
-                                                                v149 = (Position_2 ~= nil) and (Effects_upv_1.NEAR < Effects_upv_1.CamDistance(Position_2))
-                                                                if (v149) then
-                                                                    return
-                                                                end
-                                                                Effects_upv_1.Heal(v92, tonumber(a2.duration) or 3)
-                                                            end
-                                                            Effects_upv_1.Heal(v92, tonumber(a2.duration) or 3)
-                                                        end
-                                                    elseif typeof(a2.position) == "Vector3" then
-                                                        local Death_1 = Effects_upv_1.Death
-                                                        local position_1 = a2.position
-                                                        v106 = false
-                                                        local killer_1 = a2.killer
-                                                        local v151
-                                                        if typeof(killer_1) == "Instance" then
-                                                            if killer_1:IsA("Player") then
-                                                                v151 = killer_1.Character
-                                                            elseif killer_1:IsA("Model") then
-                                                                v151 = killer_1
-                                                            else
-                                                                v151 = nil
-                                                            end
-                                                        else
-                                                            v151 = nil
-                                                        end
-                                                        if v151 == char_5 then
-                                                            v106 = char_5 ~= nil
-                                                        end
-                                                        if type(a2.weaponId) ~= "string" then
-                                                            v151 = nil
-                                                        else
-                                                            v151 = a2.weaponId
-                                                        end
-                                                        Death_1(position_1, v106, v151, a2.headshot == true)
-                                                    end
-                                                elseif typeof(a2.position) == "Vector3" then
-                                                    Effects_upv_1.TrapSnap(a2.position)
-                                                end
-                                            else
-                                                RankFx_upv_1.ParryStart(a2)
-                                            end
-                                        else
-                                            Effects_upv_1.Caltrops(a2)
-                                        end
-                                    elseif typeof(a2.position) == "Vector3" then
-                                        Effects_upv_1.HealPool(a2.position, tonumber(a2.radius) or 10, tonumber(a2.duration) or 3)
-                                    end
-                                elseif typeof(a2.position) == "Vector3" then
-                                    Effects_upv_1.Wall(a2.position, tostring(a2.op), tonumber(a2.width) or 6, tonumber(a2.height) or 5)
-                                end
-                            elseif typeof(a2.position) == "Vector3" then
-                                Effects_upv_1.FirePatch(a2.position, tonumber(a2.radius) or 3.5, tonumber(a2.duration) or 1.5)
-                            end
-                        elseif type(a2.key) == "string" then
-                            local ChakramEnd_1 = Effects_upv_1.ChakramEnd
-                            local key_5 = a2.key
-                            local v151
-                            if typeof(a2.position) ~= "Vector3" then
-                                v151 = nil
-                            else
-                                v151 = a2.position
-                            end
-                            ChakramEnd_1(key_5, a2.caught == true, v151)
-                        end
-                    elseif type(a2.key) == "string" and typeof(a2.position) == "Vector3" then
-                        Effects_upv_1.ChakramTurn(a2.key, a2.position)
-                    end
-                else
-                    v101 = a2.attacker
-                    local v92
-                    if typeof(v101) == "Instance" then
-                        if v101:IsA("Player") then
-                            v92 = v101.Character
-                        elseif v101:IsA("Model") then
-                            v92 = v101
-                        else
-                            v92 = nil
-                        end
-                    else
-                        v92 = nil
-                    end
-                    if typeof(a2.position) ~= "Vector3" then
-                        v90 = nil
-                    else
-                        v90 = a2.position
-                    end
-                    if not v90 then
-                        return
-                    end
-                    Util_upv_1.Sound("War_Horn", v90)
-                    Effects_upv_1.HornBlast(v90)
-                    if v92 == nil then
-                        if v92 == nil or char_5 == nil or not Util_upv_1.IsEnemy(v92) then
-                            return
-                        end
-                        Hud_upv_1.DamageFrom(v90, true, Color3.fromRGB(240, 180, 70), tonumber(a2.reveal) or 3)
-                        Hud_upv_1.Toast("ENEMY HORN", Color3.fromRGB(240, 180, 70), 1.6)
-                    else
-                        if v92 ~= char_5 and not (Util_upv_1.IsTeammate(v92)) then
-                            if v92 ~= nil and char_5 ~= nil and Util_upv_1.IsEnemy(v92) then
-                                Hud_upv_1.DamageFrom(v90, true, Color3.fromRGB(240, 180, 70), tonumber(a2.reveal) or 3)
-                                Hud_upv_1.Toast("ENEMY HORN", Color3.fromRGB(240, 180, 70), 1.6)
-                            end
-                            return
-                        end
-                        if type(a2.enemies) == "table" then
-                            local v152 = nil
-                            for _, value_11 in a2.enemies do
-                                if typeof(value_11) == "Instance" then
-                                    if value_11:IsA("Player") then
-                                        v152 = value_11.Character
-                                    elseif value_11:IsA("Model") then
-                                        v152 = value_11
-                                    else
-                                        v152 = nil
-                                    end
-                                else
-                                    v152 = nil
-                                end
-                                if v152 then
-                                    Effects_upv_1.Reveal(v152, tonumber(a2.reveal) or 3)
-                                end
-                            end
-                        end
-                        if not Util_upv_1.InMatch() then
-                            return
-                        end
-                        Hud_upv_1.Toast("TRIBE RALLIED", Color3.fromRGB(226, 190, 110), 1.6)
-                    end
-                end
-            elseif typeof(a2.position) == "Vector3" then
-                local v153 = tonumber(a2.duration) or 7
-                Effects_upv_1.SmokeCloud(a2.position, tonumber(a2.radius) or 13, v153)
-                if a2.hiss ~= true then
-                    return
-                end
-                local u16 = Instance.new("Part")
-                u16.Name = "SmokeHiss"
-                u16.Anchored = true
-                u16.CanCollide = false
-                u16.CanQuery = false
-                u16.CanTouch = false
-                u16.Transparency = 1
-                u16.Size = Vector3.new(1, 1, 1)
-                u16.CFrame = CFrame.new(a2.position)
-                u16.Parent = workspace
-                local u17 = Util_upv_1.Loop("Smoke_Hiss_Loop", u16)
-                task.delay(
-                    v153,
-                    function()
-                        --[[
-                          line: 1093
-                          upvalues:
-                            u17 (copy, index: 1)
-                            u16 (copy, index: 2)
-                        ]]
-                        pcall(u17, 1)
-                        task.delay(
-                            1.2,
-                            function()
-                                --[[
-                                  line: 1095
-                                  upvalues:
-                                    u16 (copy, index: 1)
-                                ]]
-                                u16:Destroy()
-                            end
-                        )
-                    end
-                )
-            end
-        elseif typeof(a2.position) == "Vector3" then
-            Effects_upv_1.Explosion(a2.position, tonumber(a2.radius) or 10, tonumber(a2.zoneRadius), (tonumber(a2.zoneTime)))
-        end
-    else
-        v90 = a2.attacker
-        local v92
-        if typeof(v90) == "Instance" then
-            if v90:IsA("Player") then
-                v92 = v90.Character
-            elseif v90:IsA("Model") then
-                v92 = v90
-            else
-                v92 = nil
-            end
-        else
-            v92 = nil
-        end
-        if v92 and v92 ~= char_5 then
-            local v154
-            if typeof(v92) == "Instance" then
-                if v92:IsA("Player") then
-                    v154 = v92.Character
-                elseif v92:IsA("Model") then
-                    v154 = v92
-                else
-                    v154 = nil
-                end
-            else
-                v154 = nil
-            end
-            local v155 = v154 and (v154:FindFirstChild("HumanoidRootPart"))
-            v90 = not (v155) or not (v155:IsA("BasePart")) or v155
-            if v90 then
-                local Position_3 = v90.Position
-                v154 = (Position_3 ~= nil) and (Effects_upv_1.NEAR < Effects_upv_1.CamDistance(Position_3))
-                if not (v154) then
-                    local v156 = Presentation_upv_1.For(a2.weaponId, Combat_upv_1.Kind(a2.weaponId) or "Fists")
-                    if a2.heavy == true then
-                        v154 = v156.heavySound or (v156.swingSound)
-                    elseif a2.lunge ~= true then
-                        v154 = v156.swingSound
-                    else
-                        v154 = v156.lungeSound or (v156.swingSound)
-                    end
-                    Util_upv_1.Sound(v154 or "Swing_Sword", v90)
-                    if v156.trail and v156.trail > 0 and Quality_upv_1.layers then
-                        local Trail_1 = Effects_upv_1.Trail
-                        local v157 = (v92 and (v92:FindFirstChildOfClass("Tool"))) or nil
-                        Trail_1(v157, v156.trail)
-                    end
-                    if v156.noSlash then
-                        return
-                    end
-                    local Slash_1 = Effects_upv_1.Slash
-                    local v158 = tonumber(a2.step) or 1
-                    Slash_1(v92, v158, a2.heavy == true, v156.slashColor)
-                    if a2.heavy == true then
-                        Effects_upv_1.GroundScuff((v90.Position + (v90.CFrame.LookVector * 4)) - Vector3.new(0, 2.799999952316284, 0))
-                    end
-                end
-            end
-        end
-    end
-end
-local function onInputBegan(a1, a2)
-    --[[
-      name: onInputBegan
-      line: 780
-      upvalues:
-        mapInput (copy, index: 1)
-        tbl_upv_4 (copy, index: 2)
-        Util_upv_1 (copy, index: 3)
-        Keybinds_upv_1 (copy, index: 4)
-        handlerInput (copy, index: 5)
-    ]]
-    if a2 then
-        return
-    end
-    local v159 = mapInput(a1)
-    if not v159 then
-        return
-    end
-    if tbl_upv_4.handler and tbl_upv_4.hum ~= nil and (tbl_upv_4.hum.Health > 0) and tbl_upv_4.char ~= nil and tbl_upv_4.char.Parent ~= nil and not Util_upv_1.IsMouseUnlocked() and (not Keybinds_upv_1.PadBlocked() or not (#Keybinds_upv_1.PadActionsOf(a1) > 0)) then
-        tbl_upv_4.pressed[v159] = true
-        handlerInput(v159, true)
-    end
-end
-local function drawTool(a1, a2)
-    --[[
-      name: drawTool
-      line: 671
-      upvalues:
-        tbl_upv_4 (copy, index: 1)
-        backpack (copy, index: 2)
-    ]]
-    local v160 = nil
-    local tbl_33 = {tbl_upv_4.char, backpack()}
-    for _, value_12 in tbl_33 do
-        if not (value_12) then
-            continue
-        end
-        for v164, value_13 in value_12:GetChildren() do
-            local v161 = (value_13 ~= nil) and (value_13:IsA("Tool") and (type(value_13:GetAttribute("WeaponId")) == "string"))
-            if not (v161) or value_13:GetAttribute("DrawToken") ~= a2 then
-                continue
-            end
-            if (type(a1) ~= "string" or value_13:GetAttribute("Slot") ~= a1) and (type(a1) ~= "number" or value_13:GetAttribute("SlotIndex") ~= a1) then
-                local v162 = value_13:GetAttribute("SlotIndex")
-                local v163 = v160 and (v160:GetAttribute("SlotIndex"))
-                if not (v160) then
-                    v160 = value_13
-                    continue
-                end
-                if type(v162) ~= "number" or type(v163) ~= "number" then
-                    continue
-                end
-                if v162 < v163 then
-                    v160 = value_13
-                    continue
-                end
-            end
-            return value_13
-        end
-    end
-    return v160
-end
-function tbl_upv_3.Start()
-    --[[
-      name: Start
-      line: 1343
-      upvalues:
-        Net_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
-        tbl_upv_4 (copy, index: 3)
-        Hud_upv_1 (copy, index: 4)
-        Guard_upv_1 (copy, index: 5)
-        Poses_upv_1 (copy, index: 6)
-        World_upv_1 (copy, index: 7)
-        Quality_upv_1 (copy, index: 8)
-        Touch_upv_1 (copy, index: 9)
-        dispatch (copy, index: 10)
-        onHitConfirm (copy, index: 11)
-        onDamageTaken (copy, index: 12)
-        onCombatFX (copy, index: 13)
-        Metrics_upv_1 (copy, index: 14)
-        Util_upv_1 (copy, index: 15)
-        Players_upv_1 (copy, index: 16)
-        LocalPlayer_upv_1 (copy, index: 17)
-        Combat_upv_1 (copy, index: 18)
-        Presentation_upv_1 (copy, index: 19)
-        Keybinds_upv_1 (copy, index: 20)
-        onInputBegan (copy, index: 21)
-        onInputEnded (copy, index: 22)
-        RunService_upv_1 (copy, index: 23)
-        u3 (ref,  index: 24)
-        u4 (ref,  index: 25)
-        u10 (ref,  index: 26)
-        reconcileEquip (copy, index: 27)
-        refreshEquipped (copy, index: 28)
-        u5 (ref,  index: 29)
-        u2 (ref,  index: 30)
-        tbl_upv_5 (copy, index: 31)
-        send (copy, index: 32)
-        queueReconcile (copy, index: 33)
-        copyDecoy (copy, index: 34)
-        u12 (ref,  index: 35)
-        onCharacter (copy, index: 36)
-        autoDraw (copy, index: 37)
-        u11 (ref,  index: 38)
-        u6 (copy, index: 39)
-        enforceWant (copy, index: 40)
-        drawTool (copy, index: 41)
-        tbl_upv_3 (copy, index: 42)
-        u8 (ref,  index: 43)
-        tbl_upv_1 (copy, index: 44)
-        setSpeed (copy, index: 45)
-    ]]
-    local u18 = false
-    local u19 = nil
-    Net_upv_1.UnreliableEvent("CombatFXU").OnClientEvent:Connect(
-        function(a1, a2)
-            --[[
-              line: 1349
-              upvalues:
-                u18 (ref, index: 1)
-                u19 (ref, index: 2)
-            ]]
-            if not u18 or not u19 then
-                return
-            end
-            u19(a1, a2)
-        end
-    )
-    u1 = Net_upv_1.Event("WeaponAction")
-    local v164 = Net_upv_1.Event("HitConfirm")
-    local v165 = Net_upv_1.Event("DamageTaken")
-    local v166 = Net_upv_1.Event("CombatFX")
-    tbl_upv_4.shotId = math.floor((workspace:GetServerTimeNow() % 1e+05) * 10)
-    Hud_upv_1.Init()
-    Guard_upv_1.Init()
-    Poses_upv_1.Init()
-    World_upv_1.Init()
-    Quality_upv_1.Start()
-    Touch_upv_1.Start(dispatch)
-    v164.OnClientEvent:Connect(
-        function(a3)
-            --[[
-              line: 1368
-              upvalues:
-                onHitConfirm (copy, index: 1)
-            ]]
-            local success_4, v167 = pcall(onHitConfirm, a3)
-            if (success_4) then
-                return
-            end
-            warn("[Combat] HitConfirm error:", v167)
-        end
-    )
-    v165.OnClientEvent:Connect(
-        function(a4)
-            --[[
-              line: 1374
-              upvalues:
-                onDamageTaken (copy, index: 1)
-            ]]
-            local success_5, v168 = pcall(onDamageTaken, a4)
-            if (success_5) then
-                return
-            end
-            warn("[Combat] DamageTaken error:", v168)
-        end
-    )
-    local function fx(a5, a6)
-        --[[
-          name: fx
-          line: 1380
-          upvalues:
-            onCombatFX (copy, index: 1)
-            Metrics_upv_1 (copy, index: 2)
-        ]]
-        local v169 = os.clock()
-        local success_6, v170 = pcall(onCombatFX, a5, a6)
-        local AddFx_1 = Metrics_upv_1.AddFx
-        local v171 = os.clock() - v169
-        local v172
-        if type(a5) ~= "string" then
-            v172 = nil
-        else
-            v172 = a5
-        end
-        AddFx_1(v171, v172)
-        if (success_6) then
-            return
-        end
-        warn("[Combat] CombatFX error:", a5, v170)
-    end
-    v166.OnClientEvent:Connect(fx)
-    u19 = fx
-    u18 = true
-    local v173 = Net_upv_1.Event("AnimRelay")
-    Util_upv_1.SetAnimRelay(v173)
-    v173.OnClientEvent:Connect(
-        function(a7, a8, a9, a10, a11, a12)
-            --[[
-              line: 1396
-              upvalues:
-                tbl_upv_4 (copy, index: 1)
-                Util_upv_1 (copy, index: 2)
-            ]]
-            if typeof(a7) ~= "Instance" or not a7:IsA("Model") or a7 == tbl_upv_4.char then
-                return
-            end
-            if type(a9) == "string" then
-                local v174 = a7:FindFirstChildOfClass("Humanoid")
-                local v175 = v174 and (v174:FindFirstChildOfClass("Animator"))
-                if v175 and a7:IsDescendantOf(workspace) then
-                    local v176
-                    if type(a10) ~= "number" then
-                        v176 = 1
-                    else
-                        v176 = a10
-                    end
-                    if a8 == "Play" then
-                        Util_upv_1.PlayAnim(v174, a9, v176, tonumber(a11), (tonumber(a12)))
-                    elseif a8 == "Hold" then
-                        Util_upv_1.PlayHold(v174, a9, v176)
-                    elseif a8 == "Stop" then
-                        Util_upv_1.StopAnim(v174, a9, (tonumber(a11)))
-                    end
-                    return
-                end
-            end
-        end
-    )
-    local tbl_upv_34 = {}
-    task.spawn(
-        function()
-            --[[
-              line: 1417
-              upvalues:
-                Players_upv_1 (copy, index: 1)
-                LocalPlayer_upv_1 (copy, index: 2)
-                Combat_upv_1 (copy, index: 3)
-                Presentation_upv_1 (copy, index: 4)
-                tbl_upv_34 (copy, index: 5)
-                Util_upv_1 (copy, index: 6)
-            ]]
-            task.wait(0.5)
-            local CurrentCamera_1 = workspace.CurrentCamera
-            local v177 = ((not CurrentCamera_1) and Vector3.new(0, 0, 0)) or (CurrentCamera_1.CFrame.Position)
-            local v178 = nil
-            for _, value_14 in Players_upv_1:GetPlayers() do
-                local Character_1 = value_14.Character
-                if value_14 == LocalPlayer_upv_1 or not (Character_1) then
-                    continue
-                end
-                v178 = Character_1:FindFirstChild("HumanoidRootPart")
-                local v179 = Character_1:FindFirstChildOfClass("Humanoid")
-                local v180 = v179 and (v179:FindFirstChildOfClass("Animator"))
-                if not (v178) then
-                    continue
-                end
-                local v181 = v178:IsA("BasePart")
-                if not (v181) or not (v180) or (v178.Position - v177).Magnitude > 160 then
-                    continue
-                end
-                v178 = (Character_1 and (Character_1:FindFirstChildOfClass("Tool"))) or nil
-                v181 = v178 and (v178:GetAttribute("WeaponId"))
-                if type(v181) ~= "string" or not (v179.Health > 0) then
-                    v178 = nil
-                    v181 = tbl_upv_34[Character_1]
-                    if v181 then
-                        if v181 ~= v178 then
-                            Util_upv_1.StopAnim(v179, v181, 0.15)
-                            tbl_upv_34[Character_1] = nil
-                        end
-                        if not (v178) then
-                            continue
-                        end
-                        v181 = Util_upv_1.GetTrack(v179, v178)
-                        if not (v181) then
-                            tbl_upv_34[Character_1] = v178
-                            continue
-                        end
-                        if not (v181.IsPlaying) then
-                            Util_upv_1.PlayAnim(v179, v178, 1, 0.2)
-                        end
-                    else
-                        if not (v178) then
-                            continue
-                        end
-                        v181 = Util_upv_1.GetTrack(v179, v178)
-                        if not (v182) then
-                            tbl_upv_34[Character_1] = v178
-                            continue
-                        end
-                        if not (v182.IsPlaying) then
-                            Util_upv_1.PlayAnim(v179, v178, 1, 0.2)
-                        end
-                    end
-                    tbl_upv_34[Character_1] = v178
-                end
-                v178 = Presentation_upv_1.For(v181, Combat_upv_1.Kind(v181)).hold
-                v181 = tbl_upv_34[Character_1]
-                if v181 and v181 ~= v178 then
-                    Util_upv_1.StopAnim(v179, v181, 0.15)
-                    tbl_upv_34[Character_1] = nil
-                end
-                if not (v178) then
-                    continue
-                end
-                v181 = Util_upv_1.GetTrack(v179, v178)
-                if not (v181) then
-                    tbl_upv_34[Character_1] = v178
-                    continue
-                end
-                if not (v181.IsPlaying) then
-                    Util_upv_1.PlayAnim(v179, v178, 1, 0.2)
-                end
-                tbl_upv_34[Character_1] = v178
-            end
-            for key_6 in tbl_upv_34 do
-                if not (key_6.Parent) then
-                    tbl_upv_34[key_6] = nil
-                end
-            end
-        end
-    )
-    Keybinds_upv_1.OnInput("Began", onInputBegan)
-    Keybinds_upv_1.OnInput("Ended", onInputEnded)
-    local u20 = 0
-    RunService_upv_1.Heartbeat:Connect(
-        function()
-            --[[
-              line: 1462
-              upvalues:
-                u3 (ref,  index: 1)
-                LocalPlayer_upv_1 (copy, index: 2)
-                u20 (ref,  index: 3)
-                u4 (ref,  index: 4)
-                u10 (ref,  index: 5)
-                reconcileEquip (copy, index: 6)
-                refreshEquipped (copy, index: 7)
-                u5 (ref,  index: 8)
-                u2 (ref,  index: 9)
-                tbl_upv_4 (copy, index: 10)
-                tbl_upv_5 (copy, index: 11)
-                u1 (ref,  index: 12)
-                send (copy, index: 13)
-            ]]
-            if u3 ~= 0 then
-                local v183 = LocalPlayer_upv_1:GetAttribute("EquipAck")
-                local v184
-                if type(v183) ~= "number" then
-                    v184 = 0
-                else
-                    v184 = v183
-                end
-                if (u3 <= v184) then
-                    return
-                end
-                if u20 ~= u3 then
-                    local v185 = os.clock()
-                    if v185 - u4 >= 4 then
-                        u20 = u3
-                        if u10 then
-                            return
-                        end
-                        u10 = true
+
+    table.insert(
+        v27.conns,
+        char.ChildRemoved:Connect(
+            function(child: Instance)
+                --[[
+                  line: 641
+                  upvalues:
+                    v31 (ref,  index: 1)
+                    isBusy (ref,  index: 2)
+                    reconcileEquip (copy, index: 3)
+                    refreshEquipped (copy, index: 4)
+                ]]
+                if child:IsA("Tool") then
+                    if child == v31 and not isBusy then
+                        isBusy = true
+
                         task.defer(
                             function()
                                 --[[
                                   line: 563
                                   upvalues:
-                                    u10 (ref,  index: 1)
+                                    isBusy (ref,  index: 1)
                                     reconcileEquip (copy, index: 2)
                                     refreshEquipped (copy, index: 3)
                                 ]]
-                                u10 = false
+                                isBusy = false
                                 reconcileEquip()
                                 refreshEquipped()
                             end
                         )
-                    elseif v185 - u5 >= 1 and u2 and (tbl_upv_4.hum ~= nil) and ((tbl_upv_4.hum.Health > 0) and ((tbl_upv_4.char ~= nil) and (tbl_upv_4.char.Parent ~= nil))) then
-                        tbl_upv_5.resent = tbl_upv_5.resent + 1
-                        local v186 = u2
-                        if v186 and u1 then
-                            u5 = os.clock()
-                            send("Equip", {tool = v186, seq = u3})
+                    end
+
+                    task.defer(refreshEquipped)
+                end
+            end
+        )
+    )
+
+    table.insert(
+        v27.conns,
+        humanoid.Died:Connect(
+            function()
+                --[[
+                  line: 649
+                  upvalues:
+                    dropHandler (copy, index: 1)
+                    Hud (copy, index: 2)
+                    Touch (copy, index: 3)
+                ]]
+                dropHandler()
+                Hud.SetStyle("Dot")
+                Hud.SetPips(0, 0)
+                Hud.SetArc(nil)
+                Touch.SetWeapon(nil)
+            end
+        )
+    )
+
+    applySpeed()
+    instance = char:FindFirstChildOfClass("Tool")
+
+    if instance and v26 then
+        local v197 = instance ~= nil and instance:IsA("Tool") and type(instance:GetAttribute("WeaponId")) == "string"
+
+        if v197 and instance ~= v31 and instance.Parent == v27.char then
+            local v198 = instance ~= nil
+                and instance:IsA("Tool")
+                and type(instance:GetAttribute("WeaponId")) == "string"
+            if v198 then
+                v36.stale += 1
+
+                if not isBusy then
+                    isBusy = true
+
+                    task.defer(
+                        function()
+                            --[[
+                              line: 563
+                              upvalues:
+                                isBusy (ref,  index: 1)
+                                reconcileEquip (copy, index: 2)
+                                refreshEquipped (copy, index: 3)
+                            ]]
+                            isBusy = false
+                            reconcileEquip()
+                            refreshEquipped()
+                        end
+                    )
+                end
+            end
+        end
+    end
+
+    refreshEquipped()
+end
+
+local combatDrawToken = nil
+
+local function drawTool(combatDrawSlot, combatDrawToken)
+    --[[
+      name: drawTool
+      line: 671
+      upvalues:
+        v27 (copy, index: 1)
+        backpack (copy, index: 2)
+    ]]
+    local child
+    local v204 = {v27.char, (backpack())}
+
+    for _, v206 in v204 do
+        if v206 then
+            for _, child2 in v206:GetChildren() do
+                local v209 = child2 ~= nil and child2:IsA("Tool") and type(child2:GetAttribute("WeaponId")) == "string"
+                if v209 then
+                    if child2:GetAttribute("DrawToken") ~= combatDrawToken then
+                        continue
+                    end
+
+                    if type(combatDrawSlot) == "string" then
+                        if child2:GetAttribute("Slot") == combatDrawSlot then
+                            return child2
+                        end
+                    end
+
+                    if type(combatDrawSlot) == "number" then
+                        if child2:GetAttribute("SlotIndex") == combatDrawSlot then
+                            return child2
+                        end
+                    end
+
+                    local slotIndex = child2:GetAttribute("SlotIndex")
+                    local slotIndex2 = child and child:GetAttribute("SlotIndex")
+
+                    if child then
+                        if type(slotIndex) ~= "number" then
+                            continue
+                        end
+
+                        if type(slotIndex2) == "number" and slotIndex < slotIndex2 then
+                            child = child2
+                        end
+
+                        continue
+                    end
+
+                    child = child2
+                end
+            end
+        end
+    end
+
+    return child
+end
+
+local function autoDraw()
+    --[[
+      name: autoDraw
+      line: 696
+      upvalues:
+        localPlayer (copy, index: 1)
+        combatDrawToken (ref,  index: 2)
+        v27 (copy, index: 3)
+        count (ref,  index: 4)
+        timestamp (ref,  index: 5)
+        v31 (ref,  index: 6)
+        v35 (copy, index: 7)
+        v36 (copy, index: 8)
+        enforceWant (copy, index: 9)
+        v26 (ref,  index: 10)
+        timestamp2 (ref,  index: 11)
+        send (copy, index: 12)
+        drawTool (copy, index: 13)
+        v24 (copy, index: 14)
+    ]]
+    local combatDrawToken2 = localPlayer:GetAttribute("CombatDrawToken")
+
+    if type(combatDrawToken2) ~= "number" or combatDrawToken2 == combatDrawToken then
+        return
+    end
+
+    combatDrawToken = combatDrawToken2
+
+    task.spawn(
+        function()
+            --[[
+              line: 702
+              upvalues:
+                localPlayer (copy, index: 1)
+                combatDrawToken2 (copy, index: 2)
+                v27 (copy, index: 3)
+                count (ref,  index: 4)
+                timestamp (ref,  index: 5)
+                v31 (ref,  index: 6)
+                v35 (copy, index: 7)
+                v36 (copy, index: 8)
+                enforceWant (copy, index: 9)
+                v26 (ref,  index: 10)
+                timestamp2 (ref,  index: 11)
+                send (copy, index: 12)
+                drawTool (copy, index: 13)
+                v24 (copy, index: 14)
+            ]]
+            local timestamp3 = os.clock()
+            local timestamp4 = -math.huge
+
+            while os.clock() - timestamp3 < 10 do
+                if localPlayer:GetAttribute("CombatDrawToken") ~= combatDrawToken2 then
+                    return
+                end
+
+                local combatDrawSlot = localPlayer:GetAttribute("CombatDrawSlot")
+
+                if combatDrawSlot == 0 then
+                    return
+                end
+
+                local char = v27.char
+                local hum = v27.hum
+
+                if char
+                    and hum
+                    and 0 < hum.Health
+                    and char == localPlayer.Character
+                    and char:IsDescendantOf(workspace)
+                then
+                    local tool = char:FindFirstChildOfClass("Tool")
+                    local v220 = false
+
+                    if tool ~= nil then
+                        v220 = tool ~= nil and tool:IsA("Tool") and type(tool:GetAttribute("WeaponId")) == "string"
+                        v220 = v220 and tool:GetAttribute("DrawToken") == combatDrawToken2
+                    end
+
+                    if v220 then
+                        local v221 = false
+                        local equipAck = localPlayer:GetAttribute("EquipAck")
+
+                        if type(equipAck) ~= "number" then
+                            equipAck = 0
+                        end
+
+                        if equipAck < count then
+                            v221 = os.clock() - timestamp < 4
+                        end
+
+                        if not v221 then
+                            local equipSlot = localPlayer:GetAttribute("EquipSlot")
+
+                            if type(equipSlot) == "number" then
+                                if 0 < equipSlot then
+                                    return
+                                end
+                            end
+
+                            if 0.5 < os.clock() - timestamp4 then
+                                local timestamp5 = os.clock()
+                                v31 = tool
+                                count += 1
+                                v35[tool] = count
+                                timestamp = os.clock()
+                                v36.requests += 1
+                                enforceWant()
+
+                                if const v225 = v31 then
+                                    if v26 then
+                                        timestamp2 = os.clock()
+                                        send("Equip", {tool = v225, seq = count})
+                                        timestamp4 = timestamp5
+                                    else
+                                        timestamp4 = timestamp5
+                                    end
+                                else
+                                    timestamp4 = timestamp5
+                                end
+                            end
+                        end
+                    end
+
+                    if not v220 then
+                        if type(combatDrawSlot) ~= "number" and type(combatDrawSlot) ~= "string" then
+                            combatDrawSlot = 1
+                        end
+
+                        if const v226 = drawTool(combatDrawSlot, combatDrawToken2) then
+                            v24.Equip(v226)
+                        end
+                    end
+                end
+
+                task.wait(0.1)
+            end
+        end
+    )
+end
+
+local v227 = {Attack = "Primary", Aim = "Secondary", Reload = "Reload"}
+
+local function mapInput(a229)
+    --[[
+      name: mapInput
+      line: 744
+      upvalues:
+        Keybinds (copy, index: 1)
+        v227 (copy, index: 2)
+    ]]
+    local v230
+
+    for _, v232 in Keybinds.PadActionsOf(a229) do
+        v230 = v227[v232]
+
+        if v230 then
+            return v230
+        end
+    end
+
+    local userInputType = a229.UserInputType
+
+    if userInputType ~= Enum.UserInputType.Keyboard
+        and userInputType ~= Enum.UserInputType.MouseButton1
+        and userInputType ~= Enum.UserInputType.MouseButton2
+    then
+        if userInputType ~= Enum.UserInputType.MouseButton3 then
+            return nil
+        end
+    end
+
+    return if const v234 = Keybinds.ActionOf(a229) then v227[v234] else nil
+end
+
+local v235 = {n = 0, last = ""}
+
+local function handlerInput(a237, a238)
+    --[[
+      name: handlerInput
+      line: 765
+      upvalues:
+        v27 (copy, index: 1)
+        v235 (copy, index: 2)
+    ]]
+    local handler = v27.handler
+    if not handler then
+        return
+    end
+
+    v235.n += 1
+    local v240 = a238 and "+" or "-"
+    v235.last = a237 .. v240
+    local success, result = pcall(
+        function()
+            --[[
+              line: 772
+              upvalues:
+                handler (copy, index: 1)
+                a237 (copy, index: 2)
+                a238 (copy, index: 3)
+            ]]
+            handler:Input(a237, a238)
+        end
+    )
+    if not success then
+        warn("[Combat] input error:", result)
+    end
+end
+
+local function onInputBegan(a244, a245)
+    --[[
+      name: onInputBegan
+      line: 780
+      upvalues:
+        mapInput (copy, index: 1)
+        v27 (copy, index: 2)
+        Util (copy, index: 3)
+        Keybinds (copy, index: 4)
+        handlerInput (copy, index: 5)
+    ]]
+    if a245 then
+        return
+    end
+
+    local v246 = mapInput(a244)
+
+    if v246
+        and v27.handler
+        and v27.hum ~= nil
+        and 0 < v27.hum.Health
+        and v27.char ~= nil
+        and (v27.char.Parent ~= nil)
+        and not Util.IsMouseUnlocked()
+        and (not Keybinds.PadBlocked() or not (0 < #Keybinds.PadActionsOf(a244)))
+    then
+        v27.pressed[v246] = true
+        handlerInput(v246, true)
+    end
+end
+
+local function onInputEnded(a248, a249)
+    --[[
+      name: onInputEnded
+      line: 795
+      upvalues:
+        mapInput (copy, index: 1)
+        v27 (copy, index: 2)
+        handlerInput (copy, index: 3)
+    ]]
+    local v250 = mapInput(a248)
+
+    if not v250 or not v27.pressed[v250] then
+        return
+    end
+
+    v27.pressed[v250] = nil
+    handlerInput(v250, false)
+end
+
+local function dispatch(key, a253)
+    --[[
+      name: dispatch
+      line: 805
+      upvalues:
+        InputStats (ref,  index: 1)
+        v27 (copy, index: 2)
+        Util (copy, index: 3)
+        handlerInput (copy, index: 4)
+    ]]
+    local v254 = false
+
+    if InputStats then
+        InputStats.Caller(8192)
+    end
+
+    if a253 then
+        if v27.handler then
+            if v27.hum ~= nil
+                and 0 < v27.hum.Health
+                and v27.char ~= nil
+                and (v27.char.Parent ~= nil)
+                and not Util.IsMouseUnlocked()
+            then
+                v27.pressed[key] = true
+            else
+                v254 = true
+            end
+        else
+            v254 = true
+        end
+    else
+        if not v27.pressed[key] then
+            return
+        end
+
+        v27.pressed[key] = nil
+    end
+
+    if v254 then
+        return
+    end
+
+    handlerInput(key, a253)
+end
+
+v24.Dispatch = dispatch
+local v255 = false
+
+local function interrupt()
+    --[[
+      name: interrupt
+      line: 828
+      upvalues:
+        v255 (ref,  index: 1)
+        v27 (copy, index: 2)
+    ]]
+    if v255 then
+        return
+    end
+
+    local handler = v27.handler
+
+    if handler and type(handler.Interrupt) == "function" then
+        pcall(
+            function()
+                --[[
+                  line: 834
+                  upvalues:
+                    handler (copy, index: 1)
+                ]]
+                handler:Interrupt()
+            end
+        )
+    end
+end
+
+local timestamp4 = 0
+
+local function onHitConfirm(a260)
+    --[[
+      name: onHitConfirm
+      line: 844
+      upvalues:
+        Util (copy, index: 1)
+        Hud (copy, index: 2)
+        Effects (copy, index: 3)
+        Combat (copy, index: 4)
+        v27 (copy, index: 5)
+        nameOf (copy, index: 6)
+        Loc (copy, index: 7)
+        Presentation (copy, index: 8)
+        timestamp4 (ref,  index: 9)
+    ]]
+    if type(a260) ~= "table" then
+        return
+    end
+
+    local position
+
+    if typeof(a260.position) ~= "Vector3" then
+        position = nil
+    else
+        position = a260.position
+    end
+
+    local number = tonumber(a260.amount) or 0
+    local v263 = a260.headshot == true or a260.crit == true
+    local victim = a260.victim
+    local number2 = tonumber(a260.armor) or 0
+
+    if a260.armorBroken then
+        Util.Sound("Shield_Break")
+    end
+
+    if position and 0 < number then
+        local v266 = a260.dot and "dot"
+            or a260.killed and "kill"
+            or v263 and "crit"
+            or a260.blocked and "blocked"
+            or 0 < number2 and (number - number2 < 0.5 and "armor" or "health")
+            or "health"
+        local v267 = if a260.dot then nil else a260.headshot and "HEADSHOT"
+            or a260.crit and "BACKSTAB"
+            or a260.blocked and "BLOCKED"
+            or a260.armorBroken and "ARMOR BROKEN"
+            or nil
+        Hud.DamageNumber(position, number, v266, victim, v267)
+    end
+
+    if a260.dot then
+        return
+    end
+
+    local v268 = Effects.ConsumePrediction(victim)
+    local timestamp = os.clock()
+    local v270 = Combat.Kind(a260.weaponId)
+    local isMelee = Combat.IsMelee(v270)
+
+    if a260.killed then
+        Hud.Hitmarker("kill")
+        local sound = Util.Sound
+        local v273 = a260.headshot and "Kill_Confirm_Headshot" or "Kill_Confirm"
+        sound(v273)
+        v27.killStreak = not (timestamp - v27.lastKillAt <= 4) and 1 or v27.killStreak + 1
+        v27.lastKillAt = timestamp
+        local v275 = if const text = nameOf(victim) then string.upper(text) else nil
+
+        if not (2 <= v27.killStreak) then
+            local killBanner = Hud.KillBanner
+            local v277 = not v275 and "ELIMINATED" or `ELIMINATED {v275}`
+            local v278 = if a260.headshot then Loc.T("HEADSHOT") else nil
+            killBanner(v277, v278)
+        else
+            local v279
+            local v280 = v27.killStreak ~= 2 and "TRIPLE ELIMINATION" or "DOUBLE ELIMINATION"
+
+            if v275 and a260.headshot then
+                v279 = `{v275} · {(Loc.T("HEADSHOT"))}`
+            else
+                v279 = v275 or (if a260.headshot then Loc.T("HEADSHOT") else nil)
+            end
+
+            Hud.KillBanner(v280, v279)
+        end
+
+        Util.Shake(0.35, 0.18)
+    else
+        local hitmarker = Hud.Hitmarker
+        local v282 = v263 and "crit" or "hit"
+        hitmarker(v282)
+
+        if a260.headshot then
+            Util.Sound("Hitmarker_Headshot")
+        elseif a260.crit then
+            local sound = Util.Sound
+            local weaponId = a260.weaponId
+            sound((Presentation.For(weaponId, v270).critSound or "Hitmarker_Crit"))
+        elseif 0.06 < timestamp - timestamp4 then
+            timestamp4 = timestamp
+            local sound = Util.Sound
+            local v286 = isMelee and "Hitmarker" or "Hitmarker_Ranged"
+            sound(v286)
+        end
+    end
+
+    if position and isMelee and not v268 then
+        local weaponId = a260.weaponId
+        local v288 = Presentation.For(weaponId, v270)
+        local sound = Util.Sound
+        local hitSound = v288.hitSound or "Hit_Melee"
+        sound(hitSound, position)
+    end
+end
+
+local function onDamageTaken(a292)
+    --[[
+      name: onDamageTaken
+      line: 915
+      upvalues:
+        Hud (copy, index: 1)
+        RankFx (copy, index: 2)
+        Util (copy, index: 3)
+        v255 (ref,  index: 4)
+        v27 (copy, index: 5)
+        emitView (copy, index: 6)
+        Guard (copy, index: 7)
+    ]]
+    if type(a292) ~= "table" then
+        return
+    end
+
+    local number = tonumber(a292.amount) or 0
+    local fromPosition = a292.fromPosition
+
+    if a292.damageType == "Burn" then
+        Hud.Hurt(0.2, Color3.fromRGB(255, 120, 40))
+        return
+    end
+
+    if a292.damageType == "World" or a292.weaponId == "ring" then
+        Hud.Hurt(0.25, Color3.fromRGB(255, 110, 40))
+        return
+    end
+
+    if a292.damageType == "Sting" then
+        Hud.Hurt(0.18, Color3.fromRGB(220, 160, 40))
+        RankFx.Stung()
+        Util.Sound("Damage_Receive", nil, {Volume = 0.6, PlaybackSpeed = 1.18})
+
+        if a292.interrupted then
+            if not v255 then
+                local handler = v27.handler
+
+                if handler and type(handler.Interrupt) == "function" then
+                    pcall(
+                        function()
+                            --[[
+                              line: 834
+                              upvalues:
+                                handler (copy, index: 1)
+                            ]]
+                            handler:Interrupt()
+                        end
+                    )
+                end
+            end
+
+            Hud.Toast("INTERRUPTED", Color3.fromRGB(255, 150, 90), 0.9)
+        end
+
+        return
+    end
+
+    if typeof(fromPosition) == "Vector3" then
+        Hud.DamageFrom(fromPosition, 40 <= number)
+    end
+
+    local number2 = tonumber(a292.armor) or 0
+
+    if not v255 then
+        emitView("Hurt", {amount = number, blocked = a292.blocked == true})
+    end
+
+    if a292.interrupted then
+        if not v255 then
+            local handler = v27.handler
+
+            if handler and type(handler.Interrupt) == "function" then
+                pcall(
+                    function()
+                        --[[
+                          line: 834
+                          upvalues:
+                            handler (copy, index: 1)
+                        ]]
+                        handler:Interrupt()
+                    end
+                )
+            end
+        end
+
+        Hud.Toast("INTERRUPTED", Color3.fromRGB(255, 150, 90), 0.9)
+    end
+
+    if a292.armorBroken then
+        Util.Sound("Shield_Break")
+        Hud.Toast("ARMOR BROKEN", Color3.fromRGB(200, 210, 225), 1.1)
+    end
+
+    if a292.guardBroken then
+        if not v255 then
+            local handler = v27.handler
+
+            if handler and type(handler.Interrupt) == "function" then
+                pcall(
+                    function()
+                        --[[
+                          line: 834
+                          upvalues:
+                            handler (copy, index: 1)
+                        ]]
+                        handler:Interrupt()
+                    end
+                )
+            end
+        end
+
+        Util.Sound("Shield_Break")
+        Hud.Toast("SHIELD BROKEN", Color3.fromRGB(110, 190, 255), 1.3)
+    end
+
+    if a292.blocked then
+        Hud.Hurt(math.min(0.35, number / 60), Color3.fromRGB(110, 190, 255))
+        Hud.BlockPulse()
+
+        if not v255 then
+            Guard.Impact(v27.char, true)
+        end
+    elseif 0 < number2 and number - number2 < 0.5 then
+        Hud.Hurt(math.min(0.3, number / 70), Color3.fromRGB(170, 185, 205))
+        Util.Shake(math.clamp(number / 70, 0.15, 0.6), 0.2)
+        Util.Sound("Impact_Metal")
+    else
+        local v299
+        Hud.Hurt(number / 35, nil)
+        Util.Shake(math.clamp(number / 45, 0.2, 1.1), 0.28)
+        Util.Recoil(math.clamp(number / 12, 0.5, 4), (math.random() - 0.5) * 3)
+        local sound = Util.Sound
+
+        if not (30 <= number) then
+            v299 = "Damage_Receive"
+        else
+            v299 = "Damage_Receive_Heavy"
+        end
+
+        sound(v299)
+    end
+
+    if type(a292.stagger) == "number" and 0 < a292.stagger then
+        if not v255 then
+            local handler = v27.handler
+
+            if handler and type(handler.Interrupt) == "function" then
+                pcall(
+                    function()
+                        --[[
+                          line: 834
+                          upvalues:
+                            handler (copy, index: 1)
+                        ]]
+                        handler:Interrupt()
+                    end
+                )
+            end
+        end
+
+        Hud.Toast("STAGGERED", Color3.fromRGB(255, 170, 90), a292.stagger + 0.2)
+    end
+
+    if a292.damageType == "Trap" then
+        if not v255 then
+            local handler = v27.handler
+
+            if handler and type(handler.Interrupt) == "function" then
+                pcall(
+                    function()
+                        --[[
+                          line: 834
+                          upvalues:
+                            handler (copy, index: 1)
+                        ]]
+                        handler:Interrupt()
+                    end
+                )
+            end
+        end
+
+        Hud.Toast("TRAPPED!", Color3.fromRGB(255, 120, 90), 1.4)
+    end
+end
+
+local v303 = {}
+local v304 = {}
+
+task.spawn(
+    function()
+        --[[
+          line: 992
+          upvalues:
+            v303 (copy, index: 1)
+            v304 (copy, index: 2)
+        ]]
+        while true do
+            task.wait(10)
+
+            for v305 in v303 do
+                if not v305.Parent then
+                    v303[v305] = nil
+                end
+            end
+
+            for v306 in v304 do
+                if not v306.Parent then
+                    v304[v306] = nil
+                end
+            end
+        end
+    end
+)
+
+local function onCombatFX(a308, a309)
+    --[[
+      name: onCombatFX
+      line: 1008
+      upvalues:
+        v27 (copy, index: 1)
+        Effects (copy, index: 2)
+        Combat (copy, index: 3)
+        Presentation (copy, index: 4)
+        Util (copy, index: 5)
+        Quality (copy, index: 6)
+        Poses (copy, index: 7)
+        v303 (copy, index: 8)
+        Hud (copy, index: 9)
+        RankFx (copy, index: 10)
+        v255 (ref,  index: 11)
+        emitView (copy, index: 12)
+        Guard (copy, index: 13)
+        v304 (copy, index: 14)
+        v36 (copy, index: 15)
+        v31 (ref,  index: 16)
+        localPlayer (copy, index: 17)
+        count (ref,  index: 18)
+        timestamp (ref,  index: 19)
+        v35 (copy, index: 20)
+        enforceWant (copy, index: 21)
+        v26 (ref,  index: 22)
+        timestamp2 (ref,  index: 23)
+        send (copy, index: 24)
+    ]]
+    repeat
+        if type(a308) ~= "string" or type(a309) ~= "table" then
+            return
+        end
+
+        do
+            local char = v27.char
+
+            if a308 == "Swing" then
+                do
+                    local v311
+
+                    do
+                        local attacker = a309.attacker
+
+                        if typeof(attacker) == "Instance" then
+                            if attacker:IsA("Player") then
+                                v311 = attacker.Character
+                            else
+                                v311 = if attacker:IsA("Model") then attacker else nil
+                            end
+                        else
+                            v311 = nil
+                        end
+                    end
+
+                    if not v311 or v311 == char then
+                        return
+                    end
+
+                    do
+                        local v313
+                        local v314
+
+                        if typeof(v311) == "Instance" then
+                            if v311:IsA("Player") then
+                                v313 = v311.Character
+                            else
+                                v313 = if v311:IsA("Model") then v311 else nil
+                            end
+                        else
+                            v313 = nil
+                        end
+
+                        local humanoidRootPart = v313 and v313:FindFirstChild("HumanoidRootPart")
+                        local v316 = if humanoidRootPart and humanoidRootPart:IsA("BasePart") then humanoidRootPart else nil
+
+                        do
+                            local v317
+
+                            do
+                                local v318, v319 = false, false
+
+                                if v316 then
+                                    do
+                                        local position = v316.Position
+                                        v317 = false
+
+                                        if position ~= nil then
+                                            local v321 = Effects.CamDistance(position)
+                                            v317 = Effects.NEAR < v321
+                                        end
+                                    end
+
+                                    v318 = true
+                                else
+                                    v319 = true
+                                end
+
+                                if v318 and v317 then
+                                    v319 = true
+                                end
+
+                                if v319 then
+                                    return
+                                end
+                            end
+                        end
+
+                        local v322 = Combat.Kind(a309.weaponId) or "Fists"
+                        local weaponId = a309.weaponId
+
+                        do
+                            local v324 = Presentation.For(weaponId, v322)
+
+                            if a309.heavy ~= true then
+                                if a309.lunge ~= true then
+                                    v314 = v324.swingSound
+                                else
+                                    v314 = v324.lungeSound or v324.swingSound
+                                end
+                            else
+                                v314 = v324.heavySound or v324.swingSound
+                            end
+
+                            Util.Sound(v314 or "Swing_Sword", v316)
+
+                            if v324.trail and 0 < v324.trail and Quality.layers then
+                                do
+                                    do
+                                        local trail = Effects.Trail
+                                        local tool = v311 and v311:FindFirstChildOfClass("Tool") or nil
+                                        trail(tool, v324.trail)
+                                    end
+                                end
+                            end
+
+                            if not v324.noSlash then
+                                Effects.Slash(v311, (tonumber(a309.step) or 1), a309.heavy == true, v324.slashColor)
+
+                                if a309.heavy == true then
+                                    Effects.GroundScuff(v316.Position + (v316.CFrame.LookVector * 4) - Vector3.new(0, 2.799999952316284, 0))
+                                    return
+                                end
+                            end
+                        end
+                    end
+                end
+            elseif a308 == "Projectile" then
+                do
+                    local v327
+
+                    do
+                        local shooter = a309.shooter
+
+                        if typeof(shooter) == "Instance" then
+                            if shooter:IsA("Player") then
+                                v327 = shooter.Character
+                            else
+                                v327 = if shooter:IsA("Model") then shooter else nil
+                            end
+                        else
+                            v327 = nil
+                        end
+                    end
+
+                    do
+                        do
+                            local v329
+
+                            do
+                                local v330, v331, v332, v333 = false, false, false, false
+
+                                if v327 and v327 == char and a309.deflected ~= true then
+                                    return
+                                end
+                                if typeof(a309.origin) ~= "Vector3"
+                                    or typeof(a309.velocity) ~= "Vector3"
+                                    or type(a309.key) ~= "string"
+                                then
+                                    return
+                                end
+
+                                do
+                                    local number = tonumber(a309.gravity) or 0
+
+                                    if const number2 = tonumber(a309.pellets) then
+                                        if not (1 < number2) then
+                                            v330 = true
+                                        else
+                                            local velocity = a309.velocity
+                                            Effects.Pellets(a309.key, a309.kind, a309.origin, velocity.Unit, velocity.Magnitude, number, number2, (tonumber(a309.spread)
+                                                or 6), (tonumber(a309.seed) or 0), v327)
+                                        end
+                                    else
+                                        v330 = true
+                                    end
+
+                                    if v330 then
+                                        Effects.Projectile(a309.key, a309.kind, a309.origin, a309.velocity, number, v327)
+                                    end
+                                end
+
+                                local v337 = Combat.Kind(a309.weaponId)
+                                local weaponId = a309.weaponId
+
+                                do
+                                    local v339 = Presentation.For(weaponId, v337 or "Bow")
+                                    local origin = a309.origin
+                                    local v341 = false
+
+                                    if origin ~= nil then
+                                        local v342 = Effects.CamDistance(origin)
+                                        v341 = Effects.NEAR < v342
+                                    end
+
+                                    do
+                                        local v343 = not v341
+                                        if v343 then
+                                            if v339.flash then
+                                                v331 = true
+                                            elseif v339.puff then
+                                                v331 = true
+                                            end
+                                        end
+
+                                        if v331 then
+                                            local muzzle = Effects.Muzzle
+                                            local cframe = CFrame.lookAt(a309.origin, a309.origin + a309.velocity)
+                                            local v346 = v337 ~= "Pistol"
+                                            muzzle(cframe, v346, v339.puff ~= false)
+                                        end
+
+                                        if v327 and v339.kick then
+                                            Poses.Kick(v327, v339.kick * 5)
+                                        end
+
+                                        do
+                                            local timestamp3 = os.clock()
+                                            local v348 = v327 or workspace
+
+                                            if 0.08 < timestamp3 - (v303[v348] or 0) then
+                                                v303[v348] = timestamp3
+                                                v329 = v339.fireSound
+
+                                                if not v329 then
+                                                    v329 = v339.throwSound
+                                                    v329 = v329 or "Bow_Release"
+                                                end
+
+                                                v332 = true
+                                            end
+                                        end
+
+                                        if v332 then
+                                            if v343 then
+                                                v333 = true
+                                            elseif v339.flash then
+                                                v333 = true
+                                            end
+                                        end
+                                    end
+                                end
+
+                                if v333 then
+                                    Util.Sound(v329, a309.origin)
+                                    return
+                                end
+                            end
+                        end
+                    end
+                end
+            else
+                if a308 == "ProjectileHit" then
+                    Effects.ResolveProjectile(a309)
+                    return
+                end
+
+                if a308 == "Explosion" then
+                    if typeof(a309.position) == "Vector3" then
+                        Effects.Explosion(a309.position, (tonumber(a309.radius) or 10), tonumber(a309.zoneRadius), (tonumber(a309.zoneTime)))
+                        return
+                    end
+                elseif a308 == "Smoke" then
+                    if typeof(a309.position) == "Vector3" then
+                        do
+                            local number = tonumber(a309.duration) or 7
+                            Effects.SmokeCloud(a309.position, (tonumber(a309.radius) or 13), number)
+
+                            if a309.hiss == true then
+                                do
+                                    local smokeHiss = Instance.new("Part")
+                                    smokeHiss.Name = "SmokeHiss"
+                                    smokeHiss.Anchored = true
+                                    smokeHiss.CanCollide = false
+                                    smokeHiss.CanQuery = false
+                                    smokeHiss.CanTouch = false
+                                    smokeHiss.Transparency = 1
+                                    smokeHiss.Size = Vector3.new(1, 1, 1)
+                                    smokeHiss.CFrame = CFrame.new(a309.position)
+                                    smokeHiss.Parent = workspace
+                                    local v351 = Util.Loop("Smoke_Hiss_Loop", smokeHiss)
+
+                                    task.delay(
+                                        number,
+                                        function()
+                                            --[[
+                                              line: 1093
+                                              upvalues:
+                                                v351 (copy, index: 1)
+                                                smokeHiss (copy, index: 2)
+                                            ]]
+                                            pcall(v351, 1)
+                                            task.delay(
+                                                1.2,
+                                                function()
+                                                    --[[
+                                                      line: 1095
+                                                      upvalues:
+                                                        smokeHiss (copy, index: 1)
+                                                    ]]
+                                                    smokeHiss:Destroy()
+                                                end
+                                            )
+                                        end
+                                    )
+                                end
+
+                                return
+                            end
+                        end
+                    end
+                elseif a308 == "Horn" then
+                    do
+                        local v352
+                        local position
+
+                        do
+                            local attacker = a309.attacker
+
+                            if typeof(attacker) == "Instance" then
+                                if attacker:IsA("Player") then
+                                    v352 = attacker.Character
+                                else
+                                    v352 = if attacker:IsA("Model") then attacker else nil
+                                end
+                            else
+                                v352 = nil
+                            end
+                        end
+
+                        if typeof(a309.position) ~= "Vector3" then
+                            position = nil
+                        else
+                            position = a309.position
+                        end
+
+                        if not position then
+                            return
+                        end
+
+                        Util.Sound("War_Horn", position)
+                        Effects.HornBlast(position)
+
+                        if v352 ~= nil and (v352 == char or Util.IsTeammate(v352)) then
+                            if type(a309.enemies) == "table" then
+                                for _, enemy in a309.enemies do
+                                    do
+                                        local v357
+
+                                        if typeof(enemy) == "Instance" then
+                                            if enemy:IsA("Player") then
+                                                v357 = enemy.Character
+                                            else
+                                                v357 = if enemy:IsA("Model") then enemy else nil
+                                            end
+                                        else
+                                            v357 = nil
+                                        end
+
+                                        if v357 then
+                                            Effects.Reveal(v357, (tonumber(a309.reveal) or 3))
+                                        end
+                                    end
+                                end
+                            end
+
+                            if Util.InMatch() then
+                                Hud.Toast("TRIBE RALLIED", Color3.fromRGB(226, 190, 110), 1.6)
+                                return
+                            end
+
+                            return
+                        end
+
+                        if v352 ~= nil and char ~= nil and Util.IsEnemy(v352) then
+                            Hud.DamageFrom(position, true, Color3.fromRGB(240, 180, 70), (tonumber(a309.reveal) or 3))
+                            Hud.Toast("ENEMY HORN", Color3.fromRGB(240, 180, 70), 1.6)
+
+                            return
+                        end
+                    end
+                elseif a308 == "Chakram" then
+                    do
+                        local v358
+
+                        do
+                            local shooter = a309.shooter
+
+                            if typeof(shooter) == "Instance" then
+                                if shooter:IsA("Player") then
+                                    v358 = shooter.Character
+                                else
+                                    v358 = if shooter:IsA("Model") then shooter else nil
+                                end
+                            else
+                                v358 = nil
+                            end
+                        end
+
+                        if v358 == char
+                            or typeof(a309.origin) ~= "Vector3"
+                            or typeof(a309.dir) ~= "Vector3"
+                            or type(a309.key) ~= "string"
+                        then
+                            return
+                        end
+
+                        do
+                            Effects.Chakram(a309.key, a309.origin, a309.dir, (tonumber(a309.speed) or 110), (tonumber(a309.range)
+                                or 45), (tonumber(a309.catch) or 4.5), v358)
+                            local origin = a309.origin
+                            local v361 = origin ~= nil and Effects.NEAR < Effects.CamDistance(origin)
+                            if not v361 then
+                                Util.Sound("Knife_Throw", a309.origin)
+                                return
+                            end
+                        end
+                    end
+                elseif a308 == "ChakramTurn" then
+                    if type(a309.key) == "string" and typeof(a309.position) == "Vector3" then
+                        Effects.ChakramTurn(a309.key, a309.position)
+                        return
+                    end
+                elseif a308 == "ChakramEnd" then
+                    if type(a309.key) == "string" then
+                        do
+                            local position
+
+                            do
+                                local chakramEnd = Effects.ChakramEnd
+                                local key = a309.key
+                                local caught = a309.caught == true
+
+                                if typeof(a309.position) ~= "Vector3" then
+                                    position = nil
+                                else
+                                    position = a309.position
+                                end
+
+                                chakramEnd(key, caught, position)
+
+                                return
+                            end
+                        end
+                    end
+                elseif a308 == "FirePatch" then
+                    if typeof(a309.position) == "Vector3" then
+                        Effects.FirePatch(a309.position, (tonumber(a309.radius) or 3.5), (tonumber(a309.duration)
+                            or 1.5))
+                        return
+                    end
+                elseif a308 == "Wall" then
+                    if typeof(a309.position) == "Vector3" then
+                        Effects.Wall(a309.position, tostring(a309.op), (tonumber(a309.width) or 6), (tonumber(a309.height)
+                            or 5))
+                        return
+                    end
+                elseif a308 == "HealPool" then
+                    if typeof(a309.position) == "Vector3" then
+                        Effects.HealPool(a309.position, (tonumber(a309.radius) or 10), (tonumber(a309.duration) or 3))
+                        return
+                    end
+                else
+                    if a308 == "Caltrops" then
+                        Effects.Caltrops(a309)
+                        return
+                    end
+
+                    if a308 ~= "CaltropsEnd" then
+                        if a308 == "Swarm" then
+                            RankFx.Swarm(a309)
+                            return
+                        end
+
+                        if a308 == "SwarmTarget" then
+                            RankFx.SwarmTarget(a309)
+                            return
+                        end
+
+                        if a308 == "SwarmSync" then
+                            RankFx.SwarmSync(a309)
+                            return
+                        end
+
+                        if a308 == "SwarmEnd" then
+                            RankFx.SwarmEnd(a309)
+                            return
+                        end
+
+                        if a308 == "HatchetDrop" then
+                            RankFx.HatchetDrop(a309)
+                            return
+                        end
+
+                        if a308 == "HatchetEnd" then
+                            RankFx.HatchetEnd(a309)
+                            return
+                        end
+
+                        if a308 == "ParryStart" then
+                            RankFx.ParryStart(a309)
+                            return
+                        end
+
+                        if a308 == "Parry" then
+                            local v366
+
+                            do
+                                local v367
+                                RankFx.Parried(a309)
+
+                                do
+                                    local target = a309.target
+
+                                    if typeof(target) == "Instance" then
+                                        if target:IsA("Player") then
+                                            v366 = target.Character
+                                        else
+                                            v366 = if target:IsA("Model") then target else nil
+                                        end
+                                    else
+                                        v366 = nil
+                                    end
+                                end
+
+                                do
+                                    local attacker = a309.attacker
+
+                                    if typeof(attacker) == "Instance" then
+                                        if attacker:IsA("Player") then
+                                            v367 = attacker.Character
+                                        else
+                                            v367 = if attacker:IsA("Model") then attacker else nil
+                                        end
+                                    else
+                                        v367 = nil
+                                    end
+                                end
+
+                                if v366 ~= nil and v366 == char and not v255 then
+                                    do
+                                        Hud.Flash(Color3.fromRGB(150, 196, 236), 0.5, 0.25)
+
+                                        do
+                                            local toast = Hud.Toast
+                                            local v371 = a309.ranged and "DEFLECTED" or "PARRIED"
+                                            toast(v371, Color3.fromRGB(170, 214, 245), 0.9)
+                                            Util.Shake(0.25, 0.12)
+                                        end
+
+                                        emitView("Parried", {ranged = a309.ranged == true})
+
+                                        do
+                                            local handler = v27.handler
+
+                                            if not handler or type(handler.ParryUsed) ~= "function" then
+                                                return
+                                            end
+
+                                            pcall(
+                                                function()
+                                                    --[[
+                                                      line: 1194
+                                                      upvalues:
+                                                        handler (copy, index: 1)
+                                                    ]]
+                                                    handler:ParryUsed()
+                                                end
+                                            )
+
+                                            return
+                                        end
+                                    end
+                                end
+
+                                if v367 ~= nil and v367 == char and not v255 then
+                                    if not a309.staggered then
+                                        Hud.Toast("PARRIED", Color3.fromRGB(255, 170, 90), 0.9)
+                                        return
+                                    end
+
+                                    if not v255 then
+                                        do
+                                            local handler = v27.handler
+
+                                            if handler and type(handler.Interrupt) == "function" then
+                                                pcall(
+                                                    function()
+                                                        --[[
+                                                          line: 834
+                                                          upvalues:
+                                                            handler (copy, index: 1)
+                                                        ]]
+                                                        handler:Interrupt()
+                                                    end
+                                                )
+                                            end
+                                        end
+                                    end
+
+                                    Hud.Toast("PARRIED · STAGGERED", Color3.fromRGB(255, 170, 90), (tonumber(a309.stagger)
+                                        or 0.5) + 0.3)
+                                    Util.Shake(0.4, 0.18)
+
+                                    return
+                                end
+                            end
+                        elseif a308 == "TrapSnap" then
+                            if typeof(a309.position) == "Vector3" then
+                                Effects.TrapSnap(a309.position)
+                                return
+                            end
+                        elseif a308 == "Hit" then
+                            do
+                                local v374
+                                local position
+                                local v376
+
+                                do
+                                    local target = a309.target
+
+                                    if typeof(target) == "Instance" then
+                                        if target:IsA("Player") then
+                                            v374 = target.Character
+                                        else
+                                            v374 = if target:IsA("Model") then target else nil
+                                        end
+                                    else
+                                        v374 = nil
+                                    end
+                                end
+
+                                if typeof(a309.position) ~= "Vector3" then
+                                    position = nil
+                                else
+                                    position = a309.position
+                                end
+
+                                do
+                                    local attacker = a309.attacker
+
+                                    if typeof(attacker) == "Instance" then
+                                        if attacker:IsA("Player") then
+                                            v376 = attacker.Character
+                                        else
+                                            v376 = if attacker:IsA("Model") then attacker else nil
+                                        end
+                                    else
+                                        v376 = nil
+                                    end
+                                end
+
+                                if (v376 == nil or v376 ~= char) and (v374 == nil or v374 ~= char) then
+                                    do
+                                        local v379 = position ~= nil
+                                            and Effects.NEAR < Effects.CamDistance(position)
+                                        if v379 then
+                                            return
+                                        end
+                                    end
+                                end
+
+                                if a309.damageType ~= "Burn" and v374 ~= char then
+                                    do
+                                        do
+                                            local hitFlash = Effects.HitFlash
+                                            local color3 = if a309.blocked then Color3.fromRGB(110, 190, 255) else nil
+                                            hitFlash(v374, color3)
+                                        end
+                                    end
+                                end
+
+                                if position and a309.damageType ~= "Burn" then
+                                    local unit
+
+                                    if typeof(a309.source) ~= "Vector3"
+                                        or not (0.1 < (position - a309.source).Magnitude)
+                                    then
+                                        unit = nil
+                                    else
+                                        unit = (position - a309.source).Unit
+                                    end
+
+                                    do
+                                        local v383 = a309.blocked and "blocked"
+                                            or a309.headshot and "headshot"
+                                            or a309.crit and "headshot"
+                                            or "health"
+                                        Effects.CharacterImpact(position, unit, ((a309.headshot == true)
+                                            or (a309.killed == true)), v383)
+                                    end
+                                end
+
+                                if a309.blocked and v374 and v374 ~= char then
+                                    Guard.Impact(v374, false)
+
+                                    if a309.guardBroken and position then
+                                        Util.Sound("Shield_Break", position)
+                                    end
+                                end
+
+                                if position and a309.armor then
+                                    Effects.ArmorHit(position, a309.armorBroken == true)
+                                end
+
+                                if position and v376 ~= char and v374 ~= char and a309.damageType == "Melee" then
+                                    do
+                                        local v384 = Combat.Kind(a309.weaponId) or "Sword"
+                                        local weaponId = a309.weaponId
+                                        local v386 = Presentation.For(weaponId, v384)
+                                        Util.Sound((v386.hitSound or "Hit_Melee"), position)
+                                    end
+
+                                    return
+                                end
+                            end
+                        elseif a308 == "Death" then
+                            if typeof(a309.position) == "Vector3" then
+                                local v387
+
+                                do
+                                    local weaponId
+
+                                    do
+                                        local death = Effects.Death
+                                        local position = a309.position
+                                        local killer = a309.killer
+
+                                        if typeof(killer) == "Instance" then
+                                            if killer:IsA("Player") then
+                                                v387 = killer.Character
+                                            else
+                                                v387 = if killer:IsA("Model") then killer else nil
+                                            end
+                                        else
+                                            v387 = nil
+                                        end
+
+                                        do
+                                            local v392 = v387 == char and char ~= nil
+
+                                            if type(a309.weaponId) ~= "string" then
+                                                weaponId = nil
+                                            else
+                                                weaponId = a309.weaponId
+                                            end
+
+                                            death(position, v392, weaponId, a309.headshot == true)
+
+                                            return
+                                        end
+                                    end
+                                end
+                            end
+                        else
+                            if a308 == "Heal" then
+                                do
+                                    local v393
+                                    local v394
+
+                                    do
+                                        local target = a309.target
+
+                                        if typeof(target) == "Instance" then
+                                            if target:IsA("Player") then
+                                                v393 = target.Character
+                                            else
+                                                v393 = if target:IsA("Model") then target else nil
+                                            end
+                                        else
+                                            v393 = nil
+                                        end
+                                    end
+
+                                    if typeof(v393) == "Instance" then
+                                        if v393:IsA("Player") then
+                                            v394 = v393.Character
+                                        else
+                                            v394 = if v393:IsA("Model") then v393 else nil
+                                        end
+                                    else
+                                        v394 = nil
+                                    end
+
+                                    do
+                                        local humanoidRootPart = v394 and v394:FindFirstChild("HumanoidRootPart")
+                                        local v397 = if humanoidRootPart and humanoidRootPart:IsA("BasePart") then humanoidRootPart else nil
+                                        local v398
+
+                                        do
+                                            local v399, v400 = false, false
+
+                                            if v393 ~= char then
+                                                if v397 then
+                                                    do
+                                                        local position = v397.Position
+                                                        v398 = false
+
+                                                        if position ~= nil then
+                                                            local v402 = Effects.CamDistance(position)
+                                                            v398 = Effects.NEAR < v402
+                                                        end
+                                                    end
+
+                                                    v399 = true
+                                                else
+                                                    v400 = true
+                                                end
+                                            end
+
+                                            if v399 and v398 then
+                                                v400 = true
+                                            end
+
+                                            if v400 then
+                                                return
+                                            end
+                                        end
+                                    end
+
+                                    Effects.Heal(v393, (tonumber(a309.duration) or 3))
+
+                                    return
+                                end
+                            end
+
+                            if a308 == "Status" then
+                                do
+                                    local v403
+                                    local v404
+
+                                    do
+                                        local target = a309.target
+
+                                        if typeof(target) == "Instance" then
+                                            if target:IsA("Player") then
+                                                v403 = target.Character
+                                            else
+                                                v403 = if target:IsA("Model") then target else nil
+                                            end
+                                        else
+                                            v403 = nil
+                                        end
+                                    end
+
+                                    if typeof(v403) == "Instance" then
+                                        if v403:IsA("Player") then
+                                            v404 = v403.Character
+                                        else
+                                            v404 = if v403:IsA("Model") then v403 else nil
+                                        end
+                                    else
+                                        v404 = nil
+                                    end
+
+                                    do
+                                        local humanoidRootPart = v404 and v404:FindFirstChild("HumanoidRootPart")
+                                        local v407 = if humanoidRootPart and humanoidRootPart:IsA("BasePart") then humanoidRootPart else nil
+
+                                        if v403 ~= char then
+                                            if not v407 then
+                                                break
+                                            end
+
+                                            do
+                                                local position = v407.Position
+                                                local v409 = position ~= nil
+                                                    and Effects.NEAR < Effects.CamDistance(position)
+                                                if v409 then
+                                                    break
+                                                end
+                                            end
+                                        end
+                                    end
+
+                                    if a309.status == "Caltrops" then
+                                        if v403 and v403:IsA("Model") then
+                                            Effects.CaltropStep(v403)
+                                        end
+
+                                        if v403 == char then
+                                            Hud.Toast("CALTROPS", Color3.fromRGB(214, 180, 140), 0.9)
+                                        end
+
+                                        return
+                                    end
+
+                                    Effects.Status(v403, a309.status, (tonumber(a309.duration) or 1))
+
+                                    if v403 == char and a309.status == "Burn" then
+                                        Hud.Toast("BURNING", Color3.fromRGB(255, 140, 60), 1)
+                                        return
+                                    end
+
+                                    if v403 == char and a309.status == "Snare" then
+                                        Hud.Toast("SNARED", Color3.fromRGB(226, 196, 140), 1.2)
+                                        return
+                                    end
+                                end
+                            elseif a308 == "Charge" then
+                                do
+                                    local v410
+
+                                    do
+                                        local attacker = a309.attacker
+
+                                        if typeof(attacker) == "Instance" then
+                                            if attacker:IsA("Player") then
+                                                v410 = attacker.Character
+                                            else
+                                                v410 = if attacker:IsA("Model") then attacker else nil
+                                            end
+                                        else
+                                            v410 = nil
+                                        end
+                                    end
+
+                                    if v410 and v410 ~= char and a309.on then
+                                        local v412
+
+                                        if typeof(v410) == "Instance" then
+                                            if v410:IsA("Player") then
+                                                v412 = v410.Character
+                                            else
+                                                v412 = if v410:IsA("Model") then v410 else nil
+                                            end
+                                        else
+                                            v412 = nil
+                                        end
+
+                                        local humanoidRootPart = v412 and v412:FindFirstChild("HumanoidRootPart")
+                                        local v414 = if humanoidRootPart and humanoidRootPart:IsA("BasePart") then humanoidRootPart else nil
+                                        local v415 = Combat.Kind(a309.weaponId)
+                                        local weaponId = a309.weaponId
+
+                                        do
+                                            local v417 = Presentation.For(weaponId, v415)
+
+                                            if a309.kind == "Draw" then
+                                                Util.Sound((v417.drawSound or "Bow_Draw"), v414)
+                                                return
+                                            end
+
+                                            if a309.kind == "Heavy" or a309.kind == "Lunge" then
+                                                Util.Sound((v417.chargeSound or "Charge_Up"), v414)
+                                                return
+                                            end
+
+                                            if a309.kind == "Throw" then
+                                                Util.Sound((v417.windupSound or "Throw_Windup"), v414)
+                                                return
+                                            end
+                                        end
+                                    end
+                                end
+                            elseif a308 == "Reload" then
+                                do
+                                    local v418
+
+                                    do
+                                        local attacker = a309.attacker
+
+                                        if typeof(attacker) == "Instance" then
+                                            if attacker:IsA("Player") then
+                                                v418 = attacker.Character
+                                            else
+                                                v418 = if attacker:IsA("Model") then attacker else nil
+                                            end
+                                        else
+                                            v418 = nil
+                                        end
+                                    end
+
+                                    if v418 and v418 ~= char then
+                                        do
+                                            local v420 = Combat.Kind(a309.weaponId) or "Crossbow"
+                                            local weaponId = a309.weaponId
+                                            local v422 = Presentation.For(weaponId, v420)
+
+                                            task.delay(
+                                                0.5,
+                                                function()
+                                                    --[[
+                                                      line: 1293
+                                                      upvalues:
+                                                        Util (copy, index: 1)
+                                                        v422 (copy, index: 2)
+                                                        v418 (copy, index: 3)
+                                                    ]]
+                                                    local v423
+                                                    local sound = Util.Sound
+                                                    local reloadSound = v422.reloadSound or "Crossbow_Reload"
+
+                                                    if typeof(v418) == "Instance" then
+                                                        if v418:IsA("Player") then
+                                                            v423 = v418.Character
+                                                        else
+                                                            v423 = if v418:IsA("Model") then v418 else nil
+                                                        end
+                                                    else
+                                                        v423 = nil
+                                                    end
+
+                                                    local humanoidRootPart = v423
+                                                        and v423:FindFirstChild("HumanoidRootPart")
+                                                    local v427 = if humanoidRootPart
+                                                        and humanoidRootPart:IsA("BasePart") then humanoidRootPart else nil
+                                                    sound(reloadSound, v427)
+                                                end
+                                            )
+                                        end
+
+                                        return
+                                    end
+                                end
+                            elseif a308 == "Block" then
+                                do
+                                    local v428
+
+                                    do
+                                        local attacker = a309.attacker
+
+                                        if typeof(attacker) == "Instance" then
+                                            if attacker:IsA("Player") then
+                                                v428 = attacker.Character
+                                            else
+                                                v428 = if attacker:IsA("Model") then attacker else nil
+                                            end
+                                        else
+                                            v428 = nil
+                                        end
+                                    end
+
+                                    if v428 and v428 ~= char and a309.on then
+                                        do
+                                            local timestamp4 = os.clock()
+
+                                            if 0.5 <= timestamp4 - (v304[v428] or -math.huge) then
+                                                local v431
+                                                v304[v428] = timestamp4
+
+                                                do
+                                                    local sound = Util.Sound
+
+                                                    if typeof(v428) == "Instance" then
+                                                        if v428:IsA("Player") then
+                                                            v431 = v428.Character
+                                                        else
+                                                            v431 = if v428:IsA("Model") then v428 else nil
+                                                        end
+                                                    else
+                                                        v431 = nil
+                                                    end
+
+                                                    local humanoidRootPart = v431
+                                                        and v431:FindFirstChild("HumanoidRootPart")
+                                                    local v434 = if humanoidRootPart
+                                                        and humanoidRootPart:IsA("BasePart") then humanoidRootPart else nil
+                                                    sound("Block_Up", v434)
+
+                                                    return
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            elseif a308 == "Use" then
+                                do
+                                    local v435
+
+                                    do
+                                        local attacker = a309.attacker
+
+                                        if typeof(attacker) == "Instance" then
+                                            if attacker:IsA("Player") then
+                                                v435 = attacker.Character
+                                            else
+                                                v435 = if attacker:IsA("Model") then attacker else nil
+                                            end
+                                        else
+                                            v435 = nil
+                                        end
+                                    end
+
+                                    if v435 and v435 ~= char then
+                                        do
+                                            local v437
+                                            local v438 = Combat.Kind(a309.weaponId) or "Herbs"
+                                            local weaponId = a309.weaponId
+                                            local v440 = Presentation.For(weaponId, v438)
+
+                                            if v438 == "Trap" and not Util.IsTeammate(v435) then
+                                                return
+                                            end
+
+                                            do
+                                                local sound = Util.Sound
+                                                local useSound = v440.useSound or "Bandage_Wrap"
+
+                                                if typeof(a309.position) ~= "Vector3" then
+                                                    local v443
+
+                                                    if typeof(v435) == "Instance" then
+                                                        if v435:IsA("Player") then
+                                                            v443 = v435.Character
+                                                        else
+                                                            v443 = if v435:IsA("Model") then v435 else nil
+                                                        end
+                                                    else
+                                                        v443 = nil
+                                                    end
+
+                                                    do
+                                                        local humanoidRootPart = v443
+                                                            and v443:FindFirstChild("HumanoidRootPart")
+                                                        v437 = if humanoidRootPart and humanoidRootPart:IsA("BasePart") then humanoidRootPart else nil
+                                                    end
+                                                else
+                                                    v437 = a309.position
+                                                end
+
+                                                sound(useSound, v437)
+
+                                                return
+                                            end
+                                        end
+                                    end
+                                end
+                            elseif a308 == "Equip" then
+                                do
+                                    local v445
+
+                                    do
+                                        local attacker = a309.attacker
+
+                                        if typeof(attacker) == "Instance" then
+                                            if attacker:IsA("Player") then
+                                                v445 = attacker.Character
+                                            else
+                                                v445 = if attacker:IsA("Model") then attacker else nil
+                                            end
+                                        else
+                                            v445 = nil
+                                        end
+                                    end
+
+                                    if v445 and v445 ~= char then
+                                        local v447
+                                        local v448 = Combat.Kind(a309.weaponId) or "Sword"
+                                        local weaponId = a309.weaponId
+                                        local v450 = Presentation.For(weaponId, v448)
+
+                                        do
+                                            local sound = Util.Sound
+                                            local equip = v450.equip or "Equip_Item"
+
+                                            if typeof(v445) == "Instance" then
+                                                if v445:IsA("Player") then
+                                                    v447 = v445.Character
+                                                else
+                                                    v447 = if v445:IsA("Model") then v445 else nil
+                                                end
+                                            else
+                                                v447 = nil
+                                            end
+
+                                            local humanoidRootPart = v447 and v447:FindFirstChild("HumanoidRootPart")
+                                            local v454 = if humanoidRootPart and humanoidRootPart:IsA("BasePart") then humanoidRootPart else nil
+                                            sound(equip, v454, {Volume = 0.7})
+
+                                            return
+                                        end
+                                    end
+                                end
+                            elseif a308 == "Denied" then
+                                if a309.reason == "NotEquipped" then
+                                    v36.denied += 1
+
+                                    do
+                                        local v455 = v31
+
+                                        if v455 and v455.Parent == v27.char then
+                                            local equipAck
+
+                                            do
+                                                local equipAck2 = localPlayer:GetAttribute("EquipAck")
+
+                                                if type(equipAck2) ~= "number" then
+                                                    equipAck = 0
+                                                else
+                                                    equipAck = equipAck2
+                                                end
+                                            end
+
+                                            if not (equipAck < count) or not (os.clock() - timestamp < 4) then
+                                                v31 = v455
+                                                count += 1
+                                                v35[v455] = count
+                                                timestamp = os.clock()
+                                                v36.requests += 1
+                                                enforceWant()
+
+                                                local v458 = v31
+
+                                                if v458 and v26 then
+                                                    timestamp2 = os.clock()
+                                                    send("Equip", {tool = v458, seq = count})
+                                                end
+                                            end
+                                        end
+                                    end
+
+                                    return
+                                end
+
+                                do
+                                    local handler = v27.handler
+
+                                    if handler and type(handler.OnDenied) == "function" then
+                                        handler:OnDenied(a309.reason)
+                                        return
+                                    end
+                                end
+
+                                if a309.reason == "NoCharges" then
+                                    Hud.Toast("NONE LEFT THIS ROUND", Color3.fromRGB(255, 120, 90))
+                                end
+                            end
+                        end
+                    else
+                        do
+                            if const number = tonumber(a309.id) then
+                                Effects.CaltropsEnd(number)
+                                return
+                            end
                         end
                     end
                 end
             end
         end
-    )
-    for _, value_15 in {"EquipAck", "EquipSlot"} do
-        LocalPlayer_upv_1:GetAttributeChangedSignal(value_15):Connect(queueReconcile)
-    end
-    local u21 = false
-    RunService_upv_1.RenderStepped:Connect(
-        function(a13)
+
+        return
+    until true
+end
+
+function v24.Start()
+    --[[
+      name: Start
+      line: 1343
+      upvalues:
+        Net (copy, index: 1)
+        v26 (ref,  index: 2)
+        v27 (copy, index: 3)
+        Hud (copy, index: 4)
+        Guard (copy, index: 5)
+        Poses (copy, index: 6)
+        World (copy, index: 7)
+        Quality (copy, index: 8)
+        Touch (copy, index: 9)
+        dispatch (copy, index: 10)
+        onHitConfirm (copy, index: 11)
+        onDamageTaken (copy, index: 12)
+        onCombatFX (copy, index: 13)
+        Metrics (copy, index: 14)
+        Util (copy, index: 15)
+        players (copy, index: 16)
+        localPlayer (copy, index: 17)
+        Combat (copy, index: 18)
+        Presentation (copy, index: 19)
+        Keybinds (copy, index: 20)
+        onInputBegan (copy, index: 21)
+        onInputEnded (copy, index: 22)
+        runService (copy, index: 23)
+        count (ref,  index: 24)
+        timestamp (ref,  index: 25)
+        isBusy (ref,  index: 26)
+        reconcileEquip (copy, index: 27)
+        refreshEquipped (copy, index: 28)
+        timestamp2 (ref,  index: 29)
+        v31 (ref,  index: 30)
+        v36 (copy, index: 31)
+        send (copy, index: 32)
+        queueReconcile (copy, index: 33)
+        copyDecoy (copy, index: 34)
+        v255 (ref,  index: 35)
+        onCharacter (copy, index: 36)
+        autoDraw (copy, index: 37)
+        combatDrawToken (ref,  index: 38)
+        v35 (copy, index: 39)
+        enforceWant (copy, index: 40)
+        drawTool (copy, index: 41)
+        v24 (copy, index: 42)
+        InputStats (ref,  index: 43)
+        v22 (copy, index: 44)
+        setSpeed (copy, index: 45)
+    ]]
+    local v461 = false
+    local fx2 = nil
+    local v463 = Net.UnreliableEvent("CombatFXU")
+
+    v463.OnClientEvent:Connect(
+        function(a464, a465)
             --[[
-              line: 1480
+              line: 1349
               upvalues:
-                copyDecoy (copy, index: 1)
-                u12 (ref,  index: 2)
-                tbl_upv_4 (copy, index: 3)
-                Util_upv_1 (copy, index: 4)
-                u21 (ref,  index: 5)
-                Hud_upv_1 (copy, index: 6)
-                LocalPlayer_upv_1 (copy, index: 7)
-                Touch_upv_1 (copy, index: 8)
+                v461 (ref, index: 1)
+                fx2 (ref, index: 2)
             ]]
-            copyDecoy()
-            if u12 then
+            if v461 and fx2 then
+                fx2(a464, a465)
+            end
+        end
+    )
+
+    v26 = Net.Event("WeaponAction")
+    local v466 = Net.Event("HitConfirm")
+    local v467 = Net.Event("DamageTaken")
+    local v468 = Net.Event("CombatFX")
+    v27.shotId = math.floor((workspace:GetServerTimeNow() % 1e+05) * 10)
+    Hud.Init()
+    Guard.Init()
+    Poses.Init()
+    World.Init()
+    Quality.Start()
+    Touch.Start(dispatch)
+
+    v466.OnClientEvent:Connect(
+        function(a469)
+            --[[
+              line: 1368
+              upvalues:
+                onHitConfirm (copy, index: 1)
+            ]]
+            local success, result = pcall(onHitConfirm, a469)
+            if not success then
+                warn("[Combat] HitConfirm error:", result)
+            end
+        end
+    )
+
+    v467.OnClientEvent:Connect(
+        function(a472)
+            --[[
+              line: 1374
+              upvalues:
+                onDamageTaken (copy, index: 1)
+            ]]
+            local success, result = pcall(onDamageTaken, a472)
+            if not success then
+                warn("[Combat] DamageTaken error:", result)
+            end
+        end
+    )
+
+    local function fx(a476, a477)
+        --[[
+          name: fx
+          line: 1380
+          upvalues:
+            onCombatFX (copy, index: 1)
+            Metrics (copy, index: 2)
+        ]]
+        local v478
+        local timestamp = os.clock()
+        local success, result = pcall(onCombatFX, a476, a477)
+        local addFx = Metrics.AddFx
+        local elapsedTime = os.clock() - timestamp
+
+        if type(a476) ~= "string" then
+            v478 = nil
+        else
+            v478 = a476
+        end
+
+        addFx(elapsedTime, v478)
+
+        if not success then
+            warn("[Combat] CombatFX error:", a476, result)
+        end
+    end
+
+    v468.OnClientEvent:Connect(fx)
+    fx2 = fx
+    v461 = true
+    local v484 = Net.Event("AnimRelay")
+    Util.SetAnimRelay(v484)
+
+    v484.OnClientEvent:Connect(
+        function(a485, a486, a487, a488, a489, a490)
+            --[[
+              line: 1396
+              upvalues:
+                v27 (copy, index: 1)
+                Util (copy, index: 2)
+            ]]
+            if typeof(a485) ~= "Instance" or not a485:IsA("Model") or a485 == v27.char or type(a487) ~= "string" then
                 return
             end
-            local handler_upv_6 = tbl_upv_4.handler
-            if handler_upv_6 and (tbl_upv_4.hum ~= nil) and ((tbl_upv_4.hum.Health > 0) and ((tbl_upv_4.char ~= nil) and (tbl_upv_4.char.Parent ~= nil))) then
-                local v187, v188 = pcall(
-                    function()
-                        --[[
-                          line: 1489
-                          upvalues:
-                            handler_upv_6 (copy, index: 1)
-                            a13 (copy, index: 2)
-                        ]]
-                        handler_upv_6:Update(a13)
+
+            local humanoid = a485:FindFirstChildOfClass("Humanoid")
+            local animator = humanoid and humanoid:FindFirstChildOfClass("Animator")
+
+            if not animator or not a485:IsDescendantOf(workspace) then
+                return
+            end
+
+            local v493
+
+            if type(a488) ~= "number" then
+                v493 = 1
+            else
+                v493 = a488
+            end
+
+            if a486 == "Play" then
+                Util.PlayAnim(animator, a487, v493, tonumber(a489), (tonumber(a490)))
+                return
+            end
+
+            if a486 == "Hold" then
+                Util.PlayHold(animator, a487, v493)
+                return
+            end
+
+            if a486 == "Stop" then
+                Util.StopAnim(animator, a487, (tonumber(a489)))
+            end
+        end
+    )
+
+    local v494 = {}
+
+    task.spawn(
+        function()
+            --[[
+              line: 1417
+              upvalues:
+                players (copy, index: 1)
+                localPlayer (copy, index: 2)
+                Combat (copy, index: 3)
+                Presentation (copy, index: 4)
+                v494 (copy, index: 5)
+                Util (copy, index: 6)
+            ]]
+            local vector3
+
+            while true do
+                task.wait(0.5)
+                vector3 = if const camera = workspace.CurrentCamera then camera.CFrame.Position else Vector3.new(0, 0, 0)
+
+                for _, player in players:GetPlayers() do
+                    local character = player.Character
+
+                    if player ~= localPlayer then
+                        if not character then
+                            continue
+                        end
+
+                        local instance
+                        local tool
+                        local hold
+                        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                        local humanoid = character:FindFirstChildOfClass("Humanoid")
+                        local humanoid2 = humanoid
+
+                        if humanoid2 then
+                            instance = humanoid:FindFirstChildOfClass("Animator")
+                        else
+                            instance = humanoid2
+                        end
+
+                        if not humanoidRootPart then
+                            continue
+                        end
+                        if not humanoidRootPart:IsA("BasePart") then
+                            continue
+                        end
+                        if not instance then
+                            continue
+                        end
+                        if 160 < (humanoidRootPart.Position - vector3).Magnitude then
+                            continue
+                        end
+
+                        if character then
+                            tool = character:FindFirstChildOfClass("Tool")
+                            tool = tool or nil
+                        else
+                            tool = nil
+                        end
+
+                        local weaponId = tool and tool:GetAttribute("WeaponId")
+
+                        if type(weaponId) == "string" then
+                            if not (0 < humanoid.Health) then
+                                hold = nil
+                            else
+                                local v507 = Combat.Kind(weaponId)
+                                hold = Presentation.For(weaponId, v507).hold
+                            end
+                        else
+                            hold = nil
+                        end
+
+                        local v508 = false
+                        local v509 = v494[character]
+
+                        if v509 and v509 ~= hold then
+                            Util.StopAnim(instance, v509, 0.15)
+                            v494[character] = nil
+                        end
+
+                        if hold then
+                            local track = Util.GetTrack(instance, hold)
+
+                            if track and not track.IsPlaying then
+                                Util.PlayAnim(instance, hold, 1, 0.2)
+                            end
+
+                            v508 = true
+                        end
+
+                        if v508 then
+                            v494[character] = hold
+                        end
                     end
-                )
-                if not (v187) then
-                    warn("[Combat] update error:", v188)
+                end
+
+                for v511 in v494 do
+                    if not v511.Parent then
+                        v494[v511] = nil
+                    end
                 end
             end
-            local v189 = not Util_upv_1.CanAct()
-            local v187 = nil
-            if v189 ~= u21 then
-                u21 = v189
-                Hud_upv_1.SetFrozen(v189)
-                if v189 then
-                    if not (u12) then
-                        v187 = tbl_upv_4.handler
-                        if v187 and type(v187.Interrupt) == "function" then
-                            pcall(
+        end
+    )
+
+    Keybinds.OnInput("Began", onInputBegan)
+    Keybinds.OnInput("Ended", onInputEnded)
+    local v512 = 0
+
+    runService.Heartbeat:Connect(
+        function()
+            --[[
+              line: 1462
+              upvalues:
+                count (ref,  index: 1)
+                localPlayer (copy, index: 2)
+                v512 (ref,  index: 3)
+                timestamp (ref,  index: 4)
+                isBusy (ref,  index: 5)
+                reconcileEquip (copy, index: 6)
+                refreshEquipped (copy, index: 7)
+                timestamp2 (ref,  index: 8)
+                v31 (ref,  index: 9)
+                v27 (copy, index: 10)
+                v36 (copy, index: 11)
+                v26 (ref,  index: 12)
+                send (copy, index: 13)
+            ]]
+            if count ~= 0 then
+                local equipAck
+                local equipAck2 = localPlayer:GetAttribute("EquipAck")
+
+                if type(equipAck2) ~= "number" then
+                    equipAck = 0
+                else
+                    equipAck = equipAck2
+                end
+
+                if not (count <= equipAck) and v512 ~= count then
+                    local timestamp3 = os.clock()
+
+                    if not (4 <= timestamp3 - timestamp) then
+                        if 1 <= timestamp3 - timestamp2
+                            and v31
+                            and v27.hum ~= nil
+                            and 0 < v27.hum.Health
+                            and v27.char ~= nil
+                            and (v27.char.Parent ~= nil)
+                        then
+                            v36.resent += 1
+                            local v516 = v31
+
+                            if v516 and v26 then
+                                timestamp2 = os.clock()
+                                send("Equip", {tool = v516, seq = count})
+                            end
+                        end
+                    else
+                        v512 = count
+
+                        if not isBusy then
+                            isBusy = true
+
+                            task.defer(
                                 function()
                                     --[[
-                                      line: 834
+                                      line: 563
                                       upvalues:
-                                        v187 (copy, index: 1)
+                                        isBusy (ref,  index: 1)
+                                        reconcileEquip (copy, index: 2)
+                                        refreshEquipped (copy, index: 3)
                                     ]]
-                                    v187:Interrupt()
+                                    isBusy = false
+                                    reconcileEquip()
+                                    refreshEquipped()
                                 end
                             )
                         end
                     end
                 end
             end
-            local v190 = LocalPlayer_upv_1:GetAttribute("CombatMode")
-            if v190 ~= nil then
-                v187 = v190 == true
-            else
-                local v191 = LocalPlayer_upv_1:GetAttribute("State") == "Match"
-                v187 = v191
-            end
-            v190 = not Util_upv_1.IsMouseUnlocked() and (LocalPlayer_upv_1:GetAttribute("MenuOpen") ~= true)
-            local SetVisible_1 = Hud_upv_1.SetVisible
-            local v192 = v190
-            if v192 then
-                v192 = (tbl_upv_4.hum ~= nil) and ((tbl_upv_4.hum.Health > 0) and ((tbl_upv_4.char ~= nil) and (tbl_upv_4.char.Parent ~= nil)))
-                if v192 then
-                    v192 = v187
-                end
-            end
-            SetVisible_1(v192)
-            Touch_upv_1.SetVisible(v190 and v187)
         end
     )
-    LocalPlayer_upv_1.CharacterAdded:Connect(onCharacter)
-    if LocalPlayer_upv_1.Character then
-        task.spawn(onCharacter, LocalPlayer_upv_1.Character)
+
+    for _, attribute in {"EquipAck", "EquipSlot"} do
+        localPlayer:GetAttributeChangedSignal(attribute):Connect(queueReconcile)
     end
-    LocalPlayer_upv_1:GetAttributeChangedSignal("CombatDrawToken"):Connect(autoDraw)
-    local u22 = LocalPlayer_upv_1:GetAttribute("CombatDrawToken")
-    if type(u22) == "number" and u22 ~= u11 then
-        u11 = u22
+
+    local v519 = false
+
+    runService.RenderStepped:Connect(
+        function(deltaTime: number)
+            --[[
+              line: 1480
+              upvalues:
+                copyDecoy (copy, index: 1)
+                v255 (ref,  index: 2)
+                v27 (copy, index: 3)
+                Util (copy, index: 4)
+                v519 (ref,  index: 5)
+                Hud (copy, index: 6)
+                localPlayer (copy, index: 7)
+                Touch (copy, index: 8)
+            ]]
+            local v521
+            copyDecoy()
+
+            if v255 then
+                return
+            end
+
+            local handler = v27.handler
+
+            if handler
+                and v27.hum ~= nil
+                and 0 < v27.hum.Health
+                and v27.char ~= nil
+                and v27.char.Parent ~= nil
+            then
+                local success, result = pcall(
+                    function()
+                        --[[
+                          line: 1489
+                          upvalues:
+                            handler (copy, index: 1)
+                            deltaTime (copy, index: 2)
+                        ]]
+                        handler:Update(deltaTime)
+                    end
+                )
+                if not success then
+                    warn("[Combat] update error:", result)
+                end
+            end
+
+            local v525 = not Util.CanAct()
+
+            if v525 ~= v519 then
+                v519 = v525
+                Hud.SetFrozen(v525)
+
+                if v525 and not v255 then
+                    local handler2 = v27.handler
+
+                    if handler2 and type(handler2.Interrupt) == "function" then
+                        pcall(
+                            function()
+                                --[[
+                                  line: 834
+                                  upvalues:
+                                    handler2 (copy, index: 1)
+                                ]]
+                                handler2:Interrupt()
+                            end
+                        )
+                    end
+                end
+            end
+
+            local combatMode = localPlayer:GetAttribute("CombatMode")
+
+            if combatMode ~= nil then
+                v521 = combatMode == true
+            else
+                v521 = localPlayer:GetAttribute("State") == "Match"
+            end
+
+            local v528 = not Util.IsMouseUnlocked() and localPlayer:GetAttribute("MenuOpen") ~= true
+            local setVisible = Hud.SetVisible
+            local v530 = v528
+                and v27.hum ~= nil
+                and 0 < v27.hum.Health
+                and v27.char ~= nil
+                and v27.char.Parent ~= nil
+                and v521
+            setVisible(v530)
+            Touch.SetVisible(v528 and v521)
+        end
+    )
+
+    localPlayer.CharacterAdded:Connect(onCharacter)
+
+    if localPlayer.Character then
+        task.spawn(onCharacter, localPlayer.Character)
+    end
+
+    localPlayer:GetAttributeChangedSignal("CombatDrawToken"):Connect(autoDraw)
+    local combatDrawToken2 = localPlayer:GetAttribute("CombatDrawToken")
+
+    if type(combatDrawToken2) == "number" and combatDrawToken2 ~= combatDrawToken then
+        combatDrawToken = combatDrawToken2
+
         task.spawn(
             function()
                 --[[
                   line: 702
                   upvalues:
-                    LocalPlayer_upv_1 (copy, index: 1)
-                    u22 (copy, index: 2)
-                    tbl_upv_4 (copy, index: 3)
-                    u3 (ref,  index: 4)
-                    u4 (ref,  index: 5)
-                    u2 (ref,  index: 6)
-                    u6 (copy, index: 7)
-                    tbl_upv_5 (copy, index: 8)
+                    localPlayer (copy, index: 1)
+                    combatDrawToken2 (copy, index: 2)
+                    v27 (copy, index: 3)
+                    count (ref,  index: 4)
+                    timestamp (ref,  index: 5)
+                    v31 (ref,  index: 6)
+                    v35 (copy, index: 7)
+                    v36 (copy, index: 8)
                     enforceWant (copy, index: 9)
-                    u1 (ref,  index: 10)
-                    u5 (ref,  index: 11)
+                    v26 (ref,  index: 10)
+                    timestamp2 (ref,  index: 11)
                     send (copy, index: 12)
                     drawTool (copy, index: 13)
-                    tbl_upv_3 (copy, index: 14)
+                    v24 (copy, index: 14)
                 ]]
-                local v193 = os.clock()
-                local v194 = -math.huge
-                local v195, v196, v196 = nil, nil, nil
-                while os.clock() - v193 < 10 do
-                    if LocalPlayer_upv_1:GetAttribute("CombatDrawToken") ~= u22 then
+                local timestamp3 = os.clock()
+                local timestamp4 = -math.huge
+
+                while os.clock() - timestamp3 < 10 do
+                    if localPlayer:GetAttribute("CombatDrawToken") ~= combatDrawToken2 then
                         return
                     end
-                    local v197 = LocalPlayer_upv_1:GetAttribute("CombatDrawSlot")
-                    if v197 == 0 then
+
+                    local combatDrawSlot = localPlayer:GetAttribute("CombatDrawSlot")
+
+                    if combatDrawSlot == 0 then
                         return
                     end
-                    local char_6 = tbl_upv_4.char
-                    local hum_4 = tbl_upv_4.hum
-                    if not (char_6) or not (hum_4) or not (hum_4.Health > 0) or char_6 ~= LocalPlayer_upv_1.Character then
-                        task.wait(0.1)
-                        continue
-                    end
-                    local v198 = char_6:IsDescendantOf(workspace)
-                    if not (v198) then
-                        task.wait(0.1)
-                        continue
-                    end
-                    local v199 = char_6:FindFirstChildOfClass("Tool")
-                    v195 = false
-                    if v199 ~= nil then
-                        v195 = (v199 ~= nil) and (v199:IsA("Tool") and (type(v199:GetAttribute("WeaponId")) == "string"))
-                        if v195 then
-                            v195 = v199:GetAttribute("DrawToken") == u22
+
+                    local char = v27.char
+                    local hum = v27.hum
+
+                    if char
+                        and hum
+                        and 0 < hum.Health
+                        and char == localPlayer.Character
+                        and char:IsDescendantOf(workspace)
+                    then
+                        local tool = char:FindFirstChildOfClass("Tool")
+                        local v538 = false
+
+                        if tool ~= nil then
+                            v538 = tool ~= nil and tool:IsA("Tool") and type(tool:GetAttribute("WeaponId")) == "string"
+                            v538 = v538 and tool:GetAttribute("DrawToken") == combatDrawToken2
                         end
-                    end
-                    if v195 then
-                        local v200 = false
-                        local v201 = LocalPlayer_upv_1:GetAttribute("EquipAck")
-                        if type(v201) ~= "number" then
-                            v196 = 0
-                        else
-                            v196 = v201
-                        end
-                        if v196 < u3 then
-                            if os.clock() - u4 < 4 then
-                                v200 = true
-                            else
-                                v200 = false
+
+                        if v538 then
+                            local v539 = false
+                            local equipAck = localPlayer:GetAttribute("EquipAck")
+
+                            if type(equipAck) ~= "number" then
+                                equipAck = 0
                             end
-                        end
-                        if v200 then
-                            if v195 then
-                                task.wait(0.1)
-                                continue
+
+                            if equipAck < count then
+                                v539 = os.clock() - timestamp < 4
                             end
-                            if type(v197) == "number" or type(v197) == "string" then
-                                v196 = v197
-                                local v202 = drawTool(v197, u22)
-                                if v202 then
-                                    tbl_upv_3.Equip(v202)
+
+                            if not v539 then
+                                local equipSlot = localPlayer:GetAttribute("EquipSlot")
+
+                                if type(equipSlot) == "number" then
+                                    if 0 < equipSlot then
+                                        return
+                                    end
                                 end
-                                task.wait(0.1)
-                            end
-                            v196 = 1
-                            local v202 = drawTool(v197, u22)
-                            if v202 then
-                                tbl_upv_3.Equip(v202)
-                            end
-                            task.wait(0.1)
-                        else
-                            local v203 = LocalPlayer_upv_1:GetAttribute("EquipSlot")
-                            if type(v203) ~= "number" or not (v203 > 0) then
-                                if os.clock() - v194 > 0.5 then
-                                    v194 = os.clock()
-                                    u2 = v199
-                                    u3 = u3 + 1
-                                    u6[v199] = u3
-                                    u4 = os.clock()
-                                    tbl_upv_5.requests = tbl_upv_5.requests + 1
+
+                                if 0.5 < os.clock() - timestamp4 then
+                                    local timestamp5 = os.clock()
+                                    v31 = tool
+                                    count += 1
+                                    v35[tool] = count
+                                    timestamp = os.clock()
+                                    v36.requests += 1
                                     enforceWant()
-                                    v200 = u2
-                                    if v200 and u1 then
-                                        u5 = os.clock()
-                                        send("Equip", {tool = v200, seq = u3})
+
+                                    if const v543 = v31 then
+                                        if v26 then
+                                            timestamp2 = os.clock()
+                                            send("Equip", {tool = v543, seq = count})
+                                            timestamp4 = timestamp5
+                                        else
+                                            timestamp4 = timestamp5
+                                        end
+                                    else
+                                        timestamp4 = timestamp5
                                     end
                                 end
-                                if v195 then
-                                    task.wait(0.1)
-                                    continue
-                                end
-                                if type(v197) == "number" or type(v197) == "string" then
-                                    v196 = v197
-                                    local v202 = drawTool(v197, u22)
-                                    if v202 then
-                                        tbl_upv_3.Equip(v202)
-                                    end
-                                    task.wait(0.1)
-                                end
-                                v196 = 1
-                                local v202 = drawTool(v197, u22)
-                                if v202 then
-                                    tbl_upv_3.Equip(v202)
-                                end
-                                task.wait(0.1)
                             end
-                            return
                         end
-                    else
-                        if v195 then
-                            task.wait(0.1)
-                            continue
-                        end
-                        if type(v197) == "number" or type(v197) == "string" then
-                            v196 = v197
-                            local v202 = drawTool(v197, u22)
-                            if v202 then
-                                tbl_upv_3.Equip(v202)
+
+                        if not v538 then
+                            if type(combatDrawSlot) ~= "number" and type(combatDrawSlot) ~= "string" then
+                                combatDrawSlot = 1
                             end
-                            task.wait(0.1)
+
+                            if const v544 = drawTool(combatDrawSlot, combatDrawToken2) then
+                                v24.Equip(v544)
+                            end
                         end
-                        v196 = 1
-                        local v202 = drawTool(v196, u22)
-                        if v202 then
-                            tbl_upv_3.Equip(v202)
-                        end
-                        task.wait(0.1)
                     end
+
+                    task.wait(0.1)
                 end
             end
         )
     end
-    for _, value_16 in {"CombatMode", "State"} do
-        LocalPlayer_upv_1:GetAttributeChangedSignal(value_16):Connect(
+
+    for _, attribute in {"CombatMode", "State"} do
+        localPlayer:GetAttributeChangedSignal(attribute):Connect(
             function()
                 --[[
                   line: 1519
@@ -2977,157 +3706,159 @@ function tbl_upv_3.Start()
             end
         )
     end
+
     task.spawn(
         function()
             --[[
               line: 1525
               upvalues:
-                LocalPlayer_upv_1 (copy, index: 1)
-                u8 (ref,  index: 2)
-                Util_upv_1 (copy, index: 3)
-                tbl_upv_3 (copy, index: 4)
-                tbl_upv_1 (copy, index: 5)
+                localPlayer (copy, index: 1)
+                InputStats (ref,  index: 2)
+                Util (copy, index: 3)
+                v24 (copy, index: 4)
+                v22 (copy, index: 5)
                 setSpeed (copy, index: 6)
             ]]
-            local v204 = LocalPlayer_upv_1:WaitForChild("PlayerScripts"):WaitForChild("Core", 30)
-            local v205 = v204 and (v204:WaitForChild("InputStats", 30))
-            if not v205 then
-                return
-            end
-            if v205:IsA("ModuleScript") then
-                local v206 = require(v205)
-                u8 = v206
-                v206.Watch(Util_upv_1, 512)
-                v206.Watch(tbl_upv_3, 1024)
-                for _, value_17 in tbl_upv_1 do
-                    v206.Watch(value_17, 1024)
+            local core = localPlayer:WaitForChild("PlayerScripts"):WaitForChild("Core", 30)
+            local inputStats = core and core:WaitForChild("InputStats", 30)
+
+            if inputStats and inputStats:IsA("ModuleScript") then
+                local inputStats2 = inputStats
+                local InputStats2 = require(inputStats2)
+                InputStats = InputStats2
+                InputStats2.Watch(Util, 512)
+                InputStats2.Watch(v24, 1024)
+
+                for _, v552 in v22 do
+                    InputStats2.Watch(v552, 1024)
                 end
-                local PROBE_1 = v206.PROBE
-                v206.Hooked(Util_upv_1.Recoil, PROBE_1.n, 1)
-                v206.Hooked(tbl_upv_1.Melee.Detect, PROBE_1.t, 1, 2, 3)
-                v206.Hooked(Util_upv_1.AimDirection, PROBE_1.v)
-                v206.Hooked(setSpeed, PROBE_1.s, 1)
-                v206.Hooked(Util_upv_1.RecoilSlow, PROBE_1.n, 1)
-                v206.Hooked(Util_upv_1.Shake, PROBE_1.n, 1)
-                PROBE_1.m = setmetatable({lastSwing = os.clock()}, tbl_upv_1.Melee)
-                PROBE_1.ml = rawget(PROBE_1.m, "lastSwing")
+
+                local probe = InputStats2.PROBE
+                InputStats2.Hooked(Util.Recoil, probe.n, 1)
+                InputStats2.Hooked(v22.Melee.Detect, probe.t, 1, 2, 3)
+                InputStats2.Hooked(Util.AimDirection, probe.v)
+                InputStats2.Hooked(setSpeed, probe.s, 1)
+                InputStats2.Hooked(Util.RecoilSlow, probe.n, 1)
+                InputStats2.Hooked(Util.Shake, probe.n, 1)
+                probe.m = setmetatable({lastSwing = os.clock()}, v22.Melee)
+                probe.ml = rawget(probe.m, "lastSwing")
             end
         end
     )
 end
-function tbl_upv_3.PlayFX(a1, a2)
+
+function v24.PlayFX(a554, a555)
     --[[
       name: PlayFX
       line: 1553
       upvalues:
         onCombatFX (copy, index: 1)
     ]]
-    local success_7, v207 = pcall(onCombatFX, a1, a2)
-    if (success_7) then
-        return
+    local success, result = pcall(onCombatFX, a554, a555)
+    if not success then
+        warn("[Combat] replay FX error:", a554, result)
     end
-    warn("[Combat] replay FX error:", a1, v207)
 end
-function tbl_upv_3.SetReplayHud(a1)
+
+function v24.SetReplayHud(replayHud)
     --[[
       name: SetReplayHud
       line: 1563
       upvalues:
-        u12 (ref,  index: 1)
-        Touch_upv_1 (copy, index: 2)
+        v255 (ref,  index: 1)
+        Touch (copy, index: 2)
         dropHandler (copy, index: 3)
-        tbl_upv_4 (copy, index: 4)
+        v27 (copy, index: 4)
         refreshEquipped (copy, index: 5)
     ]]
-    if u12 == a1 then
+    if v255 == replayHud then
         return
     end
-    u12 = a1
-    if a1 then
-        Touch_upv_1.SetVisible(false)
-    else
-        pcall(dropHandler)
-        tbl_upv_4.tool = nil
-        pcall(refreshEquipped)
+
+    v255 = replayHud
+
+    if replayHud then
+        Touch.SetVisible(false)
+        return
     end
+
+    pcall(dropHandler)
+    v27.tool = nil
+    pcall(refreshEquipped)
 end
-function tbl_upv_3.ReplayHitConfirm(a1)
+
+function v24.ReplayHitConfirm(a559)
     --[[
       name: ReplayHitConfirm
       line: 1577
       upvalues:
         onHitConfirm (copy, index: 1)
     ]]
-    local success_8, v208 = pcall(onHitConfirm, a1)
-    if (success_8) then
-        return
+    local success, result = pcall(onHitConfirm, a559)
+    if not success then
+        warn("[Combat] replay HitConfirm error:", result)
     end
-    warn("[Combat] replay HitConfirm error:", v208)
 end
-function tbl_upv_3.ReplayDamageTaken(a1)
+
+function v24.ReplayDamageTaken(a562)
     --[[
       name: ReplayDamageTaken
       line: 1584
       upvalues:
         onDamageTaken (copy, index: 1)
     ]]
-    local success_9, v209 = pcall(onDamageTaken, a1)
-    if (success_9) then
-        return
+    local success, result = pcall(onDamageTaken, a562)
+    if not success then
+        warn("[Combat] replay DamageTaken error:", result)
     end
-    warn("[Combat] replay DamageTaken error:", v209)
 end
-function tbl_upv_3.State()
+
+function v24.State()
     --[[
       name: State
       line: 1592
       upvalues:
-        u2 (ref,  index: 13)
-        tbl_upv_4 (copy, index: 14)
-        u3 (ref,  index: 15)
-        LocalPlayer_upv_1 (copy, index: 16)
-        u4 (ref,  index: 17)
-        tbl_upv_5 (copy, index: 18)
-        tbl_upv_28 (copy, index: 19)
+        v31 (ref,  index: 13)
+        v27 (copy, index: 14)
+        count (ref,  index: 15)
+        localPlayer (copy, index: 16)
+        timestamp (ref,  index: 17)
+        v36 (copy, index: 18)
+        v235 (copy, index: 19)
     ]]
-    local v210 = u2
-    local tbl_35 = {inputs = 0, equipStats = 0, shotId = 0, equipSeq = 0, equipPending = 0, equipAck = 0, lastInput = 0, speed = 0, tool = 0, wantSlot = 0}
-    tbl_35.kind = tbl_upv_4.kind
-    local v211, v212
-    if tbl_upv_4.hum then
-        v211 = tbl_upv_4.hum.WalkSpeed
-        v212 = tbl_upv_4
+    local equipAck
+    local equipAck2
+    local v567 = v31
+    local v568 = v27
+    local v569 = {kind = v568.kind, speed = if v568.hum then v568.hum.WalkSpeed else nil}
+    v569.shotId = v568.shotId
+    v569.tool = v568.tool and v568.tool.Name or nil
+    v569.wantSlot = not v567 and 0 or v567:GetAttribute("SlotIndex")
+    v569.equipSeq = count
+    local equipAck3 = localPlayer:GetAttribute("EquipAck")
+
+    if type(equipAck3) ~= "number" then
+        equipAck = 0
     else
-        v211, v212 = nil, tbl_upv_4
+        equipAck = equipAck3
     end
-    tbl_35.speed = v211
-    tbl_35.shotId = v212.shotId
-    tbl_35.tool = ((tbl_upv_4.tool) and (v212.tool.Name)) or nil
-    tbl_35.wantSlot = not v210 and 0 or u2:GetAttribute("SlotIndex")
-    tbl_35.equipSeq = u3
-    local v214 = LocalPlayer_upv_1:GetAttribute("EquipAck")
-    local v215
-    if type(v214) ~= "number" then
-        v215 = 0
+
+    v569.equipAck = equipAck
+    local equipAck4 = localPlayer:GetAttribute("EquipAck")
+
+    if type(equipAck4) ~= "number" then
+        equipAck2 = 0
     else
-        v215 = v214
+        equipAck2 = equipAck4
     end
-    tbl_35.equipAck = v215
-    local v216 = false
-    local v217 = LocalPlayer_upv_1:GetAttribute("EquipAck")
-    local v218
-    if type(v217) ~= "number" then
-        v218 = 0
-    else
-        v218 = v217
-    end
-    if v218 < u3 then
-        v216 = os.clock() - u4 < 4
-    end
-    tbl_35.equipPending = v216
-    tbl_35.equipStats = table.clone(tbl_upv_5)
-    tbl_35.inputs = tbl_upv_28.n
-    tbl_35.lastInput = tbl_upv_28.last
-    return tbl_35
+
+    local equipPending = equipAck2 < count and os.clock() - timestamp < 4
+    v569.equipPending = equipPending
+    v569.equipStats = table.clone(v36)
+    v569.inputs = v235.n
+    v569.lastInput = v235.last
+
+    return v569
 end
-return tbl_upv_3
+
+return v24

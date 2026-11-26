@@ -1,18 +1,19 @@
-local Players_upv_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local RunService_upv_1 = game:GetService("RunService")
-local Parent_upv_1 = script.Parent
-local Humanoid_upv_1 = Parent_upv_1:WaitForChild("Humanoid")
-local u1 = Humanoid_upv_1:FindFirstChildOfClass("Animator") or (Humanoid_upv_1:WaitForChild("Animator"))
-local HumanoidRootPart_upv_1 = Parent_upv_1:WaitForChild("HumanoidRootPart")
-local success_upv_1, u2 = pcall(
+local v1
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local parent = script.Parent
+local humanoid = parent:WaitForChild("Humanoid")
+local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator")
+local humanoidRootPart = parent:WaitForChild("HumanoidRootPart")
+local success, Camera = pcall(
     function()
         --[[
           line: 27
           upvalues:
-            ReplicatedStorage_upv_1 (copy, index: 1)
+            replicatedStorage (copy, index: 1)
         ]]
-        return (require(ReplicatedStorage_upv_1:WaitForChild("Shared"):WaitForChild("Camera")))
+        return (require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Camera")))
     end
 )
 pcall(
@@ -20,535 +21,623 @@ pcall(
         --[[
           line: 33
           upvalues:
-            ReplicatedStorage_upv_1 (copy, index: 1)
-            u1 (copy, index: 2)
+            replicatedStorage (copy, index: 1)
+            animator (copy, index: 2)
         ]]
-        require(ReplicatedStorage_upv_1:WaitForChild("Shared"):WaitForChild("AnimGuard")).Watch(u1)
+        require(replicatedStorage:WaitForChild("Shared"):WaitForChild("AnimGuard")).Watch(animator)
     end
 )
-local u3 = require(Players_upv_1.LocalPlayer:WaitForChild("PlayerScripts"):WaitForChild("Character"):WaitForChild("AnimationIds"))
-local R15_1 = u3.R15
-local R6_1 = u3.R6
-local Emotes_upv_1 = u3.Emotes
-if Humanoid_upv_1.RigType ~= Enum.HumanoidRigType.R6 then
-    u3 = R15_1
+local playerScripts = players.LocalPlayer:WaitForChild("PlayerScripts")
+local AnimationIds = require(playerScripts:WaitForChild("Character"):WaitForChild("AnimationIds"))
+local r15 = AnimationIds.R15
+local r6 = AnimationIds.R6
+local emotes = AnimationIds.Emotes
+
+if humanoid.RigType ~= Enum.HumanoidRigType.R6 then
+    v1 = r15
 else
-    u3 = R6_1
+    v1 = r6
 end
-local tbl_upv_1 = {}
-local tbl_upv_2 = {}
-local tbl_upv_3 = {}
-local tbl_upv_4 = {}
-local function load(a1, a2, a3)
+
+local v16 = {}
+local v17 = {}
+local v18 = {}
+local v19 = {}
+
+local function load(name: string, animationId: string, looped: boolean)
     --[[
       name: load
       line: 68
       upvalues:
-        u1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
+        animator (copy, index: 1)
+        v16 (copy, index: 2)
+        v17 (copy, index: 3)
     ]]
-    local v1 = Instance.new("Animation")
-    v1.Name = a1
-    v1.AnimationId = a2
-    local v2 = u1:LoadAnimation(v1)
-    v2.Priority = Enum.AnimationPriority.Core
-    v2.Looped = a3
-    tbl_upv_1[a1] = v2
-    tbl_upv_2[a1] = 0
-    return v2
+    local animation = Instance.new("Animation")
+    animation.Name = name
+    animation.AnimationId = animationId
+
+    local animationTrack = animator:LoadAnimation(animation)
+    animationTrack.Priority = Enum.AnimationPriority.Core
+    animationTrack.Looped = looped
+    v16[name] = animationTrack
+    v17[name] = 0
+
+    return animationTrack
 end
-for key_1, value_1 in u3 do
-    local v3 = Instance.new("Animation")
-    v3.Name = key_1
-    v3.AnimationId = value_1
-    local v4 = u1:LoadAnimation(v3)
-    v4.Priority = Enum.AnimationPriority.Core
-    v4.Looped = true
-    tbl_upv_1[key_1] = v4
-    tbl_upv_2[key_1] = 0
+
+for name, animationId in v1 do
+    local animationId2 = animationId
+    local name2 = name
+    local animation = Instance.new("Animation")
+    animation.Name = name2
+    animation.AnimationId = animationId2
+
+    local animationTrack = animator:LoadAnimation(animation)
+    animationTrack.Priority = Enum.AnimationPriority.Core
+    animationTrack.Looped = true
+    v16[name2] = animationTrack
+    v17[name2] = 0
 end
-for key_2, value_2 in tbl_upv_1 do
-    value_2:Play(0, 1e-04, 1)
-    tbl_upv_2[key_2] = 0
-    tbl_upv_3[key_2] = 1e-04
-    tbl_upv_4[key_2] = 1
+
+for v32, v33 in v16 do
+    local v34 = v32
+    local v35 = v33
+    v35:Play(0, 1e-04, 1)
+    v17[v34] = 0
+    v18[v34] = 1e-04
+    v19[v34] = 1
 end
-tbl_upv_2.idle = 1
-tbl_upv_1.idle:AdjustWeight(1, 0)
-tbl_upv_3.idle = 1
-local u4 = 0
-local u5 = false
-local u6 = "ground"
-local u7 = -1
-local u8 = 0
-local u9 = 0
-local u10 = nil
+
+v17.idle = 1
+v16.idle:AdjustWeight(1, 0)
+v18.idle = 1
+local v36 = 0
+local v37 = false
+local v38 = "ground"
+local v39 = -1
+local v40 = 0
+local v41 = 0
+local animationTrack = nil
+
 local function stopEmote()
     --[[
       name: stopEmote
       line: 105
       upvalues:
-        u10 (ref,  index: 1)
-        success_upv_1 (copy, index: 2)
-        u2 (copy, index: 3)
+        animationTrack (ref,  index: 1)
+        success (copy, index: 2)
+        Camera (copy, index: 3)
     ]]
-    if not u10 then
-        return
+    if animationTrack then
+        animationTrack:Stop(0.2)
+        animationTrack = nil
+
+        if success then
+            Camera.ResumeCharacterRotation("Emote")
+        end
     end
-    u10:Stop(0.2)
-    u10 = nil
-    if not success_upv_1 then
-        return
-    end
-    u2.ResumeCharacterRotation("Emote")
 end
-u3 = {}
-u3[Enum.HumanoidStateType.Jumping] = "air"
-u3[Enum.HumanoidStateType.Freefall] = "air"
-u3[Enum.HumanoidStateType.Climbing] = "climb"
-u3[Enum.HumanoidStateType.Swimming] = "swim"
-u3[Enum.HumanoidStateType.Seated] = "sit"
-u3[Enum.HumanoidStateType.Dead] = "none"
-u3[Enum.HumanoidStateType.Physics] = "none"
-u3[Enum.HumanoidStateType.Ragdoll] = "none"
-u3[Enum.HumanoidStateType.FallingDown] = "none"
-u3[Enum.HumanoidStateType.PlatformStanding] = "none"
-u3[Enum.HumanoidStateType.Running] = "ground"
-u3[Enum.HumanoidStateType.RunningNoPhysics] = "ground"
-u3[Enum.HumanoidStateType.Landed] = "ground"
-u3[Enum.HumanoidStateType.GettingUp] = "ground"
-local function startJump(a1)
+
+local v44 = {}
+v44[Enum.HumanoidStateType.Jumping] = "air"
+v44[Enum.HumanoidStateType.Freefall] = "air"
+v44[Enum.HumanoidStateType.Climbing] = "climb"
+v44[Enum.HumanoidStateType.Swimming] = "swim"
+v44[Enum.HumanoidStateType.Seated] = "sit"
+v44[Enum.HumanoidStateType.Dead] = "none"
+v44[Enum.HumanoidStateType.Physics] = "none"
+v44[Enum.HumanoidStateType.Ragdoll] = "none"
+v44[Enum.HumanoidStateType.FallingDown] = "none"
+v44[Enum.HumanoidStateType.PlatformStanding] = "none"
+v44[Enum.HumanoidStateType.Running] = "ground"
+v44[Enum.HumanoidStateType.RunningNoPhysics] = "ground"
+v44[Enum.HumanoidStateType.Landed] = "ground"
+v44[Enum.HumanoidStateType.GettingUp] = "ground"
+
+local function startJump(timePosition)
     --[[
       name: startJump
       line: 134
       upvalues:
-        u6 (ref,  index: 1)
-        u7 (ref,  index: 2)
-        tbl_upv_1 (copy, index: 3)
+        v38 (ref,  index: 1)
+        v39 (ref,  index: 2)
+        v16 (copy, index: 3)
     ]]
-    if u6 == "air" and u7 > 0 and os.clock() - u7 < 0.4 then
+    if v38 == "air" and 0 < v39 and os.clock() - v39 < 0.4 then
         return
     end
-    u6 = "air"
-    u7 = os.clock() - a1
-    tbl_upv_1.jump.TimePosition = a1
+
+    v38 = "air"
+    v39 = os.clock() - timePosition
+    v16.jump.TimePosition = timePosition
 end
-local function enterMode(a1)
+
+local function enterMode(a48)
     --[[
       name: enterMode
       line: 143
       upvalues:
-        u6 (ref,  index: 1)
-        u7 (ref,  index: 2)
-        u10 (ref,  index: 3)
-        success_upv_1 (copy, index: 4)
-        u2 (copy, index: 5)
+        v38 (ref,  index: 1)
+        v39 (ref,  index: 2)
+        animationTrack (ref,  index: 3)
+        success (copy, index: 4)
+        Camera (copy, index: 5)
     ]]
-    if a1 == u6 then
+    if a48 == v38 then
         return
     end
-    if a1 == "air" then
-        u7 = -1
+
+    if a48 == "air" then
+        v39 = -1
     end
-    if a1 ~= "ground" and a1 ~= "sit" and u10 then
-        u10:Stop(0.2)
-        u10 = nil
-        if success_upv_1 then
-            u2.ResumeCharacterRotation("Emote")
+
+    if a48 ~= "ground" and a48 ~= "sit" and animationTrack then
+        animationTrack:Stop(0.2)
+        animationTrack = nil
+
+        if success then
+            Camera.ResumeCharacterRotation("Emote")
         end
     end
-    u6 = a1
+
+    v38 = a48
 end
-Humanoid_upv_1.StateChanged:Connect(
-    function(a1, a2)
+
+humanoid.StateChanged:Connect(
+    function(a49, key)
         --[[
           line: 156
           upvalues:
-            RunService_upv_1 (copy, index: 1)
-            u6 (ref,  index: 2)
-            u7 (ref,  index: 3)
-            tbl_upv_1 (copy, index: 4)
-            u10 (ref,  index: 5)
-            success_upv_1 (copy, index: 6)
-            u2 (copy, index: 7)
-            u3 (copy, index: 8)
+            runService (copy, index: 1)
+            v38 (ref,  index: 2)
+            v39 (ref,  index: 3)
+            v16 (copy, index: 4)
+            animationTrack (ref,  index: 5)
+            success (copy, index: 6)
+            Camera (copy, index: 7)
+            v44 (copy, index: 8)
         ]]
-        if not RunService_upv_1:IsResimulating() then
-            local v5 = nil
-            if a2 ~= Enum.HumanoidStateType.Jumping then
-                v5 = u3[a2]
-                if v5 and v5 ~= u6 then
-                    if v5 == "air" then
-                        u7 = -1
-                    end
-                    if v5 ~= "ground" and v5 ~= "sit" and u10 then
-                        u10:Stop(0.2)
-                        u10 = nil
-                        if success_upv_1 then
-                            u2.ResumeCharacterRotation("Emote")
-                        end
-                    end
-                    u6 = v5
-                end
-            else
-                if u6 ~= "air" or not (u7 > 0) or not (os.clock() - u7 < 0.4) then
-                    u6 = "air"
-                    u7 = os.clock() - 0
-                    tbl_upv_1.jump.TimePosition = 0
-                end
-                if u10 then
-                    u10:Stop(0.2)
-                    u10 = nil
-                    if success_upv_1 then
-                        u2.ResumeCharacterRotation("Emote")
-                    end
+        if runService:IsResimulating() then
+            return
+        end
+
+        if key == Enum.HumanoidStateType.Jumping then
+            if v38 ~= "air" or not (0 < v39) or not (os.clock() - v39 < 0.4) then
+                v38 = "air"
+                v39 = os.clock() - 0
+                v16.jump.TimePosition = 0
+            end
+
+            if animationTrack then
+                animationTrack:Stop(0.2)
+                animationTrack = nil
+
+                if success then
+                    Camera.ResumeCharacterRotation("Emote")
                 end
             end
+
+            return
+        elseif const v51 = v44[key] then
+            if v51 == v38 then
+                return
+            end
+
+            if v51 == "air" then
+                v39 = -1
+            end
+
+            if v51 ~= "ground" and v51 ~= "sit" and animationTrack then
+                animationTrack:Stop(0.2)
+                animationTrack = nil
+
+                if success then
+                    Camera.ResumeCharacterRotation("Emote")
+                end
+            end
+
+            v38 = v51
         end
     end
 )
-Humanoid_upv_1.Climbing:Connect(
-    function(a1)
+
+humanoid.Climbing:Connect(
+    function(speed: number)
         --[[
           line: 171
           upvalues:
-            u8 (ref, index: 1)
+            v40 (ref, index: 1)
         ]]
-        u8 = a1
+        v40 = speed
     end
 )
-Humanoid_upv_1.Swimming:Connect(
-    function(a1)
+humanoid.Swimming:Connect(
+    function(speed: number)
         --[[
           line: 174
           upvalues:
-            u9 (ref, index: 1)
+            v41 (ref, index: 1)
         ]]
-        u9 = a1
+        v41 = speed
     end
 )
-local u11 = script:FindFirstChild("PlayEmote")
-if not (u11) then
-    local v6 = Instance.new("BindableFunction")
-    v6.Name = "PlayEmote"
-    v6.Parent = script
-    u11 = v6
+local playEmote = script:FindFirstChild("PlayEmote")
+if not playEmote then
+    playEmote = Instance.new("BindableFunction")
+    playEmote.Name = "PlayEmote"
+    playEmote.Parent = script
 end
+
 local function inMatch()
     --[[
       name: inMatch
       line: 186
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    local v7 = Players_upv_1.LocalPlayer:GetAttribute("State") == "Match"
-    return v7
+    return players.LocalPlayer:GetAttribute("State") == "Match"
 end
-Players_upv_1.LocalPlayer:GetAttributeChangedSignal("State"):Connect(
+
+players.LocalPlayer:GetAttributeChangedSignal("State"):Connect(
     function()
         --[[
           line: 189
           upvalues:
-            Players_upv_1 (copy, index: 1)
-            u10 (ref,  index: 2)
-            success_upv_1 (copy, index: 3)
-            u2 (copy, index: 4)
+            players (copy, index: 1)
+            animationTrack (ref,  index: 2)
+            success (copy, index: 3)
+            Camera (copy, index: 4)
         ]]
-        local v8 = Players_upv_1.LocalPlayer:GetAttribute("State") == "Match"
-        if not v8 or not u10 then
-            return
+        local v56 = players.LocalPlayer:GetAttribute("State") == "Match"
+
+        if v56 and animationTrack then
+            animationTrack:Stop(0.2)
+            animationTrack = nil
+
+            if success then
+                Camera.ResumeCharacterRotation("Emote")
+            end
         end
-        u10:Stop(0.2)
-        u10 = nil
-        if not success_upv_1 then
-            return
-        end
-        u2.ResumeCharacterRotation("Emote")
     end
 )
-u11.OnInvoke = function(a1)
+
+playEmote.OnInvoke = function(emoteKey)
     --[[
       line: 194
       upvalues:
-        u6 (ref,  index: 1)
-        Humanoid_upv_1 (copy, index: 2)
-        Players_upv_1 (copy, index: 3)
-        Emotes_upv_1 (copy, index: 4)
-        u10 (ref,  index: 5)
-        success_upv_1 (copy, index: 6)
-        u2 (copy, index: 7)
-        u1 (copy, index: 8)
+        v38 (ref,  index: 1)
+        humanoid (copy, index: 2)
+        players (copy, index: 3)
+        emotes (copy, index: 4)
+        animationTrack (ref,  index: 5)
+        success (copy, index: 6)
+        Camera (copy, index: 7)
+        animator (copy, index: 8)
     ]]
-    if u6 == "ground" and not (Humanoid_upv_1.MoveDirection.Magnitude > 0.05) then
-        local v9 = Players_upv_1.LocalPlayer:GetAttribute("State") == "Match"
-        if not (v9) then
-            v9 = nil
-            if typeof(a1) == "Instance" and (a1:IsA("Animation")) then
-                v9 = a1
-            elseif typeof(a1) == "string" and Emotes_upv_1[a1] then
-                local v10 = Instance.new("Animation")
-                v10.AnimationId = Emotes_upv_1[a1]
-                v9 = v10
-            end
-            if not v9 then
-                return false
-            end
-            if u10 then
-                u10:Stop(0.2)
-                u10 = nil
-                if success_upv_1 then
-                    u2.ResumeCharacterRotation("Emote")
-                end
-            end
-            local u12 = u1:LoadAnimation(v9)
-            u12.Priority = Enum.AnimationPriority.Idle
-            u12:Play(0.2)
-            u10 = u12
-            if success_upv_1 then
-                u2.SuspendCharacterRotation("Emote")
-            end
-            u12.Stopped:Once(
-                function()
-                    --[[
-                      line: 217
-                      upvalues:
-                        u10 (ref,  index: 1)
-                        u12 (copy, index: 2)
-                        success_upv_1 (copy, index: 3)
-                        u2 (copy, index: 4)
-                    ]]
-                    if u10 ~= u12 then
-                        return
-                    end
-                    u10 = nil
-                    if not success_upv_1 then
-                        return
-                    end
-                    u2.ResumeCharacterRotation("Emote")
-                end
-            )
-            return true
+    if v38 ~= "ground"
+        or 0.05 < humanoid.MoveDirection.Magnitude
+        or players.LocalPlayer:GetAttribute("State") == "Match"
+    then
+        return false
+    end
+
+    local v58
+    local v59 = nil
+
+    if typeof(emoteKey) == "Instance" and emoteKey:IsA("Animation") then
+        v58 = emoteKey
+    elseif typeof(emoteKey) ~= "string" then
+        v58 = v59
+    elseif emotes[emoteKey] then
+        v58 = Instance.new("Animation")
+        v58.AnimationId = emotes[emoteKey]
+    else
+        v58 = v59
+    end
+
+    if not v58 then
+        return false
+    end
+
+    if animationTrack then
+        animationTrack:Stop(0.2)
+        animationTrack = nil
+
+        if success then
+            Camera.ResumeCharacterRotation("Emote")
         end
     end
-    return false
+
+    local animationTrack2 = animator:LoadAnimation(v58)
+    animationTrack2.Priority = Enum.AnimationPriority.Idle
+    animationTrack2:Play(0.2)
+    animationTrack = animationTrack2
+
+    if success then
+        Camera.SuspendCharacterRotation("Emote")
+    end
+
+    animationTrack2.Stopped:Once(
+        function()
+            --[[
+              line: 217
+              upvalues:
+                animationTrack (ref,  index: 1)
+                animationTrack2 (copy, index: 2)
+                success (copy, index: 3)
+                Camera (copy, index: 4)
+            ]]
+            if animationTrack == animationTrack2 then
+                animationTrack = nil
+
+                if success then
+                    Camera.ResumeCharacterRotation("Emote")
+                end
+            end
+        end
+    )
+
+    return true
 end
-u11 = {}
+
+local v61 = {}
+
 local function scale()
     --[[
       name: scale
       line: 231
       upvalues:
-        Parent_upv_1 (copy, index: 1)
-        Humanoid_upv_1 (copy, index: 2)
+        parent (copy, index: 1)
+        humanoid (copy, index: 2)
     ]]
-    local HumanoidRootPart_2 = Parent_upv_1:FindFirstChild("HumanoidRootPart")
-    local v11 = HumanoidRootPart_2 and (HumanoidRootPart_2:GetAttribute("SHipBase"))
-    local v12
-    if type(v11) ~= "number" then
-        v12 = Humanoid_upv_1.HipHeight
+    local v63
+    local humanoidRootPart = parent:FindFirstChild("HumanoidRootPart")
+    local sHipBase = humanoidRootPart and humanoidRootPart:GetAttribute("SHipBase")
+
+    if type(sHipBase) ~= "number" then
+        v63 = humanoid.HipHeight
     else
-        v12 = v11
+        v63 = sHipBase
     end
-    return (math.max(0.5, v12 / 2))
+
+    return (math.max(0.5, v63 / 2))
 end
-local u13 = false
-local tbl_upv_5 = {}
-local u14 = 0
-local u15 = u6
+
+local v66 = false
+local v67 = {}
+local v68 = 0
+local v69 = v38
+
 local function push()
     --[[
       name: push
       line: 246
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
-        tbl_upv_3 (copy, index: 3)
-        u11 (copy, index: 4)
-        tbl_upv_5 (copy, index: 5)
-        tbl_upv_4 (copy, index: 6)
+        v16 (copy, index: 1)
+        v17 (copy, index: 2)
+        v18 (copy, index: 3)
+        v61 (copy, index: 4)
+        v67 (copy, index: 5)
+        v19 (copy, index: 6)
     ]]
-    for key_3, value_3 in tbl_upv_1 do
-        local v13 = tbl_upv_2[key_3]
-        local v14 = tbl_upv_3[key_3]
-        if v13 ~= v14 and (math.abs(v13 - v14) >= 0.01 or v13 == math.max(u11[key_3] or 0, 1e-04)) then
-            tbl_upv_3[key_3] = v13
-            value_3:AdjustWeight(v13, 0.05)
+    for v71, v72 in v16 do
+        local v73 = v17[v71]
+        local v74 = v18[v71]
+
+        if v73 ~= v74 and (0.01 <= math.abs(v73 - v74) or v73 == math.max(v61[v71] or 0, 1e-04)) then
+            v18[v71] = v73
+            v72:AdjustWeight(v73, 0.05)
         end
-        local v15 = tbl_upv_5[key_3]
-        if v15 and math.abs(v15 - tbl_upv_4[key_3]) >= 0.02 then
-            tbl_upv_4[key_3] = v15
-            value_3:AdjustSpeed(v15)
+
+        local v75 = v67[v71]
+
+        if v75 and 0.02 <= math.abs(v75 - v19[v71]) then
+            v19[v71] = v75
+            v72:AdjustSpeed(v75)
         end
-        if not (value_3.IsPlaying) then
-            value_3:Play(0, tbl_upv_3[key_3], tbl_upv_4[key_3])
+
+        if not v72.IsPlaying then
+            v72:Play(0, v18[v71], v19[v71])
         end
     end
 end
-RunService_upv_1.Heartbeat:Connect(
-    function(a1)
+
+runService.Heartbeat:Connect(
+    function(deltaTime: number)
         --[[
           line: 265
           upvalues:
-            u13 (ref,  index: 1)
-            Parent_upv_1 (copy, index: 2)
-            tbl_upv_1 (copy, index: 3)
-            u11 (copy, index: 4)
-            tbl_upv_5 (copy, index: 5)
-            HumanoidRootPart_upv_1 (copy, index: 6)
-            Humanoid_upv_1 (copy, index: 7)
-            u3 (copy, index: 8)
-            u6 (ref,  index: 9)
-            u7 (ref,  index: 10)
-            u10 (ref,  index: 11)
-            success_upv_1 (copy, index: 12)
-            u2 (copy, index: 13)
-            u4 (ref,  index: 14)
-            u5 (ref,  index: 15)
-            u8 (ref,  index: 16)
-            u9 (ref,  index: 17)
-            tbl_upv_2 (copy, index: 18)
-            u14 (ref,  index: 19)
-            u15 (ref,  index: 20)
+            v66 (ref,  index: 1)
+            parent (copy, index: 2)
+            v16 (copy, index: 3)
+            v61 (copy, index: 4)
+            v67 (copy, index: 5)
+            humanoidRootPart (copy, index: 6)
+            humanoid (copy, index: 7)
+            v44 (copy, index: 8)
+            v38 (ref,  index: 9)
+            v39 (ref,  index: 10)
+            animationTrack (ref,  index: 11)
+            success (copy, index: 12)
+            Camera (copy, index: 13)
+            v36 (ref,  index: 14)
+            v37 (ref,  index: 15)
+            v40 (ref,  index: 16)
+            v41 (ref,  index: 17)
+            v17 (copy, index: 18)
+            v68 (ref,  index: 19)
+            v69 (ref,  index: 20)
             push (copy, index: 21)
         ]]
-        if u13 or not Parent_upv_1.Parent then
+        if v66 or not parent.Parent then
             return
         end
-        for key_4 in tbl_upv_1 do
-            u11[key_4] = 0
+
+        local v77
+
+        for v78 in v16 do
+            v61[v78] = 0
         end
-        table.clear(tbl_upv_5)
-        local v16 = HumanoidRootPart_upv_1.AssemblyLinearVelocity
-        local Magnitude_1 = Vector3.new(v16.X, 0, v16.Z).Magnitude
-        local v17 = Parent_upv_1:FindFirstChild("HumanoidRootPart")
-        local v18 = v17 and (v17:GetAttribute("SHipBase"))
-        local v19
-        if type(v18) ~= "number" then
-            v19 = Humanoid_upv_1.HipHeight
+
+        table.clear(v67)
+        local assemblyLinearVelocity = humanoidRootPart.AssemblyLinearVelocity
+        local magnitude = Vector3.new(assemblyLinearVelocity.X, 0, assemblyLinearVelocity.Z).Magnitude
+        local humanoidRootPart2 = parent:FindFirstChild("HumanoidRootPart")
+        local sHipBase = humanoidRootPart2 and humanoidRootPart2:GetAttribute("SHipBase")
+
+        if type(sHipBase) ~= "number" then
+            v77 = humanoid.HipHeight
         else
-            v19 = v18
+            v77 = sHipBase
         end
-        local v20 = math.max(0.5, v19 / 2)
-        local v21 = u3[Humanoid_upv_1:GetState()]
-        if v21 and v21 ~= u6 then
-            if v21 == "air" and (v16.Y > 8) then
-                local Gravity_1 = workspace.Gravity
-                local v22 = math.clamp((math.sqrt((2 * Gravity_1) * math.max(Humanoid_upv_1.JumpHeight, 0.1)) - v16.Y) / Gravity_1, 0, 0.4)
-                if u6 ~= "air" or not (u7 > 0) or not (os.clock() - u7 < 0.4) then
-                    u6 = "air"
-                    u7 = os.clock() - v22
-                    tbl_upv_1.jump.TimePosition = v22
+
+        local v83 = math.max(0.5, v77 / 2)
+        local v84 = v44[humanoid:GetState()]
+
+        if v84 and v84 ~= v38 then
+            if v84 == "air" and 8 < assemblyLinearVelocity.Y then
+                local gravity = workspace.Gravity
+                local timePosition = math.clamp((math.sqrt(2 * gravity * math.max(humanoid.JumpHeight, 0.1)) - assemblyLinearVelocity.Y) / gravity, 0, 0.4)
+
+                if v38 ~= "air" or not (0 < v39) or not (os.clock() - v39 < 0.4) then
+                    v38 = "air"
+                    v39 = os.clock() - timePosition
+                    v16.jump.TimePosition = timePosition
                 end
-            elseif v21 ~= u6 then
-                if v21 == "air" then
-                    u7 = -1
+            elseif v84 ~= v38 then
+                if v84 == "air" then
+                    v39 = -1
                 end
-                if v21 ~= "ground" and v21 ~= "sit" and u10 then
-                    u10:Stop(0.2)
-                    u10 = nil
-                    if success_upv_1 then
-                        u2.ResumeCharacterRotation("Emote")
+
+                if v84 ~= "ground" and v84 ~= "sit" and animationTrack then
+                    animationTrack:Stop(0.2)
+                    animationTrack = nil
+
+                    if success then
+                        Camera.ResumeCharacterRotation("Emote")
                     end
                 end
-                u6 = v21
+
+                v38 = v84
             end
         end
-        if u6 == "ground" then
-            v17 = math.clamp((Magnitude_1 - 0.6) / 2.5, 0, 1)
-            if Humanoid_upv_1.MoveDirection.Magnitude < 0.05 then
-                v17 = ((Magnitude_1 < 3) and 0) or v17
+
+        if v38 == "ground" then
+            local clampedValue = math.clamp((magnitude - 0.6) / 2.5, 0, 1)
+
+            if humanoid.MoveDirection.Magnitude < 0.05 and magnitude < 3 then
+                clampedValue = 0
             end
-            local v23 = math.clamp(((Magnitude_1 / v20) - 9) / 5, 0, 1)
-            u4 = u4 + a1
-            if u4 > 12 then
-                u4 = 0
-                local v24 = math.random() < 0.35
-                u5 = v24
+
+            local clampedValue2 = math.clamp(((magnitude / v83) - 9) / 5, 0, 1)
+            v36 += deltaTime
+
+            if 12 < v36 then
+                v36 = 0
+                v37 = math.random() < 0.35
             end
-            local v25 = (u5 and "idle2") or "idle"
-            u11[v25] = 1 - v17
-            u11.walk = v17 * (1 - v23)
-            u11.run = v17 * v23
-            local v26 = 1
-            if Magnitude_1 > 1 then
-                local _ = HumanoidRootPart_upv_1.CFrame.LookVector
-                v26 = (v16.X * HumanoidRootPart_upv_1.CFrame.LookVector.X + v16.Z * HumanoidRootPart_upv_1.CFrame.LookVector.Z) / Magnitude_1 < -0.35 and -1 or v26
-            end
-            tbl_upv_5.walk = v26 * math.clamp(Magnitude_1 / (v20 * 7.5), 0.4, 1.8)
-            tbl_upv_5.run = v26 * math.clamp(Magnitude_1 / (v20 * 16.5), 0.55, 1.7)
-            if u10 and v17 > 0.1 and u10 then
-                u10:Stop(0.2)
-                u10 = nil
-                if success_upv_1 then
-                    u2.ResumeCharacterRotation("Emote")
+
+            local v89 = v37 and "idle2" or "idle"
+            v61[v89] = 1 - clampedValue
+            v61.walk = clampedValue * (1 - clampedValue2)
+            v61.run = clampedValue * clampedValue2
+            local v90 = 1
+
+            if 1 < magnitude then
+                local lookVector = humanoidRootPart.CFrame.LookVector
+
+                if (assemblyLinearVelocity.X * lookVector.X + (assemblyLinearVelocity.Z * lookVector.Z)) / magnitude < -0.35 then
+                    v90 = -1
                 end
             end
-        elseif u6 == "air" then
-            local v27 = os.clock() - u7
-            if u7 > 0 and v27 < 0.45 and v16.Y > -12 then
-                u11.jump = 1
-            else
-                u11.fall = 1
+
+            v67.walk = v90 * math.clamp(magnitude / (v83 * 7.5), 0.4, 1.8)
+            v67.run = v90 * math.clamp(magnitude / (v83 * 16.5), 0.55, 1.7)
+
+            if animationTrack and 0.1 < clampedValue and animationTrack then
+                animationTrack:Stop(0.2)
+                animationTrack = nil
+
+                if success then
+                    Camera.ResumeCharacterRotation("Emote")
+                end
             end
-        elseif u6 == "climb" then
-            u11.climb = 1
-            tbl_upv_5.climb = math.abs(u8) > 0.1 and u8 / (v20 * 5) or 0
-        elseif u6 == "swim" then
-            local v29 = math.clamp((u9 - 1) / 3, 0, 1)
-            u11.swim = v29
-            u11.swimidle = 1 - v29
-            tbl_upv_5.swim = math.clamp(u9 / 10, 0.6, 1.5)
-        elseif u6 == "sit" then
-            u11.sit = 1
-        end
-        v20 = 1 - math.exp(-14 * a1)
-        local v30 = nil
-        for key_5 in tbl_upv_1 do
-            local v31 = u11[key_5] or 0
-            v30 = tbl_upv_2[key_5] + (v31 - tbl_upv_2[key_5]) * v20
-            if math.abs(v31 - v30) < 0.002 then
-                v16 = v31
+        elseif v38 == "air" then
+            local v92 = os.clock() - v39
+
+            if not (0 < v39) or not (v92 < 0.45) or not (-12 < assemblyLinearVelocity.Y) then
+                v61.fall = 1
             else
-                v16 = v30
+                v61.jump = 1
             end
-            if v16 < 0.001 then
-                v30 = 1e-04
+        elseif v38 == "climb" then
+            local climb
+            v61.climb = 1
+
+            if not (0.1 < math.abs(v40)) then
+                climb = 0
             else
-                v30 = v16
+                climb = v40 / (v83 * 5)
             end
-            tbl_upv_2[key_5] = v30
+
+            v67.climb = climb
+        elseif v38 == "swim" then
+            local swim = math.clamp((v41 - 1) / 3, 0, 1)
+            v61.swim = swim
+            v61.swimidle = 1 - swim
+            v67.swim = math.clamp(v41 / 10, 0.6, 1.5)
+        elseif v38 == "sit" then
+            v61.sit = 1
         end
-        u14 = u14 + a1
-        if not (u14 >= 0.05) and u6 == u15 then
-            return
+
+        local v95 = 1 - math.exp(-14 * deltaTime)
+
+        for v96 in v16 do
+            local v97 = v61[v96] or 0
+            local v98 = v17[v96] + (v97 - v17[v96]) * v95
+
+            if not (math.abs(v97 - v98) < 0.002) then
+                v97 = v98
+            end
+
+            v17[v96] = v97 < 0.001 and 1e-04 or v97
         end
-        u14 = 0
-        u15 = u6
-        push()
+
+        v68 += deltaTime
+
+        if 0.05 <= v68 or v38 ~= v69 then
+            v68 = 0
+            v69 = v38
+            push()
+        end
     end
 )
-Humanoid_upv_1.Died:Connect(
+
+humanoid.Died:Connect(
     function()
         --[[
           line: 360
           upvalues:
-            u13 (ref,  index: 1)
-            u10 (ref,  index: 2)
-            success_upv_1 (copy, index: 3)
-            u2 (copy, index: 4)
-            tbl_upv_1 (copy, index: 5)
+            v66 (ref,  index: 1)
+            animationTrack (ref,  index: 2)
+            success (copy, index: 3)
+            Camera (copy, index: 4)
+            v16 (copy, index: 5)
         ]]
-        u13 = true
-        if u10 then
-            u10:Stop(0.2)
-            u10 = nil
-            if success_upv_1 then
-                u2.ResumeCharacterRotation("Emote")
+        v66 = true
+
+        if animationTrack then
+            animationTrack:Stop(0.2)
+            animationTrack = nil
+
+            if success then
+                Camera.ResumeCharacterRotation("Emote")
             end
         end
-        for _, value_4 in tbl_upv_1 do
-            value_4:Stop(0.3)
+
+        for _, v100 in v16 do
+            v100:Stop(0.3)
         end
     end
 )

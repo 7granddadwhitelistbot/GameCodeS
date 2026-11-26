@@ -1,3 +1,5 @@
-local v1 = require(script.Parent:WaitForChild("EventBus")).new()
-v1.data = {}
-return v1
+local EventBus = require(script.Parent:WaitForChild("EventBus"))
+local eventBus = EventBus.new()
+eventBus.data = {}
+
+return eventBus

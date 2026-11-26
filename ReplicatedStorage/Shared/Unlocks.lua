@@ -1,5 +1,6 @@
-local tbl_upv_1 = {}
-local success_1, u1 = pcall(
+local Weapons
+local v2 = {}
+local success, Weapons2 = pcall(
     function()
         --[[
           line: 30
@@ -7,10 +8,14 @@ local success_1, u1 = pcall(
         return (require(script.Parent:WaitForChild("Weapons")))
     end
 )
-if not (success_1) then
-    u1 = nil
+
+if success then
+    Weapons = Weapons2
+else
+    Weapons = nil
 end
-local success_2, v1 = pcall(
+
+local success2, Config = pcall(
     function()
         --[[
           line: 40
@@ -18,11 +23,11 @@ local success_2, v1 = pcall(
         return (require(script.Parent:WaitForChild("Config")))
     end
 )
-local u2 = success_2 and ((type(v1) == "table") and (game.PlaceId == v1.STAGING_PLACE_ID))
-tbl_upv_1.EVERYTHING_OWNED = u2
-tbl_upv_1.STARTERS = table.freeze({throwing_knives = true, sling = true, bandage = true, war_club = true, hide_armor = true, short_bow = true, bronze_sword = true, smoke_bomb = true})
-tbl_upv_1.DEFAULT = table.freeze({size = "medium"})
-tbl_upv_1.ITEMS = table.freeze(
+local everythingOwned = success2 and type(Config) == "table" and game.PlaceId == Config.STAGING_PLACE_ID
+v2.EVERYTHING_OWNED = everythingOwned
+v2.STARTERS = table.freeze({short_bow = true, bronze_sword = true, throwing_knives = true, bandage = true, smoke_bomb = true, sling = true, war_club = true, hide_armor = true})
+v2.DEFAULT = table.freeze({size = "medium"})
+v2.ITEMS = table.freeze(
     {
         obsidian_dagger = {size = "small"},
         bear_trap = {size = "small"},
@@ -55,289 +60,314 @@ tbl_upv_1.ITEMS = table.freeze(
         katana = {size = "large"}
     }
 )
-tbl_upv_1.DROPS = table.freeze({table.freeze({kind = "golden", key = "drop_golden", count = 1}), table.freeze({kind = "golden", key = "drop_golden5", count = 5})})
-tbl_upv_1.FIRST_DROP = table.freeze({minMatches = 1, key = "drop_golden_first", kind = "golden", duration = 172800, count = 1})
-tbl_upv_1.RESTORE_MIN_STREAK = 2
-tbl_upv_1.RESTORE_WINDOW = 86400
-tbl_upv_1.RESTORE = table.freeze({table.freeze({key = "streak_s", max = 4}), table.freeze({key = "streak_m", max = 9}), table.freeze({key = "streak_l", max = 1e+09})})
-function tbl_upv_1.IsAmmo(a1)
+v2.DROPS = table.freeze({table.freeze({key = "drop_golden", kind = "golden", count = 1}), table.freeze({key = "drop_golden5", kind = "golden", count = 5})})
+v2.FIRST_DROP = table.freeze({key = "drop_golden_first", kind = "golden", count = 1, duration = 172800, minMatches = 1})
+v2.RESTORE_MIN_STREAK = 2
+v2.RESTORE_WINDOW = 86400
+v2.RESTORE = table.freeze({table.freeze({key = "streak_s", max = 4}), table.freeze({key = "streak_m", max = 9}), table.freeze({key = "streak_l", max = 1e+09})})
+
+function v2.IsAmmo(key)
     --[[
       name: IsAmmo
       line: 133
       upvalues:
-        u1 (ref, index: 1)
+        Weapons (ref, index: 1)
     ]]
-    local v2 = (type(a1) == "string") and (v3 and ((type(v3.AMMO) == "table") and (v3.AMMO[a1])))
-    local v4 = false
-    if type(v2) == "table" then
-        v4 = v2.unlock == true
-    end
-    return v4
+    local v9 = type(key) == "string" and Weapons and type(Weapons.AMMO) == "table" and Weapons.AMMO[key]
+    return type(v9) == "table" and v9.unlock == true
 end
-local function known(a1)
+
+local function known(a11)
     --[[
       name: known
       line: 138
       upvalues:
-        u1 (ref,  index: 1)
-        tbl_upv_1 (copy, index: 2)
+        Weapons (ref,  index: 1)
+        v2 (copy, index: 2)
     ]]
-    if type(a1) ~= "string" then
+    if type(a11) ~= "string" then
         return false
     end
-    if v3 and type(v3.Get) == "function" then
-        local v5 = true
-        if v3.Get(a1) == nil then
-            v5 = tbl_upv_1.IsAmmo(a1)
-        end
-        return v5
+    if Weapons and type(Weapons.Get) == "function" then
+        return Weapons.Get(a11) ~= nil or v2.IsAmmo(a11)
     end
-    local v6 = true
-    if tbl_upv_1.STARTERS[a1] ~= true then
-        v6 = tbl_upv_1.ITEMS[a1] ~= nil
-    end
-    return v6
+
+    return v2.STARTERS[a11] == true or v2.ITEMS[a11] ~= nil
 end
-tbl_upv_1.IsKnown = known
-function tbl_upv_1.IsStarter(a1)
+
+v2.IsKnown = known
+
+function v2.IsStarter(starterKey)
     --[[
       name: IsStarter
       line: 149
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v2 (copy, index: 1)
     ]]
-    local v7 = (type(a1) == "string") and (tbl_upv_1.STARTERS[a1] == true)
-    return v7
+    return type(starterKey) == "string" and v2.STARTERS[starterKey] == true
 end
-local function row(a1)
+
+local function row(itemKey)
     --[[
       name: row
       line: 153
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v2 (copy, index: 1)
     ]]
-    if tbl_upv_1.IsStarter(a1) then
+    if v2.IsStarter(itemKey) then
         return nil
     end
-    local v8 = ((type(a1) == "string") and (tbl_upv_1.ITEMS[a1])) or (tbl_upv_1.DEFAULT)
-    return v8
+
+    return type(itemKey) == "string" and v2.ITEMS[itemKey] or v2.DEFAULT
 end
-function tbl_upv_1.SizeOf(a1)
+
+function v2.SizeOf(itemKey)
     --[[
       name: SizeOf
       line: 161
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v2 (copy, index: 1)
     ]]
-    local v9 = tbl_upv_1.IsStarter(a1) or ((type(a1) == "string") and (tbl_upv_1.ITEMS[a1])) or (tbl_upv_1.DEFAULT)
-    if v9 then
-        return v9.size
+    local v16
+
+    if v2.IsStarter(itemKey) then
+        v16 = nil
+    else
+        v16 = type(itemKey) == "string" and v2.ITEMS[itemKey] or v2.DEFAULT
     end
+
+    if v16 then
+        return v16.size
+    end
+
     return "starter"
 end
-function tbl_upv_1.Owns(a1, a2)
+
+function v2.Owns(a17, starterKey)
     --[[
       name: Owns
       line: 167
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u2 (copy, index: 2)
+        v2 (copy, index: 1)
+        everythingOwned (copy, index: 2)
         known (copy, index: 3)
-        u1 (ref,  index: 4)
+        Weapons (ref,  index: 4)
     ]]
-    if type(a2) ~= "string" then
+    if type(starterKey) ~= "string" then
         return false
     end
-    if tbl_upv_1.STARTERS[a2] or u2 and known(a2) or v3 and type(v3.IsStagingOnly) == "function" and v3.IsStagingOnly(a2) then
+    if v2.STARTERS[starterKey] then
         return true
     end
-    local v10 = (type(a1) == "table") and (a1[a2])
-    local v11 = false
-    if type(v10) == "table" then
-        v11 = (type(v10.level) == "number") and (v10.level >= 1)
+    if everythingOwned and known(starterKey) then
+        return true
     end
-    return v11
+    if Weapons and type(Weapons.IsStagingOnly) == "function" and Weapons.IsStagingOnly(starterKey) then
+        return true
+    end
+
+    local v19 = false
+
+    if type(a17) == "table" then
+        v19 = a17[starterKey]
+    end
+
+    return type(v19) == "table" and type(v19.level) == "number" and 1 <= v19.level
 end
-function tbl_upv_1.AllIds()
+
+function v2.AllIds()
     --[[
       name: AllIds
       line: 186
       upvalues:
-        u1 (ref,  index: 1)
-        tbl_upv_1 (copy, index: 2)
+        Weapons (ref,  index: 1)
+        v2 (copy, index: 2)
     ]]
-    local tbl_2 = {}
-    if v3 then
-        if type(v3.All) ~= "function" then
-            for key_1 in tbl_upv_1.STARTERS do
-                table.insert(tbl_2, key_1)
-            end
-            for key_2 in tbl_upv_1.ITEMS do
-                table.insert(tbl_2, key_2)
-            end
-            table.sort(tbl_2)
-        else
-            for _, value_1 in v3.All() do
-                table.insert(tbl_2, value_1.id)
-            end
-            if type(v3.UnlockAmmo) == "function" then
-                for _, value_2 in v3.UnlockAmmo() do
-                    table.insert(tbl_2, value_2)
-                end
-            end
+    local v20 = {}
+
+    if Weapons and type(Weapons.All) == "function" then
+        for _, v22 in Weapons.All() do
+            table.insert(v20, v22.id)
         end
-    else
-        for key_1 in tbl_upv_1.STARTERS do
-            table.insert(tbl_2, key_1)
+
+        if type(Weapons.UnlockAmmo) ~= "function" then
+            return v20
         end
-        for key_2 in tbl_upv_1.ITEMS do
-            table.insert(tbl_2, key_2)
+
+        for _, v24 in Weapons.UnlockAmmo() do
+            table.insert(v20, v24)
         end
-        table.sort(tbl_2)
+
+        return v20
     end
-    return tbl_2
+
+    for v25 in v2.STARTERS do
+        table.insert(v20, v25)
+    end
+
+    for v26 in v2.ITEMS do
+        table.insert(v20, v26)
+    end
+
+    table.sort(v20)
+
+    return v20
 end
-function tbl_upv_1.FirstLocked(a1, a2)
+
+function v2.FirstLocked(a27, a28)
     --[[
       name: FirstLocked
       line: 209
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v2 (copy, index: 1)
     ]]
-    if type(a2) == "table" then
-        if type(a2.items) == "table" then
-            local v12 = nil
-            for n_1 = 1, 16 do
-                v12 = a2.items[n_1]
-                if v12 == nil then
-                    break
-                end
-                if type(v12) ~= "string" then
-                    continue
-                end
-                local v13 = tbl_upv_1.Owns(a1, v12)
-                if v13 then
-                    continue
-                end
-                return v12
+    if type(a28) ~= "table" then
+        return nil
+    end
+
+    if type(a28.items) == "table" then
+        local item
+
+        for itemKey = 1, 16 do
+            item = a28.items[itemKey]
+
+            if item == nil then
+                break
             end
-        end
-        if type(a2.armor) == "string" and not (tbl_upv_1.Owns(a1, a2.armor)) then
-            return a2.armor
-        end
-        if type(a2.ammo) == "table" then
-            for key_3, value_3 in a2.ammo do
-                if type(value_3) ~= "number" or not (value_3 >= 1) or not (tbl_upv_1.IsAmmo(key_3)) or tbl_upv_1.Owns(a1, key_3) then
-                    continue
+
+            if type(item) == "string" then
+                if not v2.Owns(a27, item) then
+                    return item
                 end
-                return key_3
             end
         end
     end
+
+    if type(a28.armor) == "string" and not v2.Owns(a27, a28.armor) then
+        return a28.armor
+    end
+
+    if type(a28.ammo) == "table" then
+        for v31, v32 in a28.ammo do
+            if type(v32) == "number" and 1 <= v32 and v2.IsAmmo(v31) and not v2.Owns(a27, v31) then
+                return v31
+            end
+        end
+    end
+
     return nil
 end
-function tbl_upv_1.FilterLoadout(a1, a2)
+
+function v2.FilterLoadout(a33, a34)
     --[[
       name: FilterLoadout
       line: 241
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
+        v2 (copy, index: 1)
+        Weapons (ref,  index: 2)
     ]]
-    local tbl_3 = {}
-    if type(a2) == "table" and type(a2.items) == "table" then
-        for n_2 = 1, 16 do
-            local v14 = a2.items[n_2]
-            if v14 == nil then
+    local armor
+    local items = {}
+
+    if type(a34) == "table" and type(a34.items) == "table" then
+        for itemKey = 1, 16 do
+            local item = a34.items[itemKey]
+            if item == nil then
                 break
             end
-            if type(v14) ~= "string" then
-                continue
-            end
-            local v15 = tbl_upv_1.Owns(a1, v14)
-            if v15 then
-                table.insert(tbl_3, v14)
+
+            if type(item) == "string" and v2.Owns(a33, item) then
+                table.insert(items, item)
             end
         end
     end
-    local v16
-    if type(a2) == "table" and type(a2.armor) == "string" and tbl_upv_1.Owns(a1, a2.armor) then
-        v16 = a2.armor
+
+    if type(a34) ~= "table" or type(a34.armor) ~= "string" or not v2.Owns(a33, a34.armor) then
+        armor = false
     else
-        v16 = false
+        armor = a34.armor
     end
-    local v17 = nil
-    if type(a2) == "table" and type(a2.ammo) == "table" then
-        v17 = {}
-        local v18 = nil
-        if v3 and type(v3.AmmoNeeded) == "function" then
-            local v19 = v3.AmmoNeeded({items = tbl_3})
-            v18 = v19
+
+    local ammo = nil
+
+    if type(a34) == "table" and type(a34.ammo) == "table" then
+        ammo = {}
+        local v40 = nil
+
+        if Weapons and type(Weapons.AmmoNeeded) == "function" then
+            v40 = Weapons.AmmoNeeded({items = items})
         end
-        for key_4, value_4 in a2.ammo do
-            if type(key_4) ~= "string" then
-                continue
-            end
-            if (v18 == nil or v18[key_4]) and (not (tbl_upv_1.IsAmmo(key_4)) or tbl_upv_1.Owns(a1, key_4)) then
-                v17[key_4] = value_4
+
+        for v41, v42 in a34.ammo do
+            if type(v41) == "string" then
+                if v40 ~= nil and not v40[v41] then
+                    continue
+                end
+
+                if not v2.IsAmmo(v41) or v2.Owns(a33, v41) then
+                    ammo[v41] = v42
+                end
             end
         end
     end
-    local tbl_4 = {}
-    tbl_4.items = tbl_3
-    tbl_4.armor = v16
-    tbl_4.ammo = v17
-    return tbl_4
+
+    return {items = items, armor = armor, ammo = ammo}
 end
-function tbl_upv_1.RestoreTier(a1)
+
+function v2.RestoreTier(a43)
     --[[
       name: RestoreTier
       line: 271
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v2 (copy, index: 1)
     ]]
-    for _, value_5 in tbl_upv_1.RESTORE do
-        if not (a1 <= value_5.max) then
-            continue
+    for _, v45 in v2.RESTORE do
+        if a43 <= v45.max then
+            return v45
         end
-        return value_5
     end
-    return tbl_upv_1.RESTORE[#tbl_upv_1.RESTORE]
+
+    return v2.RESTORE[#v2.RESTORE]
 end
-function tbl_upv_1.DropProduct(a1)
+
+function v2.DropProduct(a46)
     --[[
       name: DropProduct
       line: 280
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v2 (copy, index: 1)
     ]]
-    if a1 ~= tbl_upv_1.FIRST_DROP.key then
-        for _, value_6 in tbl_upv_1.DROPS do
-            if value_6.key ~= a1 then
-                continue
-            end
-            return value_6
-        end
-        return nil
+    if a46 == v2.FIRST_DROP.key then
+        return v2.FIRST_DROP
     end
-    return tbl_upv_1.FIRST_DROP
+
+    for _, drop in v2.DROPS do
+        if drop.key == a46 then
+            return drop
+        end
+    end
+
+    return nil
 end
-function tbl_upv_1.ProductKey(a1, a2)
+
+function v2.ProductKey(a49, a50)
     --[[
       name: ProductKey
       line: 292
     ]]
-    if a1 ~= "unlock" then
-        return a2
+    if a49 == "unlock" then
+        return "unlock_" .. a50
     end
-    return "unlock_" .. a2
+
+    return a50
 end
-function tbl_upv_1.Cost(a1)
+
+function v2.Cost(a51)
     --[[
       name: Cost
       line: 297
     ]]
-    local success_3, v20 = pcall(
+    local success, Shards = pcall(
         function()
             --[[
               line: 298
@@ -345,9 +375,11 @@ function tbl_upv_1.Cost(a1)
             return (require(script.Parent:WaitForChild("Shards")))
         end
     )
-    if success_3 then
-        return (v20.UnlockCost(a1))
+    if success then
+        return (Shards.UnlockCost(a51))
     end
+
     return 0
 end
-return tbl_upv_1
+
+return v2

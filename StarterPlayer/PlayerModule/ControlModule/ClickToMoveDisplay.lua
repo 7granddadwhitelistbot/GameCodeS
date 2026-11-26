@@ -1,684 +1,768 @@
-local tbl_1 = {}
-local u1 = "rbxasset://textures/ui/traildot.png"
-local u2 = "rbxasset://textures/ui/waypoint.png"
-local u3 = false
-local u4 = UDim2.new(0, 42, 0, 50)
-local u5 = Vector2.new(0, 0.5)
-local u6 = Vector2.new(0, 1)
-local u7 = Vector2.new(0, 0.5)
-local u8 = Vector2.new(0.1, 0.5)
-local u9 = Vector2.new(-0.1, 0.5)
-local u10 = Vector2.new(1.5, 1.5)
-local u11 = RaycastParams.new()
-u11.FilterType = Enum.RaycastFilterType.Exclude
-local Players_1 = game:GetService("Players")
-local TweenService_upv_1 = game:GetService("TweenService")
-local RunService_upv_1 = game:GetService("RunService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local u12 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil").getUserFlag("UserRaycastUpdateAPI2")
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
+local v1 = {}
+local image = "rbxasset://textures/ui/traildot.png"
+local image2 = "rbxasset://textures/ui/waypoint.png"
+local alwaysOnTop = false
+local size = UDim2.new(0, 42, 0, 50)
+local sizeOffset = Vector2.new(0, 0.5)
+local sizeOffset2 = Vector2.new(0, 1)
+local sizeOffset3 = Vector2.new(0, 0.5)
+local sizeOffset4 = Vector2.new(0.1, 0.5)
+local sizeOffset5 = Vector2.new(-0.1, 0.5)
+local size2 = Vector2.new(1.5, 1.5)
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+local players = game:GetService("Players")
+local tweenService = game:GetService("TweenService")
+local runService = game:GetService("RunService")
+local workspace = game:GetService("Workspace")
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v18 = CommonUtils.get("FlagUtil")
+local userFlag = v18.getUserFlag("UserRaycastUpdateAPI2")
+local localPlayer = players.LocalPlayer
+
 local function CreateWaypointTemplates()
     --[[
       name: CreateWaypointTemplates
       line: 55
       upvalues:
-        u10 (ref,  index: 1)
-        u3 (ref,  index: 2)
-        u1 (ref,  index: 3)
-        u4 (copy, index: 4)
-        u5 (copy, index: 5)
-        u2 (ref,  index: 6)
-        u7 (copy, index: 7)
+        size2 (ref,  index: 1)
+        alwaysOnTop (ref,  index: 2)
+        image (ref,  index: 3)
+        size (copy, index: 4)
+        sizeOffset (copy, index: 5)
+        image2 (ref,  index: 6)
+        sizeOffset3 (copy, index: 7)
     ]]
-    local v1 = Instance.new("Part")
-    v1.Size = Vector3.new(1, 1, 1)
-    v1.Anchored = true
-    v1.CanCollide = false
-    v1.Name = "TrailDot"
-    v1.Transparency = 1
-    local v2 = Instance.new("ImageHandleAdornment")
-    v2.Name = "TrailDotImage"
-    v2.Size = u10
-    v2.SizeRelativeOffset = Vector3.new(0, 0, -0.10000000149011612)
-    v2.AlwaysOnTop = u3
-    v2.Image = u1
-    v2.Adornee = v1
-    v2.Parent = v1
-    local v3 = Instance.new("Part")
-    v3.Size = Vector3.new(2, 2, 2)
-    v3.Anchored = true
-    v3.CanCollide = false
-    v3.Name = "EndWaypoint"
-    v3.Transparency = 1
-    local v4 = Instance.new("ImageHandleAdornment")
-    v4.Name = "TrailDotImage"
-    v4.Size = u10
-    v4.SizeRelativeOffset = Vector3.new(0, 0, -0.10000000149011612)
-    v4.AlwaysOnTop = u3
-    v4.Image = u1
-    v4.Adornee = v3
-    v4.Parent = v3
-    local v5 = Instance.new("BillboardGui")
-    v5.Name = "EndWaypointBillboard"
-    v5.Size = u4
-    v5.LightInfluence = 0
-    v5.SizeOffset = u5
-    v5.AlwaysOnTop = true
-    v5.Adornee = v3
-    v5.Parent = v3
-    local v6 = Instance.new("ImageLabel")
-    v6.Image = u2
-    v6.BackgroundTransparency = 1
-    v6.Size = UDim2.new(1, 0, 1, 0)
-    v6.Parent = v5
-    local v7 = Instance.new("Part")
-    v7.Size = Vector3.new(2, 2, 2)
-    v7.Anchored = true
-    v7.CanCollide = false
-    v7.Name = "FailureWaypoint"
-    v7.Transparency = 1
-    local v8 = Instance.new("ImageHandleAdornment")
-    v8.Name = "TrailDotImage"
-    v8.Size = u10
-    v8.SizeRelativeOffset = Vector3.new(0, 0, -0.10000000149011612)
-    v8.AlwaysOnTop = u3
-    v8.Image = u1
-    v8.Adornee = v7
-    v8.Parent = v7
-    local v9 = Instance.new("BillboardGui")
-    v9.Name = "FailureWaypointBillboard"
-    v9.Size = u4
-    v9.LightInfluence = 0
-    v9.SizeOffset = u7
-    v9.AlwaysOnTop = true
-    v9.Adornee = v7
-    v9.Parent = v7
-    local v10 = Instance.new("Frame")
-    v10.BackgroundTransparency = 1
-    v10.Size = UDim2.new(0, 0, 0, 0)
-    v10.Position = UDim2.new(0.5, 0, 1, 0)
-    v10.Parent = v9
-    local v11 = Instance.new("ImageLabel")
-    v11.Image = u2
-    v11.BackgroundTransparency = 1
-    v11.Position = UDim2.new(0, -u4.X.Offset / 2, 0, -u4.Y.Offset)
-    v11.Size = u4
-    v11.Parent = v10
-    return v1, v3, v7
+    local trailDot = Instance.new("Part")
+    trailDot.Size = Vector3.new(1, 1, 1)
+    trailDot.Anchored = true
+    trailDot.CanCollide = false
+    trailDot.Name = "TrailDot"
+    trailDot.Transparency = 1
+
+    local trailDotImage = Instance.new("ImageHandleAdornment")
+    trailDotImage.Name = "TrailDotImage"
+    trailDotImage.Size = size2
+    trailDotImage.SizeRelativeOffset = Vector3.new(0, 0, -0.10000000149011612)
+    trailDotImage.AlwaysOnTop = alwaysOnTop
+    trailDotImage.Image = image
+    trailDotImage.Adornee = trailDot
+    trailDotImage.Parent = trailDot
+
+    local endWaypoint = Instance.new("Part")
+    endWaypoint.Size = Vector3.new(2, 2, 2)
+    endWaypoint.Anchored = true
+    endWaypoint.CanCollide = false
+    endWaypoint.Name = "EndWaypoint"
+    endWaypoint.Transparency = 1
+
+    local trailDotImage2 = Instance.new("ImageHandleAdornment")
+    trailDotImage2.Name = "TrailDotImage"
+    trailDotImage2.Size = size2
+    trailDotImage2.SizeRelativeOffset = Vector3.new(0, 0, -0.10000000149011612)
+    trailDotImage2.AlwaysOnTop = alwaysOnTop
+    trailDotImage2.Image = image
+    trailDotImage2.Adornee = endWaypoint
+    trailDotImage2.Parent = endWaypoint
+
+    local endWaypointBillboard = Instance.new("BillboardGui")
+    endWaypointBillboard.Name = "EndWaypointBillboard"
+    endWaypointBillboard.Size = size
+    endWaypointBillboard.LightInfluence = 0
+    endWaypointBillboard.SizeOffset = sizeOffset
+    endWaypointBillboard.AlwaysOnTop = true
+    endWaypointBillboard.Adornee = endWaypoint
+    endWaypointBillboard.Parent = endWaypoint
+
+    local imageLabel = Instance.new("ImageLabel")
+    imageLabel.Image = image2
+    imageLabel.BackgroundTransparency = 1
+    imageLabel.Size = UDim2.new(1, 0, 1, 0)
+    imageLabel.Parent = endWaypointBillboard
+
+    local failureWaypoint = Instance.new("Part")
+    failureWaypoint.Size = Vector3.new(2, 2, 2)
+    failureWaypoint.Anchored = true
+    failureWaypoint.CanCollide = false
+    failureWaypoint.Name = "FailureWaypoint"
+    failureWaypoint.Transparency = 1
+
+    local trailDotImage3 = Instance.new("ImageHandleAdornment")
+    trailDotImage3.Name = "TrailDotImage"
+    trailDotImage3.Size = size2
+    trailDotImage3.SizeRelativeOffset = Vector3.new(0, 0, -0.10000000149011612)
+    trailDotImage3.AlwaysOnTop = alwaysOnTop
+    trailDotImage3.Image = image
+    trailDotImage3.Adornee = failureWaypoint
+    trailDotImage3.Parent = failureWaypoint
+
+    local failureWaypointBillboard = Instance.new("BillboardGui")
+    failureWaypointBillboard.Name = "FailureWaypointBillboard"
+    failureWaypointBillboard.Size = size
+    failureWaypointBillboard.LightInfluence = 0
+    failureWaypointBillboard.SizeOffset = sizeOffset3
+    failureWaypointBillboard.AlwaysOnTop = true
+    failureWaypointBillboard.Adornee = failureWaypoint
+    failureWaypointBillboard.Parent = failureWaypoint
+
+    local parent = Instance.new("Frame")
+    parent.BackgroundTransparency = 1
+    parent.Size = UDim2.new(0, 0, 0, 0)
+    parent.Position = UDim2.new(0.5, 0, 1, 0)
+    parent.Parent = failureWaypointBillboard
+
+    local imageLabel2 = Instance.new("ImageLabel")
+    imageLabel2.Image = image2
+    imageLabel2.BackgroundTransparency = 1
+    imageLabel2.Position = UDim2.new(0, -size.X.Offset / 2, 0, -size.Y.Offset)
+    imageLabel2.Size = size
+    imageLabel2.Parent = parent
+
+    return trailDot, endWaypoint, failureWaypoint
 end
-local u13, u14
-local u15, u13, u14 = CreateWaypointTemplates()
+
+local waypointTemplates, v34, v35 = CreateWaypointTemplates()
+
 local function getTrailDotParent()
     --[[
       name: getTrailDotParent
-      line: 141
+      line: 139
       upvalues:
-        Workspace_upv_1 (copy, index: 1)
+        workspace (copy, index: 1)
     ]]
-    local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
-    local v12 = CurrentCamera_1:FindFirstChild("ClickToMoveDisplay")
-    if not (v12) then
-        v12 = Instance.new("Model")
-        v12.Name = "ClickToMoveDisplay"
-        v12.Parent = CurrentCamera_1
+    local camera = workspace.CurrentCamera
+    local clickToMoveDisplay = camera:FindFirstChild("ClickToMoveDisplay")
+    if not clickToMoveDisplay then
+        clickToMoveDisplay = Instance.new("Model")
+        clickToMoveDisplay.Name = "ClickToMoveDisplay"
+        clickToMoveDisplay.Parent = camera
     end
-    return v12
+
+    return clickToMoveDisplay
 end
-local tbl_upv_2 = {}
-tbl_upv_2.__index = tbl_upv_2
-function tbl_upv_2.Destroy(a1)
-    --[[
-      name: Destroy
-      line: 177
-    ]]
-    a1.DisplayModel:Destroy()
-end
-local function placePathWaypoint(a1, a2)
+
+local function placePathWaypoint(a40, a41)
     --[[
       name: placePathWaypoint
-      line: 152
+      line: 150
       upvalues:
-        u12 (copy, index: 1)
-        u11 (copy, index: 2)
-        Workspace_upv_1 (copy, index: 3)
-        LocalPlayer_upv_1 (copy, index: 4)
+        userFlag (copy, index: 1)
+        raycastParams (copy, index: 2)
+        workspace (copy, index: 3)
+        localPlayer (copy, index: 4)
     ]]
-    local v13 = nil
-    if u12 then
-        u11.FilterDescendantsInstances = {Workspace_upv_1.CurrentCamera, LocalPlayer_upv_1.Character}
-        v13 = Workspace_upv_1:Raycast(a2 + Vector3.new(0, 2.5, 0), Vector3.new(-0, -10, -0), u11)
-        if v13 then
-            a1.CFrame = CFrame.lookAlong(v13.Position, v13.Normal)
-            local CurrentCamera_2 = Workspace_upv_1.CurrentCamera
-            local v14 = CurrentCamera_2:FindFirstChild("ClickToMoveDisplay")
-            if not (v14) then
-                v14 = Instance.new("Model")
-                v14.Name = "ClickToMoveDisplay"
-                v14.Parent = CurrentCamera_2
+    if userFlag then
+        raycastParams.FilterDescendantsInstances = {workspace.CurrentCamera, localPlayer.Character}
+
+        if const raycastResult = workspace:Raycast(a41 + Vector3.new(0, 2.5, 0), Vector3.new(-0, -10, -0), raycastParams) then
+            a40.CFrame = CFrame.lookAlong(raycastResult.Position, raycastResult.Normal)
+            local camera = workspace.CurrentCamera
+            local clickToMoveDisplay = camera:FindFirstChild("ClickToMoveDisplay")
+            if not clickToMoveDisplay then
+                clickToMoveDisplay = Instance.new("Model")
+                clickToMoveDisplay.Name = "ClickToMoveDisplay"
+                clickToMoveDisplay.Parent = camera
             end
-            a1.Parent = v14
+
+            a40.Parent = clickToMoveDisplay
         end
     else
-        local v15, v16, v17 = Workspace_upv_1:FindPartOnRayWithIgnoreList(Ray.new(a2 + Vector3.new(0, 2.5, 0), Vector3.new(0, -10, 0)), {Workspace_upv_1.CurrentCamera, LocalPlayer_upv_1.Character})
-        if v15 then
-            a1.CFrame = CFrame.new(v16, v16 + v17)
-            local CurrentCamera_3 = Workspace_upv_1.CurrentCamera
-            local v18 = CurrentCamera_3:FindFirstChild("ClickToMoveDisplay")
-            if not (v18) then
-                v18 = Instance.new("Model")
-                v18.Name = "ClickToMoveDisplay"
-                v18.Parent = CurrentCamera_3
+        local partOnRay, v46, v47 = workspace:FindPartOnRayWithIgnoreList(Ray.new(a41 + Vector3.new(0, 2.5, 0), Vector3.new(0, -10, 0)), {workspace.CurrentCamera, localPlayer.Character})
+        if partOnRay then
+            a40.CFrame = CFrame.new(v46, v46 + v47)
+            local camera = workspace.CurrentCamera
+            local clickToMoveDisplay = camera:FindFirstChild("ClickToMoveDisplay")
+            if not clickToMoveDisplay then
+                clickToMoveDisplay = Instance.new("Model")
+                clickToMoveDisplay.Name = "ClickToMoveDisplay"
+                clickToMoveDisplay.Parent = camera
             end
-            a1.Parent = v18
+
+            a40.Parent = clickToMoveDisplay
         end
     end
 end
-function tbl_upv_2.NewDisplayModel(a1, a2)
-    --[[
-      name: NewDisplayModel
-      line: 181
-      upvalues:
-        u15 (ref,  index: 1)
-        placePathWaypoint (copy, index: 2)
-    ]]
-    local v19 = u15:Clone()
-    placePathWaypoint(v19, a2)
-    return v19
-end
-function tbl_upv_2.new(a1, a2)
-    --[[
-      name: new
-      line: 187
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-    ]]
-    local v20 = setmetatable({}, tbl_upv_2)
-    v20.DisplayModel = v20:NewDisplayModel(a1)
-    v20.ClosestWayPoint = a2
-    return v20
-end
-local tbl_upv_3 = {}
-tbl_upv_3.__index = tbl_upv_3
-function tbl_upv_3.Destroy(a1)
+
+local Class = {}
+Class.__index = Class
+
+function Class.Destroy(self)
     --[[
       name: Destroy
-      line: 199
+      line: 173
     ]]
-    a1.Destroyed = true
-    a1.Tween:Cancel()
-    a1.DisplayModel:Destroy()
+    self.DisplayModel:Destroy()
 end
-function tbl_upv_3.NewDisplayModel(a1, a2)
+
+function Class.NewDisplayModel(self, a53)
     --[[
       name: NewDisplayModel
-      line: 205
+      line: 177
       upvalues:
-        u13 (ref,  index: 1)
+        waypointTemplates (ref,  index: 1)
         placePathWaypoint (copy, index: 2)
     ]]
-    local v21 = u13:Clone()
-    placePathWaypoint(v21, a2)
-    return v21
+    local waypointTemplates2 = waypointTemplates:Clone()
+    placePathWaypoint(waypointTemplates2, a53)
+
+    return waypointTemplates2
 end
-function tbl_upv_3.CreateTween(a1)
-    --[[
-      name: CreateTween
-      line: 211
-      upvalues:
-        TweenService_upv_1 (copy, index: 1)
-        u6 (copy, index: 2)
-    ]]
-    local v22 = TweenService_upv_1:Create(a1.DisplayModel.EndWaypointBillboard, TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, -1, true), {SizeOffset = u6})
-    v22:Play()
-    return v22
-end
-function tbl_upv_3.TweenInFrom(a1, a2)
-    --[[
-      name: TweenInFrom
-      line: 222
-      upvalues:
-        TweenService_upv_1 (copy, index: 1)
-    ]]
-    a1.DisplayModel.EndWaypointBillboard.StudsOffset = Vector3.new(0, (a2 - a1.DisplayModel.Position).Y, 0)
-    local v23 = TweenService_upv_1:Create(a1.DisplayModel.EndWaypointBillboard, TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {StudsOffset = Vector3.new(0, 0, 0)})
-    v23:Play()
-    return v23
-end
-function tbl_upv_3.new(a1, a2, a3)
+
+function Class.new(a55, closestWayPoint)
     --[[
       name: new
-      line: 236
+      line: 183
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    local u16 = setmetatable({}, tbl_upv_3)
-    u16.DisplayModel = u16:NewDisplayModel(a1)
-    u16.Destroyed = false
-    if (a3) and ((a3 - a1).Magnitude > 5) then
-        u16.Tween = u16:TweenInFrom(a3)
+    local v57 = setmetatable({}, Class)
+    v57.DisplayModel = v57:NewDisplayModel(a55)
+    v57.ClosestWayPoint = closestWayPoint
+    return v57
+end
+
+local Class2 = {}
+Class2.__index = Class2
+
+function Class2.Destroy(self)
+    --[[
+      name: Destroy
+      line: 195
+    ]]
+    self.Destroyed = true
+    self.Tween:Cancel()
+    self.DisplayModel:Destroy()
+end
+
+function Class2.NewDisplayModel(self, a61)
+    --[[
+      name: NewDisplayModel
+      line: 201
+      upvalues:
+        v34 (ref,  index: 1)
+        placePathWaypoint (copy, index: 2)
+    ]]
+    local v62 = v34:Clone()
+    placePathWaypoint(v62, a61)
+
+    return v62
+end
+
+function Class2.CreateTween(self)
+    --[[
+      name: CreateTween
+      line: 207
+      upvalues:
+        tweenService (copy, index: 1)
+        sizeOffset2 (copy, index: 2)
+    ]]
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, -1, true)
+    local tween = tweenService:Create(self.DisplayModel.EndWaypointBillboard, tweenInfo, {SizeOffset = sizeOffset2})
+    tween:Play()
+
+    return tween
+end
+
+function Class2.TweenInFrom(self, a67)
+    --[[
+      name: TweenInFrom
+      line: 218
+      upvalues:
+        tweenService (copy, index: 1)
+    ]]
+    local position = self.DisplayModel.Position
+    local v69 = a67 - position
+    self.DisplayModel.EndWaypointBillboard.StudsOffset = Vector3.new(0, v69.Y, 0)
+    local tweenInfo = TweenInfo.new(1, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+    local tween = tweenService:Create(self.DisplayModel.EndWaypointBillboard, tweenInfo, {StudsOffset = Vector3.new(0, 0, 0)})
+    tween:Play()
+
+    return tween
+end
+
+function Class2.new(a72, closestWayPoint, a74)
+    --[[
+      name: new
+      line: 229
+      upvalues:
+        Class2 (copy, index: 1)
+    ]]
+    local v75 = setmetatable({}, Class2)
+    v75.DisplayModel = v75:NewDisplayModel(a72)
+    v75.Destroyed = false
+
+    if not a74 or not (5 < (a74 - a72).Magnitude) then
+        v75.Tween = v75:CreateTween()
+    else
+        v75.Tween = v75:TweenInFrom(a74)
+
         coroutine.wrap(
             function()
                 --[[
-                  line: 243
+                  line: 236
                   upvalues:
-                    u16 (copy, index: 1)
+                    v75 (copy, index: 1)
                 ]]
-                u16.Tween.Completed:Wait()
-                if (u16.Destroyed) then
-                    return
+                v75.Tween.Completed:Wait()
+
+                if not v75.Destroyed then
+                    v75.Tween = v75:CreateTween()
                 end
-                u16.Tween = u16:CreateTween()
             end
         )()
-    else
-        u16.Tween = u16:CreateTween()
     end
-    u16.ClosestWayPoint = a2
-    return u16
+
+    v75.ClosestWayPoint = closestWayPoint
+
+    return v75
 end
-local tbl_upv_4 = {}
-tbl_upv_4.__index = tbl_upv_4
-function tbl_upv_4.Hide(a1)
+
+local Class3 = {}
+Class3.__index = Class3
+
+function Class3.Hide(self)
     --[[
       name: Hide
-      line: 260
+      line: 253
     ]]
-    a1.DisplayModel.Parent = nil
+    self.DisplayModel.Parent = nil
 end
-function tbl_upv_4.Destroy(a1)
+
+function Class3.Destroy(self)
     --[[
       name: Destroy
-      line: 264
+      line: 257
     ]]
-    a1.DisplayModel:Destroy()
+    self.DisplayModel:Destroy()
 end
-function tbl_upv_4.NewDisplayModel(a1, a2)
+
+function Class3.NewDisplayModel(self, a80)
     --[[
       name: NewDisplayModel
-      line: 268
+      line: 261
       upvalues:
-        u14 (ref,  index: 1)
+        v35 (ref,  index: 1)
         placePathWaypoint (copy, index: 2)
-        u12 (copy, index: 3)
-        u11 (copy, index: 4)
-        Workspace_upv_1 (copy, index: 5)
-        LocalPlayer_upv_1 (copy, index: 6)
+        userFlag (copy, index: 3)
+        raycastParams (copy, index: 4)
+        workspace (copy, index: 5)
+        localPlayer (copy, index: 6)
     ]]
-    local v24 = u14:Clone()
-    placePathWaypoint(v24, a2)
-    local v25 = nil
-    if u12 then
-        u11.FilterDescendantsInstances = {Workspace_upv_1.CurrentCamera, LocalPlayer_upv_1.Character}
-        v25 = Workspace_upv_1:Raycast(a2 + Vector3.new(0, 2.5, 0), Vector3.new(-0, -10, -0), u11)
-        if v25 then
-            v24.CFrame = CFrame.lookAlong(v25.Position, v25.Normal)
-            local CurrentCamera_4 = Workspace_upv_1.CurrentCamera
-            local v26 = CurrentCamera_4:FindFirstChild("ClickToMoveDisplay")
-            if not (v26) then
-                v26 = Instance.new("Model")
-                v26.Name = "ClickToMoveDisplay"
-                v26.Parent = CurrentCamera_4
+    local v81 = v35:Clone()
+    placePathWaypoint(v81, a80)
+
+    if userFlag then
+        raycastParams.FilterDescendantsInstances = {workspace.CurrentCamera, localPlayer.Character}
+
+        if const raycastResult = workspace:Raycast(a80 + Vector3.new(0, 2.5, 0), Vector3.new(-0, -10, -0), raycastParams) then
+            v81.CFrame = CFrame.lookAlong(raycastResult.Position, raycastResult.Normal)
+            local camera = workspace.CurrentCamera
+            local clickToMoveDisplay = camera:FindFirstChild("ClickToMoveDisplay")
+            if not clickToMoveDisplay then
+                clickToMoveDisplay = Instance.new("Model")
+                clickToMoveDisplay.Name = "ClickToMoveDisplay"
+                clickToMoveDisplay.Parent = camera
             end
-            v24.Parent = v26
-            return v24
+
+            v81.Parent = clickToMoveDisplay
+
+            return v81
         end
     else
-        local v27, v28, v29 = Workspace_upv_1:FindPartOnRayWithIgnoreList(Ray.new(a2 + Vector3.new(0, 2.5, 0), Vector3.new(0, -10, 0)), {Workspace_upv_1.CurrentCamera, LocalPlayer_upv_1.Character})
-        if v27 then
-            v24.CFrame = CFrame.new(v28, v28 + v29)
-            local CurrentCamera_5 = Workspace_upv_1.CurrentCamera
-            local v30 = CurrentCamera_5:FindFirstChild("ClickToMoveDisplay")
-            if not (v30) then
-                v30 = Instance.new("Model")
-                v30.Name = "ClickToMoveDisplay"
-                v30.Parent = CurrentCamera_5
+        local partOnRay, v86, v87 = workspace:FindPartOnRayWithIgnoreList(Ray.new(a80 + Vector3.new(0, 2.5, 0), Vector3.new(0, -10, 0)), {workspace.CurrentCamera, localPlayer.Character})
+        if partOnRay then
+            v81.CFrame = CFrame.new(v86, v86 + v87)
+            local camera = workspace.CurrentCamera
+            local clickToMoveDisplay = camera:FindFirstChild("ClickToMoveDisplay")
+            if not clickToMoveDisplay then
+                clickToMoveDisplay = Instance.new("Model")
+                clickToMoveDisplay.Name = "ClickToMoveDisplay"
+                clickToMoveDisplay.Parent = camera
             end
-            v24.Parent = v30
+
+            v81.Parent = clickToMoveDisplay
         end
     end
-    return v24
+
+    return v81
 end
-function tbl_upv_4.RunFailureTween(a1)
+
+function Class3.RunFailureTween(self)
     --[[
       name: RunFailureTween
-      line: 292
+      line: 284
       upvalues:
-        TweenService_upv_1 (copy, index: 1)
-        u8 (copy, index: 2)
-        u9 (copy, index: 3)
-        u7 (copy, index: 4)
+        tweenService (copy, index: 1)
+        sizeOffset4 (copy, index: 2)
+        sizeOffset5 (copy, index: 3)
+        sizeOffset3 (copy, index: 4)
     ]]
     wait(0.125)
-    local v31 = TweenInfo.new(0.0625, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-    local v32 = TweenService_upv_1:Create(a1.DisplayModel.FailureWaypointBillboard, v31, {SizeOffset = u8})
-    v32:Play()
-    TweenService_upv_1:Create(a1.DisplayModel.FailureWaypointBillboard.Frame, v31, {Rotation = 10}):Play()
-    v32.Completed:wait()
-    local v33 = TweenService_upv_1:Create(a1.DisplayModel.FailureWaypointBillboard, TweenInfo.new(0.125, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 3, true), {SizeOffset = u9})
-    v33:Play()
-    local v34 = TweenInfo.new(0.125, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 3, true)
-    local tbl_5 = {}
-    tbl_5.ImageColor3 = Color3.new(0.75, 0.75, 0.75)
-    TweenService_upv_1:Create(a1.DisplayModel.FailureWaypointBillboard.Frame.ImageLabel, v34, tbl_5):Play()
-    TweenService_upv_1:Create(a1.DisplayModel.FailureWaypointBillboard.Frame, v34, {Rotation = -10}):Play()
-    v33.Completed:wait()
-    local v35 = TweenInfo.new(0.0625, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-    local v36 = TweenService_upv_1:Create(a1.DisplayModel.FailureWaypointBillboard, v35, {SizeOffset = u7})
-    v36:Play()
-    TweenService_upv_1:Create(a1.DisplayModel.FailureWaypointBillboard.Frame, v35, {Rotation = 0}):Play()
-    v36.Completed:wait()
+    local tweenInfo = TweenInfo.new(0.0625, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+    local tween = tweenService:Create(self.DisplayModel.FailureWaypointBillboard, tweenInfo, {SizeOffset = sizeOffset4})
+    tween:Play()
+    tweenService:Create(self.DisplayModel.FailureWaypointBillboard.Frame, tweenInfo, {Rotation = 10}):Play()
+    tween.Completed:wait()
+    local tweenInfo2 = TweenInfo.new(0.125, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 3, true)
+    local tween2 = tweenService:Create(self.DisplayModel.FailureWaypointBillboard, tweenInfo2, {SizeOffset = sizeOffset5})
+    tween2:Play()
+    local tweenInfo3 = TweenInfo.new(0.125, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 3, true)
+    local tween3 = tweenService:Create(self.DisplayModel.FailureWaypointBillboard.Frame.ImageLabel, tweenInfo3, {ImageColor3 = Color3.new(0.75, 0.75, 0.75)})
+    tween3:Play()
+    local tween4 = tweenService:Create(self.DisplayModel.FailureWaypointBillboard.Frame, tweenInfo3, {Rotation = -10})
+    tween4:Play()
+    tween2.Completed:wait()
+    local tweenInfo4 = TweenInfo.new(0.0625, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+    local tween5 = tweenService:Create(self.DisplayModel.FailureWaypointBillboard, tweenInfo4, {SizeOffset = sizeOffset3})
+    tween5:Play()
+    tweenService:Create(self.DisplayModel.FailureWaypointBillboard.Frame, tweenInfo4, {Rotation = 0}):Play()
+    tween5.Completed:wait()
     wait(0.125)
 end
-function tbl_upv_4.new(a1)
+
+function Class3.new(a100)
     --[[
       name: new
-      line: 341
-      upvalues:
-        tbl_upv_4 (copy, index: 1)
-    ]]
-    local v37 = setmetatable({}, tbl_upv_4)
-    v37.DisplayModel = v37:NewDisplayModel(a1)
-    return v37
-end
-local u17 = Instance.new("Animation")
-u17.AnimationId = "rbxassetid://2874840706"
-local u18 = nil
-local function getFailureAnimationTrack(a1)
-    --[[
-      name: getFailureAnimationTrack
       line: 355
       upvalues:
-        u18 (ref,  index: 1)
-        u17 (copy, index: 2)
+        Class3 (copy, index: 1)
     ]]
-    if a1 ~= nil then
-        u18 = a1:LoadAnimation(u17)
-        assert(u18, "")
-        u18.Priority = Enum.AnimationPriority.Action
-        u18.Looped = false
-    end
-    return u18
+    local v101 = setmetatable({}, Class3)
+    v101.DisplayModel = v101:NewDisplayModel(a100)
+    return v101
 end
+
+local animation = Instance.new("Animation")
+animation.AnimationId = "rbxassetid://2874840706"
+local v103 = nil
+
+local function getFailureAnimationTrack(a105)
+    --[[
+      name: getFailureAnimationTrack
+      line: 369
+      upvalues:
+        v103 (ref,  index: 1)
+        animation (copy, index: 2)
+    ]]
+    if a105 == nil then
+        return v103
+    end
+
+    v103 = a105:LoadAnimation(animation)
+    assert(v103, "")
+    v103.Priority = Enum.AnimationPriority.Action
+    v103.Looped = false
+
+    return v103
+end
+
 local function findPlayerHumanoid()
     --[[
       name: findPlayerHumanoid
-      line: 366
+      line: 380
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
     ]]
-    local Character_1 = LocalPlayer_upv_1.Character
-    if Character_1 then
-        return Character_1:FindFirstChildOfClass("Humanoid")
+    if const character = localPlayer.Character then
+        return character:FindFirstChildOfClass("Humanoid")
     end
 end
-local function getTrailDotScale(a1, a2)
-    --[[
-      name: getTrailDotScale
-      line: 398
-    ]]
-    return a2 * (((math.clamp(a1 - 10, 0, 90) / 90) * 1.5) + 1)
-end
-local u19 = 0
-local function createTrailDots(a1, a2)
+
+local function createTrailDots(a109, a110)
     --[[
       name: createTrailDots
-      line: 373
+      line: 387
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
+        Class (copy, index: 1)
+        Class2 (copy, index: 2)
     ]]
-    local tbl_6 = {}
-    local v38 = 1
-    for n_1 = 1, #a1 - 1 do
-        local v39 = (a1[n_1].Position - a1[#a1].Position).Magnitude < 3
-        if not v39 and n_1 % 2 == 0 then
-            tbl_6[v38] = tbl_upv_2.new(a1[n_1].Position, n_1)
-            v38 = v38 + 1
+    local v111 = {}
+    local writeIndex = 1
+
+    for index = 1, #a109 - 1 do
+        local v114 = (a109[index].Position - a109[#a109].Position).Magnitude < 3
+        local v115 = index % 2 == 0 and not v114
+        if v115 then
+            v111[writeIndex] = Class.new(a109[index].Position, index)
+            writeIndex += 1
         end
     end
-    table.insert(tbl_6, (tbl_upv_3.new(a1[#a1].Position, #a1, a2)))
-    local tbl_7 = {}
-    local v40 = 1
-    v38 = v40
-    for n_2 = #tbl_6, 1, -1 do
-        tbl_7[v38] = tbl_6[n_2]
-        v38 = v38 + 1
+
+    table.insert(v111, (Class2.new(a109[#a109].Position, #a109, a110)))
+    local v116 = {}
+    local writeIndex2 = 1
+
+    for index = #v111, 1, -1 do
+        v116[writeIndex2] = v111[index]
+        writeIndex2 += 1
     end
-    return tbl_7
+
+    return v116
 end
-function tbl_1.CreatePathDisplay(a1, a2)
+
+local function getTrailDotScale(a120, a121)
+    --[[
+      name: getTrailDotScale
+      line: 412
+    ]]
+    return a121 * (((math.clamp(a120 - 10, 0, 90) / 90) * 1.5) + 1)
+end
+
+local count = 0
+
+function v1.CreatePathDisplay(a123, a124)
     --[[
       name: CreatePathDisplay
-      line: 407
+      line: 421
       upvalues:
-        u19 (ref,  index: 1)
+        count (ref,  index: 1)
         createTrailDots (copy, index: 2)
-        RunService_upv_1 (copy, index: 3)
-        Workspace_upv_1 (copy, index: 4)
-        u10 (ref,  index: 5)
+        runService (copy, index: 3)
+        workspace (copy, index: 4)
+        size2 (ref,  index: 5)
     ]]
-    u19 = u19 + 1
-    local u20 = createTrailDots(a1, a2)
-    local u21 = "ClickToMoveResizeTrail" .. u19
+    count += 1
+    local trailDots = createTrailDots(a123, a124)
+
+    local function removePathBeforePoint(a127)
+        --[[
+          name: removePathBeforePoint
+          line: 425
+          upvalues:
+            trailDots (copy, index: 1)
+        ]]
+        for trailDotKey = #trailDots, 1, -1 do
+            local trailDot = trailDots[trailDotKey]
+
+            if not (trailDot.ClosestWayPoint <= a127) then
+                break
+            end
+
+            trailDot:Destroy()
+            trailDots[trailDotKey] = nil
+        end
+    end
+
+    local name = "ClickToMoveResizeTrail" .. count
+
     local function resizeTrailDots()
         --[[
           name: resizeTrailDots
-          line: 425
+          line: 439
           upvalues:
-            u20 (copy, index: 1)
-            RunService_upv_1 (copy, index: 2)
-            u21 (copy, index: 3)
-            Workspace_upv_1 (copy, index: 4)
-            u10 (ref,  index: 5)
+            trailDots (copy, index: 1)
+            runService (copy, index: 2)
+            name (copy, index: 3)
+            workspace (copy, index: 4)
+            size2 (ref,  index: 5)
         ]]
-        if #u20 ~= 0 then
-            local Position_1 = Workspace_upv_1.CurrentCamera.CFrame.Position
-            for n_3 = 1, #u20 do
-                local TrailDotImage_1 = u20[n_3].DisplayModel:FindFirstChild("TrailDotImage")
-                if TrailDotImage_1 then
-                    TrailDotImage_1.Size = u10 * (((math.clamp((u20[n_3].DisplayModel.Position - Position_1).Magnitude - 10, 0, 90) / 90) * 1.5) + 1)
-                end
-            end
-        else
-            RunService_upv_1:UnbindFromRenderStep(u21)
+        if #trailDots == 0 then
+            runService:UnbindFromRenderStep(name)
+            return
         end
-    end
-    RunService_upv_1:BindToRenderStep(u21, Enum.RenderPriority.Camera.Value - 1, resizeTrailDots)
-    local function removePathBeforePoint(a3)
-        --[[
-          name: removePathBeforePoint
-          line: 411
-          upvalues:
-            u20 (copy, index: 1)
-        ]]
-        for n_4 = #u20, 1, -1 do
-            local v41 = u20[n_4]
-            if v41.ClosestWayPoint <= a3 then
-                v41:Destroy()
-                u20[n_4] = nil
-                continue
-            else
-                break
+
+        local position = workspace.CurrentCamera.CFrame.Position
+
+        for trailDotKey = 1, #trailDots do
+            if const trailDotImage = trailDots[trailDotKey].DisplayModel:FindFirstChild("TrailDotImage") then
+                trailDotImage.Size = size2 * (((math.clamp((trailDots[trailDotKey].DisplayModel.Position - position).Magnitude - 10, 0, 90) / 90) * 1.5) + 1)
             end
         end
     end
-    local function removePath()
+
+    runService:BindToRenderStep(name, Enum.RenderPriority.Camera.Value - 1, resizeTrailDots)
+
+    return function()
         --[[
           name: removePath
-          line: 441
+          line: 455
           upvalues:
             removePathBeforePoint (copy, index: 1)
-            a1 (copy, index: 2)
+            a123 (copy, index: 2)
         ]]
-        removePathBeforePoint(#a1)
-    end
-    return removePath, removePathBeforePoint
+        removePathBeforePoint(#a123)
+    end, removePathBeforePoint
 end
-local u22 = nil
-function tbl_1.DisplayFailureWaypoint(a1)
+
+local class = nil
+
+function v1.DisplayFailureWaypoint(a136)
     --[[
       name: DisplayFailureWaypoint
-      line: 449
+      line: 463
       upvalues:
-        u22 (ref,  index: 1)
-        tbl_upv_4 (copy, index: 2)
+        class (ref,  index: 1)
+        Class3 (copy, index: 2)
     ]]
-    if u22 then
-        u22:Hide()
+    if class then
+        class:Hide()
     end
-    local u23 = tbl_upv_4.new(a1)
-    u22 = u23
+
+    local class2 = Class3.new(a136)
+    class = class2
+
     coroutine.wrap(
         function()
             --[[
-              line: 455
+              line: 469
               upvalues:
-                u23 (ref, index: 1)
+                class2 (ref, index: 1)
             ]]
-            u23:RunFailureTween()
-            u23:Destroy()
-            u23 = nil
+            class2:RunFailureTween()
+            class2:Destroy()
+            class2 = nil
         end
     )()
 end
-function tbl_1.CreateEndWaypoint(a1)
+
+function v1.CreateEndWaypoint(a138)
     --[[
       name: CreateEndWaypoint
-      line: 462
+      line: 476
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        Class2 (copy, index: 1)
     ]]
-    return tbl_upv_3.new(a1)
+    return Class2.new(a138)
 end
-function tbl_1.PlayFailureAnimation()
+
+function v1.PlayFailureAnimation()
     --[[
       name: PlayFailureAnimation
-      line: 466
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        u18 (ref,  index: 2)
-        u17 (copy, index: 3)
-    ]]
-    local Character_2 = LocalPlayer_upv_1.Character
-    local v42
-    if Character_2 then
-        v42 = Character_2:FindFirstChildOfClass("Humanoid")
-    else
-        v42 = nil
-    end
-    if not v42 then
-        return
-    end
-    if v42 ~= nil then
-        u18 = v42:LoadAnimation(u17)
-        assert(u18, "")
-        u18.Priority = Enum.AnimationPriority.Action
-        u18.Looped = false
-    end
-    u18:Play()
-end
-function tbl_1.CancelFailureAnimation()
-    --[[
-      name: CancelFailureAnimation
-      line: 474
-      upvalues:
-        u18 (ref, index: 1)
-    ]]
-    if u18 == nil or not u18.IsPlaying then
-        return
-    end
-    u18:Stop()
-end
-function tbl_1.SetWaypointTexture(a1)
-    --[[
-      name: SetWaypointTexture
       line: 480
       upvalues:
-        u1 (ref,  index: 1)
-        u15 (ref,  index: 2)
-        u13 (ref,  index: 3)
-        u14 (ref,  index: 4)
-        CreateWaypointTemplates (copy, index: 5)
+        localPlayer (copy, index: 1)
+        v103 (ref,  index: 2)
+        animation (copy, index: 3)
     ]]
-    u1 = a1
-    u15, u13, u14 = CreateWaypointTemplates()
+    local humanoid = if const character = localPlayer.Character then character:FindFirstChildOfClass("Humanoid") else nil
+
+    if humanoid then
+        local v141
+
+        if humanoid ~= nil then
+            v103 = humanoid:LoadAnimation(animation)
+            assert(v103, "")
+            v103.Priority = Enum.AnimationPriority.Action
+            v103.Looped = false
+            v141 = v103
+        else
+            v141 = v103
+        end
+
+        v141:Play()
+    end
 end
-function tbl_1.GetWaypointTexture()
+
+function v1.CancelFailureAnimation()
     --[[
-      name: GetWaypointTexture
-      line: 485
+      name: CancelFailureAnimation
+      line: 488
       upvalues:
-        u1 (ref, index: 1)
+        v103 (ref, index: 1)
     ]]
-    return u1
+    if v103 ~= nil and v103.IsPlaying then
+        v103:Stop()
+    end
 end
-function tbl_1.SetWaypointRadius(a1)
+
+function v1.SetWaypointTexture(waypointTexture)
     --[[
-      name: SetWaypointRadius
-      line: 489
-      upvalues:
-        u10 (ref,  index: 1)
-        u15 (ref,  index: 2)
-        u13 (ref,  index: 3)
-        u14 (ref,  index: 4)
-        CreateWaypointTemplates (copy, index: 5)
-    ]]
-    u10 = Vector2.new(a1, a1)
-    u15, u13, u14 = CreateWaypointTemplates()
-end
-function tbl_1.GetWaypointRadius()
-    --[[
-      name: GetWaypointRadius
+      name: SetWaypointTexture
       line: 494
       upvalues:
-        u10 (ref, index: 1)
-    ]]
-    return u10.X
-end
-function tbl_1.SetEndWaypointTexture(a1)
-    --[[
-      name: SetEndWaypointTexture
-      line: 498
-      upvalues:
-        u2 (ref,  index: 1)
-        u15 (ref,  index: 2)
-        u13 (ref,  index: 3)
-        u14 (ref,  index: 4)
+        image (ref,  index: 1)
+        waypointTemplates (ref,  index: 2)
+        v34 (ref,  index: 3)
+        v35 (ref,  index: 4)
         CreateWaypointTemplates (copy, index: 5)
     ]]
-    u2 = a1
-    u15, u13, u14 = CreateWaypointTemplates()
+    image = waypointTexture
+    waypointTemplates, v34, v35 = CreateWaypointTemplates()
 end
-function tbl_1.GetEndWaypointTexture()
+
+function v1.GetWaypointTexture()
     --[[
-      name: GetEndWaypointTexture
+      name: GetWaypointTexture
+      line: 499
+      upvalues:
+        image (ref, index: 1)
+    ]]
+    return image
+end
+
+function v1.SetWaypointRadius(a143: number)
+    --[[
+      name: SetWaypointRadius
       line: 503
       upvalues:
-        u2 (ref, index: 1)
-    ]]
-    return u2
-end
-function tbl_1.SetWaypointsAlwaysOnTop(a1)
-    --[[
-      name: SetWaypointsAlwaysOnTop
-      line: 507
-      upvalues:
-        u3 (ref,  index: 1)
-        u15 (ref,  index: 2)
-        u13 (ref,  index: 3)
-        u14 (ref,  index: 4)
+        size2 (ref,  index: 1)
+        waypointTemplates (ref,  index: 2)
+        v34 (ref,  index: 3)
+        v35 (ref,  index: 4)
         CreateWaypointTemplates (copy, index: 5)
     ]]
-    u3 = a1
-    u15, u13, u14 = CreateWaypointTemplates()
+    size2 = Vector2.new(a143, a143)
+    waypointTemplates, v34, v35 = CreateWaypointTemplates()
 end
-function tbl_1.GetWaypointsAlwaysOnTop()
+
+function v1.GetWaypointRadius()
     --[[
-      name: GetWaypointsAlwaysOnTop
+      name: GetWaypointRadius
+      line: 508
+      upvalues:
+        size2 (ref, index: 1)
+    ]]
+    return size2.X
+end
+
+function v1.SetEndWaypointTexture(endWaypointTexture)
+    --[[
+      name: SetEndWaypointTexture
       line: 512
       upvalues:
-        u3 (ref, index: 1)
+        image2 (ref,  index: 1)
+        waypointTemplates (ref,  index: 2)
+        v34 (ref,  index: 3)
+        v35 (ref,  index: 4)
+        CreateWaypointTemplates (copy, index: 5)
     ]]
-    return u3
+    image2 = endWaypointTexture
+    waypointTemplates, v34, v35 = CreateWaypointTemplates()
 end
-return tbl_1
+
+function v1.GetEndWaypointTexture()
+    --[[
+      name: GetEndWaypointTexture
+      line: 517
+      upvalues:
+        image2 (ref, index: 1)
+    ]]
+    return image2
+end
+
+function v1.SetWaypointsAlwaysOnTop(waypointsAlwaysOnTop)
+    --[[
+      name: SetWaypointsAlwaysOnTop
+      line: 521
+      upvalues:
+        alwaysOnTop (ref,  index: 1)
+        waypointTemplates (ref,  index: 2)
+        v34 (ref,  index: 3)
+        v35 (ref,  index: 4)
+        CreateWaypointTemplates (copy, index: 5)
+    ]]
+    alwaysOnTop = waypointsAlwaysOnTop
+    waypointTemplates, v34, v35 = CreateWaypointTemplates()
+end
+
+function v1.GetWaypointsAlwaysOnTop()
+    --[[
+      name: GetWaypointsAlwaysOnTop
+      line: 526
+      upvalues:
+        alwaysOnTop (ref, index: 1)
+    ]]
+    return alwaysOnTop
+end
+
+return v1

@@ -1,69 +1,79 @@
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-require(ReplicatedStorage_1:WaitForChild("Shared"):WaitForChild("Loc")).Install()
-require(ReplicatedStorage_1:WaitForChild("Shared"):WaitForChild("Camera"))
-local tbl_upv_1 = {"Quality", "Movement", "TouchControls", "Procedural", "Footsteps", "RemoteAnimate", "ResetButton", "ViewModel"}
-local tbl_upv_2 = {}
-for _, value_upv_1 in tbl_upv_1 do
+local replicatedStorage = game:GetService("ReplicatedStorage")
+require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Loc")).Install()
+require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Camera"))
+local childNames = {"Quality", "Movement", "TouchControls", "Procedural", "Footsteps", "RemoteAnimate", "ResetButton", "ViewModel"}
+local v3 = {}
+
+for _, childName in childNames do
     task.spawn(
         function()
             --[[
               line: 28
               upvalues:
-                value_upv_1 (copy, index: 1)
-                tbl_upv_2 (copy, index: 2)
+                childName (copy, index: 1)
+                v3 (copy, index: 2)
             ]]
-            local v1 = os.clock()
-            local success_1, v2 = pcall(
+            local timestamp = os.clock()
+
+            local success, result = pcall(
                 function()
                     --[[
                       line: 30
                       upvalues:
-                        value_upv_1 (copy, index: 1)
+                        childName (copy, index: 1)
                     ]]
-                    require(script.Parent:WaitForChild(value_upv_1, 10)).Start()
+                    local child = require((script.Parent:WaitForChild(childName, 10)))
+                    child.Start()
                 end
             )
-            if success_1 then
-                tbl_upv_2[value_upv_1] = (os.clock() - v1) * 1000
-            else
-                warn((("[Character] %* failed to start: %*"):format(value_upv_1, v2)))
-                tbl_upv_2[value_upv_1] = -1
+
+            if success then
+                v3[childName] = (os.clock() - timestamp) * 1000
+                return
             end
+
+            warn((`[Character] {childName} failed to start: {result}`))
+            v3[childName] = -1
         end
     )
 end
+
 task.delay(
     5,
     function()
         --[[
           line: 43
           upvalues:
-            tbl_upv_1 (copy, index: 1)
-            tbl_upv_2 (copy, index: 2)
+            childNames (copy, index: 1)
+            v3 (copy, index: 2)
         ]]
-        local tbl_3 = {}
-        local v3 = nil
-        for _, value_2 in tbl_upv_1 do
-            local v4 = tbl_upv_2[value_2]
-            if v4 == nil then
-                v3 = ("%* STILL STARTING"):format(value_2)
-                table.insert(tbl_3, v3)
+        local parts = {}
+
+        for _, v12 in childNames do
+            local formattedText
+            local v14 = v3[v12]
+
+            if v14 == nil then
+                formattedText = `{v12} STILL STARTING`
+            else
+                formattedText = if v14 < 0 then `{v12} FAILED` else string.format("%s %.1f", v12, v14)
+            end
+
+            table.insert(parts, formattedText)
+        end
+
+        local v15 = "[Character] started (ms): " .. table.concat(parts, ", ")
+
+        for _, v17 in childNames do
+            if v3[v17] ~= nil and not (v3[v17] < 0) then
                 continue
             end
-            if v4 < 0 then
-                v3 = ("%* FAILED"):format(value_2)
-            else
-                v3 = string.format("%s %.1f", value_2, v4)
-            end
-            table.insert(tbl_3, v3)
+
+            warn(v15)
+
+            return
         end
-        local v5 = "[Character] started (ms): " .. table.concat(tbl_3, ", ")
-        for _, value_3 in tbl_upv_1 do
-            if tbl_upv_2[value_3] == nil or tbl_upv_2[value_3] < 0 then
-                warn(v5)
-                return
-            end
-        end
-        print(v5)
+
+        print(v15)
     end
 )

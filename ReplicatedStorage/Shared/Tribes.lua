@@ -1,22 +1,23 @@
-local tbl_upv_1 = {}
-tbl_upv_1.MAX_MEMBERS = 30
-tbl_upv_1.FOUND_LEVEL = 10
-tbl_upv_1.TAG_MIN = 2
-tbl_upv_1.TAG_MAX = 4
-tbl_upv_1.NAME_MIN = 3
-tbl_upv_1.NAME_MAX = 20
-tbl_upv_1.LEAVE_COOLDOWN = 1200
-tbl_upv_1.RENOWN_WIN = 3
-tbl_upv_1.RENOWN_LOSS = 1
-tbl_upv_1.STACK_MULT = {1, 1.5, 2}
-tbl_upv_1.CHEST_TIERS = {40, 150, 400, 900, 1800}
-tbl_upv_1.CHEST_MIN = 25
-tbl_upv_1.CHEST_TERRITORY_MAX = 3
-tbl_upv_1.WEEK_EPOCH = 345600
-tbl_upv_1.WEEK_LENGTH = 604800
-tbl_upv_1.JOIN_MODES = {"open", "request", "invite"}
-tbl_upv_1.ICONS = {"wolf", "bear", "raven", "eagle", "serpent", "boar", "stag", "fox", "owl", "shark", "flame", "sun", "moon", "star", "bolt", "mountain", "wave", "tree", "crown", "swords", "axe", "bow", "shield", "gem", "lion", "dragon", "scorpion", "anchor", "bull", "octopus", "trident", "skull", "ram", "griffin", "claws"}
-tbl_upv_1.COLORS = {
+local v1 = {
+    MAX_MEMBERS = 30,
+    FOUND_LEVEL = 10,
+    TAG_MIN = 2,
+    TAG_MAX = 4,
+    NAME_MIN = 3,
+    NAME_MAX = 20,
+    LEAVE_COOLDOWN = 1200,
+    RENOWN_WIN = 3,
+    RENOWN_LOSS = 1,
+    STACK_MULT = {1, 1.5, 2},
+    CHEST_TIERS = {40, 150, 400, 900, 1800},
+    CHEST_MIN = 25,
+    CHEST_TERRITORY_MAX = 3,
+    WEEK_EPOCH = 345600,
+    WEEK_LENGTH = 604800,
+    JOIN_MODES = {"open", "request", "invite"},
+    ICONS = {"wolf", "bear", "raven", "eagle", "serpent", "boar", "stag", "fox", "owl", "shark", "flame", "sun", "moon", "star", "bolt", "mountain", "wave", "tree", "crown", "swords", "axe", "bow", "shield", "gem", "lion", "dragon", "scorpion", "anchor", "bull", "octopus", "trident", "skull", "ram", "griffin", "claws"}
+}
+local colors = {
     Color3.fromRGB(40, 150, 255),
     Color3.fromRGB(90, 200, 255),
     Color3.fromRGB(40, 190, 170),
@@ -32,7 +33,7 @@ tbl_upv_1.COLORS = {
     Color3.fromRGB(140, 90, 230),
     Color3.fromRGB(80, 90, 220),
     Color3.fromRGB(30, 50, 120),
-    Color3.fromRGB(30, 110, 60),
+    (Color3.fromRGB(30, 110, 60)),
     Color3.fromRGB(140, 90, 50),
     Color3.fromRGB(210, 180, 120),
     Color3.fromRGB(90, 105, 125),
@@ -43,155 +44,174 @@ tbl_upv_1.COLORS = {
     Color3.fromRGB(180, 140, 255),
     Color3.fromRGB(246, 248, 252)
 }
-tbl_upv_1.WHITE = 25
-function tbl_upv_1.Color(a1)
+v1.COLORS = colors
+v1.WHITE = 25
+
+function v1.Color(a3)
     --[[
       name: Color
       line: 73
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    local COLORS_1 = tbl_upv_1.COLORS
-    local v1
-    if type(a1) ~= "number" then
-        v1 = 1
+    local colorKey
+    local colors = v1.COLORS
+
+    if type(a3) ~= "number" then
+        colorKey = 1
     else
-        v1 = a1
+        colorKey = a3
     end
-    return COLORS_1[v1] or (tbl_upv_1.COLORS[1])
+
+    return colors[colorKey] or v1.COLORS[1]
 end
-function tbl_upv_1.TextColor(a1)
+
+function v1.TextColor(a6)
     --[[
       name: TextColor
       line: 78
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    local v2 = tbl_upv_1.Color(a1)
-    local _, v4, v3 = v2:ToHSV()
-    if v3 < 0.62 then
-        return (v2:Lerp(Color3.new(1, 1, 1), 0.45))
+    local startValue = v1.Color(a6)
+    local _, _, v10 = startValue:ToHSV()
+
+    if v10 < 0.62 then
+        return (startValue:Lerp(Color3.new(1, 1, 1), 0.45))
     end
-    return v2
+
+    return startValue
 end
-function tbl_upv_1.Renown(a1, a2)
+
+function v1.Renown(a11, a12: number)
     --[[
       name: Renown
       line: 84
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    local v4
-    if a1 then
-        v4 = tbl_upv_1.RENOWN_WIN
-    else
-        v4 = tbl_upv_1.RENOWN_LOSS
-    end
-    return (math.floor((v4 * tbl_upv_1.STACK_MULT[math.clamp(math.floor(a2), 1, 3)]) + 0.5))
+    local v13 = if a11 then v1.RENOWN_WIN else v1.RENOWN_LOSS
+    return (math.floor((v13 * v1.STACK_MULT[math.clamp(math.floor(a12), 1, 3)]) + 0.5))
 end
-function tbl_upv_1.ChestTier(a1)
+
+function v1.ChestTier(a14)
     --[[
       name: ChestTier
       line: 90
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    local v5 = 0
-    for key_1, value_1 in tbl_upv_1.CHEST_TIERS do
-        if value_1 <= a1 then
-            v5 = key_1
+    local v15 = 0
+
+    for v16, chestTier in v1.CHEST_TIERS do
+        if chestTier <= a14 then
+            v15 = v16
         end
     end
-    return v5
+
+    return v15
 end
-function tbl_upv_1.WeekOf(a1)
+
+function v1.WeekOf(a18)
     --[[
       name: WeekOf
       line: 100
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    return (math.floor((a1 - tbl_upv_1.WEEK_EPOCH) / tbl_upv_1.WEEK_LENGTH))
+    return (math.floor((a18 - v1.WEEK_EPOCH) / v1.WEEK_LENGTH))
 end
-function tbl_upv_1.WeekEndsAt(a1)
+
+function v1.WeekEndsAt(a19)
     --[[
       name: WeekEndsAt
       line: 104
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    return tbl_upv_1.WEEK_EPOCH + ((a1 + 1) * tbl_upv_1.WEEK_LENGTH)
+    return v1.WEEK_EPOCH + ((a19 + 1) * v1.WEEK_LENGTH)
 end
-function tbl_upv_1.CleanTag(a1)
+
+function v1.CleanTag(text: string)
     --[[
       name: CleanTag
       line: 108
     ]]
-    return string.upper(string.gsub(a1, "%s", ""))
+    return string.upper((string.gsub(text, "%s", "")))
 end
-function tbl_upv_1.ValidTag(a1)
+
+function v1.ValidTag(text: string)
     --[[
       name: ValidTag
       line: 112
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    local v6 = (tbl_upv_1.TAG_MIN <= #a1) and ((#a1 <= tbl_upv_1.TAG_MAX) and (string.match(a1, "^[A-Z0-9]+$") ~= nil))
-    return v6
+    local textLength = #text
+    return v1.TAG_MIN <= textLength and #text <= v1.TAG_MAX and string.match(text, "^[A-Z0-9]+$") ~= nil
 end
-function tbl_upv_1.CleanName(a1)
+
+function v1.CleanName(text: string)
     --[[
       name: CleanName
       line: 116
     ]]
-    local v7 = string.gsub(a1, "%s+", " ")
-    return string.match(v7, "^%s*(.-)%s*$") or v7
+    local text2 = string.gsub(text, "%s+", " ")
+    return string.match(text2, "^%s*(.-)%s*$") or text2
 end
-function tbl_upv_1.ValidName(a1)
+
+function v1.ValidName(text: string)
     --[[
       name: ValidName
       line: 122
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    if not (#a1 < tbl_upv_1.NAME_MIN) and not (tbl_upv_1.NAME_MAX < #a1) then
-        local v8 = string.match(a1, "^[%w][%w '%.%-]*[%w%.']$") ~= nil
-        return v8
+    if not (#text < v1.NAME_MIN) then
+        local textLength = #text
+
+        if not (v1.NAME_MAX < textLength) then
+            return string.match(text, "^[%w][%w '%.%-]*[%w%.']$") ~= nil
+        end
     end
+
     return false
 end
-local tbl_upv_3 = {
-    kicked = "You were kicked from that tribe recently. Ask them for an invite.",
+
+local v27 = {
     filtered = "That isn't allowed. Try something else.",
-    no_request = "That request is gone.",
-    min_level = "Your level is below that tribe's minimum.",
-    not_found = "That tribe doesn't exist any more.",
-    in_tribe = "Leave your tribe first.",
-    busy = "One moment.",
-    invites_full = "Your tribe has too many invites waiting.",
-    lobby_only = "Do that from the lobby.",
-    unavailable = "Tribes are unavailable right now. Try again soon.",
-    bad_target = "You can't do that.",
-    requests_full = "That tribe has too many requests waiting. Try again later.",
-    not_member = "You're not in that tribe.",
     tag_taken = "That tag is taken.",
-    target_in_tribe = "They're already in a tribe.",
-    no_permission = "Your rank can't do that.",
-    offline = "They're not in a lobby right now.",
+    in_tribe = "Leave your tribe first.",
     cooldown = "You left a tribe a moment ago. You can join another in a few minutes.",
-    invite_only = "That tribe is invite only."
+    not_found = "That tribe doesn't exist any more.",
+    min_level = "Your level is below that tribe's minimum.",
+    invite_only = "That tribe is invite only.",
+    kicked = "You were kicked from that tribe recently. Ask them for an invite.",
+    requests_full = "That tribe has too many requests waiting. Try again later.",
+    invites_full = "Your tribe has too many invites waiting.",
+    not_member = "You're not in that tribe.",
+    no_permission = "Your rank can't do that.",
+    no_request = "That request is gone.",
+    target_in_tribe = "They're already in a tribe.",
+    bad_target = "You can't do that.",
+    unavailable = "Tribes are unavailable right now. Try again soon.",
+    busy = "One moment.",
+    lobby_only = "Do that from the lobby.",
+    offline = "They're not in a lobby right now.",
+    level = `Reach level {v1.FOUND_LEVEL} to found a tribe.`,
+    bad_tag = `Tags are {v1.TAG_MIN} to {v1.TAG_MAX} letters or numbers.`,
+    bad_name = `Names are {v1.NAME_MIN} to {v1.NAME_MAX} letters, numbers or spaces.`,
+    full = `That tribe is full ({v1.MAX_MEMBERS} members).`
 }
-tbl_upv_3.level = ("Reach level %* to found a tribe."):format(tbl_upv_1.FOUND_LEVEL)
-tbl_upv_3.bad_tag = ("Tags are %* to %* letters or numbers."):format(tbl_upv_1.TAG_MIN, tbl_upv_1.TAG_MAX)
-tbl_upv_3.bad_name = ("Names are %* to %* letters, numbers or spaces."):format(tbl_upv_1.NAME_MIN, tbl_upv_1.NAME_MAX)
-tbl_upv_3.full = ("That tribe is full (%* members)."):format(tbl_upv_1.MAX_MEMBERS)
-function tbl_upv_1.Message(a1)
+
+function v1.Message(key)
     --[[
       name: Message
       line: 156
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v27 (copy, index: 1)
     ]]
-    return tbl_upv_3[a1] or "Something went wrong. Try again."
+    return v27[key] or "Something went wrong. Try again."
 end
-return tbl_upv_1
+
+return v1

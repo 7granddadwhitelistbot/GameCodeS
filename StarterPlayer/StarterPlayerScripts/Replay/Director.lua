@@ -1,422 +1,475 @@
-local Workspace_upv_1 = game:GetService("Workspace")
-local tbl_1 = {}
-local u1 = 1
-local tbl_upv_2 = {pitch = -0.13962634015954636, aimFovW = 0, duration = 10, actionWant = 0, aimW = 0, pivotY = 0, yaw = 0, seg = 1, aimed = false, orbit = 0, fpW = 0, action = 0, fov = 70, offset = Vector3.new(2.9000000953674316, 0, 10.5), punch = 0, arm = 1, firstPerson = false}
-tbl_upv_2.segments = {}
-local u2 = RaycastParams.new()
-u2.FilterType = Enum.RaycastFilterType.Include
-u2.IgnoreWater = true
-local function yawOf(a1)
+local workspace = game:GetService("Workspace")
+local v2 = {}
+local v3 = 1
+local v4 = {yaw = 0, pitch = -0.13962634015954636, fov = 70, pivotY = 0, aimW = 0, aimFovW = 0, punch = 0, deadAt = nil, orbit = 0, duration = 10, seg = 1, arm = 1, offset = Vector3.new(2.9000000953674316, 0, 10.5), action = 0, actionWant = 0, aimed = false, fpW = 0, firstPerson = false, segments = {}}
+local params = RaycastParams.new()
+params.FilterType = Enum.RaycastFilterType.Include
+params.IgnoreWater = true
+
+local function yawOf(a7)
     --[[
       name: yawOf
       line: 105
     ]]
-    local LookVector_1 = a1.LookVector
-    return (math.atan2(-LookVector_1.X, -LookVector_1.Z))
+    local lookVector = a7.LookVector
+    return (math.atan2(-lookVector.X, -lookVector.Z))
 end
-local function wrap(a1)
+
+local function wrap(a10)
     --[[
       name: wrap
       line: 110
     ]]
-    return ((a1 + math.pi) % math.tau) - math.pi
+    return ((a10 + math.pi) % math.tau) - math.pi
 end
-local function ease(a1)
+
+local function ease(a12: number)
     --[[
       name: ease
       line: 114
     ]]
-    return 1 - ((1 - math.clamp(a1, 0, 1)) ^ 3)
+    return 1 - ((function(...) return (...) ^ 3 end)(((1 - math.clamp(a12, 0, 1)))))
 end
-local function yawPitchOf(a1)
+
+local function yawPitchOf(a14)
     --[[
       name: yawPitchOf
       line: 119
     ]]
-    local Unit_1 = a1.Unit
-    return math.atan2(-Unit_1.X, -Unit_1.Z), (math.asin(math.clamp(Unit_1.Y, -1, 1)))
+    local unit = a14.Unit
+    return math.atan2(-unit.X, -unit.Z), (math.asin((math.clamp(unit.Y, -1, 1))))
 end
-function tbl_1.SetWorld(a1)
+
+function v2.SetWorld(world)
     --[[
       name: SetWorld
       line: 125
       upvalues:
-        u2 (copy, index: 1)
+        params (copy, index: 1)
     ]]
-    u2.FilterDescendantsInstances = a1
+    params.FilterDescendantsInstances = world
 end
-function tbl_1.SetSegments(a1)
+
+function v2.SetSegments(segments)
     --[[
       name: SetSegments
       line: 130
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
     table.sort(
-        a1,
-        function(a2, a3)
+        segments,
+        function(left, right)
             --[[
               line: 131
             ]]
-            return a2.t0 < a3.t0
+            return left.t0 < right.t0
         end
     )
-    tbl_upv_2.segments = a1
-    tbl_upv_2.seg = 1
+    v4.segments = segments
+    v4.seg = 1
 end
-function tbl_1.SetShoulderSide(a1)
+
+function v2.SetShoulderSide(shoulderSide)
     --[[
       name: SetShoulderSide
       line: 138
       upvalues:
-        u1 (ref, index: 1)
+        v3 (ref, index: 1)
     ]]
-    u1 = ((a1 < 0) and -1) or 1
+    v3 = not (shoulderSide < 0) and 1 or -1
 end
-function tbl_1.Begin(a1, a2)
+
+function v2.Begin(a21, duration)
     --[[
       name: Begin
       line: 142
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local LookVector_2 = a1.LookVector
-    tbl_upv_2.yaw = math.atan2(-LookVector_2.X, -LookVector_2.Z)
-    tbl_upv_2.pitch = -0.13962634015954636
-    tbl_upv_2.fov = 70
-    tbl_upv_2.pivotY = a1.Position.Y + 3.1
-    tbl_upv_2.aimW = 0
-    tbl_upv_2.aimFovW = 0
-    tbl_upv_2.punch = 0
-    tbl_upv_2.deadAt = nil
-    tbl_upv_2.orbit = 0
-    tbl_upv_2.duration = a2
-    tbl_upv_2.seg = 1
-    tbl_upv_2.arm = 1
-    tbl_upv_2.offset = Vector3.new(2.9000000953674316, 0, 10.5)
-    tbl_upv_2.action = 0
-    tbl_upv_2.actionWant = 0
-    tbl_upv_2.aimed = false
-    tbl_upv_2.fpW = 0
-    tbl_upv_2.firstPerson = false
+    local lookVector = a21.LookVector
+    v4.yaw = math.atan2(-lookVector.X, -lookVector.Z)
+    v4.pitch = -0.13962634015954636
+    v4.fov = 70
+    v4.pivotY = a21.Position.Y + 3.1
+    v4.aimW = 0
+    v4.aimFovW = 0
+    v4.punch = 0
+    v4.deadAt = nil
+    v4.orbit = 0
+    v4.duration = duration
+    v4.seg = 1
+    v4.arm = 1
+    v4.offset = Vector3.new(2.9000000953674316, 0, 10.5)
+    v4.action = 0
+    v4.actionWant = 0
+    v4.aimed = false
+    v4.fpW = 0
+    v4.firstPerson = false
 end
-function tbl_1.InFirstPerson()
+
+function v2.InFirstPerson()
     --[[
       name: InFirstPerson
       line: 164
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    return tbl_upv_2.firstPerson
+    return v4.firstPerson
 end
-function tbl_1.SetAction(a1)
+
+function v2.SetAction(action: number)
     --[[
       name: SetAction
       line: 169
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    tbl_upv_2.actionWant = math.clamp(a1, 0, 1)
+    v4.actionWant = math.clamp(action, 0, 1)
 end
-function tbl_1.SetAimed(a1)
+
+function v2.SetAimed(aimed)
     --[[
       name: SetAimed
       line: 174
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    tbl_upv_2.aimed = a1
+    v4.aimed = aimed
 end
-function tbl_1.OnKill()
+
+function v2.OnKill()
     --[[
       name: OnKill
       line: 178
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    tbl_upv_2.punch = 1
+    v4.punch = 1
 end
-function tbl_1.OnShot(a1, a2)
+
+function v2.OnShot(a26, a27)
     --[[
       name: OnShot
       line: 183
     ]]
 end
-local function candidate(a1, a2, a3)
-    --[[
-      name: candidate
-      line: 207
-    ]]
-    if a1 ~= 1 then
-        if a1 ~= 2 then
-            if a1 ~= 3 then
-                return (Vector3.new(a2 * 0.7, 2.2, a3 * 0.85))
-            end
-            return (Vector3.new(a2 * 0.7, -1.6, a3 * 0.8))
-        end
-        return (Vector3.new(-a2, 0, a3))
-    end
-    return (Vector3.new(a2, 0, a3))
-end
-local function freeLength(a1, a2)
-    --[[
-      name: freeLength
-      line: 219
-      upvalues:
-        Workspace_upv_1 (copy, index: 1)
-        u2 (copy, index: 2)
-    ]]
-    local Magnitude_1 = a2.Magnitude
-    if Magnitude_1 < 0.001 then
-        return 0
-    end
-    local v1 = Workspace_upv_1:Spherecast(a1, 0.6, a2, u2)
-    if v1 then
-        return v1.Distance
-    end
-    return Magnitude_1
-end
-local function aimAt(a1)
+
+local function aimAt(deadAt)
     --[[
       name: aimAt
       line: 186
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local segments_1 = tbl_upv_2.segments
-    while tbl_upv_2.seg <= #segments_1 do
-        if segments_1[tbl_upv_2.seg].t1 < a1 then
-            tbl_upv_2.seg = tbl_upv_2.seg + 1
-            continue
-        else
-            break
+    local segment
+    local segments = v4.segments
+
+    while v4.seg <= #segments and segments[v4.seg].t1 < deadAt do
+        v4.seg += 1
+    end
+
+    local clampedValue = 0
+    segment = nil
+
+    for segmentKey = math.max(1, v4.seg - 1), math.min(#segments, v4.seg + 1) do
+        local segment2 = segments[segmentKey]
+        local clampedValue2 = 0
+
+        if segment2.t0 <= deadAt and deadAt <= segment2.t1 then
+            local v36 = (deadAt - segment2.t0) / 0.28
+            local v37 = (segment2.t1 - deadAt) / 0.4
+            local v38 = not (deadAt <= segment2.shot) and 0 or 1
+            clampedValue2 = math.clamp(math.min(1, v36, v37 + v38), 0, 1)
+        end
+
+        if clampedValue < clampedValue2 then
+            clampedValue, segment = clampedValue2, segment2
         end
     end
-    local v2 = nil
-    local v3 = 0
-    local v4 = nil
-    for n_1 = math.max(1, tbl_upv_2.seg - 1), math.min(#segments_1, tbl_upv_2.seg + 1) do
-        local v5 = segments_1[n_1]
-        v4 = 0
-        if v5.t0 <= a1 and a1 <= v5.t1 then
-            v4 = math.clamp(math.min(1, (a1 - v5.t0) / 0.28, (v5.t1 - a1) / 0.4 + (((a1 <= v5.shot) and 1) or 0)), 0, 1)
-        end
-        if v3 < v4 then
-            v3, v2 = v4, v5
-        end
+
+    if segment then
+        return clampedValue, segment.point
     end
-    if v2 then
-        return v3, v2.point
-    end
-    return v3, nil
+
+    return clampedValue, nil
 end
-function tbl_1.Update(a1, a2, a3, a4, a5, a6)
+
+local function candidate(a40, x: number, z: number)
+    --[[
+      name: candidate
+      line: 207
+    ]]
+    if a40 == 1 then
+        return (Vector3.new(x, 0, z))
+    end
+    if a40 == 2 then
+        return (Vector3.new(-x, 0, z))
+    end
+    if a40 == 3 then
+        return (Vector3.new(x * 0.7, -1.6, z * 0.8))
+    end
+
+    return (Vector3.new(x * 0.7, 2.2, z * 0.85))
+end
+
+local function freeLength(position: Vector3, direction: Vector3)
+    --[[
+      name: freeLength
+      line: 219
+      upvalues:
+        workspace (copy, index: 1)
+        params (copy, index: 2)
+    ]]
+    local magnitude = direction.Magnitude
+
+    return if magnitude < 0.001 then 0 elseif const raycastResult = workspace:Spherecast(position, 0.6, direction, params) then raycastResult.Distance else magnitude
+end
+
+function v2.Update(a48, a49, deadAt, a51, a52, a53)
     --[[
       name: Update
       line: 229
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        Workspace_upv_1 (copy, index: 2)
-        u2 (copy, index: 3)
+        v4 (copy, index: 1)
+        workspace (copy, index: 2)
+        params (copy, index: 3)
         aimAt (copy, index: 4)
-        u1 (ref,  index: 5)
+        v3 (ref,  index: 5)
     ]]
-    local v6
-    if a4 then
-        v6 = a4.Position
-    else
-        v6 = nil
-    end
-    local v11 = nil
-    if (v6) and (a5) then
-        tbl_upv_2.deadAt = nil
-        local v7 = v6 + Vector3.new(0, 1.5, 0)
-        local v8 = Workspace_upv_1:Spherecast(v7, 0.4, Vector3.new(0, 1.600000023841858, 0), u2)
-        v11 = (v8 and (v7.Y + math.max(0, v8.Distance - 0.4))) or v6.Y + 3.1
-        local v10 = tbl_upv_2
-        v10.pivotY = v10.pivotY + ((v11 - tbl_upv_2.pivotY) * (1 - math.exp(a2 * -10)))
-    elseif v6 and not (tbl_upv_2.deadAt) then
-        tbl_upv_2.deadAt = a3
-    end
-    if v6 then
-        v11 = Vector3.new(v6.X, tbl_upv_2.pivotY, v6.Z)
-    else
-        v11 = a1.CFrame.Position
-    end
-    if tbl_upv_2.deadAt then
-        v11 = (v6 and (v6 + Vector3.new(0, 1.2000000476837158, 0))) or v11
-    end
-    local v12 = false
-    if a6 ~= nil then
-        v12 = a6.valid
-        v12 = a6.valid and a5
-    end
-    local v13
-    if (a4) and (a5) then
-        local v49 = a4.LookVector
-        v13 = math.atan2(-a4.LookVector.X, -a4.LookVector.Z)
-    else
-        v13 = tbl_upv_2.yaw
-    end
-    local v14, v15 = aimAt(a3)
-    tbl_upv_2.aimW = v12 and 0
-    local Magnitude_2 = -0.13962634015954636
-    local v17 = nil
-    local v18 = v17.aimFovW
-    local v19
-    if (tbl_upv_2.aimed) and (a5) then
-        v19 = 1
-    else
-        v19 = 0
-    end
-    v17.aimFovW = v18 + ((v19 - tbl_upv_2.aimFovW) * (1 - math.exp(a2 * -8)))
-    local v20 = tbl_upv_2
-    v20.action = v20.action + ((tbl_upv_2.actionWant - tbl_upv_2.action) * (1 - math.exp(a2 * -3)))
-    local v21 = ((tbl_upv_2.deadAt) and 0) or (tbl_upv_2.action * (1 - v14))
-    local v22 = u1 * (((tbl_upv_2.aimFovW * -0.10000000000000009) + 2.9) + v21 * 0.8)
-    local v23 = tbl_upv_2.aimFovW * -2.5 + 10.5
-    local v24 = nil
-    local v32 = nil
-    if v15 and v14 > 0 then
-        v32 = tbl_upv_2.yaw
-        local v26 = tbl_upv_2.pitch
-        for v50 = 1, 2 do
-            local Unit_2 = (v15 - (v11 + CFrame.fromEulerAnglesYXZ(v26, v32, 0):VectorToWorldSpace(tbl_upv_2.offset))).Unit
-            local v27 = math.atan2(-Unit_2.X, -Unit_2.Z)
-            v26, v32 = math.asin(math.clamp(Unit_2.Y, -1, 1)), v27
+    local v54
+    local aimW, v56
+    local v57
+    local v58
+    local v59
+    local v60 = if a51 then a51.Position else nil
+
+    if v60 and a52 then
+        v4.deadAt = nil
+        local v61 = v60.Y + 3.1
+        local position = v60 + Vector3.new(0, 1.5, 0)
+
+        if const raycastResult = workspace:Spherecast(position, 0.4, Vector3.new(0, 1.600000023841858, 0), params) then
+            v61 = position.Y + math.max(0, raycastResult.Distance - 0.4)
         end
-        v24, Magnitude_2 = v13 + (((v32 - v13 + math.pi) % math.tau) - math.pi) * v14, (v26 - -0.13962634015954636) * v14 + -0.13962634015954636
+
+        v4.pivotY += ((v61 - v4.pivotY) * (1 - math.exp(a49 * -10)))
+    elseif v60 and not v4.deadAt then
+        v4.deadAt = deadAt
     end
-    if tbl_upv_2.deadAt then
-        tbl_upv_2.yaw = tbl_upv_2.yaw + a2 * 0.35
-        v24, Magnitude_2 = tbl_upv_2.yaw, -0.4188790204786391
+
+    local v64 = if v60 then Vector3.new(v60.X, v4.pivotY, v60.Z) else a48.CFrame.Position
+
+    if v4.deadAt and v60 then
+        v64 = v60 + Vector3.new(0, 1.2000000476837158, 0)
     end
-    if v12 then
-        local v28 = math.clamp(a6.pitch, -1.3962634015954636, 1.361356816555577)
-        tbl_upv_2.yaw = a6.yaw
-        tbl_upv_2.pitch = v28
+
+    local v65 = a53 ~= nil and a53.valid and a52
+
+    if a51 and a52 then
+        local lookVector = a51.LookVector
+        v54 = math.atan2(-lookVector.X, -lookVector.Z)
     else
-        local v29 = ((v14 > 0) and 16) or 9
-        v32 = tbl_upv_2
-        v32.yaw = v32.yaw + (((((v24 - tbl_upv_2.yaw) + math.pi) % math.tau) - math.pi) * (1 - math.exp(-v29 * a2)))
-        v32 = tbl_upv_2
-        v32.pitch = v32.pitch + ((Magnitude_2 - tbl_upv_2.pitch) * (1 - math.exp(-(((v14 > 0) and 14) or 6) * a2)))
-        tbl_upv_2.pitch = math.clamp(tbl_upv_2.pitch, -1.2217304763960306, 1.0471975511965976)
+        v54 = v4.yaw
     end
-    Magnitude_2 = 1 - (1 - math.clamp(a3 / 1, 0, 1)) ^ 3
-    tbl_upv_2.punch = math.max(0, tbl_upv_2.punch - (a2 * 1.6))
-    if tbl_upv_2.punch > 0.85 then
-        v32 = (1 - tbl_upv_2.punch) / 0.15
+
+    aimW, v56 = aimAt(deadAt)
+
+    if v65 then
+        aimW = 0
+        v56 = nil
+    end
+
+    v4.aimW = aimW
+    local v67 = v54
+    local v68 = -0.13962634015954636
+    local v69 = v4
+    local aimFovW = v69.aimFovW
+    local v71 = v4.aimed and a52 and 1 or 0
+    v69.aimFovW = aimFovW + ((v71 - v4.aimFovW) * (1 - math.exp(a49 * -8)))
+    v4.action += ((v4.actionWant - v4.action) * (1 - math.exp(a49 * -3)))
+
+    if v4.deadAt then
+        v57 = 0
     else
-        v32 = tbl_upv_2.punch / 0.85
+        v57 = v4.action * (1 - aimW)
     end
-    local v33 = (v12 and (a6.fov - v32 * 4)) or ((tbl_upv_2.aimFovW * -20) + 70 - v32 * 6)
-    local v34 = ((tbl_upv_2.deadAt) and (v23 + math.min(3, (a3 - tbl_upv_2.deadAt) * 2))) or v23
-    local v35 = CFrame.fromEulerAnglesYXZ(tbl_upv_2.pitch - ((1 - Magnitude_2) * 0.10471975511965978), tbl_upv_2.yaw + ((1 - Magnitude_2) * 0.5235987755982988), 0)
-    Magnitude_2 = table.create(4, 0)
-    local v36 = table.create(4, Vector3.new(0, 0, 0))
-    local v37 = nil
-    for n_2 = 1, 4 do
-        v37 = v34 + (17 - v23) * (1 - Magnitude_2)
-        local v38
-        if n_2 == 1 then
-            v38 = Vector3.new(v22, 0, v37)
-        elseif n_2 == 2 then
-            v38 = Vector3.new(-v22, 0, v37)
-        elseif n_2 ~= 3 then
-            v38 = Vector3.new(v22 * 0.7, 2.2, v37 * 0.85)
+
+    local x = v3 * ((v4.aimFovW * -0.10000000000000009) + 2.9 + v57 * 0.8)
+    local v73 = v4.aimFovW * -2.5 + 10.5
+
+    if v56 and 0 < aimW then
+        local v74 = v4.yaw
+        local v75 = v4.pitch
+
+        for _ = 1, 2 do
+            local unit = (v56 - (v64 + CFrame.fromEulerAnglesYXZ(v75, v74, 0):VectorToWorldSpace(v4.offset))).Unit
+            v74 = math.atan2(-unit.X, -unit.Z)
+            v75 = math.asin((math.clamp(unit.Y, -1, 1)))
+        end
+
+        v67 = v54 + (((v74 - v54 + math.pi) % math.tau) - math.pi) * aimW
+        v68 = (v75 - -0.13962634015954636) * aimW + -0.13962634015954636
+    end
+
+    if v4.deadAt then
+        v4.yaw += a49 * 0.35
+        v67 = v4.yaw
+        v68 = -0.4188790204786391
+    end
+
+    if v65 then
+        v4.yaw, v4.pitch = a53.yaw, math.clamp(a53.pitch, -1.3962634015954636, 1.361356816555577)
+    else
+        local v78
+        local v79 = not (0 < aimW) and 9 or 16
+        v4.yaw += (((((v67 - v4.yaw) + math.pi) % math.tau) - math.pi) * (1 - math.exp(-v79 * a49)))
+        local v80 = v4
+        local pitch = v80.pitch
+        local v82 = v68 - v4.pitch
+
+        if not (0 < aimW) then
+            v78 = 6
         else
-            v38 = Vector3.new(v22 * 0.7, -1.6, v37 * 0.8)
+            v78 = 14
         end
-        local v39 = v38 + Vector3.new(0, (1 - Magnitude_2) * 4.5 + (v21 * 0.5), 0)
-        v36[n_2] = v39
-        local v40 = v35:VectorToWorldSpace(v39)
-        local Magnitude_3 = v40.Magnitude
-        if Magnitude_3 < 0.001 then
-            v37 = 0
-            Magnitude_2[n_2] = v37 / v39.Magnitude
-            continue
-        end
-        local v41 = Workspace_upv_1:Spherecast(v11, 0.6, v40, u2)
-        if v41 then
-            v37 = v41.Distance
-        else
-            v37 = Magnitude_3
-        end
-        Magnitude_2[n_2] = v37 / v39.Magnitude
+
+        v80.pitch = pitch + (v82 * (1 - math.exp(-v78 * a49)))
+        v4.pitch = math.clamp(v4.pitch, -1.2217304763960306, 1.0471975511965976)
     end
-    local v42 = tbl_upv_2.arm
-    if Magnitude_2[1] >= 0.92 then
-        v42 = 1
-    elseif Magnitude_2[v42] < 0.92 then
-        v18 = Magnitude_2[v42] + 0.15 < Magnitude_2[1] and 1 or v42
-        if Magnitude_2[v18] + 0.15 < Magnitude_2[2] then
-            v18 = 2
-        end
-        if Magnitude_2[v18] + 0.15 < Magnitude_2[3] then
-            v18 = 3
-        end
-        if Magnitude_2[v18] + 0.15 < Magnitude_2[4] then
-            v18 = 4
-        end
-        v42 = v18
-    end
-    tbl_upv_2.arm = v42
-    tbl_upv_2.offset = tbl_upv_2.offset:Lerp(v36[v42], 1 - math.exp(a2 * -7))
-    local v43 = v35:VectorToWorldSpace(tbl_upv_2.offset)
-    Magnitude_2 = v43.Magnitude
-    local v44 = nil
-    if Magnitude_2 < 0.001 then
-        v21 = 0
+
+    local v83 = 1 - (function(...) return (...) ^ 3 end)(((1 - math.clamp(deadAt / 1, 0, 1))))
+    local v84 = (17 - v73) * (1 - v83)
+    local v85 = (1 - v83) * 4.5
+    local v86 = (1 - v83) * 0.5235987755982988
+    v4.punch = math.max(0, v4.punch - (a49 * 1.6))
+
+    if not (0.85 < v4.punch) then
+        v58 = v4.punch / 0.85
     else
-        v44 = Workspace_upv_1:Spherecast(v11, 0.6, v43, u2)
-        if v44 then
-            v21 = v44.Distance
+        v58 = (1 - v4.punch) / 0.15
+    end
+
+    local fieldOfView = if v65 then a53.fov - v58 * 4 else (v4.aimFovW * -20) + 70 - v58 * 6
+
+    if v4.deadAt then
+        v73 += math.min(3, (deadAt - v4.deadAt) * 2)
+    end
+
+    local v88 = CFrame.fromEulerAnglesYXZ(v4.pitch - ((1 - v83) * 0.10471975511965978), v4.yaw + v86, 0)
+    local values = table.create(4, 0)
+    local values2 = table.create(4, Vector3.new(0, 0, 0))
+
+    for valueKey = 1, 4 do
+        local vector3
+        local z = v73 + v84
+
+        if valueKey == 1 then
+            vector3 = Vector3.new(x, 0, z)
+        elseif valueKey == 2 then
+            vector3 = Vector3.new(-x, 0, z)
         else
-            v21 = Magnitude_2
+            vector3 = if valueKey == 3 then Vector3.new(x * 0.7, -1.6, z * 0.8) else Vector3.new(x * 0.7, 2.2, z * 0.85)
         end
-    end
-    local v45 = v11 + v43.Unit * math.max(math.min(v21 - 0.2, v43.Magnitude), math.min(3.2, v43.Magnitude))
-    local v46 = CFrame.lookAt(v45, v45 + v35.LookVector)
-    if v12 and a6 and a6.first and a6.eye and a3 >= 0.7 then
-        v32 = 1
-    else
-        v32 = 0
-    end
-    if tbl_upv_2.fpW < v32 then
-        tbl_upv_2.fpW = math.min(v32, tbl_upv_2.fpW + (a2 / 0.2))
-    elseif v32 < tbl_upv_2.fpW then
-        tbl_upv_2.fpW = math.max(v32, tbl_upv_2.fpW - (a2 / 0.2))
-    end
-    tbl_upv_2.firstPerson = tbl_upv_2.fpW >= 0.5
-    if tbl_upv_2.fpW > 0 and a6 then
-        local v47 = nil
-        if a6.eye then
-            local v48 = CFrame.new(a6.eye + Vector3.new(0, a6.bobY, 0)) * CFrame.fromEulerAnglesYXZ(math.clamp(a6.pitch, -1.3962634015954636, 1.361356816555577), a6.yaw, 0) * CFrame.Angles(0, 0, a6.bobRoll)
-            v47 = tbl_upv_2.fpW * tbl_upv_2.fpW * (3 - (tbl_upv_2.fpW * 2))
-            if v47 >= 1 then
-                v46 = v48
-            else
-                v46 = v46:Lerp(v48, v47)
+
+        local v94 = vector3 + Vector3.new(0, v85 + (v57 * 0.5), 0)
+        values2[valueKey] = v94
+        local direction = v88:VectorToWorldSpace(v94)
+        local v96 = direction.Magnitude
+
+        if not (v96 < 0.001) then
+            if const raycastResult = workspace:Spherecast(v64, 0.6, direction, params) then
+                v96 = raycastResult.Distance
             end
+        else
+            v96 = 0
+        end
+
+        values[valueKey] = v96 / v94.Magnitude
+    end
+
+    local arm = v4.arm
+
+    if not (0.92 <= values[1]) then
+        if values[arm] < 0.92 then
+            local arm2 = arm
+            local value = values[1]
+
+            if values[arm2] + 0.15 < value then
+                arm2 = 1
+            end
+
+            local value2 = values[2]
+
+            if values[arm2] + 0.15 < value2 then
+                arm2 = 2
+            end
+
+            local value3 = values[3]
+
+            if values[arm2] + 0.15 < value3 then
+                arm2 = 3
+            end
+
+            local value4 = values[4]
+
+            if values[arm2] + 0.15 < value4 then
+                arm2 = 4
+            end
+
+            arm = arm2
+        end
+    else
+        arm = 1
+    end
+
+    v4.arm = arm
+    v4.offset = v4.offset:Lerp(values2[arm], 1 - math.exp(a49 * -7))
+    local direction = v88:VectorToWorldSpace(v4.offset)
+    local magnitude = direction.Magnitude
+
+    if not (magnitude < 0.001) then
+        v59 = if const raycastResult = workspace:Spherecast(v64, 0.6, direction, params) then raycastResult.Distance else magnitude
+    else
+        v59 = 0
+    end
+
+    local v107 = math.max(math.min(v59 - 0.2, direction.Magnitude), (math.min(3.2, direction.Magnitude)))
+    local v108 = v64 + direction.Unit * v107
+    local startValue = CFrame.lookAt(v108, v108 + v88.LookVector)
+    local v110 = v65 and a53 and a53.first and a53.eye and 0.7 <= deadAt and 1 or 0
+
+    if v4.fpW < v110 then
+        v4.fpW = math.min(v110, v4.fpW + (a49 / 0.2))
+    elseif v110 < v4.fpW then
+        v4.fpW = math.max(v110, v4.fpW - (a49 / 0.2))
+    end
+
+    v4.firstPerson = 0.5 <= v4.fpW
+
+    if 0 < v4.fpW and a53 and a53.eye then
+        local targetValue = CFrame.new(a53.eye + Vector3.new(0, a53.bobY, 0)) * CFrame.fromEulerAnglesYXZ(math.clamp(a53.pitch, -1.3962634015954636, 1.361356816555577), a53.yaw, 0) * CFrame.Angles(0, 0, a53.bobRoll)
+        local alpha = v4.fpW * v4.fpW * (3 - (v4.fpW * 2))
+
+        if not (1 <= alpha) then
+            startValue = startValue:Lerp(targetValue, alpha)
+        else
+            startValue = targetValue
         end
     end
-    a1.CFrame = v46
-    a1.FieldOfView = v33
+
+    a48.CFrame = startValue
+    a48.FieldOfView = fieldOfView
 end
-function tbl_1.Stats()
+
+function v2.Stats()
     --[[
       name: Stats
       line: 354
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local tbl_3 = {}
-    tbl_3.aimW = tbl_upv_2.aimW
-    tbl_3.arm = tbl_upv_2.arm
-    tbl_3.offset = tbl_upv_2.offset
-    tbl_3.pivotY = tbl_upv_2.pivotY
-    tbl_3.segments = #tbl_upv_2.segments
-    return tbl_3
+    return {aimW = v4.aimW, arm = v4.arm, offset = v4.offset, pivotY = v4.pivotY, segments = #v4.segments}
 end
-return tbl_1
+
+return v2

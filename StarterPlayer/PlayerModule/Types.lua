@@ -1,3 +1,4 @@
-local _ = require(script.ControlModuleData)
-local v1 = require(script.PlayerModuleInternalData)
+require(script.ControlModuleData)
+require(script.PlayerModuleInternalData)
+
 return {}

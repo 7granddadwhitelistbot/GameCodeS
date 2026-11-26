@@ -1,263 +1,318 @@
-local Spring_1 = require(script.Parent:WaitForChild("Spring"))
-local tbl_upv_1 = {}
-tbl_upv_1.EYE_EASE = 5
-local EYE_EASE_upv_1 = tbl_upv_1.EYE_EASE
-tbl_upv_1.STRIDE = 7
-tbl_upv_1.BOB_SPEED = 21
-tbl_upv_1.BOB_EASE = 8
-tbl_upv_1.CAM_BOB_Y = 0.03
-tbl_upv_1.CAM_BOB_ROLL = 0.002617993877991494
-tbl_upv_1.RUN_SPEED = 21
-tbl_upv_1.STRAFE_ROLL = 0.019198621771937627
-tbl_upv_1.SLIDE_ROLL = 0.041887902047863905
-tbl_upv_1.LAND_FALL = 56
-tbl_upv_1.LAND_MAX = 2.2
-tbl_upv_1.DROP = 0.13
-tbl_upv_1.NOD = 0.012217304763960306
-tbl_upv_1.TAKEOFF_DROP = 0.05
-local u1 = Spring_1.new(0, 6, 0.85)
-local u2 = Spring_1.new(0, 3, 0.5)
-local u3 = Spring_1.new(0, 3, 0.5)
-local u4 = 0
-local u5 = 0
-local u6 = true
-local u7 = false
-local u8 = true
-local u9 = 0
-local u10 = nil
-local u11 = 0
-local u12 = 0
-local u13 = 0
-local u14 = nil
-function tbl_upv_1.Set(a1)
+local Spring = require(script.Parent:WaitForChild("Spring"))
+local v2 = {EYE_EASE = 5}
+local eyeEase = v2.EYE_EASE
+v2.STRIDE = 7
+v2.BOB_SPEED = 21
+v2.BOB_EASE = 8
+v2.CAM_BOB_Y = 0.03
+v2.CAM_BOB_ROLL = 0.002617993877991494
+v2.RUN_SPEED = 21
+v2.STRAFE_ROLL = 0.019198621771937627
+v2.SLIDE_ROLL = 0.041887902047863905
+v2.LAND_FALL = 56
+v2.LAND_MAX = 2.2
+v2.DROP = 0.13
+v2.NOD = 0.012217304763960306
+v2.TAKEOFF_DROP = 0.05
+local spring = Spring.new(0, 6, 0.85)
+local spring2 = Spring.new(0, 3, 0.5)
+local spring3 = Spring.new(0, 3, 0.5)
+local v7 = 0
+local v8 = 0
+local v9 = true
+local v10 = false
+local v11 = true
+local v12 = 0
+local v13 = nil
+local v14 = 0
+local v15 = 0
+local v16 = 0
+local v17 = nil
+
+function v2.Set(a18)
     --[[
       name: Set
       line: 76
       upvalues:
-        u7 (ref, index: 1)
+        v10 (ref, index: 1)
     ]]
-    u7 = a1 == true
+    v10 = a18 == true
 end
-function tbl_upv_1.Get()
+
+function v2.Get()
     --[[
       name: Get
       line: 80
       upvalues:
-        u7 (ref, index: 1)
+        v10 (ref, index: 1)
     ]]
-    return u7
+    return v10
 end
-function tbl_upv_1.SetBobbing(a1)
+
+function v2.SetBobbing(bobbing)
     --[[
       name: SetBobbing
       line: 84
       upvalues:
-        u8 (ref, index: 1)
+        v11 (ref, index: 1)
     ]]
-    u8 = a1 == true
+    v11 = bobbing == true
 end
-function tbl_upv_1.GetBobbing()
+
+function v2.GetBobbing()
     --[[
       name: GetBobbing
       line: 88
       upvalues:
-        u8 (ref, index: 1)
+        v11 (ref, index: 1)
     ]]
-    return u8
+    return v11
 end
-function tbl_upv_1.Step(a1, a2)
+
+function v2.Step(a20, a21)
     --[[
       name: Step
       line: 94
       upvalues:
-        u9 (ref,  index: 1)
-        u10 (ref,  index: 2)
-        u14 (ref,  index: 3)
-        u12 (ref,  index: 4)
-        u1 (copy, index: 5)
-        u2 (copy, index: 6)
-        u3 (copy, index: 7)
-        u4 (ref,  index: 8)
-        u5 (ref,  index: 9)
-        u6 (ref,  index: 10)
-        u7 (ref,  index: 11)
+        v12 (ref,  index: 1)
+        v13 (ref,  index: 2)
+        v17 (ref,  index: 3)
+        v15 (ref,  index: 4)
+        spring (copy, index: 5)
+        spring2 (copy, index: 6)
+        spring3 (copy, index: 7)
+        v7 (ref,  index: 8)
+        v8 (ref,  index: 9)
+        v9 (ref,  index: 10)
+        v10 (ref,  index: 11)
     ]]
-    if a2 then
-        local v1 = (u7 and 1) or 0
-        if u9 < v1 then
-            u9 = math.min(v1, u9 + (a1 / 0.2))
-        elseif v1 < u9 then
-            u9 = math.max(v1, u9 - (a1 / 0.2))
-        end
-        return u9
+    if not a21 then
+        v12 = 0
+        v13 = nil
+        v17 = nil
+        v15 = 0
+        spring:Snap(0)
+        spring2:Snap(0)
+        spring3:Snap(0)
+        v7 = 0
+        v8 = 0
+        v9 = true
+
+        return 0
     end
-    u9 = 0
-    u10 = nil
-    u14 = nil
-    u12 = 0
-    u1:Snap(0)
-    u2:Snap(0)
-    u3:Snap(0)
-    u4 = 0
-    u5 = 0
-    u6 = true
-    return 0
+
+    local v22 = v10 and 1 or 0
+
+    if v12 < v22 then
+        v12 = math.min(v22, v12 + (a20 / 0.2))
+    elseif v22 < v12 then
+        v12 = math.max(v22, v12 - (a20 / 0.2))
+    end
+
+    return v12
 end
-function tbl_upv_1.Eased()
+
+function v2.Eased()
     --[[
       name: Eased
       line: 116
       upvalues:
-        u9 (ref, index: 1)
+        v12 (ref, index: 1)
     ]]
-    local v2 = u9
-    return (v2 * v2) * (3 - (v2 * 2))
+    local v23 = v12
+    return v23 * v23 * (3 - (v23 * 2))
 end
-local function kick(a1, a2)
+
+local function kick(a25, a26)
     --[[
       name: kick
       line: 122
     ]]
-    a1:Impulse((((a2 * a1.frequency) * 2) * math.pi) / 0.546)
+    a25:Impulse((((a26 * a25.frequency) * 2) * math.pi) / 0.546)
 end
-local function stepMotion(a1, a2, a3, a4, a5)
+
+local function stepMotion(a28, a29, a30, a31, a32)
     --[[
       name: stepMotion
       line: 128
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u1 (copy, index: 2)
-        u6 (ref,  index: 3)
-        u2 (copy, index: 4)
-        u4 (ref,  index: 5)
-        u5 (ref,  index: 6)
-        u3 (copy, index: 7)
+        v2 (copy, index: 1)
+        spring (copy, index: 2)
+        v9 (ref,  index: 3)
+        spring2 (copy, index: 4)
+        v7 (ref,  index: 5)
+        v8 (ref,  index: 6)
+        spring3 (copy, index: 7)
     ]]
-    local RightVector_1 = a3.RightVector
-    local v3 = Vector3.new(RightVector_1.X, 0, RightVector_1.Z)
-    local v4 = ((v3.Magnitude > 0.001) and (a2:Dot(v3.Unit) / tbl_upv_1.RUN_SPEED)) or 0
-    local v5 = -math.clamp(v4, -1.3, 1.3) * tbl_upv_1.STRAFE_ROLL
-    if a5 then
-        local v6 = not (math.abs(v4) > 0.15) and -1 or math.sign(v4)
-        v5 = v5 - v6 * tbl_upv_1.SLIDE_ROLL
+    local v33
+    local rightVector = a30.RightVector
+    local vector3 = Vector3.new(rightVector.X, 0, rightVector.Z)
+
+    if not (0.001 < vector3.Magnitude) then
+        v33 = 0
+    else
+        v33 = a29:Dot(vector3.Unit) / v2.RUN_SPEED
     end
-    u1.target = v5
-    if a4 then
-        if not (u6) then
-            v3 = -u5
-            if u4 > 0.12 and v3 > 18 then
-                local v7 = math.min(v3 / tbl_upv_1.LAND_FALL, tbl_upv_1.LAND_MAX)
-                u2:Impulse(((((-tbl_upv_1.DROP * v7) * u2.frequency) * 2) * math.pi) / 0.546)
-                u3:Impulse(((((-tbl_upv_1.NOD * v7) * u3.frequency) * 2) * math.pi) / 0.546)
+
+    local target = -math.clamp(v33, -1.3, 1.3) * v2.STRAFE_ROLL
+
+    if a32 then
+        local v37
+
+        if not (0.15 < math.abs(v33)) then
+            v37 = -1
+        else
+            v37 = math.sign(v33)
+        end
+
+        target -= v37 * v2.SLIDE_ROLL
+    end
+
+    spring.target = target
+
+    if a31 then
+        if not v9 then
+            local v38 = -v8
+
+            if 0.12 < v7 and 18 < v38 then
+                local v39 = math.min(v38 / v2.LAND_FALL, v2.LAND_MAX)
+                spring2:Impulse((((-v2.DROP * v39 * spring2.frequency) * 2) * math.pi) / 0.546)
+                spring3:Impulse((((-v2.NOD * v39 * spring3.frequency) * 2) * math.pi) / 0.546)
             end
-            u4 = 0
-            u5 = 0
+
+            v7 = 0
+            v8 = 0
         end
     else
-        if u6 and a2.Y > 20 then
-            u2:Impulse((((-tbl_upv_1.TAKEOFF_DROP * u2.frequency) * 2) * math.pi) / 0.546)
+        if v9 and 20 < a29.Y then
+            spring2:Impulse((((-v2.TAKEOFF_DROP * spring2.frequency) * 2) * math.pi) / 0.546)
         end
-        u4 = u4 + a1
-        u5 = math.min(u5, a2.Y)
+
+        v7 += a28
+        v8 = math.min(v8, a29.Y)
     end
-    u6 = a4
-    u1:Update(a1)
-    u2:Update(a1)
-    u3:Update(a1)
+
+    v9 = a31
+    spring:Update(a28)
+    spring2:Update(a28)
+    spring3:Update(a28)
 end
-function tbl_upv_1.StepBob(a1, a2, a3, a4, a5, a6)
+
+function v2.StepBob(a40, a41, a42, a43, a44, a45)
     --[[
       name: StepBob
       line: 160
       upvalues:
         stepMotion (copy, index: 1)
-        u14 (ref,  index: 2)
-        u13 (ref,  index: 3)
-        tbl_upv_1 (copy, index: 4)
-        u12 (ref,  index: 5)
-        u11 (ref,  index: 6)
+        v17 (ref,  index: 2)
+        v16 (ref,  index: 3)
+        v2 (copy, index: 4)
+        v15 (ref,  index: 5)
+        v14 (ref,  index: 6)
     ]]
-    if a5 and a6 then
-        stepMotion(a1, a5, a6, a3, a4)
+    local clampedValue
+
+    if a44 and a45 then
+        stepMotion(a40, a44, a45, a42, a43)
     end
-    local v8 = 0
-    local v9 = u14
-    if v9 and a1 > 0 then
-        local _ = a2 - v9
-        v8 = Vector3.new((a2 - v9).X, 0, (a2 - v9).Z).Magnitude / a1
-        v8 = ((v8 > 80) and 0) or v8
+
+    local v47 = 0
+    local v48 = v17
+
+    if v48 and 0 < a40 then
+        local v49 = a41 - v48
+        v47 = Vector3.new(v49.X, 0, v49.Z).Magnitude / a40
+
+        if 80 < v47 then
+            v47 = 0
+        end
     end
-    u14 = a2
-    u13 = u13 + (v8 - u13) * (1 - math.exp(a1 * -12))
-    local v10
-    if not (a3) or a4 then
-        v10 = 0
+
+    v17 = a41
+    v16 += ((v47 - v16) * (1 - math.exp(a40 * -12)))
+
+    if not a42 or a43 then
+        clampedValue = 0
     else
-        v10 = math.clamp((u13 - 1) / (tbl_upv_1.BOB_SPEED - 1), 0, 1.25)
+        clampedValue = math.clamp((v16 - 1) / (v2.BOB_SPEED - 1), 0, 1.25)
     end
-    u12 = u12 + (v10 - u12) * (1 - math.exp(-tbl_upv_1.BOB_EASE * a1))
-    if u12 < 0.002 and v10 == 0 then
-        u12 = 0
+
+    v15 += ((clampedValue - v15) * (1 - math.exp(-v2.BOB_EASE * a40)))
+
+    if v15 < 0.002 and clampedValue == 0 then
+        v15 = 0
     end
-    if not a3 then
-        return
+
+    if a42 then
+        v14 = (v14 + (((v47 * a40 / v2.STRIDE) * 2) * math.pi)) % 12.566370614359172
     end
-    u11 = (u11 + ((((v8 * a1) / tbl_upv_1.STRIDE) * 2) * math.pi)) % 12.566370614359172
 end
-function tbl_upv_1.Bob()
+
+function v2.Bob()
     --[[
       name: Bob
       line: 186
       upvalues:
-        u11 (ref, index: 1)
-        u12 (ref, index: 2)
-        u13 (ref, index: 3)
+        v14 (ref, index: 1)
+        v15 (ref, index: 2)
+        v16 (ref, index: 3)
     ]]
-    return u11, u12, u13
+    return v14, v15, v16
 end
-function tbl_upv_1.CameraBob()
+
+function v2.CameraBob()
     --[[
       name: CameraBob
       line: 192
       upvalues:
-        u8 (ref,  index: 1)
-        u2 (copy, index: 2)
-        u3 (copy, index: 3)
-        u1 (copy, index: 4)
-        u12 (ref,  index: 5)
-        u11 (ref,  index: 6)
-        tbl_upv_1 (copy, index: 7)
+        v11 (ref,  index: 1)
+        spring2 (copy, index: 2)
+        spring3 (copy, index: 3)
+        spring (copy, index: 4)
+        v15 (ref,  index: 5)
+        v14 (ref,  index: 6)
+        v2 (copy, index: 7)
     ]]
-    if not u8 then
+    if not v11 then
         return 0, 0, 0
     end
-    local value_1 = u2.value
-    local value_2 = u3.value
-    local value_3 = u1.value
-    local v11 = u12
-    if v11 > 0 then
-        value_1, value_3 = value_1 + (-math.cos(u11 * 2) * 0.5 * tbl_upv_1.CAM_BOB_Y) * v11, value_3 + (math.sin(u11) * tbl_upv_1.CAM_BOB_ROLL) * v11
+
+    local v50 = spring2.value
+    local value = spring3.value
+    local v52 = spring.value
+    local v53 = v15
+
+    if 0 < v53 then
+        v50 += (-math.cos(v14 * 2) * 0.5 * v2.CAM_BOB_Y) * v53
+        v52 += (math.sin(v14) * v2.CAM_BOB_ROLL) * v53
     end
-    return value_1, value_2, value_3
+
+    return v50, value, v52
 end
-function tbl_upv_1.Eye(a1, a2, a3, a4, a5)
+
+function v2.Eye(a54, a55, a56, a57, a58)
     --[[
       name: Eye
       line: 208
       upvalues:
-        u10 (ref,  index: 1)
-        EYE_EASE_upv_1 (copy, index: 2)
+        v13 (ref,  index: 1)
+        eyeEase (copy, index: 2)
     ]]
-    local v12 = ((a4 and (a4.Position.Y - a3.Position.Y)) or 1.5) + 0.25
-    local v13 = u10
-    local v14
-    if v13 ~= nil then
-        v14 = v13 + (v12 - v13) * (1 - math.exp(-EYE_EASE_upv_1 * a1))
+    local vector3
+    local v60 = not a57 and 1.5 or a57.Position.Y - a56.Position.Y
+    local v61 = v60 + 0.25
+    local y = v13
+    y = if y == nil then v61 else y + (v61 - y) * (1 - math.exp(-eyeEase * a54))
+    v13 = y
+    local vector32 = Vector3.new(a58.X, 0, a58.Z)
+
+    if not (0.001 < vector32.Magnitude) then
+        vector3 = Vector3.new(0, 0, 0)
     else
-        v14 = v12
+        vector3 = vector32.Unit * 0.3
     end
-    u10 = v14
-    local v15 = Vector3.new(a5.X, 0, a5.Z)
-    return (a2 + Vector3.new(0, v14, 0)) - (((v15.Magnitude > 0.001) and (v15.Unit * 0.3)) or Vector3.new(0, 0, 0))
+
+    return (a55 + Vector3.new(0, y, 0)) - vector3
 end
-return tbl_upv_1
+
+return v2

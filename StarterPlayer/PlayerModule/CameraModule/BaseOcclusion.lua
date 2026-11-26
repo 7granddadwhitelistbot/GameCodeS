@@ -1,64 +1,75 @@
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-local tbl_2 = {}
-function tbl_2.__call(a1, ...)
-    --[[
-      name: __call
-      line: 10
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-    ]]
-    return tbl_upv_1.new(...)
-end
-setmetatable(tbl_upv_1, tbl_2)
-function tbl_upv_1.new()
+local Class = {}
+Class.__index = Class
+setmetatable(
+    Class,
+    {
+        __call = (function(self, ...)
+            --[[
+              name: __call
+              line: 11
+              upvalues:
+                Class (copy, index: 1)
+            ]]
+            return Class.new(...)
+        end)
+    }
+)
+
+function Class.new()
     --[[
       name: new
-      line: 15
+      line: 16
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    return (setmetatable({}, tbl_upv_1))
+    return (setmetatable({}, Class))
 end
-function tbl_upv_1.CharacterAdded(a1, a2, a3)
+
+function Class.CharacterAdded(a3, a4, a5)
     --[[
       name: CharacterAdded
-      line: 21
+      line: 23
     ]]
 end
-function tbl_upv_1.CharacterRemoving(a1, a2, a3)
+
+function Class.CharacterRemoving(a6, a7, a8)
     --[[
       name: CharacterRemoving
-      line: 25
+      line: 27
     ]]
 end
-function tbl_upv_1.OnCameraSubjectChanged(a1, a2)
+
+function Class.OnCameraSubjectChanged(a9, a10)
     --[[
       name: OnCameraSubjectChanged
-      line: 28
+      line: 29
     ]]
 end
-function tbl_upv_1.GetOcclusionMode(a1)
+
+function Class.GetOcclusionMode(a11)
     --[[
       name: GetOcclusionMode
-      line: 32
+      line: 33
     ]]
     warn("BaseOcclusion GetOcclusionMode must be overridden by derived classes")
     return nil
 end
-function tbl_upv_1.Enable(a1, a2)
+
+function Class.Enable(a12, a13)
     --[[
       name: Enable
-      line: 38
+      line: 39
     ]]
     warn("BaseOcclusion Enable must be overridden by derived classes")
 end
-function tbl_upv_1.Update(a1, a2, a3, a4)
+
+function Class.Update(a14, a15, a16, a17)
     --[[
       name: Update
-      line: 42
+      line: 43
     ]]
     warn("BaseOcclusion Update must be overridden by derived classes")
-    return a3, a4
+    return a16, a17
 end
-return tbl_upv_1
+
+return Class

@@ -1,569 +1,671 @@
-local Players_upv_1 = game:GetService("Players")
-local u1 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil").getUserFlag("UserRaycastUpdateAPI2")
-local tbl_upv_1 = {CIRCLE1 = 5, CHAR_OUTLINE = 9, MOVEMENT = 3, CORNERS = 4, LIMBS = 2, SMART_CIRCLE = 8, LIMBMOVE = 7, CIRCLE2 = 6}
-local tbl_upv_2 = {}
-tbl_upv_2.Head = true
-tbl_upv_2["Left Arm"] = true
-tbl_upv_2["Right Arm"] = true
-tbl_upv_2["Left Leg"] = true
-tbl_upv_2["Right Leg"] = true
-tbl_upv_2.LeftLowerArm = true
-tbl_upv_2.RightLowerArm = true
-tbl_upv_2.LeftUpperLeg = true
-tbl_upv_2.RightUpperLeg = true
-local tbl_upv_3 = {Vector3.new(1, 1, -1), Vector3.new(1, -1, -1), Vector3.new(-1, -1, -1), Vector3.new(-1, 1, -1)}
-local u2 = RaycastParams.new()
-u2.FilterType = Enum.RaycastFilterType.Exclude
-local u3 = RaycastParams.new()
-u3.FilterType = Enum.RaycastFilterType.Include
-local function Det3x3(a1, a2, a3, a4, a5, a6, a7, a8, a9)
+local players = game:GetService("Players")
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v3 = CommonUtils.get("FlagUtil")
+local userFlag = v3.getUserFlag("UserRaycastUpdateAPI2")
+local userFlag2 = v3.getUserFlag("UserPlayerModuleEngineAPI")
+local v6 = {LIMBS = 2, MOVEMENT = 3, CORNERS = 4, CIRCLE1 = 5, CIRCLE2 = 6, LIMBMOVE = 7, SMART_CIRCLE = 8, CHAR_OUTLINE = 9}
+local v7 = {Head = true, ["Left Arm"] = true, ["Right Arm"] = true, ["Left Leg"] = true, ["Right Leg"] = true, LeftLowerArm = true, RightLowerArm = true, LeftUpperLeg = true, RightUpperLeg = true}
+local v8 = {Vector3.new(1, 1, -1), Vector3.new(1, -1, -1), Vector3.new(-1, -1, -1), Vector3.new(-1, 1, -1)}
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+
+local raycastParams2 = RaycastParams.new()
+raycastParams2.FilterType = Enum.RaycastFilterType.Include
+
+local function AssertTypes(mode, ...)
+    --[[
+      name: AssertTypes
+      line: 75
+    ]]
+    local v13 = {}
+    local v14 = ""
+
+    for _, v16 in pairs({...}) do
+        v13[v16] = true
+        local v17 = v14 ~= "" and " or " or ""
+        v14 ..= v17 .. v16
+    end
+
+    local valueType = type(mode)
+    assert(v13[valueType], v14 .. " type expected, got: " .. valueType)
+end
+
+local function Det3x3(a20, a21, a22, a23, a24, a25, a26, a27, a28)
     --[[
       name: Det3x3
-      line: 83
+      line: 87
     ]]
-    return ((a1 * ((a5 * a9) - (a6 * a8))) - (a2 * ((a4 * a9) - (a6 * a7)))) + (a3 * ((a4 * a8) - (a5 * a7)))
+    return (a20 * (a24 * a28 - (a25 * a27))) - (a21 * (a23 * a28 - (a25 * a26))) + (a22 * (a23 * a27 - (a24 * a26)))
 end
-local BaseOcclusion_upv_1 = require(script.Parent:WaitForChild("BaseOcclusion"))
-local u4 = setmetatable({}, BaseOcclusion_upv_1)
-u4.__index = u4
-function u4.new()
+
+local function RayIntersection(a30, unit, a32, a33)
+    --[[
+      name: RayIntersection
+      line: 105
+    ]]
+    local v34 = unit:Cross(a33)
+    local v35 = a32.X - a30.X
+    local v36 = a32.Y - a30.Y
+    local v37 = a32.Z - a30.Z
+    local x = unit.X
+    local v39 = -a33.X
+    local x2 = v34.X
+    local y = unit.Y
+    local v42 = -a33.Y
+    local y2 = v34.Y
+    local z = unit.Z
+    local v45 = -a33.Z
+    local z2 = v34.Z
+    local v47 = (x * (v42 * z2 - (y2 * v45))) - (v39 * (y * z2 - (y2 * z))) + x2 * (y * v45 - (v42 * z))
+
+    if v47 == 0 then
+        return Vector3.new(0, 0, 0)
+    end
+
+    local v48 = -a33.X
+    local x3 = v34.X
+    local v50 = -a33.Y
+    local y3 = v34.Y
+    local v52 = -a33.Z
+    local z3 = v34.Z
+    local v54 = ((v35 * (v50 * z3 - (y3 * v52))) - (v48 * (v36 * z3 - (y3 * v37))) + (x3 * (v36 * v52 - (v50 * v37)))) / v47
+    local x4 = unit.X
+    local x5 = v34.X
+    local y4 = unit.Y
+    local y5 = v34.Y
+    local z4 = unit.Z
+    local z5 = v34.Z
+    local v61 = ((x4 * (v36 * z5 - (y5 * v37))) - (v35 * (y4 * z5 - (y5 * z4))) + (x5 * (y4 * v37 - (v36 * z4)))) / v47
+    local v62 = a30 + v54 * unit
+    local v63 = a32 + v61 * a33
+    local v64 = v62 + (v63 - v62) * 0.5
+
+    if (v63 - v62).Magnitude < 0.25 then
+        return v64
+    end
+
+    return Vector3.new(0, 0, 0)
+end
+
+local BaseOcclusion = require(script.Parent:WaitForChild("BaseOcclusion"))
+local v66 = setmetatable({}, BaseOcclusion)
+v66.__index = v66
+
+function v66.new()
     --[[
       name: new
-      line: 124
+      line: 137
       upvalues:
-        BaseOcclusion_upv_1 (copy, index: 1)
-        u4 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        BaseOcclusion (copy, index: 1)
+        v66 (copy, index: 2)
+        v6 (copy, index: 3)
     ]]
-    local v1 = setmetatable(BaseOcclusion_upv_1.new(), u4)
-    v1.char = nil
-    v1.humanoidRootPart = nil
-    v1.torsoPart = nil
-    v1.headPart = nil
-    v1.childAddedConn = nil
-    v1.childRemovedConn = nil
-    v1.behaviors = {}
-    v1.behaviors[tbl_upv_1.LIMBS] = v1.LimbBehavior
-    v1.behaviors[tbl_upv_1.MOVEMENT] = v1.MoveBehavior
-    v1.behaviors[tbl_upv_1.CORNERS] = v1.CornerBehavior
-    v1.behaviors[tbl_upv_1.CIRCLE1] = v1.CircleBehavior
-    v1.behaviors[tbl_upv_1.CIRCLE2] = v1.CircleBehavior
-    v1.behaviors[tbl_upv_1.LIMBMOVE] = v1.LimbMoveBehavior
-    v1.behaviors[tbl_upv_1.SMART_CIRCLE] = v1.SmartCircleBehavior
-    v1.behaviors[tbl_upv_1.CHAR_OUTLINE] = v1.CharacterOutlineBehavior
-    v1.mode = tbl_upv_1.SMART_CIRCLE
-    v1.behaviorFunction = v1.SmartCircleBehavior
-    v1.savedHits = {}
-    v1.trackedLimbs = {}
-    v1.camera = game.Workspace.CurrentCamera
-    v1.enabled = false
-    return v1
+    local v67 = setmetatable(BaseOcclusion.new(), v66)
+    v67.char = nil
+    v67.humanoidRootPart = nil
+    v67.torsoPart = nil
+    v67.headPart = nil
+    v67.childAddedConn = nil
+    v67.childRemovedConn = nil
+    v67.behaviors = {}
+    v67.behaviors[v6.LIMBS] = v67.LimbBehavior
+    v67.behaviors[v6.MOVEMENT] = v67.MoveBehavior
+    v67.behaviors[v6.CORNERS] = v67.CornerBehavior
+    v67.behaviors[v6.CIRCLE1] = v67.CircleBehavior
+    v67.behaviors[v6.CIRCLE2] = v67.CircleBehavior
+    v67.behaviors[v6.LIMBMOVE] = v67.LimbMoveBehavior
+    v67.behaviors[v6.SMART_CIRCLE] = v67.SmartCircleBehavior
+    v67.behaviors[v6.CHAR_OUTLINE] = v67.CharacterOutlineBehavior
+    v67.mode = v6.SMART_CIRCLE
+    v67.behaviorFunction = v67.SmartCircleBehavior
+    v67.savedHits = {}
+    v67.trackedLimbs = {}
+    v67.camera = game.Workspace.CurrentCamera
+    v67.enabled = false
+
+    return v67
 end
-function u4.Enable(a1, a2)
+
+function v66.Enable(a68, enabled)
     --[[
       name: Enable
-      line: 157
+      line: 170
     ]]
-    a1.enabled = a2
-    if (a2) then
-        return
+    a68.enabled = enabled
+
+    if not enabled then
+        a68:Cleanup()
     end
-    a1:Cleanup()
 end
-function u4.GetOcclusionMode(a1)
+
+function v66.GetOcclusionMode(a70)
     --[[
       name: GetOcclusionMode
-      line: 165
+      line: 178
     ]]
     return Enum.DevCameraOcclusionMode.Invisicam
 end
-function u4.LimbBehavior(a1, a2)
+
+function v66.LimbBehavior(a71, a72)
     --[[
       name: LimbBehavior
-      line: 170
+      line: 184
     ]]
-    for key_1, _ in pairs(a1.trackedLimbs) do
-        a2[#a2 + 1] = key_1.Position
+    for key, _ in pairs(a71.trackedLimbs) do
+        a72[#a72 + 1] = key.Position
     end
 end
-function u4.MoveBehavior(a1, a2)
+
+function v66.MoveBehavior(a75, a76)
     --[[
       name: MoveBehavior
-      line: 176
+      line: 190
     ]]
-    for n_1 = 1, 3 do
-        local Velocity_1 = a1.humanoidRootPart.Velocity
-        a2[#a2 + 1] = a1.humanoidRootPart.Position + (((n_1 - 1) * a1.humanoidRootPart.CFrame.lookVector) * (Vector3.new(Velocity_1.X, 0, Velocity_1.Z).Magnitude / 2))
+    for index = 1, 3 do
+        local position = a75.humanoidRootPart.Position
+        local velocity = a75.humanoidRootPart.Velocity
+        local v80 = Vector3.new(velocity.X, 0, velocity.Z).Magnitude / 2
+        local v81 = (index - 1) * a75.humanoidRootPart.CFrame.lookVector * v80
+        a76[#a76 + 1] = position + v81
     end
 end
-function u4.CornerBehavior(a1, a2)
+
+function v66.CornerBehavior(a82, a83)
     --[[
       name: CornerBehavior
-      line: 185
+      line: 199
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v8 (copy, index: 1)
     ]]
-    local CFrame_1 = a1.humanoidRootPart.CFrame
-    local Position_1 = CFrame_1.Position
-    local v2 = a1.char:GetExtentsSize() / 2
-    a2[#a2 + 1] = Position_1
-    for n_2 = 1, #tbl_upv_3 do
-        a2[#a2 + 1] = Position_1 + ((CFrame_1 - Position_1) * (v2 * tbl_upv_3[n_2]))
+    local cFrame = a82.humanoidRootPart.CFrame
+    local position = cFrame.Position
+    local v86 = cFrame - position
+    local v87 = a82.char:GetExtentsSize() / 2
+    a83[#a83 + 1] = position
+
+    for index = 1, #v8 do
+        a83[#a83 + 1] = position + (v86 * (v87 * v8[index]))
     end
 end
-function u4.CircleBehavior(a1, a2)
+
+function v66.CircleBehavior(a89, a90)
     --[[
       name: CircleBehavior
-      line: 196
+      line: 210
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v6 (copy, index: 1)
     ]]
-    local v3
-    if a1.mode ~= tbl_upv_1.CIRCLE1 then
-        local _ = a1.camera.CoordinateFrame
-        v3 = a1.camera.CoordinateFrame - a1.camera.CoordinateFrame.Position + a1.humanoidRootPart.Position
+    local v91
+
+    if a89.mode ~= v6.CIRCLE1 then
+        local coordinateFrame = a89.camera.CoordinateFrame
+        v91 = coordinateFrame - coordinateFrame.Position + a89.humanoidRootPart.Position
     else
-        v3 = a1.humanoidRootPart.CFrame
+        v91 = a89.humanoidRootPart.CFrame
     end
-    a2[#a2 + 1] = v3.Position
-    for n_3 = 0, 9 do
-        local v4 = 0.6283185307179586 * n_3
-        a2[#a2 + 1] = v3 * (Vector3.new(math.cos(v4), math.sin(v4), 0) * 3)
+
+    a90[#a90 + 1] = v91.Position
+
+    for index = 0, 9 do
+        local v94 = 0.6283185307179586 * index
+        local vector3 = Vector3.new(math.cos(v94), math.sin(v94), 0) * 3
+        a90[#a90 + 1] = v91 * vector3
     end
 end
-function u4.LimbMoveBehavior(a1, a2)
+
+function v66.LimbMoveBehavior(a96, a97)
     --[[
       name: LimbMoveBehavior
-      line: 212
+      line: 226
     ]]
-    a1:LimbBehavior(a2)
-    a1:MoveBehavior(a2)
+    a96:LimbBehavior(a97)
+    a96:MoveBehavior(a97)
 end
-function u4.CharacterOutlineBehavior(a1, a2)
+
+function v66.CharacterOutlineBehavior(a98, a99)
     --[[
       name: CharacterOutlineBehavior
-      line: 217
+      line: 231
       upvalues:
-        u1 (copy, index: 1)
-        u3 (copy, index: 2)
+        userFlag (copy, index: 1)
+        raycastParams2 (copy, index: 2)
     ]]
-    local unit_1 = a1.torsoPart.CFrame.upVector.unit
-    local unit_2 = a1.torsoPart.CFrame.rightVector.unit
-    a2[#a2 + 1] = a1.torsoPart.CFrame.Position
-    a2[#a2 + 1] = a1.torsoPart.CFrame.Position + unit_1
-    a2[#a2 + 1] = a1.torsoPart.CFrame.Position - unit_1
-    a2[#a2 + 1] = a1.torsoPart.CFrame.Position + unit_2
-    a2[#a2 + 1] = a1.torsoPart.CFrame.Position - unit_2
-    if a1.headPart then
-        a2[#a2 + 1] = a1.headPart.CFrame.Position
+    local unit = a98.torsoPart.CFrame.upVector.unit
+    local unit2 = a98.torsoPart.CFrame.rightVector.unit
+    a99[#a99 + 1] = a98.torsoPart.CFrame.Position
+    a99[#a99 + 1] = a98.torsoPart.CFrame.Position + unit
+    a99[#a99 + 1] = a98.torsoPart.CFrame.Position - unit
+    a99[#a99 + 1] = a98.torsoPart.CFrame.Position + unit2
+    a99[#a99 + 1] = a98.torsoPart.CFrame.Position - unit2
+
+    if a98.headPart then
+        a99[#a99 + 1] = a98.headPart.CFrame.Position
     end
-    local v5 = CFrame.new(Vector3.new(0, 0, 0), Vector3.new(a1.camera.CoordinateFrame.lookVector.X, 0, a1.camera.CoordinateFrame.lookVector.Z))
-    local v6 = ((a1.torsoPart) and (a1.torsoPart.Position)) or (a1.humanoidRootPart.Position)
-    local tbl_4 = {a1.torsoPart}
-    if a1.headPart then
-        tbl_4[#tbl_4 + 1] = a1.headPart
+
+    local cframe = CFrame.new(Vector3.new(0, 0, 0), (Vector3.new(a98.camera.CoordinateFrame.lookVector.X, 0, a98.camera.CoordinateFrame.lookVector.Z)))
+    local position = a98.torsoPart and a98.torsoPart.Position or a98.humanoidRootPart.Position
+    local whitelistDescendantsTable = {a98.torsoPart}
+
+    if a98.headPart then
+        whitelistDescendantsTable[#whitelistDescendantsTable + 1] = a98.headPart
     end
-    for n_4 = 1, 24 do
-        local v7 = math.tau * n_4 / 24
-        local v8 = v5 * (Vector3.new(math.cos(v7), math.sin(v7), 0) * 3)
-        local v9 = Vector3.new(v8.X, math.max(v8.Y, -2.25), v8.Z)
-        if u1 then
-            u3.FilterDescendantsInstances = tbl_4
-            local v10 = game.Workspace:Raycast(v6 + v9, -3 * v9, u3)
-            if v10 then
-                local Position_2 = v10.Position
-                a2[#a2 + 1] = Position_2 + (0.2 * (v6 - Position_2).unit)
+
+    for index = 1, 24 do
+        local v106 = math.tau * index / 24
+        local vector3 = cframe * (Vector3.new(math.cos(v106), math.sin(v106), 0) * 3)
+        local vector32 = Vector3.new(vector3.X, math.max(vector3.Y, -2.25), vector3.Z)
+
+        if userFlag then
+            raycastParams2.FilterDescendantsInstances = whitelistDescendantsTable
+
+            if const raycastResult = game.Workspace:Raycast(position + vector32, -3 * vector32, raycastParams2) then
+                local position2 = raycastResult.Position
+                a99[#a99 + 1] = position2 + (0.2 * (position - position2).unit)
             end
         else
-            local v11, v12 = game.Workspace:FindPartOnRayWithWhitelist(Ray.new(v6 + v9, -3 * v9), tbl_4, false)
-            if v11 then
-                a2[#a2 + 1] = v12 + (0.2 * (v6 - v12).unit)
+            local ray = Ray.new(position + vector32, -3 * vector32)
+            local partOnRay, v113 = game.Workspace:FindPartOnRayWithWhitelist(ray, whitelistDescendantsTable, false)
+            if partOnRay then
+                a99[#a99 + 1] = v113 + (0.2 * (position - v113).unit)
             end
         end
     end
 end
-local function RayIntersection(a1, a2, a3, a4)
-    --[[
-      name: RayIntersection
-      line: 91
-    ]]
-    local v13 = a2:Cross(a4)
-    local v14 = a3.X - a1.X
-    local v15 = a3.Y - a1.Y
-    local v16 = a3.Z - a1.Z
-    local Y_1 = a2.Y
-    local v17 = -a4.Y
-    local Y_2 = v13.Y
-    local Z_1 = a2.Z
-    local v18 = -a4.Z
-    local Z_2 = v13.Z
-    local v19 = (a2.X * ((v17 * Z_2) - (Y_2 * v18))) - (-a4.X * ((Y_1 * Z_2) - (Y_2 * Z_1))) + v13.X * ((Y_1 * v18) - (v17 * Z_1))
-    if v19 == 0 then
-        return Vector3.new(0, 0, 0)
-    end
-    local v20 = -a4.Y
-    local Y_3 = v13.Y
-    local v21 = -a4.Z
-    local Z_3 = v13.Z
-    local Y_4 = a2.Y
-    local Y_5 = v13.Y
-    local Z_4 = a2.Z
-    local Z_5 = v13.Z
-    v19 = a1 + ((((v14 * ((v20 * Z_3) - (Y_3 * v21))) - (-a4.X * ((v15 * Z_3) - (Y_3 * v16)))) + (v13.X * ((v15 * v21) - (v20 * v16)))) / v19) * a2
-    local v22 = a3 + ((((a2.X * ((v15 * Z_5) - (Y_5 * v16))) - (v14 * ((Y_4 * Z_5) - (Y_5 * Z_4)))) + (v13.X * ((Y_4 * v16) - (v15 * Z_4)))) / v19) * a4
-    if (v22 - v19).Magnitude < 0.25 then
-        return v19 + ((v22 - v19) * 0.5)
-    end
-    return Vector3.new(0, 0, 0)
-end
-function u4.SmartCircleBehavior(a1, a2)
+
+function v66.SmartCircleBehavior(a114, a115)
     --[[
       name: SmartCircleBehavior
-      line: 268
+      line: 285
       upvalues:
-        u1 (copy, index: 1)
-        u2 (copy, index: 2)
+        userFlag (copy, index: 1)
+        raycastParams (copy, index: 2)
         RayIntersection (copy, index: 3)
     ]]
-    local unit_3 = a1.torsoPart.CFrame.upVector.unit
-    local unit_4 = a1.torsoPart.CFrame.rightVector.unit
-    a2[#a2 + 1] = a1.torsoPart.CFrame.Position
-    a2[#a2 + 1] = a1.torsoPart.CFrame.Position + unit_3
-    a2[#a2 + 1] = a1.torsoPart.CFrame.Position - unit_3
-    a2[#a2 + 1] = a1.torsoPart.CFrame.Position + unit_4
-    a2[#a2 + 1] = a1.torsoPart.CFrame.Position - unit_4
-    if a1.headPart then
-        a2[#a2 + 1] = a1.headPart.CFrame.Position
+    local unit = a114.torsoPart.CFrame.upVector.unit
+    local unit2 = a114.torsoPart.CFrame.rightVector.unit
+    a115[#a115 + 1] = a114.torsoPart.CFrame.Position
+    a115[#a115 + 1] = a114.torsoPart.CFrame.Position + unit
+    a115[#a115 + 1] = a114.torsoPart.CFrame.Position - unit
+    a115[#a115 + 1] = a114.torsoPart.CFrame.Position + unit2
+    a115[#a115 + 1] = a114.torsoPart.CFrame.Position - unit2
+
+    if a114.headPart then
+        a115[#a115 + 1] = a114.headPart.CFrame.Position
     end
-    local v23 = Vector3.new(0, 0.5, 0) + (((a1.torsoPart) and (a1.torsoPart.Position)) or (a1.humanoidRootPart.Position))
-    local v24, v24, v25, v25 = nil, nil, nil, nil
-    for n_5 = 1, 24 do
-        local v26 = 0.2617993877991494 * n_5 - 1.5707963267948966
-        local v27 = v23 + (a1.camera.CFrame - a1.camera.CFrame.Position) * (Vector3.new(math.cos(v26), math.sin(v26), 0) * 2.5)
-        local v28 = v27 - a1.camera.CFrame.Position
-        if u1 then
-            u2.FilterDescendantsInstances = {a1.char}
-            local v29 = game.Workspace:Raycast(v23, v27 - v23, u2)
-            if not (v29) then
-                a2[#a2 + 1] = v24
-                continue
-            end
-            local Normal_1 = v29.Normal
-            local v30 = v29.Position + 0.1 * Normal_1.unit
-            local v31 = v30 - v23
-            local unit_5 = v31:Cross(v28).unit:Cross(Normal_1).unit
-            if not (v31.unit:Dot(-unit_5) < v31.unit:Dot((v30 - a1.camera.CFrame.Position).unit)) then
-                v24 = v30
-                local v32 = game.Workspace:Raycast(v23, v24 - v23, u2)
-                v24 = (v32 and (v32.Position - (0.1 * (v24 - v23).unit))) or v24
-                a2[#a2 + 1] = v24
-                continue
-            end
-            v24 = RayIntersection(v30, unit_5, v27, v28)
-            if v24.Magnitude > 0 then
-                local v33 = game.Workspace:Raycast(v30, v24 - v30, u2)
-                v24 = (v33 and (v33.Position + (0.1 * v33.Normal.Unit))) or v24
+
+    local v118 = a114.camera.CFrame - a114.camera.CFrame.Position
+    local position = a114.torsoPart and a114.torsoPart.Position or a114.humanoidRootPart.Position
+    local origin = Vector3.new(0, 0.5, 0) + position
+
+    for index = 1, 24 do
+        local v122 = 0.2617993877991494 * index - 1.5707963267948966
+        local v123 = origin + v118 * (Vector3.new(math.cos(v122), math.sin(v122), 0) * 2.5)
+        local v124 = v123 - a114.camera.CFrame.Position
+
+        if userFlag then
+            local v125
+            raycastParams.FilterDescendantsInstances = {a114.char}
+
+            if const raycastResult = game.Workspace:Raycast(origin, v123 - origin, raycastParams) then
+                local position2 = raycastResult.Position
+                local normal = raycastResult.Normal
+                v125 = position2 + 0.1 * normal.unit
+                local v129 = v125 - origin
+                local unit3 = v129:Cross(v124).unit
+                local unit4 = unit3:Cross(normal).unit
+                local unit5 = (v125 - a114.camera.CFrame.Position).unit
+
+                if v129.unit:Dot(-unit4) < v129.unit:Dot(unit5) then
+                    local v133 = RayIntersection(v125, unit4, v123, v124)
+
+                    if 0 < v133.Magnitude then
+                        v125 = if const raycastResult2 = game.Workspace:Raycast(v125, v133 - v125, raycastParams) then raycastResult2.Position + (0.1 * raycastResult2.Normal.Unit) else v133
+                    end
+                end
+
+                if const raycastResult3 = game.Workspace:Raycast(origin, v125 - origin, raycastParams) then
+                    v125 = raycastResult3.Position - (0.1 * (v125 - origin).unit)
+                end
             else
-                v24 = v30
+                v125 = v123
             end
-            local v32 = game.Workspace:Raycast(v23, v24 - v23, u2)
-            v24 = (v32 and (v32.Position - (0.1 * (v24 - v23).unit))) or v24
-            a2[#a2 + 1] = v24
+
+            a115[#a115 + 1] = v125
         else
-            local v34, v35, v36 = game.Workspace:FindPartOnRayWithIgnoreList(Ray.new(v23, v27 - v23), {a1.char}, false, false)
-            if not (v34) then
-                a2[#a2 + 1] = v25
-                continue
-            end
-            local v37 = v35 + 0.1 * v36.unit
-            local v38 = v37 - v23
-            local unit_6 = v38:Cross(v28).unit:Cross(v36).unit
-            if not (v38.unit:Dot(-unit_6) < v38.unit:Dot((v37 - a1.camera.CFrame.Position).unit)) then
-                v25 = v37
-                local v39, v40 = game.Workspace:FindPartOnRayWithIgnoreList(Ray.new(v23, v25 - v23), {a1.char}, false, false)
-                v25 = (v39 and (v40 - (0.1 * (v25 - v23).unit))) or v25
-                a2[#a2 + 1] = v25
-                continue
-            end
-            v25 = RayIntersection(v37, unit_6, v27, v28)
-            if v25.Magnitude > 0 then
-                local v41, v42, v43 = game.Workspace:FindPartOnRayWithIgnoreList(Ray.new(v37, v25 - v37), {a1.char}, false, false)
-                v25 = (v41 and (v42 + (0.1 * v43.unit))) or v25
+            local v136
+            local ray = Ray.new(origin, v123 - origin)
+            local partOnRay, v139, v140 = game.Workspace:FindPartOnRayWithIgnoreList(ray, {a114.char}, false, false)
+
+            if partOnRay then
+                v136 = v139 + 0.1 * v140.unit
+                local v141 = v136 - origin
+                local unit6 = v141:Cross(v124).unit
+                local unit7 = unit6:Cross(v140).unit
+                local unit8 = (v136 - a114.camera.CFrame.Position).unit
+
+                if v141.unit:Dot(-unit7) < v141.unit:Dot(unit8) then
+                    local v145 = RayIntersection(v136, unit7, v123, v124)
+
+                    if 0 < v145.Magnitude then
+                        local ray2 = Ray.new(v136, v145 - v136)
+                        local partOnRay2, v148, v149 = game.Workspace:FindPartOnRayWithIgnoreList(ray2, {a114.char}, false, false)
+                        v136 = if partOnRay2 then v148 + (0.1 * v149.unit) else v145
+                    end
+                end
+
+                local ray3 = Ray.new(origin, v136 - origin)
+                local partOnRay3, v152 = game.Workspace:FindPartOnRayWithIgnoreList(ray3, {a114.char}, false, false)
+                if partOnRay3 then
+                    v136 = v152 - (0.1 * (v136 - origin).unit)
+                end
             else
-                v25 = v37
+                v136 = v123
             end
-            local v39, v40 = game.Workspace:FindPartOnRayWithIgnoreList(Ray.new(v23, v25 - v23), {a1.char}, false, false)
-            v25 = (v39 and (v40 - (0.1 * (v25 - v23).unit))) or v25
-            a2[#a2 + 1] = v25
+
+            a115[#a115 + 1] = v136
         end
     end
 end
-function u4.CheckTorsoReference(a1)
+
+function v66.CheckTorsoReference(a153)
     --[[
       name: CheckTorsoReference
-      line: 403
+      line: 421
     ]]
-    if not a1.char then
-        return
-    end
-    a1.torsoPart = a1.char:FindFirstChild("Torso")
-    if not (a1.torsoPart) then
-        a1.torsoPart = a1.char:FindFirstChild("UpperTorso")
-        if not (a1.torsoPart) then
-            a1.torsoPart = a1.char:FindFirstChild("HumanoidRootPart")
+    if a153.char then
+        a153.torsoPart = a153.char:FindFirstChild("Torso")
+
+        if not a153.torsoPart then
+            a153.torsoPart = a153.char:FindFirstChild("UpperTorso")
+
+            if not a153.torsoPart then
+                a153.torsoPart = a153.char:FindFirstChild("HumanoidRootPart")
+            end
         end
+
+        a153.headPart = a153.char:FindFirstChild("Head")
     end
-    a1.headPart = a1.char:FindFirstChild("Head")
 end
-function u4.CharacterAdded(a1, a2, a3)
+
+function v66.CharacterAdded(a154, char, a156)
     --[[
       name: CharacterAdded
-      line: 417
+      line: 435
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
+        players (copy, index: 1)
+        v7 (copy, index: 2)
     ]]
-    if a3 ~= Players_upv_1.LocalPlayer then
+    if a156 ~= players.LocalPlayer then
         return
     end
-    if a1.childAddedConn then
-        a1.childAddedConn:Disconnect()
-        a1.childAddedConn = nil
+
+    if a154.childAddedConn then
+        a154.childAddedConn:Disconnect()
+        a154.childAddedConn = nil
     end
-    if a1.childRemovedConn then
-        a1.childRemovedConn:Disconnect()
-        a1.childRemovedConn = nil
+
+    if a154.childRemovedConn then
+        a154.childRemovedConn:Disconnect()
+        a154.childRemovedConn = nil
     end
-    a1.char = a2
-    a1.trackedLimbs = {}
-    local function childRemoved(a4)
-        --[[
-          name: childRemoved
-          line: 449
-          upvalues:
-            a1 (copy, index: 1)
-        ]]
-        a1.trackedLimbs[a4] = nil
-        a1:CheckTorsoReference()
-    end
-    local function childAdded(a5)
-        --[[
-          name: childAdded
-          line: 433
-          upvalues:
-            tbl_upv_2 (copy, index: 1)
-            a1 (copy, index: 2)
-        ]]
-        if not a5:IsA("BasePart") then
-            return
+
+    a154.char = char
+    a154.trackedLimbs = {}
+
+    a154.childAddedConn = char.ChildAdded:Connect(
+        function(a157)
+            --[[
+              name: childAdded
+              line: 453
+              upvalues:
+                v7 (copy, index: 1)
+                a154 (copy, index: 2)
+            ]]
+            if a157:IsA("BasePart") then
+                if v7[a157.Name] then
+                    a154.trackedLimbs[a157] = true
+                end
+
+                if a157.Name == "Torso" or a157.Name == "UpperTorso" then
+                    a154.torsoPart = a157
+                end
+
+                if a157.Name == "Head" then
+                    a154.headPart = a157
+                end
+            end
         end
-        if tbl_upv_2[a5.Name] then
-            a1.trackedLimbs[a5] = true
+    )
+
+    a154.childRemovedConn = char.ChildRemoved:Connect(
+        function(trackedLimbKey)
+            --[[
+              name: childRemoved
+              line: 469
+              upvalues:
+                a154 (copy, index: 1)
+            ]]
+            a154.trackedLimbs[trackedLimbKey] = nil
+            a154:CheckTorsoReference()
         end
-        if a5.Name == "Torso" or a5.Name == "UpperTorso" then
-            a1.torsoPart = a5
-        end
-        if a5.Name ~= "Head" then
-            return
-        end
-        a1.headPart = a5
-    end
-    a1.childAddedConn = a2.ChildAdded:Connect(childAdded)
-    a1.childRemovedConn = a2.ChildRemoved:Connect(childRemoved)
-    for _, value_1 in pairs(a1.char:GetChildren()) do
-        if not (value_1:IsA("BasePart")) then
-            continue
-        end
-        if tbl_upv_2[value_1.Name] then
-            a1.trackedLimbs[value_1] = true
-        end
-        if value_1.Name == "Torso" or value_1.Name == "UpperTorso" then
-            a1.torsoPart = value_1
-        end
-        if value_1.Name == "Head" then
-            a1.headPart = value_1
+    )
+
+    for _, child in pairs(a154.char:GetChildren()) do
+        if child:IsA("BasePart") then
+            if v7[child.Name] then
+                a154.trackedLimbs[child] = true
+            end
+
+            if child.Name == "Torso" or child.Name == "UpperTorso" then
+                a154.torsoPart = child
+            end
+
+            if child.Name ~= "Head" then
+                continue
+            end
+
+            a154.headPart = child
         end
     end
 end
-local function AssertTypes(a1, ...)
-    --[[
-      name: AssertTypes
-      line: 71
-    ]]
-    local tbl_5 = {}
-    local v44 = ""
-    for _, value_2 in pairs({...}) do
-        tbl_5[value_2] = true
-        v44 = v44 .. (((v44 ~= "") and " or ") or "") .. value_2
-    end
-    local ty_1 = type(a1)
-    assert(tbl_5[ty_1], v44 .. " type expected, got: " .. ty_1)
-end
-function u4.SetMode(a1, a2)
+
+function v66.SetMode(mode2, mode)
     --[[
       name: SetMode
-      line: 463
+      line: 483
       upvalues:
         AssertTypes (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v6 (copy, index: 2)
     ]]
-    AssertTypes(a2, "number")
-    for _, value_3 in pairs(tbl_upv_1) do
-        if value_3 ~= a2 then
-            continue
-        end
-        a1.mode = a2
-        a1.behaviorFunction = a1.behaviors[a1.mode]
-        return
-    end
-    error("Invalid mode number")
-end
-function u4.GetObscuredParts(a1)
-    --[[
-      name: GetObscuredParts
-      line: 475
-    ]]
-    return a1.savedHits
-end
-function u4.Cleanup(a1)
-    --[[
-      name: Cleanup
-      line: 480
-    ]]
-    for key_2, value_4 in pairs(a1.savedHits) do
-        key_2.LocalTransparencyModifier = value_4
-    end
-end
-function u4.Update(a1, a2, a3, a4)
-    --[[
-      name: Update
-      line: 486
-    ]]
-    if not a1.enabled or not a1.char then
-        return a3, a4
-    end
-    a1.camera = game.Workspace.CurrentCamera
-    local v45 = nil
-    if not (a1.humanoidRootPart) then
-        v45 = a1.char:FindFirstChildOfClass("Humanoid")
-        if v45 and v45.RootPart then
-            a1.humanoidRootPart = v45.RootPart
-        else
-            a1.humanoidRootPart = a1.char:FindFirstChild("HumanoidRootPart")
-            if not (a1.humanoidRootPart) then
-                return a3, a4
-            end
-        end
-        local u5 = nil
-        local v46 = a1.humanoidRootPart.AncestryChanged:Connect(
-            function(a5, a6)
-                --[[
-                  line: 511
-                  upvalues:
-                    a1 (copy, index: 1)
-                    u5 (ref,  index: 2)
-                ]]
-                if a5 ~= a1.humanoidRootPart or (a6) then
-                    return
-                end
-                a1.humanoidRootPart = nil
-                if not u5 or not u5.Connected then
-                    return
-                end
-                u5:Disconnect()
-                u5 = nil
-            end
-        )
-        u5 = v46
-    end
-    if not (a1.torsoPart) then
-        a1:CheckTorsoReference()
-        if not (a1.torsoPart) then
-            return a3, a4
-        end
-    end
-    local tbl_6 = {}
-    a1.behaviorFunction(a1, tbl_6)
-    local tbl_upv_7 = {}
-    local tbl_8 = {a1.char}
-    local function add(a7)
-        --[[
-          name: add
-          line: 537
-          upvalues:
-            tbl_upv_7 (copy, index: 1)
-            a1 (copy, index: 2)
-        ]]
-        tbl_upv_7[a7] = true
-        if (a1.savedHits[a7]) then
+    AssertTypes(mode, "number")
+
+    for _, v164 in pairs(v6) do
+        if v164 == mode then
+            mode2.mode = mode
+            mode2.behaviorFunction = mode2.behaviors[mode2.mode]
+
             return
         end
-        a1.savedHits[a7] = a7.LocalTransparencyModifier
     end
-    local v47 = 0
-    local tbl_9 = {}
-    local v48 = 0.75
-    local v49 = 0.75
-    local v50 = (a1.headPart and (a1.headPart.CFrame.Position)) or (tbl_6[1])
-    local v51 = a1.camera:GetPartsObscuringTarget({v50, ((a1.torsoPart) and (a1.torsoPart.CFrame.Position)) or (tbl_6[2])}, tbl_8)
-    local tbl_10 = v47
-    for n_6 = 1, #v51 do
-        local v52 = v51[n_6]
-        tbl_10 = tbl_10 + 1
-        tbl_9[v52] = true
-        for _, value_5 in pairs(v52:GetChildren()) do
-            local v53 = value_5:IsA("Decal")
-            if v53 then
-                tbl_10 = tbl_10 + 1
+
+    error("Invalid mode number")
+end
+
+function v66.GetObscuredParts(a165)
+    --[[
+      name: GetObscuredParts
+      line: 495
+    ]]
+    return a165.savedHits
+end
+
+function v66.Cleanup(a166)
+    --[[
+      name: Cleanup
+      line: 500
+    ]]
+    for key, localTransparencyModifier in pairs(a166.savedHits) do
+        key.LocalTransparencyModifier = localTransparencyModifier
+    end
+end
+
+function v66.Update(a169, a170, a171, a172, a173)
+    --[[
+      name: Update
+      line: 506
+      upvalues:
+        userFlag2 (copy, index: 1)
+    ]]
+    local engineInterface = a173.engineInterface
+    local player = engineInterface.player
+    local character = engineInterface.character
+
+    if userFlag2 and engineInterface.characterChanged and player and character then
+        a169:CharacterAdded(character, player)
+    end
+
+    if not a169.enabled or not a169.char then
+        return a171, a172
+    end
+
+    local v177
+    a169.camera = game.Workspace.CurrentCamera
+
+    if not a169.humanoidRootPart then
+        local humanoid = a169.char:FindFirstChildOfClass("Humanoid")
+
+        if not humanoid or not humanoid.RootPart then
+            a169.humanoidRootPart = a169.char:FindFirstChild("HumanoidRootPart")
+
+            if not a169.humanoidRootPart then
+                return a171, a172
             end
-        end
-        local v54 = value_5:IsA("Texture")
-        if v54 then
-            tbl_10 = tbl_10 + 1
-        end
-    end
-    if tbl_10 > 0 then
-        v48, v49 = math.pow((0.375 / tbl_10) + 0.375, 1 / tbl_10), math.pow((0.25 / tbl_10) + 0.25, 1 / tbl_10)
-    end
-    local v55 = a1.camera:GetPartsObscuringTarget(tbl_6, tbl_8)
-    tbl_10 = {}
-    local v56 = nil
-    tbl_10 = tbl_10
-    for n_7 = 1, #v55 do
-        local v57 = v55[n_7]
-        if (tbl_9[v57]) and (v48) then
-            v56 = v48
         else
-            v56 = v49
+            a169.humanoidRootPart = humanoid.RootPart
         end
-        n_7[v57] = v56
-        if v57.Transparency < n_7[v57] then
-            tbl_upv_7[v57] = true
-            if not (a1.savedHits[v57]) then
-                a1.savedHits[v57] = v57.LocalTransparencyModifier
+
+        local v179 = nil
+
+        v179 = a169.humanoidRootPart.AncestryChanged:Connect(
+            function(a180, a181)
+                --[[
+                  line: 539
+                  upvalues:
+                    a169 (copy, index: 1)
+                    v179 (ref,  index: 2)
+                ]]
+                if a180 == a169.humanoidRootPart and not a181 then
+                    a169.humanoidRootPart = nil
+
+                    if v179 and v179.Connected then
+                        v179:Disconnect()
+                        v179 = nil
+                    end
+                end
+            end
+        )
+    end
+
+    if not a169.torsoPart then
+        a169:CheckTorsoReference()
+
+        if not a169.torsoPart then
+            return a171, a172
+        end
+    end
+
+    local v182 = {}
+    a169.behaviorFunction(a169, v182)
+    local v183 = {}
+    local v184 = {a169.char}
+
+    local function add(savedHitKey)
+        --[[
+          name: add
+          line: 565
+          upvalues:
+            v183 (copy, index: 1)
+            a169 (copy, index: 2)
+        ]]
+        v183[savedHitKey] = true
+
+        if not a169.savedHits[savedHitKey] then
+            a169.savedHits[savedHitKey] = savedHitKey.LocalTransparencyModifier
+        end
+    end
+
+    local v187 = 0
+    local v188 = {}
+    local v189 = 0.75
+    local v190 = 0.75
+    local v191 = a169.headPart and a169.headPart.CFrame.Position or v182[1]
+    local v192 = a169.torsoPart and a169.torsoPart.CFrame.Position or v182[2]
+    local partsObscuringTarget = a169.camera:GetPartsObscuringTarget({v191, v192}, v184)
+    v177 = v187
+
+    for index = 1, #partsObscuringTarget do
+        local v195 = partsObscuringTarget[index]
+        v177 += 1
+        v188[v195] = true
+
+        for _, child in pairs(v195:GetChildren()) do
+            if child:IsA("Decal") or child:IsA("Texture") then
+                v177 += 1
+                break
             end
         end
-        for _, value_6 in pairs(v57:GetChildren()) do
-            if value_6:IsA("Decal") or value_6:IsA("Texture") then
-                if not (value_6.Transparency < n_7[v57]) then
+    end
+
+    if 0 < v177 then
+        v189 = math.pow((0.375 / v177) + 0.375, 1 / v177)
+        v190 = math.pow((0.25 / v177) + 0.25, 1 / v177)
+    end
+
+    local partsObscuringTarget2 = a169.camera:GetPartsObscuringTarget(v182, v184)
+    local v199 = {}
+
+    for index = 1, #partsObscuringTarget2 do
+        local savedHitKey = partsObscuringTarget2[index]
+        v199[savedHitKey] = v188[savedHitKey] and v189 or v190
+
+        if savedHitKey.Transparency < v199[savedHitKey] then
+            v183[savedHitKey] = true
+
+            if not a169.savedHits[savedHitKey] then
+                a169.savedHits[savedHitKey] = savedHitKey.LocalTransparencyModifier
+            end
+        end
+
+        for _, savedHitKey2 in pairs(savedHitKey:GetChildren()) do
+            if not savedHitKey2:IsA("Decal") and not savedHitKey2:IsA("Texture") then
+                continue
+            end
+
+            if savedHitKey2.Transparency < v199[savedHitKey] then
+                v199[savedHitKey2] = v199[savedHitKey]
+                v183[savedHitKey2] = true
+
+                if a169.savedHits[savedHitKey2] then
                     continue
                 end
-                n_7[value_6] = n_7[v57]
-                tbl_upv_7[value_6] = true
-                if not (a1.savedHits[value_6]) then
-                    a1.savedHits[value_6] = value_6.LocalTransparencyModifier
-                end
+
+                a169.savedHits[savedHitKey2] = savedHitKey2.LocalTransparencyModifier
             end
         end
     end
-    for key_3, value_7 in pairs(a1.savedHits) do
-        if tbl_upv_7[key_3] then
-            key_3.LocalTransparencyModifier = ((key_3.Transparency < 1) and ((tbl_10[key_3] - key_3.Transparency) / (1 - key_3.Transparency))) or 0
+
+    for savedHitKey, localTransparencyModifier in pairs(a169.savedHits) do
+        if v183[savedHitKey] then
+            savedHitKey.LocalTransparencyModifier = savedHitKey.Transparency < 1
+                and (v199[savedHitKey] - savedHitKey.Transparency) / (1 - savedHitKey.Transparency)
+                or 0
         else
-            key_3.LocalTransparencyModifier = value_7
-            a1.savedHits[key_3] = nil
+            savedHitKey.LocalTransparencyModifier = localTransparencyModifier
+            a169.savedHits[savedHitKey] = nil
         end
     end
-    return a3, a4
+
+    return a171, a172
 end
-return u4
+
+return v66

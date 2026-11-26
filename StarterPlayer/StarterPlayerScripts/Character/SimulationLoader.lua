@@ -1,1 +1,2 @@
-require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Simulation")).Initialize()
+local replicatedStorage = game:GetService("ReplicatedStorage")
+require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Simulation")).Initialize()

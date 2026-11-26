@@ -1,258 +1,301 @@
-local u1 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil").getUserFlag("UserFixOrbitalCameraAzimuth")
-local _ = require(script.Parent:WaitForChild("CameraUtils"))
-local CameraInput_upv_1 = require(script.Parent:WaitForChild("CameraInput"))
-local Players_upv_1 = game:GetService("Players")
-local BaseCamera_upv_1 = require(script.Parent:WaitForChild("BaseCamera"))
-local u2 = setmetatable({}, BaseCamera_upv_1)
-u2.__index = u2
-function u2.new()
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v2 = CommonUtils.get("FlagUtil")
+local userFlag = v2.getUserFlag("UserFixOrbitalCameraAzimuth")
+require(script.Parent:WaitForChild("CameraUtils"))
+v2 = require(script.Parent:WaitForChild("CameraInput"))
+local players = game:GetService("Players")
+local BaseCamera = require(script.Parent:WaitForChild("BaseCamera"))
+local v6 = setmetatable({}, BaseCamera)
+v6.__index = v6
+
+function v6.new()
     --[[
       name: new
-      line: 33
+      line: 34
       upvalues:
-        BaseCamera_upv_1 (copy, index: 1)
-        u2 (copy, index: 2)
+        BaseCamera (copy, index: 1)
+        v6 (copy, index: 2)
     ]]
-    local v1 = setmetatable(BaseCamera_upv_1.new(), u2)
-    v1.lastUpdate = tick()
-    v1.changedSignalConnections = {}
-    v1.refAzimuthRad = nil
-    v1.curAzimuthRad = nil
-    v1.minAzimuthAbsoluteRad = nil
-    v1.maxAzimuthAbsoluteRad = nil
-    v1.useAzimuthLimits = nil
-    v1.curElevationRad = nil
-    v1.minElevationRad = nil
-    v1.maxElevationRad = nil
-    v1.curDistance = nil
-    v1.minDistance = nil
-    v1.maxDistance = nil
-    v1.gamepadDollySpeedMultiplier = 1
-    v1.lastUserPanCamera = tick()
-    v1.externalProperties = {}
-    v1.externalProperties.InitialDistance = 25
-    v1.externalProperties.MinDistance = 10
-    v1.externalProperties.MaxDistance = 100
-    v1.externalProperties.InitialElevation = 35
-    v1.externalProperties.MinElevation = 35
-    v1.externalProperties.MaxElevation = 35
-    v1.externalProperties.ReferenceAzimuth = -45
-    v1.externalProperties.CWAzimuthTravel = 90
-    v1.externalProperties.CCWAzimuthTravel = 90
-    v1.externalProperties.UseAzimuthLimits = false
-    v1:LoadNumberValueParameters()
-    return v1
+    local v7 = setmetatable(BaseCamera.new(), v6)
+    v7.lastUpdate = tick()
+    v7.changedSignalConnections = {}
+    v7.refAzimuthRad = nil
+    v7.curAzimuthRad = nil
+    v7.minAzimuthAbsoluteRad = nil
+    v7.maxAzimuthAbsoluteRad = nil
+    v7.useAzimuthLimits = nil
+    v7.curElevationRad = nil
+    v7.minElevationRad = nil
+    v7.maxElevationRad = nil
+    v7.curDistance = nil
+    v7.minDistance = nil
+    v7.maxDistance = nil
+    v7.gamepadDollySpeedMultiplier = 1
+    v7.lastUserPanCamera = tick()
+    v7.externalProperties = {}
+    v7.externalProperties.InitialDistance = 25
+    v7.externalProperties.MinDistance = 10
+    v7.externalProperties.MaxDistance = 100
+    v7.externalProperties.InitialElevation = 35
+    v7.externalProperties.MinElevation = 35
+    v7.externalProperties.MaxElevation = 35
+    v7.externalProperties.ReferenceAzimuth = -45
+    v7.externalProperties.CWAzimuthTravel = 90
+    v7.externalProperties.CCWAzimuthTravel = 90
+    v7.externalProperties.UseAzimuthLimits = false
+    v7:LoadNumberValueParameters()
+
+    return v7
 end
-function u2.LoadOrCreateNumberValueParameter(a1, a2, a3, a4)
+
+function v6.LoadOrCreateNumberValueParameter(self, name: string, className: string, callback)
     --[[
       name: LoadOrCreateNumberValueParameter
-      line: 72
+      line: 73
     ]]
-    local v2 = script:FindFirstChild(a2)
-    if v2 and v2:IsA(a3) then
-        a1.externalProperties[a2] = v2.Value
-        if a4 then
-            if a1.changedSignalConnections[a2] then
-                a1.changedSignalConnections[a2]:Disconnect()
+    local instance = script:FindFirstChild(name)
+
+    if not instance or not instance:IsA(className) then
+        if self.externalProperties[name] == nil then
+            return
+        end
+
+        instance = Instance.new(className)
+        instance.Name = name
+        instance.Parent = script
+        instance.Value = self.externalProperties[name]
+    else
+        self.externalProperties[name] = instance.Value
+    end
+
+    if callback then
+        if self.changedSignalConnections[name] then
+            self.changedSignalConnections[name]:Disconnect()
+        end
+
+        self.changedSignalConnections[name] = instance.Changed:Connect(
+            function(value)
+                --[[
+                  line: 93
+                  upvalues:
+                    self (copy, index: 1)
+                    name (copy, index: 2)
+                    callback (copy, index: 3)
+                ]]
+                self.externalProperties[name] = value
+                callback(self)
             end
-            a1.changedSignalConnections[a2] = v2.Changed:Connect(
-                function(a5)
-                    --[[
-                      line: 92
-                      upvalues:
-                        a1 (copy, index: 1)
-                        a2 (copy, index: 2)
-                        a4 (copy, index: 3)
-                    ]]
-                    a1.externalProperties[a2] = a5
-                    a4(a1)
-                end
-            )
-        end
-        return
+        )
     end
-    if a1.externalProperties[a2] == nil then
-        return
-    end
-    local v3 = Instance.new(a3)
-    v3.Name = a2
-    v3.Parent = script
-    v3.Value = a1.externalProperties[a2]
-    v2 = v3
-    if not a4 then
-        return
-    end
-    if a1.changedSignalConnections[a2] then
-        a1.changedSignalConnections[a2]:Disconnect()
-    end
-    a1.changedSignalConnections[a2] = v2.Changed:Connect(
-        function(a5)
-            --[[
-              line: 92
-              upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
-                a4 (copy, index: 3)
-            ]]
-            a1.externalProperties[a2] = a5
-            a4(a1)
-        end
-    )
 end
-function u2.SetAndBoundsCheckAzimuthValues(a1)
+
+function v6.SetAndBoundsCheckAzimuthValues(self)
     --[[
       name: SetAndBoundsCheckAzimuthValues
-      line: 99
+      line: 100
     ]]
-    a1.minAzimuthAbsoluteRad = math.rad(a1.externalProperties.ReferenceAzimuth) - math.abs(math.rad(a1.externalProperties.CWAzimuthTravel))
-    a1.maxAzimuthAbsoluteRad = math.rad(a1.externalProperties.ReferenceAzimuth) + math.abs(math.rad(a1.externalProperties.CCWAzimuthTravel))
-    a1.useAzimuthLimits = a1.externalProperties.UseAzimuthLimits
-    if not a1.useAzimuthLimits then
-        return
+    self.minAzimuthAbsoluteRad = math.rad(self.externalProperties.ReferenceAzimuth) - math.abs((math.rad(self.externalProperties.CWAzimuthTravel)))
+    self.maxAzimuthAbsoluteRad = math.rad(self.externalProperties.ReferenceAzimuth) + math.abs((math.rad(self.externalProperties.CCWAzimuthTravel)))
+    self.useAzimuthLimits = self.externalProperties.UseAzimuthLimits
+    local useAzimuthLimits = self.useAzimuthLimits
+    if useAzimuthLimits then
+        self.curAzimuthRad = math.max(self.curAzimuthRad, self.minAzimuthAbsoluteRad)
+        self.curAzimuthRad = math.min(self.curAzimuthRad, self.maxAzimuthAbsoluteRad)
     end
-    a1.curAzimuthRad = math.max(a1.curAzimuthRad, a1.minAzimuthAbsoluteRad)
-    a1.curAzimuthRad = math.min(a1.curAzimuthRad, a1.maxAzimuthAbsoluteRad)
 end
-function u2.SetAndBoundsCheckElevationValues(a1)
+
+function v6.SetAndBoundsCheckElevationValues(self)
     --[[
       name: SetAndBoundsCheckElevationValues
-      line: 109
+      line: 112
     ]]
-    local v4 = math.max(a1.externalProperties.MinElevation, -80)
-    local v5 = math.min(a1.externalProperties.MaxElevation, 80)
-    a1.minElevationRad = math.rad(math.min(v4, v5))
-    a1.maxElevationRad = math.rad(math.max(v4, v5))
-    a1.curElevationRad = math.max(a1.curElevationRad, a1.minElevationRad)
-    a1.curElevationRad = math.min(a1.curElevationRad, a1.maxElevationRad)
+    local v17 = math.max(self.externalProperties.MinElevation, -80)
+    local v18 = math.min(self.externalProperties.MaxElevation, 80)
+    self.minElevationRad = math.rad((math.min(v17, v18)))
+    self.maxElevationRad = math.rad((math.max(v17, v18)))
+    self.curElevationRad = math.max(self.curElevationRad, self.minElevationRad)
+    self.curElevationRad = math.min(self.curElevationRad, self.maxElevationRad)
 end
-function u2.SetAndBoundsCheckDistanceValues(a1)
+
+function v6.SetAndBoundsCheckDistanceValues(self)
     --[[
       name: SetAndBoundsCheckDistanceValues
-      line: 125
+      line: 128
     ]]
-    a1.minDistance = a1.externalProperties.MinDistance
-    a1.maxDistance = a1.externalProperties.MaxDistance
-    a1.curDistance = math.max(a1.curDistance, a1.minDistance)
-    a1.curDistance = math.min(a1.curDistance, a1.maxDistance)
+    self.minDistance = self.externalProperties.MinDistance
+    self.maxDistance = self.externalProperties.MaxDistance
+    self.curDistance = math.max(self.curDistance, self.minDistance)
+    self.curDistance = math.min(self.curDistance, self.maxDistance)
 end
-function u2.LoadNumberValueParameters(a1)
+
+function v6.LoadNumberValueParameters(self)
     --[[
       name: LoadNumberValueParameters
-      line: 133
+      line: 136
       upvalues:
-        u1 (copy, index: 1)
+        userFlag (copy, index: 1)
     ]]
-    a1:LoadOrCreateNumberValueParameter("InitialElevation", "NumberValue", nil)
-    a1:LoadOrCreateNumberValueParameter("InitialDistance", "NumberValue", nil)
-    local v6
-    if u1 then
-        v6 = a1.SetAndBoundsCheckAzimuthValues
-    else
-        v6 = a1.SetAndBoundsCheckAzimuthValue
-    end
-    a1:LoadOrCreateNumberValueParameter("ReferenceAzimuth", "NumberValue", v6)
-    a1:LoadOrCreateNumberValueParameter("CWAzimuthTravel", "NumberValue", a1.SetAndBoundsCheckAzimuthValues)
-    a1:LoadOrCreateNumberValueParameter("CCWAzimuthTravel", "NumberValue", a1.SetAndBoundsCheckAzimuthValues)
-    a1:LoadOrCreateNumberValueParameter("MinElevation", "NumberValue", a1.SetAndBoundsCheckElevationValues)
-    a1:LoadOrCreateNumberValueParameter("MaxElevation", "NumberValue", a1.SetAndBoundsCheckElevationValues)
-    a1:LoadOrCreateNumberValueParameter("MinDistance", "NumberValue", a1.SetAndBoundsCheckDistanceValues)
-    a1:LoadOrCreateNumberValueParameter("MaxDistance", "NumberValue", a1.SetAndBoundsCheckDistanceValues)
-    a1:LoadOrCreateNumberValueParameter("UseAzimuthLimits", "BoolValue", a1.SetAndBoundsCheckAzimuthValues)
-    a1.curAzimuthRad = math.rad(a1.externalProperties.ReferenceAzimuth)
-    a1.curElevationRad = math.rad(a1.externalProperties.InitialElevation)
-    a1.curDistance = a1.externalProperties.InitialDistance
-    a1:SetAndBoundsCheckAzimuthValues()
-    a1:SetAndBoundsCheckElevationValues()
-    a1:SetAndBoundsCheckDistanceValues()
+    self:LoadOrCreateNumberValueParameter("InitialElevation", "NumberValue", nil)
+    self:LoadOrCreateNumberValueParameter("InitialDistance", "NumberValue", nil)
+    local v21 = if userFlag then self.SetAndBoundsCheckAzimuthValues else self.SetAndBoundsCheckAzimuthValue
+    self:LoadOrCreateNumberValueParameter("ReferenceAzimuth", "NumberValue", v21)
+    self:LoadOrCreateNumberValueParameter("CWAzimuthTravel", "NumberValue", self.SetAndBoundsCheckAzimuthValues)
+    self:LoadOrCreateNumberValueParameter("CCWAzimuthTravel", "NumberValue", self.SetAndBoundsCheckAzimuthValues)
+    self:LoadOrCreateNumberValueParameter("MinElevation", "NumberValue", self.SetAndBoundsCheckElevationValues)
+    self:LoadOrCreateNumberValueParameter("MaxElevation", "NumberValue", self.SetAndBoundsCheckElevationValues)
+    self:LoadOrCreateNumberValueParameter("MinDistance", "NumberValue", self.SetAndBoundsCheckDistanceValues)
+    self:LoadOrCreateNumberValueParameter("MaxDistance", "NumberValue", self.SetAndBoundsCheckDistanceValues)
+    self:LoadOrCreateNumberValueParameter("UseAzimuthLimits", "BoolValue", self.SetAndBoundsCheckAzimuthValues)
+    self.curAzimuthRad = math.rad(self.externalProperties.ReferenceAzimuth)
+    self.curElevationRad = math.rad(self.externalProperties.InitialElevation)
+    self.curDistance = self.externalProperties.InitialDistance
+    self:SetAndBoundsCheckAzimuthValues()
+    self:SetAndBoundsCheckElevationValues()
+    self:SetAndBoundsCheckDistanceValues()
 end
-function u2.GetModuleName(a1)
+
+function v6.GetModuleName(a22)
     --[[
       name: GetModuleName
-      line: 159
+      line: 167
     ]]
     return "OrbitalCamera"
 end
-function u2.GetCameraToSubjectDistance(a1)
+
+function v6.GetCameraToSubjectDistance(a23)
     --[[
       name: GetCameraToSubjectDistance
-      line: 164
+      line: 173
     ]]
-    return a1.curDistance
+    return a23.curDistance
 end
-function u2.SetCameraToSubjectDistance(a1, a2)
+
+function v6.SetCameraToSubjectDistance(cameraToSubjectDistance, a25: number)
     --[[
       name: SetCameraToSubjectDistance
-      line: 168
+      line: 177
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    if Players_upv_1.LocalPlayer then
-        a1.currentSubjectDistance = math.clamp(a2, a1.minDistance, a1.maxDistance)
-        a1.currentSubjectDistance = math.max(a1.currentSubjectDistance, a1.FIRST_PERSON_DISTANCE_THRESHOLD)
+    if players.LocalPlayer then
+        cameraToSubjectDistance.currentSubjectDistance = math.clamp(a25, cameraToSubjectDistance.minDistance, cameraToSubjectDistance.maxDistance)
+        cameraToSubjectDistance.currentSubjectDistance = math.max(cameraToSubjectDistance.currentSubjectDistance, cameraToSubjectDistance.FIRST_PERSON_DISTANCE_THRESHOLD)
     end
-    a1.inFirstPerson = false
-    a1:UpdateMouseBehavior()
-    return a1.currentSubjectDistance
+
+    cameraToSubjectDistance.inFirstPerson = false
+    cameraToSubjectDistance:UpdateMouseBehavior()
+
+    return cameraToSubjectDistance.currentSubjectDistance
 end
-function u2.CalculateNewLookVector(a1, a2, a3)
+
+function v6.CalculateNewLookVector(a26, a27, a28)
     --[[
       name: CalculateNewLookVector
-      line: 181
+      line: 190
     ]]
-    local v7 = a2 or (a1:GetCameraLookVector())
-    local v8 = math.asin(v7.Y)
-    v8 = Vector2.new(a3.X, math.clamp(a3.Y, v8 - 1.3962634015954636, v8 - -1.3962634015954636))
-    local v9 = CFrame.new(Vector3.new(0, 0, 0), v7)
-    return (CFrame.Angles(0, -v8.X, 0) * v9 * CFrame.Angles(-v8.Y, 0, 0)).LookVector
+    local v29 = a27 or a26:GetCameraLookVector()
+    local v30 = math.asin(v29.Y)
+    local y = math.clamp(a28.Y, v30 - 1.3962634015954636, v30 - -1.3962634015954636)
+    local vector2 = Vector2.new(a28.X, y)
+    y = CFrame.new(Vector3.new(0, 0, 0), v29)
+
+    return (CFrame.Angles(0, -vector2.X, 0) * y * CFrame.Angles(-vector2.Y, 0, 0)).LookVector
 end
-function u2.Update(a1, a2)
+
+function v6.Update(a33, a34)
     --[[
       name: Update
-      line: 192
+      line: 209
       upvalues:
-        CameraInput_upv_1 (copy, index: 1)
-        Players_upv_1 (copy, index: 2)
+        v2 (copy, index: 1)
+        players (copy, index: 2)
     ]]
-    local time_1 = tick()
-    local v10 = CameraInput_upv_1.getRotation(a2) ~= Vector2.new()
-    local CurrentCamera_1 = workspace.CurrentCamera
-    local v11 = CurrentCamera_1.CFrame
-    local v12 = CurrentCamera_1.Focus
-    local LocalPlayer_1 = Players_upv_1.LocalPlayer
-    local v13 = CurrentCamera_1 and (CurrentCamera_1.CameraSubject)
-    local _ = v13 and (v13:IsA("VehicleSeat"))
-    local v17 = CurrentCamera_1 and (CurrentCamera_1:IsA("SkateboardPlatform"))
-    if a1.lastUpdate == nil or time_1 - a1.lastUpdate > 1 then
-        a1.lastCameraTransform = nil
+    local time = tick()
+    local v36 = time - a33.lastUpdate
+    local v37 = v2.getRotation(a34) ~= Vector2.new()
+    local camera = workspace.CurrentCamera
+    local cframe = camera.CFrame
+    local cframe2 = camera.Focus
+    local localPlayer = players.LocalPlayer
+    local cameraSubject = camera and camera.CameraSubject
+    local isVehicleSeat = cameraSubject and cameraSubject:IsA("VehicleSeat")
+    local isSkateboardPlatform = cameraSubject and cameraSubject:IsA("SkateboardPlatform")
+
+    if a33.lastUpdate == nil or 1 < v36 then
+        a33.lastCameraTransform = nil
     end
-    if v10 then
-        a1.lastUserPanCamera = tick()
+
+    if v37 then
+        a33.lastUserPanCamera = tick()
     end
-    local v14 = a1:GetSubjectPosition()
-    if v14 and LocalPlayer_1 and CurrentCamera_1 then
-        if a1.gamepadDollySpeedMultiplier ~= 1 then
-            a1:SetCameraToSubjectDistance(a1.currentSubjectDistance * a1.gamepadDollySpeedMultiplier)
+
+    local subjectPosition = a33:GetSubjectPosition()
+
+    if subjectPosition and localPlayer and camera then
+        local curAzimuthRad
+        local v47, v48, v49, v50 = false, false, false, false
+
+        if a33.gamepadDollySpeedMultiplier ~= 1 then
+            a33:SetCameraToSubjectDistance(a33.currentSubjectDistance * a33.gamepadDollySpeedMultiplier)
         end
-        v12 = CFrame.new(v14)
-        local v15 = CameraInput_upv_1.getRotation(a2)
-        a1.curAzimuthRad = a1.curAzimuthRad - v15.X
-        if a1.useAzimuthLimits then
-            a1.curAzimuthRad = math.clamp(a1.curAzimuthRad, a1.minAzimuthAbsoluteRad, a1.maxAzimuthAbsoluteRad)
+
+        cframe2 = CFrame.new(subjectPosition)
+        local rotation = v2.getRotation(a34)
+        a33.curAzimuthRad -= rotation.X
+
+        if a33.useAzimuthLimits then
+            a33.curAzimuthRad = math.clamp(a33.curAzimuthRad, a33.minAzimuthAbsoluteRad, a33.maxAzimuthAbsoluteRad)
+        elseif a33.curAzimuthRad == 0 then
+            v47 = true
         else
-            a1.curAzimuthRad = a1.curAzimuthRad ~= 0 and math.sign(a1.curAzimuthRad) * (math.abs(a1.curAzimuthRad) % math.tau) or 0
+            curAzimuthRad = math.sign(a33.curAzimuthRad) * (math.abs(a33.curAzimuthRad) % math.tau)
+
+            if curAzimuthRad then
+                v48 = true
+            else
+                v47 = true
+            end
         end
-        a1.curElevationRad = math.clamp(a1.curElevationRad + v15.Y, a1.minElevationRad, a1.maxElevationRad)
-        v11 = CFrame.new(v14 + (a1.currentSubjectDistance * (CFrame.fromEulerAnglesYXZ(-a1.curElevationRad, a1.curAzimuthRad, 0) * Vector3.new(0, 0, 1))), v14)
-        a1.lastCameraTransform = v11
-        a1.lastCameraFocus = v12
-        if not (v13) and not (CurrentCamera_1) or not (CurrentCamera_1:IsA("BasePart")) then
-            a1.lastSubjectCFrame = nil
-            a1.lastUpdate = time_1
-            return v11, v12
+
+        if v47 then
+            curAzimuthRad = 0
+            v48 = true
         end
-        a1.lastSubjectCFrame = CurrentCamera_1.CFrame
+
+        if v48 then
+            a33.curAzimuthRad = curAzimuthRad
+        end
+
+        a33.curElevationRad = math.clamp(a33.curElevationRad + rotation.Y, a33.minElevationRad, a33.maxElevationRad)
+        local v52 = subjectPosition + a33.currentSubjectDistance * (CFrame.fromEulerAnglesYXZ(-a33.curElevationRad, a33.curAzimuthRad, 0) * Vector3.new(0, 0, 1))
+        cframe = CFrame.new(v52, subjectPosition)
+        a33.lastCameraTransform = cframe
+        a33.lastCameraFocus = cframe2
+
+        if isVehicleSeat then
+            v49 = true
+        elseif isSkateboardPlatform then
+            v49 = true
+        else
+            v50 = true
+        end
+
+        if v49 then
+            if cameraSubject:IsA("BasePart") then
+                a33.lastSubjectCFrame = cameraSubject.CFrame
+            else
+                v50 = true
+            end
+        end
+
+        if v50 then
+            a33.lastSubjectCFrame = nil
+        end
     end
-    a1.lastUpdate = time_1
-    return v11, v12
+
+    a33.lastUpdate = time
+
+    return cframe, cframe2
 end
-return u2
+
+return v6

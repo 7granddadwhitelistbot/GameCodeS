@@ -1,1736 +1,1911 @@
-local Players_upv_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local Signal_1 = require(script.Parent:WaitForChild("Signal"))
-local tbl_upv_1 = {}
-tbl_upv_1.PREFIX = "kb_"
-tbl_upv_1.PAD_PREFIX = "gp_"
-tbl_upv_1.MAX = 2
-local function A(a1, a2, a3, a4, a5)
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local Signal = require(script.Parent:WaitForChild("Signal"))
+local v4 = {PREFIX = "kb_", PAD_PREFIX = "gp_", MAX = 2}
+
+local function A(id, label, keys, group, a10)
     --[[
       name: A
       line: 39
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local tbl_2 = {group = 0, max = 0}
-    tbl_2.id = a1
-    tbl_2.label = a2
-    tbl_2.keys = a3
-    tbl_2.max = a5 or (tbl_upv_1.MAX)
-    tbl_2.group = a4
-    return tbl_2
+    return {id = id, label = label, keys = keys, max = a10 or v4.MAX, group = group}
 end
-local tbl_3 = {"Space"}
-local tbl_4 = {"C", "LeftControl"}
-local tbl_5 = {label = "SLIDE", id = "Slide", group = "move"}
-tbl_5.keys = tbl_4
-tbl_5.max = tbl_upv_1.MAX
-local tbl_6 = {"MouseButton1"}
-local tbl_7 = {"MouseButton2"}
-local tbl_8 = {label = "AIM / BLOCK", id = "Aim", group = "combat"}
-tbl_8.keys = tbl_7
-tbl_8.max = tbl_upv_1.MAX
-local tbl_9 = {"R"}
-local tbl_10 = {"MouseButton3", "G"}
-local tbl_11 = {label = "PING", id = "Ping", group = "combat"}
-tbl_11.keys = tbl_10
-tbl_11.max = tbl_upv_1.MAX
-local tbl_12 = {"One"}
-local tbl_13 = {"Two"}
-local tbl_14 = {label = "ITEM 2", id = "Item2", group = "items", max = 1}
-tbl_14.keys = tbl_13
-local tbl_15 = {"Three"}
-local tbl_16 = {"Four"}
-local tbl_17 = {label = "ITEM 4", id = "Item4", group = "items", max = 1}
-tbl_17.keys = tbl_16
-local tbl_18 = {"Five"}
-local tbl_19 = {"Six"}
-local tbl_20 = {label = "ITEM 6", id = "Item6", group = "items", max = 1}
-tbl_20.keys = tbl_19
-local tbl_21 = {"Q"}
-local tbl_22 = {"B"}
-local tbl_23 = {label = "NEXT LOADOUT", id = "NextLoadout", group = "items"}
-tbl_23.keys = tbl_22
-tbl_23.max = tbl_upv_1.MAX
-local tbl_24 = {"V"}
-local tbl_25 = {"X"}
-local tbl_26 = {label = "SWITCH SHOULDER", id = "Shoulder", group = "camera"}
-tbl_26.keys = tbl_25
-tbl_26.max = tbl_upv_1.MAX
-local tbl_27 = {
-    {label = "JUMP", id = "Jump", group = "move", keys = tbl_3, max = tbl_upv_1.MAX},
-    tbl_5,
-    {label = "ATTACK", id = "Attack", group = "combat", keys = tbl_6, max = tbl_upv_1.MAX},
-    tbl_8,
-    {label = "RELOAD", id = "Reload", group = "combat", keys = tbl_9, max = tbl_upv_1.MAX},
-    tbl_11,
-    {label = "ITEM 1", id = "Item1", group = "items", max = 1, keys = tbl_12},
-    tbl_14,
-    {label = "ITEM 3", id = "Item3", group = "items", max = 1, keys = tbl_15},
-    tbl_17,
-    {label = "ITEM 5", id = "Item5", group = "items", max = 1, keys = tbl_18},
-    tbl_20,
-    {label = "LAST ITEM", id = "LastItem", group = "items", keys = tbl_21, max = tbl_upv_1.MAX},
-    tbl_23,
-    {label = "FIRST / THIRD PERSON", id = "View", group = "camera", keys = tbl_24, max = tbl_upv_1.MAX},
-    tbl_26
+
+local actions = {
+    {id = "Jump", label = "JUMP", group = "move", keys = {"Space"}, max = v4.MAX},
+    {id = "Slide", label = "SLIDE", group = "move", keys = {"C", "LeftControl"}, max = v4.MAX},
+    {id = "Attack", label = "ATTACK", group = "combat", keys = {"MouseButton1"}, max = v4.MAX},
+    {id = "Aim", label = "AIM / BLOCK", group = "combat", keys = {"MouseButton2"}, max = v4.MAX},
+    {id = "Reload", label = "RELOAD", group = "combat", keys = {"R"}, max = v4.MAX},
+    {id = "Ping", label = "PING", group = "combat", keys = {"MouseButton3", "G"}, max = v4.MAX},
+    {id = "Item1", label = "ITEM 1", max = 1, group = "items", keys = {"One"}},
+    {id = "Item2", label = "ITEM 2", max = 1, group = "items", keys = {"Two"}},
+    {id = "Item3", label = "ITEM 3", max = 1, group = "items", keys = {"Three"}},
+    {id = "Item4", label = "ITEM 4", max = 1, group = "items", keys = {"Four"}},
+    {id = "Item5", label = "ITEM 5", max = 1, group = "items", keys = {"Five"}},
+    {id = "Item6", label = "ITEM 6", max = 1, group = "items", keys = {"Six"}},
+    {id = "LastItem", label = "LAST ITEM", group = "items", keys = {"Q"}, max = v4.MAX},
+    {id = "NextLoadout", label = "NEXT LOADOUT", group = "items", keys = {"B"}, max = v4.MAX},
+    {id = "View", label = "FIRST / THIRD PERSON", group = "camera", keys = {"V"}, max = v4.MAX},
+    {id = "Shoulder", label = "SWITCH SHOULDER", group = "camera", keys = {"X"}, max = v4.MAX},
+    {id = "FreeCursor", label = "FREE CURSOR", group = "camera", keys = {"LeftAlt", "RightAlt"}, max = v4.MAX},
+    {id = "CustomMenu", label = "CUSTOM MATCH MENU", group = "menus", keys = {"H"}, max = v4.MAX},
+    {id = "Scoreboard", label = "SCOREBOARD (HOLD)", group = "menus", keys = {"Tab"}, max = v4.MAX}
 }
-local tbl_28 = {"LeftAlt", "RightAlt"}
-local tbl_29 = {"H"}
-local tbl_30 = {label = "CUSTOM MATCH MENU", id = "CustomMenu", group = "menus"}
-tbl_30.keys = tbl_29
-tbl_30.max = tbl_upv_1.MAX
-tbl_27[17], tbl_27[18], tbl_27[19] = {label = "FREE CURSOR", id = "FreeCursor", group = "camera", keys = tbl_28, max = tbl_upv_1.MAX}, tbl_30, {label = "SCOREBOARD (HOLD)", id = "Scoreboard", group = "menus", keys = {"Tab"}, max = tbl_upv_1.MAX}
-tbl_upv_1.ACTIONS = tbl_27
-local tbl_upv_31 = {}
-for _, value_1 in tbl_upv_1.ACTIONS do
-    tbl_upv_31[value_1.id] = value_1
+v4.ACTIONS = actions
+local v12 = {}
+
+for _, action in v4.ACTIONS do
+    v12[action.id] = action
 end
-function tbl_upv_1.Action(a1)
+
+function v4.Action(key)
     --[[
       name: Action
       line: 76
       upvalues:
-        tbl_upv_31 (copy, index: 1)
+        v12 (copy, index: 1)
     ]]
-    return tbl_upv_31[a1]
+    return v12[key]
 end
-local tbl_upv_32 = {MouseButton1 = true, MouseButton3 = true, MouseButton2 = true}
-local tbl_upv_33 = {
-    A = "W A S D move you",
-    E = "E interacts with things",
-    D = "W A S D move you",
-    Left = "The arrow keys turn the camera",
-    F10 = "Reserved by Roblox",
-    M = "M opens Settings",
-    RightSuper = "Reserved by your system",
-    S = "W A S D move you",
-    Up = "The arrow keys move you",
+
+local v16 = {MouseButton1 = true, MouseButton2 = true, MouseButton3 = true}
+local reserved = {
     Escape = "Esc opens the Roblox menu",
-    W = "W A S D move you",
-    F11 = "Reserved by Roblox",
-    Print = "Reserved by your system",
-    LeftSuper = "Reserved by your system",
-    Menu = "Reserved by your system",
-    F12 = "Reserved by Roblox",
     Slash = "/ opens chat",
-    Right = "The arrow keys turn the camera",
+    W = "W A S D move you",
+    A = "W A S D move you",
+    S = "W A S D move you",
+    D = "W A S D move you",
+    Up = "The arrow keys move you",
     Down = "The arrow keys move you",
-    F9 = "F9 opens Roblox's console"
+    Left = "The arrow keys turn the camera",
+    Right = "The arrow keys turn the camera",
+    M = "M opens Settings",
+    E = "E interacts with things",
+    F9 = "F9 opens Roblox's console",
+    F10 = "Reserved by Roblox",
+    F11 = "Reserved by Roblox",
+    F12 = "Reserved by Roblox",
+    LeftSuper = "Reserved by your system",
+    RightSuper = "Reserved by your system",
+    Print = "Reserved by your system",
+    Menu = "Reserved by your system"
 }
-tbl_upv_1.RESERVED = tbl_upv_33
-local tbl_upv_34 = {}
-for _, value_2 in string.split("B C F G H I J K L N O P Q R T U V X Y Z", " ") do
-    tbl_upv_34[value_2] = value_2
+v4.RESERVED = reserved
+local v18 = {}
+
+for _, part in string.split("B C F G H I J K L N O P Q R T U V X Y Z", " ") do
+    v18[part] = part
 end
-for key_1, value_3 in {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"} do
-    tbl_upv_34[value_3] = tostring(key_1 - 1)
-    tbl_upv_34["Keypad" .. value_3] = "NUM " .. tostring(key_1 - 1)
+
+for v21, v22 in {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"} do
+    v18[v22] = tostring(v21 - 1)
+    v18["Keypad" .. v22] = "NUM " .. tostring(v21 - 1)
 end
-tbl_upv_34["F" .. 1] = "F" .. 1
-tbl_upv_34["F" .. 2] = "F" .. 2
-tbl_upv_34["F" .. 3] = "F" .. 3
-tbl_upv_34["F" .. 4] = "F" .. 4
-tbl_upv_34["F" .. 5] = "F" .. 5
-tbl_upv_34["F" .. 6] = "F" .. 6
-tbl_upv_34["F" .. 7] = "F" .. 7
-tbl_upv_34["F" .. 8] = "F" .. 8
-local tbl_35 = {}
-tbl_35.Space = "SPACE"
-tbl_35.Tab = "TAB"
-tbl_35.CapsLock = "CAPS"
-tbl_35.Return = "ENTER"
-tbl_35.Backspace = "BKSP"
-tbl_35.LeftShift = "SHIFT"
-tbl_35.RightShift = "R SHIFT"
-tbl_35.LeftControl = "CTRL"
-tbl_35.RightControl = "R CTRL"
-tbl_35.LeftAlt = "ALT"
-tbl_35.RightAlt = "R ALT"
-tbl_35.Insert = "INS"
-tbl_35.Delete = "DEL"
-tbl_35.Home = "HOME"
-tbl_35.End = "END"
-tbl_35.PageUp = "PG UP"
-tbl_35.PageDown = "PG DN"
-tbl_35.Backquote = "`"
-tbl_35.Minus = "-"
-tbl_35.Equals = "="
-tbl_35.LeftBracket = "["
-tbl_35.RightBracket = "]"
-tbl_35.BackSlash = "\\"
-tbl_35.Semicolon = ";"
-tbl_35.Quote = "'"
-tbl_35.Comma = ","
-tbl_35.Period = "."
-tbl_35.KeypadPeriod = "NUM ."
-tbl_35.KeypadDivide = "NUM /"
-tbl_35.KeypadMultiply = "NUM *"
-tbl_35.KeypadMinus = "NUM -"
-tbl_35.KeypadPlus = "NUM +"
-tbl_35.KeypadEnter = "NUM ENTER"
-tbl_35.MouseButton1 = "LEFT CLICK"
-tbl_35.MouseButton2 = "RIGHT CLICK"
-tbl_35.MouseButton3 = "MIDDLE CLICK"
-for key_2, value_4 in tbl_35 do
-    tbl_upv_34[key_2] = value_4
+
+v18["F" .. 1] = "F" .. 1
+v18["F" .. 2] = "F" .. 2
+v18["F" .. 3] = "F" .. 3
+v18["F" .. 4] = "F" .. 4
+v18["F" .. 5] = "F" .. 5
+v18["F" .. 6] = "F" .. 6
+v18["F" .. 7] = "F" .. 7
+v18["F" .. 8] = "F" .. 8
+
+for v23, v24 in {
+    Space = "SPACE",
+    Tab = "TAB",
+    CapsLock = "CAPS",
+    Return = "ENTER",
+    Backspace = "BKSP",
+    LeftShift = "SHIFT",
+    RightShift = "R SHIFT",
+    LeftControl = "CTRL",
+    RightControl = "R CTRL",
+    LeftAlt = "ALT",
+    RightAlt = "R ALT",
+    Insert = "INS",
+    Delete = "DEL",
+    Home = "HOME",
+    End = "END",
+    PageUp = "PG UP",
+    PageDown = "PG DN",
+    Backquote = "`",
+    Minus = "-",
+    Equals = "=",
+    LeftBracket = "[",
+    RightBracket = "]",
+    BackSlash = "\\",
+    Semicolon = ";",
+    Quote = "'",
+    Comma = ",",
+    Period = ".",
+    KeypadPeriod = "NUM .",
+    KeypadDivide = "NUM /",
+    KeypadMultiply = "NUM *",
+    KeypadMinus = "NUM -",
+    KeypadPlus = "NUM +",
+    KeypadEnter = "NUM ENTER",
+    MouseButton1 = "LEFT CLICK",
+    MouseButton2 = "RIGHT CLICK",
+    MouseButton3 = "MIDDLE CLICK"
+} do
+    v18[v23] = v24
 end
-function tbl_upv_1.Bindable(a1)
+
+function v4.Bindable(key)
     --[[
       name: Bindable
       line: 131
       upvalues:
-        tbl_upv_34 (copy, index: 1)
-        tbl_upv_33 (copy, index: 2)
+        v18 (copy, index: 1)
+        reserved (copy, index: 2)
     ]]
-    if tbl_upv_34[a1] then
+    if v18[key] then
         return true, nil
     end
-    return false, tbl_upv_33[a1] or "That key can't be used"
+
+    return false, reserved[key] or "That key can't be used"
 end
-function tbl_upv_1.Display(a1)
+
+function v4.Display(key)
     --[[
       name: Display
       line: 139
       upvalues:
-        tbl_upv_34 (copy, index: 1)
+        v18 (copy, index: 1)
     ]]
-    if a1 then
-        return tbl_upv_34[a1] or a1
+    if key then
+        return v18[key] or key
     end
-    return "\226\128\148"
+
+    return "—"
 end
-function tbl_upv_1.CapFor(a1)
+
+function v4.CapFor(key)
     --[[
       name: CapFor
       line: 144
       upvalues:
-        tbl_upv_34 (copy, index: 1)
+        v18 (copy, index: 1)
     ]]
-    if a1 then
-        if a1 ~= "MouseButton1" then
-            if a1 ~= "MouseButton2" then
-                if a1 ~= "MouseButton3" then
-                    return tbl_upv_34[a1] or a1
-                end
-                return "M3"
-            end
-            return "M2"
-        end
+    if not key then
+        return nil
+    end
+    if key == "MouseButton1" then
         return "M1"
     end
-    return nil
+    if key == "MouseButton2" then
+        return "M2"
+    end
+    if key == "MouseButton3" then
+        return "M3"
+    end
+
+    return v18[key] or key
 end
-function tbl_upv_1.Parse(a1, a2)
+
+function v4.Parse(key, text: string)
     --[[
       name: Parse
       line: 161
       upvalues:
-        tbl_upv_31 (copy, index: 1)
-        tbl_upv_34 (copy, index: 2)
+        v12 (copy, index: 1)
+        v18 (copy, index: 2)
     ]]
-    local v1 = tbl_upv_31[a1]
-    if not v1 or type(a2) ~= "string" or #a2 > 64 then
+    local v30 = v12[key]
+
+    if not v30 or type(text) ~= "string" or 64 < #text then
         return nil
     end
-    if a2 == "-" then
+    if text == "-" then
         return {}
     end
-    if a2 == "" then
+    if text == "" then
         return nil
     end
-    local v2 = string.split(a2, ",")
-    if v1.max < #v2 then
+
+    local parts = string.split(text, ",")
+    local partCount = #parts
+
+    if v30.max < partCount then
         return nil
     end
-    local tbl_36 = {}
-    for _, value_5 in v2 do
-        if #value_5 ~= 0 and not (#value_5 > 16) and tbl_upv_34[value_5] and not (tbl_36[value_5]) then
-            tbl_36[value_5] = true
-            continue
+
+    local v33 = {}
+
+    for _, part in parts do
+        if #part == 0 then
+            return nil
         end
-        return nil
+        if 16 < #part then
+            return nil
+        end
+        if not v18[part] or v33[part] then
+            return nil
+        end
+
+        v33[part] = true
     end
-    return v2
+
+    return parts
 end
-function tbl_upv_1.Encode(a1)
+
+function v4.Encode(parts)
     --[[
       name: Encode
       line: 186
     ]]
-    if #a1 ~= 0 then
-        return (table.concat(a1, ","))
+    if #parts == 0 then
+        return "-"
     end
-    return "-"
+
+    return (table.concat(parts, ","))
 end
-function tbl_upv_1.ValidSetting(a1, a2)
+
+function v4.ValidSetting(text: string, a38)
     --[[
       name: ValidSetting
       line: 191
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_31 (copy, index: 2)
+        v4 (copy, index: 1)
+        v12 (copy, index: 2)
     ]]
-    if type(a1) == "string" then
-        local v3 = nil
-        if string.sub(a1, 1, #tbl_upv_1.PAD_PREFIX) ~= tbl_upv_1.PAD_PREFIX then
-            if string.sub(a1, 1, #tbl_upv_1.PREFIX) ~= tbl_upv_1.PREFIX then
-                return false
-            end
-            local v4 = string.sub(a1, #tbl_upv_1.PREFIX + 1)
-            if not tbl_upv_31[v4] then
-                return false
-            end
-            local v5 = true
-            if a2 ~= "" then
-                v5 = tbl_upv_1.Parse(v4, a2) ~= nil
-            end
-            return v5
-        else
-            v3 = string.sub(a1, #tbl_upv_1.PAD_PREFIX + 1)
-            if not tbl_upv_1.PadAction(v3) then
-                return false
-            end
-            local v6 = true
-            if a2 ~= "" then
-                v6 = tbl_upv_1.PadParse(v3, a2) ~= nil
-            end
-            return v6
-        end
-    else
+    if type(text) ~= "string" then
         return false
     end
+
+    local substring = string.sub(text, 1, #v4.PAD_PREFIX)
+
+    if substring == v4.PAD_PREFIX then
+        local substring2 = string.sub(text, #v4.PAD_PREFIX + 1)
+
+        if v4.PadAction(substring2) then
+            return a38 == "" or v4.PadParse(substring2, a38) ~= nil
+        end
+
+        return false
+    end
+
+    local substring3 = string.sub(text, 1, #v4.PREFIX)
+
+    if substring3 ~= v4.PREFIX then
+        return false
+    end
+
+    local substring4 = string.sub(text, #v4.PREFIX + 1)
+
+    if v12[substring4] then
+        return a38 == "" or v4.Parse(substring4, a38) ~= nil
+    end
+
+    return false
 end
-function tbl_upv_1.IsKey(a1)
+
+function v4.IsKey(text: string)
     --[[
       name: IsKey
       line: 213
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local v7 = false
-    local v8
-    if type(a1) ~= "string" then
-        v8 = v7
-    else
-        v8 = true
-        if string.sub(a1, 1, #tbl_upv_1.PREFIX) ~= tbl_upv_1.PREFIX then
-            v8 = string.sub(a1, 1, #tbl_upv_1.PAD_PREFIX) == tbl_upv_1.PAD_PREFIX
+    local v44 = false
+
+    if type(text) == "string" then
+        v44 = true
+        local substring = string.sub(text, 1, #v4.PREFIX)
+
+        if substring ~= v4.PREFIX then
+            local substring2 = string.sub(text, 1, #v4.PAD_PREFIX)
+            v44 = substring2 == v4.PAD_PREFIX
         end
     end
-    return v8
+
+    return v44
 end
-local function sameList(a1, a2)
+
+local function sameList(a48, a49)
     --[[
       name: sameList
       line: 218
     ]]
-    if #a1 == #a2 then
-        for key_3, value_6 in a1 do
-            if a2[key_3] == value_6 then
-                continue
-            end
+    if #a48 ~= #a49 then
+        return false
+    end
+
+    for v50, v51 in a48 do
+        if a49[v50] ~= v51 then
             return false
         end
-        return true
     end
-    return false
+
+    return true
 end
-local tbl_upv_37 = {}
-local tbl_upv_38 = {}
-tbl_upv_1.Changed = Signal_1.new()
+
+local v52 = {}
+local v53 = {}
+v4.Changed = Signal.new()
+
 local function reindex()
     --[[
       name: reindex
       line: 238
       upvalues:
-        tbl_upv_38 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-        tbl_upv_37 (copy, index: 3)
+        v53 (copy, index: 1)
+        v4 (copy, index: 2)
+        v52 (copy, index: 3)
     ]]
-    table.clear(tbl_upv_38)
-    for _, value_7 in tbl_upv_1.ACTIONS do
-        for v1, value_8 in tbl_upv_37[value_7.id] do
-            tbl_upv_38[value_8] = value_7.id
+    table.clear(v53)
+
+    for _, action in v4.ACTIONS do
+        for _, v58 in v52[action.id] do
+            v53[v58] = action.id
         end
     end
 end
+
 local function resetAll()
     --[[
       name: resetAll
       line: 247
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_37 (copy, index: 2)
+        v4 (copy, index: 1)
+        v52 (copy, index: 2)
         reindex (copy, index: 3)
     ]]
-    for _, value_9 in tbl_upv_1.ACTIONS do
-        tbl_upv_37[value_9.id] = table.clone(value_9.keys)
+    for _, action in v4.ACTIONS do
+        v52[action.id] = table.clone(action.keys)
     end
+
     reindex()
 end
+
 resetAll()
-function tbl_upv_1.Get(a1)
+
+function v4.Get(key)
     --[[
       name: Get
       line: 255
       upvalues:
-        tbl_upv_37 (copy, index: 1)
+        v52 (copy, index: 1)
     ]]
-    return table.clone(tbl_upv_37[a1] or {})
+    return table.clone((v52[key] or {}))
 end
-function tbl_upv_1.IsDefault(a1)
+
+function v4.IsDefault(key)
     --[[
       name: IsDefault
       line: 259
       upvalues:
-        tbl_upv_31 (copy, index: 1)
-        tbl_upv_37 (copy, index: 2)
+        v12 (copy, index: 1)
+        v52 (copy, index: 2)
     ]]
-    local v9 = tbl_upv_31[a1]
-    local v10 = false
-    local v11, v12
-    if v9 == nil then
-        return v10
+    local v64 = v12[key]
+    if v64 == nil then
+        return false
     end
-    v11 = tbl_upv_37[a1]
-    v12 = v9.keys
-    if #v11 == #v12 then
-        for key_4, value_10 in v11 do
-            if v12[key_4] == value_10 then
-                continue
-            end
+
+    local v65 = v52[key]
+    local keys = v64.keys
+
+    if #v65 ~= #keys then
+        return false
+    end
+
+    for keyKey, v68 in v65 do
+        if keys[keyKey] ~= v68 then
             return false
         end
-        v10 = true
-        return v10
     end
-    return false
+
+    return true
 end
-function tbl_upv_1.AllDefault()
+
+function v4.AllDefault()
     --[[
       name: AllDefault
       line: 264
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_37 (copy, index: 2)
+        v4 (copy, index: 1)
+        v52 (copy, index: 2)
     ]]
-    local v13 = nil
-    for _, value_11 in tbl_upv_1.ACTIONS do
-        local v14 = tbl_upv_37[value_11.id]
-        local keys_1 = value_11.keys
-        if #v14 == #keys_1 then
-            for key_5, value_12 in v14 do
-                if keys_1[key_5] ~= value_12 then
-                    v13 = false
+    for _, action in v4.ACTIONS do
+        local v71
+        local v72 = v52[action.id]
+        local keys = action.keys
+
+        if #v72 == #keys then
+            v71 = true
+
+            for keyKey, v75 in v72 do
+                if keys[keyKey] ~= v75 then
+                    v71 = false
+                    break
                 end
             end
         else
-            v13 = false
+            v71 = false
         end
-        if v13 then
-            continue
+
+        if not v71 then
+            return false
         end
-        return false
     end
+
     return true
 end
-function tbl_upv_1.OwnerOf(a1)
+
+function v4.OwnerOf(key)
     --[[
       name: OwnerOf
       line: 273
       upvalues:
-        tbl_upv_38 (copy, index: 1)
+        v53 (copy, index: 1)
     ]]
-    return tbl_upv_38[a1]
+    return v53[key]
 end
-function tbl_upv_1.SettingValue(a1)
+
+function v4.SettingValue(key)
     --[[
       name: SettingValue
       line: 278
       upvalues:
-        tbl_upv_31 (copy, index: 1)
-        tbl_upv_37 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        v12 (copy, index: 1)
+        v52 (copy, index: 2)
+        v4 (copy, index: 3)
     ]]
-    local v15 = tbl_upv_31[a1]
-    if not v15 then
-        return ""
-    end
-    local v16 = tbl_upv_37[a1]
-    local keys_2 = v15.keys
-    local v17 = nil
-    if #v16 == #keys_2 then
-        for key_6, value_13 in v16 do
-            if keys_2[key_6] ~= value_13 then
-                v17 = false
+    if const v78 = v12[key] then
+        local v79
+        local v80 = v52[key]
+        local keys = v78.keys
+
+        if #v80 == #keys then
+            v79 = true
+
+            for keyKey, v83 in v80 do
+                if keys[keyKey] ~= v83 then
+                    v79 = false
+                    break
+                end
             end
+        else
+            v79 = false
         end
-    else
-        v17 = false
+
+        if not v79 then
+            return v4.Encode(v52[key])
+        end
     end
-    if v17 then
-        return ""
-    end
-    return tbl_upv_1.Encode(tbl_upv_37[a1])
+
+    return ""
 end
-function tbl_upv_1.Load(a1)
+
+function v4.Load(a84)
     --[[
       name: Load
       line: 289
       upvalues:
-        tbl_upv_37 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v52 (copy, index: 1)
+        v4 (copy, index: 2)
         reindex (copy, index: 3)
     ]]
-    local v18
-    if type(a1) ~= "table" then
-        local tbl_39 = {}
-        v18 = tbl_39
+    local v85
+
+    if type(a84) ~= "table" then
+        v85 = {}
     else
-        v18 = a1
+        v85 = a84
     end
-    local tbl_40 = {}
-    for key_7, value_14 in tbl_upv_37 do
-        tbl_40[key_7] = value_14
+
+    local v86 = {}
+
+    for v87, v88 in v52 do
+        v86[v87] = v88
     end
-    local tbl_41 = {}
-    local tbl_42 = {}
-    local v19 = nil
-    for _, value_15 in tbl_upv_1.ACTIONS do
-        v19 = tbl_upv_1.Parse(value_15.id, v18[tbl_upv_1.PREFIX .. value_15.id])
-        if not (v19) then
-            continue
-        end
-        local tbl_43 = {}
-        for v22, value_16 in v19 do
-            if not (tbl_41[value_16]) then
-                tbl_41[value_16] = true
-                table.insert(tbl_43, value_16)
+
+    local v89 = {}
+    local v90 = {}
+
+    for _, action in v4.ACTIONS do
+        if const v93 = v4.Parse(action.id, v85[v4.PREFIX .. action.id]) then
+            local v94 = {}
+
+            for _, v96 in v93 do
+                if not v89[v96] then
+                    v89[v96] = true
+                    table.insert(v94, v96)
+                end
             end
+
+            v52[action.id] = v94
+            v90[action.id] = true
         end
-        tbl_upv_37[value_15.id] = tbl_43
-        tbl_42[value_15.id] = true
     end
-    for _, value_17 in tbl_upv_1.ACTIONS do
-        if tbl_42[value_17.id] then
-            continue
-        end
-        local tbl_44 = {}
-        for v23, value_18 in value_17.keys do
-            if not (tbl_41[value_18]) then
-                tbl_41[value_18] = true
-                table.insert(tbl_44, value_18)
+
+    for _, action in v4.ACTIONS do
+        if not v90[action.id] then
+            local v99 = {}
+
+            for _, key in action.keys do
+                if not v89[key] then
+                    v89[key] = true
+                    table.insert(v99, key)
+                end
             end
+
+            v52[action.id] = v99
         end
-        tbl_upv_37[value_17.id] = tbl_44
     end
+
     reindex()
-    tbl_42 = {}
-    for _, value_19 in tbl_upv_1.ACTIONS do
-        local v20 = tbl_40[value_19.id] or {}
-        local v21 = tbl_upv_37[value_19.id]
-        if #v20 == #v21 then
-            for key_8, value_20 in v20 do
-                if v21[key_8] ~= value_20 then
-                    v19 = false
+    local v102 = {}
+
+    for _, action in v4.ACTIONS do
+        local v105
+        local v106 = v86[action.id] or {}
+        local v107 = v52[action.id]
+
+        if #v106 == #v107 then
+            v105 = true
+
+            for v108, v109 in v106 do
+                if v107[v108] ~= v109 then
+                    v105 = false
+                    break
                 end
             end
         else
-            v19 = false
+            v105 = false
         end
-        if not (v19) then
-            table.insert(tbl_42, value_19.id)
+
+        if not v105 then
+            table.insert(v102, action.id)
         end
     end
-    if #tbl_42 > 0 then
-        tbl_upv_1.Changed:Fire(tbl_42)
+
+    if 0 < #v102 then
+        v4.Changed:Fire(v102)
     end
-    tbl_upv_1.PadLoad(v18)
+
+    v4.PadLoad(v85)
 end
-function tbl_upv_1.Assign(a1, a2, a3)
+
+function v4.Assign(key, a111: number, target)
     --[[
       name: Assign
       line: 339
       upvalues:
-        tbl_upv_31 (copy, index: 1)
-        tbl_upv_34 (copy, index: 2)
-        tbl_upv_37 (copy, index: 3)
-        tbl_upv_38 (copy, index: 4)
+        v12 (copy, index: 1)
+        v18 (copy, index: 2)
+        v52 (copy, index: 3)
+        v53 (copy, index: 4)
         reindex (copy, index: 5)
-        tbl_upv_1 (copy, index: 6)
+        v4 (copy, index: 6)
     ]]
-    local v22 = tbl_upv_31[a1]
-    if v22 and tbl_upv_34[a3] then
-        local v23 = math.clamp(a2, 1, math.min(v22.max, #tbl_upv_37[a1] + 1))
-        local v24 = tbl_upv_37[a1]
-        local v25 = v24[v23]
-        if v25 == a3 then
-            return {}, nil, nil
-        end
-        local tbl_45 = {a1}
-        local v26 = tbl_upv_38[a3]
-        if v26 ~= a1 then
-            if v26 then
-                local v27 = tbl_upv_37[v26]
-                local v28 = table.find(v27, a3)
-                if not (v25) or table.find(v27, v25) then
-                    table.remove(v27, v28)
-                else
-                    v27[v28] = v25
-                end
-                table.insert(tbl_45, v26)
-                local _ = table.clone(v27)
-            end
-            v24[v23] = a3
-        elseif v25 ~= nil then
-            v24[table.find(v24, a3)] = v25
-            v24[v23] = a3
-        else
-            return {}, nil, nil
-        end
-        reindex()
-        tbl_upv_1.Changed:Fire(tbl_45)
-        return tbl_45, ((v26 ~= a1) and v26) or nil, nil
+    local v113 = v12[key]
+
+    if not v113 or not v18[target] then
+        return {}, nil, nil
     end
-    return {}, nil, nil
+
+    local clampedValue = math.clamp(a111, 1, (math.min(v113.max, #v52[key] + 1)))
+    local targets = v52[key]
+    local target2 = targets[clampedValue]
+
+    if target2 == target then
+        return {}, nil, nil
+    end
+
+    local v117 = {key}
+    local v118 = v53[target]
+    local values = nil
+
+    if v118 ~= key then
+        if v118 then
+            local v120 = v52[v118]
+            local index = table.find(v120, target)
+
+            if not target2 or table.find(v120, target2) then
+                table.remove(v120, index)
+            else
+                v120[index] = target2
+            end
+
+            table.insert(v117, v118)
+            values = table.clone(v120)
+        end
+
+        targets[clampedValue] = target
+    else
+        if target2 == nil then
+            return {}, nil, nil
+        end
+
+        targets[table.find(targets, target)] = target2
+        targets[clampedValue] = target
+    end
+
+    reindex()
+    v4.Changed:Fire(v117)
+    local v122 = v118 ~= key and v118 or nil
+
+    return v117, v122, values
 end
-function tbl_upv_1.Clear(a1, a2)
+
+function v4.Clear(key, index)
     --[[
       name: Clear
       line: 381
       upvalues:
-        tbl_upv_37 (copy, index: 1)
+        v52 (copy, index: 1)
         reindex (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        v4 (copy, index: 3)
     ]]
-    local v29 = tbl_upv_37[a1]
-    if not v29 or not v29[a2] then
+    local v125 = v52[key]
+
+    if not v125 or not v125[index] then
         return
     end
-    table.remove(v29, a2)
+
+    table.remove(v125, index)
     reindex()
-    tbl_upv_1.Changed:Fire({a1})
+    v4.Changed:Fire({key})
 end
-function tbl_upv_1.ResetAll()
+
+function v4.ResetAll()
     --[[
       name: ResetAll
       line: 392
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_37 (copy, index: 2)
+        v4 (copy, index: 1)
+        v52 (copy, index: 2)
         resetAll (copy, index: 3)
     ]]
-    local tbl_46 = {}
-    local v30 = nil
-    for _, value_21 in tbl_upv_1.ACTIONS do
-        local v31 = tbl_upv_37[value_21.id]
-        local keys_3 = value_21.keys
-        if #v31 == #keys_3 then
-            for key_9, value_22 in v31 do
-                if keys_3[key_9] ~= value_22 then
-                    v30 = false
+    local v126 = {}
+
+    for _, action in v4.ACTIONS do
+        local v129
+        local v130 = v52[action.id]
+        local keys = action.keys
+
+        if #v130 == #keys then
+            v129 = true
+
+            for keyKey, v133 in v130 do
+                if keys[keyKey] ~= v133 then
+                    v129 = false
+                    break
                 end
             end
         else
-            v30 = false
+            v129 = false
         end
-        if not (v30) then
-            table.insert(tbl_46, value_21.id)
+
+        if not v129 then
+            table.insert(v126, action.id)
         end
     end
+
     resetAll()
-    if #tbl_46 > 0 then
-        tbl_upv_1.Changed:Fire(tbl_46)
+
+    if 0 < #v126 then
+        v4.Changed:Fire(v126)
     end
-    return tbl_46
+
+    return v126
 end
-function tbl_upv_1.ActionOf(a1)
+
+function v4.ActionOf(a134)
     --[[
       name: ActionOf
       line: 407
       upvalues:
-        tbl_upv_38 (copy, index: 1)
+        v53 (copy, index: 1)
     ]]
-    local UserInputType_1 = a1.UserInputType
-    if UserInputType_1 ~= Enum.UserInputType.Keyboard then
-        if UserInputType_1 ~= Enum.UserInputType.MouseButton1 and UserInputType_1 ~= Enum.UserInputType.MouseButton2 and UserInputType_1 ~= Enum.UserInputType.MouseButton3 then
-            return nil
-        end
-        return tbl_upv_38[UserInputType_1.Name]
+    local userInputType = a134.UserInputType
+
+    if userInputType == Enum.UserInputType.Keyboard then
+        return v53[a134.KeyCode.Name]
     end
-    return tbl_upv_38[a1.KeyCode.Name]
+    if userInputType ~= Enum.UserInputType.MouseButton1
+        and userInputType ~= Enum.UserInputType.MouseButton2
+        and userInputType ~= Enum.UserInputType.MouseButton3
+    then
+        return nil
+    end
+
+    return v53[userInputType.Name]
 end
-function tbl_upv_1.Inputs(a1)
+
+function v4.Inputs(key)
     --[[
       name: Inputs
       line: 418
       upvalues:
-        tbl_upv_37 (copy, index: 1)
-        tbl_upv_32 (copy, index: 2)
+        v52 (copy, index: 1)
+        v16 (copy, index: 2)
     ]]
-    local tbl_47 = {}
-    for _, value_upv_23 in tbl_upv_37[a1] or {} do
-        if tbl_upv_32[value_upv_23] then
-            table.insert(tbl_47, Enum.UserInputType[value_upv_23])
-            continue
-        end
-        local success_1, v32 = pcall(
-            function()
-                --[[
-                  line: 424
-                  upvalues:
-                    value_upv_23 (copy, index: 1)
-                ]]
-                return Enum.KeyCode[value_upv_23]
+    local v137 = {}
+    local v138 = v52[key] or {}
+
+    for _, v140 in v138 do
+        if v16[v140] then
+            table.insert(v137, Enum.UserInputType[v140])
+        else
+            local success, result = pcall(
+                function()
+                    --[[
+                      line: 424
+                      upvalues:
+                        v140 (copy, index: 1)
+                    ]]
+                    return Enum.KeyCode[v140]
+                end
+            )
+
+            if success and result then
+                table.insert(v137, result)
             end
-        )
-        if not (success_1) then
-            continue
-        end
-        if v32 then
-            table.insert(tbl_47, v32)
         end
     end
-    return tbl_47
+
+    return v137
 end
-function tbl_upv_1.CapText(a1)
+
+function v4.CapText(key)
     --[[
       name: CapText
       line: 436
       upvalues:
-        tbl_upv_37 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v52 (copy, index: 1)
+        v4 (copy, index: 2)
     ]]
-    local v33 = tbl_upv_37[a1]
-    return tbl_upv_1.CapFor(v33 and (v33[1]))
+    local v144 = v52[key]
+    return v4.CapFor((v144 and v144[1]))
 end
-function tbl_upv_1.NameOf(a1)
+
+function v4.NameOf(a145)
     --[[
       name: NameOf
       line: 442
     ]]
-    local UserInputType_2 = a1.UserInputType
-    if UserInputType_2 ~= Enum.UserInputType.Keyboard then
-        if UserInputType_2 ~= Enum.UserInputType.MouseButton1 and UserInputType_2 ~= Enum.UserInputType.MouseButton2 and UserInputType_2 ~= Enum.UserInputType.MouseButton3 then
-            return nil
-        end
-        return UserInputType_2.Name
+    local userInputType = a145.UserInputType
+
+    if userInputType == Enum.UserInputType.Keyboard then
+        return a145.KeyCode.Name
     end
-    return a1.KeyCode.Name
+    if userInputType ~= Enum.UserInputType.MouseButton1
+        and userInputType ~= Enum.UserInputType.MouseButton2
+        and userInputType ~= Enum.UserInputType.MouseButton3
+    then
+        return nil
+    end
+
+    return userInputType.Name
 end
-local tbl_48 = {"ButtonA"}
-local tbl_49 = {"ButtonB"}
-local tbl_50 = {"ButtonR2"}
-local tbl_51 = {"ButtonL2"}
-local tbl_52 = {"ButtonX"}
-local tbl_53 = {"ButtonL3"}
-local tbl_54 = {"ButtonR1"}
-local tbl_55 = {"ButtonL1"}
-local tbl_56 = {"ButtonY"}
-local tbl_57 = {"DPadRight"}
-local tbl_58 = {"DPadLeft"}
-local tbl_59 = {"DPadUp"}
-local tbl_60 = {"ButtonR3"}
-local tbl_61 = {"DPadDown"}
-local tbl_62 = {"ButtonR1", "ButtonA"}
-local tbl_63 = {"ButtonL1", "ButtonB"}
-local function P(a1, a2, a3, a4, a5, a6, a7)
+
+local function P(id: string, label: string, desc: string, buttons, text: string, group: string, a154: number?)
     --[[
       name: P
       line: 479
     ]]
-    local tbl_64 = {}
-    for _, value_24 in string.split(a5, " ") do
-        tbl_64[value_24] = true
+    local contexts = {}
+
+    for _, part in string.split(text, " ") do
+        contexts[part] = true
     end
-    local tbl_65 = {}
-    tbl_65.id = a1
-    tbl_65.label = a2
-    tbl_65.desc = a3
-    tbl_65.buttons = a4
-    tbl_65.max = a7 or 1
-    tbl_65.contexts = tbl_64
-    tbl_65.group = a6
-    return tbl_65
+
+    return {id = id, label = label, desc = desc, buttons = buttons, max = a154 or 1, contexts = contexts, group = group}
 end
-local tbl_66 = {
-    P("Jump", "JUMP", "In the lobby and in matches", tbl_48, "lobby training match", "move"),
-    P("Slide", "SLIDE", "While running", tbl_49, "lobby training match", "move"),
-    P("Attack", "ATTACK", "Swing, fire, throw, use", tbl_50, "training match", "combat"),
-    P("Aim", "AIM / BLOCK", "Aim, zoom, block, heavy attack, lunge", tbl_51, "training match", "combat"),
-    P("Reload", "RELOAD", "Reload your weapon", tbl_52, "training match", "combat"),
-    P("Ping", "PING", "Mark a spot for your team", tbl_53, "match spectate", "combat"),
-    P("NextItem", "NEXT ITEM", "The next hotbar slot", tbl_54, "training match", "items"),
-    P("PrevItem", "PREVIOUS ITEM", "The previous hotbar slot", tbl_55, "training match", "items"),
-    P("LastItem", "LAST ITEM", "Swap back to your last item", tbl_56, "training match", "items"),
-    P("NextLoadout", "NEXT LOADOUT", "During the round countdown", tbl_57, "match", "items"),
-    P("PrevLoadout", "PREVIOUS LOADOUT", "During the round countdown", tbl_58, "match", "items"),
-    P("View", "FIRST / THIRD PERSON", "Switch the camera view", tbl_59, "training match", "camera"),
-    P("Shoulder", "SWITCH SHOULDER", "Look over the other shoulder", tbl_60, "training match", "camera"),
-    P("Scoreboard", "SCOREBOARD (HOLD)", "In a match", tbl_61, "match spectate", "menus"),
-    P("SpectateNext", "SPECTATE NEXT", "While you're out of the round", tbl_62, "spectate", "spectate", 2),
-    P("SpectatePrev", "SPECTATE PREVIOUS", "While you're out of the round", tbl_63, "spectate", "spectate", 2)
+
+local buttons = {"ButtonL1", "ButtonB"}
+local padActions = {
+    P("Jump", "JUMP", "In the lobby and in matches", {"ButtonA"}, "lobby training match", "move"),
+    P("Slide", "SLIDE", "While running", {"ButtonB"}, "lobby training match", "move"),
+    P("Attack", "ATTACK", "Swing, fire, throw, use", {"ButtonR2"}, "training match", "combat"),
+    P("Aim", "AIM / BLOCK", "Aim, zoom, block, heavy attack, lunge", {"ButtonL2"}, "training match", "combat"),
+    P("Reload", "RELOAD", "Reload your weapon", {"ButtonX"}, "training match", "combat"),
+    P("Ping", "PING", "Mark a spot for your team", {"ButtonL3"}, "match spectate", "combat"),
+    P("NextItem", "NEXT ITEM", "The next hotbar slot", {"ButtonR1"}, "training match", "items"),
+    P("PrevItem", "PREVIOUS ITEM", "The previous hotbar slot", {"ButtonL1"}, "training match", "items"),
+    P("LastItem", "LAST ITEM", "Swap back to your last item", {"ButtonY"}, "training match", "items"),
+    P("NextLoadout", "NEXT LOADOUT", "During the round countdown", {"DPadRight"}, "match", "items"),
+    P("PrevLoadout", "PREVIOUS LOADOUT", "During the round countdown", {"DPadLeft"}, "match", "items"),
+    P("View", "FIRST / THIRD PERSON", "Switch the camera view", {"DPadUp"}, "training match", "camera"),
+    P("Shoulder", "SWITCH SHOULDER", "Look over the other shoulder", {"ButtonR3"}, "training match", "camera"),
+    P("Scoreboard", "SCOREBOARD (HOLD)", "In a match", {"DPadDown"}, "match spectate", "menus"),
+    P("SpectateNext", "SPECTATE NEXT", "While you're out of the round", {"ButtonR1", "ButtonA"}, "spectate", "spectate", 2),
+    (P("SpectatePrev", "SPECTATE PREVIOUS", "While you're out of the round", buttons, "spectate", "spectate", 2))
 }
-local tbl_67 = {"ButtonY"}
-local tbl_68 = {"DPadDown"}
-tbl_66[17], tbl_66[18] = P("Play", "PLAY / CANCEL", "Join or leave the queue in the lobby", tbl_67, "lobby", "menus"), P("CustomMenu", "CUSTOM MATCH MENU", "In a custom match server's lobby", tbl_68, "lobby", "menus")
-tbl_upv_1.PAD_ACTIONS = tbl_66
-local tbl_upv_69 = {}
-for _, value_25 in tbl_upv_1.PAD_ACTIONS do
-    tbl_upv_69[value_25.id] = value_25
+local buttons2 = {"DPadDown"}
+padActions[17], padActions[18] = P("Play", "PLAY / CANCEL", "Join or leave the queue in the lobby", {"ButtonY"}, "lobby", "menus"), (P("CustomMenu", "CUSTOM MATCH MENU", "In a custom match server's lobby", buttons2, "lobby", "menus"))
+v4.PAD_ACTIONS = padActions
+local v161 = {}
+
+for _, padAction in v4.PAD_ACTIONS do
+    v161[padAction.id] = padAction
 end
-function tbl_upv_1.PadAction(a1)
+
+function v4.PadAction(key)
     --[[
       name: PadAction
       line: 513
       upvalues:
-        tbl_upv_69 (copy, index: 1)
+        v161 (copy, index: 1)
     ]]
-    return tbl_upv_69[a1]
+    return v161[key]
 end
-local tbl_upv_70 = {DPadRight = "D-PAD RIGHT", DPadLeft = "D-PAD LEFT", ButtonX = "X", DPadDown = "D-PAD DOWN", DPadUp = "D-PAD UP", ButtonR3 = "RS", ButtonA = "A", ButtonR1 = "RB", ButtonL1 = "LB", ButtonR2 = "RT", ButtonL2 = "LT", ButtonL3 = "LS", ButtonB = "B", ButtonY = "Y"}
-tbl_upv_1.PAD_ALLOWED = tbl_upv_70
-local tbl_upv_71 = {ButtonStart = "That button opens Roblox's menu", ButtonSelect = "That button opens Settings"}
-tbl_upv_1.PAD_RESERVED = tbl_upv_71
-local function isPadType(a1)
+
+local padAllowed = {ButtonA = "A", ButtonB = "B", ButtonX = "X", ButtonY = "Y", ButtonL1 = "LB", ButtonR1 = "RB", ButtonL2 = "LT", ButtonR2 = "RT", ButtonL3 = "LS", ButtonR3 = "RS", DPadUp = "D-PAD UP", DPadDown = "D-PAD DOWN", DPadLeft = "D-PAD LEFT", DPadRight = "D-PAD RIGHT"}
+v4.PAD_ALLOWED = padAllowed
+local padReserved = {ButtonSelect = "That button opens Settings", ButtonStart = "That button opens Roblox's menu"}
+v4.PAD_RESERVED = padReserved
+
+local function isPadType(userInputType)
     --[[
       name: isPadType
       line: 531
     ]]
-    local v34 = string.sub(a1.Name, 1, 7) == "Gamepad"
-    return v34
+    return string.sub(userInputType.Name, 1, 7) == "Gamepad"
 end
-function tbl_upv_1.PadBindable(a1)
+
+function v4.PadBindable(key)
     --[[
       name: PadBindable
       line: 536
       upvalues:
-        tbl_upv_70 (copy, index: 1)
-        tbl_upv_71 (copy, index: 2)
+        padAllowed (copy, index: 1)
+        padReserved (copy, index: 2)
     ]]
-    if tbl_upv_70[a1] then
+    if padAllowed[key] then
         return true, nil
     end
-    return false, tbl_upv_71[a1] or "That button can't be used"
+
+    return false, padReserved[key] or "That button can't be used"
 end
-function tbl_upv_1.PadDisplay(a1)
+
+function v4.PadDisplay(key)
     --[[
       name: PadDisplay
       line: 544
       upvalues:
-        tbl_upv_70 (copy, index: 1)
+        padAllowed (copy, index: 1)
     ]]
-    if a1 then
-        return tbl_upv_70[a1] or a1
+    if key then
+        return padAllowed[key] or key
     end
-    return "\226\128\148"
+
+    return "—"
 end
-function tbl_upv_1.PadParse(a1, a2)
+
+function v4.PadParse(key, text: string)
     --[[
       name: PadParse
       line: 549
       upvalues:
-        tbl_upv_69 (copy, index: 1)
-        tbl_upv_70 (copy, index: 2)
+        v161 (copy, index: 1)
+        padAllowed (copy, index: 2)
     ]]
-    local v35 = tbl_upv_69[a1]
-    if not v35 or type(a2) ~= "string" or #a2 > 64 then
+    local v173 = v161[key]
+
+    if not v173 or type(text) ~= "string" or 64 < #text then
         return nil
     end
-    if a2 == "-" then
+    if text == "-" then
         return {}
     end
-    if a2 == "" then
+    if text == "" then
         return nil
     end
-    local v36 = string.split(a2, ",")
-    if v35.max < #v36 then
+
+    local parts = string.split(text, ",")
+    local partCount = #parts
+
+    if v173.max < partCount then
         return nil
     end
-    local tbl_72 = {}
-    for _, value_26 in v36 do
-        if #value_26 ~= 0 and not (#value_26 > 16) and tbl_upv_70[value_26] and not (tbl_72[value_26]) then
-            tbl_72[value_26] = true
-            continue
+
+    local v176 = {}
+
+    for _, part in parts do
+        if #part == 0 then
+            return nil
         end
-        return nil
+        if 16 < #part then
+            return nil
+        end
+        if not padAllowed[part] or v176[part] then
+            return nil
+        end
+
+        v176[part] = true
     end
-    return v36
+
+    return parts
 end
-local function overlap(a1, a2)
+
+local function overlap(a180, a181)
     --[[
       name: overlap
       line: 575
     ]]
-    for key_10 in a1.contexts do
-        if not (a2.contexts[key_10]) then
-            continue
+    for contextKey in a180.contexts do
+        if a181.contexts[contextKey] then
+            return true
         end
-        return true
     end
+
     return false
 end
-tbl_upv_1.PadOverlap = function(a1, a2)
+
+v4.PadOverlap = function(key, key2)
     --[[
       line: 583
       upvalues:
-        tbl_upv_69 (copy, index: 1)
+        v161 (copy, index: 1)
     ]]
-    local v37 = tbl_upv_69[a1]
-    local v38 = tbl_upv_69[a2]
-    local v39 = false
-    if v37 == nil then
-        return v39
+    local v185 = v161[key]
+    local v186 = v161[key2]
+
+    if v185 == nil then
+        return false
     end
-    local v40 = false
-    if v38 == nil then
-        v39 = v40
-    else
-        for key_11 in v37.contexts do
-            if not (v38.contexts[key_11]) then
-                continue
-            end
+    if v186 == nil then
+        return false
+    end
+
+    for contextKey in v185.contexts do
+        if v186.contexts[contextKey] then
             return true
         end
-        v39 = false
     end
-    return v39
+
+    return false
 end
-local tbl_upv_73 = {}
-local tbl_upv_74 = {}
-local u1 = false
-tbl_upv_1.PadChanged = Signal_1.new()
+
+local v188 = {}
+local v189 = {}
+local v190 = false
+v4.PadChanged = Signal.new()
+
 local function padReindex()
     --[[
       name: padReindex
       line: 594
       upvalues:
-        tbl_upv_74 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-        tbl_upv_73 (copy, index: 3)
+        v189 (copy, index: 1)
+        v4 (copy, index: 2)
+        v188 (copy, index: 3)
     ]]
-    table.clear(tbl_upv_74)
-    for _, value_27 in tbl_upv_1.PAD_ACTIONS do
-        for v1, value_28 in tbl_upv_73[value_27.id] do
-            tbl_upv_74[value_28] = tbl_upv_74[value_28] or {}
-            table.insert(tbl_upv_74[value_28], value_27.id)
+    table.clear(v189)
+
+    for _, padAction in v4.PAD_ACTIONS do
+        for _, v195 in v188[padAction.id] do
+            v189[v195] = v189[v195] or {}
+            table.insert(v189[v195], padAction.id)
         end
     end
 end
+
 local function padResetAll()
     --[[
       name: padResetAll
       line: 603
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_73 (copy, index: 2)
+        v4 (copy, index: 1)
+        v188 (copy, index: 2)
         padReindex (copy, index: 3)
     ]]
-    for _, value_29 in tbl_upv_1.PAD_ACTIONS do
-        tbl_upv_73[value_29.id] = table.clone(value_29.buttons)
+    for _, padAction in v4.PAD_ACTIONS do
+        v188[padAction.id] = table.clone(padAction.buttons)
     end
+
     padReindex()
 end
+
 padResetAll()
-function tbl_upv_1.PadGet(a1)
-    --[[
-      name: PadGet
-      line: 621
-      upvalues:
-        tbl_upv_73 (copy, index: 1)
-    ]]
-    return table.clone(tbl_upv_73[a1] or {})
-end
-function tbl_upv_1.PadCode(a1)
-    --[[
-      name: PadCode
-      line: 625
-      upvalues:
-        tbl_upv_73 (copy, index: 1)
-    ]]
-    local v41 = tbl_upv_73[a1]
-    local u2 = v41 and (v41[1])
-    if not u2 then
-        return nil
-    end
-    local success_2, v42 = pcall(
-        function()
-            --[[
-              line: 631
-              upvalues:
-                u2 (copy, index: 1)
-            ]]
-            return Enum.KeyCode[u2]
-        end
-    )
-    if success_2 then
-        return v42
-    end
-    return nil
-end
-function tbl_upv_1.PadInputs(a1)
-    --[[
-      name: PadInputs
-      line: 637
-      upvalues:
-        tbl_upv_73 (copy, index: 1)
-    ]]
-    local tbl_75 = {}
-    for _, value_upv_30 in tbl_upv_73[a1] or {} do
-        local success_3, v43 = pcall(
-            function()
-                --[[
-                  line: 640
-                  upvalues:
-                    value_upv_30 (copy, index: 1)
-                ]]
-                return Enum.KeyCode[value_upv_30]
-            end
-        )
-        if not (success_3) then
-            continue
-        end
-        if v43 then
-            table.insert(tbl_75, v43)
-        end
-    end
-    return tbl_75
-end
-function tbl_upv_1.PadIsDefault(a1)
-    --[[
-      name: PadIsDefault
-      line: 649
-      upvalues:
-        tbl_upv_69 (copy, index: 1)
-        tbl_upv_73 (copy, index: 2)
-    ]]
-    local v44 = tbl_upv_69[a1]
-    local v45 = false
-    local v46, v47
-    if v44 == nil then
-        return v45
-    end
-    v46 = tbl_upv_73[a1]
-    v47 = v44.buttons
-    if #v46 == #v47 then
-        for key_12, value_31 in v46 do
-            if v47[key_12] == value_31 then
-                continue
-            end
-            return false
-        end
-        v45 = true
-        return v45
-    end
-    return false
-end
-function tbl_upv_1.PadAllDefault()
-    --[[
-      name: PadAllDefault
-      line: 653
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_73 (copy, index: 2)
-    ]]
-    local v48 = nil
-    for _, value_32 in tbl_upv_1.PAD_ACTIONS do
-        local v49 = tbl_upv_73[value_32.id]
-        local buttons_1 = value_32.buttons
-        if #v49 == #buttons_1 then
-            for key_13, value_33 in v49 do
-                if buttons_1[key_13] ~= value_33 then
-                    v48 = false
-                end
-            end
-        else
-            v48 = false
-        end
-        if v48 then
-            continue
-        end
-        return false
-    end
-    return true
-end
-function tbl_upv_1.PadSettingValue(a1)
-    --[[
-      name: PadSettingValue
-      line: 662
-      upvalues:
-        tbl_upv_69 (copy, index: 1)
-        tbl_upv_73 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
-    ]]
-    local v50 = tbl_upv_69[a1]
-    if not v50 then
-        return ""
-    end
-    local v51 = tbl_upv_73[a1]
-    local buttons_2 = v50.buttons
-    local v52 = nil
-    if #v51 == #buttons_2 then
-        for key_14, value_34 in v51 do
-            if buttons_2[key_14] ~= value_34 then
-                v52 = false
-            end
-        end
-    else
-        v52 = false
-    end
-    if v52 then
-        return ""
-    end
-    return tbl_upv_1.Encode(tbl_upv_73[a1])
-end
-function tbl_upv_1.SettingValueFor(a1)
-    --[[
-      name: SettingValueFor
-      line: 670
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-    ]]
-    if string.sub(a1, 1, #tbl_upv_1.PAD_PREFIX) ~= tbl_upv_1.PAD_PREFIX then
-        return tbl_upv_1.SettingValue(string.sub(a1, #tbl_upv_1.PREFIX + 1))
-    end
-    return tbl_upv_1.PadSettingValue(string.sub(a1, #tbl_upv_1.PAD_PREFIX + 1))
-end
-local tbl_upv_76 = {}
-function tbl_upv_1.PadActionsOf(a1)
-    --[[
-      name: PadActionsOf
-      line: 680
-      upvalues:
-        tbl_upv_76 (copy, index: 1)
-        tbl_upv_74 (copy, index: 2)
-    ]]
-    local v53 = string.sub(a1.UserInputType.Name, 1, 7) == "Gamepad"
-    if v53 then
-        v53 = tbl_upv_74[a1.KeyCode.Name] or tbl_upv_76
-        return v53
-    end
-    return tbl_upv_76
-end
-function tbl_upv_1.IsPad(a1, a2)
-    --[[
-      name: IsPad
-      line: 686
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-    ]]
-    local v54 = table.find(tbl_upv_1.PadActionsOf(a1), a2) ~= nil
-    return v54
-end
-function tbl_upv_1.PadUsedIn(a1, a2)
-    --[[
-      name: PadUsedIn
-      line: 690
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_69 (copy, index: 2)
-    ]]
-    for _, value_35 in tbl_upv_1.PadActionsOf(a1) do
-        if not (tbl_upv_69[value_35].contexts[a2]) then
-            continue
-        end
-        return true
-    end
-    return false
-end
-function tbl_upv_1.PadBlocked()
-    --[[
-      name: PadBlocked
-      line: 699
-      upvalues:
-        u1 (ref, index: 1)
-    ]]
-    return u1
-end
-function tbl_upv_1.PadLoad(a1)
-    --[[
-      name: PadLoad
-      line: 705
-      upvalues:
-        tbl_upv_73 (copy, index: 1)
-        tbl_upv_69 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
-        padReindex (copy, index: 4)
-    ]]
-    local v55
-    if type(a1) ~= "table" then
-        local tbl_77 = {}
-        v55 = tbl_77
-    else
-        v55 = a1
-    end
-    local tbl_78 = {}
-    for key_15, value_36 in tbl_upv_73 do
-        tbl_78[key_15] = value_36
-    end
-    local tbl_upv_79 = {}
-    local tbl_80 = {}
-    local v56 = nil
-    local function keep(a2, a3)
-        --[[
-          name: keep
-          line: 712
-          upvalues:
-            tbl_upv_79 (copy, index: 1)
-            tbl_upv_69 (copy, index: 2)
-        ]]
-        local tbl_81 = {}
-        local v57 = nil
-        local v58 = nil
-        for _, value_37 in a3 do
-            v57 = true
-            for v60, value_38 in tbl_upv_79[value_37] or {} do
-                local v59 = tbl_upv_69[value_38]
-                for key_16 in a2.contexts do
-                    if v59.contexts[key_16] then
-                        v58 = true
-                    else
-                        continue
-                    end
-                end
-                if v58 then
-                    v57 = false
-                    break
-                end
-            end
-            if v57 then
-                tbl_upv_79[value_37] = tbl_upv_79[value_37] or {}
-                table.insert(tbl_upv_79[value_37], a2.id)
-                table.insert(tbl_81, value_37)
-            end
-        end
-        return tbl_81
-    end
-    for _, value_39 in tbl_upv_1.PAD_ACTIONS do
-        v56 = tbl_upv_1.PadParse(value_39.id, v55[tbl_upv_1.PAD_PREFIX .. value_39.id])
-        if v56 then
-            tbl_upv_73[value_39.id] = keep(value_39, v56)
-            tbl_80[value_39.id] = true
-        end
-    end
-    for _, value_40 in tbl_upv_1.PAD_ACTIONS do
-        if not (tbl_80[value_40.id]) then
-            tbl_upv_73[value_40.id] = keep(value_40, value_40.buttons)
-        end
-    end
-    padReindex()
-    tbl_80 = {}
-    for _, value_41 in tbl_upv_1.PAD_ACTIONS do
-        local v60 = tbl_78[value_41.id] or {}
-        local v61 = tbl_upv_73[value_41.id]
-        if #v60 == #v61 then
-            for key_17, value_42 in v60 do
-                if v61[key_17] ~= value_42 then
-                    v56 = false
-                end
-            end
-        else
-            v56 = false
-        end
-        if not (v56) then
-            table.insert(tbl_80, value_41.id)
-        end
-    end
-    if not (#tbl_80 > 0) then
-        return
-    end
-    tbl_upv_1.PadChanged:Fire(tbl_80)
-end
-local function padTaken(a1, a2, a3)
+
+local function padTaken(padAction, target, a202: nil)
     --[[
       name: padTaken
       line: 612
       upvalues:
-        tbl_upv_74 (copy, index: 1)
-        tbl_upv_69 (copy, index: 2)
+        v189 (copy, index: 1)
+        v161 (copy, index: 2)
     ]]
-    local v62 = nil
-    for _, value_43 in tbl_upv_74[a2] or {} do
-        if value_43 == a1.id or value_43 == a3 then
-            continue
-        end
-        local v63 = tbl_upv_69[value_43]
-        for key_18 in a1.contexts do
-            if v63.contexts[key_18] then
-                v62 = true
-            else
+    local v203 = v189[target] or {}
+
+    for _, v205 in v203 do
+        if v205 ~= padAction.id then
+            local v206
+
+            if v205 == a202 then
                 continue
             end
+
+            local v207 = v161[v205]
+            v206 = false
+
+            for contextKey in padAction.contexts do
+                if v207.contexts[contextKey] then
+                    v206 = true
+                    break
+                end
+            end
+
+            if not v206 then
+                continue
+            end
+
+            return v205
         end
-        if not (v62) then
-            continue
-        end
-        return value_43
     end
+
     return nil
 end
-function tbl_upv_1.PadAssign(a1, a2, a3)
+
+function v4.PadGet(key)
+    --[[
+      name: PadGet
+      line: 621
+      upvalues:
+        v188 (copy, index: 1)
+    ]]
+    return table.clone((v188[key] or {}))
+end
+
+function v4.PadCode(key)
+    --[[
+      name: PadCode
+      line: 625
+      upvalues:
+        v188 (copy, index: 1)
+    ]]
+    local v211 = v188[key]
+    local v212 = v211 and v211[1]
+    if not v212 then
+        return nil
+    end
+
+    local success, result = pcall(
+        function()
+            --[[
+              line: 631
+              upvalues:
+                v212 (copy, index: 1)
+            ]]
+            return Enum.KeyCode[v212]
+        end
+    )
+    if success then
+        return result
+    end
+
+    return nil
+end
+
+function v4.PadInputs(key)
+    --[[
+      name: PadInputs
+      line: 637
+      upvalues:
+        v188 (copy, index: 1)
+    ]]
+    local v216 = {}
+    local v217 = v188[key] or {}
+
+    for _, v219 in v217 do
+        local success, result = pcall(
+            function()
+                --[[
+                  line: 640
+                  upvalues:
+                    v219 (copy, index: 1)
+                ]]
+                return Enum.KeyCode[v219]
+            end
+        )
+
+        if success and result then
+            table.insert(v216, result)
+        end
+    end
+
+    return v216
+end
+
+function v4.PadIsDefault(key)
+    --[[
+      name: PadIsDefault
+      line: 649
+      upvalues:
+        v161 (copy, index: 1)
+        v188 (copy, index: 2)
+    ]]
+    local v223 = v161[key]
+    if v223 == nil then
+        return false
+    end
+
+    local v224 = v188[key]
+    local buttons = v223.buttons
+
+    if #v224 ~= #buttons then
+        return false
+    end
+
+    for buttonKey, v227 in v224 do
+        if buttons[buttonKey] ~= v227 then
+            return false
+        end
+    end
+
+    return true
+end
+
+function v4.PadAllDefault()
+    --[[
+      name: PadAllDefault
+      line: 653
+      upvalues:
+        v4 (copy, index: 1)
+        v188 (copy, index: 2)
+    ]]
+    for _, padAction in v4.PAD_ACTIONS do
+        local v230
+        local v231 = v188[padAction.id]
+        local buttons = padAction.buttons
+
+        if #v231 == #buttons then
+            v230 = true
+
+            for buttonKey, v234 in v231 do
+                if buttons[buttonKey] ~= v234 then
+                    v230 = false
+                    break
+                end
+            end
+        else
+            v230 = false
+        end
+
+        if not v230 then
+            return false
+        end
+    end
+
+    return true
+end
+
+function v4.PadSettingValue(key)
+    --[[
+      name: PadSettingValue
+      line: 662
+      upvalues:
+        v161 (copy, index: 1)
+        v188 (copy, index: 2)
+        v4 (copy, index: 3)
+    ]]
+    if const v236 = v161[key] then
+        local v237
+        local v238 = v188[key]
+        local buttons = v236.buttons
+
+        if #v238 == #buttons then
+            v237 = true
+
+            for buttonKey, v241 in v238 do
+                if buttons[buttonKey] ~= v241 then
+                    v237 = false
+                    break
+                end
+            end
+        else
+            v237 = false
+        end
+
+        if not v237 then
+            return v4.Encode(v188[key])
+        end
+    end
+
+    return ""
+end
+
+function v4.SettingValueFor(text: string)
+    --[[
+      name: SettingValueFor
+      line: 670
+      upvalues:
+        v4 (copy, index: 1)
+    ]]
+    local substring = string.sub(text, 1, #v4.PAD_PREFIX)
+
+    if substring ~= v4.PAD_PREFIX then
+        return v4.SettingValue((string.sub(text, #v4.PREFIX + 1)))
+    end
+
+    return v4.PadSettingValue((string.sub(text, #v4.PAD_PREFIX + 1)))
+end
+
+local v244 = {}
+
+function v4.PadActionsOf(a245)
+    --[[
+      name: PadActionsOf
+      line: 680
+      upvalues:
+        v244 (copy, index: 1)
+        v189 (copy, index: 2)
+        isPadType (copy, index: 3)
+    ]]
+    if not isPadType(a245.UserInputType) then
+        return v244
+    end
+
+    return v189[a245.KeyCode.Name] or v244
+end
+
+function v4.IsPad(a246, target)
+    --[[
+      name: IsPad
+      line: 686
+      upvalues:
+        v4 (copy, index: 1)
+    ]]
+    return table.find(v4.PadActionsOf(a246), target) ~= nil
+end
+
+function v4.PadUsedIn(a248, contextKey)
+    --[[
+      name: PadUsedIn
+      line: 690
+      upvalues:
+        v4 (copy, index: 1)
+        v161 (copy, index: 2)
+    ]]
+    for _, v251 in v4.PadActionsOf(a248) do
+        if v161[v251].contexts[contextKey] then
+            return true
+        end
+    end
+
+    return false
+end
+
+function v4.PadBlocked()
+    --[[
+      name: PadBlocked
+      line: 699
+      upvalues:
+        v190 (ref, index: 1)
+    ]]
+    return v190
+end
+
+function v4.PadLoad(a252)
+    --[[
+      name: PadLoad
+      line: 705
+      upvalues:
+        v188 (copy, index: 1)
+        v161 (copy, index: 2)
+        v4 (copy, index: 3)
+        padReindex (copy, index: 4)
+    ]]
+    local v253
+
+    if type(a252) ~= "table" then
+        v253 = {}
+    else
+        v253 = a252
+    end
+
+    local v254 = {}
+
+    for v255, v256 in v188 do
+        v254[v255] = v256
+    end
+
+    local v257 = {}
+
+    local function keep(padAction, a260)
+        --[[
+          name: keep
+          line: 712
+          upvalues:
+            v257 (copy, index: 1)
+            v161 (copy, index: 2)
+        ]]
+        local v261 = {}
+
+        for _, v263 in a260 do
+            local v264 = true
+            local v265 = v257[v263] or {}
+
+            for _, v267 in v265 do
+                local v268
+                local v269 = v161[v267]
+                v268 = false
+
+                for contextKey in padAction.contexts do
+                    if v269.contexts[contextKey] then
+                        v268 = true
+                        break
+                    end
+                end
+
+                if v268 then
+                    v264 = false
+                    break
+                end
+            end
+
+            if v264 then
+                v257[v263] = v257[v263] or {}
+                table.insert(v257[v263], padAction.id)
+                table.insert(v261, v263)
+            end
+        end
+
+        return v261
+    end
+
+    local v271 = {}
+
+    for _, padAction in v4.PAD_ACTIONS do
+        if const v274 = v4.PadParse(padAction.id, v253[v4.PAD_PREFIX .. padAction.id]) then
+            v188[padAction.id] = keep(padAction, v274)
+            v271[padAction.id] = true
+        end
+    end
+
+    for _, padAction in v4.PAD_ACTIONS do
+        if not v271[padAction.id] then
+            v188[padAction.id] = keep(padAction, padAction.buttons)
+        end
+    end
+
+    padReindex()
+    local v277 = {}
+
+    for _, padAction in v4.PAD_ACTIONS do
+        local v280
+        local v281 = v254[padAction.id] or {}
+        local v282 = v188[padAction.id]
+
+        if #v281 == #v282 then
+            v280 = true
+
+            for v283, v284 in v281 do
+                if v282[v283] ~= v284 then
+                    v280 = false
+                    break
+                end
+            end
+        else
+            v280 = false
+        end
+
+        if not v280 then
+            table.insert(v277, padAction.id)
+        end
+    end
+
+    if 0 < #v277 then
+        v4.PadChanged:Fire(v277)
+    end
+end
+
+function v4.PadAssign(key, a286: number, target)
     --[[
       name: PadAssign
       line: 761
       upvalues:
-        tbl_upv_69 (copy, index: 1)
-        tbl_upv_70 (copy, index: 2)
-        tbl_upv_73 (copy, index: 3)
+        v161 (copy, index: 1)
+        padAllowed (copy, index: 2)
+        v188 (copy, index: 3)
         padReindex (copy, index: 4)
-        tbl_upv_1 (copy, index: 5)
+        v4 (copy, index: 5)
         padTaken (copy, index: 6)
     ]]
-    local v64 = tbl_upv_69[a1]
-    if not v64 or not tbl_upv_70[a3] then
+    local v288 = v161[key]
+
+    if not v288 or not padAllowed[target] then
         return {}, {}
     end
-    local v65 = tbl_upv_73[a1]
-    local v66 = math.clamp(a2, 1, math.min(v64.max, #v65 + 1))
-    local v67 = v65[v66]
-    if v67 == a3 then
+
+    local targets = v188[key]
+    local clampedValue = math.clamp(a286, 1, (math.min(v288.max, #targets + 1)))
+    local target2 = targets[clampedValue]
+
+    if target2 == target then
         return {}, {}
-    end
-    local v68 = table.find(v65, a3)
-    if v68 then
-        if v67 ~= nil then
-            v65[v68] = v67
-            v65[v66] = a3
-            padReindex()
-            tbl_upv_1.PadChanged:Fire({a1})
-            return {a1}, {}
+    elseif const index2 = table.find(targets, target) then
+        if target2 == nil then
+            return {}, {}
         end
-        return {}, {}
-    else
-        v65[v66] = a3
+
+        targets[index2] = target2
+        targets[clampedValue] = target
         padReindex()
-        local tbl_82 = {a1}
-        local tbl_83 = {}
-        local v69 = nil
-        for _, value_44 in tbl_upv_1.PAD_ACTIONS do
-            if value_44.id == a1 then
-                continue
-            end
-            for key_19 in v64.contexts do
-                if value_44.contexts[key_19] then
-                    v69 = true
-                else
-                    continue
+        v4.PadChanged:Fire({key})
+
+        return {key}, {}
+    end
+
+    targets[clampedValue] = target
+    padReindex()
+    local v293 = {key}
+    local v294 = {}
+
+    for _, padAction in v4.PAD_ACTIONS do
+        if padAction.id ~= key then
+            local v297
+            v297 = false
+
+            for contextKey in v288.contexts do
+                if padAction.contexts[contextKey] then
+                    v297 = true
+                    break
                 end
             end
-            if not (v69) then
-                continue
+
+            local v299, index
+            local v301, v302 = false, false
+
+            if v297 then
+                v299 = v188[padAction.id]
+                index = table.find(v299, target)
+
+                if index then
+                    if target2 then
+                        if table.find(v299, target2) then
+                            v301 = true
+                        elseif padTaken(padAction, target2, nil) ~= nil then
+                            v301 = true
+                        else
+                            v299[index] = target2
+                            v302 = true
+                        end
+                    else
+                        v301 = true
+                    end
+                end
             end
-            v69 = tbl_upv_73[value_44.id]
-            local v70 = table.find(v69, a3)
-            if not (v70) then
-                continue
+
+            if v301 then
+                table.remove(v299, index)
+                v302 = true
             end
-            if not (v67) or table.find(v69, v67) or padTaken(value_44, v67, nil) ~= nil then
-                table.remove(v69, v70)
-            else
-                v69[v70] = v67
+
+            if v302 then
+                padReindex()
+                table.insert(v293, padAction.id)
+                table.insert(v294, {id = padAction.id, now = table.clone(v299)})
             end
-            padReindex()
-            table.insert(tbl_82, value_44.id)
-            table.insert(tbl_83, {id = value_44.id, now = table.clone(v69)})
         end
-        tbl_upv_1.PadChanged:Fire(tbl_82)
-        return tbl_82, tbl_83
     end
+
+    v4.PadChanged:Fire(v293)
+
+    return v293, v294
 end
-function tbl_upv_1.PadClear(a1, a2)
+
+function v4.PadClear(key, index)
     --[[
       name: PadClear
       line: 809
       upvalues:
-        tbl_upv_73 (copy, index: 1)
+        v188 (copy, index: 1)
         padReindex (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        v4 (copy, index: 3)
     ]]
-    local v71 = tbl_upv_73[a1]
-    if not v71 or not v71[a2] then
+    local v305 = v188[key]
+
+    if not v305 or not v305[index] then
         return
     end
-    table.remove(v71, a2)
+
+    table.remove(v305, index)
     padReindex()
-    tbl_upv_1.PadChanged:Fire({a1})
+    v4.PadChanged:Fire({key})
 end
-function tbl_upv_1.PadResetAll()
+
+function v4.PadResetAll()
     --[[
       name: PadResetAll
       line: 820
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_73 (copy, index: 2)
+        v4 (copy, index: 1)
+        v188 (copy, index: 2)
         padResetAll (copy, index: 3)
     ]]
-    local tbl_84 = {}
-    local v72 = nil
-    for _, value_45 in tbl_upv_1.PAD_ACTIONS do
-        local v73 = tbl_upv_73[value_45.id]
-        local buttons_3 = value_45.buttons
-        if #v73 == #buttons_3 then
-            for key_20, value_46 in v73 do
-                if buttons_3[key_20] ~= value_46 then
-                    v72 = false
+    local v306 = {}
+
+    for _, padAction in v4.PAD_ACTIONS do
+        local v309
+        local v310 = v188[padAction.id]
+        local buttons = padAction.buttons
+
+        if #v310 == #buttons then
+            v309 = true
+
+            for buttonKey, v313 in v310 do
+                if buttons[buttonKey] ~= v313 then
+                    v309 = false
+                    break
                 end
             end
         else
-            v72 = false
+            v309 = false
         end
-        if not (v72) then
-            table.insert(tbl_84, value_45.id)
+
+        if not v309 then
+            table.insert(v306, padAction.id)
         end
     end
+
     padResetAll()
-    if #tbl_84 > 0 then
-        tbl_upv_1.PadChanged:Fire(tbl_84)
+
+    if 0 < #v306 then
+        v4.PadChanged:Fire(v306)
     end
-    return tbl_84
+
+    return v306
 end
-tbl_upv_1.FakeInput = Signal_1.new()
-function tbl_upv_1.OnInput(a1, a2)
+
+v4.FakeInput = Signal.new()
+
+function v4.OnInput(a314, callback)
     --[[
       name: OnInput
       line: 840
       upvalues:
-        RunService_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        runService (copy, index: 1)
+        v4 (copy, index: 2)
     ]]
-    local UserInputService_1 = game:GetService("UserInputService")
-    local v74
-    if a1 == "Began" then
-        v74 = UserInputService_1.InputBegan
-    elseif a1 ~= "Ended" then
-        v74 = UserInputService_1.InputChanged
+    local rbxScriptSignal
+    local userInputService = game:GetService("UserInputService")
+
+    if a314 ~= "Began" then
+        rbxScriptSignal = if a314 == "Ended" then userInputService.InputEnded else userInputService.InputChanged
     else
-        v74 = UserInputService_1.InputEnded
+        rbxScriptSignal = userInputService.InputBegan
     end
-    v74:Connect(a2)
-    if not RunService_upv_1:IsStudio() then
-        return
-    end
-    tbl_upv_1.FakeInput:Connect(
-        function(a3, a4, a5)
-            --[[
-              line: 845
-              upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
-            ]]
-            if a3 ~= a1 then
-                return
+
+    rbxScriptSignal:Connect(callback)
+
+    if runService:IsStudio() then
+        v4.FakeInput:Connect(
+            function(a318, a319, a320)
+                --[[
+                  line: 845
+                  upvalues:
+                    a314 (copy, index: 1)
+                    callback (copy, index: 2)
+                ]]
+                if a318 == a314 then
+                    callback(a319, a320 == true)
+                end
             end
-            a2(a4, a5 == true)
-        end
-    )
+        )
+    end
 end
-local tbl_upv_85 = {"Slide", "Jump"}
-local tbl_upv_86 = {}
-tbl_upv_86.MouseButton1 = Enum.KeyCode.MouseLeftButton
-tbl_upv_86.MouseButton2 = Enum.KeyCode.MouseRightButton
-tbl_upv_86.MouseButton3 = Enum.KeyCode.MouseMiddleButton
-local function isPadCode(a1)
+
+local childNames = {"Slide", "Jump"}
+local v322 = {MouseButton1 = Enum.KeyCode.MouseLeftButton, MouseButton2 = Enum.KeyCode.MouseRightButton, MouseButton3 = Enum.KeyCode.MouseMiddleButton}
+
+local function isPadCode(keyCode)
     --[[
       name: isPadCode
       line: 863
     ]]
-    local Name_1 = a1.Name
-    local v75 = true
-    local v76
-    if string.find(Name_1, "^Button") ~= nil then
-        v76 = v75
-    else
-        v76 = true
-        if string.find(Name_1, "^DPad") == nil then
-            v76 = string.find(Name_1, "^Thumbstick") ~= nil
+    local name = keyCode.Name
+    return string.find(name, "^Button") ~= nil
+        or string.find(name, "^DPad") ~= nil
+        or string.find(name, "^Thumbstick") ~= nil
+end
+
+local v326 = {}
+
+local function collectPadBindings(instance: Instance?)
+    --[[
+      name: collectPadBindings
+      line: 873
+      upvalues:
+        childNames (copy, index: 1)
+        v326 (copy, index: 2)
+        isPadCode (copy, index: 3)
+    ]]
+    for _, childName in childNames do
+        if const child2 = instance:FindFirstChild(childName) then
+            if not child2:IsA("InputAction") then
+                continue
+            end
+
+            for _, child in child2:GetChildren() do
+                if child:IsA("InputBinding") then
+                    if v326[child] ~= nil then
+                        continue
+                    end
+
+                    if isPadCode(child.KeyCode) or string.find(child.Name, "^PadLocal") ~= nil then
+                        v326[child] = true
+                    end
+                end
+            end
         end
     end
-    return v76
 end
-local tbl_upv_87 = {}
-local function applyPadBindings(a1)
+
+local function applyPadBindings(instance: Instance?)
     --[[
       name: applyPadBindings
       line: 885
       upvalues:
-        tbl_upv_87 (copy, index: 1)
-        tbl_upv_85 (copy, index: 2)
-        tbl_upv_73 (copy, index: 3)
-        u1 (ref,  index: 4)
+        v326 (copy, index: 1)
+        childNames (copy, index: 2)
+        v188 (copy, index: 3)
+        v190 (ref,  index: 4)
     ]]
-    for key_21 in tbl_upv_87 do
-        if not (key_21.Parent) then
-            tbl_upv_87[key_21] = nil
+    local compare = function(left: Instance, right: Instance)
+        --[[
+          line: 902
+        ]]
+        return left.Name < right.Name
+    end
+
+    for v339 in v326 do
+        if not v339.Parent then
+            v326[v339] = nil
         end
     end
-    local u3 = nil
-    for _, value_47 in tbl_upv_85 do
-        local v77 = a1:FindFirstChild(value_47)
-        if not (v77) or not (v77:IsA("InputAction")) then
-            continue
-        end
-        local tbl_88 = {}
-        for v80, value_48 in v77:GetChildren() do
-            if not (value_48:IsA("InputBinding")) then
+
+    local _
+
+    for _, childName in childNames do
+        if const instance2 = instance:FindFirstChild(childName) then
+            if not instance2:IsA("InputAction") then
                 continue
             end
-            if tbl_upv_87[value_48] then
-                table.insert(tbl_88, value_48)
-            end
-        end
-        table.sort(
-            tbl_88,
-            function(a2, a3)
-                --[[
-                  line: 902
-                ]]
-                return a2.Name < a3.Name
-            end
-        )
-        local v78 = tbl_upv_73[value_47] or {}
-        local u4 = math.max(#tbl_88, #v78)
-        for n_1 = 1, u4 do
-            u4 = tbl_88[n_1]
-            local v79 = v78[n_1]
-            if v79 and not (u4) then
-                u3 = Instance.new("InputBinding")
-                u3.Name = "PadLocal" .. n_1
-                u3.KeyCode = Enum.KeyCode.None
-                tbl_upv_87[u3] = true
-                u3.Parent = v77
-                u4 = u3
-            end
-            if not (u4) then
-                continue
-            end
-            if not (v79) or u1 then
-                u3 = Enum.KeyCode.None
-            else
-                u3 = Enum.KeyCode[v79]
-            end
-            pcall(
-                function()
-                    --[[
-                      line: 919
-                      upvalues:
-                        u4 (ref,  index: 1)
-                        u3 (copy, index: 2)
-                    ]]
-                    u4.KeyCode = u3
+
+            local v344 = {}
+
+            for _, child in instance2:GetChildren() do
+                local child2 = child
+
+                if child2:IsA("InputBinding") and v326[child2] then
+                    table.insert(v344, child2)
                 end
-            )
+            end
+
+            table.sort(v344, compare)
+            local v348 = v188[childName] or {}
+
+            for index = 1, math.max(#v344, #v348) do
+                local instance3 = v344[index]
+                local v351 = v348[index]
+
+                if v351 and not instance3 then
+                    local inputBinding = Instance.new("InputBinding")
+                    inputBinding.Name = "PadLocal" .. index
+                    inputBinding.KeyCode = Enum.KeyCode.None
+                    v326[inputBinding] = true
+                    inputBinding.Parent = instance2
+                    instance3 = inputBinding
+                end
+
+                if instance3 then
+                    local v353 = if v351 and not v190 then Enum.KeyCode[v351] else Enum.KeyCode.None
+                    pcall(
+                        function()
+                            --[[
+                              line: 919
+                              upvalues:
+                                instance3 (ref,  index: 1)
+                                v353 (copy, index: 2)
+                            ]]
+                            instance3.KeyCode = v353
+                        end
+                    )
+                end
+            end
         end
     end
 end
+
 local function tribesInputs()
     --[[
       name: tribesInputs
       line: 926
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    local LocalPlayer_1 = Players_upv_1.LocalPlayer
-    local v80 = LocalPlayer_1 and (LocalPlayer_1:FindFirstChild("TribesInputs"))
-    return v80
+    local localPlayer = players.LocalPlayer
+    return localPlayer and localPlayer:FindFirstChild("TribesInputs")
 end
-local function collectPadBindings(a1)
-    --[[
-      name: collectPadBindings
-      line: 873
-      upvalues:
-        tbl_upv_85 (copy, index: 1)
-        tbl_upv_87 (copy, index: 2)
-    ]]
-    local v81 = nil
-    for _, value_49 in tbl_upv_85 do
-        local v82 = a1:FindFirstChild(value_49)
-        if not (v82) then
-            continue
-        end
-        local v83 = v82:IsA("InputAction")
-        if not (v83) then
-            continue
-        end
-        for v86, value_50 in v82:GetChildren() do
-            local v84 = value_50:IsA("InputBinding")
-            if not (v84) or tbl_upv_87[value_50] ~= nil then
-                continue
-            end
-            local Name_2 = value_50.KeyCode.Name
-            local v85 = true
-            if string.find(Name_2, "^Button") ~= nil then
-                v81 = v85
-            else
-                v81 = true
-                if string.find(Name_2, "^DPad") == nil then
-                    v81 = string.find(Name_2, "^Thumbstick") ~= nil
-                end
-            end
-            if v81 or string.find(value_50.Name, "^PadLocal") ~= nil then
-                tbl_upv_87[value_50] = true
-            end
-        end
-    end
-end
-function tbl_upv_1.SetPadBlocked(a1)
+
+function v4.SetPadBlocked(padBlocked)
     --[[
       name: SetPadBlocked
       line: 931
       upvalues:
-        u1 (ref,  index: 1)
-        Players_upv_1 (copy, index: 2)
+        v190 (ref,  index: 1)
+        players (copy, index: 2)
         collectPadBindings (copy, index: 3)
         applyPadBindings (copy, index: 4)
     ]]
-    u1 = a1
-    local LocalPlayer_2 = Players_upv_1.LocalPlayer
-    local v86 = LocalPlayer_2 and (LocalPlayer_2:FindFirstChild("TribesInputs"))
-    if not v86 then
-        return
+    v190 = padBlocked
+    local instance = players.LocalPlayer
+    instance = instance and instance:FindFirstChild("TribesInputs")
+
+    if instance then
+        collectPadBindings(instance)
+        applyPadBindings(instance)
     end
-    collectPadBindings(v86)
-    applyPadBindings(v86)
 end
+
 local function applyInputActions()
     --[[
       name: applyInputActions
       line: 940
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
         collectPadBindings (copy, index: 2)
         applyPadBindings (copy, index: 3)
-        tbl_upv_85 (copy, index: 4)
-        tbl_upv_87 (copy, index: 5)
-        tbl_upv_37 (copy, index: 6)
-        tbl_upv_86 (copy, index: 7)
+        childNames (copy, index: 4)
+        v326 (copy, index: 5)
+        v52 (copy, index: 6)
+        v322 (copy, index: 7)
+        isPadCode (copy, index: 8)
     ]]
-    local LocalPlayer_3 = Players_upv_1.LocalPlayer
-    local v87 = LocalPlayer_3 and (LocalPlayer_3:FindFirstChild("TribesInputs"))
-    if v87 then
-        collectPadBindings(v87)
-        applyPadBindings(v87)
-        local v88, None_upv_1 = nil, nil
-        for _, value_51 in tbl_upv_85 do
-            local v89 = LocalPlayer_3:FindFirstChild(value_51)
-            if not (v89) or not (v89:IsA("InputAction")) then
+    local compare = function(left: Instance, right: Instance)
+        --[[
+          line: 961
+        ]]
+        return left.Name < right.Name
+    end
+
+    local instance = players.LocalPlayer
+    instance = instance and instance:FindFirstChild("TribesInputs")
+
+    if not instance then
+        return
+    end
+
+    collectPadBindings(instance)
+    applyPadBindings(instance)
+    local _
+
+    for _, childName in childNames do
+        if const instance2 = instance:FindFirstChild(childName) then
+            if not instance2:IsA("InputAction") then
                 continue
             end
-            local tbl_89 = {}
-            for v93, value_52 in v89:GetChildren() do
-                if not (value_52:IsA("InputBinding")) or value_52.Name == "Script" or value_52.Type == Enum.InputBindingType.Scriptable then
-                    continue
-                end
-                local Name_3 = value_52.KeyCode.Name
-                local v90 = true
-                if string.find(Name_3, "^Button") ~= nil then
-                    v88 = v90
-                else
-                    v88 = true
-                    if string.find(Name_3, "^DPad") == nil then
-                        v88 = string.find(Name_3, "^Thumbstick") ~= nil
+
+            local v367 = {}
+
+            for _, child in instance2:GetChildren() do
+                local child2 = child
+
+                if child2:IsA("InputBinding") then
+                    if child2.Name == "Script" then
+                        continue
                     end
-                end
-                if v88 then
-                    continue
-                end
-                if tbl_upv_87[value_52] == nil then
-                    table.insert(tbl_89, value_52)
+                    if child2.Type == Enum.InputBindingType.Scriptable then
+                        continue
+                    end
+
+                    if not isPadCode(child2.KeyCode) and v326[child2] == nil then
+                        table.insert(v367, child2)
+                    end
                 end
             end
-            table.sort(
-                tbl_89,
-                function(a1, a2)
-                    --[[
-                      line: 961
-                    ]]
-                    return a1.Name < a2.Name
+
+            table.sort(v367, compare)
+            local v371 = v52[childName] or {}
+
+            for index = 1, math.max(#v367, #v371) do
+                local instance3 = v367[index]
+                local v374 = v371[index]
+
+                if v374 and not instance3 then
+                    local inputBinding = Instance.new("InputBinding")
+                    inputBinding.Name = "KeyLocal" .. index
+                    inputBinding.Parent = instance2
+                    instance3 = inputBinding
                 end
-            )
-            local v91 = tbl_upv_37[value_51] or {}
-            local u5 = math.max(#tbl_89, #v91)
-            for n_2 = 1, u5 do
-                u5 = tbl_89[n_2]
-                local v92 = v91[n_2]
-                if v92 and not (u5) then
-                    None_upv_1 = Instance.new("InputBinding")
-                    None_upv_1.Name = "KeyLocal" .. n_2
-                    None_upv_1.Parent = v89
-                    u5 = None_upv_1
-                end
-                if not (u5) then
-                    continue
-                end
-                if v92 then
-                    None_upv_1 = tbl_upv_86[v92] or (Enum.KeyCode[v92])
-                else
-                    None_upv_1 = Enum.KeyCode.None
-                end
-                pcall(
-                    function()
-                        --[[
-                          line: 976
-                          upvalues:
-                            u5 (ref,  index: 1)
-                            None_upv_1 (copy, index: 2)
-                        ]]
-                        u5.KeyCode = None_upv_1
+
+                if instance3 then
+                    local v376
+
+                    if v374 then
+                        v376 = v322[v374] or Enum.KeyCode[v374]
+                    else
+                        v376 = Enum.KeyCode.None
                     end
-                )
+
+                    pcall(
+                        function()
+                            --[[
+                              line: 976
+                              upvalues:
+                                instance3 (ref,  index: 1)
+                                v376 (copy, index: 2)
+                            ]]
+                            instance3.KeyCode = v376
+                        end
+                    )
+                end
             end
         end
     end
 end
-tbl_upv_1.ApplyInputActions = applyInputActions
-if RunService_upv_1:IsClient() then
-    local function onIds(a1)
+
+v4.ApplyInputActions = applyInputActions
+
+if runService:IsClient() then
+    local function onIds(a378)
         --[[
           name: onIds
           line: 986
-          upvalues:
-            applyInputActions (copy, index: 1)
         ]]
-        for _, value_53 in a1 do
-            if value_53 == "Slide" or value_53 == "Jump" then
-                applyInputActions()
-                return
+        for _, v380 in a378 do
+            if v380 == "Slide" then
+                break
+            end
+            if v380 == "Jump" then
+                break
             end
         end
     end
-    tbl_upv_1.Changed:Connect(onIds)
-    tbl_upv_1.PadChanged:Connect(onIds)
+
+    v4.Changed:Connect(onIds)
+    v4.PadChanged:Connect(onIds)
+
     task.spawn(
         function()
             --[[
               line: 996
               upvalues:
-                Players_upv_1 (copy, index: 1)
-                tbl_upv_85 (copy, index: 2)
+                players (copy, index: 1)
+                childNames (copy, index: 2)
                 applyInputActions (copy, index: 3)
             ]]
-            local LocalPlayer_4 = Players_upv_1.LocalPlayer
-            local v93 = LocalPlayer_4 and (LocalPlayer_4:WaitForChild("TribesInputs", 120))
-            if not v93 then
+            local instance = players.LocalPlayer
+            instance = instance and instance:WaitForChild("TribesInputs", 120)
+
+            if not instance then
                 return
             end
-            for _, value_54 in tbl_upv_85 do
-                LocalPlayer_4:WaitForChild(value_54, 10)
+
+            for _, childName in childNames do
+                instance:WaitForChild(childName, 10)
             end
+
             applyInputActions()
-            LocalPlayer_4.DescendantAdded:Connect(
-                function(a1)
+
+            instance.DescendantAdded:Connect(
+                function(descendant: Instance)
                     --[[
                       line: 1007
                       upvalues:
                         applyInputActions (copy, index: 1)
                     ]]
-                    if not a1:IsA("InputBinding") or (string.find(a1.Name, "^KeyLocal")) or (string.find(a1.Name, "^PadLocal")) then
-                        return
+                    if descendant:IsA("InputBinding")
+                        and not string.find(descendant.Name, "^KeyLocal")
+                        and not string.find(descendant.Name, "^PadLocal")
+                    then
+                        task.defer(applyInputActions)
                     end
-                    task.defer(applyInputActions)
                 end
             )
         end
     )
 end
-return tbl_upv_1
+
+return v4

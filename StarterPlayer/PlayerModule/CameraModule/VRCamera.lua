@@ -1,402 +1,497 @@
-local Players_upv_1 = game:GetService("Players")
-local VRService_upv_1 = game:GetService("VRService")
-local _ = require(script.Parent:WaitForChild("CameraInput"))
-local v2 = require(script.Parent:WaitForChild("CameraUtils"))
-local VRCameraTeleportDetector_upv_1 = require(script.Parent:WaitForChild("VRCameraTeleportDetector"))
-local v1 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil")
-local u1 = v1.getUserFlag("UserVRRecenterOnExternalTeleport")
-local u2 = v1.getUserFlag("UserVRSkipOcclusionInFirstPerson")
-local u3 = v1.getUserFlag("UserFixVRImmersionAutoRotate")
-local VRBaseCamera_upv_1 = require(script.Parent:WaitForChild("VRBaseCamera"))
-local u4 = setmetatable({}, VRBaseCamera_upv_1)
-u4.__index = u4
-function u4.new()
+local players = game:GetService("Players")
+local vrService = game:GetService("VRService")
+require(script.Parent:WaitForChild("CameraInput"))
+require(script.Parent:WaitForChild("CameraUtils"))
+local VRCameraTeleportDetector = require(script.Parent:WaitForChild("VRCameraTeleportDetector"))
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v5 = CommonUtils.get("FlagUtil")
+local userFlag = v5.getUserFlag("UserVRRecenterOnExternalTeleport")
+local userFlag2 = v5.getUserFlag("UserVRSkipOcclusionInFirstPerson")
+local userFlag3 = v5.getUserFlag("UserFixVRImmersionAutoRotate")
+local VRBaseCamera = require(script.Parent:WaitForChild("VRBaseCamera"))
+local v10 = setmetatable({}, VRBaseCamera)
+v10.__index = v10
+
+function v10.new()
     --[[
       name: new
-      line: 34
+      line: 36
       upvalues:
-        VRBaseCamera_upv_1 (copy, index: 1)
-        u4 (copy, index: 2)
+        VRBaseCamera (copy, index: 1)
+        v10 (copy, index: 2)
     ]]
-    local v2 = setmetatable(VRBaseCamera_upv_1.new(), u4)
-    v2.lastUpdate = tick()
-    v2.focusOffset = CFrame.new()
-    v2:Reset()
-    v2.controlModule = require(script.Parent.Parent:WaitForChild("ControlModule"))
-    v2.savedAutoRotate = true
-    v2.autoRotateOverridden = false
-    return v2
+    local v11 = setmetatable(VRBaseCamera.new(), v10)
+    v11.lastUpdate = tick()
+    v11.focusOffset = CFrame.new()
+    v11:Reset()
+    v11.controlModule = require(script.Parent.Parent:WaitForChild("ControlModule"))
+    v11.savedAutoRotate = true
+    v11.autoRotateOverridden = false
+
+    return v11
 end
-function u4.Reset(a1)
+
+function v10.Reset(self)
     --[[
       name: Reset
-      line: 48
+      line: 50
       upvalues:
-        VRBaseCamera_upv_1 (copy, index: 1)
+        VRBaseCamera (copy, index: 1)
     ]]
-    a1.needsReset = true
-    a1.needsBlackout = true
-    a1.motionDetTime = 0
-    a1.blackOutTimer = 0
-    a1.lastCameraResetPosition = nil
-    VRBaseCamera_upv_1.Reset(a1)
+    self.needsReset = true
+    self.needsBlackout = true
+    self.motionDetTime = 0
+    self.blackOutTimer = 0
+    self.lastCameraResetPosition = nil
+    VRBaseCamera.Reset(self)
 end
-function u4.Update(a1, a2)
+
+function v10.Update(a13, a14: number)
     --[[
       name: Update
-      line: 57
+      line: 59
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        u2 (copy, index: 2)
-        VRService_upv_1 (copy, index: 3)
+        players (copy, index: 1)
+        userFlag2 (copy, index: 2)
+        vrService (copy, index: 3)
     ]]
-    local CurrentCamera_1 = workspace.CurrentCamera
-    local v3 = CurrentCamera_1.CFrame
-    local v4 = CurrentCamera_1.Focus
-    local LocalPlayer_1 = Players_upv_1.LocalPlayer
-    if a1.lastUpdate == nil or a2 > 1 then
-        a1.lastCameraTransform = nil
+    local camera = workspace.CurrentCamera
+    local v16 = camera.CFrame
+    local v17 = camera.Focus
+    local localPlayer = players.LocalPlayer
+
+    if a13.lastUpdate == nil or 1 < a14 then
+        a13.lastCameraTransform = nil
     end
-    a1:UpdateFadeFromBlack(a2)
-    local lastSubjectPosition_1 = a1.lastSubjectPosition
-    local v5 = a1:GetSubjectPosition()
-    if a1.needsBlackout then
-        a1:StartFadeFromBlack()
-        a1.blackOutTimer = a1.blackOutTimer + math.clamp(a2, 1e-04, 0.1)
-        if a1.blackOutTimer > 0.1 and game:IsLoaded() then
-            a1.needsBlackout = false
-            a1.needsReset = true
+
+    a13:UpdateFadeFromBlack(a14)
+    local lastSubjectPosition = a13.lastSubjectPosition
+    local subjectPosition = a13:GetSubjectPosition()
+
+    if a13.needsBlackout then
+        a13:StartFadeFromBlack()
+        local clampedValue = math.clamp(a14, 1e-04, 0.1)
+        a13.blackOutTimer += clampedValue
+
+        if 0.1 < a13.blackOutTimer and game:IsLoaded() then
+            a13.needsBlackout = false
+            a13.needsReset = true
         end
     end
-    if v5 and LocalPlayer_1 and CurrentCamera_1 then
-        v4 = a1:GetVRFocus(v5, a2)
-        if u2 then
-            a1.skipOcclusion = a1:IsInFirstPerson() and LocalPlayer_1.DevCameraOcclusionMode ~= Enum.DevCameraOcclusionMode.Invisicam
+
+    if subjectPosition and localPlayer and camera then
+        local lastCameraFocus
+        local vrFocus = a13:GetVRFocus(subjectPosition, a14)
+
+        if userFlag2 then
+            local skipOcclusion = a13:IsInFirstPerson()
+                and localPlayer.DevCameraOcclusionMode ~= Enum.DevCameraOcclusionMode.Invisicam
+            a13.skipOcclusion = skipOcclusion
         end
-        if a1:IsInFirstPerson() then
-            if VRService_upv_1.AvatarGestures then
-                local v7, v8 = a1:UpdateImmersionCamera(a2, v3, v4, lastSubjectPosition_1, v5)
-                v3, v4 = v7, v8
+
+        if a13:IsInFirstPerson() then
+            if vrService.AvatarGestures then
+                v16, lastCameraFocus = a13:UpdateImmersionCamera(a14, v16, vrFocus, lastSubjectPosition, subjectPosition)
             else
-                local v9, v10 = a1:UpdateFirstPersonTransform(a2, v3, v4, lastSubjectPosition_1, v5)
-                v3, v4 = v9, v10
+                v16, lastCameraFocus = a13:UpdateFirstPersonTransform(a14, v16, vrFocus, lastSubjectPosition, subjectPosition)
             end
-        elseif VRService_upv_1.ThirdPersonFollowCamEnabled then
-            local v11, v12 = a1:UpdateThirdPersonFollowTransform(a2, v3, v4, lastSubjectPosition_1, v5)
-            v3, v4 = v11, v12
+        elseif vrService.ThirdPersonFollowCamEnabled then
+            v16, lastCameraFocus = a13:UpdateThirdPersonFollowTransform(a14, v16, vrFocus, lastSubjectPosition, subjectPosition)
         else
-            local v13, v14 = a1:UpdateThirdPersonComfortTransform(a2, v3, v4, lastSubjectPosition_1, v5)
-            v3, v4 = v13, v14
+            v16, lastCameraFocus = a13:UpdateThirdPersonComfortTransform(a14, v16, vrFocus, lastSubjectPosition, subjectPosition)
         end
-        a1.lastCameraTransform = v3
-        a1.lastCameraFocus = v4
+
+        a13.lastCameraTransform = v16
+        a13.lastCameraFocus = lastCameraFocus
+        v17 = lastCameraFocus
     end
-    a1.lastUpdate = tick()
-    return v3, v4
+
+    a13.lastUpdate = tick()
+
+    return v16, v17
 end
-function u4.GetAvatarFeetWorldYValue(a1)
+
+function v10.GetAvatarFeetWorldYValue(a25)
     --[[
       name: GetAvatarFeetWorldYValue
-      line: 125
+      line: 142
     ]]
-    local CameraSubject_1 = workspace.CurrentCamera.CameraSubject
-    if not CameraSubject_1 or not CameraSubject_1:IsA("Humanoid") or not CameraSubject_1.RootPart then
+    local camera = workspace.CurrentCamera
+    local cameraSubject = camera.CameraSubject
+    if not cameraSubject then
         return nil
     end
-    local RootPart_1 = CameraSubject_1.RootPart
-    return (RootPart_1.Position.Y - (RootPart_1.Size.Y / 2)) - CameraSubject_1.HipHeight
+    if not cameraSubject:IsA("Humanoid") or not cameraSubject.RootPart then
+        return nil
+    end
+
+    local rootPart = cameraSubject.RootPart
+
+    return rootPart.Position.Y - (rootPart.Size.Y / 2) - cameraSubject.HipHeight
 end
-function u4.UpdateFirstPersonTransform(a1, a2, a3, a4, a5, a6)
+
+function v10.UpdateFirstPersonTransform(a29, a30, a31, a32, a33, a34)
     --[[
       name: UpdateFirstPersonTransform
-      line: 140
+      line: 157
     ]]
-    if a1.needsReset then
-        a1:StartFadeFromBlack()
-        a1.needsReset = false
+    if a29.needsReset then
+        a29:StartFadeFromBlack()
+        a29.needsReset = false
     end
-    local Position_1 = a4.Position
-    local v15 = a1:GetCameraLookVector()
-    return CFrame.new(Position_1 - (0.5 * a1:CalculateNewLookVectorFromArg(Vector3.new(v15.X, 0, v15.Z).Unit, Vector2.new(a1:getRotation(a2), 0))), Position_1), a4
+
+    local position = a32.Position
+    local cameraLookVector = a29:GetCameraLookVector()
+    local unit = Vector3.new(cameraLookVector.X, 0, cameraLookVector.Z).Unit
+    local x = a29:getRotation(a30)
+    local v39 = a29:CalculateNewLookVectorFromArg(unit, Vector2.new(x, 0))
+
+    return CFrame.new(position - (0.5 * v39), position), a32
 end
-function u4.UpdateImmersionCamera(a1, a2, a3, a4, a5, a6)
+
+function v10.UpdateImmersionCamera(a40, a41, a42, a43, a44, a45)
     --[[
       name: UpdateImmersionCamera
-      line: 160
+      line: 177
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        u1 (copy, index: 2)
-        u3 (copy, index: 3)
-        VRService_upv_1 (copy, index: 4)
-        VRCameraTeleportDetector_upv_1 (copy, index: 5)
+        players (copy, index: 1)
+        userFlag (copy, index: 2)
+        userFlag3 (copy, index: 3)
+        vrService (copy, index: 4)
+        VRCameraTeleportDetector (copy, index: 5)
     ]]
-    local v16 = a1:GetSubjectCFrame()
-    local CurrentCamera_2 = workspace.CurrentCamera
-    local Character_1 = Players_upv_1.LocalPlayer.Character
-    local v17 = a1:GetHumanoid()
-    if not v17 then
-        return CurrentCamera_2.CFrame, CurrentCamera_2.Focus
+    local v46
+    local subjectCFrame = a40:GetSubjectCFrame()
+    local camera = workspace.CurrentCamera
+    local character = players.LocalPlayer.Character
+    local humanoid = a40:GetHumanoid()
+    if not humanoid then
+        return camera.CFrame, camera.Focus
     end
-    local HumanoidRootPart_1 = Character_1:FindFirstChild("HumanoidRootPart")
-    if not HumanoidRootPart_1 then
-        return CurrentCamera_2.CFrame, CurrentCamera_2.Focus
+
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    if not humanoidRootPart then
+        return camera.CFrame, camera.Focus
     end
-    local v18 = (not u1) or (((not a5) and 0) or (Vector3.new(a6.X - a5.X, 0, a6.Z - a5.Z).Magnitude))
-    a1.characterOrientation = HumanoidRootPart_1:FindFirstChild("CharacterAlignOrientation")
-    local v19 = nil
-    if not (a1.characterOrientation) then
-        v19 = HumanoidRootPart_1:FindFirstChild("RootAttachment")
-        if not v19 then
+
+    local v52 = nil
+
+    if userFlag then
+        v52 = not a44 and 0 or Vector3.new(a45.X - a44.X, 0, a45.Z - a44.Z).Magnitude
+    end
+
+    a40.characterOrientation = humanoidRootPart:FindFirstChild("CharacterAlignOrientation")
+
+    if not a40.characterOrientation then
+        local rootAttachment = humanoidRootPart:FindFirstChild("RootAttachment")
+        if not rootAttachment then
             return
         end
-        a1.characterOrientation = Instance.new("AlignOrientation")
-        a1.characterOrientation.Name = "CharacterAlignOrientation"
-        a1.characterOrientation.Mode = Enum.OrientationAlignmentMode.OneAttachment
-        a1.characterOrientation.Attachment0 = v19
-        a1.characterOrientation.RigidityEnabled = true
-        a1.characterOrientation.Parent = HumanoidRootPart_1
+
+        a40.characterOrientation = Instance.new("AlignOrientation")
+        a40.characterOrientation.Name = "CharacterAlignOrientation"
+        a40.characterOrientation.Mode = Enum.OrientationAlignmentMode.OneAttachment
+        a40.characterOrientation.Attachment0 = rootAttachment
+        a40.characterOrientation.RigidityEnabled = true
+        a40.characterOrientation.Parent = humanoidRootPart
     end
-    if a1.characterOrientation.Enabled == false then
-        a1.characterOrientation.Enabled = true
+
+    if a40.characterOrientation.Enabled == false then
+        a40.characterOrientation.Enabled = true
     end
-    if a1.needsReset then
-        a1.needsReset = false
-        if u3 then
-            a1:updateImmersionAutoRotate()
+
+    if a40.needsReset then
+        a40.needsReset = false
+
+        if userFlag3 then
+            a40:updateImmersionAutoRotate()
         else
-            a1.savedAutoRotate = v17.AutoRotate
-            v17.AutoRotate = false
+            a40.savedAutoRotate = humanoid.AutoRotate
+            humanoid.AutoRotate = false
         end
-        if u1 then
-            VRService_upv_1:RecenterUserHeadCFrame()
-            a1.lastTeleportRecenter = tick()
+
+        if userFlag then
+            vrService:RecenterUserHeadCFrame()
+            a40.lastTeleportRecenter = tick()
         end
-        a1:StartFadeFromBlack()
-        a3 = v16
+
+        a40:StartFadeFromBlack()
+        v46 = subjectCFrame
+    elseif humanoid.Sit then
+        v46 = subjectCFrame
     else
-        local v20 = nil
-        if v17.Sit then
-            a3 = v16
+        local estimatedVrTorsoFrame = a40.controlModule:GetEstimatedVRTorsoFrame()
+        a40.characterOrientation.CFrame = camera.CFrame * estimatedVrTorsoFrame
+
+        if 0 < a40.controlModule.inputMoveVector.Magnitude then
+            a40.motionDetTime = 0.1
+        end
+
+        if 0 < a40.controlModule.inputMoveVector.Magnitude or 0 < a40.motionDetTime then
+            a40.motionDetTime -= a41
+            local userCFrame = vrService:GetUserCFrame(Enum.UserCFrame.Head)
+            local v56 = userCFrame.Rotation + userCFrame.Position * camera.HeadScale
+            local humanoidRootPart2 = character.HumanoidRootPart
+            local y = -0.7 * humanoidRootPart2.Size.Y / 2
+            local v59 = camera.CFrame * v56 * CFrame.new(0, y, 0)
+            local lookVector = humanoidRootPart2.CFrame.LookVector
+            local v61 = a45 - (v59 - ((Vector3.new(lookVector.X, 0, lookVector.Z).Unit * humanoidRootPart2.Size.Y) * 0.125)).Position + camera.CFrame.Position
+            local vector3 = Vector3.new(v61.X, a45.Y, v61.Z)
+            v46 = camera.CFrame.Rotation + vector3
+        elseif userFlag
+            and VRCameraTeleportDetector.shouldRecenter(a40.prevSubjStep, v52, a40.lastTeleportRecenter, tick())
+        then
+            local userCFrame = vrService:GetUserCFrame(Enum.UserCFrame.Head)
+            local v64 = userCFrame.Rotation + userCFrame.Position * camera.HeadScale
+            local humanoidRootPart3 = character.HumanoidRootPart
+            local y = -0.7 * humanoidRootPart3.Size.Y / 2
+            local v67 = camera.CFrame * v64 * CFrame.new(0, y, 0)
+            local lookVector = humanoidRootPart3.CFrame.LookVector
+            local v69 = a45 - (v67 - ((Vector3.new(lookVector.X, 0, lookVector.Z).Unit * humanoidRootPart3.Size.Y) * 0.125)).Position + camera.CFrame.Position
+            local vector3 = Vector3.new(v69.X, a45.Y, v69.Z)
+            v46 = camera.CFrame.Rotation + vector3
+            vrService:RecenterUserHeadCFrame()
+            a40:StartFadeFromBlack()
+            a40.lastTeleportRecenter = tick()
         else
-            a1.characterOrientation.CFrame = CurrentCamera_2.CFrame * a1.controlModule:GetEstimatedVRTorsoFrame()
-            if a1.controlModule.inputMoveVector.Magnitude > 0 then
-                a1.motionDetTime = 0.1
-            end
-            if a1.controlModule.inputMoveVector.Magnitude > 0 or a1.motionDetTime > 0 then
-                a1.motionDetTime = a1.motionDetTime - a2
-                local v21 = VRService_upv_1:GetUserCFrame(Enum.UserCFrame.Head)
-                local HumanoidRootPart_2 = Character_1.HumanoidRootPart
-                local v22 = CurrentCamera_2.CFrame * (v21.Rotation + (v21.Position * CurrentCamera_2.HeadScale)) * CFrame.new(0, (-0.7 * HumanoidRootPart_2.Size.Y) / 2, 0)
-                local LookVector_1 = HumanoidRootPart_2.CFrame.LookVector
-                local v23 = a6 - (v22 - ((Vector3.new(LookVector_1.X, 0, LookVector_1.Z).Unit * HumanoidRootPart_2.Size.Y) * 0.125)).Position + CurrentCamera_2.CFrame.Position
-                a3 = CurrentCamera_2.CFrame.Rotation + Vector3.new(v23.X, a6.Y, v23.Z)
-            elseif (u1) and (VRCameraTeleportDetector_upv_1.shouldRecenter(a1.prevSubjStep, v18, a1.lastTeleportRecenter, tick())) then
-                local v24 = VRService_upv_1:GetUserCFrame(Enum.UserCFrame.Head)
-                local HumanoidRootPart_3 = Character_1.HumanoidRootPart
-                local v25 = CurrentCamera_2.CFrame * (v24.Rotation + (v24.Position * CurrentCamera_2.HeadScale)) * CFrame.new(0, (-0.7 * HumanoidRootPart_3.Size.Y) / 2, 0)
-                local LookVector_2 = HumanoidRootPart_3.CFrame.LookVector
-                local v26 = a6 - (v25 - ((Vector3.new(LookVector_2.X, 0, LookVector_2.Z).Unit * HumanoidRootPart_3.Size.Y) * 0.125)).Position + CurrentCamera_2.CFrame.Position
-                local v27 = CurrentCamera_2.CFrame.Rotation + Vector3.new(v26.X, a6.Y, v26.Z)
-                VRService_upv_1:RecenterUserHeadCFrame()
-                a1:StartFadeFromBlack()
-                a1.lastTeleportRecenter = tick()
-                a3 = v27
-            else
-                a3 = CurrentCamera_2.CFrame.Rotation + Vector3.new(CurrentCamera_2.CFrame.Position.X, a6.Y, CurrentCamera_2.CFrame.Position.Z)
-            end
-            v20 = a1:getRotation(a2)
-            if math.abs(v20) > 0 then
-                local v28 = VRService_upv_1:GetUserCFrame(Enum.UserCFrame.Head)
-                local v29 = v28.Rotation + v28.Position * CurrentCamera_2.HeadScale
-                local v30 = a3 * v29
-                a3 = CFrame.new(v30.Position) * CFrame.Angles(0, -math.rad(v20 * 90), 0) * v30.Rotation * v29:Inverse()
-            end
+            v46 = camera.CFrame.Rotation + Vector3.new(camera.CFrame.Position.X, a45.Y, camera.CFrame.Position.Z)
+        end
+
+        local rotation = a40:getRotation(a41)
+
+        if 0 < math.abs(rotation) then
+            local userCFrame = vrService:GetUserCFrame(Enum.UserCFrame.Head)
+            local v73 = userCFrame.Rotation + userCFrame.Position * camera.HeadScale
+            local v74 = v46 * v73
+            v46 = (CFrame.new(v74.Position) * CFrame.Angles(0, -math.rad(rotation * 90), 0)) * v74.Rotation * v73:Inverse()
         end
     end
-    if u1 then
-        a1.prevSubjStep = v18
+
+    if userFlag then
+        a40.prevSubjStep = v52
     end
-    return a3, a3 * CFrame.new(0, 0, -0.5)
+
+    return v46, v46 * CFrame.new(0, 0, -0.5)
 end
-function u4.UpdateThirdPersonComfortTransform(a1, a2, a3, a4, a5, a6)
+
+function v10.UpdateThirdPersonComfortTransform(a75, a76, a77, a78, a79, lastCameraResetPosition)
     --[[
       name: UpdateThirdPersonComfortTransform
-      line: 312
+      line: 339
       upvalues:
-        VRService_upv_1 (copy, index: 1)
+        vrService (copy, index: 1)
     ]]
-    local v31 = a1:GetCameraToSubjectDistance()
-    local v32 = ((v31 < 0.5) and 0.5) or v31
-    if a5 ~= nil then
-        local v33, v34 = nil, nil
-        if a1.lastCameraFocus ~= nil then
-            local v35 = a1.controlModule.inputMoveVector
-            local v36 = true
-            if not ((a5 - a6).magnitude > 0.01) then
-                v36 = v35.magnitude > 0.01
-            end
-            if v36 then
-                a1.motionDetTime = 0.1
-            end
-            a1.motionDetTime = a1.motionDetTime - a2
-            if (((a1.motionDetTime > 0) and true) or v36) and not (a1.needsReset) then
-                a4 = a1.lastCameraFocus
-                a1.VRCameraFocusFrozen = true
-                return a3, a4
-            end
-            local v37 = true
-            if a1.lastCameraResetPosition == nil then
-                v35 = v37
-            else
-                v35 = (a6 - a1.lastCameraResetPosition).Magnitude > 1
-            end
-            v33 = a1:getRotation(a2)
-            if math.abs(v33) > 0 then
-                local v38 = a4:ToObjectSpace(a3)
-                a3 = a4 * CFrame.Angles(0, -v33, 0) * v38
-            end
-            if a1.VRCameraFocusFrozen and v35 or a1.needsReset then
-                VRService_upv_1:RecenterUserHeadCFrame()
-                a1.VRCameraFocusFrozen = false
-                a1.needsReset = false
-                a1.lastCameraResetPosition = a6
-                a1:ResetZoom()
-                a1:StartFadeFromBlack()
-                v34 = a1:GetHumanoid()
-                local v39 = v34.Torso and v34.Torso.CFrame.lookVector or Vector3.new(1, 0, 0)
-                local v40 = a4.Position - Vector3.new(v39.X, 0, v39.Z) * v32
-                a3 = CFrame.new(v40, Vector3.new(a4.Position.X, v40.Y, a4.Position.Z))
-            end
+    local cameraToSubjectDistance = a75:GetCameraToSubjectDistance()
+
+    if cameraToSubjectDistance < 0.5 then
+        cameraToSubjectDistance = 0.5
+    end
+
+    if a79 ~= nil and a75.lastCameraFocus ~= nil then
+        local v82 = a79 - lastCameraResetPosition
+        local inputMoveVector = a75.controlModule.inputMoveVector
+        local v84 = 0.01 < v82.magnitude or 0.01 < inputMoveVector.magnitude
+        if v84 then
+            a75.motionDetTime = 0.1
+        end
+
+        a75.motionDetTime -= a76
+
+        if 0 < a75.motionDetTime then
+            v84 = true
+        end
+
+        if v84 and not a75.needsReset then
+            local lastCameraFocus = a75.lastCameraFocus
+            a75.VRCameraFocusFrozen = true
+
+            return a77, lastCameraFocus
+        end
+
+        local v86 = a75.lastCameraResetPosition == nil
+            or 1 < (lastCameraResetPosition - a75.lastCameraResetPosition).Magnitude
+        local rotation = a75:getRotation(a76)
+
+        if 0 < math.abs(rotation) then
+            local v88 = a78:ToObjectSpace(a77)
+            a77 = a78 * CFrame.Angles(0, -rotation, 0) * v88
+        end
+
+        if a75.VRCameraFocusFrozen and v86 or a75.needsReset then
+            vrService:RecenterUserHeadCFrame()
+            a75.VRCameraFocusFrozen = false
+            a75.needsReset = false
+            a75.lastCameraResetPosition = lastCameraResetPosition
+            a75:ResetZoom()
+            a75:StartFadeFromBlack()
+            local humanoid = a75:GetHumanoid()
+            local v90 = humanoid.Torso and humanoid.Torso.CFrame.lookVector or Vector3.new(1, 0, 0)
+            local vector3 = Vector3.new(v90.X, 0, v90.Z)
+            local v92 = a78.Position - vector3 * cameraToSubjectDistance
+            local vector32 = Vector3.new(a78.Position.X, v92.Y, a78.Position.Z)
+            a77 = CFrame.new(v92, vector32)
         end
     end
-    return a3, a4
+
+    return a77, a78
 end
-function u4.UpdateThirdPersonFollowTransform(a1, a2, a3, a4, a5, a6)
+
+function v10.UpdateThirdPersonFollowTransform(a94, a95, a96, a97, a98, a99)
     --[[
       name: UpdateThirdPersonFollowTransform
-      line: 378
+      line: 412
       upvalues:
-        VRService_upv_1 (copy, index: 1)
+        vrService (copy, index: 1)
     ]]
-    local CurrentCamera_3 = workspace.CurrentCamera
-    local v41 = a1:GetCameraToSubjectDistance()
-    local v42 = a1:GetVRFocus(a6, a2)
-    if a1.needsReset then
-        a1.needsReset = false
-        VRService_upv_1:RecenterUserHeadCFrame()
-        a1:ResetZoom()
-        a1:StartFadeFromBlack()
+    local v100, v101, v102
+    local v103 = false
+    local camera = workspace.CurrentCamera
+    local z = a94:GetCameraToSubjectDistance()
+    local vrFocus = a94:GetVRFocus(a99, a95)
+
+    if a94.needsReset then
+        a94.needsReset = false
+        vrService:RecenterUserHeadCFrame()
+        a94:ResetZoom()
+        a94:StartFadeFromBlack()
     end
-    local v43, v44 = nil, nil
-    if a1.recentered then
-        v43 = a1:GetSubjectCFrame()
-        if not v43 then
-            return CurrentCamera_3.CFrame, CurrentCamera_3.Focus
+
+    if a94.recentered then
+        local subjectCFrame = a94:GetSubjectCFrame()
+        if not subjectCFrame then
+            return camera.CFrame, camera.Focus
         end
-        local v45 = v42 * v43.Rotation * CFrame.new(0, 0, v41)
-        a1.focusOffset = v42:ToObjectSpace(v45)
-        a1.recentered = false
-        return v45, v42
+
+        local v108 = vrFocus * subjectCFrame.Rotation * CFrame.new(0, 0, z)
+        a94.focusOffset = vrFocus:ToObjectSpace(v108)
+        a94.recentered = false
+
+        return v108, vrFocus
+    end
+
+    local startValue = vrFocus:ToWorldSpace(a94.focusOffset)
+    local v110 = a98 - a99
+    local controlModule = a94.controlModule
+    local inputMoveVector = controlModule.inputMoveVector
+
+    if 0.01 < v110.magnitude then
+        v103 = true
+    elseif not (0 < inputMoveVector.magnitude) then
+        a96 = startValue
     else
-        local v46 = v42:ToWorldSpace(a1.focusOffset)
-        local controlModule_1 = a1.controlModule
-        local inputMoveVector_1 = controlModule_1.inputMoveVector
-        if (a5 - a6).magnitude > 0.01 or inputMoveVector_1.magnitude > 0 then
-            local v47 = controlModule_1:GetEstimatedVRTorsoFrame()
-            local v48 = CurrentCamera_3.CFrame * (v47.Rotation + (v47.Position * CurrentCamera_3.HeadScale))
-            local LookVector_3 = v48.LookVector
-            a3 = v46:Lerp(CFrame.new((CurrentCamera_3.CFrame.Position + (v42.Position - Vector3.new(LookVector_3.X, 0, LookVector_3.Z).Unit * v41)) - v48.Position) * v46.Rotation, 0.01)
-        else
-            a3 = v46
-        end
-        v44 = a1:getRotation(a2)
-        if math.abs(v44) > 0 then
-            local v49 = v42:ToObjectSpace(a3)
-            a3 = v42 * CFrame.Angles(0, -v44, 0) * v49
-        end
-        a1.focusOffset = v42:ToObjectSpace(a3)
-        return a3, a3 * CFrame.new(0, 0, -v41)
+        v103 = true
     end
+
+    if v103 then
+        local estimatedVrTorsoFrame = controlModule:GetEstimatedVRTorsoFrame()
+        local v114 = estimatedVrTorsoFrame.Rotation + estimatedVrTorsoFrame.Position * camera.HeadScale
+        v100 = camera.CFrame * v114
+        local lookVector = v100.LookVector
+        local v116 = Vector3.new(lookVector.X, 0, lookVector.Z).Unit * z
+        v101 = vrFocus.Position - v116
+        a96 = startValue:Lerp(CFrame.new(camera.CFrame.Position + v101 - v100.Position) * startValue.Rotation, 0.01)
+    end
+
+    local rotation = a94:getRotation(a95)
+
+    if 0 < math.abs(rotation) then
+        v102 = vrFocus:ToObjectSpace(a96)
+        a96 = vrFocus * CFrame.Angles(0, -rotation, 0) * v102
+    end
+
+    a94.focusOffset = vrFocus:ToObjectSpace(a96)
+
+    return a96, a96 * CFrame.new(0, 0, -z)
 end
-function u4.updateImmersionAutoRotate(a1)
+
+function v10.updateImmersionAutoRotate(a118)
     --[[
       name: updateImmersionAutoRotate
-      line: 452
-      upvalues:
-        VRService_upv_1 (copy, index: 1)
-    ]]
-    local v50 = a1:GetHumanoid()
-    if not v50 then
-        return
-    end
-    if a1:IsInFirstPerson() and VRService_upv_1.AvatarGestures then
-        if not (a1.autoRotateOverridden) then
-            a1.savedAutoRotate = v50.AutoRotate
-            a1.autoRotateOverridden = true
-        end
-        v50.AutoRotate = false
-        return
-    end
-    if a1.autoRotateOverridden then
-        v50.AutoRotate = a1.savedAutoRotate
-        a1.autoRotateOverridden = false
-    end
-end
-function u4.OnEnabledChanged(a1)
-    --[[
-      name: OnEnabledChanged
-      line: 472
-      upvalues:
-        VRBaseCamera_upv_1 (copy, index: 1)
-        u3 (copy, index: 2)
-        VRService_upv_1 (copy, index: 3)
-    ]]
-    VRBaseCamera_upv_1.OnEnabledChanged(a1)
-    if not u3 then
-        return
-    end
-    if a1.enabled then
-        if not (a1.avatarGesturesChangedConn) then
-            a1.avatarGesturesChangedConn = VRService_upv_1:GetPropertyChangedSignal("AvatarGestures"):Connect(
-                function()
-                    --[[
-                      line: 481
-                      upvalues:
-                        a1 (copy, index: 1)
-                    ]]
-                    a1:updateImmersionAutoRotate()
-                end
-            )
-            return
-        end
-    elseif a1.avatarGesturesChangedConn then
-        a1.avatarGesturesChangedConn:Disconnect()
-        a1.avatarGesturesChangedConn = nil
-    end
-end
-function u4.LeaveFirstPerson(a1)
-    --[[
-      name: LeaveFirstPerson
       line: 491
       upvalues:
-        VRBaseCamera_upv_1 (copy, index: 1)
-        u3 (copy, index: 2)
+        vrService (copy, index: 1)
     ]]
-    VRBaseCamera_upv_1.LeaveFirstPerson(a1)
-    a1.needsReset = true
-    if a1.VRBlur then
-        a1.VRBlur.Visible = false
+    local humanoid = a118:GetHumanoid()
+    if not humanoid then
+        return
     end
-    if a1.characterOrientation then
-        a1.characterOrientation.Enabled = false
-    end
-    if u3 then
-        a1:updateImmersionAutoRotate()
-    else
-        local v51 = a1:GetHumanoid()
-        if v51 then
-            v51.AutoRotate = a1.savedAutoRotate
+
+    if a118:IsInFirstPerson() and vrService.AvatarGestures then
+        if not a118.autoRotateOverridden then
+            a118.savedAutoRotate = humanoid.AutoRotate
+            a118.autoRotateOverridden = true
         end
+
+        humanoid.AutoRotate = false
+
+        return
+    end
+
+    if a118.autoRotateOverridden then
+        humanoid.AutoRotate = a118.savedAutoRotate
+        a118.autoRotateOverridden = false
     end
 end
-return u4
+
+function v10.OnEnabledChanged(a120)
+    --[[
+      name: OnEnabledChanged
+      line: 511
+      upvalues:
+        VRBaseCamera (copy, index: 1)
+        userFlag3 (copy, index: 2)
+        vrService (copy, index: 3)
+    ]]
+    VRBaseCamera.OnEnabledChanged(a120)
+
+    if not userFlag3 then
+        return
+    end
+
+    if a120.enabled then
+        if not a120.avatarGesturesChangedConn then
+            a120.avatarGesturesChangedConn = vrService:GetPropertyChangedSignal("AvatarGestures"):Connect(
+                function()
+                    --[[
+                      line: 520
+                      upvalues:
+                        a120 (copy, index: 1)
+                    ]]
+                    a120:updateImmersionAutoRotate()
+                end
+            )
+        end
+    elseif a120.avatarGesturesChangedConn then
+        a120.avatarGesturesChangedConn:Disconnect()
+        a120.avatarGesturesChangedConn = nil
+    end
+end
+
+function v10.LeaveFirstPerson(a121)
+    --[[
+      name: LeaveFirstPerson
+      line: 530
+      upvalues:
+        VRBaseCamera (copy, index: 1)
+        userFlag3 (copy, index: 2)
+    ]]
+    VRBaseCamera.LeaveFirstPerson(a121)
+    a121.needsReset = true
+
+    if a121.VRBlur then
+        a121.VRBlur.Visible = false
+    end
+
+    if a121.characterOrientation then
+        a121.characterOrientation.Enabled = false
+    end
+
+    if userFlag3 then
+        a121:updateImmersionAutoRotate()
+        return
+    elseif const humanoid = a121:GetHumanoid() then
+        humanoid.AutoRotate = a121.savedAutoRotate
+    end
+end
+
+return v10

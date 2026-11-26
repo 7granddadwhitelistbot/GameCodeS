@@ -1,49 +1,57 @@
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-function tbl_upv_1.new(a1, a2, a3)
+local Class = {}
+Class.__index = Class
+
+function Class.new(a2, frequency, a4)
     --[[
       name: new
       line: 24
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    return (setmetatable({value = a1, velocity = a1 * 0, target = a1, frequency = a2, damping = a3 or 1}, tbl_upv_1))
+    return (setmetatable({value = a2, velocity = a2 * 0, target = a2, frequency = frequency, damping = a4 or 1}, Class))
 end
-function tbl_upv_1.Update(a1, a2)
+
+function Class.Update(self, a6: number)
     --[[
       name: Update
       line: 35
     ]]
-    local v1 = a1.frequency * 2 * math.pi
-    local damping_1 = a1.damping
-    local v2 = math.min(a2, 0.13333333333333333)
-    local value_1 = a1.value
-    local velocity_1 = a1.velocity
-    local target_1 = a1.target
-    while v2 > 1e-06 do
-        local v3 = math.min(0.004166666666666667, v2)
-        v2 = v2 - v3
-        velocity_1 = velocity_1 + (((target_1 - value_1) * (v1 * v1)) - (velocity_1 * ((damping_1 * 2) * v1))) * v3
-        value_1 = value_1 + velocity_1 * v3
+    local v7 = self.frequency * 2 * math.pi
+    local damping = self.damping
+    local v9 = math.min(a6, 0.13333333333333333)
+    local v10 = self.value
+    local v11 = self.velocity
+    local target = self.target
+
+    while 1e-06 < v9 do
+        local v13 = math.min(0.004166666666666667, v9)
+        v9 -= v13
+        v11 += ((target - v10) * (v7 * v7) - (v11 * ((damping * 2) * v7))) * v13
+        v10 += v11 * v13
     end
-    a1.value = value_1
-    a1.velocity = velocity_1
-    return value_1
+
+    self.value = v10
+    self.velocity = v11
+
+    return v10
 end
-function tbl_upv_1.Impulse(a1, a2)
+
+function Class.Impulse(self, a15)
     --[[
       name: Impulse
       line: 51
     ]]
-    a1.velocity = a1.velocity + a2
+    self.velocity += a15
 end
-function tbl_upv_1.Snap(a1, a2)
+
+function Class.Snap(self, a17)
     --[[
       name: Snap
       line: 55
     ]]
-    a1.value = a2
-    a1.target = a2
-    a1.velocity = a2 * 0
+    self.value = a17
+    self.target = a17
+    self.velocity = a17 * 0
 end
-return tbl_upv_1
+
+return Class

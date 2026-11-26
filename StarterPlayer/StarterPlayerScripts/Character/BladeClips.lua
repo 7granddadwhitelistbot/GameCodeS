@@ -1,53 +1,35 @@
-local tbl_upv_1 = {}
-local function V(a1, a2, a3)
+local v1 = {}
+
+local function V(x: number, y: number, z: number)
     --[[
       name: V
       line: 54
     ]]
-    return (Vector3.new(a1, a2, a3))
+    return (Vector3.new(x, y, z))
 end
-function tbl_upv_1.Frame(a1, a2, a3)
+
+function v1.Frame(a6, a7, a8)
     --[[
       name: Frame
       line: 60
     ]]
-    local v1 = ((not (a2.Magnitude > 1e-04)) and Vector3.new(0, 1, 0)) or (a2.Unit)
-    local v2 = a3 - v1 * a3:Dot(v1)
-    if v2.Magnitude < 0.001 then
-        v2 = v1:Cross(Vector3.new(1, 0, 0))
-        if v2.Magnitude < 0.001 then
-            v2 = v1:Cross(Vector3.new(0, 0, 1))
+    local v9 = not (1e-04 < a7.Magnitude) and Vector3.new(0, 1, 0) or a7.Unit
+    local v10 = a8 - v9 * a8:Dot(v9)
+
+    if v10.Magnitude < 0.001 then
+        v10 = v9:Cross(Vector3.new(1, 0, 0))
+
+        if v10.Magnitude < 0.001 then
+            v10 = v9:Cross(Vector3.new(0, 0, 1))
         end
     end
-    local v3 = -v2.Unit
-    return CFrame.fromMatrix(a1, v1:Cross(v3), v1, v3)
+
+    local v11 = -v10.Unit
+
+    return CFrame.fromMatrix(a6, v9:Cross(v11), v9, v11)
 end
-local tbl_2 = {contact = 0.09, release = 0.5}
-tbl_2.smear = {0.04, 0.15}
-tbl_2.keys = {
-    {t = 0.03, pos = Vector3.new(-0.41999998688697815, -0.6600000262260437, -0.46000000834465027), tip = Vector3.new(-0.44999998807907104, 0.800000011920929, -0.4000000059604645), edge = Vector3.new(-0.10000000149011612, 0, -1)},
-    {t = 0.055, pos = Vector3.new(-0.5799999833106995, -0.18000000715255737, -0.5), tip = Vector3.new(-0.8830000162124634, 0.20000000298023224, -0.4690000116825104), edge = Vector3.new(0.4690000116825104, 0, -0.8830000162124634)},
-    {t = 0.09, pos = Vector3.new(-0.019999999552965164, -0.17000000178813934, -0.5), tip = Vector3.new(-0.5740000009536743, 0.14000000059604645, -0.8190000057220459), edge = Vector3.new(0.8190000057220459, 0, -0.5740000009536743)},
-    {t = 0.14, pos = Vector3.new(0.6399999856948853, -0.07000000029802322, -0.5), tip = Vector3.new(0.13899999856948853, 0.10000000149011612, -0.9900000095367432), edge = Vector3.new(0.9900000095367432, 0, 0.13899999856948853)},
-    {t = 0.24, pos = Vector3.new(0.8600000143051147, -0.30000001192092896, -0.46000000834465027), tip = Vector3.new(0.75, -0.44999998807907104, -0.47999998927116394), edge = Vector3.new(0.5, 0, 0.8659999966621399)},
-    {t = 0.4, rest = Vector3.new(0, 0.02500000037252903, 0)},
-    {t = 0.5, rest = Vector3.new(0, 0, 0)}
-}
-local tbl_3 = {contact = 0.09, release = 0.61}
-tbl_3.smear = {0.04, 0.16}
-tbl_3.keys = {
-    {t = 0.03, pos = Vector3.new(0.4000000059604645, 0.03999999910593033, -0.5), tip = Vector3.new(0.7570000290870667, 0.6359999775886536, 0.1509999930858612), edge = Vector3.new(-0.22200000286102295, 0.46700000762939453, -0.8560000061988831)},
-    {t = 0.055, pos = Vector3.new(0.4000000059604645, 0.18000000715255737, -0.5), tip = Vector3.new(0.18700000643730164, 0.722000002861023, -0.6660000085830688), edge = Vector3.new(-0.765999972820282, -0.31700000166893005, -0.5590000152587891)},
-    {t = 0.09, pos = Vector3.new(0.10000000149011612, -0.14000000059604645, -0.5), tip = Vector3.new(-0.3499999940395355, 0.3499999940395355, -0.8690000176429749), edge = Vector3.new(-0.7070000171661377, -0.7070000171661377, 0)},
-    {t = 0.145, pos = Vector3.new(-0.44999998807907104, -0.4399999976158142, -0.5), tip = Vector3.new(-0.765999972820282, -0.31700000166893005, -0.5590000152587891), edge = Vector3.new(-0.18700000643730164, -0.722000002861023, 0.6660000085830688)},
-    {t = 0.26, pos = Vector3.new(-0.6600000262260437, -0.6600000262260437, -0.4399999976158142), tip = Vector3.new(-0.6359999775886536, -0.7570000290870667, 0.1509999930858612), edge = Vector3.new(0.46700000762939453, -0.22200000286102295, 0.8560000061988831)},
-    {t = 0.4, pos = Vector3.new(0.2199999988079071, -0.8399999737739563, -0.47999998927116394), tip = Vector3.new(-0.20000000298023224, 0.8500000238418579, -0.5), edge = Vector3.new(-0.6000000238418579, 0, -0.800000011920929)},
-    {t = 0.5, rest = Vector3.new(0, 0.02500000037252903, 0)},
-    {t = 0.61, rest = Vector3.new(0, 0, 0)}
-}
-local tbl_4 = {contact = 0, release = 0.3}
-tbl_4.keys = {{t = 0.12, pos = Vector3.new(0.4000000059604645, -0.36000001430511475, -0.5600000023841858), tip = Vector3.new(0.05000000074505806, 0.550000011920929, -0.8299999833106995), edge = Vector3.new(-0.699999988079071, 0.10000000149011612, -0.699999988079071)}, {t = 0.2, rest = Vector3.new(0, 0.029999999329447746, 0)}, {t = 0.3, rest = Vector3.new(0, 0, 0)}}
-tbl_upv_1.SWORD = {
+
+v1.SWORD = {
     slash_r = {
         contact = 0.09,
         release = 0.58,
@@ -63,28 +45,38 @@ tbl_upv_1.SWORD = {
             {t = 0.58, rest = Vector3.new(0, 0, 0)}
         }
     },
-    slash_l = tbl_2,
-    finisher = tbl_3,
-    draw = tbl_4
+    slash_l = {
+        contact = 0.09,
+        release = 0.5,
+        smear = {0.04, 0.15},
+        keys = {
+            {t = 0.03, pos = Vector3.new(-0.41999998688697815, -0.6600000262260437, -0.46000000834465027), tip = Vector3.new(-0.44999998807907104, 0.800000011920929, -0.4000000059604645), edge = Vector3.new(-0.10000000149011612, 0, -1)},
+            {t = 0.055, pos = Vector3.new(-0.5799999833106995, -0.18000000715255737, -0.5), tip = Vector3.new(-0.8830000162124634, 0.20000000298023224, -0.4690000116825104), edge = Vector3.new(0.4690000116825104, 0, -0.8830000162124634)},
+            {t = 0.09, pos = Vector3.new(-0.019999999552965164, -0.17000000178813934, -0.5), tip = Vector3.new(-0.5740000009536743, 0.14000000059604645, -0.8190000057220459), edge = Vector3.new(0.8190000057220459, 0, -0.5740000009536743)},
+            {t = 0.14, pos = Vector3.new(0.6399999856948853, -0.07000000029802322, -0.5), tip = Vector3.new(0.13899999856948853, 0.10000000149011612, -0.9900000095367432), edge = Vector3.new(0.9900000095367432, 0, 0.13899999856948853)},
+            {t = 0.24, pos = Vector3.new(0.8600000143051147, -0.30000001192092896, -0.46000000834465027), tip = Vector3.new(0.75, -0.44999998807907104, -0.47999998927116394), edge = Vector3.new(0.5, 0, 0.8659999966621399)},
+            {t = 0.4, rest = Vector3.new(0, 0.02500000037252903, 0)},
+            {t = 0.5, rest = Vector3.new(0, 0, 0)}
+        }
+    },
+    finisher = {
+        contact = 0.09,
+        release = 0.61,
+        smear = {0.04, 0.16},
+        keys = {
+            {t = 0.03, pos = Vector3.new(0.4000000059604645, 0.03999999910593033, -0.5), tip = Vector3.new(0.7570000290870667, 0.6359999775886536, 0.1509999930858612), edge = Vector3.new(-0.22200000286102295, 0.46700000762939453, -0.8560000061988831)},
+            {t = 0.055, pos = Vector3.new(0.4000000059604645, 0.18000000715255737, -0.5), tip = Vector3.new(0.18700000643730164, 0.722000002861023, -0.6660000085830688), edge = Vector3.new(-0.765999972820282, -0.31700000166893005, -0.5590000152587891)},
+            {t = 0.09, pos = Vector3.new(0.10000000149011612, -0.14000000059604645, -0.5), tip = Vector3.new(-0.3499999940395355, 0.3499999940395355, -0.8690000176429749), edge = Vector3.new(-0.7070000171661377, -0.7070000171661377, 0)},
+            {t = 0.145, pos = Vector3.new(-0.44999998807907104, -0.4399999976158142, -0.5), tip = Vector3.new(-0.765999972820282, -0.31700000166893005, -0.5590000152587891), edge = Vector3.new(-0.18700000643730164, -0.722000002861023, 0.6660000085830688)},
+            {t = 0.26, pos = Vector3.new(-0.6600000262260437, -0.6600000262260437, -0.4399999976158142), tip = Vector3.new(-0.6359999775886536, -0.7570000290870667, 0.1509999930858612), edge = Vector3.new(0.46700000762939453, -0.22200000286102295, 0.8560000061988831)},
+            {t = 0.4, pos = Vector3.new(0.2199999988079071, -0.8399999737739563, -0.47999998927116394), tip = Vector3.new(-0.20000000298023224, 0.8500000238418579, -0.5), edge = Vector3.new(-0.6000000238418579, 0, -0.800000011920929)},
+            {t = 0.5, rest = Vector3.new(0, 0.02500000037252903, 0)},
+            {t = 0.61, rest = Vector3.new(0, 0, 0)}
+        }
+    },
+    draw = {contact = 0, release = 0.3, keys = {{t = 0.12, pos = Vector3.new(0.4000000059604645, -0.36000001430511475, -0.5600000023841858), tip = Vector3.new(0.05000000074505806, 0.550000011920929, -0.8299999833106995), edge = Vector3.new(-0.699999988079071, 0.10000000149011612, -0.699999988079071)}, {t = 0.2, rest = Vector3.new(0, 0.029999999329447746, 0)}, {t = 0.3, rest = Vector3.new(0, 0, 0)}}}
 }
-local tbl_5 = {contact = 0.06, release = 0.34}
-tbl_5.smear = {0.035, 0.12}
-tbl_5.keys = {
-    {t = 0.03, pos = Vector3.new(-0.20000000298023224, -0.41999998688697815, -0.4399999976158142), tip = Vector3.new(-0.5450000166893005, -0.7839999794960022, 0.296999990940094), edge = Vector3.new(-0.5699999928474426, 0.08699999749660492, -0.8169999718666077)},
-    {t = 0.07, pos = Vector3.new(0.019999999552965164, -0.07999999821186066, -0.4399999976158142), tip = Vector3.new(-0.3499999940395355, 0.3499999940395355, -0.8690000176429749), edge = Vector3.new(0.7070000171661377, 0.7070000171661377, 0)},
-    {t = 0.11, pos = Vector3.new(0.5, 0.3400000035762787, -0.4399999976158142), tip = Vector3.new(0.49300000071525574, 0.7889999747276306, -0.367000013589859), edge = Vector3.new(0.6159999966621399, -0.017999999225139618, 0.7879999876022339)},
-    {t = 0.17, pos = Vector3.new(0.6200000047683716, 0.4399999976158142, -0.41999998688697815), tip = Vector3.new(0.7739999890327454, 0.5929999947547913, 0.22499999403953552), edge = Vector3.new(0.1550000011920929, -0.5210000276565552, 0.8399999737739563)},
-    {t = 0.26, rest = Vector3.new(0, -0.019999999552965164, 0)},
-    {t = 0.34, rest = Vector3.new(0, 0, 0)}
-}
-local tbl_6 = {contact = 0, release = 0.25}
-tbl_6.keys = {
-    {t = 0.07, pos = Vector3.new(0.3799999952316284, -0.41999998688697815, -0.5199999809265137), tip = Vector3.new(-0.34700000286102295, 0.9049999713897705, -0.24799999594688416), edge = Vector3.new(-0.9290000200271606, -0.2939999997615814, 0.22699999809265137)},
-    {t = 0.12, pos = Vector3.new(0.3499999940395355, -0.3100000023841858, -0.5600000023841858), tip = Vector3.new(-0.34700000286102295, 0.9049999713897705, -0.24799999594688416), edge = Vector3.new(0.13199999928474426, 0.3089999854564667, 0.9419999718666077)},
-    {t = 0.17, pos = Vector3.new(0.3400000035762787, -0.25, -0.5799999833106995), tip = Vector3.new(-0.34700000286102295, 0.9049999713897705, -0.24799999594688416), edge = Vector3.new(0.9290000200271606, 0.2939999997615814, -0.22699999809265137)},
-    {t = 0.25, rest = Vector3.new(0, 0, 0)}
-}
-tbl_upv_1.DAGGER = {
+v1.DAGGER = {
     cut = {
         contact = 0.06,
         release = 0.395,
@@ -100,240 +92,301 @@ tbl_upv_1.DAGGER = {
             {t = 0.395, rest = Vector3.new(0, 0, 0)}
         }
     },
-    back = tbl_5,
-    draw = tbl_6
+    back = {
+        contact = 0.06,
+        release = 0.34,
+        smear = {0.035, 0.12},
+        keys = {
+            {t = 0.03, pos = Vector3.new(-0.20000000298023224, -0.41999998688697815, -0.4399999976158142), tip = Vector3.new(-0.5450000166893005, -0.7839999794960022, 0.296999990940094), edge = Vector3.new(-0.5699999928474426, 0.08699999749660492, -0.8169999718666077)},
+            {t = 0.07, pos = Vector3.new(0.019999999552965164, -0.07999999821186066, -0.4399999976158142), tip = Vector3.new(-0.3499999940395355, 0.3499999940395355, -0.8690000176429749), edge = Vector3.new(0.7070000171661377, 0.7070000171661377, 0)},
+            {t = 0.11, pos = Vector3.new(0.5, 0.3400000035762787, -0.4399999976158142), tip = Vector3.new(0.49300000071525574, 0.7889999747276306, -0.367000013589859), edge = Vector3.new(0.6159999966621399, -0.017999999225139618, 0.7879999876022339)},
+            {t = 0.17, pos = Vector3.new(0.6200000047683716, 0.4399999976158142, -0.41999998688697815), tip = Vector3.new(0.7739999890327454, 0.5929999947547913, 0.22499999403953552), edge = Vector3.new(0.1550000011920929, -0.5210000276565552, 0.8399999737739563)},
+            {t = 0.26, rest = Vector3.new(0, -0.019999999552965164, 0)},
+            {t = 0.34, rest = Vector3.new(0, 0, 0)}
+        }
+    },
+    draw = {
+        contact = 0,
+        release = 0.25,
+        keys = {
+            {t = 0.07, pos = Vector3.new(0.3799999952316284, -0.41999998688697815, -0.5199999809265137), tip = Vector3.new(-0.34700000286102295, 0.9049999713897705, -0.24799999594688416), edge = Vector3.new(-0.9290000200271606, -0.2939999997615814, 0.22699999809265137)},
+            {t = 0.12, pos = Vector3.new(0.3499999940395355, -0.3100000023841858, -0.5600000023841858), tip = Vector3.new(-0.34700000286102295, 0.9049999713897705, -0.24799999594688416), edge = Vector3.new(0.13199999928474426, 0.3089999854564667, 0.9419999718666077)},
+            {t = 0.17, pos = Vector3.new(0.3400000035762787, -0.25, -0.5799999833106995), tip = Vector3.new(-0.34700000286102295, 0.9049999713897705, -0.24799999594688416), edge = Vector3.new(0.9290000200271606, 0.2939999997615814, -0.22699999809265137)},
+            {t = 0.25, rest = Vector3.new(0, 0, 0)}
+        }
+    }
 }
-tbl_upv_1.SETS = {Sword = tbl_upv_1.SWORD, Dagger = tbl_upv_1.DAGGER}
-tbl_upv_1.DRAW = {Sword = tbl_upv_1.Frame(Vector3.new(0.46000000834465027, -0.7799999713897705, -0.46000000834465027), Vector3.new(-0.15000000596046448, -0.20000000298023224, -0.9700000286102295), Vector3.new(-0.699999988079071, 0.699999988079071, 0)), Dagger = tbl_upv_1.Frame(Vector3.new(0.41999998688697815, -0.6200000047683716, -0.4399999976158142), Vector3.new(-0.15000000596046448, -0.20000000298023224, -0.9700000286102295), Vector3.new(-0.699999988079071, 0.699999988079071, 0))}
-function tbl_upv_1.Pick(a1, a2, a3)
+v1.SETS = {Sword = v1.SWORD, Dagger = v1.DAGGER}
+v1.DRAW = {Sword = v1.Frame(Vector3.new(0.46000000834465027, -0.7799999713897705, -0.46000000834465027), Vector3.new(-0.15000000596046448, -0.20000000298023224, -0.9700000286102295), Vector3.new(-0.699999988079071, 0.699999988079071, 0)), Dagger = v1.Frame(Vector3.new(0.41999998688697815, -0.6200000047683716, -0.4399999976158142), Vector3.new(-0.15000000596046448, -0.20000000298023224, -0.9700000286102295), Vector3.new(-0.699999988079071, 0.699999988079071, 0))}
+
+function v1.Pick(a12, a13, a14)
     --[[
       name: Pick
       line: 213
     ]]
-    local v4 = a2 % 2 == 0
-    if a1 ~= "Dagger" then
-        if a3 then
-            return "finisher"
-        elseif v4 then
-            return "slash_l"
-        else
-            return "slash_r"
+    local v15 = a13 % 2 == 0
+
+    if a12 == "Dagger" then
+        if v15 then
+            return "back"
         end
+
+        return "cut"
     end
-    if v4 then
-        return "back"
+
+    if a14 then
+        return "finisher"
     end
-    return "cut"
+    if v15 then
+        return "slash_l"
+    end
+
+    return "slash_r"
 end
-function tbl_upv_1.Subdivide(a1, a2, a3)
+
+function v1.Subdivide(a16, a17, a18)
     --[[
       name: Subdivide
       line: 224
     ]]
-    local v5 = a2 or 60
-    local tbl_7 = {}
-    local v6
-    if a3 then
-        v6 = {t = 0}
-        v6.rest = a3.rest or Vector3.new(0, 0, 0)
-        v6.rot = a3.rot or Vector3.new(0, 0, 0)
-    else
-        v6 = nil
+    local function wrap(a20)
+        --[[
+          name: wrap
+          line: 237
+        ]]
+        return ((a20 + 180) % 360) - 180
     end
-    local v7, v8 = nil, nil
-    for _, value_1 in a1.keys do
-        if not (v6) or not (v6.rest) or not (value_1.rest) then
-            table.insert(tbl_7, value_1)
-            v6 = value_1
-            continue
-        end
-        local v9 = v6.rot or Vector3.new(0, 0, 0)
-        v8 = value_1.rot or Vector3.new(0, 0, 0)
-        v7 = v8 - v9
-        if not value_1.rot then
-            local function wrap(a4)
-                --[[
-                  name: wrap
-                  line: 237
-                ]]
-                return ((a4 + 180) % 360) - 180
+
+    local keys = {}
+    local v22 = a18 and {t = 0, rest = a18.rest or Vector3.new(0, 0, 0), rot = a18.rot or Vector3.new(0, 0, 0)}
+        or nil
+
+    for _, key in a16.keys do
+        if not v22 or not v22.rest or not key.rest then
+            table.insert(keys, key)
+            v22 = key
+        else
+            local v25 = v22.rot or Vector3.new(0, 0, 0)
+            local v26 = key.rot or Vector3.new(0, 0, 0)
+            local v27 = v26 - v25
+
+            if not key.rot then
+                v27 = -Vector3.new(wrap(v25.X), wrap(v25.Y), (wrap(v25.Z)))
+                v26 = v25 + v27
             end
-            v7 = -Vector3.new(((v9.X + 180) % 360) - 180, ((v9.Y + 180) % 360) - 180, ((v9.Z + 180) % 360) - 180)
-            v8 = v9 + v7
+
+            local ceilingValue = math.ceil(math.max(math.abs(v27.X), math.abs(v27.Y), (math.abs(v27.Z))) / (a17 or 60))
+
+            for index = 1, ceilingValue - 1 do
+                local alpha = index / ceilingValue
+                table.insert(keys, {t = v22.t + ((key.t - v22.t) * alpha), rest = v22.rest:Lerp(key.rest, alpha), rot = v25:Lerp(v26, alpha)})
+            end
+
+            table.insert(keys, key)
+            v22 = key
         end
-        local v10 = math.ceil(math.max(math.abs(v7.X), math.abs(v7.Y), math.abs(v7.Z)) / v5)
-        for n_1 = 1, v10 - 1 do
-            v7 = n_1 / v10
-            table.insert(tbl_7, {t = v6.t + ((value_1.t - v6.t) * v7), rest = v6.rest:Lerp(value_1.rest, v7), rot = v9:Lerp(v8, v7)})
-        end
-        table.insert(tbl_7, value_1)
-        v6 = value_1
     end
-    a1.keys = tbl_7
-    return a1
+
+    a16.keys = keys
+
+    return a16
 end
-function tbl_upv_1.Turn(a1, a2)
+
+function v1.Turn(a31, a32)
     --[[
       name: Turn
       line: 264
     ]]
-    local v11
-    if (a2) and (a2.Magnitude > 0.001) then
-        v11 = CFrame.fromAxisAngle(-a2.Unit, a1.Z * 0.017453292519943295)
-    else
-        v11 = CFrame.fromEulerAnglesYXZ(0, 0, a1.Z * 0.017453292519943295)
-    end
-    return v11 * CFrame.fromEulerAnglesYXZ(a1.X * 0.017453292519943295, a1.Y * 0.017453292519943295, 0)
+    local v33 = if a32 and 0.001 < a32.Magnitude then CFrame.fromAxisAngle(-a32.Unit, a31.Z * 0.017453292519943295) else CFrame.fromEulerAnglesYXZ(0, 0, a31.Z * 0.017453292519943295)
+    return v33 * CFrame.fromEulerAnglesYXZ(a31.X * 0.017453292519943295, a31.Y * 0.017453292519943295, 0)
 end
-function tbl_upv_1.StartFrame(a1, a2)
+
+function v1.StartFrame(a34, a35)
     --[[
       name: StartFrame
       line: 271
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    if typeof(a1) ~= "CFrame" then
-        return CFrame.new(a2.Position + (a1.rest or Vector3.new(0, 0, 0))) * tbl_upv_1.Turn(a1.rot or Vector3.new(0, 0, 0)) * a2.Rotation
+    if typeof(a34) == "CFrame" then
+        return a34
     end
-    return a1
+
+    local v36 = a34.rest or Vector3.new(0, 0, 0)
+    local v37 = a34.rot or Vector3.new(0, 0, 0)
+
+    return CFrame.new(a35.Position + v36) * v1.Turn(v37) * a35.Rotation
 end
-function tbl_upv_1.Eval(a1, a2, a3, a4, a5, a6)
+
+function v1.Eval(a38, a39, a40, a41, a42, a43)
     --[[
       name: Eval
       line: 283
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    local u1 = a4 or 1
-    local u2 = a5 or (CFrame.identity)
-    local keys_upv_1 = a1.keys
-    local u3 = #keys_upv_1
-    local function knotT(a7)
+    local readIndex
+    local v45 = a41 or 1
+    local v46 = a42 or CFrame.identity
+    local keys = a38.keys
+    local keyKey = #keys
+
+    local function knotT(keyKey)
         --[[
           name: knotT
           line: 289
           upvalues:
-            keys_upv_1 (copy, index: 1)
-            u1 (copy, index: 2)
+            keys (copy, index: 1)
+            v45 (copy, index: 2)
         ]]
-        if a7 ~= 0 then
-            return keys_upv_1[a7].t * u1
+        if keyKey == 0 then
+            return 0
         end
-        return 0
+
+        return keys[keyKey].t * v45
     end
-    local function knotV(a8, a9)
+
+    local function knotV(keyKey, a53: number)
         --[[
           name: knotV
           line: 292
           upvalues:
-            a2 (copy, index: 1)
-            keys_upv_1 (copy, index: 2)
-            u2 (copy, index: 3)
-            tbl_upv_1 (copy, index: 4)
-            a1 (copy, index: 5)
+            a39 (copy, index: 1)
+            keys (copy, index: 2)
+            v46 (copy, index: 3)
+            v1 (copy, index: 4)
+            a38 (copy, index: 5)
         ]]
-        local v12 = nil
-        if a8 ~= 0 then
-            v12 = keys_upv_1[a8]
-            local v13 = nil
-            if v12.rest then
-                v13 = v12.rot
-                if v13 then
-                    local _ = tbl_upv_1.Turn(v13, ((a1.eyeRoll) and (u2.Position + v12.rest)) or nil)
-                end
-                if a9 ~= 1 then
-                    if a9 ~= 2 then
-                        return u2.LookVector
-                    end
-                    return u2.UpVector
-                else
-                    local v14 = u2.Position + v12.rest
-                    if a1.pivot then
-                        v14 = (v13 and (v14 + (u2.UpVector - u2.UpVector) * a1.pivot)) or v14
-                    end
-                    return v14
-                end
-            else
-                if a9 ~= 1 then
-                    if a9 ~= 2 then
-                        return v12.edge.Unit
-                    end
-                    return v12.tip.Unit
-                end
-                return v12.pos
+        if keyKey == 0 then
+            if a53 == 1 then
+                return a39.Position
             end
-        else
-            if a9 ~= 1 then
-                if a9 ~= 2 then
-                    return a2.LookVector
-                end
-                return a2.UpVector
+            if a53 == 2 then
+                return a39.UpVector
             end
-            return a2.Position
+
+            return a39.LookVector
         end
+
+        local key = keys[keyKey]
+
+        if not key.rest then
+            if a53 == 1 then
+                return key.pos
+            end
+            if a53 == 2 then
+                return key.tip.Unit
+            end
+
+            return key.edge.Unit
+        end
+
+        local v55
+        local rot = key.rot
+
+        if rot then
+            local turn = v1.Turn
+            local v58 = if a38.eyeRoll then v46.Position + key.rest else nil
+            v55 = turn(rot, v58) * v46.Rotation
+        else
+            v55 = v46
+        end
+
+        if a53 ~= 1 then
+            if a53 == 2 then
+                return v55.UpVector
+            end
+
+            return v55.LookVector
+        end
+
+        local v59 = v46.Position + key.rest
+
+        if a38.pivot and rot then
+            v59 += (v46.UpVector - v55.UpVector) * a38.pivot
+        end
+
+        return v59
     end
-    if (((u3 ~= 0) and (keys_upv_1[u3].t * u1)) or 0) <= a3 then
-        return tbl_upv_1.Frame(knotV(u3, 1), knotV(u3, 2), knotV(u3, 3))
+
+    local v60 = keyKey == 0 and 0 or keys[keyKey].t * v45
+
+    if v60 <= a40 then
+        return v1.Frame(knotV(keyKey, 1), knotV(keyKey, 2), (knotV(keyKey, 3)))
     end
-    local v15 = 0
-    while true do
-        local v16
-        if not (v15 < u3 - 1) then
+
+    readIndex = 0
+
+    while readIndex < keyKey - 1 do
+        local keyKey2 = readIndex + 1
+        local v62 = keyKey2 == 0 and 0 or keys[keyKey2].t * v45
+
+        if not (v62 < a40) then
             break
         end
-        v16 = v15 + 1
-        if (((v16 ~= 0) and (keys_upv_1[v16].t * u1)) or 0) < a3 then
-            v15 = v15 + 1
-            continue
-        else
-            break
-        end
+
+        readIndex += 1
     end
-    local v17 = ((v15 ~= 0) and (keys_upv_1[v15].t * u1)) or 0
-    local v18 = v15 + 1
-    local v19 = math.max((((v18 ~= 0) and (keys_upv_1[v18].t * u1)) or 0) - v17, 1e-04)
-    local v20 = math.clamp((a3 - v17) / v19, 0, 1)
-    local v21 = v20 * v20
-    local tangent = v20 * v20 * v20
-    tangent = function(a10, a11)
+
+    local v63 = readIndex == 0 and 0 or keys[readIndex].t * v45
+    local keyKey3 = readIndex + 1
+    local v65 = keyKey3 == 0 and 0 or keys[keyKey3].t * v45
+    local v66 = math.max(v65 - v63, 1e-04)
+    local clampedValue = math.clamp((a40 - v63) / v66, 0, 1)
+    local v68 = clampedValue * clampedValue
+    local v69 = clampedValue * clampedValue * clampedValue
+    local v70 = v69 * 2 - (v68 * 3) + 1
+    local v71 = v69 - (v68 * 2) + clampedValue
+    local v72 = v69 * -2 + v68 * 3
+    local v73 = v69 - v68
+
+    local function tangent(a75, a76: number)
         --[[
           name: tangent
           line: 326
           upvalues:
-            a6 (copy, index: 1)
-            u3 (copy, index: 2)
+            a43 (copy, index: 1)
+            keyKey (copy, index: 2)
             knotV (copy, index: 3)
-            keys_upv_1 (copy, index: 4)
-            u1 (copy, index: 5)
+            keys (copy, index: 4)
+            v45 (copy, index: 5)
         ]]
-        if a10 <= 0 then
-            if a6 then
-                if a11 ~= 1 then
-                    if a11 ~= 2 then
-                        return a6.edge
-                    end
-                    return a6.tip
-                end
-                return a6.pos
-            end
-            return Vector3.new(0, 0, 0)
-        else
-            if u3 <= a10 then
+        if not (a75 <= 0) then
+            if keyKey <= a75 then
                 return Vector3.new(0, 0, 0)
             end
-            local v22 = knotV(a10 + 1, a11) - knotV(a10 - 1, a11)
-            local v23 = a10 + 1
-            local v24 = ((v23 ~= 0) and (keys_upv_1[v23].t * u1)) or 0
-            local v25 = a10 - 1
-            return v22 / math.max(v24 - (((v25 ~= 0) and (keys_upv_1[v25].t * u1)) or 0), 1e-04)
+
+            local v77 = knotV(a75 + 1, a76) - knotV(a75 - 1, a76)
+            local keyKey2 = a75 + 1
+            local v79 = keyKey2 == 0 and 0 or keys[keyKey2].t * v45
+            local keyKey3 = a75 - 1
+            local v81 = keyKey3 == 0 and 0 or keys[keyKey3].t * v45
+
+            return v77 / math.max(v79 - v81, 1e-04)
         end
+
+        if not a43 then
+            return Vector3.new(0, 0, 0)
+        end
+        if a76 == 1 then
+            return a43.pos
+        end
+        if a76 == 2 then
+            return a43.tip
+        end
+
+        return a43.edge
     end
-    local tbl_8 = {}
-    for n_2 = 1, 3 do
-        local v26 = knotV(v15, n_2)
-        local v27 = knotV(v15 + 1, n_2)
-        tbl_8[n_2] = ((v26 * (((tangent * 2) - (v21 * 3)) + 1)) + (tangent(v15, n_2) * (((tangent - (v21 * 2)) + v20) * v19))) + (v27 * ((tangent * -2) + (v21 * 3))) + (tangent(v15 + 1, n_2) * ((tangent - v21) * v19))
+
+    local v82 = {}
+
+    for index = 1, 3 do
+        local v84 = knotV(readIndex, index)
+        local v85 = knotV(readIndex + 1, index)
+        v82[index] = (v84 * v70 + (tangent(readIndex, index) * (v71 * v66))) + (v85 * v72) + (tangent(readIndex + 1, index) * (v73 * v66))
     end
-    return tbl_upv_1.Frame(tbl_8[1], tbl_8[2], tbl_8[3])
+
+    return v1.Frame(v82[1], v82[2], v82[3])
 end
-return tbl_upv_1
+
+return v1

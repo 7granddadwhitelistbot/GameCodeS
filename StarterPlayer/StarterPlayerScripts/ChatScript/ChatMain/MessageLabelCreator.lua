@@ -1,199 +1,216 @@
-local tbl_1 = {}
-local Chat_upv_1 = game:GetService("Chat")
-local v1 = Chat_upv_1:WaitForChild("ClientChatModules")
-local MessageCreatorModules_upv_1 = v1:WaitForChild("MessageCreatorModules")
-local Util_upv_1 = require(MessageCreatorModules_upv_1:WaitForChild("Util"))
-local Parent_1 = script.Parent
-local _ = require(v1:WaitForChild("ChatSettings"))
-local ObjectPool_upv_1 = require(Parent_1:WaitForChild("ObjectPool"))
-v1 = require(Parent_1:WaitForChild("MessageSender"))
-local tbl_upv_2 = {}
-tbl_upv_2.__index = tbl_upv_2
-function mergeProps(a1, a2)
+local v1 = {}
+local chat = game:GetService("Chat")
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local messageCreatorModules = clientChatModules:WaitForChild("MessageCreatorModules")
+local childName = "Util"
+local child = require(messageCreatorModules:WaitForChild(childName))
+local parent = script.Parent
+require(clientChatModules:WaitForChild("ChatSettings"))
+local ObjectPool = require(parent:WaitForChild("ObjectPool"))
+require(parent:WaitForChild("MessageSender"))
+local Class = {}
+Class.__index = Class
+
+function mergeProps(a10, a11)
     --[[
       name: mergeProps
       line: 26
     ]]
-    if not a1 then
+    if not a10 then
         return
     end
-    for key_1, value_1 in pairs(a1) do
-        a2[key_1] = value_1
+
+    for key, v13 in pairs(a10) do
+        a11[key] = v13
     end
 end
-function ReturnToObjectPoolRecursive(a1, a2)
+
+function ReturnToObjectPoolRecursive(a14, a15)
     --[[
       name: ReturnToObjectPoolRecursive
       line: 33
     ]]
-    local v2 = a1:GetChildren()
-    for n_1 = 1, #v2 do
-        ReturnToObjectPoolRecursive(v2[n_1], a2)
+    local children = a14:GetChildren()
+
+    for childKey = 1, #children do
+        ReturnToObjectPoolRecursive(children[childKey], a15)
     end
-    a1.Parent = nil
-    a2:ReturnInstance(a1)
+
+    a14.Parent = nil
+    a15:ReturnInstance(a14)
 end
+
 function GetMessageCreators()
     --[[
       name: GetMessageCreators
       line: 42
       upvalues:
-        MessageCreatorModules_upv_1 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
+        messageCreatorModules (copy, index: 1)
+        child (copy, index: 2)
     ]]
-    local tbl_3 = {}
-    local v3 = MessageCreatorModules_upv_1:GetChildren()
-    for n_2 = 1, #v3 do
-        local v4 = v3[n_2]:IsA("ModuleScript")
-        if (v4) and v3[n_2].Name ~= "Util" then
-            local v5 = require(v3[n_2])
-            tbl_3[v5[Util_upv_1.KEY_MESSAGE_TYPE]] = v5[Util_upv_1.KEY_CREATOR_FUNCTION]
+    local v18 = {}
+    local children = messageCreatorModules:GetChildren()
+
+    for childKey = 1, #children do
+        if children[childKey]:IsA("ModuleScript") and children[childKey].Name ~= "Util" then
+            local Module = require(children[childKey])
+            v18[Module[child.KEY_MESSAGE_TYPE]] = Module[child.KEY_CREATOR_FUNCTION]
         end
     end
-    return tbl_3
+
+    return v18
 end
-function tbl_upv_2.WrapIntoMessageObject(a1, a2, a3)
+
+function Class.WrapIntoMessageObject(self, a23, a24)
     --[[
       name: WrapIntoMessageObject
       line: 56
       upvalues:
-        Util_upv_1 (copy, index: 1)
+        child (copy, index: 1)
     ]]
-    local v6 = a3[Util_upv_1.KEY_BASE_FRAME]
-    local v7 = (not (Util_upv_1.KEY_BASE_MESSAGE)) or (a3[Util_upv_1.KEY_BASE_MESSAGE])
-    local v8 = a3[Util_upv_1.KEY_GET_HEIGHT]
-    local v9 = a3[Util_upv_1.KEY_FADE_IN]
-    local v10 = a3[Util_upv_1.KEY_FADE_OUT]
-    local v11 = a3[Util_upv_1.KEY_UPDATE_ANIMATION]
-    local tbl_4 = {}
-    tbl_4.ID = a2.ID
-    tbl_4.BaseFrame = v6
-    tbl_4.BaseMessage = v7
-    local v12 = a3[Util_upv_1.KEY_UPDATE_TEXT_FUNC]
-        or function()
-            --[[
-              line: 73
-            ]]
-            warn("NO MESSAGE RESIZE FUNCTION")
-        end
-    tbl_4.UpdateTextFunction = v12
-    tbl_4.GetHeightFunction = v8
-    tbl_4.FadeInFunction = v9
-    tbl_4.FadeOutFunction = v10
-    tbl_4.UpdateAnimFunction = v11
-    tbl_4.ObjectPool = a1.ObjectPool
-    tbl_4.Destroyed = false
-    function tbl_4.Destroy(a4)
-        --[[
-          name: Destroy
-          line: 81
-        ]]
-        ReturnToObjectPoolRecursive(a4.BaseFrame, a4.ObjectPool)
-        a4.Destroyed = true
+    local baseFrame = a24[child.KEY_BASE_FRAME]
+    local baseMessage = nil
+
+    if child.KEY_BASE_MESSAGE then
+        baseMessage = a24[child.KEY_BASE_MESSAGE]
     end
-    return tbl_4
+
+    local v27 = a24[child.KEY_UPDATE_TEXT_FUNC]
+    local getHeightFunction = a24[child.KEY_GET_HEIGHT]
+    local fadeInFunction = a24[child.KEY_FADE_IN]
+    local fadeOutFunction = a24[child.KEY_FADE_OUT]
+    local updateAnimFunction = a24[child.KEY_UPDATE_ANIMATION]
+
+    return {
+        ID = a23.ID,
+        BaseFrame = baseFrame,
+        BaseMessage = baseMessage,
+        UpdateTextFunction = v27
+            or function()
+                --[[
+                  line: 73
+                ]]
+                warn("NO MESSAGE RESIZE FUNCTION")
+            end,
+        GetHeightFunction = getHeightFunction,
+        FadeInFunction = fadeInFunction,
+        FadeOutFunction = fadeOutFunction,
+        UpdateAnimFunction = updateAnimFunction,
+        ObjectPool = self.ObjectPool,
+        Destroyed = false,
+        Destroy = (function(a32)
+            --[[
+              name: Destroy
+              line: 81
+            ]]
+            ReturnToObjectPoolRecursive(a32.BaseFrame, a32.ObjectPool)
+            a32.Destroyed = true
+        end)
+    }
 end
-function tbl_upv_2.CreateMessageLabel_Chat(a1, a2, a3, a4)
+
+function Class.CreateMessageLabel_Chat(self, a34, channel, a36)
     --[[
       name: CreateMessageLabel_Chat
       line: 89
       upvalues:
-        Chat_upv_1 (copy, index: 1)
+        chat (copy, index: 1)
     ]]
-    a2.Channel = a3
-    local u1 = nil
+    a34.Channel = channel
+    local v37 = nil
     pcall(
         function()
             --[[
               line: 92
               upvalues:
-                u1 (ref,  index: 1)
-                Chat_upv_1 (copy, index: 2)
-                a2 (copy, index: 3)
+                v37 (ref,  index: 1)
+                chat (copy, index: 2)
+                a34 (copy, index: 3)
             ]]
-            u1 = Chat_upv_1:InvokeChatCallback(Enum.ChatCallbackType.OnClientFormattingMessage, a2)
+            v37 = chat:InvokeChatCallback(Enum.ChatCallbackType.OnClientFormattingMessage, a34)
         end
     )
-    a2.ExtraData = a2.ExtraData or {}
-    mergeProps(u1, a2.ExtraData)
-    local MessageType_1 = a2.MessageType
-    local v13, v14 = nil, nil
-    if a1.MessageCreators[MessageType_1] then
-        v13 = a1.MessageCreators[MessageType_1](a2, a3, a4)
-        if v13 then
-            return a1:WrapIntoMessageObject(a2, v13)
+    a34.ExtraData = a34.ExtraData or {}
+    mergeProps(v37, a34.ExtraData)
+    local messageType = a34.MessageType
+
+    if self.MessageCreators[messageType] then
+        if const v39 = self.MessageCreators[messageType](a34, channel, a36) then
+            return self:WrapIntoMessageObject(a34, v39)
         end
-    elseif a1.DefaultCreatorType then
-        v14 = a1.MessageCreators[a1.DefaultCreatorType](a2, a3, a4)
-        if v14 then
-            return a1:WrapIntoMessageObject(a2, v14)
+    elseif self.DefaultCreatorType then
+        if const v40 = self.MessageCreators[self.DefaultCreatorType](a34, channel, a36) then
+            return self:WrapIntoMessageObject(a34, v40)
         end
     else
-        error("No message creator available for message type: " .. MessageType_1)
+        error("No message creator available for message type: " .. messageType)
     end
 end
-function tbl_upv_2.CreateMessageLabel(a1, a2, a3)
+
+function Class.CreateMessageLabel(self, a42, channel)
     --[[
       name: CreateMessageLabel
       line: 114
       upvalues:
-        Chat_upv_1 (copy, index: 1)
+        chat (copy, index: 1)
     ]]
-    a2.Channel = a3
-    local u2 = nil
+    a42.Channel = channel
+    local v44 = nil
     pcall(
         function()
             --[[
               line: 118
               upvalues:
-                u2 (ref,  index: 1)
-                Chat_upv_1 (copy, index: 2)
-                a2 (copy, index: 3)
+                v44 (ref,  index: 1)
+                chat (copy, index: 2)
+                a42 (copy, index: 3)
             ]]
-            u2 = Chat_upv_1:InvokeChatCallback(Enum.ChatCallbackType.OnClientFormattingMessage, a2)
+            v44 = chat:InvokeChatCallback(Enum.ChatCallbackType.OnClientFormattingMessage, a42)
         end
     )
-    a2.ExtraData = a2.ExtraData or {}
-    mergeProps(u2, a2.ExtraData)
-    local MessageType_2 = a2.MessageType
-    local v15, v16 = nil, nil
-    if a1.MessageCreators[MessageType_2] then
-        v15 = a1.MessageCreators[MessageType_2](a2, a3)
-        if v15 then
-            return a1:WrapIntoMessageObject(a2, v15)
+    a42.ExtraData = a42.ExtraData or {}
+    mergeProps(v44, a42.ExtraData)
+    local messageType = a42.MessageType
+
+    if self.MessageCreators[messageType] then
+        if const v46 = self.MessageCreators[messageType](a42, channel) then
+            return self:WrapIntoMessageObject(a42, v46)
         end
-    elseif a1.DefaultCreatorType then
-        v16 = a1.MessageCreators[a1.DefaultCreatorType](a2, a3)
-        if v16 then
-            return a1:WrapIntoMessageObject(a2, v16)
+    elseif self.DefaultCreatorType then
+        if const v47 = self.MessageCreators[self.DefaultCreatorType](a42, channel) then
+            return self:WrapIntoMessageObject(a42, v47)
         end
     else
-        error("No message creator available for message type: " .. MessageType_2)
+        error("No message creator available for message type: " .. messageType)
     end
 end
-function tbl_1.new()
+
+function v1.new()
     --[[
       name: new
       line: 143
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        ObjectPool_upv_1 (copy, index: 2)
-        Util_upv_1 (copy, index: 3)
+        Class (copy, index: 1)
+        ObjectPool (copy, index: 2)
+        child (copy, index: 3)
     ]]
-    local v17 = setmetatable({}, tbl_upv_2)
-    v17.ObjectPool = ObjectPool_upv_1.new(50)
-    v17.MessageCreators = GetMessageCreators()
-    v17.DefaultCreatorType = Util_upv_1.DEFAULT_MESSAGE_CREATOR
-    Util_upv_1:RegisterObjectPool(v17.ObjectPool)
-    return v17
+    local v48 = setmetatable({}, Class)
+    v48.ObjectPool = ObjectPool.new(50)
+    v48.MessageCreators = GetMessageCreators()
+    v48.DefaultCreatorType = child.DEFAULT_MESSAGE_CREATOR
+    child:RegisterObjectPool(v48.ObjectPool)
+
+    return v48
 end
-function tbl_1.GetStringTextBounds(a1, a2, a3, a4, a5)
+
+function v1.GetStringTextBounds(a49, a50, a51, a52, a53)
     --[[
       name: GetStringTextBounds
       line: 155
       upvalues:
-        Util_upv_1 (copy, index: 1)
+        child (copy, index: 1)
     ]]
-    return Util_upv_1:GetStringTextBounds(a2, a3, a4, a5)
+    return child:GetStringTextBounds(a50, a51, a52, a53)
 end
-return tbl_1
+
+return v1

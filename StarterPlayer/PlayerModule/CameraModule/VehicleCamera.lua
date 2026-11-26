@@ -1,182 +1,220 @@
-local tbl_upv_1 = {0, 15, 30}
-local Players_1 = game:GetService("Players")
-local RunService_1 = game:GetService("RunService")
-local BaseCamera_upv_1 = require(script.Parent:WaitForChild("BaseCamera"))
-local CameraInput_upv_1 = require(script.Parent:WaitForChild("CameraInput"))
-local CameraUtils_upv_1 = require(script.Parent:WaitForChild("CameraUtils"))
-local _ = require(script.Parent:WaitForChild("ZoomController"))
-local VehicleCameraCore_upv_1 = require(script:WaitForChild("VehicleCameraCore"))
-local VehicleCameraConfig_upv_1 = require(script:WaitForChild("VehicleCameraConfig"))
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local Spring_upv_1 = CameraUtils_upv_1.Spring
-local mapClamp_upv_1 = CameraUtils_upv_1.mapClamp
-local sanitizeAngle_upv_1 = CameraUtils_upv_1.sanitizeAngle
-local function pitchVelocity(a1, a2)
+local v1 = {0, 15, 30}
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local BaseCamera = require(script.Parent:WaitForChild("BaseCamera"))
+local CameraInput = require(script.Parent:WaitForChild("CameraInput"))
+local CameraUtils = require(script.Parent:WaitForChild("CameraUtils"))
+require(script.Parent:WaitForChild("ZoomController"))
+local VehicleCameraCore = require(script:WaitForChild("VehicleCameraCore"))
+local VehicleCameraConfig = require(script:WaitForChild("VehicleCameraConfig"))
+local localPlayer = players.LocalPlayer
+local _ = CameraUtils.map
+local spring = CameraUtils.Spring
+local mapClamp = CameraUtils.mapClamp
+local sanitizeAngle = CameraUtils.sanitizeAngle
+
+local function pitchVelocity(a15, a16)
     --[[
       name: pitchVelocity
       line: 31
     ]]
-    return (math.abs(a2.XVector:Dot(a1)))
+    return (math.abs((a16.XVector:Dot(a15))))
 end
-local function yawVelocity(a1, a2)
+
+local function yawVelocity(a18, a19)
     --[[
       name: yawVelocity
       line: 36
     ]]
-    return (math.abs(a2.YVector:Dot(a1)))
+    return (math.abs((a19.YVector:Dot(a18))))
 end
-local u1 = 0.016666666666666666
-RunService_1.Stepped:Connect(
-    function(a1, a2)
+
+local deltaTime = 0.016666666666666666
+runService.Stepped:Connect(
+    function(time: number, deltaTime2: number)
         --[[
           line: 42
           upvalues:
-            u1 (ref, index: 1)
+            deltaTime (ref, index: 1)
         ]]
-        u1 = a2
+        deltaTime = deltaTime2
     end
 )
-local u2 = setmetatable({}, BaseCamera_upv_1)
-u2.__index = u2
-function u2.new()
+local v23 = setmetatable({}, BaseCamera)
+v23.__index = v23
+
+function v23.new()
     --[[
       name: new
       line: 49
       upvalues:
-        BaseCamera_upv_1 (copy, index: 1)
-        u2 (copy, index: 2)
+        BaseCamera (copy, index: 1)
+        v23 (copy, index: 2)
     ]]
-    local v1 = setmetatable(BaseCamera_upv_1.new(), u2)
-    v1:Reset()
-    return v1
+    local v24 = setmetatable(BaseCamera.new(), v23)
+    v24:Reset()
+
+    return v24
 end
-function u2.Reset(a1)
+
+function v23.Reset(self)
     --[[
       name: Reset
       line: 55
       upvalues:
-        VehicleCameraCore_upv_1 (copy, index: 1)
-        Spring_upv_1 (copy, index: 2)
-        VehicleCameraConfig_upv_1 (copy, index: 3)
-        CameraUtils_upv_1 (copy, index: 4)
-        tbl_upv_1 (copy, index: 5)
+        VehicleCameraCore (copy, index: 1)
+        spring (copy, index: 2)
+        VehicleCameraConfig (copy, index: 3)
+        CameraUtils (copy, index: 4)
+        v1 (copy, index: 5)
     ]]
-    a1.vehicleCameraCore = VehicleCameraCore_upv_1.new(a1:GetSubjectCFrame())
-    a1.pitchSpring = Spring_upv_1.new(0, -math.rad(VehicleCameraConfig_upv_1.pitchBaseAngle))
-    a1.yawSpring = Spring_upv_1.new(0, 0)
-    a1.lastPanTick = 0
-    local CurrentCamera_1 = workspace.CurrentCamera
-    local v2 = CurrentCamera_1 and (CurrentCamera_1.CameraSubject)
-    assert(CurrentCamera_1)
-    assert(v2)
-    assert(v2:IsA("VehicleSeat"))
-    local v3, v4 = CameraUtils_upv_1.getLooseBoundingSphere(v2:GetConnectedParts(true))
-    a1.assemblyRadius = math.max(v4, 5)
-    a1.assemblyOffset = v2.CFrame:Inverse() * v3
-    a1.gamepadZoomLevels = {}
-    for _, value_1 in tbl_upv_1 do
-        table.insert(a1.gamepadZoomLevels, (value_1 * a1.assemblyRadius) / 10)
+    local instance
+    self.vehicleCameraCore = VehicleCameraCore.new(self:GetSubjectCFrame())
+    self.pitchSpring = spring.new(0, -math.rad(VehicleCameraConfig.pitchBaseAngle))
+    self.yawSpring = spring.new(0, 0)
+    self.lastPanTick = 0
+    local camera = workspace.CurrentCamera
+    local camera2 = camera
+
+    if camera2 then
+        instance = camera.CameraSubject
+    else
+        instance = camera2
     end
-    a1:SetCameraToSubjectDistance(a1.gamepadZoomLevels[#a1.gamepadZoomLevels])
+
+    assert(camera)
+    assert(instance)
+    assert(instance:IsA("VehicleSeat"))
+    local connectedParts = instance:GetConnectedParts(true)
+    local looseBoundingSphere, v31 = CameraUtils.getLooseBoundingSphere(connectedParts)
+    self.assemblyRadius = math.max(v31, 5)
+    self.assemblyOffset = instance.CFrame:Inverse() * looseBoundingSphere
+    self.gamepadZoomLevels = {}
+
+    for _, v33 in v1 do
+        table.insert(self.gamepadZoomLevels, (v33 * self.assemblyRadius) / 10)
+    end
+
+    self:SetCameraToSubjectDistance(self.gamepadZoomLevels[#self.gamepadZoomLevels])
 end
-function u2._StepRotation(a1, a2, a3)
+
+function v23._StepRotation(a34, a35, a36)
     --[[
       name: _StepRotation
       line: 85
       upvalues:
-        CameraInput_upv_1 (copy, index: 1)
-        sanitizeAngle_upv_1 (copy, index: 2)
-        VehicleCameraConfig_upv_1 (copy, index: 3)
-        mapClamp_upv_1 (copy, index: 4)
+        CameraInput (copy, index: 1)
+        sanitizeAngle (copy, index: 2)
+        VehicleCameraConfig (copy, index: 3)
+        mapClamp (copy, index: 4)
     ]]
-    local yawSpring_1 = a1.yawSpring
-    local pitchSpring_1 = a1.pitchSpring
-    local v5 = CameraInput_upv_1.getRotation(a2)
-    yawSpring_1.pos = sanitizeAngle_upv_1(yawSpring_1.pos + -v5.X)
-    pitchSpring_1.pos = sanitizeAngle_upv_1(math.clamp(pitchSpring_1.pos + -v5.Y, -1.3962634015954636, 1.3962634015954636))
-    if CameraInput_upv_1.getRotationActivated() then
-        a1.lastPanTick = os.clock()
+    local yawSpring = a34.yawSpring
+    local pitchSpring = a34.pitchSpring
+    local rotation = CameraInput.getRotation(a35)
+    local v40 = -rotation.X
+    local v41 = -rotation.Y
+    yawSpring.pos = sanitizeAngle(yawSpring.pos + v40)
+    pitchSpring.pos = sanitizeAngle((math.clamp(pitchSpring.pos + v41, -1.3962634015954636, 1.3962634015954636)))
+
+    if CameraInput.getRotationActivated() then
+        a34.lastPanTick = os.clock()
     end
-    local v6 = -math.rad(VehicleCameraConfig_upv_1.pitchBaseAngle)
-    local v7 = math.rad(VehicleCameraConfig_upv_1.pitchDeadzoneAngle)
-    if VehicleCameraConfig_upv_1.autocorrectDelay < os.clock() - a1.lastPanTick then
-        v5 = mapClamp_upv_1(a3, VehicleCameraConfig_upv_1.autocorrectMinCarSpeed, VehicleCameraConfig_upv_1.autocorrectMaxCarSpeed, 0, VehicleCameraConfig_upv_1.autocorrectResponse)
-        yawSpring_1.freq = v5
-        pitchSpring_1.freq = v5
-        if yawSpring_1.freq < 0.001 then
-            yawSpring_1.vel = 0
+
+    local goal = -math.rad(VehicleCameraConfig.pitchBaseAngle)
+    local v43 = math.rad(VehicleCameraConfig.pitchDeadzoneAngle)
+    local v44 = os.clock() - a34.lastPanTick
+
+    if VehicleCameraConfig.autocorrectDelay < v44 then
+        local freq = mapClamp(a36, VehicleCameraConfig.autocorrectMinCarSpeed, VehicleCameraConfig.autocorrectMaxCarSpeed, 0, VehicleCameraConfig.autocorrectResponse)
+        yawSpring.freq = freq
+        pitchSpring.freq = freq
+
+        if yawSpring.freq < 0.001 then
+            yawSpring.vel = 0
         end
-        if pitchSpring_1.freq < 0.001 then
-            pitchSpring_1.vel = 0
+
+        if pitchSpring.freq < 0.001 then
+            pitchSpring.vel = 0
         end
-        if math.abs(sanitizeAngle_upv_1(v6 - pitchSpring_1.pos)) <= v7 then
-            pitchSpring_1.goal = pitchSpring_1.pos
+
+        if math.abs((sanitizeAngle(goal - pitchSpring.pos))) <= v43 then
+            pitchSpring.goal = pitchSpring.pos
         else
-            pitchSpring_1.goal = v6
+            pitchSpring.goal = goal
         end
     else
-        yawSpring_1.freq = 0
-        yawSpring_1.vel = 0
-        pitchSpring_1.freq = 0
-        pitchSpring_1.vel = 0
-        pitchSpring_1.goal = v6
+        yawSpring.freq = 0
+        yawSpring.vel = 0
+        pitchSpring.freq = 0
+        pitchSpring.vel = 0
+        pitchSpring.goal = goal
     end
-    return CFrame.fromEulerAnglesYXZ(pitchSpring_1:step(a2), yawSpring_1:step(a2), 0)
+
+    return CFrame.fromEulerAnglesYXZ(pitchSpring:step(a35), yawSpring:step(a35), 0)
 end
-function u2._GetThirdPersonLocalOffset(a1)
+
+function v23._GetThirdPersonLocalOffset(a46)
     --[[
       name: _GetThirdPersonLocalOffset
-      line: 148
+      line: 144
       upvalues:
-        VehicleCameraConfig_upv_1 (copy, index: 1)
+        VehicleCameraConfig (copy, index: 1)
     ]]
-    return a1.assemblyOffset + Vector3.new(0, a1.assemblyRadius * VehicleCameraConfig_upv_1.verticalCenterOffset, 0)
+    return a46.assemblyOffset + Vector3.new(0, a46.assemblyRadius * VehicleCameraConfig.verticalCenterOffset, 0)
 end
-function u2._GetFirstPersonLocalOffset(a1, a2)
+
+function v23._GetFirstPersonLocalOffset(a47, a48)
     --[[
       name: _GetFirstPersonLocalOffset
-      line: 152
+      line: 148
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
     ]]
-    local Character_1 = LocalPlayer_upv_1.Character
-    if Character_1 and Character_1.Parent then
-        local Head_1 = Character_1:FindFirstChild("Head")
-        if Head_1 and Head_1:IsA("BasePart") then
-            return a2:Inverse() * Head_1.Position
+    local character = localPlayer.Character
+
+    if character and character.Parent then
+        local head = character:FindFirstChild("Head")
+
+        if head and head:IsA("BasePart") then
+            return a48:Inverse() * head.Position
         end
     end
-    return a1:_GetThirdPersonLocalOffset()
+
+    return a47:_GetThirdPersonLocalOffset()
 end
-function u2.Update(a1)
+
+function v23.Update(a51)
     --[[
       name: Update
-      line: 166
+      line: 162
       upvalues:
-        u1 (ref,  index: 1)
-        mapClamp_upv_1 (copy, index: 2)
+        deltaTime (ref,  index: 1)
+        mapClamp (copy, index: 2)
     ]]
-    local CurrentCamera_2 = workspace.CurrentCamera
-    local v8 = CurrentCamera_2 and (CurrentCamera_2.CameraSubject)
-    local vehicleCameraCore_1 = a1.vehicleCameraCore
-    assert(CurrentCamera_2)
-    assert(v8)
-    assert(v8:IsA("VehicleSeat"))
-    local v9 = u1
-    u1 = 0
-    local v10 = a1:GetSubjectCFrame()
-    local v11 = a1:GetSubjectVelocity()
-    local v12 = a1:GetSubjectRotVelocity()
-    local v13 = math.abs(v11:Dot(v10.ZVector))
-    local v14 = math.abs(v10.YVector:Dot(v12))
-    local v15 = math.abs(v10.XVector:Dot(v12))
-    local v16 = a1:StepZoom(v9)
-    local v17 = a1:_StepRotation(v9, v13)
-    local v18 = mapClamp_upv_1(v16, 0.5, a1.assemblyRadius, 1, 0)
-    local v19 = a1:_GetThirdPersonLocalOffset():Lerp(a1:_GetFirstPersonLocalOffset(v10), v18)
-    vehicleCameraCore_1:setTransform(v10)
-    local v20 = vehicleCameraCore_1:step(v9, v15, v14, v18)
-    local v21 = CFrame.new(v10 * v19) * v20 * v17
-    return v21 * CFrame.new(0, 0, v16), v21
+    local camera = workspace.CurrentCamera
+    local cameraSubject = camera and camera.CameraSubject
+    local vehicleCameraCore = a51.vehicleCameraCore
+    assert(camera)
+    assert(cameraSubject)
+    assert(cameraSubject:IsA("VehicleSeat"))
+    local deltaTime2 = deltaTime
+    deltaTime = 0
+    local transform = a51:GetSubjectCFrame()
+    local subjectVelocity = a51:GetSubjectVelocity()
+    local subjectRotVelocity = a51:GetSubjectRotVelocity()
+    local absoluteValue = math.abs((subjectVelocity:Dot(transform.ZVector)))
+    local absoluteValue2 = math.abs((transform.YVector:Dot(subjectRotVelocity)))
+    local absoluteValue3 = math.abs((transform.XVector:Dot(subjectRotVelocity)))
+    local z = a51:StepZoom(deltaTime2)
+    local v63 = a51:_StepRotation(deltaTime2, absoluteValue)
+    local alpha = mapClamp(z, 0.5, a51.assemblyRadius, 1, 0)
+    local startValue = a51:_GetThirdPersonLocalOffset()
+    local interpolatedValue = startValue:Lerp(a51:_GetFirstPersonLocalOffset(transform), alpha)
+    vehicleCameraCore:setTransform(transform)
+    local v67 = vehicleCameraCore:step(deltaTime2, absoluteValue3, absoluteValue2, alpha)
+    local v68 = CFrame.new(transform * interpolatedValue) * v67 * v63
+
+    return v68 * CFrame.new(0, 0, z), v68
 end
-return u2
+
+return v23

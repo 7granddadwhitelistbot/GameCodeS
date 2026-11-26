@@ -1,127 +1,156 @@
-local u1 = require(game:GetService("Chat"):WaitForChild("ClientChatModules"):WaitForChild("ChatConstants")).StandardPriority
-if u1 == nil then
-    u1 = 10
+local standardPriority
+local chat = game:GetService("Chat")
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local standardPriority2 = require(clientChatModules:WaitForChild("ChatConstants")).StandardPriority
+
+if standardPriority2 ~= nil then
+    standardPriority = standardPriority2
+else
+    standardPriority = 10
 end
-local tbl_1 = {}
-tbl_1.__index = tbl_1
-local tbl_upv_2 = {}
-local tbl_upv_3 = {}
-tbl_upv_3.__index = tbl_upv_3
-function tbl_upv_3.RebuildProcessCommandsPriorities(a1)
+
+local Class = {}
+Class.__index = Class
+local v6 = {}
+local Class2 = {}
+Class2.__index = Class2
+
+function Class2.RebuildProcessCommandsPriorities(self)
     --[[
       name: RebuildProcessCommandsPriorities
       line: 25
     ]]
-    a1.RegisteredPriorites = {}
-    local v1 = nil
-    for key_1, value_1 in pairs(a1.FunctionMap) do
-        v1 = true
-        for _, v2 in pairs(value_1) do
-            v1 = false
+    self.RegisteredPriorites = {}
+
+    for key, v10 in pairs(self.FunctionMap) do
+        local v11 = true
+
+        for _, v13 in pairs(v10) do
+            v11 = false
             break
         end
-        if not (v1) then
-            table.insert(a1.RegisteredPriorites, key_1)
+
+        if not v11 then
+            table.insert(self.RegisteredPriorites, key)
         end
     end
+
     table.sort(
-        a1.RegisteredPriorites,
-        function(a2, a3)
+        self.RegisteredPriorites,
+        function(left, right)
             --[[
               line: 37
             ]]
-            return a3 < a2
+            return right < left
         end
     )
 end
-function tbl_upv_3.HasFunction(a1, a2)
+
+function Class2.HasFunction(self, registeredFunctionKey)
     --[[
       name: HasFunction
       line: 42
     ]]
-    if a1.RegisteredFunctions[a2] ~= nil then
-        return true
+    if self.RegisteredFunctions[registeredFunctionKey] == nil then
+        return false
     end
-    return false
+
+    return true
 end
-function tbl_upv_3.RemoveFunction(a1, a2)
+
+function Class2.RemoveFunction(self, registeredFunctionKey)
     --[[
       name: RemoveFunction
       line: 49
     ]]
-    a1.RegisteredFunctions[a2] = nil
-    a1.FunctionMap[a1.RegisteredFunctions[a2]][a2] = nil
-    a1:RebuildProcessCommandsPriorities()
+    local registeredFunction = self.RegisteredFunctions[registeredFunctionKey]
+    self.RegisteredFunctions[registeredFunctionKey] = nil
+    self.FunctionMap[registeredFunction][registeredFunctionKey] = nil
+    self:RebuildProcessCommandsPriorities()
 end
-function tbl_upv_3.AddFunction(a1, a2, a3, a4)
+
+function Class2.AddFunction(self, registeredFunctionKey, value, a24)
     --[[
       name: AddFunction
       line: 56
       upvalues:
-        u1 (ref, index: 1)
+        standardPriority (ref, index: 1)
     ]]
-    if a4 == nil then
-        a4 = u1
+    if a24 == nil then
+        a24 = standardPriority
     end
-    if a1.RegisteredFunctions[a2] then
-        error(a2 .. " is already in use!")
+
+    if self.RegisteredFunctions[registeredFunctionKey] then
+        error(registeredFunctionKey .. " is already in use!")
     end
-    a1.RegisteredFunctions[a2] = a4
-    if a1.FunctionMap[a4] == nil then
-        a1.FunctionMap[a4] = {}
+
+    self.RegisteredFunctions[registeredFunctionKey] = a24
+
+    if self.FunctionMap[a24] == nil then
+        self.FunctionMap[a24] = {}
     end
-    a1.FunctionMap[a4][a2] = a3
-    a1:RebuildProcessCommandsPriorities()
+
+    self.FunctionMap[a24][registeredFunctionKey] = value
+    self:RebuildProcessCommandsPriorities()
 end
-function tbl_upv_3.GetIterator(a1)
+
+function Class2.GetIterator(self)
     --[[
       name: GetIterator
       line: 75
     ]]
-    local u2 = 1
-    local u3 = nil
-    local u4 = nil
-    local v3 = function()
+    local readIndex = 1
+    local key = nil
+    local value = nil
+
+    return function()
         --[[
           line: 80
           upvalues:
-            u2 (ref,  index: 1)
-            a1 (copy, index: 2)
-            u3 (ref,  index: 3)
-            u4 (ref,  index: 4)
+            readIndex (ref,  index: 1)
+            self (copy, index: 2)
+            key (ref,  index: 3)
+            value (ref,  index: 4)
         ]]
-        while not (#a1.RegisteredPriorites < u2) do
-            local v4 = a1.RegisteredPriorites[u2]
-            u3, u4 = next(a1.FunctionMap[v4], u3)
-            if u3 == nil then
-                u2 = u2 + 1
-                continue
+        while true do
+            if #self.RegisteredPriorites < readIndex then
+                break
             end
-            return u3, u4, v4
+
+            local registeredPriorite = self.RegisteredPriorites[readIndex]
+            key, value = next(self.FunctionMap[registeredPriorite], key)
+
+            if key ~= nil then
+                return key, value, registeredPriorite
+            end
+
+            readIndex += 1
         end
     end
-    return v3
 end
-function tbl_upv_2.new()
+
+function v6.new()
     --[[
       name: new
       line: 96
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        Class2 (copy, index: 1)
     ]]
-    local v5 = setmetatable({}, tbl_upv_3)
-    v5.RegisteredFunctions = {}
-    v5.RegisteredPriorites = {}
-    v5.FunctionMap = {}
-    return v5
+    local v30 = setmetatable({}, Class2)
+    v30.RegisteredFunctions = {}
+    v30.RegisteredPriorites = {}
+    v30.FunctionMap = {}
+    return v30
 end
-function tbl_1.NewSortedFunctionContainer(a1)
+
+function Class.NewSortedFunctionContainer(a31)
     --[[
       name: NewSortedFunctionContainer
       line: 107
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v6 (copy, index: 1)
     ]]
-    return tbl_upv_2.new()
+    return v6.new()
 end
-return tbl_1
+
+return Class

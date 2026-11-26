@@ -1,182 +1,202 @@
-local CameraUtils_1 = require(script.Parent.Parent.CameraUtils)
-local VehicleCameraConfig_upv_1 = require(script.Parent.VehicleCameraConfig)
-local map_upv_1 = CameraUtils_1.map
-local mapClamp_upv_1 = CameraUtils_1.mapClamp
-local sanitizeAngle_upv_1 = CameraUtils_1.sanitizeAngle
-local function getYaw(a1)
+local CameraUtils = require(script.Parent.Parent.CameraUtils)
+local VehicleCameraConfig = require(script.Parent.VehicleCameraConfig)
+local map = CameraUtils.map
+local mapClamp = CameraUtils.mapClamp
+local sanitizeAngle = CameraUtils.sanitizeAngle
+
+local function getYaw(a7)
     --[[
       name: getYaw
       line: 10
       upvalues:
-        sanitizeAngle_upv_1 (copy, index: 1)
+        sanitizeAngle (copy, index: 1)
     ]]
-    local _, v1 = a1:toEulerAnglesYXZ()
-    return sanitizeAngle_upv_1(v1)
+    local _, v9 = a7:toEulerAnglesYXZ()
+    return sanitizeAngle(v9)
 end
-local function getPitch(a1)
+
+local function getPitch(a11)
     --[[
       name: getPitch
       line: 16
       upvalues:
-        sanitizeAngle_upv_1 (copy, index: 1)
+        sanitizeAngle (copy, index: 1)
     ]]
-    return sanitizeAngle_upv_1(a1:toEulerAnglesYXZ())
+    local v12 = a11:toEulerAnglesYXZ()
+    return sanitizeAngle(v12)
 end
-local function stepSpringAxis(a1, a2, a3, a4, a5)
+
+local function stepSpringAxis(a14, a15, a16, a17, a18)
     --[[
       name: stepSpringAxis
       line: 22
       upvalues:
-        sanitizeAngle_upv_1 (copy, index: 1)
+        sanitizeAngle (copy, index: 1)
     ]]
-    local v2 = sanitizeAngle_upv_1(a4 - a3)
-    local v3 = math.exp(-a2 * a1)
-    return sanitizeAngle_upv_1((((v2 * (1 + (a2 * a1))) + (a5 * a1)) * v3) + a3), ((a5 * (1 - (a2 * a1))) - (v2 * ((a2 * a2) * a1))) * v3
+    local v19 = sanitizeAngle(a17 - a16)
+    local v20 = math.exp(-a15 * a14)
+
+    return sanitizeAngle(((v19 * (1 + (a15 * a14)) + (a18 * a14)) * v20) + a16), (a18 * (1 - (a15 * a14)) - (v19 * ((a15 * a15) * a14))) * v20
 end
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-function tbl_upv_1.new(a1, a2, a3)
+
+local Class = {}
+Class.__index = Class
+
+function Class.new(fRising, fFalling, a24)
     --[[
       name: new
-      line: 36
+      line: 37
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    return (setmetatable({fRising = a1, fFalling = a2, g = a3, p = a3, v = a3 * 0}, tbl_upv_1))
+    return (setmetatable({fRising = fRising, fFalling = fFalling, g = a24, p = a24, v = a24 * 0}, Class))
 end
-function tbl_upv_1.step(a1, a2)
+
+function Class.step(self, a26)
     --[[
       name: step
-      line: 46
+      line: 47
     ]]
-    local fRising_1 = a1.fRising
-    local fFalling_1 = a1.fFalling
-    local g_1 = a1.g
-    local p_1 = a1.p
-    local v_1 = a1.v
-    local v4 = math.tau
-    local v5
-    if v_1 > 0 then
-        v5 = fRising_1 or fFalling_1
+    local v27
+    local fRising = self.fRising
+    local fFalling = self.fFalling
+    local g = self.g
+    local p = self.p
+    local v = self.v
+    local v33 = math.tau
+
+    if not (0 < v) then
+        v27 = fFalling
     else
-        v5 = fFalling_1
+        v27 = fRising
+        v27 = v27 or fFalling
     end
-    local v6 = v4 * v5
-    local v7 = p_1 - g_1
-    local v8 = math.exp(-v6 * a2)
-    local v9 = ((v7 * (1 + (v6 * a2))) + (v_1 * a2)) * v8 + g_1
-    a1.p = v9
-    a1.v = ((v_1 * (1 - (v6 * a2))) - (v7 * ((v6 * v6) * a2))) * v8
-    return v9
+
+    local v34 = v33 * v27
+    local v35 = p - g
+    local v36 = math.exp(-v34 * a26)
+    local p2 = (v35 * (1 + (v34 * a26)) + (v * a26)) * v36 + g
+    self.p, self.v = p2, (v * (1 - (v34 * a26)) - (v35 * ((v34 * v34) * a26))) * v36
+
+    return p2
 end
-local tbl_upv_2 = {}
-tbl_upv_2.__index = tbl_upv_2
-function tbl_upv_2.new(a1)
+
+local Class2 = {}
+Class2.__index = Class2
+
+function Class2.new(a39)
     --[[
       name: new
-      line: 72
+      line: 74
       upvalues:
-        sanitizeAngle_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-        VehicleCameraConfig_upv_1 (copy, index: 3)
-        tbl_upv_2 (copy, index: 4)
+        sanitizeAngle (copy, index: 1)
+        Class (copy, index: 2)
+        VehicleCameraConfig (copy, index: 3)
+        Class2 (copy, index: 4)
     ]]
-    local v10 = typeof(a1) == "CFrame"
-    assert(v10)
-    local tbl_3 = {pitchV = 0, yawV = 0}
-    local _, v11 = a1:toEulerAnglesYXZ()
-    tbl_3.yawG = sanitizeAngle_upv_1(v11)
-    local v13, v12 = a1:toEulerAnglesYXZ()
-    tbl_3.yawP = sanitizeAngle_upv_1(v12)
-    tbl_3.pitchG = sanitizeAngle_upv_1(a1:toEulerAnglesYXZ())
-    tbl_3.pitchP = sanitizeAngle_upv_1(a1:toEulerAnglesYXZ())
-    tbl_3.fSpringYaw = tbl_upv_1.new(VehicleCameraConfig_upv_1.yawReponseDampingRising, VehicleCameraConfig_upv_1.yawResponseDampingFalling, 0)
-    tbl_3.fSpringPitch = tbl_upv_1.new(VehicleCameraConfig_upv_1.pitchReponseDampingRising, VehicleCameraConfig_upv_1.pitchResponseDampingFalling, 0)
-    return (setmetatable(tbl_3, tbl_upv_2))
+    assert(typeof(a39) == "CFrame")
+    local v40 = {yawV = 0, pitchV = 0}
+    local _, v42 = a39:toEulerAnglesYXZ()
+    v40.yawG = sanitizeAngle(v42)
+    local _, v44 = a39:toEulerAnglesYXZ()
+    v40.yawP = sanitizeAngle(v44)
+    local v45 = a39:toEulerAnglesYXZ()
+    v40.pitchG = sanitizeAngle(v45)
+    local v46 = a39:toEulerAnglesYXZ()
+    v40.pitchP = sanitizeAngle(v46)
+    v40.fSpringYaw = Class.new(VehicleCameraConfig.yawReponseDampingRising, VehicleCameraConfig.yawResponseDampingFalling, 0)
+    v40.fSpringPitch = Class.new(VehicleCameraConfig.pitchReponseDampingRising, VehicleCameraConfig.pitchResponseDampingFalling, 0)
+
+    return (setmetatable(v40, Class2))
 end
-function tbl_upv_2.setGoal(a1, a2)
+
+function Class2.setGoal(self, goal)
     --[[
       name: setGoal
-      line: 99
+      line: 101
       upvalues:
-        sanitizeAngle_upv_1 (copy, index: 1)
+        sanitizeAngle (copy, index: 1)
     ]]
-    local v13 = typeof(a2) == "CFrame"
-    assert(v13)
-    local _, v14 = a2:toEulerAnglesYXZ()
-    a1.yawG = sanitizeAngle_upv_1(v14)
-    a1.pitchG = sanitizeAngle_upv_1(a2:toEulerAnglesYXZ())
+    assert(typeof(goal) == "CFrame")
+    local _, v50 = goal:toEulerAnglesYXZ()
+    self.yawG = sanitizeAngle(v50)
+    local v51 = goal:toEulerAnglesYXZ()
+    self.pitchG = sanitizeAngle(v51)
 end
-function tbl_upv_2.getCFrame(a1)
+
+function Class2.getCFrame(self)
     --[[
       name: getCFrame
-      line: 106
+      line: 108
     ]]
-    return CFrame.fromEulerAnglesYXZ(a1.pitchP, a1.yawP, 0)
+    return CFrame.fromEulerAnglesYXZ(self.pitchP, self.yawP, 0)
 end
-function tbl_upv_2.step(a1, a2, a3, a4, a5)
+
+function Class2.step(self, a54, a55, a56, a57)
     --[[
       name: step
-      line: 110
+      line: 112
       upvalues:
-        mapClamp_upv_1 (copy, index: 1)
-        map_upv_1 (copy, index: 2)
-        VehicleCameraConfig_upv_1 (copy, index: 3)
-        sanitizeAngle_upv_1 (copy, index: 4)
+        mapClamp (copy, index: 1)
+        map (copy, index: 2)
+        VehicleCameraConfig (copy, index: 3)
+        sanitizeAngle (copy, index: 4)
     ]]
-    local v15 = typeof(a2) == "number"
-    assert(v15)
-    local v16 = typeof(a4) == "number"
-    assert(v16)
-    local v17 = typeof(a3) == "number"
-    assert(v17)
-    local v18 = typeof(a5) == "number"
-    assert(v18)
-    local fSpringYaw_1 = a1.fSpringYaw
-    local fSpringPitch_1 = a1.fSpringPitch
-    fSpringYaw_1.g = mapClamp_upv_1(map_upv_1(a5, 0, 1, a4, 0), math.rad(VehicleCameraConfig_upv_1.cutoffMinAngularVelYaw), math.rad(VehicleCameraConfig_upv_1.cutoffMaxAngularVelYaw), 1, 0)
-    fSpringPitch_1.g = mapClamp_upv_1(map_upv_1(a5, 0, 1, a3, 0), math.rad(VehicleCameraConfig_upv_1.cutoffMinAngularVelPitch), math.rad(VehicleCameraConfig_upv_1.cutoffMaxAngularVelPitch), 1, 0)
-    local v19 = math.tau * VehicleCameraConfig_upv_1.yawStiffness * fSpringYaw_1:step(a2)
-    local v20 = (math.tau * VehicleCameraConfig_upv_1.pitchStiffness) * fSpringPitch_1:step(a2) * map_upv_1(a5, 0, 1, 1, VehicleCameraConfig_upv_1.firstPersonResponseMul)
-    local v21 = v19 * map_upv_1(a5, 0, 1, 1, VehicleCameraConfig_upv_1.firstPersonResponseMul)
-    local yawG_1 = a1.yawG
-    local yawV_1 = a1.yawV
-    local v22 = sanitizeAngle_upv_1(a1.yawP - yawG_1)
-    local v23 = math.exp(-v21 * a2)
-    a1.yawP = sanitizeAngle_upv_1((((v22 * (1 + (v21 * a2))) + (yawV_1 * a2)) * v23) + yawG_1)
-    a1.yawV = ((yawV_1 * (1 - (v21 * a2))) - (v22 * ((v21 * v21) * a2))) * v23
-    local pitchG_1 = a1.pitchG
-    local pitchV_1 = a1.pitchV
-    local v24 = sanitizeAngle_upv_1(a1.pitchP - pitchG_1)
-    local v25 = math.exp(-v20 * a2)
-    a1.pitchP = sanitizeAngle_upv_1((((v24 * (1 + (v20 * a2))) + (pitchV_1 * a2)) * v25) + pitchG_1)
-    a1.pitchV = ((pitchV_1 * (1 - (v20 * a2))) - (v24 * ((v20 * v20) * a2))) * v25
-    return a1:getCFrame()
+    assert(typeof(a54) == "number")
+    assert(typeof(a56) == "number")
+    assert(typeof(a55) == "number")
+    assert(typeof(a57) == "number")
+    local fSpringYaw = self.fSpringYaw
+    local fSpringPitch = self.fSpringPitch
+    fSpringYaw.g = mapClamp(map(a57, 0, 1, a56, 0), math.rad(VehicleCameraConfig.cutoffMinAngularVelYaw), math.rad(VehicleCameraConfig.cutoffMaxAngularVelYaw), 1, 0)
+    fSpringPitch.g = mapClamp(map(a57, 0, 1, a55, 0), math.rad(VehicleCameraConfig.cutoffMinAngularVelPitch), math.rad(VehicleCameraConfig.cutoffMaxAngularVelPitch), 1, 0)
+    local v60 = math.tau * VehicleCameraConfig.yawStiffness * fSpringYaw:step(a54)
+    local v61 = (math.tau * VehicleCameraConfig.pitchStiffness) * fSpringPitch:step(a54) * map(a57, 0, 1, 1, VehicleCameraConfig.firstPersonResponseMul)
+    local v62 = v60 * map(a57, 0, 1, 1, VehicleCameraConfig.firstPersonResponseMul)
+    local yawG = self.yawG
+    local yawP = self.yawP
+    local yawV = self.yawV
+    local v66 = sanitizeAngle(yawP - yawG)
+    local v67 = math.exp(-v62 * a54)
+    self.yawP, self.yawV = sanitizeAngle(((v66 * (1 + (v62 * a54)) + (yawV * a54)) * v67) + yawG), (yawV * (1 - (v62 * a54)) - (v66 * ((v62 * v62) * a54))) * v67
+    local pitchG = self.pitchG
+    local pitchP = self.pitchP
+    local pitchV = self.pitchV
+    local v71 = sanitizeAngle(pitchP - pitchG)
+    local v72 = math.exp(-v61 * a54)
+    self.pitchP, self.pitchV = sanitizeAngle(((v71 * (1 + (v61 * a54)) + (pitchV * a54)) * v72) + pitchG), (pitchV * (1 - (v61 * a54)) - (v71 * ((v61 * v61) * a54))) * v72
+
+    return self:getCFrame()
 end
-local tbl_upv_4 = {}
-tbl_upv_4.__index = tbl_upv_4
-function tbl_upv_4.new(a1)
+
+local Class3 = {}
+Class3.__index = Class3
+
+function Class3.new(a74)
     --[[
       name: new
-      line: 167
+      line: 160
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        tbl_upv_4 (copy, index: 2)
+        Class2 (copy, index: 1)
+        Class3 (copy, index: 2)
     ]]
-    return (setmetatable({vrs = tbl_upv_2.new(a1)}, tbl_upv_4))
+    return (setmetatable({vrs = Class2.new(a74)}, Class3))
 end
-function tbl_upv_4.step(a1, a2, a3, a4, a5)
+
+function Class3.step(self, a76, a77, a78, a79)
     --[[
       name: step
-      line: 173
+      line: 166
     ]]
-    return a1.vrs:step(a2, a3, a4, a5)
+    return self.vrs:step(a76, a77, a78, a79)
 end
-function tbl_upv_4.setTransform(a1, a2)
+
+function Class3.setTransform(self, goal)
     --[[
       name: setTransform
-      line: 177
+      line: 170
     ]]
-    a1.vrs:setGoal(a2)
+    self.vrs:setGoal(goal)
 end
-return tbl_upv_4
+
+return Class3

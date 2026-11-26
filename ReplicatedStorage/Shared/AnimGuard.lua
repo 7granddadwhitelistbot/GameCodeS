@@ -1,62 +1,87 @@
-local RunService_1 = game:GetService("RunService")
-local tbl_upv_1 = {}
-local u1 = RunService_1:IsStudio()
-local u2 = ((RunService_1:IsServer()) and "DroppedServer") or "DroppedClient"
-local tbl_upv_2 = {"^rbxassetid://%d+$", "^rbxasset://[%w_%-%./]+$", "^https?://www%.roblox%.com/[Aa]sset/?%?[Ii][Dd]=%d+$", "^https?://assetdelivery%.roblox%.com/v1/[Aa]sset/?%?[Ii][Dd]=%d+$"}
-function tbl_upv_1.IsContentId(a1)
+local drop
+local attributeName
+local runService = game:GetService("RunService")
+local v4 = {}
+local isStudio = runService:IsStudio()
+
+if runService:IsServer() then
+    attributeName = "DroppedServer"
+else
+    attributeName = "DroppedClient"
+end
+
+local patterns = {"^rbxassetid://%d+$", "^rbxasset://[%w_%-%./]+$", "^https?://www%.roblox%.com/[Aa]sset/?%?[Ii][Dd]=%d+$", "^https?://assetdelivery%.roblox%.com/v1/[Aa]sset/?%?[Ii][Dd]=%d+$"}
+
+function v4.IsContentId(text: string)
     --[[
       name: IsContentId
       line: 48
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        patterns (copy, index: 1)
     ]]
-    for _, value_1 in tbl_upv_2 do
-        if not (string.match(a1, value_1)) then
-            continue
+    for _, pattern in patterns do
+        if string.match(text, pattern) then
+            return true
         end
-        return true
     end
+
     return false
 end
-function tbl_upv_1.IsText(a1)
+
+function v4.IsText(text: string)
     --[[
       name: IsText
       line: 57
     ]]
-    local v1 = string.find(a1, "://", 1, true) == nil
-    return v1
+    return string.find(text, "://", 1, true) == nil
 end
-local u3 = setmetatable({}, {__mode = "k"})
-local function idOf(a1)
+
+local v11 = setmetatable({}, {__mode = "k"})
+
+local function idOf(a13)
     --[[
       name: idOf
       line: 63
     ]]
-    local success_1, v2 = pcall(function() end)
-    if success_1 and type(v2) == "string" then
-        return v2
+    local success, animationId = pcall(
+        function()
+            --[[
+              line: 64
+              upvalues:
+                a13 (copy, index: 1)
+            ]]
+            local animation = a13.Animation
+            return animation and animation.AnimationId
+        end
+    )
+
+    if success and type(animationId) == "string" then
+        return animationId
     end
+
     return nil
 end
-local function drop(a1)
+
+drop = function(a17)
     --[[
       name: drop
       line: 71
       upvalues:
-        u1 (copy, index: 1)
-        u2 (copy, index: 2)
+        isStudio (copy, index: 1)
+        attributeName (copy, index: 2)
     ]]
-    if u1 then
-        script:SetAttribute(u2, (script:GetAttribute(u2) or 0) + 1)
+    if isStudio then
+        script:SetAttribute(attributeName, (script:GetAttribute(attributeName) or 0) + 1)
     end
+
     pcall(
         function()
             --[[
               line: 75
               upvalues:
-                a1 (copy, index: 1)
+                a17 (copy, index: 1)
             ]]
-            a1:Stop(0)
+            a17:Stop(0)
         end
     )
     pcall(
@@ -64,93 +89,115 @@ local function drop(a1)
             --[[
               line: 78
               upvalues:
-                a1 (copy, index: 1)
+                a17 (copy, index: 1)
             ]]
-            a1:Destroy()
+            a17:Destroy()
         end
     )
 end
-function tbl_upv_1.Watch(a1, a2)
+
+function v4.Watch(key, callback)
     --[[
       name: Watch
       line: 83
       upvalues:
-        u3 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v11 (copy, index: 1)
+        v4 (copy, index: 2)
         drop (copy, index: 3)
     ]]
-    if u3[a1] then
+    if v11[key] then
         return
     end
-    u3[a1] = true
-    local v3 = nil
-    for _, value_upv_2 in a1:GetPlayingAnimationTracks() do
-        local success_2, v4 = pcall(
+
+    v11[key] = true
+
+    for _, playingAnimationTrack in key:GetPlayingAnimationTracks() do
+        local animationId
+
+        local success, animationId2 = pcall(
             function()
                 --[[
                   line: 64
                   upvalues:
-                    value_upv_2 (copy, index: 1)
+                    playingAnimationTrack (copy, index: 1)
                 ]]
-                local Animation_1 = value_upv_2.Animation
-                return Animation_1 and (Animation_1.AnimationId)
+                local animation = playingAnimationTrack.Animation
+                return animation and animation.AnimationId
             end
         )
-        if not (success_2) or type(v4) ~= "string" then
-            v3 = nil
-            if not (v3) then
+
+        if not success or type(animationId2) ~= "string" then
+            animationId = nil
+        else
+            animationId = animationId2
+        end
+
+        if animationId then
+            if not v4.IsText(animationId) then
                 continue
             end
-            local v5 = tbl_upv_1.IsText(v3)
-            if not (v5) then
+
+            drop(playingAnimationTrack)
+
+            if not callback then
                 continue
             end
-            drop(value_upv_2)
-            if a2 then
-                a2(value_upv_2, "text id")
-                continue
-            end
-        end
-        v3 = v4
-        if not (v3) then
-            continue
-        end
-        local v5 = tbl_upv_1.IsText(v3)
-        if not (v5) then
-            continue
-        end
-        drop(value_upv_2)
-        if a2 then
-            a2(value_upv_2, "text id")
+
+            callback(playingAnimationTrack, "text id")
         end
     end
-    local function check(a3)
-        --[[
-          name: check
-          line: 88
-          upvalues:
-            tbl_upv_1 (copy, index: 1)
-            a1 (copy, index: 2)
-            drop (copy, index: 3)
-            a2 (copy, index: 4)
-        ]]
-        local v6, v7 = pcall(function() end)
-        local v8 = not (v6) or type(v7) ~= "string" or v7
-        v6 = nil
-        if (v8) and (tbl_upv_1.IsText(v8)) then
-            v6 = "text id"
-        elseif a3.WeightTarget <= 0.01 then
-            v6 = ((#a1:GetPlayingAnimationTracks() > 48) and "over budget") or v6
+
+    key.AnimationPlayed:Connect(
+        function(a26)
+            --[[
+              name: check
+              line: 88
+              upvalues:
+                v4 (copy, index: 1)
+                key (copy, index: 2)
+                drop (copy, index: 3)
+                callback (copy, index: 4)
+            ]]
+            local animationId
+            local v28
+
+            local success, animationId2 = pcall(
+                function()
+                    --[[
+                      line: 64
+                      upvalues:
+                        a26 (copy, index: 1)
+                    ]]
+                    local animation = a26.Animation
+                    return animation and animation.AnimationId
+                end
+            )
+
+            if not success or type(animationId2) ~= "string" then
+                animationId = nil
+            else
+                animationId = animationId2
+            end
+
+            local v32 = nil
+
+            if animationId and v4.IsText(animationId) then
+                v28 = "text id"
+            elseif not (a26.WeightTarget <= 0.01) then
+                v28 = v32
+            else
+                v28 = 48 < #key:GetPlayingAnimationTracks() and "over budget" or v32
+            end
+
+            if v28 then
+                drop(a26)
+
+                if callback then
+                    callback(a26, v28)
+                end
+            end
         end
-        if not v6 then
-            return
-        end
-        drop(a3)
-        if not a2 then
-            return
-        end
-        a2(a3, v6)
-    end
-    a1.AnimationPlayed:Connect(check)
+    )
 end
-return tbl_upv_1
+
+return v4

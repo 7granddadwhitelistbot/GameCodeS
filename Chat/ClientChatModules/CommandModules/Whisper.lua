@@ -1,269 +1,296 @@
-local Util_1 = require(script.Parent:WaitForChild("Util"))
-local ChatSettings_upv_1 = require(script.Parent.Parent:WaitForChild("ChatSettings"))
-local Players_upv_1 = game:GetService("Players")
-local ChatLocalization_upv_1 = nil
+local localPlayer
+local Util = require(script.Parent:WaitForChild("Util"))
+local ChatSettings = require(script.Parent.Parent:WaitForChild("ChatSettings"))
+local players = game:GetService("Players")
+local ChatLocalization = nil
 pcall(
     function()
         --[[
           line: 13
           upvalues:
-            ChatLocalization_upv_1 (ref, index: 1)
+            ChatLocalization (ref, index: 1)
         ]]
-        ChatLocalization_upv_1 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
+        ChatLocalization = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
     end
 )
-local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-while LocalPlayer_upv_1 == nil do
-    Players_upv_1.ChildAdded:wait()
-    LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
+localPlayer = players.LocalPlayer
+
+while localPlayer == nil do
+    players.ChildAdded:wait()
+    localPlayer = players.LocalPlayer
 end
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-local tbl_upv_2 = {}
-function tbl_upv_1.TrimWhisperCommand(a1, a2)
+
+local Class = {}
+Class.__index = Class
+local v7 = {}
+
+function Class.TrimWhisperCommand(self, text: string)
     --[[
       name: TrimWhisperCommand
       line: 26
     ]]
-    if string.sub(a2, 1, 3):lower() ~= "/w " then
-        if string.sub(a2, 1, 9):lower() ~= "/whisper " then
-            return nil
-        end
-        return (string.sub(a2, 10))
+    if string.sub(text, 1, 3):lower() == "/w " then
+        return (string.sub(text, 4))
     end
-    return (string.sub(a2, 4))
+
+    return if string.sub(text, 1, 9):lower() ~= "/whisper " then nil else (string.sub(text, 10))
 end
-function tbl_upv_1.TrimWhiteSpace(a1, a2)
+
+function Class.TrimWhiteSpace(self, text: string)
     --[[
       name: TrimWhiteSpace
       line: 35
     ]]
-    local v1 = string.gsub(a2, "%s+", "")
-    return v1, a2[#a2] == " "
+    return string.gsub(text, "%s+", ""), text[#text] == " "
 end
-function tbl_upv_1.ShouldAutoCompleteNames(a1)
+
+function Class.ShouldAutoCompleteNames(self)
     --[[
       name: ShouldAutoCompleteNames
       line: 41
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        ChatSettings (copy, index: 1)
     ]]
-    if ChatSettings_upv_1.WhisperCommandAutoCompletePlayerNames == nil then
-        return true
+    if ChatSettings.WhisperCommandAutoCompletePlayerNames ~= nil then
+        return ChatSettings.WhisperCommandAutoCompletePlayerNames
     end
-    return ChatSettings_upv_1.WhisperCommandAutoCompletePlayerNames
+
+    return true
 end
-function tbl_upv_1.GetWhisperingPlayer(a1, a2)
+
+function Class.GetWhisperingPlayer(self, a14)
     --[[
       name: GetWhisperingPlayer
       line: 48
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        LocalPlayer_upv_1 (ref,  index: 2)
-        ChatSettings_upv_1 (copy, index: 3)
+        players (copy, index: 1)
+        localPlayer (ref,  index: 2)
+        ChatSettings (copy, index: 3)
     ]]
-    local v2 = a1:TrimWhisperCommand(a2:lower())
-    if not v2 then
-        return nil
-    end
-    local v3, v4 = a1:TrimWhiteSpace(v2)
-    local tbl_3 = {}
-    local tbl_4 = {}
-    local v5 = Players_upv_1:GetPlayers()
-    for n_1 = 1, #v5 do
-        if v5[n_1] == LocalPlayer_upv_1 then
-            continue
+    if const v15 = self:TrimWhisperCommand((a14:lower())) then
+        local key
+        local v17
+        local text, v19 = self:TrimWhiteSpace(v15)
+        local v20 = {}
+        local v21 = {}
+        local players2 = players:GetPlayers()
+
+        for playerKey = 1, #players2 do
+            if players2[playerKey] ~= localPlayer then
+                if string.sub(players2[playerKey].Name:lower(), 1, (string.len(text))) == text then
+                    v20[players2[playerKey]] = players2[playerKey].Name:lower()
+                end
+
+                if ChatSettings.WhisperByDisplayName then
+                    local text2 = players2[playerKey].DisplayName:lower()
+
+                    if string.sub(text2, 1, (string.len(text))) == text then
+                        v21[players2[playerKey]] = text2
+                    end
+                end
+            end
         end
-        if string.sub(v5[n_1].Name:lower(), 1, string.len(v3)) == v3 then
-            tbl_3[v5[n_1]] = v5[n_1].Name:lower()
+
+        local v25 = 0
+        local v26
+        key, v17 = nil, nil
+
+        for key2, v28 in pairs(v20) do
+            v26 = v25 + 1
+
+            if v28 == text and v19 then
+                return key2
+            end
+
+            v25, key, v17 = v26, key2, v28
         end
-        if not (ChatSettings_upv_1.WhisperByDisplayName) then
-            continue
+
+        if ChatSettings.WhisperByDisplayName then
+            for key3, v30 in pairs(v21) do
+                if key ~= key3 then
+                    v25 += 1
+                    key, v17 = key3, v30
+                end
+            end
         end
-        local v6 = v5[n_1].DisplayName:lower()
-        if string.sub(v6, 1, string.len(v3)) == v3 then
-            tbl_4[v5[n_1]] = v6
-        end
-    end
-    v5 = 0
-    local v7 = nil
-    local v8 = nil
-    local v9, v10
-    v9, v10 = v7, v8
-    for key_1, value_1 in pairs(tbl_3) do
-        v5 = v5 + 1
-        if value_1 ~= v3 or not (v4) then
-            v10 = value_1
-            continue
-        end
-        return key_1
-    end
-    if ChatSettings_upv_1.WhisperByDisplayName then
-        for key_2, value_2 in pairs(tbl_4) do
-            if v9 ~= key_2 then
-                v5 = v5 + 1
-                v9, v10 = key_2, value_2
+
+        if v25 == 1 then
+            if self:ShouldAutoCompleteNames() then
+                return key
+            end
+            if v17 == text then
+                return key
             end
         end
     end
-    if v5 ~= 1 or not a1:ShouldAutoCompleteNames() and v10 ~= v3 then
-        return nil
-    end
-    return v9
+
+    return nil
 end
-function tbl_upv_1.GetWhisperChanneNameColor(a1)
+
+function Class.GetWhisperChanneNameColor(self)
     --[[
       name: GetWhisperChanneNameColor
       line: 106
     ]]
-    if a1.ChatSettings.WhisperChannelNameColor then
-        return a1.ChatSettings.WhisperChannelNameColor
+    if self.ChatSettings.WhisperChannelNameColor then
+        return self.ChatSettings.WhisperChannelNameColor
     end
+
     return Color3.fromRGB(102, 14, 102)
 end
-function tbl_upv_1.EnterWhisperState(a1, a2)
+
+function Class.EnterWhisperState(self, a33)
     --[[
       name: EnterWhisperState
       line: 113
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
-        ChatLocalization_upv_1 (ref,  index: 2)
+        ChatSettings (copy, index: 1)
+        ChatLocalization (ref,  index: 2)
     ]]
-    a1.PlayerNameEntered = true
-    a1.PlayerName = a2.Name
-    a1.PlayerDisplayName = a2.DisplayName
-    a1.MessageModeButton.Size = UDim2.new(0, 1000, 1, 0)
-    local v11
-    if (ChatSettings_upv_1.PlayerDisplayNamesEnabled) and (ChatSettings_upv_1.WhisperByDisplayName) then
-        v11 = string.format("[To %s]", a2.DisplayName)
-    else
-        v11 = string.format("[To %s]", a2.Name)
+    self.PlayerNameEntered = true
+    self.PlayerName = a33.Name
+    self.PlayerDisplayName = a33.DisplayName
+    self.MessageModeButton.Size = UDim2.new(0, 1000, 1, 0)
+    local text = if ChatSettings.PlayerDisplayNamesEnabled and ChatSettings.WhisperByDisplayName then string.format("[To %s]", a33.DisplayName) else string.format("[To %s]", a33.Name)
+
+    if ChatLocalization.tryLocalize then
+        text = ChatLocalization:tryLocalize(text)
     end
-    if ChatLocalization_upv_1.tryLocalize then
-        v11 = ChatLocalization_upv_1:tryLocalize(v11)
-    end
-    a1.MessageModeButton.Text = v11
-    a1.MessageModeButton.TextColor3 = a1:GetWhisperChanneNameColor()
-    v11 = math.ceil(a1.MessageModeButton.TextBounds.X)
-    a1.MessageModeButton.Size = UDim2.new(0, v11, 1, 0)
-    a1.TextBox.Size = UDim2.new(1, -v11, 1, 0)
-    a1.TextBox.Position = UDim2.new(0, v11, 0, 0)
-    a1.TextBox.Text = " "
+
+    self.MessageModeButton.Text = text
+    self.MessageModeButton.TextColor3 = self:GetWhisperChanneNameColor()
+    local ceilingValue = math.ceil(self.MessageModeButton.TextBounds.X)
+    self.MessageModeButton.Size = UDim2.new(0, ceilingValue, 1, 0)
+    self.TextBox.Size = UDim2.new(1, -ceilingValue, 1, 0)
+    self.TextBox.Position = UDim2.new(0, ceilingValue, 0, 0)
+    self.TextBox.Text = " "
 end
-function tbl_upv_1.TextUpdated(a1)
+
+function Class.TextUpdated(self)
     --[[
       name: TextUpdated
       line: 142
     ]]
-    local Text_1 = a1.TextBox.Text
-    local v12 = nil
-    if a1.PlayerNameEntered then
-        if Text_1 ~= "" then
-            return
+    local text = self.TextBox.Text
+
+    if self.PlayerNameEntered then
+        if text == "" then
+            self.MessageModeButton.Text = ""
+            self.MessageModeButton.Size = UDim2.new(0, 0, 0, 0)
+            self.TextBox.Size = UDim2.new(1, 0, 1, 0)
+            self.TextBox.Position = UDim2.new(0, 0, 0, 0)
+            self.TextBox.Text = ""
+            self.PlayerNameEntered = false
+            self.ChatBar:ResetCustomState()
+            self.ChatBar:CaptureFocus()
         end
-        a1.MessageModeButton.Text = ""
-        a1.MessageModeButton.Size = UDim2.new(0, 0, 0, 0)
-        a1.TextBox.Size = UDim2.new(1, 0, 1, 0)
-        a1.TextBox.Position = UDim2.new(0, 0, 0, 0)
-        a1.TextBox.Text = ""
-        a1.PlayerNameEntered = false
-        a1.ChatBar:ResetCustomState()
-        a1.ChatBar:CaptureFocus()
-    else
-        v12 = a1:GetWhisperingPlayer(Text_1)
-        if not v12 then
-            return
-        end
-        a1:EnterWhisperState(v12)
+    elseif const whisperingPlayer = self:GetWhisperingPlayer(text) then
+        self:EnterWhisperState(whisperingPlayer)
     end
 end
-function tbl_upv_1.GetMessage(a1)
+
+function Class.GetMessage(self)
     --[[
       name: GetMessage
       line: 166
     ]]
-    if a1.PlayerNameEntered then
-        return "/w " .. a1.PlayerName .. " " .. a1.TextBox.Text
+    if self.PlayerNameEntered then
+        return "/w " .. self.PlayerName .. " " .. self.TextBox.Text
     end
-    return a1.TextBox.Text
+
+    return self.TextBox.Text
 end
-function tbl_upv_1.ProcessCompletedMessage(a1)
+
+function Class.ProcessCompletedMessage(a40)
     --[[
       name: ProcessCompletedMessage
       line: 173
     ]]
     return false
 end
-function tbl_upv_1.Destroy(a1)
+
+function Class.Destroy(self)
     --[[
       name: Destroy
       line: 177
     ]]
-    a1.MessageModeConnection:disconnect()
-    a1.Destroyed = true
+    self.MessageModeConnection:disconnect()
+    self.Destroyed = true
 end
-function tbl_upv_2.new(a1, a2, a3, a4)
+
+function v7.new(chatWindow, chatBar, chatSettings, a45)
     --[[
       name: new
       line: 182
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    local u1 = setmetatable({}, tbl_upv_1)
-    u1.Destroyed = false
-    u1.ChatWindow = a1
-    u1.ChatBar = a2
-    u1.ChatSettings = a3
-    u1.TextBox = a2:GetTextBox()
-    u1.MessageModeButton = a2:GetMessageModeTextButton()
-    u1.OriginalWhisperText = ""
-    u1.PlayerNameEntered = false
-    u1.MessageModeConnection = u1.MessageModeButton.MouseButton1Click:connect(
+    local v46 = setmetatable({}, Class)
+    v46.Destroyed = false
+    v46.ChatWindow = chatWindow
+    v46.ChatBar = chatBar
+    v46.ChatSettings = chatSettings
+    v46.TextBox = chatBar:GetTextBox()
+    v46.MessageModeButton = chatBar:GetMessageModeTextButton()
+    v46.OriginalWhisperText = ""
+    v46.PlayerNameEntered = false
+
+    v46.MessageModeConnection = v46.MessageModeButton.MouseButton1Click:connect(
         function()
             --[[
               line: 193
               upvalues:
-                u1 (copy, index: 1)
+                v46 (copy, index: 1)
             ]]
-            local Text_2 = u1.TextBox.Text
-            if string.sub(Text_2, 1, 1) == " " then
-                Text_2 = string.sub(Text_2, 2)
+            local v47 = v46.TextBox.Text
+
+            if string.sub(v47, 1, 1) == " " then
+                v47 = string.sub(v47, 2)
             end
-            u1.ChatBar:ResetCustomState()
-            u1.ChatBar:SetTextBoxText(Text_2)
-            u1.ChatBar:CaptureFocus()
+
+            v46.ChatBar:ResetCustomState()
+            v46.ChatBar:SetTextBoxText(v47)
+            v46.ChatBar:CaptureFocus()
         end
     )
-    if a4 then
-        u1:EnterWhisperState(a4)
-    else
-        u1:TextUpdated()
+
+    if a45 then
+        v46:EnterWhisperState(a45)
+        return v46
     end
-    return u1
+
+    v46:TextUpdated()
+
+    return v46
 end
-function ProcessMessage(a1, a2, a3, a4)
+
+function ProcessMessage(text: string, chatWindow, chatBar, chatSettings)
     --[[
       name: ProcessMessage
       line: 212
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    if string.sub(a1, 1, 3):lower() ~= "/w " and string.sub(a1, 1, 9):lower() ~= "/whisper " then
+    if string.sub(text, 1, 3):lower() ~= "/w " and string.sub(text, 1, 9):lower() ~= "/whisper " then
         return nil
     end
-    return tbl_upv_2.new(a2, a3, a4)
+
+    return v7.new(chatWindow, chatBar, chatSettings)
 end
-function CreateCustomState(a1, a2, a3, a4)
+
+function CreateCustomState(a52, chatWindow, chatBar, chatSettings)
     --[[
       name: CreateCustomState
       line: 219
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    return tbl_upv_2.new(a2, a3, a4, a1)
+    return v7.new(chatWindow, chatBar, chatSettings, a52)
 end
-local tbl_5 = {}
-tbl_5[Util_1.KEY_COMMAND_PROCESSOR_TYPE] = Util_1.IN_PROGRESS_MESSAGE_PROCESSOR
-tbl_5[Util_1.KEY_PROCESSOR_FUNCTION] = ProcessMessage
-tbl_5.CustomStateCreator = CreateCustomState
-return tbl_5
+
+local v56 = {}
+v56[Util.KEY_COMMAND_PROCESSOR_TYPE] = Util.IN_PROGRESS_MESSAGE_PROCESSOR
+v56[Util.KEY_PROCESSOR_FUNCTION] = ProcessMessage
+v56.CustomStateCreator = CreateCustomState
+
+return v56

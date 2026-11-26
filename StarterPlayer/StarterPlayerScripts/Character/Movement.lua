@@ -1,711 +1,868 @@
-local Players_1 = game:GetService("Players")
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local RunService_upv_1 = game:GetService("RunService")
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local Shared_1 = ReplicatedStorage_1:WaitForChild("Shared")
-local Camera_upv_1 = require(Shared_1:WaitForChild("Camera"))
-local Simulation_upv_1 = require(Shared_1:WaitForChild("Simulation"))
-local Effects_upv_1 = require(script.Parent:WaitForChild("Effects"))
-local Footsteps_upv_1 = require(script.Parent:WaitForChild("Footsteps"))
-local Perf_upv_1 = require(script.Parent:WaitForChild("Perf"))
-local AnimationIds_upv_1 = require(script.Parent:WaitForChild("AnimationIds"))
-local tbl_upv_1 = {}
-local BASE_SPEED_upv_1 = Simulation_upv_1.BASE_SPEED
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local u1 = nil
-local tbl_upv_2 = {fov = 0}
-local u2 = false
-local tbl_upv_3 = {pivot = Vector3.new(0, -1.2000000476837158, 0), fov = 8}
-local function setSpeedKick(a1)
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local userInputService = game:GetService("UserInputService")
+local shared = replicatedStorage:WaitForChild("Shared")
+local Camera = require(shared:WaitForChild("Camera"))
+local Simulation = require(shared:WaitForChild("Simulation"))
+local Effects = require(script.Parent:WaitForChild("Effects"))
+local Footsteps = require(script.Parent:WaitForChild("Footsteps"))
+local Perf = require(script.Parent:WaitForChild("Perf"))
+local AnimationIds = require(script.Parent:WaitForChild("AnimationIds"))
+local v12 = {}
+local baseSpeed = Simulation.BASE_SPEED
+local localPlayer = players.LocalPlayer
+local v15 = nil
+local v16 = {fov = 0}
+local v17 = false
+local v18 = {fov = 8, pivot = Vector3.new(0, -1.2000000476837158, 0)}
+
+local function setSpeedKick(speedKick)
     --[[
       name: setSpeedKick
       line: 70
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        u2 (ref,  index: 2)
-        Camera_upv_1 (copy, index: 3)
+        v16 (copy, index: 1)
+        v17 (ref,  index: 2)
+        Camera (copy, index: 3)
     ]]
-    if a1 > 0.05 then
-        tbl_upv_2.fov = a1
-        if (u2) then
-            return
+    if not (0.05 < speedKick) then
+        if v17 then
+            v17 = false
+            Camera.SetModifier("Speed", nil)
         end
-        u2 = true
-        Camera_upv_1.SetModifier("Speed", tbl_upv_2)
-    elseif u2 then
-        u2 = false
-        Camera_upv_1.SetModifier("Speed", nil)
+    else
+        v16.fov = speedKick
+
+        if not v17 then
+            v17 = true
+            Camera.SetModifier("Speed", v16)
+        end
     end
 end
-local function drawnRoot(a1)
+
+local function drawnRoot(a22)
     --[[
       name: drawnRoot
       line: 84
       upvalues:
-        Camera_upv_1 (copy, index: 1)
+        Camera (copy, index: 1)
     ]]
-    local success_1, v1 = pcall(Camera_upv_1.Drawn, a1.root)
-    if success_1 and typeof(v1) == "Instance" and v1:IsA("BasePart") then
-        return v1
+    local success, result = pcall(Camera.Drawn, a22.root)
+
+    if success and typeof(result) == "Instance" and result:IsA("BasePart") then
+        return result
     end
-    return a1.root
+
+    return a22.root
 end
-function tbl_upv_1.IsSliding()
+
+function v12.IsSliding()
     --[[
       name: IsSliding
       line: 92
       upvalues:
-        u1 (ref, index: 1)
+        v15 (ref, index: 1)
     ]]
-    local v2 = (u1 ~= nil) and (u1.sliding)
-    return v2
+    return v15 ~= nil and v15.sliding
 end
-function tbl_upv_1.BaseSpeed()
+
+function v12.BaseSpeed()
     --[[
       name: BaseSpeed
       line: 96
       upvalues:
-        BASE_SPEED_upv_1 (copy, index: 1)
+        baseSpeed (copy, index: 1)
     ]]
-    return BASE_SPEED_upv_1
+    return baseSpeed
 end
-local function playing(a1)
+
+local function playing(a26)
     --[[
       name: playing
       line: 103
     ]]
-    return (a1 ~= nil) and (a1.IsPlaying)
+    return a26 ~= nil and a26.IsPlaying
 end
-local function renderSlideEnd(a1)
+
+local function renderSlideStart(a28)
+    --[[
+      name: renderSlideStart
+      line: 107
+      upvalues:
+        Camera (copy, index: 1)
+        v18 (copy, index: 2)
+        Effects (copy, index: 3)
+    ]]
+    local v29
+    a28.sliding = true
+    a28.slideAirborne = false
+    a28.character:SetAttribute("Sliding", true)
+    Camera.SuspendCharacterRotation("Slide")
+    Camera.SetModifier("Slide", v18)
+    Camera.Shake(0.1, 0.2)
+
+    if a28.legsTrack then
+        local legsTrack = a28.legsTrack
+        local isPlaying = legsTrack ~= nil and legsTrack.IsPlaying
+        if not isPlaying then
+            a28.legsTrack:Play(0.08, 1, 1)
+        end
+    end
+
+    if a28.upperTrack then
+        local upperTrack = a28.upperTrack
+        local isPlaying = upperTrack ~= nil and upperTrack.IsPlaying
+        if not isPlaying then
+            a28.upperTrack:Play(0.12, 1, 1)
+        end
+    end
+
+    if not a28.slideSound then
+        local v34
+        local playSound = Effects.PlaySound
+        local success, result = pcall(Camera.Drawn, a28.root)
+
+        if not success or typeof(result) ~= "Instance" or not result:IsA("BasePart") then
+            v34 = a28.root
+        else
+            v34 = result
+        end
+
+        a28.slideSound = playSound("Slide", v34, {pitchVar = 0.08, looped = true, volume = 1.2})
+    end
+
+    local v38 = Effects.DustColor(a28.humanoid.FloorMaterial)
+    local dust = Effects.Dust
+    local success, result = pcall(Camera.Drawn, a28.root)
+
+    if not success or typeof(result) ~= "Instance" or not result:IsA("BasePart") then
+        v29 = a28.root
+    else
+        v29 = result
+    end
+
+    dust(v29.Position - Vector3.new(0, 2.5999999046325684, 0), 1.1, v38)
+
+    if a28.trailAttachment then
+        if not a28.slideTrail or not a28.slideTrail.Parent then
+            a28.slideTrail = Effects.Trail(a28.trailAttachment, v38)
+        end
+
+        local slideTrail = a28.slideTrail
+        slideTrail.Color = ColorSequence.new(v38)
+        slideTrail.Enabled = true
+    end
+end
+
+local function renderSlideEnd(a44)
     --[[
       name: renderSlideEnd
       line: 135
       upvalues:
-        Camera_upv_1 (copy, index: 1)
+        Camera (copy, index: 1)
     ]]
-    a1.sliding = false
-    if a1.character.Parent then
-        a1.character:SetAttribute("Sliding", false)
+    a44.sliding = false
+
+    if a44.character.Parent then
+        a44.character:SetAttribute("Sliding", false)
     end
-    if a1.legsTrack then
-        a1.legsTrack:Stop(0.15)
+
+    if a44.legsTrack then
+        a44.legsTrack:Stop(0.15)
     end
-    if a1.upperTrack then
-        a1.upperTrack:Stop(0.15)
+
+    if a44.upperTrack then
+        a44.upperTrack:Stop(0.15)
     end
-    if a1.slideTrail then
-        a1.slideTrail.Enabled = false
+
+    if a44.slideTrail then
+        a44.slideTrail.Enabled = false
     end
-    local slideSound_upv_1 = a1.slideSound
-    if slideSound_upv_1 then
-        a1.slideSound = nil
+
+    if const slideSound = a44.slideSound then
+        a44.slideSound = nil
+
         task.spawn(
             function()
                 --[[
                   line: 152
                   upvalues:
-                    slideSound_upv_1 (copy, index: 1)
+                    slideSound (copy, index: 1)
                 ]]
                 for _ = 1, 8 do
-                    if slideSound_upv_1.Parent then
-                        slideSound_upv_1.Volume = slideSound_upv_1.Volume * 0.7
-                        task.wait(0.02)
-                        continue
-                    else
+                    if not slideSound.Parent then
                         break
                     end
+
+                    slideSound.Volume *= 0.7
+                    task.wait(0.02)
                 end
-                slideSound_upv_1:Destroy()
+
+                slideSound:Destroy()
             end
         )
     end
-    Camera_upv_1.SetModifier("Slide", nil)
-    Camera_upv_1.ResumeCharacterRotation("Slide")
+
+    Camera.SetModifier("Slide", nil)
+    Camera.ResumeCharacterRotation("Slide")
 end
-local u3 = RaycastParams.new()
-u3.FilterType = Enum.RaycastFilterType.Include
-u3.FilterDescendantsInstances = {workspace.Terrain}
-u3.IgnoreWater = false
-local function feetOf(a1)
+
+local function feetOf(a48)
     --[[
       name: feetOf
       line: 170
       upvalues:
-        Camera_upv_1 (copy, index: 1)
+        Camera (copy, index: 1)
     ]]
-    local v3 = a1.humanoid.HipHeight
-    local v4 = a1.root:GetAttribute("SHipBase")
-    if type(v4) == "number" and v4 < v3 then
-        v3 = v4
+    local v49
+    local v50 = a48.humanoid.HipHeight
+    local sHipBase = a48.root:GetAttribute("SHipBase")
+
+    if type(sHipBase) == "number" and sHipBase < v50 then
+        v50 = sHipBase
     end
-    local success_2, v5 = pcall(Camera_upv_1.Drawn, a1.root)
-    local v6
-    if success_2 and typeof(v5) == "Instance" and v5:IsA("BasePart") then
-        v6 = v5
+
+    local success, result = pcall(Camera.Drawn, a48.root)
+
+    if not success or typeof(result) ~= "Instance" or not result:IsA("BasePart") then
+        v49 = a48.root
     else
-        v6 = a1.root
+        v49 = result
     end
-    return v6.Position - Vector3.new(0, (v3 + (a1.root.Size.Y / 2)) - 0.2, 0)
+
+    return v49.Position - Vector3.new(0, (v50 + (a48.root.Size.Y / 2)) - 0.2, 0)
 end
-local function waterSplashAt(a1)
+
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Include
+raycastParams.FilterDescendantsInstances = {workspace.Terrain}
+raycastParams.IgnoreWater = false
+
+local function waterSplashAt(a56)
     --[[
       name: waterSplashAt
       line: 189
       upvalues:
-        u3 (copy, index: 1)
+        raycastParams (copy, index: 1)
     ]]
-    local v7 = a1.root:GetAttribute("SWade")
-    if type(v7) == "number" and not (v7 < 0.3) then
-        local v8 = workspace:Raycast(a1.root.Position + Vector3.new(0, 4, 0), Vector3.new(0, -12, 0), u3)
-        if v8 and v8.Material == Enum.Material.Water then
-            return v8.Position
-        end
+    local sWade = a56.root:GetAttribute("SWade")
+
+    if type(sWade) ~= "number" or sWade < 0.3 then
         return nil
     end
+
+    local raycastResult = workspace:Raycast(a56.root.Position + Vector3.new(0, 4, 0), Vector3.new(0, -12, 0), raycastParams)
+
+    if raycastResult and raycastResult.Material == Enum.Material.Water then
+        return raycastResult.Position
+    end
+
     return nil
 end
-local function onLanded(a1)
+
+local function onJumped(a60)
+    --[[
+      name: onJumped
+      line: 202
+      upvalues:
+        Effects (copy, index: 1)
+        Camera (copy, index: 2)
+        waterSplashAt (copy, index: 3)
+        feetOf (copy, index: 4)
+    ]]
+    local v61
+    local timestamp = os.clock()
+
+    if timestamp - a60.lastJumpFx < 0.4 then
+        return
+    end
+
+    a60.airStart = timestamp
+    a60.minVy = 0
+    a60.lastJumpFx = timestamp
+    local playSound = Effects.PlaySound
+    local success, result = pcall(Camera.Drawn, a60.root)
+
+    if not success or typeof(result) ~= "Instance" or not result:IsA("BasePart") then
+        v61 = a60.root
+    else
+        v61 = result
+    end
+
+    playSound("Jump", v61, {pitchVar = 0.08, volume = 0.8})
+
+    if const v66 = waterSplashAt(a60) then
+        Effects.Dust(v66, 0.55, Effects.DustColor(Enum.Material.Water))
+        return
+    end
+
+    Effects.Dust(feetOf(a60), 0.4, Effects.DustColor(a60.humanoid.FloorMaterial))
+end
+
+local function onLanded(a68)
     --[[
       name: onLanded
       line: 221
       upvalues:
         waterSplashAt (copy, index: 1)
-        Effects_upv_1 (copy, index: 2)
-        Camera_upv_1 (copy, index: 3)
+        Effects (copy, index: 2)
+        Camera (copy, index: 3)
         feetOf (copy, index: 4)
-        Footsteps_upv_1 (copy, index: 5)
+        Footsteps (copy, index: 5)
     ]]
-    local v9 = -a1.minVy
-    a1.minVy = 0
-    local v10 = os.clock()
-    if (v9 < 18) or (v10 - a1.airStart < 0.12) then
+    local v69 = -a68.minVy
+    a68.minVy = 0
+    local timestamp = os.clock()
+    local v71 = timestamp - a68.airStart
+
+    if v69 < 18 or v71 < 0.12 or timestamp - a68.lastLandFx < 0.4 then
         return
     end
-    if not (v10 - a1.lastLandFx < 0.4) then
-        a1.lastLandFx = v10
-        local FloorMaterial_1 = a1.humanoid.FloorMaterial
-        local v11 = math.clamp((v9 - 70) / 60, 0, 1)
-        local v12 = waterSplashAt(a1)
-        if v12 then
-            Effects_upv_1.Dust(v12, (v11 * 1.2) + 0.6, Effects_upv_1.DustColor(Enum.Material.Water))
-        else
-            Camera_upv_1.Dip((v11 * 1.2) + 0.12)
-            if v11 > 0.6 then
-                Camera_upv_1.Shake((v11 * 0.3) + 0.15, 0.3)
-            end
-            Effects_upv_1.Dust(feetOf(a1), (v11 * 1.8) + 0.45, Effects_upv_1.DustColor(FloorMaterial_1))
-            local success_3, v13 = pcall(Camera_upv_1.Drawn, a1.root)
-            if success_3 and typeof(v13) == "Instance" and v13:IsA("BasePart") then
-                v9 = v13
-            else
-                v9 = a1.root
-            end
-            if v11 <= 0 then
-                local tbl_4 = {pitchVar = 0.08, volume = 0.8}
-                Effects_upv_1.PlaySound(Footsteps_upv_1.StepSoundName(Footsteps_upv_1.SurfaceFor(FloorMaterial_1)), v9, tbl_4)
-            elseif v11 < 0.5 then
-                Effects_upv_1.PlaySound("Land", v9, {pitchVar = 0.06, volume = (v11 * 0.9) + 0.35})
-            else
-                Effects_upv_1.PlaySound("LandHeavy", v9, {pitchVar = 0.05, volume = (v11 * 0.5) + 0.5})
-            end
-        end
+
+    a68.lastLandFx = timestamp
+    local floorMaterial = a68.humanoid.FloorMaterial
+    local clampedValue = math.clamp((v69 - 70) / 60, 0, 1)
+
+    if const v74 = waterSplashAt(a68) then
+        Effects.Dust(v74, (clampedValue * 1.2) + 0.6, Effects.DustColor(Enum.Material.Water))
+        return
     end
-end
-local function renderSlideStart(a1)
-    --[[
-      name: renderSlideStart
-      line: 107
-      upvalues:
-        Camera_upv_1 (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
-        Effects_upv_1 (copy, index: 3)
-    ]]
-    a1.sliding = true
-    a1.slideAirborne = false
-    a1.character:SetAttribute("Sliding", true)
-    Camera_upv_1.SuspendCharacterRotation("Slide")
-    Camera_upv_1.SetModifier("Slide", tbl_upv_3)
-    Camera_upv_1.Shake(0.1, 0.2)
-    if a1.legsTrack then
-        local legsTrack_1 = a1.legsTrack
-        if legsTrack_1 == nil or not legsTrack_1.IsPlaying then
-            a1.legsTrack:Play(0.08, 1, 1)
-        end
+
+    local v75
+    Camera.Dip((clampedValue * 1.2) + 0.12)
+
+    if 0.6 < clampedValue then
+        Camera.Shake((clampedValue * 0.3) + 0.15, 0.3)
     end
-    if a1.upperTrack then
-        local upperTrack_1 = a1.upperTrack
-        if upperTrack_1 == nil or not upperTrack_1.IsPlaying then
-            a1.upperTrack:Play(0.12, 1, 1)
-        end
-    end
-    if not (a1.slideSound) then
-        local PlaySound_1 = Effects_upv_1.PlaySound
-        local success_4, v14 = pcall(Camera_upv_1.Drawn, a1.root)
-        local v15
-        if success_4 and typeof(v14) == "Instance" and v14:IsA("BasePart") then
-            v15 = v14
-        else
-            v15 = a1.root
-        end
-        a1.slideSound = PlaySound_1("Slide", v15, {looped = true, volume = 1.2, pitchVar = 0.08})
-    end
-    local v16 = Effects_upv_1.DustColor(a1.humanoid.FloorMaterial)
-    local Dust_1 = Effects_upv_1.Dust
-    local success_5, v17 = pcall(Camera_upv_1.Drawn, a1.root)
-    local v18
-    if success_5 and typeof(v17) == "Instance" and v17:IsA("BasePart") then
-        v18 = v17
+
+    Effects.Dust(feetOf(a68), (clampedValue * 1.8) + 0.45, Effects.DustColor(floorMaterial))
+    local success, result = pcall(Camera.Drawn, a68.root)
+
+    if not success or typeof(result) ~= "Instance" or not result:IsA("BasePart") then
+        v75 = a68.root
     else
-        v18 = a1.root
+        v75 = result
     end
-    Dust_1(v18.Position - Vector3.new(0, 2.5999999046325684, 0), 1.1, v16)
-    if a1.trailAttachment then
-        if not (a1.slideTrail) or not (a1.slideTrail.Parent) then
-            a1.slideTrail = Effects_upv_1.Trail(a1.trailAttachment, v16)
-        end
-        local slideTrail_1 = a1.slideTrail
-        slideTrail_1.Color = ColorSequence.new(v16)
-        slideTrail_1.Enabled = true
+
+    if clampedValue <= 0 then
+        local v78 = Footsteps.SurfaceFor(floorMaterial)
+        local v79 = {volume = 0.8, pitchVar = 0.08}
+        Effects.PlaySound(Footsteps.StepSoundName(v78), v75, v79)
+
+        return
     end
+
+    if clampedValue < 0.5 then
+        Effects.PlaySound("Land", v75, {pitchVar = 0.06, volume = (clampedValue * 0.9) + 0.35})
+        return
+    end
+
+    Effects.PlaySound("LandHeavy", v75, {pitchVar = 0.05, volume = (clampedValue * 0.5) + 0.5})
 end
+
 local function render()
     --[[
       name: render
       line: 257
       upvalues:
-        u1 (ref,  index: 1)
-        Camera_upv_1 (copy, index: 2)
+        v15 (ref,  index: 1)
+        Camera (copy, index: 2)
         renderSlideStart (copy, index: 3)
         renderSlideEnd (copy, index: 4)
-        Effects_upv_1 (copy, index: 5)
+        Effects (copy, index: 5)
         feetOf (copy, index: 6)
-        u2 (ref,  index: 7)
-        BASE_SPEED_upv_1 (copy, index: 8)
-        tbl_upv_2 (copy, index: 9)
+        v17 (ref,  index: 7)
+        baseSpeed (copy, index: 8)
+        v16 (copy, index: 9)
     ]]
-    if not u1 then
+    local v81 = v15
+    if not v81 then
         return
     end
-    local humanoid_1 = u1.humanoid
-    local root_1 = u1.root
-    local v19 = (humanoid_1.Parent ~= nil) and (humanoid_1.Health > 0)
-    local trailAttachment_upv_1 = u1.trailAttachment
-    if trailAttachment_upv_1 then
-        local success_6, v20 = pcall(Camera_upv_1.Drawn, u1.root)
-        if success_6 and typeof(v20) == "Instance" and v20:IsA("BasePart") then
-            root_upv_2 = v20
+
+    local humanoid = v81.humanoid
+    local root = v81.root
+    local v84 = humanoid.Parent ~= nil and 0 < humanoid.Health
+
+    if const trailAttachment = v81.trailAttachment then
+        local v86
+        local success, result = pcall(Camera.Drawn, v81.root)
+
+        if not success or typeof(result) ~= "Instance" or not result:IsA("BasePart") then
+            v86 = v81.root
         else
-            root_upv_2 = u1.root
+            v86 = result
         end
-        if trailAttachment_upv_1.Parent ~= root_upv_2
-            and not (pcall(
+
+        if trailAttachment.Parent ~= v86
+            and not pcall(
                 function()
                     --[[
                       line: 269
                       upvalues:
-                        trailAttachment_upv_1 (copy, index: 1)
-                        root_upv_2 (copy, index: 2)
+                        trailAttachment (copy, index: 1)
+                        v86 (copy, index: 2)
                     ]]
-                    trailAttachment_upv_1.Parent = root_upv_2
+                    trailAttachment.Parent = v86
                 end
-            )) then
-            local v21 = Instance.new("Attachment")
-            v21.Name = "TribesSlideTrail"
-            v21.Position = Vector3.new(0, -2.299999952316284, 1)
-            v21.Parent = root_upv_2
-            u1.trailAttachment = v21
-            u1.slideTrail = nil
+            )
+        then
+            local tribesSlideTrail = Instance.new("Attachment")
+            tribesSlideTrail.Name = "TribesSlideTrail"
+            tribesSlideTrail.Position = Vector3.new(0, -2.299999952316284, 1)
+            tribesSlideTrail.Parent = v86
+            v81.trailAttachment = tribesSlideTrail
+            v81.slideTrail = nil
         end
     end
-    local root_upv_2 = v19 and (root_1:GetAttribute("SSlide") ~= nil)
-    if root_upv_2 == u1.sliding then
-        local v22 = nil
-        if root_upv_2 then
-            if u1.legsTrack then
-                local legsTrack_2 = u1.legsTrack
-                if legsTrack_2 == nil or not legsTrack_2.IsPlaying then
-                    u1.legsTrack:Play(0.05, 1, 1)
+
+    local v90 = v84 and root:GetAttribute("SSlide") ~= nil
+
+    if v90 == v81.sliding then
+        if v90 then
+            if v81.legsTrack then
+                local legsTrack = v81.legsTrack
+                local isPlaying = legsTrack ~= nil and legsTrack.IsPlaying
+                if not isPlaying then
+                    v81.legsTrack:Play(0.05, 1, 1)
                 end
             end
-            if u1.upperTrack then
-                local upperTrack_2 = u1.upperTrack
-                if upperTrack_2 == nil or not upperTrack_2.IsPlaying then
-                    u1.upperTrack:Play(0.05, 1, 1)
+
+            if v81.upperTrack then
+                local upperTrack = v81.upperTrack
+                local isPlaying = upperTrack ~= nil and upperTrack.IsPlaying
+                if not isPlaying then
+                    v81.upperTrack:Play(0.05, 1, 1)
                 end
             end
-            v22 = humanoid_1.FloorMaterial == Enum.Material.Air
-            if v22 ~= u1.slideAirborne then
-                u1.slideAirborne = v22
-                local v23 = os.clock()
-                if v22 then
-                    u1.slideAirAt = v23
-                elseif v23 - u1.slideAirAt > 0.08 then
-                    Effects_upv_1.Dust(feetOf(u1), 0.5, Effects_upv_1.DustColor(humanoid_1.FloorMaterial))
+
+            local slideAirborne = humanoid.FloorMaterial == Enum.Material.Air
+
+            if slideAirborne ~= v81.slideAirborne then
+                v81.slideAirborne = slideAirborne
+                local timestamp = os.clock()
+
+                if slideAirborne then
+                    v81.slideAirAt = timestamp
+                elseif 0.08 < timestamp - v81.slideAirAt then
+                    Effects.Dust(feetOf(v81), 0.5, Effects.DustColor(humanoid.FloorMaterial))
                 end
-                if u1.slideTrail then
-                    u1.slideTrail.Enabled = not v22
+
+                if v81.slideTrail then
+                    v81.slideTrail.Enabled = not slideAirborne
                 end
             end
         end
-    elseif root_upv_2 then
-        renderSlideStart(u1)
+    elseif v90 then
+        renderSlideStart(v81)
     else
-        renderSlideEnd(u1)
+        renderSlideEnd(v81)
     end
-    if v19 then
-        local AssemblyLinearVelocity_1 = root_1.AssemblyLinearVelocity
-        if humanoid_1.FloorMaterial == Enum.Material.Air then
-            u1.minVy = math.min(u1.minVy, AssemblyLinearVelocity_1.Y)
+
+    if not v84 then
+        if v17 then
+            v17 = false
+            Camera.SetModifier("Speed", nil)
         end
-        if not (root_upv_2) then
-            local v24 = nil
-            if not (Camera_upv_1.IsAiming()) then
-                v24 = math.clamp(((Vector3.new(AssemblyLinearVelocity_1.X, 0, AssemblyLinearVelocity_1.Z).Magnitude - BASE_SPEED_upv_1) - 1) * 0.45, 0, 7)
-                if v24 > 0.05 then
-                    tbl_upv_2.fov = v24
-                    if not u2 then
-                        u2 = true
-                        Camera_upv_1.SetModifier("Speed", tbl_upv_2)
-                    end
-                elseif u2 then
-                    u2 = false
-                    Camera_upv_1.SetModifier("Speed", nil)
-                end
-                return
+
+        return
+    end
+
+    local assemblyLinearVelocity = root.AssemblyLinearVelocity
+
+    if humanoid.FloorMaterial == Enum.Material.Air then
+        v81.minVy = math.min(v81.minVy, assemblyLinearVelocity.Y)
+    end
+
+    if not v90 and not Camera.IsAiming() then
+        local fov = math.clamp(((Vector3.new(assemblyLinearVelocity.X, 0, assemblyLinearVelocity.Z).Magnitude - baseSpeed) - 1) * 0.45, 0, 7)
+
+        if not (0.05 < fov) then
+            if v17 then
+                v17 = false
+                Camera.SetModifier("Speed", nil)
+            end
+        else
+            v16.fov = fov
+
+            if not v17 then
+                v17 = true
+                Camera.SetModifier("Speed", v16)
             end
         end
-        if u2 then
-            u2 = false
-            Camera_upv_1.SetModifier("Speed", nil)
-        end
-    elseif u2 then
-        u2 = false
-        Camera_upv_1.SetModifier("Speed", nil)
+    elseif v17 then
+        v17 = false
+        Camera.SetModifier("Speed", nil)
     end
 end
+
+local function loadTrack(animator: Instance?, animationId, priority: Enum.AnimationPriority, name: string)
+    --[[
+      name: loadTrack
+      line: 330
+    ]]
+    if animationId == "" or animationId == "rbxassetid://0" then
+        return nil
+    end
+
+    local animation = Instance.new("Animation")
+    animation.Name = name
+    animation.AnimationId = animationId
+    local success, result = pcall(
+        function()
+            --[[
+              line: 337
+              upvalues:
+                animator (copy, index: 1)
+                animation (copy, index: 2)
+            ]]
+            return animator:LoadAnimation(animation)
+        end
+    )
+
+    if not success or not result then
+        return nil
+    end
+
+    result.Priority = priority
+    result.Looped = true
+
+    return result
+end
+
 local function unbind()
     --[[
       name: unbind
       line: 348
       upvalues:
-        u1 (ref,  index: 1)
+        v15 (ref,  index: 1)
         renderSlideEnd (copy, index: 2)
-        u2 (ref,  index: 3)
-        Camera_upv_1 (copy, index: 4)
+        v17 (ref,  index: 3)
+        Camera (copy, index: 4)
     ]]
-    if not u1 then
+    local v108 = v15
+    if not v108 then
         return
     end
-    if u1.sliding then
-        renderSlideEnd(u1)
+
+    if v108.sliding then
+        renderSlideEnd(v108)
     end
-    if u2 then
-        u2 = false
-        Camera_upv_1.SetModifier("Speed", nil)
+
+    if v17 then
+        v17 = false
+        Camera.SetModifier("Speed", nil)
     end
-    for _, value_1 in u1.connections do
-        value_1:Disconnect()
+
+    for _, connection in v108.connections do
+        connection:Disconnect()
     end
-    if u1.trailAttachment then
-        u1.trailAttachment:Destroy()
+
+    if v108.trailAttachment then
+        v108.trailAttachment:Destroy()
     end
-    u1 = nil
+
+    v15 = nil
 end
-local function loadTrack(a1, a2, a3, a4)
-    --[[
-      name: loadTrack
-      line: 330
-    ]]
-    if a2 ~= "" and a2 ~= "rbxassetid://0" then
-        local u4 = Instance.new("Animation")
-        u4.Name = a4
-        u4.AnimationId = a2
-        local success_7, v25 = pcall(
-            function()
-                --[[
-                  line: 337
-                  upvalues:
-                    a1 (copy, index: 1)
-                    u4 (copy, index: 2)
-                ]]
-                return a1:LoadAnimation(u4)
-            end
-        )
-        if success_7 and v25 then
-            v25.Priority = a3
-            v25.Looped = true
-            return v25
-        end
-        return nil
-    end
-    return nil
-end
-local function onJumped(a1)
-    --[[
-      name: onJumped
-      line: 202
-      upvalues:
-        Effects_upv_1 (copy, index: 1)
-        Camera_upv_1 (copy, index: 2)
-        waterSplashAt (copy, index: 3)
-        feetOf (copy, index: 4)
-    ]]
-    local v26 = os.clock()
-    if v26 - a1.lastJumpFx < 0.4 then
-        return
-    end
-    a1.airStart = v26
-    a1.minVy = 0
-    a1.lastJumpFx = v26
-    local PlaySound_2 = Effects_upv_1.PlaySound
-    local success_8, v27 = pcall(Camera_upv_1.Drawn, a1.root)
-    local v28
-    if success_8 and typeof(v27) == "Instance" and v27:IsA("BasePart") then
-        v28 = v27
-    else
-        v28 = a1.root
-    end
-    PlaySound_2("Jump", v28, {volume = 0.8, pitchVar = 0.08})
-    local v29 = waterSplashAt(a1)
-    if v29 then
-        Effects_upv_1.Dust(v29, 0.55, Effects_upv_1.DustColor(Enum.Material.Water))
-    else
-        Effects_upv_1.Dust(feetOf(a1), 0.4, Effects_upv_1.DustColor(a1.humanoid.FloorMaterial))
-    end
-end
-local function bindCharacter(a1)
+
+local function bindCharacter(character: Model?)
     --[[
       name: bindCharacter
       line: 366
       upvalues:
         unbind (copy, index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
+        localPlayer (copy, index: 2)
         loadTrack (copy, index: 3)
-        AnimationIds_upv_1 (copy, index: 4)
-        u1 (ref,  index: 5)
-        RunService_upv_1 (copy, index: 6)
+        AnimationIds (copy, index: 4)
+        v15 (ref,  index: 5)
+        runService (copy, index: 6)
         onJumped (copy, index: 7)
         onLanded (copy, index: 8)
         renderSlideEnd (copy, index: 9)
-        u2 (ref,  index: 10)
-        Camera_upv_1 (copy, index: 11)
+        v17 (ref,  index: 10)
+        Camera (copy, index: 11)
     ]]
     unbind()
-    local v30 = a1:WaitForChild("Humanoid", 10)
-    local v31 = a1:WaitForChild("HumanoidRootPart", 10)
-    if not v30 or not v31 then
+    local humanoid = character:WaitForChild("Humanoid", 10)
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart", 10)
+
+    if not humanoid or not humanoidRootPart or localPlayer.Character ~= character then
         return
     end
-    if LocalPlayer_upv_1.Character == a1 then
-        local v32 = Instance.new("Attachment")
-        v32.Name = "TribesSlideTrail"
-        v32.Position = Vector3.new(0, -2.299999952316284, 1)
-        local v33 = v30:FindFirstChildOfClass("Animator") or (v30:WaitForChild("Animator", 5))
-        local v34 = nil
-        local v35 = nil
-        if v33 then
-            local v36 = v33:IsA("Animator")
-            if v36 then
-                v34 = loadTrack(v33, AnimationIds_upv_1.SlideLegs, Enum.AnimationPriority.Action2, "SlideLegs")
-                v35 = loadTrack(v33, AnimationIds_upv_1.SlideUpper, Enum.AnimationPriority.Movement, "SlideUpper")
-                v34 = v34 or (loadTrack(v33, AnimationIds_upv_1.SlideFallback, Enum.AnimationPriority.Movement, "SlideFallback"))
+
+    local tribesSlideTrail = Instance.new("Attachment")
+    tribesSlideTrail.Name = "TribesSlideTrail"
+    tribesSlideTrail.Position = Vector3.new(0, -2.299999952316284, 1)
+    local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator", 5)
+    local legsTrack = nil
+    local upperTrack = nil
+
+    if animator and animator:IsA("Animator") then
+        legsTrack = loadTrack(animator, AnimationIds.SlideLegs, Enum.AnimationPriority.Action2, "SlideLegs")
+        upperTrack = loadTrack(animator, AnimationIds.SlideUpper, Enum.AnimationPriority.Movement, "SlideUpper")
+        legsTrack = legsTrack
+            or loadTrack(animator, AnimationIds.SlideFallback, Enum.AnimationPriority.Movement, "SlideFallback")
+    end
+
+    local v119 = {sliding = false, slideSound = nil, slideTrail = nil, slideAirborne = false, slideAirAt = 0, minVy = 0, lastJumpFx = 0, lastLandFx = 0, character = character, humanoid = humanoid, root = humanoidRootPart, legsTrack = legsTrack, upperTrack = upperTrack, trailAttachment = tribesSlideTrail, airStart = os.clock(), connections = {}}
+    v15 = v119
+    character:SetAttribute("Sliding", false)
+
+    table.insert(
+        v119.connections,
+        humanoid.StateChanged:Connect(
+            function(a120, a121)
+                --[[
+                  line: 412
+                  upvalues:
+                    runService (copy, index: 1)
+                    onJumped (copy, index: 2)
+                    v119 (copy, index: 3)
+                    onLanded (copy, index: 4)
+                ]]
+                if runService:IsResimulating() then
+                    return
+                end
+
+                if a121 == Enum.HumanoidStateType.Jumping then
+                    onJumped(v119)
+                    return
+                end
+
+                if a121 ~= Enum.HumanoidStateType.Freefall then
+                    if a121 == Enum.HumanoidStateType.Landed then
+                        onLanded(v119)
+                    end
+                elseif a120 ~= Enum.HumanoidStateType.Jumping and 0.4 <= os.clock() - v119.lastJumpFx then
+                    v119.airStart = os.clock()
+                    v119.minVy = 0
+                end
+            end
+        )
+    )
+
+    table.insert(
+        v119.connections,
+        humanoid.Died:Connect(
+            function()
+                --[[
+                  line: 427
+                  upvalues:
+                    v119 (copy, index: 1)
+                    renderSlideEnd (copy, index: 2)
+                    v17 (ref,  index: 3)
+                    Camera (copy, index: 4)
+                ]]
+                if v119.sliding then
+                    renderSlideEnd(v119)
+                end
+
+                if v17 then
+                    v17 = false
+                    Camera.SetModifier("Speed", nil)
+                end
+            end
+        )
+    )
+end
+
+local v122 = {}
+local v123 = {}
+
+local function setHeld(key: string, a126: boolean)
+    --[[
+      name: setHeld
+      line: 445
+      upvalues:
+        v123 (copy, index: 1)
+        v122 (copy, index: 2)
+        Simulation (copy, index: 3)
+    ]]
+    v123[key] = (v123[key] or 0) + 1
+
+    if a126 then
+        v122[key] = os.clock()
+        Simulation.SetInput(key, true)
+
+        return
+    end
+
+    local v127 = 0.1 - (os.clock() - (v122[key] or 0))
+
+    if v127 <= 0 then
+        Simulation.SetInput(key, false)
+        return
+    end
+
+    local v128 = v123[key]
+
+    task.delay(
+        v127,
+        function()
+            --[[
+              line: 458
+              upvalues:
+                v123 (copy, index: 1)
+                key (copy, index: 2)
+                v128 (copy, index: 3)
+                Simulation (copy, index: 4)
+            ]]
+            if v123[key] == v128 then
+                Simulation.SetInput(key, false)
             end
         end
-        local tbl_upv_5 = {sliding = false, lastJumpFx = 0, lastLandFx = 0, minVy = 0, slideAirborne = false, slideAirAt = 0}
-        tbl_upv_5.character = a1
-        tbl_upv_5.humanoid = v30
-        tbl_upv_5.root = v31
-        tbl_upv_5.legsTrack = v34
-        tbl_upv_5.upperTrack = v35
-        tbl_upv_5.trailAttachment = v32
-        tbl_upv_5.airStart = os.clock()
-        tbl_upv_5.connections = {}
-        u1 = tbl_upv_5
-        a1:SetAttribute("Sliding", false)
-        table.insert(
-            tbl_upv_5.connections,
-            v30.StateChanged:Connect(
-                function(a2, a3)
-                    --[[
-                      line: 412
-                      upvalues:
-                        RunService_upv_1 (copy, index: 1)
-                        onJumped (copy, index: 2)
-                        tbl_upv_5 (copy, index: 3)
-                        onLanded (copy, index: 4)
-                    ]]
-                    if RunService_upv_1:IsResimulating() then
-                        return
-                    end
-                    if a3 == Enum.HumanoidStateType.Jumping then
-                        onJumped(tbl_upv_5)
-                    elseif a3 ~= Enum.HumanoidStateType.Freefall then
-                        if a3 == Enum.HumanoidStateType.Landed then
-                            onLanded(tbl_upv_5)
-                        end
-                    elseif a2 ~= Enum.HumanoidStateType.Jumping and os.clock() - tbl_upv_5.lastJumpFx >= 0.4 then
-                        tbl_upv_5.airStart = os.clock()
-                        tbl_upv_5.minVy = 0
-                        return
-                    end
-                end
-            )
-        )
-        table.insert(
-            tbl_upv_5.connections,
-            v30.Died:Connect(
-                function()
-                    --[[
-                      line: 427
-                      upvalues:
-                        tbl_upv_5 (copy, index: 1)
-                        renderSlideEnd (copy, index: 2)
-                        u2 (ref,  index: 3)
-                        Camera_upv_1 (copy, index: 4)
-                    ]]
-                    if tbl_upv_5.sliding then
-                        renderSlideEnd(tbl_upv_5)
-                    end
-                    if not u2 then
-                        return
-                    end
-                    u2 = false
-                    Camera_upv_1.SetModifier("Speed", nil)
-                end
-            )
-        )
-    end
+    )
 end
-function tbl_upv_1.SetSlideHeld(a1)
+
+function v12.SetSlideHeld(slideHeld)
     --[[
       name: SetSlideHeld
-      line: 439
+      line: 466
       upvalues:
-        Simulation_upv_1 (copy, index: 1)
+        setHeld (copy, index: 1)
     ]]
-    Simulation_upv_1.SetInput("Slide", a1 == true)
+    setHeld("Slide", slideHeld == true)
 end
-function tbl_upv_1.RequestSlide()
+
+function v12.RequestSlide()
     --[[
       name: RequestSlide
-      line: 444
+      line: 471
       upvalues:
-        Simulation_upv_1 (copy, index: 1)
+        Simulation (copy, index: 1)
     ]]
-    Simulation_upv_1.Pulse("Slide", 0.1)
+    Simulation.Pulse("Slide", 0.1)
 end
-function tbl_upv_1.SetJumpHeld(a1)
+
+function v12.SetJumpHeld(jumpHeld)
     --[[
       name: SetJumpHeld
-      line: 449
+      line: 476
       upvalues:
-        Simulation_upv_1 (copy, index: 1)
+        setHeld (copy, index: 1)
     ]]
-    Simulation_upv_1.SetInput("Jump", a1 == true)
+    setHeld("Jump", jumpHeld == true)
 end
-local u5 = false
-function tbl_upv_1.Start()
+
+local hasRun = false
+
+function v12.Start()
     --[[
       name: Start
-      line: 454
+      line: 481
       upvalues:
-        u5 (ref,  index: 1)
-        UserInputService_upv_1 (copy, index: 2)
-        Simulation_upv_1 (copy, index: 3)
-        LocalPlayer_upv_1 (copy, index: 4)
+        hasRun (ref,  index: 1)
+        userInputService (copy, index: 2)
+        Simulation (copy, index: 3)
+        localPlayer (copy, index: 4)
         bindCharacter (copy, index: 5)
-        u1 (ref,  index: 6)
+        v15 (ref,  index: 6)
         unbind (copy, index: 7)
-        RunService_upv_1 (copy, index: 8)
-        tbl_upv_1 (copy, index: 9)
-        Perf_upv_1 (copy, index: 10)
+        runService (copy, index: 8)
+        v12 (copy, index: 9)
+        Perf (copy, index: 10)
         render (copy, index: 11)
     ]]
-    if u5 then
+    if hasRun then
         return
     end
-    u5 = true
-    UserInputService_upv_1.WindowFocusReleased:Connect(
+
+    hasRun = true
+
+    userInputService.WindowFocusReleased:Connect(
         function()
             --[[
-              line: 459
+              line: 486
               upvalues:
-                Simulation_upv_1 (copy, index: 1)
+                Simulation (copy, index: 1)
             ]]
-            Simulation_upv_1.SetInput("Slide", false)
-            Simulation_upv_1.SetInput("Jump", false)
+            Simulation.SetInput("Slide", false)
+            Simulation.SetInput("Jump", false)
         end
     )
-    if LocalPlayer_upv_1.Character then
-        task.spawn(bindCharacter, LocalPlayer_upv_1.Character)
+
+    if localPlayer.Character then
+        task.spawn(bindCharacter, localPlayer.Character)
     end
-    LocalPlayer_upv_1.CharacterAdded:Connect(bindCharacter)
-    LocalPlayer_upv_1.CharacterRemoving:Connect(
-        function(a1)
+
+    localPlayer.CharacterAdded:Connect(bindCharacter)
+
+    localPlayer.CharacterRemoving:Connect(
+        function(character: Model)
             --[[
-              line: 467
+              line: 494
               upvalues:
-                u1 (ref,  index: 1)
+                v15 (ref,  index: 1)
                 unbind (copy, index: 2)
             ]]
-            if not u1 or u1.character ~= a1 then
-                return
+            if v15 and v15.character == character then
+                unbind()
             end
-            unbind()
         end
     )
-    local v37 = RunService_upv_1:IsStudio()
-    if v37 then
-        local v38 = Instance.new("BindableFunction")
-        v38.Name = "CharacterDebug"
-        v38.OnInvoke = function(a2, a3)
+
+    if runService:IsStudio() then
+        local characterDebug = Instance.new("BindableFunction")
+        characterDebug.Name = "CharacterDebug"
+
+        characterDebug.OnInvoke = function(a134, a135)
             --[[
-              line: 478
+              line: 505
               upvalues:
-                Simulation_upv_1 (copy, index: 1)
-                tbl_upv_1 (copy, index: 2)
-                u1 (ref,  index: 3)
+                Simulation (copy, index: 1)
+                v12 (copy, index: 2)
+                v15 (ref,  index: 3)
             ]]
-            if a2 ~= "jump" then
-                if a2 ~= "slide" then
-                    if a2 == "simperf" then
-                        return Simulation_upv_1.DebugStats()
-                    end
-                    if a2 ~= "state" or not u1 then
-                        return nil
-                    end
-                    local tbl_6 = {}
-                    tbl_6.walkSpeed = u1.humanoid.WalkSpeed
-                    tbl_6.jumpHeight = u1.humanoid.JumpHeight
-                    tbl_6.hipHeight = u1.humanoid.HipHeight
-                    tbl_6.rendered = u1.sliding
-                    for key_1, value_2 in u1.root:GetAttributes() do
-                        if string.sub(key_1, 1, 1) == "S" then
-                            tbl_6[key_1] = value_2
-                        end
-                    end
-                    return tbl_6
-                end
-                tbl_upv_1.RequestSlide()
-            else
-                Simulation_upv_1.Pulse("Jump", 0.05)
+            if a134 == "jump" then
+                Simulation.Pulse("Jump", 0.05)
+                return true
             end
-            return true
+
+            if a134 == "slide" then
+                v12.RequestSlide()
+                return true
+            end
+
+            if a134 == "simperf" then
+                return Simulation.DebugStats()
+            end
+            if a134 ~= "state" then
+                return nil
+            end
+
+            local v136 = v15
+            if not v136 then
+                return nil
+            end
+
+            local v137 = {walkSpeed = v136.humanoid.WalkSpeed, jumpHeight = v136.humanoid.JumpHeight, hipHeight = v136.humanoid.HipHeight, rendered = v136.sliding}
+
+            for text, attribute in v136.root:GetAttributes() do
+                if string.sub(text, 1, 1) == "S" then
+                    v137[text] = attribute
+                end
+            end
+
+            return v137
         end
-        v38.Parent = LocalPlayer_upv_1
+
+        characterDebug.Parent = localPlayer
     end
-    RunService_upv_1.RenderStepped:Connect(
+
+    runService.RenderStepped:Connect(
         function()
             --[[
-              line: 504
+              line: 531
               upvalues:
-                Perf_upv_1 (copy, index: 1)
+                Perf (copy, index: 1)
                 render (copy, index: 2)
             ]]
-            local v39 = Perf_upv_1.Begin()
+            local v140 = Perf.Begin()
             render()
-            Perf_upv_1.End("Movement", v39)
+            Perf.End("Movement", v140)
         end
     )
 end
-return tbl_upv_1
+
+return v12

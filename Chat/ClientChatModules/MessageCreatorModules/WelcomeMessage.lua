@@ -1,7 +1,7 @@
-local Parent_1 = script.Parent.Parent
-local ChatSettings_upv_1 = require(Parent_1:WaitForChild("ChatSettings"))
-local ChatConstants_1 = require(Parent_1:WaitForChild("ChatConstants"))
-local Util_upv_1 = require(script.Parent:WaitForChild("Util"))
+local parent = script.Parent.Parent
+local ChatSettings = require(parent:WaitForChild("ChatSettings"))
+local ChatConstants = require(parent:WaitForChild("ChatConstants"))
+local Util = require(script.Parent:WaitForChild("Util"))
 pcall(
     function()
         --[[
@@ -10,63 +10,77 @@ pcall(
         ChatLocalization = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
     end
 )
-function CreateWelcomeMessageLabel(a1, a2)
+
+function CreateWelcomeMessageLabel(a5, a6)
     --[[
       name: CreateWelcomeMessageLabel
       line: 14
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
+        ChatSettings (copy, index: 1)
+        Util (copy, index: 2)
     ]]
-    local Message_1 = a1.Message
+    local v7
+    local v8 = a5.Message
+
     if ChatLocalization and ChatLocalization.LocalizeFormattedMessage then
-        Message_1 = ChatLocalization:LocalizeFormattedMessage(Message_1)
+        v8 = ChatLocalization:LocalizeFormattedMessage(v8)
     end
-    local v1 = a1.ExtraData or {}
-    local v2 = v1.Font or (ChatSettings_upv_1.DefaultFont)
-    local v3 = v1.FontSize or (ChatSettings_upv_1.ChatWindowTextSize)
-    local v4 = v1.ChatColor or (ChatSettings_upv_1.DefaultMessageColor)
-    local v5 = v1.ChannelColor or v4
-    local u1, u2 = Util_upv_1:CreateBaseMessage(Message_1, v2, v3, v4)
-    local v6 = nil
-    if a2 == a1.OriginalChannel then
-        v4 = v6
+
+    local v9 = a5.ExtraData or {}
+    local v10 = v9.Font or ChatSettings.DefaultFont
+    local v11 = v9.FontSize or ChatSettings.ChatWindowTextSize
+    local v12 = v9.ChatColor or ChatSettings.DefaultMessageColor
+    local v13 = v9.ChannelColor or v12
+    local baseMessage, v15 = Util:CreateBaseMessage(v8, v10, v11, v12)
+
+    if a6 == a5.OriginalChannel then
+        v7 = nil
     else
-        v1 = a1.OriginalChannel
+        local v16 = a5.OriginalChannel
+
         if ChatLocalization.tryLocalize then
-            v1 = ChatLocalization:tryLocalize(a1.OriginalChannel)
+            v16 = ChatLocalization:tryLocalize(a5.OriginalChannel)
         end
-        local v7 = string.format("{%s}", v1)
-        v4 = Util_upv_1:AddChannelButtonToBaseMessage(u2, v5, v7, a1.OriginalChannel)
-        u2.Text = Util_upv_1:CreateLeadingSpaces(Util_upv_1:GetNumberOfSpaces(v7, v2, v3) + 1) .. Util_upv_1:SanitizeForRichText(Message_1)
+
+        local formattedText = string.format("{%s}", v16)
+        v7 = Util:AddChannelButtonToBaseMessage(v15, v13, formattedText, a5.OriginalChannel)
+        v15.Text = Util:CreateLeadingSpaces(Util:GetNumberOfSpaces(formattedText, v10, v11) + 1) .. Util:SanitizeForRichText(v8)
     end
-    local tbl_1 = {}
-    tbl_1[u2] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
-    if v4 then
-        tbl_1[v4] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
+
+    local v18 = {}
+    v18[v15] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
+
+    if v7 then
+        v18[v7] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
     end
-    local v8, v9, v10 = Util_upv_1:CreateFadeFunctions(tbl_1)
-    local tbl_2 = {}
-    tbl_2[Util_upv_1.KEY_BASE_FRAME] = u1
-    tbl_2[Util_upv_1.KEY_BASE_MESSAGE] = u2
-    tbl_2[Util_upv_1.KEY_UPDATE_TEXT_FUNC] = nil
-    tbl_2[Util_upv_1.KEY_GET_HEIGHT] = function(a3)
+
+    local fadeFunctions, v20, v21 = Util:CreateFadeFunctions(v18)
+    local v22 = {}
+    v22[Util.KEY_BASE_FRAME] = baseMessage
+    v22[Util.KEY_BASE_MESSAGE] = v15
+    v22[Util.KEY_UPDATE_TEXT_FUNC] = nil
+
+    v22[Util.KEY_GET_HEIGHT] = function(a23)
         --[[
           name: GetHeightFunction
           line: 39
           upvalues:
-            Util_upv_1 (copy, index: 1)
-            u2 (copy, index: 2)
-            u1 (copy, index: 3)
+            Util (copy, index: 1)
+            v15 (copy, index: 2)
+            baseMessage (copy, index: 3)
         ]]
-        return Util_upv_1:GetMessageHeight(u2, u1, a3)
+        return Util:GetMessageHeight(v15, baseMessage, a23)
     end
-    tbl_2[Util_upv_1.KEY_FADE_IN] = v8
-    tbl_2[Util_upv_1.KEY_FADE_OUT] = v9
-    tbl_2[Util_upv_1.KEY_UPDATE_ANIMATION] = v10
-    return tbl_2
+
+    v22[Util.KEY_FADE_IN] = fadeFunctions
+    v22[Util.KEY_FADE_OUT] = v20
+    v22[Util.KEY_UPDATE_ANIMATION] = v21
+
+    return v22
 end
-local tbl_3 = {}
-tbl_3[Util_upv_1.KEY_MESSAGE_TYPE] = ChatConstants_1.MessageTypeWelcome
-tbl_3[Util_upv_1.KEY_CREATOR_FUNCTION] = CreateWelcomeMessageLabel
-return tbl_3
+
+local v24 = {}
+v24[Util.KEY_MESSAGE_TYPE] = ChatConstants.MessageTypeWelcome
+v24[Util.KEY_CREATOR_FUNCTION] = CreateWelcomeMessageLabel
+
+return v24

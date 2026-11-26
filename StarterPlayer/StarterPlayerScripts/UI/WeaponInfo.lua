@@ -1,836 +1,1000 @@
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local tbl_upv_1 = {}
-tbl_upv_1.CATEGORIES = {"bow", "gun", "melee", "throwable", "utility", "healing", "armor", "ammo"}
-tbl_upv_1.CATEGORY_NAMES = {ammo = "AMMO", throwable = "THROWABLES", melee = "MELEE", healing = "HEALING", armor = "ARMOR", gun = "GUNS", bow = "BOWS", utility = "UTILITY"}
-tbl_upv_1.CATEGORY_SINGULAR = {ammo = "AMMO", throwable = "THROWABLE", melee = "MELEE", healing = "HEALING", armor = "ARMOR", gun = "GUN", bow = "BOW", utility = "UTILITY"}
-tbl_upv_1.CATEGORY_COLORS = {bow = Color3.fromRGB(232, 170, 44), gun = Color3.fromRGB(128, 150, 176), melee = Color3.fromRGB(214, 72, 52), throwable = Color3.fromRGB(44, 176, 172), utility = Color3.fromRGB(156, 112, 206), healing = Color3.fromRGB(110, 196, 86), armor = Color3.fromRGB(196, 148, 92), ammo = Color3.fromRGB(240, 96, 48)}
-local tbl_upv_2 = {}
-tbl_upv_2.short_bow = {name = "Wood Bow", category = "bow", kind = "Bow", description = "Fast draw, arrows drop over distance. Reliable at any range.", points = 3, bars = {0.45, 0.8, 0.7, 0.8}}
-tbl_upv_2.longbow = {name = "Headhunter", category = "bow", kind = "Bow", description = "Slow, heavy draw with a zoom. A full-draw headshot kills.", points = 5, bars = {0.85, 0.3, 1, 0.45}}
-tbl_upv_2.crossbow = {name = "Crossbow", category = "bow", kind = "Crossbow", description = "Instant bolt, no draw. Reload after every shot.", points = 4, bars = {0.7, 0.4, 0.85, 0.75}}
-tbl_upv_2.musket = {name = "Musket", category = "gun", kind = "Musket", description = "Thunderous single shot with a smoke puff. Long reload.", points = 5, bars = {1, 0.15, 0.95, 0.5}}
-tbl_upv_2.blunderbuss = {name = "Blunderbuss", category = "gun", kind = "Blunderbuss", description = "A spray of pellets. Devastating up close, useless far away.", points = 4, bars = {0.9, 0.3, 0.25, 0.7}}
-tbl_upv_2.flintlock = {name = "Flintlock", category = "gun", kind = "Pistol", description = "One-shot pistol. Finish a wounded foe, then reload.", points = 3, bars = {0.7, 0.45, 0.65, 0.9}}
-tbl_upv_2.bronze_sword = {name = "Iron Sword", category = "melee", kind = "Sword", description = "Balanced three-hit combo. Hold to block.", points = 3, bars = {0.6, 0.7, 0.3, 0.8}}
-tbl_upv_2.battle_axe = {name = "Battle Axe", category = "melee", kind = "Axe", description = "Heavy swings and a charged overhead that splits guards.", points = 4, bars = {0.9, 0.35, 0.3, 0.7}}
-tbl_upv_2.spear = {name = "Spear", category = "melee", kind = "Spear", description = "Longest reach. Charge a lunge to close the gap.", points = 4, bars = {0.65, 0.5, 0.5, 0.75}}
-tbl_upv_2.war_club = {name = "Hammer", category = "melee", kind = "Club", description = "Knocks foes back and staggers them.", points = 3, bars = {0.75, 0.45, 0.3, 0.7}}
-tbl_upv_2.obsidian_dagger = {name = "Diamond Dagger", category = "melee", kind = "Dagger", description = "Lightning-fast stabs with a backstab bonus.", points = 2, bars = {0.35, 1, 0.2, 1}}
-tbl_upv_2.throwing_knives = {name = "Throwing Knives", category = "throwable", kind = "Knives", description = "Fast, flat throws. Five knives per round.", points = 2, bars = {0.35, 0.95, 0.55, 0.9}}
-tbl_upv_2.javelins = {name = "Javelins", category = "throwable", kind = "Javelin", description = "Heavy throws that hit hard. Three per round.", points = 2, bars = {0.8, 0.4, 0.65, 0.7}}
-tbl_upv_2.sling = {name = "Sling", category = "throwable", kind = "Sling", description = "Lobbed stones that arc over cover. Twelve per round.", points = 1, bars = {0.35, 0.8, 0.7, 0.9}}
-tbl_upv_2.fire_bomb = {name = "Fireball", category = "utility", kind = "Bomb", description = "Shatters into a pool of flame that burns anyone inside.", points = 2, bars = {0.6, 0.4, 0.55, 0.8}}
-tbl_upv_2.smoke_bomb = {name = "Smoke Bomb", category = "utility", kind = "Bomb", description = "A thick cloud that blocks sight. Reposition, escape, revive a push.", points = 1, bars = {0, 0.5, 0.55, 1}}
-tbl_upv_2.bear_trap = {name = "Snap Trap", category = "utility", kind = "Trap", description = "Set it in a chokepoint. Roots the first enemy who steps in.", points = 1, bars = {0.45, 0.3, 0.15, 0.8}}
-tbl_upv_2.bandage = {name = "Bandage", category = "healing", kind = "Bandage", description = "A quick heal at once. Two per round.", points = 1, bars = {0, 0.8, 0, 0.8}}
-tbl_upv_2.healing_herbs = {name = "Apple", category = "healing", kind = "Herbs", description = "Chew to heal over a few seconds. Stay out of sight.", points = 2, bars = {0, 0.5, 0, 0.7}}
-tbl_upv_2.healing_tonic = {name = "Golden Apple", category = "healing", kind = "Tonic", description = "Heals to full at once, plus golden armor for a few seconds.", points = 3, bars = {0, 0.3, 0, 0.6}}
-tbl_upv_2.hide_armor = {description = "Light armor: soaks a hit or two, barely slows you.", name = "Leather Armor", category = "armor", armor = 25, hotbar = false, speed = 0.97, points = 2}
-tbl_upv_2.bone_armor = {description = "Medium armor: a real second health bar, a little slower.", name = "Iron Armor", category = "armor", armor = 50, hotbar = false, speed = 0.93, points = 4}
-tbl_upv_2.bronze_armor = {description = "Heavy armor: shrug off a volley, but you'll feel the weight.", name = "Diamond Armor", category = "armor", armor = 80, hotbar = false, speed = 0.88, points = 6}
-local tbl_upv_3 = {"DAMAGE", "SPEED", "RANGE"}
-local tbl_upv_4 = {armor = "hide_armor"}
-tbl_upv_4.items = {"bronze_sword", "short_bow", "bandage"}
-tbl_upv_4.ammo = {arrows = 3}
-local tbl_upv_5 = {}
-tbl_upv_5.arrows = {name = "Arrows", id = "arrows", points = 1, order = 1, perBundle = 12}
-tbl_upv_5.shot = {name = "Bullets", id = "shot", points = 1, order = 2, perBundle = 5}
-local tbl_upv_6 = {crossbow = "arrows", musket = "shot", longbow = "arrows", short_bow = "arrows", blunderbuss = "shot", flintlock = "shot"}
-local u1 = nil
-local u2 = -math.huge
+local function ArmorStats(options)
+    --[[
+      name: ArmorStats
+      line: 499
+    ]]
+    local v3
+    local v4
+    local v5 = false
+
+    if options then
+        v3 = options.tuning
+
+        if not v3 then
+            v3 = options.stats
+
+            if not v3 then
+                v4 = {}
+
+                if v4 then
+                    v3 = v4
+                else
+                    v5 = true
+                end
+            end
+        end
+    else
+        v5 = true
+    end
+
+    if v5 then
+        v3 = {}
+    end
+
+    local v6 = v3.armor or v3.maxArmor or options.armor or 0
+    local v7 = v3.speedMult or v3.moveSpeedMult or v3.speed or options.speed or 1
+
+    if type(v6) ~= "number" then
+        v6 = 0
+    end
+
+    if type(v7) ~= "number" then
+        v7 = 1
+    end
+
+    return v6, v7
+end
+
+local function Normalize(a9)
+    --[[
+      name: Normalize
+      line: 362
+    ]]
+    local v10 = {armor = false, items = {}, ammo = {}}
+
+    if type(a9) ~= "table" then
+        return v10
+    end
+
+    if type(a9.ammo) == "table" then
+        for v11, v12 in a9.ammo do
+            if type(v11) == "string" then
+                if type(v12) == "number" and 0 < v12 then
+                    v10.ammo[v11] = math.floor(v12)
+                end
+            end
+        end
+    end
+
+    if type(a9.items) ~= "table" then
+        for _, v14 in {"primary", "secondary", "melee", "utility"} do
+            if type(a9[v14]) == "string" then
+                table.insert(v10.items, a9[v14])
+            end
+        end
+    else
+        for _, item in a9.items do
+            if type(item) == "string" then
+                table.insert(v10.items, item)
+            end
+        end
+
+        if type(a9.armor) == "string" then
+            if a9.armor ~= "" then
+                v10.armor = a9.armor
+                return v10
+            end
+        end
+    end
+
+    return v10
+end
+
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local v18 = {
+    CATEGORIES = {"bow", "gun", "melee", "throwable", "utility", "healing", "armor", "ammo"},
+    CATEGORY_NAMES = {bow = "BOWS", gun = "GUNS", melee = "MELEE", throwable = "THROWABLES", utility = "UTILITY", healing = "HEALING", armor = "ARMOR", ammo = "AMMO"},
+    CATEGORY_SINGULAR = {bow = "BOW", gun = "GUN", melee = "MELEE", throwable = "THROWABLE", utility = "UTILITY", healing = "HEALING", armor = "ARMOR", ammo = "AMMO"},
+    CATEGORY_COLORS = {bow = Color3.fromRGB(232, 170, 44), gun = Color3.fromRGB(128, 150, 176), melee = Color3.fromRGB(214, 72, 52), throwable = Color3.fromRGB(44, 176, 172), utility = Color3.fromRGB(156, 112, 206), healing = Color3.fromRGB(110, 196, 86), armor = Color3.fromRGB(196, 148, 92), ammo = Color3.fromRGB(240, 96, 48)}
+}
+local v19 = {
+    short_bow = {name = "Wood Bow", category = "bow", kind = "Bow", points = 3, description = "Fast draw, arrows drop over distance. Reliable at any range.", bars = {0.45, 0.8, 0.7, 0.8}},
+    longbow = {name = "Headhunter", category = "bow", kind = "Bow", points = 5, description = "Slow, heavy draw with a zoom. A full-draw headshot kills.", bars = {0.85, 0.3, 1, 0.45}},
+    crossbow = {name = "Crossbow", category = "bow", kind = "Crossbow", points = 4, description = "Instant bolt, no draw. Reload after every shot.", bars = {0.7, 0.4, 0.85, 0.75}},
+    musket = {name = "Musket", category = "gun", kind = "Musket", points = 5, description = "Thunderous single shot with a smoke puff. Long reload.", bars = {1, 0.15, 0.95, 0.5}},
+    blunderbuss = {name = "Blunderbuss", category = "gun", kind = "Blunderbuss", points = 4, description = "A spray of pellets. Devastating up close, useless far away.", bars = {0.9, 0.3, 0.25, 0.7}},
+    flintlock = {name = "Flintlock", category = "gun", kind = "Pistol", points = 3, description = "One-shot pistol. Finish a wounded foe, then reload.", bars = {0.7, 0.45, 0.65, 0.9}},
+    bronze_sword = {name = "Iron Sword", category = "melee", kind = "Sword", points = 3, description = "Balanced three-hit combo. Hold to block.", bars = {0.6, 0.7, 0.3, 0.8}},
+    battle_axe = {name = "Battle Axe", category = "melee", kind = "Axe", points = 4, description = "Heavy swings and a charged overhead that splits guards.", bars = {0.9, 0.35, 0.3, 0.7}},
+    spear = {name = "Spear", category = "melee", kind = "Spear", points = 4, description = "Longest reach. Charge a lunge to close the gap.", bars = {0.65, 0.5, 0.5, 0.75}},
+    war_club = {name = "Hammer", category = "melee", kind = "Club", points = 3, description = "Knocks foes back and staggers them.", bars = {0.75, 0.45, 0.3, 0.7}},
+    obsidian_dagger = {name = "Diamond Dagger", category = "melee", kind = "Dagger", points = 2, description = "Lightning-fast stabs with a backstab bonus.", bars = {0.35, 1, 0.2, 1}},
+    throwing_knives = {name = "Throwing Knives", category = "throwable", kind = "Knives", points = 2, description = "Fast, flat throws. Five knives per round.", bars = {0.35, 0.95, 0.55, 0.9}},
+    javelins = {name = "Javelins", category = "throwable", kind = "Javelin", points = 2, description = "Heavy throws that hit hard. Three per round.", bars = {0.8, 0.4, 0.65, 0.7}},
+    sling = {name = "Sling", category = "throwable", kind = "Sling", points = 1, description = "Lobbed stones that arc over cover. Twelve per round.", bars = {0.35, 0.8, 0.7, 0.9}},
+    fire_bomb = {name = "Fireball", category = "utility", kind = "Bomb", points = 2, description = "Shatters into a pool of flame that burns anyone inside.", bars = {0.6, 0.4, 0.55, 0.8}},
+    smoke_bomb = {name = "Smoke Bomb", category = "utility", kind = "Bomb", points = 1, description = "A thick cloud that blocks sight. Reposition, escape, revive a push.", bars = {0, 0.5, 0.55, 1}},
+    bear_trap = {name = "Snap Trap", category = "utility", kind = "Trap", points = 1, description = "Set it in a chokepoint. Roots the first enemy who steps in.", bars = {0.45, 0.3, 0.15, 0.8}},
+    bandage = {name = "Bandage", category = "healing", kind = "Bandage", points = 1, description = "A quick heal at once. Two per round.", bars = {0, 0.8, 0, 0.8}},
+    healing_herbs = {name = "Apple", category = "healing", kind = "Herbs", points = 2, description = "Chew to heal over a few seconds. Stay out of sight.", bars = {0, 0.5, 0, 0.7}},
+    healing_tonic = {name = "Golden Apple", category = "healing", kind = "Tonic", points = 3, description = "Heals to full at once, plus golden armor for a few seconds.", bars = {0, 0.3, 0, 0.6}},
+    hide_armor = {name = "Leather Armor", category = "armor", hotbar = false, points = 2, armor = 25, speed = 0.97, description = "Light armor: soaks a hit or two, barely slows you."},
+    bone_armor = {name = "Iron Armor", category = "armor", hotbar = false, points = 4, armor = 50, speed = 0.93, description = "Medium armor: a real second health bar, a little slower."},
+    bronze_armor = {name = "Diamond Armor", category = "armor", hotbar = false, points = 6, armor = 80, speed = 0.88, description = "Heavy armor: shrug off a volley, but you'll feel the weight."}
+}
+local v20 = {"DAMAGE", "SPEED", "RANGE"}
+local v21 = {armor = "hide_armor", items = {"bronze_sword", "short_bow", "bandage"}, ammo = {arrows = 3}}
+local v22 = {arrows = {id = "arrows", name = "Arrows", perBundle = 12, points = 1, order = 1}, shot = {id = "shot", name = "Bullets", perBundle = 5, points = 1, order = 2}}
+local v23 = {short_bow = "arrows", longbow = "arrows", crossbow = "arrows", musket = "shot", flintlock = "shot", blunderbuss = "shot"}
+local result = nil
+local timestamp = -math.huge
+
 local function getRegistry()
     --[[
       name: getRegistry
       line: 97
       upvalues:
-        u1 (ref,  index: 1)
-        u2 (ref,  index: 2)
-        ReplicatedStorage_upv_1 (copy, index: 3)
+        result (ref,  index: 1)
+        timestamp (ref,  index: 2)
+        replicatedStorage (copy, index: 3)
     ]]
-    if u1 then
-        return u1
-    end
-    if os.clock() - u2 < 5 then
-        return nil
-    end
-    u2 = os.clock()
-    local Weapons_1 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Weapons")
-    if Weapons_1 and Weapons_1:IsA("ModuleScript") then
-        local success_1, v1 = pcall(require, Weapons_1)
-        if success_1 and type(v1) == "table" then
-            u1 = v1
+    if not result then
+        if os.clock() - timestamp < 5 then
+            return nil
+        end
+
+        timestamp = os.clock()
+        local weapons = replicatedStorage.Shared:FindFirstChild("Weapons")
+
+        if weapons and weapons:IsA("ModuleScript") then
+            local success, result2 = pcall(require, weapons)
+
+            if success and type(result2) == "table" then
+                result = result2
+            end
         end
     end
-    return u1
+
+    return result
 end
-tbl_upv_1.OwnsAmmo = nil
-local tbl_upv_7 = {}
-local u3 = 0
-local function fromRegistry(a1)
+
+local function fromRegistry(id)
     --[[
       name: fromRegistry
       line: 115
       upvalues:
         getRegistry (copy, index: 1)
     ]]
-    local v2 = getRegistry()
-    if not v2 then
+    local registry = getRegistry()
+    if not registry then
         return nil
     end
-    local v3 = nil
-    if type(v2.Get) == "function" then
-        local success_2, v3 = pcall(v2.Get, a1)
-        if success_2 and type(v3) == "table" then
-            return v3
+
+    if type(registry.Get) == "function" then
+        local success, result = pcall(registry.Get, id)
+
+        if success and type(result) == "table" then
+            return result
         end
     end
-    local v4 = (type(v2.AMMO) == "table") and (v2.AMMO[a1])
-    if type(v4) == "table" and v4.unlock == true then
-        local tbl_8 = {isAmmo = true, tuning = 0, details = 0, category = "ammo", kind = "Ammo", hotbar = false}
-        tbl_8.id = a1
-        tbl_8.name = v4.name
-        tbl_8.role = v4.role or "Ammo"
-        tbl_8.points = v4.points
-        tbl_8.description = v4.description
-        tbl_8.stats = {range = 0, rate = 0, damage = 0}
-        local tbl_9 = {"Bundle", tostring(v4.perBundle) .. " arrows"}
-        local tbl_10 = {"Cost", tostring(v4.points) .. " points"}
-        local v5 = ((type(v4.burn) ~= "table") and "-") or (tostring(v4.burn.damage) .. " \195\151 " .. tostring(v4.burn.ticks))
-        tbl_8.details = {tbl_9, tbl_10, {"Burn", v5}}
-        tbl_8.tuning = {}
-        return tbl_8
-    end
-    return nil
-end
-function tbl_upv_1.Get(a1)
-    --[[
-      name: Get
-      line: 190
-      upvalues:
-        u3 (ref,  index: 1)
-        tbl_upv_7 (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
-        fromRegistry (copy, index: 4)
-        tbl_upv_1 (copy, index: 5)
-    ]]
-    if type(a1) ~= "string" then
+
+    local v35 = type(registry.AMMO) == "table" and registry.AMMO[id]
+
+    if type(v35) ~= "table" or v35.unlock ~= true then
         return nil
     end
-    if os.clock() - u3 > 10 then
-        table.clear(tbl_upv_7)
-        u3 = os.clock()
-    end
-    local v6 = tbl_upv_7[a1]
-    if v6 then
-        return v6
-    end
-    local v7 = tbl_upv_2[a1]
-    local v8 = fromRegistry(a1)
-    if not (v8) and not (v7) then
-        return nil
-    end
-    local tbl_11 = {}
-    if v7 then
-        for key_1, value_1 in v7 do
-            tbl_11[key_1] = value_1
-        end
-    end
-    if v8 then
-        for key_2, value_2 in v8 do
-            tbl_11[key_2] = value_2
-        end
-    end
-    tbl_11.id = a1
-    local v9
-    if type(tbl_11.name) ~= "string" then
-        v9 = a1:gsub("_", " ")
+
+    local v36
+    local v37 = {category = "ammo", kind = "Ammo", hotbar = false, isAmmo = true, id = id, name = v35.name, role = v35.role
+        or "Ammo", points = v35.points, description = v35.description, stats = {damage = 0, rate = 0, range = 0}}
+    local v38 = {"Bundle", tostring(v35.perBundle) .. " arrows"}
+    local v39 = {"Cost", tostring(v35.points) .. " points"}
+
+    if type(v35.burn) ~= "table" then
+        v36 = "-"
     else
-        v9 = tbl_11.name
+        v36 = tostring(v35.burn.damage) .. " × " .. tostring(v35.burn.ticks)
     end
-    tbl_11.name = v9
-    v9 = ((type(tbl_11.description) ~= "string") and "") or (tbl_11.description)
-    tbl_11.description = v9
-    if not (tbl_upv_1.CATEGORY_NAMES[tbl_11.category]) then
-        tbl_11.category = (v7 and (v7.category)) or "utility"
-    end
-    if type(tbl_11.points) ~= "number" then
-        tbl_11.points = (v7 and (v7.points)) or 1
-    end
-    if tbl_11.hotbar == nil then
-        tbl_11.hotbar = tbl_11.category ~= "armor"
-    end
-    tbl_upv_7[a1] = tbl_11
-    return tbl_11
+
+    v37.details = {v38, v39, {"Burn", v36}}
+    v37.tuning = {}
+
+    return v37
 end
-function tbl_upv_1.Name(a1)
-    --[[
-      name: Name
-      line: 234
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-    ]]
-    local v10 = tbl_upv_1.Get(a1)
-    if v10 then
-        return v10.name
-    elseif type(a1) ~= "string" then
-        return ""
-    else
-        return a1
-    end
-end
-function tbl_upv_1.Points(a1)
-    --[[
-      name: Points
-      line: 239
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-    ]]
-    local v11 = tbl_upv_1.Get(a1)
-    if v11 then
-        return v11.points
-    end
-    return 0
-end
-function tbl_upv_1.IsArmor(a1)
-    --[[
-      name: IsArmor
-      line: 244
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-    ]]
-    local v12 = tbl_upv_1.Get(a1)
-    local v13 = false
-    local v14
-    if v12 == nil then
-        v14 = v13
-    else
-        v14 = false
-        if v12.category ~= "ammo" then
-            v14 = true
-            if v12.category ~= "armor" then
-                v14 = v12.hotbar == false
-            end
-        end
-    end
-    return v14
-end
-function tbl_upv_1.AmmoTypes()
-    --[[
-      name: AmmoTypes
-      line: 250
-      upvalues:
-        getRegistry (copy, index: 1)
-        tbl_upv_5 (copy, index: 2)
-    ]]
-    local v15 = getRegistry()
-    local tbl_12 = {}
-    if v15 then
-        if type(v15.AMMO) ~= "table" then
-            for _, value_3 in tbl_upv_5 do
-                table.insert(tbl_12, value_3)
-            end
-        else
-            for key_3, value_4 in v15.AMMO do
-                if type(value_4) == "table" then
-                    local v16 = tbl_upv_5[key_3]
-                    local tbl_13 = {description = 0, optional = 0, name = 0, as = 0, points = 0, order = 0, perBundle = 0}
-                    tbl_13.id = key_3
-                    tbl_13.name = value_4.name or ((v16 and (v16.name)) or key_3)
-                    tbl_13.perBundle = value_4.perBundle or (value_4.count or (value_4.amount or ((v16 and (v16.perBundle)) or 10)))
-                    tbl_13.points = value_4.points or (value_4.cost or ((v16 and (v16.points)) or 1))
-                    tbl_13.order = value_4.order or ((v16 and (v16.order)) or 9)
-                    tbl_13.as = value_4.as
-                    tbl_13.optional = value_4.as ~= nil
-                    tbl_13.description = value_4.description
-                    table.insert(tbl_12, tbl_13)
-                end
-            end
-        end
-    else
-        for _, value_3 in tbl_upv_5 do
-            table.insert(tbl_12, value_3)
-        end
-    end
-    table.sort(
-        tbl_12,
-        function(a1, a2)
-            --[[
-              line: 275
-            ]]
-            return a1.order < a2.order
-        end
-    )
-    return tbl_12
-end
-function tbl_upv_1.AmmoDef(a1)
-    --[[
-      name: AmmoDef
-      line: 281
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-    ]]
-    for _, value_5 in tbl_upv_1.AmmoTypes() do
-        if value_5.id ~= a1 then
-            continue
-        end
-        return value_5
-    end
-    return nil
-end
-function tbl_upv_1.MaxAmmoBundles()
-    --[[
-      name: MaxAmmoBundles
-      line: 290
-      upvalues:
-        getRegistry (copy, index: 1)
-    ]]
-    local v17 = getRegistry()
-    if v17 and type(v17.MAX_AMMO_BUNDLES) == "number" then
-        return v17.MAX_AMMO_BUNDLES
-    end
-    return 3
-end
-function tbl_upv_1.AmmoOf(a1)
-    --[[
-      name: AmmoOf
-      line: 296
-      upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_6 (copy, index: 2)
-    ]]
-    local v18 = tbl_upv_1.Get(a1)
-    if not v18 then
-        return nil
-    end
-    local v19 = v18.ammoType or (v18.ammo or ((type(v18.tuning) == "table") and (v18.tuning.ammoType or (v18.tuning.ammo))))
-    if type(v19) == "string" and v19 ~= "" then
-        return v19
-    end
-    return tbl_upv_6[v18.id]
-end
-function tbl_upv_1.AmmoNeeded(a1)
-    --[[
-      name: AmmoNeeded
-      line: 310
-      upvalues:
-        getRegistry (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-    ]]
-    local tbl_14 = {}
-    local v20
-    if type(a1) == "table" and type(a1.items) == "table" then
-        v20 = a1.items
-    else
-        v20 = {}
-    end
-    local v21 = getRegistry()
-    for _, value_6 in v20 do
-        local v22 = tbl_upv_1.AmmoOf(value_6)
-        if not (v22) then
-            continue
-        end
-        tbl_14[v22] = true
-        if not (v21) or type(v21.AltAmmo) ~= "function" then
-            continue
-        end
-        for v24, value_7 in v21.AltAmmo(v22) do
-            local v23 = (type(v21.AMMO) == "table") and (v21.AMMO[value_7])
-            local OwnsAmmo_1 = tbl_upv_1.OwnsAmmo
-            if type(v23) ~= "table" or v23.unlock ~= true or not (OwnsAmmo_1) or OwnsAmmo_1(value_7) then
-                tbl_14[value_7] = true
-            end
-        end
-    end
-    return tbl_14
-end
-function tbl_upv_1.Budget()
-    --[[
-      name: Budget
-      line: 333
-      upvalues:
-        getRegistry (copy, index: 1)
-    ]]
-    local v24 = getRegistry()
-    if v24 and type(v24.BUDGET) == "number" then
-        return v24.BUDGET
-    end
-    return 12
-end
-function tbl_upv_1.MaxItems()
-    --[[
-      name: MaxItems
-      line: 338
-      upvalues:
-        getRegistry (copy, index: 1)
-    ]]
-    local v25 = getRegistry()
-    if v25 and type(v25.MAX_ITEMS) == "number" then
-        return v25.MAX_ITEMS
-    end
-    return 6
-end
+
+v18.OwnsAmmo = nil
+
 local function allIds()
     --[[
       name: allIds
       line: 154
       upvalues:
         getRegistry (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
+        v19 (copy, index: 2)
     ]]
-    local tbl_upv_15 = {}
-    local tbl_upv_16 = {}
-    local v26 = getRegistry()
-    if v26 then
-        local v27 = nil
-        if type(v26.All) == "function" then
-            local success_3, v27 = pcall(v26.All)
-            if success_3 and type(v27) == "table" then
-                for _, value_8 in v27 do
-                    if type(value_8) ~= "table" then
-                        continue
-                    end
-                    local id_1 = value_8.id
-                    if type(id_1) ~= "string" then
-                        continue
-                    end
-                    if not (tbl_upv_15[id_1]) then
-                        tbl_upv_15[id_1] = true
-                        table.insert(tbl_upv_16, id_1)
+    local v41 = {}
+    local v42 = {}
+
+    local function add(key)
+        --[[
+          name: add
+          line: 157
+          upvalues:
+            v41 (copy, index: 1)
+            v42 (copy, index: 2)
+        ]]
+        if type(key) == "string" and not v41[key] then
+            v41[key] = true
+            table.insert(v42, key)
+        end
+    end
+
+    local registry = getRegistry()
+
+    if registry and type(registry.All) == "function" then
+        local success, result = pcall(registry.All)
+
+        if success and type(result) == "table" then
+            for _, v49 in result do
+                if type(v49) == "table" then
+                    local id = v49.id
+
+                    if type(id) == "string" and not v41[id] then
+                        v41[id] = true
+                        table.insert(v42, id)
                     end
                 end
             end
         end
     end
-    if v26 and type(v26.UnlockAmmo) == "function" then
-        for _, value_9 in v26.UnlockAmmo() do
-            if type(value_9) ~= "string" then
-                continue
-            end
-            if not (tbl_upv_15[value_9]) then
-                tbl_upv_15[value_9] = true
-                table.insert(tbl_upv_16, value_9)
+
+    if registry and type(registry.UnlockAmmo) == "function" then
+        for _, v52 in registry.UnlockAmmo() do
+            if type(v52) == "string" and not v41[v52] then
+                v41[v52] = true
+                table.insert(v42, v52)
             end
         end
     end
-    local function add_1(a1)
-        --[[
-          name: add
-          line: 157
-          upvalues:
-            tbl_upv_15 (copy, index: 1)
-            tbl_upv_16 (copy, index: 2)
-        ]]
-        if type(a1) ~= "string" or (tbl_upv_15[a1]) then
-            return
-        end
-        tbl_upv_15[a1] = true
-        table.insert(tbl_upv_16, a1)
-    end
-    for key_4 in tbl_upv_2 do
-        if type(key_4) ~= "string" then
-            continue
-        end
-        if not (tbl_upv_15[key_4]) then
-            tbl_upv_15[key_4] = true
-            table.insert(tbl_upv_16, key_4)
+
+    for v53 in v19 do
+        if type(v53) == "string" and not v41[v53] then
+            v41[v53] = true
+            table.insert(v42, v53)
         end
     end
-    return tbl_upv_16
+
+    return v42
 end
-function tbl_upv_1.ByCategory(a1)
+
+local v54 = {}
+local timestamp2 = 0
+
+function v18.Get(id)
+    --[[
+      name: Get
+      line: 190
+      upvalues:
+        timestamp2 (ref,  index: 1)
+        v54 (copy, index: 2)
+        v19 (copy, index: 3)
+        fromRegistry (copy, index: 4)
+        v18 (copy, index: 5)
+    ]]
+    if type(id) ~= "string" then
+        return nil
+    end
+
+    local v57
+    local description
+
+    if 10 < os.clock() - timestamp2 then
+        table.clear(v54)
+        timestamp2 = os.clock()
+    end
+
+    if const v59 = v54[id] then
+        return v59
+    end
+
+    local v60 = v19[id]
+    local v61 = fromRegistry(id)
+
+    if not v61 and not v60 then
+        return nil
+    end
+
+    local v62 = {}
+
+    if v60 then
+        for v63, v64 in v60 do
+            v62[v63] = v64
+        end
+    end
+
+    if v61 then
+        for v65, v66 in v61 do
+            v62[v65] = v66
+        end
+    end
+
+    v62.id = id
+
+    if type(v62.name) ~= "string" then
+        v57 = id:gsub("_", " ")
+    else
+        v57 = v62.name
+    end
+
+    v62.name = v57
+
+    if type(v62.description) ~= "string" then
+        description = ""
+    else
+        description = v62.description
+    end
+
+    v62.description = description
+
+    if not v18.CATEGORY_NAMES[v62.category] then
+        v62.category = v60 and v60.category or "utility"
+    end
+
+    if type(v62.points) ~= "number" then
+        v62.points = v60 and v60.points or 1
+    end
+
+    if v62.hotbar == nil then
+        v62.hotbar = v62.category ~= "armor"
+    end
+
+    v54[id] = v62
+
+    return v62
+end
+
+function v18.Name(a67)
+    --[[
+      name: Name
+      line: 234
+      upvalues:
+        v18 (copy, index: 1)
+    ]]
+    return if const v68 = v18.Get(a67) then v68.name elseif type(a67) ~= "string" then "" else a67
+end
+
+function v18.Points(a69)
+    --[[
+      name: Points
+      line: 239
+      upvalues:
+        v18 (copy, index: 1)
+    ]]
+    return if const v70 = v18.Get(a69) then v70.points else 0
+end
+
+function v18.IsArmor(a71)
+    --[[
+      name: IsArmor
+      line: 244
+      upvalues:
+        v18 (copy, index: 1)
+    ]]
+    local v72 = v18.Get(a71)
+    return v72 ~= nil and v72.category ~= "ammo" and (v72.category == "armor" or v72.hotbar == false)
+end
+
+function v18.AmmoTypes()
+    --[[
+      name: AmmoTypes
+      line: 250
+      upvalues:
+        getRegistry (copy, index: 1)
+        v22 (copy, index: 2)
+    ]]
+    local registry = getRegistry()
+    local v74 = {}
+
+    if registry then
+        if type(registry.AMMO) ~= "table" then
+            for _, v76 in v22 do
+                table.insert(v74, v76)
+            end
+        else
+            for id, v78 in registry.AMMO do
+                if type(v78) == "table" then
+                    local v79
+                    local v80
+                    local v81
+                    local v82 = v22[id]
+                    local v83 = {id = id}
+                    v79 = if const name = v78.name then name else v82 and v82.name or id
+                    v83.name = v79
+                    v80 = if const perBundle = v78.perBundle then perBundle elseif const count = v78.count then count else v78.amount
+                        or v82 and v82.perBundle
+                        or 10
+                    v83.perBundle = v80
+                    v81 = if const points = v78.points then points else v78.cost or v82 and v82.points or 1
+                    v83.points = v81
+                    v83.order = v78.order or v82 and v82.order or 9
+                    v83.as = v78.as
+                    v83.optional = v78.as ~= nil
+                    v83.description = v78.description
+                    table.insert(v74, v83)
+                end
+            end
+        end
+    else
+        for _, v76 in v22 do
+            table.insert(v74, v76)
+        end
+    end
+
+    table.sort(
+        v74,
+        function(left, right)
+            --[[
+              line: 275
+            ]]
+            return left.order < right.order
+        end
+    )
+
+    return v74
+end
+
+function v18.AmmoDef(a90)
+    --[[
+      name: AmmoDef
+      line: 281
+      upvalues:
+        v18 (copy, index: 1)
+    ]]
+    for _, v92 in v18.AmmoTypes() do
+        if v92.id == a90 then
+            return v92
+        end
+    end
+
+    return nil
+end
+
+function v18.MaxAmmoBundles()
+    --[[
+      name: MaxAmmoBundles
+      line: 290
+      upvalues:
+        getRegistry (copy, index: 1)
+    ]]
+    local registry = getRegistry()
+
+    if registry and type(registry.MAX_AMMO_BUNDLES) == "number" then
+        return registry.MAX_AMMO_BUNDLES
+    end
+
+    return 3
+end
+
+function v18.AmmoOf(a94)
+    --[[
+      name: AmmoOf
+      line: 296
+      upvalues:
+        v18 (copy, index: 1)
+        v23 (copy, index: 2)
+    ]]
+    local v95 = v18.Get(a94)
+    if not v95 then
+        return nil
+    end
+
+    local v96 = v95.ammoType
+        or v95.ammo
+        or type(v95.tuning) == "table" and (v95.tuning.ammoType or v95.tuning.ammo)
+
+    if type(v96) == "string" then
+        if v96 ~= "" then
+            return v96
+        end
+    end
+
+    return v23[v95.id]
+end
+
+function v18.AmmoNeeded(a97)
+    --[[
+      name: AmmoNeeded
+      line: 310
+      upvalues:
+        getRegistry (copy, index: 1)
+        v18 (copy, index: 2)
+    ]]
+    local v98
+    local v99 = {}
+
+    if type(a97) ~= "table" or type(a97.items) ~= "table" then
+        v98 = {}
+    else
+        v98 = a97.items
+    end
+
+    local registry = getRegistry()
+
+    for _, v102 in v98 do
+        if const v103 = v18.AmmoOf(v102) then
+            v99[v103] = true
+
+            if registry and type(registry.AltAmmo) == "function" then
+                for _, v105 in registry.AltAmmo(v103) do
+                    local v106 = type(registry.AMMO) == "table" and registry.AMMO[v105]
+                    local ownsAmmo = v18.OwnsAmmo
+
+                    if type(v106) ~= "table" or v106.unlock ~= true or not ownsAmmo or ownsAmmo(v105) then
+                        v99[v105] = true
+                    end
+                end
+            end
+        end
+    end
+
+    return v99
+end
+
+function v18.Budget()
+    --[[
+      name: Budget
+      line: 333
+      upvalues:
+        getRegistry (copy, index: 1)
+    ]]
+    local registry = getRegistry()
+
+    if registry and type(registry.BUDGET) == "number" then
+        return registry.BUDGET
+    end
+
+    return 12
+end
+
+function v18.MaxItems()
+    --[[
+      name: MaxItems
+      line: 338
+      upvalues:
+        getRegistry (copy, index: 1)
+    ]]
+    local registry = getRegistry()
+
+    if registry and type(registry.MAX_ITEMS) == "number" then
+        return registry.MAX_ITEMS
+    end
+
+    return 6
+end
+
+function v18.ByCategory(a110)
     --[[
       name: ByCategory
       line: 344
       upvalues:
         allIds (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v18 (copy, index: 2)
     ]]
-    local tbl_17 = {}
-    for _, value_10 in allIds() do
-        local v28 = tbl_upv_1.Get(value_10)
-        if not (v28) then
-            continue
-        end
-        if v28.category == a1 then
-            table.insert(tbl_17, v28)
+    local v111 = {}
+
+    for _, v113 in allIds() do
+        local v114 = v18.Get(v113)
+
+        if v114 and v114.category == a110 then
+            table.insert(v111, v114)
         end
     end
+
     table.sort(
-        tbl_17,
-        function(a2, a3)
+        v111,
+        function(left, right)
             --[[
               line: 352
             ]]
-            if a2.points == a3.points then
-                return a2.name < a3.name
+            if left.points ~= right.points then
+                return left.points < right.points
             end
-            return a2.points < a3.points
+
+            return left.name < right.name
         end
     )
-    return tbl_17
+
+    return v111
 end
-function tbl_upv_1.Normalize(a1)
-    --[[
-      name: Normalize
-      line: 362
-    ]]
-    local tbl_18 = {armor = false}
-    tbl_18.items = {}
-    tbl_18.ammo = {}
-    if type(a1) == "table" then
-        if type(a1.ammo) == "table" then
-            for key_5, value_11 in a1.ammo do
-                if type(key_5) ~= "string" or type(value_11) ~= "number" then
-                    continue
-                end
-                if value_11 > 0 then
-                    tbl_18.ammo[key_5] = math.floor(value_11)
-                end
-            end
-        end
-        if type(a1.items) ~= "table" then
-            for _, value_12 in {"primary", "secondary", "melee", "utility"} do
-                if type(a1[value_12]) == "string" then
-                    table.insert(tbl_18.items, a1[value_12])
-                end
-            end
-        else
-            for _, value_13 in a1.items do
-                if type(value_13) == "string" then
-                    table.insert(tbl_18.items, value_13)
-                end
-            end
-            if type(a1.armor) == "string" and a1.armor ~= "" then
-                tbl_18.armor = a1.armor
-            end
-        end
-    end
-    return tbl_18
-end
-function tbl_upv_1.Cost(a1)
+
+v18.Normalize = Normalize
+
+function v18.Cost(a117)
     --[[
       name: Cost
       line: 393
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v18 (copy, index: 1)
     ]]
-    local v29 = tbl_upv_1.Normalize(a1)
-    local v30 = 0
-    for _, value_14 in v29.items do
-        v30 = v30 + tbl_upv_1.Points(value_14)
+    local v118 = v18.Normalize(a117)
+    local v119 = 0
+
+    for _, item in v118.items do
+        v119 += v18.Points(item)
     end
-    v30 = ((v29.armor) and (v30 + tbl_upv_1.Points(v29.armor))) or v30
-    for key_6, value_15 in v29.ammo do
-        local v31 = tbl_upv_1.AmmoDef(key_6)
-        v30 = (v31 and (v30 + v31.points * value_15)) or v30
+
+    if v118.armor then
+        v119 += v18.Points(v118.armor)
     end
-    return v30
+
+    for v122, v123 in v118.ammo do
+        if const v124 = v18.AmmoDef(v122) then
+            v119 += v124.points * v123
+        end
+    end
+
+    return v119
 end
-function tbl_upv_1.Validate(a1)
+
+function v18.Validate(a125)
     --[[
       name: Validate
       line: 413
       upvalues:
         getRegistry (copy, index: 1)
+        v18 (copy, index: 2)
     ]]
-    local v32 = getRegistry()
-    if v32 and type(v32.Validate) == "function" then
-        local v33 = nil
-        if type(v32.AMMO) == "table" then
-            local success_4, v34, v35, v33 = pcall(v32.Validate, dropUnusedAmmo.Normalize(a1))
-            if success_4 and type(v33) == "table" then
-                return v34 == true, v35, dropUnusedAmmo.Normalize(v33)
+    local v126
+    local registry = getRegistry()
+
+    if registry and type(registry.Validate) == "function" and type(registry.AMMO) == "table" then
+        local success, result, v130, v131 = pcall(registry.Validate, v18.Normalize(a125))
+
+        if success and type(v131) == "table" then
+            return result == true, v130, v18.Normalize(v131)
+        end
+    end
+
+    local v132 = v18.Normalize(a125)
+    local v133 = {armor = false, items = {}, ammo = {}}
+    local v134 = {}
+
+    for _, armor in v132.items do
+        if v18.Get(armor) then
+            if v134[armor] then
+                continue
+            end
+
+            v134[armor] = true
+
+            if v18.IsArmor(armor) then
+                if not v133.armor then
+                    v133.armor = armor
+                end
+            elseif #v133.items < v18.MaxItems() then
+                table.insert(v133.items, armor)
             end
         end
     end
-    local v36 = dropUnusedAmmo.Normalize(a1)
-    local tbl_upv_19 = {armor = false}
-    tbl_upv_19.items = {}
-    tbl_upv_19.ammo = {}
-    local tbl_20 = {}
-    for _, value_16 in v36.items do
-        if not (dropUnusedAmmo.Get(value_16)) or tbl_20[value_16] then
-            continue
-        end
-        tbl_20[value_16] = true
-        if dropUnusedAmmo.IsArmor(value_16) then
-            if not (tbl_upv_19.armor) then
-                tbl_upv_19.armor = value_16
-            end
-        elseif #tbl_upv_19.items < dropUnusedAmmo.MaxItems() then
-            table.insert(tbl_upv_19.items, value_16)
+
+    if v132.armor and v18.IsArmor(v132.armor) then
+        v133.armor = v132.armor
+    end
+
+    for v137, v138 in v132.ammo do
+        if v18.AmmoDef(v137) then
+            v133.ammo[v137] = math.clamp(v138, 0, (v18.MaxAmmoBundles()))
         end
     end
-    if v36.armor and dropUnusedAmmo.IsArmor(v36.armor) then
-        tbl_upv_19.armor = v36.armor
-    end
-    for key_7, value_17 in v36.ammo do
-        if dropUnusedAmmo.AmmoDef(key_7) then
-            tbl_upv_19.ammo[key_7] = math.clamp(value_17, 0, dropUnusedAmmo.MaxAmmoBundles())
-        end
-    end
-    local v37 = nil
+
+    local v139 = nil
+
     local function dropUnusedAmmo()
         --[[
           name: dropUnusedAmmo
           line: 447
           upvalues:
-            tbl_upv_19 (copy, index: 2)
+            v18 (copy, index: 1)
+            v133 (copy, index: 2)
         ]]
-        local v38 = tbl_upv_1.AmmoNeeded(tbl_upv_19)
-        for key_8 in tbl_upv_19.ammo do
-            if not (v38[key_8]) then
-                tbl_upv_19.ammo[key_8] = nil
+        local v141 = v18.AmmoNeeded(v133)
+
+        for v142 in v133.ammo do
+            if not v141[v142] then
+                v133.ammo[v142] = nil
             end
         end
     end
-    local v39 = dropUnusedAmmo.Cost(tbl_upv_19)
-    if dropUnusedAmmo.Budget() < v39 then
-        v39 = dropUnusedAmmo.AmmoNeeded(tbl_upv_19)
-        for key_9 in tbl_upv_19.ammo do
-            if not (v39[key_9]) then
-                tbl_upv_19.ammo[key_9] = nil
+
+    local v143 = v18.Cost(v133)
+
+    if v18.Budget() < v143 then
+        local v144 = v18.AmmoNeeded(v133)
+
+        for v145 in v133.ammo do
+            if not v144[v145] then
+                v133.ammo[v145] = nil
             end
         end
+
+        v126 = v139
+    else
+        v126 = v139
     end
-    local v34 = v37
+
     while true do
-        v39 = dropUnusedAmmo.Cost(tbl_upv_19)
-        if not (dropUnusedAmmo.Budget() < v39) or not (#tbl_upv_19.items > 0) then
+        local v146 = v18.Cost(v133)
+
+        if not (v18.Budget() < v146) then
             break
         end
-        table.remove(tbl_upv_19.items)
-        v39 = dropUnusedAmmo.AmmoNeeded(tbl_upv_19)
-        for key_10 in tbl_upv_19.ammo do
-            if not (v39[key_10]) then
-                tbl_upv_19.ammo[key_10] = nil
+        if not (0 < #v133.items) then
+            break
+        end
+
+        table.remove(v133.items)
+        local v147 = v18.AmmoNeeded(v133)
+
+        for v148 in v133.ammo do
+            if not v147[v148] then
+                v133.ammo[v148] = nil
             end
         end
-        v34 = "Over budget"
+
+        v126 = "Over budget"
     end
-    v39 = dropUnusedAmmo.Cost(tbl_upv_19)
-    if dropUnusedAmmo.Budget() < v39 then
-        tbl_upv_19.armor = false
-        v34 = "Over budget"
+
+    local v149 = v18.Cost(v133)
+
+    if v18.Budget() < v149 then
+        v133.armor = false
+        v126 = "Over budget"
     end
-    if v34 == nil then
-        v39 = true
-    else
-        v39 = false
-    end
-    return v39, v34, tbl_upv_19
+
+    return v126 == nil, v126, v133
 end
-function tbl_upv_1.DefaultLoadout()
+
+function v18.DefaultLoadout()
     --[[
       name: DefaultLoadout
       line: 470
       upvalues:
         getRegistry (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-        tbl_upv_4 (copy, index: 3)
+        v18 (copy, index: 2)
+        v21 (copy, index: 3)
     ]]
-    local v40 = getRegistry()
-    if v40 and type(v40.DEFAULT_LOADOUT) == "table" then
-        return tbl_upv_1.Normalize(v40.DEFAULT_LOADOUT)
+    local registry = getRegistry()
+
+    if registry and type(registry.DEFAULT_LOADOUT) == "table" then
+        return v18.Normalize(registry.DEFAULT_LOADOUT)
     end
-    return tbl_upv_1.Normalize(tbl_upv_4)
+
+    return v18.Normalize(v21)
 end
-tbl_upv_1.FILTERS = {{id = "all", name = "ALL"}, {id = "weapons", name = "WEAPONS", cats = {gun = true, bow = true, melee = true}}, {id = "utility", name = "UTILITY", cats = {throwable = true, utility = true}}, {id = "healing", name = "HEALING", cats = {healing = true}}, {id = "armor", name = "ARMOR", cats = {armor = true}}}
-function tbl_upv_1.AllItems()
+
+v18.FILTERS = {{id = "all", name = "ALL", cats = nil}, {id = "weapons", name = "WEAPONS", cats = {bow = true, gun = true, melee = true}}, {id = "utility", name = "UTILITY", cats = {throwable = true, utility = true}}, {id = "healing", name = "HEALING", cats = {healing = true}}, {id = "armor", name = "ARMOR", cats = {armor = true}}}
+
+function v18.AllItems()
     --[[
       name: AllItems
       line: 488
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v18 (copy, index: 1)
     ]]
-    local tbl_21 = {}
-    for _, value_18 in tbl_upv_1.CATEGORIES do
-        for v1, value_19 in tbl_upv_1.ByCategory(value_18) do
-            table.insert(tbl_21, value_19)
+    local v151 = {}
+
+    for _, category in v18.CATEGORIES do
+        for _, v155 in v18.ByCategory(category) do
+            table.insert(v151, v155)
         end
     end
-    return tbl_21
+
+    return v151
 end
-function tbl_upv_1.ArmorStats(a1)
-    --[[
-      name: ArmorStats
-      line: 499
-    ]]
-    local v41
-    if a1 then
-        v41 = a1.tuning
-        if not (v41) then
-            v41 = a1.stats
-            local v44
-            if not v41 then
-                v41 = {} or {}
-            end
-        end
-    else
-        v41 = {}
-    end
-    local v42 = v41.armor or (v41.maxArmor or (a1.armor or 0))
-    local v43 = v41.speedMult or (v41.moveSpeedMult or (v41.speed or (a1.speed or 1)))
-    if type(v42) ~= "number" then
-        v42 = 0
-    end
-    if type(v43) ~= "number" then
-        v43 = 1
-    end
-    return v42, v43
-end
-local u4 = nil
-local u5 = -math.huge
+
+v18.ArmorStats = ArmorStats
+local result2 = nil
+local timestamp3 = -math.huge
+
 local function combat()
     --[[
       name: combat
       line: 518
       upvalues:
-        u4 (ref,  index: 1)
-        u5 (ref,  index: 2)
-        ReplicatedStorage_upv_1 (copy, index: 3)
+        result2 (ref,  index: 1)
+        timestamp3 (ref,  index: 2)
+        replicatedStorage (copy, index: 3)
     ]]
-    if not (u4) and not (os.clock() - u5 < 5) then
-        u5 = os.clock()
-        local Combat_1 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Combat")
-        if Combat_1 and Combat_1:IsA("ModuleScript") then
-            local success_5, v44 = pcall(require, Combat_1)
-            if success_5 and type(v44) == "table" and type(v44.RunSpeed) == "function" then
-                u4 = v44
+    if not result2 and not (os.clock() - timestamp3 < 5) then
+        timestamp3 = os.clock()
+        local combat = replicatedStorage.Shared:FindFirstChild("Combat")
+
+        if combat and combat:IsA("ModuleScript") then
+            local success, result = pcall(require, combat)
+
+            if success and type(result) == "table" and type(result.RunSpeed) == "function" then
+                result2 = result
             end
         end
-        return u4
     end
-    return u4
+
+    return result2
 end
-local u6 = table.freeze({})
-function tbl_upv_1.RunSpeed(a1)
+
+local v162 = table.freeze({})
+
+function v18.RunSpeed(a163)
     --[[
       name: RunSpeed
       line: 533
       upvalues:
-        u6 (copy, index: 1)
+        v162 (copy, index: 1)
         combat (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        v18 (copy, index: 3)
     ]]
-    if a1 and not (a1.isAmmo) and a1.category ~= "ammo" then
-        local v45 = combat()
-        if a1.category ~= "armor" then
-            if not v45 then
-                return nil, u6
-            end
-            local success_6, v46, v47 = pcall(v45.RunSpeed, a1.id)
-            if success_6 and type(v46) == "number" then
-                return v46, v47
-            end
-            return nil, u6
-        elseif v45 then
-            return v45.ArmorSpeed(a1.id), u6
-        else
-            local _, v48 = tbl_upv_1.ArmorStats(a1)
-            return v48, u6
-        end
+    if not a163 or a163.isAmmo or a163.category == "ammo" then
+        return nil, v162
     end
-    return nil, u6
+
+    local v164 = combat()
+
+    if a163.category == "armor" then
+        if v164 then
+            return v164.ArmorSpeed(a163.id), v162
+        end
+
+        local _, v166 = v18.ArmorStats(a163)
+
+        return v166, v162
+    end
+
+    if not v164 then
+        return nil, v162
+    end
+
+    local success, result, v169 = pcall(v164.RunSpeed, a163.id)
+
+    if success and type(result) == "number" then
+        return result, v169
+    end
+
+    return nil, v162
 end
-function tbl_upv_1.SpeedText(a1)
+
+function v18.SpeedText(a170)
     --[[
       name: SpeedText
       line: 556
     ]]
-    local v49 = math.floor((math.abs(a1 - 1) * 100) + 0.5)
-    if v49 ~= 0 then
-        return (((a1 > 1) and "+") or "\226\136\146") .. v49 .. "%"
+    local flooredValue = math.floor((math.abs(a170 - 1) * 100) + 0.5)
+
+    if flooredValue == 0 then
+        return "Normal"
     end
-    return "Normal"
+
+    local v172 = not (1 < a170) and "−" or "+"
+
+    return v172 .. flooredValue .. "%"
 end
-local function speedFrac(a1)
+
+local function speedFrac(a174)
     --[[
       name: speedFrac
       line: 565
     ]]
-    return (math.clamp((a1 - 0.8) / 0.4, 0.05, 1))
+    return (math.clamp((a174 - 0.8) / 0.4, 0.05, 1))
 end
-function tbl_upv_1.SpeedNote(a1)
+
+function v18.SpeedNote(a175)
     --[[
       name: SpeedNote
       line: 571
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v18 (copy, index: 1)
     ]]
-    local _, v50 = tbl_upv_1.RunSpeed(a1)
-    if #v50 == 0 then
+    local _, v177 = v18.RunSpeed(a175)
+
+    if #v177 == 0 then
         return ""
     end
-    local move_1 = tbl_upv_1.SpeedText(v50[1].mult) .. " run speed while " .. v50[1].move
-    local v51 = ((v50[2]) and (move_1 .. ", " .. tbl_upv_1.SpeedText(v50[2].mult) .. " while " .. v50[2].move)) or move_1
-    return v51 .. "."
+
+    local v178 = v18.SpeedText(v177[1].mult) .. " run speed while " .. v177[1].move
+
+    if v177[2] then
+        v178 ..= ", " .. v18.SpeedText(v177[2].mult) .. " while " .. v177[2].move
+    end
+
+    return v178 .. "."
 end
-function tbl_upv_1.Bars(a1)
+
+function v18.Bars(a179)
     --[[
       name: Bars
       line: 586
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v18 (copy, index: 1)
         getRegistry (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
-        tbl_upv_3 (copy, index: 4)
+        v19 (copy, index: 3)
+        v20 (copy, index: 4)
     ]]
-    local tbl_22 = {}
-    if not a1 then
-        return tbl_22
+    local v180 = {}
+
+    if not a179 then
+        return v180
     end
-    local v52 = tbl_upv_1.RunSpeed(a1)
-    local v53
-    if v52 then
-        v53 = {label = "RUN SPEED"}
-        v53.frac = math.clamp((v52 - 0.8) / 0.4, 0.05, 1)
-        v53.value = tbl_upv_1.SpeedText(v52)
-    else
-        v53 = nil
+
+    local v182 = if const v181 = v18.RunSpeed(a179) then {label = "RUN SPEED", frac = math.clamp((v181 - 0.8) / 0.4, 0.05, 1), value = v18.SpeedText(v181)} else nil
+
+    if a179.category == "armor" then
+        table.insert(v180, {label = "ARMOR", frac = math.clamp(v18.ArmorStats(a179) / 100, 0.05, 1)})
+
+        if v182 then
+            table.insert(v180, v182)
+        end
+
+        local rangedReduction = type(a179.tuning) == "table" and a179.tuning.rangedReduction
+
+        if type(rangedReduction) == "number" and 0 < rangedReduction then
+            local v184 = {label = "VS RANGED", frac = math.clamp(rangedReduction / 0.4, 0.05, 1)}
+            table.insert(v180, v184)
+        end
+
+        return v180
     end
-    if a1.category ~= "armor" then
-        local v54 = getRegistry()
-        if type(a1.stats) == "table" and v54 and type(v54.STAT_BARS) == "table" then
-            for _, value_20 in v54.STAT_BARS do
-                local v55 = (type(value_20) == "table") and (a1.stats[value_20.key])
-                if type(v55) == "number" then
-                    local tbl_23 = {frac = 0, label = 0}
-                    tbl_23.label = string.upper(tostring(value_20.label or (value_20.key)))
-                    tbl_23.frac = math.clamp(v55 / 10, 0, 1)
-                    table.insert(tbl_22, tbl_23)
+
+    local v185
+    local registry = getRegistry()
+
+    if type(a179.stats) ~= "table" then
+        v185 = v180
+    elseif registry then
+        if type(registry.STAT_BARS) ~= "table" then
+            v185 = v180
+        else
+            for _, statBar in registry.STAT_BARS do
+                local v189
+                local v190 = false
+
+                if type(statBar) == "table" then
+                    v189 = a179.stats[statBar.key]
+                else
+                    v189 = v190
+                end
+
+                if type(v189) == "number" then
+                    local v191 = {}
+                    local stringUpper = string.upper
+                    local v193 = statBar.label or statBar.key
+                    v191.label = stringUpper((tostring(v193)))
+                    v191.frac = math.clamp(v189 / 10, 0, 1)
+                    table.insert(v180, v191)
                 end
             end
-            tbl_22 = ((#tbl_22 < 2) and {}) or tbl_22
+
+            v185 = #v180 < 2 and {} or v180
         end
-        local v56 = nil
-        if #tbl_22 == 0 then
-            local v57 = tbl_upv_2[a1.id]
-            v56 = a1.bars or (v57 and (v57.bars))
-            if type(v56) == "table" then
-                for key_11, value_21 in v56 do
-                    if type(value_21) ~= "number" then
-                        continue
-                    end
-                    if tbl_upv_3[key_11] then
-                        table.insert(tbl_22, {label = tbl_upv_3[key_11], frac = math.clamp(value_21, 0, 1)})
-                    end
+    else
+        v185 = v180
+    end
+
+    if #v185 == 0 then
+        local v194 = v19[a179.id]
+        local bars = a179.bars or v194 and v194.bars
+
+        if type(bars) == "table" then
+            for v196, bar in bars do
+                if type(bar) == "number" and v20[v196] then
+                    table.insert(v185, {label = v20[v196], frac = math.clamp(bar, 0, 1)})
                 end
             end
         end
-        if v53 and #tbl_22 > 0 then
-            table.insert(tbl_22, v53)
-        end
-    else
-        table.insert(tbl_22, {label = "ARMOR", frac = math.clamp(tbl_upv_1.ArmorStats(a1) / 100, 0.05, 1)})
-        if v53 then
-            table.insert(tbl_22, v53)
-        end
-        local v58 = (type(a1.tuning) == "table") and (a1.tuning.rangedReduction)
-        if type(v58) == "number" and v58 > 0 then
-            table.insert(tbl_22, {label = "VS RANGED", frac = math.clamp(v58 / 0.4, 0.05, 1)})
-        end
     end
-    return tbl_22
+
+    if v182 and 0 < #v185 then
+        table.insert(v185, v182)
+    end
+
+    return v185
 end
-return tbl_upv_1
+
+return v18

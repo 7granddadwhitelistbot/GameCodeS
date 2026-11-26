@@ -1,1658 +1,2039 @@
-local MarketplaceService_upv_1 = game:GetService("MarketplaceService")
-local Players_1 = game:GetService("Players")
-local PolicyService_upv_1 = game:GetService("PolicyService")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local RunService_1 = game:GetService("RunService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local Shared_1 = ReplicatedStorage_upv_1:WaitForChild("Shared")
-local Signal_1 = require(Shared_1:WaitForChild("Signal"))
-local Unlocks_upv_1 = require(Shared_1:WaitForChild("Unlocks"))
-local Ranks_upv_1 = require(Shared_1:WaitForChild("Ranks"))
-local Products_upv_1 = require(Shared_1:WaitForChild("Products"))
-local u1 = nil
-local Shards_1 = Shared_1:FindFirstChild("Shards")
-if Shards_1 then
-    local v1 = Shards_1:IsA("ModuleScript")
-    if v1 then
-        local success_1, v2 = pcall(require, Shards_1)
-        if (success_1) and type(v2) == "table" then
-            u1 = v2
+local v1
+local marketplaceService = game:GetService("MarketplaceService")
+local players = game:GetService("Players")
+local policyService = game:GetService("PolicyService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local workspace = game:GetService("Workspace")
+local shared = replicatedStorage:WaitForChild("Shared")
+local Signal = require(shared:WaitForChild("Signal"))
+local v10 = "Unlocks"
+local child = require(shared:WaitForChild(v10))
+local Ranks = require(shared:WaitForChild("Ranks"))
+local childName = "Products"
+local child2 = require(shared:WaitForChild(childName))
+local v15 = nil
+
+if const shards = shared:FindFirstChild("Shards") then
+    if shards:IsA("ModuleScript") then
+        local success, result = pcall(require, shards)
+
+        if not success or type(result) ~= "table" then
+            warn("[UI] Shared.Shards failed to load: " .. tostring(result))
+            v1 = v15
         else
-            warn("[UI] Shared.Shards failed to load: " .. tostring(v2))
+            v1 = result
         end
+    else
+        v1 = v15
     end
+else
+    v1 = v15
 end
-if not (u1) then
-    local tbl_upv_1 = {}
-    tbl_upv_1.small = {unlock = 10, up = {10, 20, 40, 80}}
-    tbl_upv_1.medium = {unlock = 20, up = {20, 40, 80, 160}}
-    tbl_upv_1.large = {unlock = 40, up = {40, 80, 160, 320}}
-    tbl_upv_1.starter = {unlock = 0, up = {10, 20, 40, 80}}
-    local tbl_upv_2 = {MAX_LEVEL = 5, FALLBACK = true, BONUS_PER_LEVEL = 0.02}
-    function tbl_upv_2.Size(a1)
-        --[[
-          name: Size
-          line: 101
-          upvalues:
-            Unlocks_upv_1 (copy, index: 1)
-            tbl_upv_1 (copy, index: 2)
-        ]]
-        local success_2, v3 = pcall(Unlocks_upv_1.SizeOf, a1)
-        if success_2 and type(v3) == "string" and tbl_upv_1[v3] then
-            return v3
-        elseif Unlocks_upv_1.IsStarter(a1) then
-            return "starter"
-        else
+
+if v1 then
+    v10 = v1
+else
+    local v19 = {small = {unlock = 10, up = {10, 20, 40, 80}}, medium = {unlock = 20, up = {20, 40, 80, 160}}, large = {unlock = 40, up = {40, 80, 160, 320}}, starter = {unlock = 0, up = {10, 20, 40, 80}}}
+    local v20 = {
+        MAX_LEVEL = 5,
+        BONUS_PER_LEVEL = 0.02,
+        FALLBACK = true,
+        Size = (function(a21)
+            --[[
+              name: Size
+              line: 101
+              upvalues:
+                child (copy, index: 1)
+                v19 (copy, index: 2)
+            ]]
+            local success, result = pcall(child.SizeOf, a21)
+
+            if success and type(result) == "string" and v19[result] then
+                return result
+            end
+            if child.IsStarter(a21) then
+                return "starter"
+            end
+
             return "medium"
-        end
-    end
-    function tbl_upv_2.UnlockCost(a1)
+        end)
+    }
+
+    function v20.UnlockCost(a24)
         --[[
           name: UnlockCost
           line: 105
           upvalues:
-            tbl_upv_1 (copy, index: 1)
-            tbl_upv_2 (copy, index: 2)
+            v19 (copy, index: 1)
+            v20 (copy, index: 2)
         ]]
-        return tbl_upv_1[tbl_upv_2.Size(a1)].unlock
+        return v19[v20.Size(a24)].unlock
     end
-    function tbl_upv_2.UpgradeCost(a1, a2)
+
+    function v20.UpgradeCost(a25, a26: number)
         --[[
           name: UpgradeCost
           line: 108
           upvalues:
-            tbl_upv_2 (copy, index: 1)
-            tbl_upv_1 (copy, index: 2)
+            v20 (copy, index: 1)
+            v19 (copy, index: 2)
         ]]
-        if tbl_upv_2.MAX_LEVEL <= a2 then
+        if v20.MAX_LEVEL <= a26 then
             return nil
         end
-        return tbl_upv_1[tbl_upv_2.Size(a1)].up[math.max(1, a2)]
+
+        return v19[v20.Size(a25)].up[math.max(1, a26)]
     end
-    function tbl_upv_2.Level(a1, a2)
+
+    function v20.Level(a27, key)
         --[[
           name: Level
           line: 114
           upvalues:
-            tbl_upv_2 (copy, index: 1)
-            Unlocks_upv_1 (copy, index: 2)
+            v20 (copy, index: 1)
+            child (copy, index: 2)
         ]]
-        local v4 = (type(a1) == "table") and (a1[a2])
-        if type(v4) == "table" and type(v4.level) == "number" then
-            return (math.clamp(math.floor(v4.level), 0, tbl_upv_2.MAX_LEVEL))
-        elseif Unlocks_upv_1.IsStarter(a2) then
-            return 1
-        else
-            return 0
+        local v29 = type(a27) == "table" and a27[key]
+
+        if type(v29) == "table" then
+            if type(v29.level) == "number" then
+                return (math.clamp(math.floor(v29.level), 0, v20.MAX_LEVEL))
+            end
         end
+
+        if child.IsStarter(key) then
+            return 1
+        end
+
+        return 0
     end
-    function tbl_upv_2.Owns(a1, a2)
+
+    function v20.Owns(a30, a31)
         --[[
           name: Owns
           line: 121
           upvalues:
-            tbl_upv_2 (copy, index: 1)
+            v20 (copy, index: 1)
         ]]
-        local v5 = tbl_upv_2.Level(a1, a2) >= 1
-        return v5
+        return 1 <= v20.Level(a30, a31)
     end
-    function tbl_upv_2.Progress(a1, a2)
+
+    function v20.Progress(a32, key)
         --[[
           name: Progress
           line: 124
           upvalues:
-            tbl_upv_2 (copy, index: 1)
+            v20 (copy, index: 1)
         ]]
-        local v6 = (type(a1) == "table") and (a1[a2])
-        local v7
-        if type(v6) == "table" and type(v6.shards) == "number" then
-            v7 = v6.shards
+        local shards
+        local v35 = type(a32) == "table" and a32[key]
+
+        if type(v35) ~= "table" or type(v35.shards) ~= "number" then
+            shards = 0
         else
-            v7 = 0
+            shards = v35.shards
         end
-        local v8 = tbl_upv_2.Level(a1, a2)
-        if v8 <= 0 then
-            return v7, tbl_upv_2.UnlockCost(a2), "unlock"
+
+        local v36 = v20.Level(a32, key)
+
+        if v36 <= 0 then
+            return shards, v20.UnlockCost(key), "unlock"
         end
-        local v9 = tbl_upv_2.UpgradeCost(a2, v8)
-        if v9 then
-            return v7, v9, "upgrade"
+
+        local v37 = v20.UpgradeCost(key, v36)
+        if not v37 then
+            return 0, 0, "max"
         end
-        return 0, 0, "max"
+
+        return shards, v37, "upgrade"
     end
-    function tbl_upv_2.CanUpgrade(a1, a2)
+
+    function v20.CanUpgrade(a38, a39)
         --[[
           name: CanUpgrade
           line: 137
           upvalues:
-            tbl_upv_2 (copy, index: 1)
+            v20 (copy, index: 1)
         ]]
-        local v10, v11, v12 = tbl_upv_2.Progress(a1, a2)
-        return (v12 == "upgrade") and (v11 <= v10)
+        local v40, v41, v42 = v20.Progress(a38, a39)
+        return (v42 == "upgrade") and (v41 <= v40)
     end
-    function tbl_upv_2.Bonus(a1)
+
+    function v20.Bonus(a43: number)
         --[[
           name: Bonus
           line: 141
           upvalues:
-            tbl_upv_2 (copy, index: 1)
+            v20 (copy, index: 1)
         ]]
-        return 1 + (tbl_upv_2.BONUS_PER_LEVEL * (math.clamp(a1, 1, tbl_upv_2.MAX_LEVEL) - 1))
+        return 1 + (v20.BONUS_PER_LEVEL * (math.clamp(a43, 1, v20.MAX_LEVEL) - 1))
     end
-    function tbl_upv_2.Odds()
+
+    function v20.Odds()
         --[[
           name: Odds
           line: 144
         ]]
         return {}
     end
-    u1 = tbl_upv_2
+
+    v10 = v20
 end
-local tbl_upv_3 = {}
-tbl_upv_3.Unlocks = Unlocks_upv_1
-tbl_upv_3.Shards = u1
-tbl_upv_3.ROBUX = utf8.char(57346)
-tbl_upv_3.MAX_LEVEL = tonumber(u1.MAX_LEVEL) or 5
-tbl_upv_3.BONUS_PER_LEVEL = tonumber(u1.BONUS_PER_LEVEL) or 0.02
-tbl_upv_3.Changed = Signal_1.new()
-tbl_upv_3.Event = Signal_1.new()
-tbl_upv_3.Upgraded = Signal_1.new()
-tbl_upv_3.Celebrate = Signal_1.new()
-tbl_upv_3.CelebrationChanged = Signal_1.new()
-tbl_upv_3.RevealChanged = Signal_1.new()
-tbl_upv_3.ForceMock = false
-tbl_upv_3.Mock = nil
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local u2 = RunService_1:IsStudio()
-local fromRGB_1 = Color3.fromRGB
-local tbl_upv_4 = {}
-tbl_upv_4.ammo = Color3.fromRGB(240, 96, 48)
-tbl_upv_4.bow = fromRGB_1(56, 189, 248)
-tbl_upv_4.gun = fromRGB_1(251, 146, 60)
-tbl_upv_4.melee = fromRGB_1(248, 113, 113)
-tbl_upv_4.throwable = fromRGB_1(167, 139, 250)
-tbl_upv_4.utility = fromRGB_1(250, 204, 21)
-tbl_upv_4.healing = fromRGB_1(74, 222, 128)
-tbl_upv_4.armor = fromRGB_1(148, 197, 255)
-function tbl_upv_3.Init(a1)
+
+local economy = {Unlocks = child, Shards = v10, ROBUX = utf8.char(57346), MAX_LEVEL = tonumber(v10.MAX_LEVEL) or 5, BONUS_PER_LEVEL = tonumber(v10.BONUS_PER_LEVEL)
+    or 0.02, Changed = Signal.new(), Event = Signal.new(), Upgraded = Signal.new(), Celebrate = Signal.new(), CelebrationChanged = Signal.new(), RevealChanged = Signal.new(), ForceMock = false, Mock = nil}
+local localPlayer = players.LocalPlayer
+local isStudio = runService:IsStudio()
+local color3FromRGB = Color3.fromRGB
+local v48 = {ammo = Color3.fromRGB(240, 96, 48), bow = color3FromRGB(56, 189, 248), gun = color3FromRGB(251, 146, 60), melee = color3FromRGB(248, 113, 113), throwable = color3FromRGB(167, 139, 250), utility = color3FromRGB(250, 204, 21), healing = color3FromRGB(74, 222, 128), armor = color3FromRGB(148, 197, 255)}
+
+function economy.Init(a49)
     --[[
       name: Init
       line: 181
       upvalues:
-        tbl_upv_4 (copy, index: 2)
-        u1 (ref,  index: 3)
-        Unlocks_upv_1 (copy, index: 4)
-        Ranks_upv_1 (copy, index: 5)
-        PolicyService_upv_1 (copy, index: 6)
-        LocalPlayer_upv_1 (copy, index: 7)
-        Workspace_upv_1 (copy, index: 8)
-        ReplicatedStorage_upv_1 (copy, index: 9)
-        Products_upv_1 (copy, index: 10)
-        MarketplaceService_upv_1 (copy, index: 11)
-        u2 (copy, index: 12)
+        economy (copy, index: 1)
+        v48 (copy, index: 2)
+        v10 (ref,  index: 3)
+        child (copy, index: 4)
+        Ranks (copy, index: 5)
+        policyService (copy, index: 6)
+        localPlayer (copy, index: 7)
+        workspace (copy, index: 8)
+        replicatedStorage (copy, index: 9)
+        child2 (copy, index: 10)
+        marketplaceService (copy, index: 11)
+        isStudio (copy, index: 12)
     ]]
-    local State_upv_1 = a1.State
-    local WeaponInfo_upv_1 = a1.WeaponInfo
-    a1.Economy = items
+    local state = a49.State
+    local weaponInfo = a49.WeaponInfo
+    a49.Economy = economy
+
     local function profile()
         --[[
           name: profile
           line: 186
           upvalues:
-            State_upv_1 (copy, index: 1)
+            state (copy, index: 1)
         ]]
-        return State_upv_1.Profile
+        return state.Profile
     end
-    function items.CategoryColor(a2)
+
+    function economy.CategoryColor(a53)
         --[[
           name: CategoryColor
           line: 190
           upvalues:
-            WeaponInfo_upv_1 (copy, index: 1)
-            tbl_upv_4 (copy, index: 2)
-            a1 (copy, index: 3)
+            weaponInfo (copy, index: 1)
+            v48 (copy, index: 2)
+            a49 (copy, index: 3)
         ]]
-        local v13 = WeaponInfo_upv_1.Get(a2)
-        return (v13 and (tbl_upv_4[v13.category])) or (a1.Theme.Colors.Accent)
+        local v54 = weaponInfo.Get(a53)
+        return v54 and v48[v54.category] or a49.Theme.Colors.Accent
     end
-    local tbl_upv_5 = nil
-    local u3 = nil
+
+    local v55 = nil
+    local owned = nil
+
     local function items()
         --[[
           name: items
           line: 200
           upvalues:
-            State_upv_1 (copy, index: 2)
-            u3 (ref,  index: 3)
-            tbl_upv_5 (ref,  index: 4)
+            economy (copy, index: 1)
+            state (copy, index: 2)
+            owned (ref,  index: 3)
+            v55 (ref,  index: 4)
         ]]
-        local Mock_1 = tbl_upv_3.Mock
-        if Mock_1 then
-            return Mock_1.items
+        if const mock = economy.Mock then
+            return mock.items
         end
-        local Profile_1 = State_upv_1.Profile
-        if type(Profile_1.items) == "table" then
-            return Profile_1.items
+
+        local profile = state.Profile
+
+        if type(profile.items) == "table" then
+            return profile.items
         end
-        local owned_1 = Profile_1.owned
-        if type(owned_1) == "table" then
-            if u3 ~= owned_1 then
-                u3 = owned_1
-                tbl_upv_5 = {}
-                for key_1, value_1 in owned_1 do
-                    if value_1 ~= true then
-                        continue
-                    end
-                    if type(key_1) == "string" then
-                        tbl_upv_5[key_1] = {level = 1, shards = 0}
-                    end
+
+        local owned2 = profile.owned
+
+        if type(owned2) ~= "table" then
+            return {}
+        end
+
+        if owned ~= owned2 then
+            owned = owned2
+            v55 = {}
+
+            for v61, v62 in owned2 do
+                if v62 == true and type(v61) == "string" then
+                    v55[v61] = {shards = 0, level = 1}
                 end
             end
-            return tbl_upv_5
         end
-        return {}
+
+        return v55
     end
-    items.Items = items
-    function items.HasData()
+
+    economy.Items = items
+
+    function economy.HasData()
         --[[
           name: HasData
           line: 226
           upvalues:
-            State_upv_1 (copy, index: 2)
+            economy (copy, index: 1)
+            state (copy, index: 2)
         ]]
-        if tbl_upv_3.Mock then
+        if economy.Mock then
             return true
         end
-        local Profile_2 = State_upv_1.Profile
-        local HasProfile_1 = State_upv_1.HasProfile
-        local v14
-        if HasProfile_1 then
-            v14 = true
-            if type(Profile_2.items) ~= "table" then
-                v14 = type(Profile_2.owned) == "table"
-            end
-        else
-            v14 = HasProfile_1
-        end
-        return v14
+
+        local profile = state.Profile
+
+        return state.HasProfile and (type(profile.items) == "table" or type(profile.owned) == "table")
     end
-    function items.Level(a3)
+
+    function economy.Level(key)
         --[[
           name: Level
           line: 233
           upvalues:
-            u1 (ref,  index: 1)
+            v10 (ref,  index: 1)
             items (copy, index: 2)
-            items (copy, index: 3)
-            State_upv_1 (copy, index: 4)
-            Unlocks_upv_1 (copy, index: 5)
+            economy (copy, index: 3)
+            state (copy, index: 4)
+            child (copy, index: 5)
         ]]
-        if type(a3) ~= "string" then
+        if type(key) ~= "string" then
             return 0
         end
-        local success_3, v15 = pcall(u1.Level, items(), a3)
-        if not (success_3) or type(v15) ~= "number" then
-            v15 = 0
+
+        local success, result
+        success, result = pcall(v10.Level, items(), key)
+
+        if not success or type(result) ~= "number" then
+            result = 0
         end
-        if v15 <= 0 then
-            local v16 = nil
-            if not (tbl_upv_3.Mock) then
-                v16 = State_upv_1.Profile.owned
-                if type(v16) == "table" and v16[a3] == true then
-                    v15 = 1
-                else
-                    v15 = (Unlocks_upv_1.IsStarter(a3) and 1) or v15
-                end
+
+        if result <= 0 and not economy.Mock then
+            local owned = state.Profile.owned
+
+            if type(owned) == "table" and owned[key] == true then
+                result = 1
+            elseif child.IsStarter(key) then
+                result = 1
             end
         end
-        return (math.clamp(math.floor(v15), 0, tbl_upv_3.MAX_LEVEL))
+
+        return (math.clamp(math.floor(result), 0, economy.MAX_LEVEL))
     end
-    function items.Owns(a4)
+
+    function economy.Owns(a68)
         --[[
           name: Owns
           line: 250
+          upvalues:
+            economy (copy, index: 1)
         ]]
-        local v17 = tbl_upv_3.Level(a4) >= 1
-        return v17
+        return 1 <= economy.Level(a68)
     end
-    WeaponInfo_upv_1.OwnsAmmo = function(a5)
+
+    weaponInfo.OwnsAmmo = function(a69)
         --[[
           line: 254
+          upvalues:
+            economy (copy, index: 1)
         ]]
-        return tbl_upv_3.Owns(a5)
+        return economy.Owns(a69)
     end
-    function items.MaxLevel(a6)
+
+    function economy.MaxLevel(a70)
         --[[
           name: MaxLevel
           line: 257
           upvalues:
-            u1 (ref, index: 1)
+            v10 (ref,  index: 1)
+            economy (copy, index: 2)
         ]]
-        if type(u1.MaxLevel) == "function" and type(a6) == "string" then
-            local success_4, v18 = pcall(u1.MaxLevel, a6)
-            if success_4 and type(v18) == "number" then
-                return (math.clamp(math.floor(v18), 1, tbl_upv_3.MAX_LEVEL))
+        if type(v10.MaxLevel) == "function" and type(a70) == "string" then
+            local success, result = pcall(v10.MaxLevel, a70)
+
+            if success and type(result) == "number" then
+                return (math.clamp(math.floor(result), 1, economy.MAX_LEVEL))
             end
         end
-        return tbl_upv_3.MAX_LEVEL
+
+        return economy.MAX_LEVEL
     end
-    function items.IsLocked(a7)
+
+    function economy.IsLocked(a73)
         --[[
           name: IsLocked
           line: 266
+          upvalues:
+            economy (copy, index: 1)
         ]]
-        local v19 = (type(a7) == "string") and (not tbl_upv_3.Owns(a7))
-        return v19
+        return type(a73) == "string" and not economy.Owns(a73)
     end
-    function items.RankBest()
+
+    function economy.RankBest()
         --[[
           name: RankBest
           line: 269
           upvalues:
-            State_upv_1 (copy, index: 1)
-            Ranks_upv_1 (copy, index: 2)
+            state (copy, index: 1)
+            Ranks (copy, index: 2)
         ]]
-        local Profile_3 = State_upv_1.Profile
-        return (math.max(tonumber(Profile_3.rankBest) or 1, Ranks_upv_1.RankOf(tonumber(Profile_3.trophies) or 0)))
+        local profile = state.Profile
+        return (math.max((tonumber(profile.rankBest) or 1), Ranks.RankOf(tonumber(profile.trophies) or 0)))
     end
-    function items.ItemRank(a8)
+
+    function economy.ItemRank(a75)
         --[[
           name: ItemRank
           line: 273
           upvalues:
-            Ranks_upv_1 (copy, index: 1)
+            Ranks (copy, index: 1)
         ]]
-        return Ranks_upv_1.ItemRank(a8)
+        return Ranks.ItemRank(a75)
     end
-    function items.RankAllows(a9)
+
+    function economy.RankAllows(a76)
         --[[
           name: RankAllows
           line: 276
           upvalues:
-            Unlocks_upv_1 (copy, index: 1)
-            Ranks_upv_1 (copy, index: 3)
+            child (copy, index: 1)
+            economy (copy, index: 2)
+            Ranks (copy, index: 3)
         ]]
-        if type(a9) ~= "string" then
+        if type(a76) ~= "string" then
             return false
         end
-        local v20 = true
-        if Unlocks_upv_1.EVERYTHING_OWNED ~= true then
-            v20 = tbl_upv_3.Owns(a9) or (Ranks_upv_1.Allows(tbl_upv_3.RankBest(), a9))
-        end
-        return v20
+
+        return child.EVERYTHING_OWNED == true or economy.Owns(a76) or Ranks.Allows(economy.RankBest(), a76)
     end
-    function items.Progress(a10)
+
+    function economy.Progress(a77)
         --[[
           name: Progress
           line: 282
           upvalues:
-            items (copy, index: 1)
-            u1 (ref,  index: 2)
+            economy (copy, index: 1)
+            v10 (ref,  index: 2)
             items (copy, index: 3)
         ]]
-        local v21 = tbl_upv_3.Level(a10)
-        local success_5, v22, _, v26 = pcall(u1.Progress, items(), a10)
-        if not (success_5) or type(v22) ~= "number" then
-            v22 = 0
-            _ = 0
-            v26 = ((tbl_upv_3.MAX_LEVEL <= v21) and "max") or "unlock"
+        local success, result, v80, v81
+        local v82 = economy.Level(a77)
+        success, result, v80, v81 = pcall(v10.Progress, items(), a77)
+
+        if not success or type(result) ~= "number" then
+            result = 0
+            v80 = 0
+            v81 = not (economy.MAX_LEVEL <= v82) and "unlock" or "max"
         end
-        if v21 >= 1 then
-            local v25 = nil
-            if v26 ~= "unlock" then
-                v26 = ((tbl_upv_3.MaxLevel(a10) <= v21) and "max") or v26
+
+        if 1 <= v82 and v81 == "unlock" then
+            if const v83 = v10.UpgradeCost(a77, v82) then
+                v81 = "upgrade"
+                v80 = v83
             else
-                v25 = u1.UpgradeCost(a10, v21)
-                if v25 then
-                    _, v26 = v25, "upgrade"
-                else
-                    v22, _, v26 = 0, 0, "max"
-                end
+                result = 0
+                v80 = 0
+                v81 = "max"
             end
-        else
-            v26 = ((tbl_upv_3.MaxLevel(a10) <= v21) and "max") or v26
+        elseif economy.MaxLevel(a77) <= v82 then
+            v81 = "max"
         end
-        return math.max(0, math.floor(v22)), math.max(0, math.floor(_ or 0)), v26
+
+        return math.max(0, (math.floor(result))), math.max(0, (math.floor((v80 or 0)))), v81
     end
-    function items.CanUpgrade(a11)
+
+    function economy.CanUpgrade(a84)
         --[[
           name: CanUpgrade
           line: 301
+          upvalues:
+            economy (copy, index: 1)
         ]]
-        if type(a11) ~= "string" then
+        if type(a84) ~= "string" then
             return false
         end
-        local v26, v27, v28 = tbl_upv_3.Progress(a11)
-        return (v28 == "upgrade") and ((v27 > 0) and (v27 <= v26))
+
+        local v85, v86, v87 = economy.Progress(a84)
+
+        return v87 == "upgrade" and 0 < v86 and (v86 <= v85)
     end
-    function items.ReadyList()
+
+    function economy.ReadyList()
         --[[
           name: ReadyList
           line: 308
           upvalues:
-            WeaponInfo_upv_1 (copy, index: 1)
+            weaponInfo (copy, index: 1)
+            economy (copy, index: 2)
         ]]
-        local tbl_6 = {}
-        for _, value_2 in WeaponInfo_upv_1.AllItems() do
-            if tbl_upv_3.CanUpgrade(value_2.id) then
-                table.insert(tbl_6, value_2.id)
+        local v88 = {}
+
+        for _, v90 in weaponInfo.AllItems() do
+            if economy.CanUpgrade(v90.id) then
+                table.insert(v88, v90.id)
             end
         end
-        return tbl_6
+
+        return v88
     end
-    function items.UpgradesReady()
+
+    function economy.UpgradesReady()
         --[[
           name: UpgradesReady
           line: 317
+          upvalues:
+            economy (copy, index: 1)
         ]]
-        return #tbl_upv_3.ReadyList()
+        return #economy.ReadyList()
     end
-    function items.Bonus(a12)
+
+    function economy.Bonus(a91: number)
         --[[
           name: Bonus
           line: 320
           upvalues:
-            u1 (ref, index: 1)
+            v10 (ref,  index: 1)
+            economy (copy, index: 2)
         ]]
-        local success_6, v29 = pcall(u1.Bonus, a12)
-        if success_6 and type(v29) == "number" then
-            return v29
+        local success, result = pcall(v10.Bonus, a91)
+
+        if success and type(result) == "number" then
+            return result
         end
-        return 1 + (tbl_upv_3.BONUS_PER_LEVEL * (math.clamp(a12, 1, tbl_upv_3.MAX_LEVEL) - 1))
+
+        return 1 + (economy.BONUS_PER_LEVEL * (math.clamp(a91, 1, economy.MAX_LEVEL) - 1))
     end
-    function items.BonusPercent(a13)
+
+    function economy.BonusPercent(a94)
         --[[
           name: BonusPercent
           line: 327
+          upvalues:
+            economy (copy, index: 1)
         ]]
-        if a13 <= 1 then
+        if a94 <= 1 then
             return 0
         end
-        return (math.floor(((tbl_upv_3.Bonus(a13) - 1) * 100) + 0.5))
+
+        return (math.floor(((economy.Bonus(a94) - 1) * 100) + 0.5))
     end
-    function items.MaxBonusPercent()
+
+    function economy.MaxBonusPercent()
         --[[
           name: MaxBonusPercent
           line: 333
+          upvalues:
+            economy (copy, index: 1)
         ]]
-        return tbl_upv_3.BonusPercent(tbl_upv_3.MAX_LEVEL)
+        return economy.BonusPercent(economy.MAX_LEVEL)
     end
-    function items.StatWord(a14)
+
+    function economy.StatWord(a95)
         --[[
           name: StatWord
           line: 336
           upvalues:
-            u1 (ref,  index: 1)
-            WeaponInfo_upv_1 (copy, index: 2)
+            v10 (ref,  index: 1)
+            weaponInfo (copy, index: 2)
         ]]
-        if type(u1.Stat) == "function" then
-            local v30 = nil
-            if type(a14) == "string" then
-                local success_7, v30 = pcall(u1.Stat, a14)
-                if success_7 then
-                    if type(v30) ~= "string" and v30 ~= false then
-                        local v31 = WeaponInfo_upv_1.Get(a14)
-                        if v31 and v31.category == "armor" then
-                            return "armor"
-                        elseif v31 and v31.category == "healing" then
-                            return "healing"
-                        else
-                            return "damage"
-                        end
-                    end
-                    return v30
-                end
+        if type(v10.Stat) == "function" and type(a95) == "string" then
+            local success, result = pcall(v10.Stat, a95)
+
+            if success and (type(result) == "string" or result == false) then
+                return result
             end
         end
-        local v31 = WeaponInfo_upv_1.Get(a14)
-        if v31 and v31.category == "armor" then
+
+        local v98 = weaponInfo.Get(a95)
+
+        if v98 and v98.category == "armor" then
             return "armor"
-        elseif v31 and v31.category == "healing" then
-            return "healing"
-        else
-            return "damage"
         end
+        if v98 and v98.category == "healing" then
+            return "healing"
+        end
+
+        return "damage"
     end
-    function items.BonusText(a15, a16)
+
+    function economy.BonusText(a99, a100)
         --[[
           name: BonusText
           line: 351
           upvalues:
-            u1 (ref, index: 1)
+            v10 (ref,  index: 1)
+            economy (copy, index: 2)
         ]]
-        local v32 = nil
-        if type(u1.BonusText) == "function" then
-            local success_8, v32 = pcall(u1.BonusText, a15, a16)
-            if success_8 and type(v32) == "string" then
-                return v32
+        if type(v10.BonusText) == "function" then
+            local success, result = pcall(v10.BonusText, a99, a100)
+
+            if success and type(result) == "string" then
+                return result
             end
         end
-        local v33 = tbl_upv_3.StatWord(a15)
-        if v33 then
-            return (string.format("+%d%% %s", tbl_upv_3.BonusPercent(a16), v33))
-        end
-        return ""
+
+        return if const v103 = economy.StatWord(a99) then (string.format("+%d%% %s", economy.BonusPercent(a100), v103)) else ""
     end
-    function items.Reveals()
+
+    function economy.Reveals()
         --[[
           name: Reveals
           line: 362
           upvalues:
-            State_upv_1 (copy, index: 1)
+            state (copy, index: 1)
         ]]
-        local reveals_1 = State_upv_1.Profile.reveals
-        if type(reveals_1) ~= "table" then
+        local reveals = state.Profile.reveals
+
+        if type(reveals) ~= "table" then
             return {}
         end
-        return reveals_1
+
+        return reveals
     end
-    local u4 = nil
-    local function noteDrop(a17)
+
+    local item = nil
+
+    local function noteDrop(a107)
         --[[
           name: noteDrop
           line: 369
           upvalues:
-            u4 (ref, index: 1)
+            item (ref, index: 1)
         ]]
-        if type(a17) ~= "table" or type(a17.stacks) ~= "table" then
+        if type(a107) ~= "table" or type(a107.stacks) ~= "table" then
             return
         end
-        local v34 = nil
-        for _, value_3 in a17.stacks do
-            if type(value_3) ~= "table" or type(value_3.item) ~= "string" then
-                continue
-            end
-            if value_3.unlocked ~= true then
-                v34 = v34 or value_3.item
-                continue
-            else
-                v34 = value_3.item
-                break
+
+        local item2
+
+        for _, stack in a107.stacks do
+            if type(stack) == "table" then
+                if type(stack.item) ~= "string" then
+                    continue
+                end
+
+                if stack.unlocked == true then
+                    item2 = stack.item
+                    break
+                end
+
+                local item3 = item2 or stack.item
+                item2 = item3
             end
         end
-        if v34 then
-            u4 = v34
+
+        if item2 then
+            item = item2
         end
     end
-    function items.LastFound()
+
+    function economy.LastFound()
         --[[
           name: LastFound
           line: 388
           upvalues:
-            u4 (ref,  index: 1)
+            item (ref,  index: 1)
+            economy (copy, index: 2)
             noteDrop (copy, index: 3)
         ]]
-        if u4 then
-            return u4
+        if not item then
+            local v112 = economy.Reveals()
+            local v113 = v112[#v112]
+
+            if type(v113) == "table" then
+                noteDrop(v113)
+            end
         end
-        local v36 = tbl_upv_3.Reveals()
-        local v37 = v36[#v36]
-        if type(v37) == "table" then
-            noteDrop(v37)
-        end
-        return u4
+
+        return item
     end
-    function items.Spotlight()
+
+    function economy.Spotlight()
         --[[
           name: Spotlight
           line: 401
           upvalues:
-            WeaponInfo_upv_1 (copy, index: 1)
+            weaponInfo (copy, index: 1)
+            economy (copy, index: 2)
         ]]
-        local v38 = WeaponInfo_upv_1.AllItems()
-        local v39 = nil
-        local v40 = -1
-        local v41 = math.huge
-        local v42 = false
-        v39, v42 = v39, v42
-        for _, value_4 in v38 do
-            local v43 = tbl_upv_3.IsLocked(value_4.id)
-            if not (v43) then
-                continue
-            end
-            local v44 = tbl_upv_3.RankAllows(value_4.id)
-            if not (v44) then
-                continue
-            end
-            local v45 = true
-            local v46, v47 = tbl_upv_3.Progress(value_4.id)
-            local v48 = v46 / math.max(v47, 1)
-            if not (v46 > 0) then
-                v42 = v45
-                continue
-            end
-            if v40 < v48 then
-                v40, v41, v39, v42 = v48, v47, value_4.id, v45
-                continue
-            end
-            if v48 ~= v40 then
-                v42 = v45
-                continue
-            end
-            if v47 < v41 then
-                v40, v41, v39, v42 = v48, v47, value_4.id, v45
-            else
-                v42 = v45
+        local id
+        local v115 = weaponInfo.AllItems()
+        local v116 = -1
+        local v117 = math.huge
+        local v118 = false
+
+        for _, v120 in v115 do
+            if economy.IsLocked(v120.id) then
+                local v121, v122, v123, v124
+                local v125 = false
+
+                if economy.RankAllows(v120.id) then
+                    v121 = true
+                    v122, v123 = economy.Progress(v120.id)
+                    v124 = v122 / math.max(v123, 1)
+
+                    if not (0 < v122) then
+                        v118 = v121
+                    elseif v116 < v124 then
+                        v125 = true
+                    elseif v124 ~= v116 then
+                        v118 = v121
+                    elseif not (v123 < v117) then
+                        v118 = v121
+                    else
+                        v125 = true
+                    end
+                end
+
+                if v125 then
+                    id = v120.id
+                    v116, v117, v118 = v124, v123, v121
+                end
             end
         end
-        if v39 then
-            return v39, "unlock"
+
+        if id then
+            return id, "unlock"
         end
-        local v49 = tbl_upv_3.LastFound()
-        if v49 and WeaponInfo_upv_1.Get(v49) and tbl_upv_3.RankAllows(v49) and (tbl_upv_3.IsLocked(v49) or tbl_upv_3.Progress(v49) > 0) then
-            if tbl_upv_3.IsLocked(v49) then
-                return v49, "unlock"
+
+        local v126 = economy.LastFound()
+
+        if v126
+            and weaponInfo.Get(v126)
+            and economy.RankAllows(v126)
+            and (economy.IsLocked(v126) or 0 < economy.Progress(v126))
+        then
+            local v127 = v126
+
+            if economy.IsLocked(v126) then
+                return v127, "unlock"
             end
-            return v49, "found"
+
+            return v127, "found"
         end
-        local v50 = nil
-        if v42 then
-            local v51 = nil
-            local v52 = math.huge
-            for _, value_5 in v38 do
-                local v53 = tbl_upv_3.IsLocked(value_5.id)
-                if not (v53) then
-                    continue
-                end
-                local v54 = tbl_upv_3.RankAllows(value_5.id)
-                if not (v54) then
-                    continue
-                end
-                local v61, v55 = tbl_upv_3.Progress(value_5.id)
-                if v55 < v52 then
-                    v52, v51 = v55, value_5.id
-                end
-            end
-            return v51, "unlock"
-        else
-            v50 = tbl_upv_3.ReadyList()
-            if v50[1] then
-                return v50[1], "ready"
-            end
-            local v56 = nil
-            local v57 = -1
-            for _, value_6 in v38 do
-                local v58, v59, v60 = tbl_upv_3.Progress(value_6.id)
-                if v60 ~= "upgrade" then
-                    continue
-                end
-                if v57 < v58 / math.max(v59, 1) then
-                    local id_1 = value_6.id
-                    v57, v56 = v58 / math.max(v59, 1), id_1
+
+        if v118 then
+            local id2
+            local v129 = math.huge
+
+            for _, v131 in v115 do
+                if economy.IsLocked(v131.id) then
+                    if not economy.RankAllows(v131.id) then
+                        continue
+                    end
+
+                    local _, v133 = economy.Progress(v131.id)
+
+                    if not (v133 < v129) then
+                        continue
+                    end
+
+                    id2 = v131.id
+                    v129 = v133
                 end
             end
-            if v56 then
-                return v39, "upgrade"
-            end
-            return v39, "max"
+
+            return id2, "unlock"
         end
+
+        local id3
+        local v135 = economy.ReadyList()
+
+        if v135[1] then
+            return v135[1], "ready"
+        end
+
+        local v136 = -1
+        id3 = nil
+
+        for _, v138 in v115 do
+            local v139, v140, v141 = economy.Progress(v138.id)
+
+            if v141 == "upgrade" and v136 < v139 / math.max(v140, 1) then
+                local id4 = v138.id
+                v136 = v139 / math.max(v140, 1)
+                id3 = id4
+            end
+        end
+
+        local id5 = id3
+
+        if id3 then
+            return id5, "upgrade"
+        end
+
+        return id5, "max"
     end
-    local u5 = nil
+
+    local arePaidRandomItemsRestricted = nil
+
     task.spawn(
         function()
             --[[
               line: 454
               upvalues:
-                PolicyService_upv_1 (copy, index: 1)
-                LocalPlayer_upv_1 (copy, index: 2)
-                u5 (ref,  index: 3)
+                policyService (copy, index: 1)
+                localPlayer (copy, index: 2)
+                arePaidRandomItemsRestricted (ref,  index: 3)
+                economy (copy, index: 4)
             ]]
-            local success_9, v61 = pcall(
+            local success, policyInfoForPlayerAsync = pcall(
                 function()
                     --[[
                       line: 455
                       upvalues:
-                        PolicyService_upv_1 (copy, index: 1)
-                        LocalPlayer_upv_1 (copy, index: 2)
+                        policyService (copy, index: 1)
+                        localPlayer (copy, index: 2)
                     ]]
-                    return PolicyService_upv_1:GetPolicyInfoForPlayerAsync(LocalPlayer_upv_1)
+                    return policyService:GetPolicyInfoForPlayerAsync(localPlayer)
                 end
             )
-            if success_9 and type(v61) == "table" and type(v61.ArePaidRandomItemsRestricted) == "boolean" then
-                u5 = v61.ArePaidRandomItemsRestricted
+
+            if not success
+                or type(policyInfoForPlayerAsync) ~= "table"
+                or type(policyInfoForPlayerAsync.ArePaidRandomItemsRestricted) ~= "boolean"
+            then
+                arePaidRandomItemsRestricted = true
             else
-                u5 = true
+                arePaidRandomItemsRestricted = policyInfoForPlayerAsync.ArePaidRandomItemsRestricted
             end
-            tbl_upv_3.Changed:Fire()
+
+            economy.Changed:Fire()
         end
     )
+
     local function payloadAllowed()
         --[[
           name: payloadAllowed
           line: 465
           upvalues:
-            State_upv_1 (copy, index: 1)
+            state (copy, index: 1)
         ]]
-        local canBuyDrops_1 = State_upv_1.Profile.canBuyDrops
-        if type(canBuyDrops_1) ~= "boolean" then
+        local canBuyDrops = state.Profile.canBuyDrops
+
+        if type(canBuyDrops) ~= "boolean" then
             return nil
         end
-        return canBuyDrops_1
+
+        return canBuyDrops
     end
-    function items.DropsAllowed()
+
+    function economy.DropsAllowed()
         --[[
           name: DropsAllowed
           line: 469
           upvalues:
-            State_upv_1 (copy, index: 2)
-            u5 (ref,  index: 3)
+            economy (copy, index: 1)
+            state (copy, index: 2)
+            arePaidRandomItemsRestricted (ref,  index: 3)
         ]]
-        local v62 = tbl_upv_3.Mock
-        if v62 and v62.restricted ~= nil then
-            return v62.restricted ~= true
+        local canBuyDrops
+        local mock = economy.Mock
+
+        if mock and mock.restricted ~= nil then
+            return mock.restricted ~= true
         end
-        local canBuyDrops_2 = State_upv_1.Profile.canBuyDrops
-        if type(canBuyDrops_2) ~= "boolean" then
-            v62 = nil
+
+        local canBuyDrops2 = state.Profile.canBuyDrops
+
+        if type(canBuyDrops2) ~= "boolean" then
+            canBuyDrops = nil
         else
-            v62 = canBuyDrops_2
+            canBuyDrops = canBuyDrops2
         end
-        if v62 ~= nil then
-            return v62
+
+        if canBuyDrops ~= nil then
+            return canBuyDrops
         end
-        local v63 = u5 == false
-        return v63
+
+        return arePaidRandomItemsRestricted == false
     end
-    function items.Odds(a18)
+
+    function economy.Odds(a152)
         --[[
           name: Odds
           line: 480
           upvalues:
-            u1 (ref,  index: 1)
-            State_upv_1 (copy, index: 2)
-            items (copy, index: 3)
+            v10 (ref,  index: 1)
+            state (copy, index: 2)
+            economy (copy, index: 3)
             items (copy, index: 4)
         ]]
-        if type(u1.Odds) == "function" then
-            local v64 = {}
-            v64.loadout = State_upv_1.Loadout()
-            if type(u1.Context) == "function" and not (tbl_upv_3.Mock) then
-                local success_10, v65 = pcall(u1.Context, State_upv_1.Profile)
-                if success_10 and type(v65) == "table" then
-                    v64 = v65
+        if type(v10.Odds) == "function" then
+            local v153
+            local v154 = {loadout = state.Loadout()}
+
+            if type(v10.Context) ~= "function" then
+                v153 = v154
+            elseif economy.Mock then
+                v153 = v154
+            else
+                local success, result = pcall(v10.Context, state.Profile)
+
+                if success then
+                    if type(result) ~= "table" then
+                        v153 = v154
+                    else
+                        v153 = result
+                    end
+                else
+                    v153 = v154
                 end
             end
-            local success_11, v66 = pcall(u1.Odds, items(), a18 or "golden", v64)
-            if success_11 and type(v66) == "table" then
-                return v66
+
+            local success, result = pcall(v10.Odds, items(), (a152 or "golden"), v153)
+
+            if success and type(result) == "table" then
+                return result
             end
         end
+
         return {}
     end
+
     local function serverNow()
         --[[
           name: serverNow
           line: 498
           upvalues:
-            Workspace_upv_1 (copy, index: 1)
+            workspace (copy, index: 1)
         ]]
-        return Workspace_upv_1:GetServerTimeNow()
+        return workspace:GetServerTimeNow()
     end
-    function items.GoldenOffer()
+
+    function economy.GoldenOffer()
         --[[
           name: GoldenOffer
           line: 501
           upvalues:
-            State_upv_1 (copy, index: 1)
-            Workspace_upv_1 (copy, index: 3)
+            state (copy, index: 1)
+            economy (copy, index: 2)
+            workspace (copy, index: 3)
         ]]
-        local goldenOffer_1 = State_upv_1.Profile.goldenOffer
-        if type(goldenOffer_1) == "table" and tbl_upv_3.DropsAllowed() then
-            if goldenOffer_1.state ~= "active" then
-                if goldenOffer_1.state ~= "ready" then
-                    return false
+        local goldenOffer = state.Profile.goldenOffer
+
+        if type(goldenOffer) == "table" and economy.DropsAllowed() then
+            if goldenOffer.state == "active" then
+                if type(goldenOffer.endsAt) ~= "number" or not (workspace:GetServerTimeNow() < goldenOffer.endsAt) then
+                    goldenOffer = false
                 end
-                return goldenOffer_1
-            elseif type(goldenOffer_1.endsAt) == "number" and Workspace_upv_1:GetServerTimeNow() < goldenOffer_1.endsAt then
-                return goldenOffer_1
-            else
-                return false
+            elseif goldenOffer.state ~= "ready" then
+                goldenOffer = false
             end
+        else
+            goldenOffer = false
         end
-        return false
+
+        return goldenOffer
     end
-    function items.OfferLeft()
+
+    function economy.OfferLeft()
         --[[
           name: OfferLeft
           line: 511
           upvalues:
-            Workspace_upv_1 (copy, index: 2)
+            economy (copy, index: 1)
+            workspace (copy, index: 2)
         ]]
-        local v67 = tbl_upv_3.GoldenOffer()
-        if v67 and v67.state == "active" then
-            return (math.max(0, v67.endsAt - Workspace_upv_1:GetServerTimeNow()))
+        local v161 = economy.GoldenOffer()
+
+        if v161 and v161.state == "active" then
+            return (math.max(0, v161.endsAt - workspace:GetServerTimeNow()))
         end
+
         return nil
     end
-    function items.OfferDiscount()
+
+    function economy.OfferDiscount()
         --[[
           name: OfferDiscount
           line: 515
           upvalues:
-            Unlocks_upv_1 (copy, index: 2)
+            economy (copy, index: 1)
+            child (copy, index: 2)
         ]]
-        local v68 = tbl_upv_3.GoldenOffer()
-        local v69 = (v68 and (v68.key)) or (Unlocks_upv_1.FIRST_DROP.key)
-        local v70 = tbl_upv_3.Price("drop_golden")
-        local v71 = tbl_upv_3.Price(v69)
-        if v70 and v71 and not (v70 <= 0) and not (v70 <= v71) then
-            return (math.floor(((1 - (v71 / v70)) * 100) + 0.5))
+        local v162 = economy.GoldenOffer()
+        local key = v162 and v162.key or child.FIRST_DROP.key
+        local v164 = economy.Price("drop_golden")
+        local v165 = economy.Price(key)
+
+        if v164 and v165 and not (v164 <= 0) and not (v164 <= v165) then
+            return (math.floor(((1 - (v165 / v164)) * 100) + 0.5))
         end
+
         return nil
     end
-    local u6 = -math.huge
-    function items.OfferSeen()
+
+    local timestamp = -math.huge
+
+    function economy.OfferSeen()
         --[[
           name: OfferSeen
           line: 525
           upvalues:
-            u6 (ref,  index: 2)
-            ReplicatedStorage_upv_1 (copy, index: 3)
+            economy (copy, index: 1)
+            timestamp (ref,  index: 2)
+            replicatedStorage (copy, index: 3)
         ]]
-        local v72 = tbl_upv_3.GoldenOffer()
-        if not v72 or v72.state ~= "ready" or (os.clock() - u6 < 5) then
+        local v167 = economy.GoldenOffer()
+
+        if not v167 or v167.state ~= "ready" or os.clock() - timestamp < 5 then
             return
         end
-        u6 = os.clock()
+
+        timestamp = os.clock()
+
         task.spawn(
             function()
                 --[[
                   line: 531
                   upvalues:
-                    ReplicatedStorage_upv_1 (copy, index: 1)
+                    replicatedStorage (copy, index: 1)
                 ]]
-                local v73 = ReplicatedStorage_upv_1:WaitForChild("Remotes", 30)
-                local u7 = v73 and (v73:WaitForChild("StoreAction", 30))
-                if not u7 or not u7:IsA("RemoteFunction") then
-                    return
+                local remotes = replicatedStorage:WaitForChild("Remotes", 30)
+                local storeAction = remotes and remotes:WaitForChild("StoreAction", 30)
+
+                if storeAction and storeAction:IsA("RemoteFunction") then
+                    pcall(
+                        function()
+                            --[[
+                              line: 535
+                              upvalues:
+                                storeAction (copy, index: 1)
+                            ]]
+                            return storeAction:InvokeServer("OfferSeen")
+                        end
+                    )
                 end
-                pcall(
-                    function()
-                        --[[
-                          line: 535
-                          upvalues:
-                            u7 (copy, index: 1)
-                        ]]
-                        return u7:InvokeServer("OfferSeen")
-                    end
-                )
             end
         )
     end
-    function items.FormatLeft(a19)
+
+    function economy.FormatLeft(a170: number)
         --[[
           name: FormatLeft
           line: 541
         ]]
-        local v74 = math.max(0, math.floor(a19))
-        local v75 = math.floor(v74 / 3600)
-        local v76 = math.floor((v74 % 3600) / 60)
-        local v77 = v74 % 60
-        if v75 > 0 then
-            return (string.format("%d:%02d:%02d", v75, v76, v77))
+        local v171 = math.max(0, (math.floor(a170)))
+        local flooredValue = math.floor(v171 / 3600)
+        local flooredValue2 = math.floor((v171 % 3600) / 60)
+        local v174 = v171 % 60
+
+        if not (0 < flooredValue) then
+            return (string.format("%d:%02d", flooredValue2, v174))
         end
-        return (string.format("%d:%02d", v76, v77))
+
+        return (string.format("%d:%02d:%02d", flooredValue, flooredValue2, v174))
     end
-    function items.DropKey(a20)
+
+    function economy.DropKey(a175)
         --[[
           name: DropKey
           line: 547
+          upvalues:
+            economy (copy, index: 1)
         ]]
-        local v78 = nil
-        if a20 < 5 then
-            v78 = tbl_upv_3.GoldenOffer()
-            if v78 and v78.state == "active" then
-                return v78.key
+        if a175 < 5 then
+            local v176 = economy.GoldenOffer()
+
+            if v176 and v176.state == "active" then
+                return v176.key
             end
         end
-        if a20 >= 5 then
+
+        if 5 <= a175 then
             return "drop_golden5"
         end
+
         return "drop_golden"
     end
-    function items.DropInfo(a21)
+
+    function economy.DropInfo(a177)
         --[[
           name: DropInfo
           line: 557
           upvalues:
-            u1 (ref, index: 1)
+            v10 (ref, index: 1)
         ]]
-        local DROPS_1 = u1.DROPS
-        local v79 = a21 or "golden"
-        local v80
-        if type(DROPS_1) ~= "table" then
-            v80 = nil
+        local v178
+        local v179, v180 = false, false
+        local drops = v10.DROPS
+        local v182 = a177 or "golden"
+
+        if type(drops) ~= "table" then
+            v180 = true
+        elseif type(drops.kinds) ~= "table" then
+            v179 = true
         else
-            v80 = type(DROPS_1.kinds) == "table" and (DROPS_1.kinds[v79]) or DROPS_1[v79] or nil
+            v178 = drops.kinds[v182]
+
+            if not v178 then
+                v179 = true
+            end
         end
-        if type(v80) ~= "table" then
+
+        if v179 then
+            v178 = drops[v182]
+
+            if not v178 then
+                v180 = true
+            end
+        end
+
+        if v180 then
+            v178 = nil
+        end
+
+        if type(v178) ~= "table" then
             return {}
         end
-        return v80
+
+        return v178
     end
-    local tbl_upv_7 = {}
-    local tbl_upv_8 = {}
-    local tbl_upv_9 = {2, 5, 15, 30}
-    items.ProductId = function(a22)
+
+    local assetIds = {}
+    local v184 = {}
+    local v185 = {2, 5, 15, 30}
+
+    economy.ProductId = function(key)
         --[[
           name: productId
           line: 572
           upvalues:
-            Products_upv_1 (copy, index: 1)
+            child2 (copy, index: 1)
         ]]
-        local v81 = Products_upv_1.ids[a22]
-        if type(v81) ~= "number" then
+        local v187 = child2.ids[key]
+
+        if type(v187) ~= "number" then
             return 0
         end
-        return v81
+
+        return v187
     end
-    local function fetch(a23)
+
+    local function fetch(key)
         --[[
           name: fetch
           line: 577
           upvalues:
-            Products_upv_1 (copy, index: 1)
-            tbl_upv_7 (copy, index: 2)
-            tbl_upv_8 (copy, index: 3)
+            child2 (copy, index: 1)
+            assetIds (copy, index: 2)
+            v184 (copy, index: 3)
+            v185 (copy, index: 4)
+            marketplaceService (copy, index: 5)
+            economy (copy, index: 6)
         ]]
-        local v82 = Products_upv_1.ids[a23]
-        local v83
-        if type(v82) ~= "number" then
-            v83 = 0
+        local v190
+        local v191 = child2.ids[key]
+
+        if type(v191) ~= "number" then
+            v190 = 0
         else
-            v83 = v82
+            v190 = v191
         end
-        if (v83 <= 0) or (tbl_upv_7[a23]) or (tbl_upv_8[a23]) then
+
+        if v190 <= 0 or assetIds[key] or v184[key] then
             return
         end
-        tbl_upv_8[a23] = true
-        task.spawn(function() end)
+
+        v184[key] = true
+
+        task.spawn(
+            function()
+                --[[
+                  line: 583
+                  upvalues:
+                    v185 (copy, index: 1)
+                    marketplaceService (copy, index: 2)
+                    v190 (copy, index: 3)
+                    assetIds (copy, index: 4)
+                    key (copy, index: 5)
+                    v184 (copy, index: 6)
+                    economy (copy, index: 7)
+                ]]
+                local productInfo
+
+                for index = 1, #v185 + 1 do
+                    local success
+                    success, productInfo = pcall(
+                        function()
+                            --[[
+                              line: 585
+                              upvalues:
+                                marketplaceService (copy, index: 1)
+                                v190 (copy, index: 2)
+                            ]]
+                            return marketplaceService:GetProductInfo(v190, Enum.InfoType.Product)
+                        end
+                    )
+
+                    if success and type(productInfo) == "table" and type(productInfo.PriceInRobux) == "number" then
+                        assetIds[key] = productInfo.PriceInRobux
+                        v184[key] = nil
+                        economy.Changed:Fire()
+
+                        return
+                    end
+
+                    local v195 = v185[index]
+                    if not v195 then
+                        break
+                    end
+
+                    task.wait(v195)
+                end
+
+                v184[key] = nil
+            end
+        )
     end
-    function items.Price(a24)
+
+    function economy.Price(key)
         --[[
           name: Price
           line: 603
           upvalues:
-            tbl_upv_7 (copy, index: 1)
-            Products_upv_1 (copy, index: 2)
-            tbl_upv_8 (copy, index: 3)
+            assetIds (copy, index: 1)
+            child2 (copy, index: 2)
+            v184 (copy, index: 3)
+            v185 (copy, index: 4)
+            marketplaceService (copy, index: 5)
+            economy (copy, index: 6)
         ]]
-        local v84 = tbl_upv_7[a24]
-        if v84 then
-            return v84
+        local v197
+        local assetId = assetIds[key]
+        if assetId then
+            return assetId
         end
-        local v85 = Products_upv_1.ids[a24]
-        if type(v85) ~= "number" then
-            v84 = 0
+
+        local v199 = child2.ids[key]
+
+        if type(v199) ~= "number" then
+            v197 = 0
         else
-            v84 = v85
+            v197 = v199
         end
-        if not (v84 <= 0) and not (tbl_upv_7[a24]) and not (tbl_upv_8[a24]) then
-            tbl_upv_8[a24] = true
-            task.spawn(function() end)
+
+        if not (v197 <= 0) and not assetIds[key] and not v184[key] then
+            v184[key] = true
+
+            task.spawn(
+                function()
+                    --[[
+                      line: 583
+                      upvalues:
+                        v185 (copy, index: 1)
+                        marketplaceService (copy, index: 2)
+                        assetId (copy, index: 3)
+                        assetIds (copy, index: 4)
+                        key (copy, index: 5)
+                        v184 (copy, index: 6)
+                        economy (copy, index: 7)
+                    ]]
+                    local productInfo
+
+                    for index = 1, #v185 + 1 do
+                        local success
+                        success, productInfo = pcall(
+                            function()
+                                --[[
+                                  line: 585
+                                  upvalues:
+                                    marketplaceService (copy, index: 1)
+                                    assetId (copy, index: 2)
+                                ]]
+                                return marketplaceService:GetProductInfo(assetId, Enum.InfoType.Product)
+                            end
+                        )
+
+                        if success and type(productInfo) == "table" and type(productInfo.PriceInRobux) == "number" then
+                            assetIds[key] = productInfo.PriceInRobux
+                            v184[key] = nil
+                            economy.Changed:Fire()
+
+                            return
+                        end
+
+                        local v203 = v185[index]
+                        if not v203 then
+                            break
+                        end
+
+                        task.wait(v203)
+                    end
+
+                    v184[key] = nil
+                end
+            )
         end
+
         return nil
     end
-    function items.PriceAmount(a25)
+
+    function economy.PriceAmount(a204)
         --[[
           name: PriceAmount
           line: 611
+          upvalues:
+            economy (copy, index: 1)
         ]]
-        local v86 = tbl_upv_3.Price(a25)
-        if v86 then
-            return (tostring(v86))
-        end
-        return "\226\128\166"
+        return if const v205 = economy.Price(a204) then (tostring(v205)) else "…"
     end
-    function items.PriceText(a26)
+
+    function economy.PriceText(a206)
         --[[
           name: PriceText
           line: 615
+          upvalues:
+            economy (copy, index: 1)
         ]]
-        return tbl_upv_3.ROBUX .. " " .. tbl_upv_3.PriceAmount(a26)
+        return economy.ROBUX .. " " .. economy.PriceAmount(a206)
     end
-    function items.ItemKey(a27)
+
+    function economy.ItemKey(a207)
         --[[
           name: ItemKey
           line: 618
         ]]
-        return "unlock_" .. a27
+        return "unlock_" .. a207
     end
-    function items.CanBuy(a28)
+
+    function economy.CanBuy(key)
         --[[
           name: CanBuy
           line: 622
           upvalues:
-            Products_upv_1 (copy, index: 1)
-            u2 (copy, index: 2)
+            child2 (copy, index: 1)
+            isStudio (copy, index: 2)
         ]]
-        local v87 = true
-        local v88 = Products_upv_1.ids[a28]
-        local v89
-        if type(v88) ~= "number" then
-            v89 = 0
+        local v209
+        local v210 = true
+        local v211 = child2.ids[key]
+
+        if type(v211) ~= "number" then
+            v209 = 0
         else
-            v89 = v88
+            v209 = v211
         end
-        if not (v89 > 0) then
-            v87 = u2
+
+        if not (0 < v209) then
+            return isStudio
         end
-        return v87
+
+        return v210
     end
+
     task.delay(
         3,
         function()
             --[[
               line: 626
               upvalues:
-                Products_upv_1 (copy, index: 1)
-                tbl_upv_7 (copy, index: 2)
-                tbl_upv_8 (copy, index: 3)
-                tbl_upv_9 (copy, index: 4)
-                MarketplaceService_upv_1 (copy, index: 5)
+                child2 (copy, index: 1)
+                assetIds (copy, index: 2)
+                v184 (copy, index: 3)
+                v185 (copy, index: 4)
+                marketplaceService (copy, index: 5)
+                economy (copy, index: 6)
             ]]
-            local u8 = nil
-            for key_upv_2 in Products_upv_1.ids do
-                local v90 = Products_upv_1.ids[key_upv_2]
-                if type(v90) ~= "number" then
-                    u8 = 0
-                else
-                    u8 = v90
+            for v212 in child2.ids do
+                local v213 = child2.ids[v212]
+
+                if type(v213) ~= "number" then
+                    v213 = 0
                 end
-                if u8 <= 0 or tbl_upv_7[key_upv_2] then
-                    continue
-                end
-                if not (tbl_upv_8[key_upv_2]) then
-                    tbl_upv_8[key_upv_2] = true
-                    task.spawn(
-                        function()
-                            --[[
-                              line: 583
-                              upvalues:
-                                tbl_upv_9 (copy, index: 1)
-                                MarketplaceService_upv_1 (copy, index: 2)
-                                u8 (copy, index: 3)
-                                tbl_upv_7 (copy, index: 4)
-                                key_upv_2 (copy, index: 5)
-                                tbl_upv_8 (copy, index: 6)
-                                tbl_upv_3 (copy, index: 7)
-                            ]]
-                            local v91 = nil
-                            for n_1 = 1, #tbl_upv_9 + 1 do
-                                local success_12, v91 = pcall(
-                                    function()
-                                        --[[
-                                          line: 585
-                                          upvalues:
-                                            MarketplaceService_upv_1 (copy, index: 1)
-                                            u8 (copy, index: 2)
-                                        ]]
-                                        return MarketplaceService_upv_1:GetProductInfo(u8, Enum.InfoType.Product)
+
+                if not (v213 <= 0) then
+                    if not assetIds[v212] and not v184[v212] then
+                        v184[v212] = true
+
+                        task.spawn(
+                            function()
+                                --[[
+                                  line: 583
+                                  upvalues:
+                                    v185 (copy, index: 1)
+                                    marketplaceService (copy, index: 2)
+                                    v213 (copy, index: 3)
+                                    assetIds (copy, index: 4)
+                                    v212 (copy, index: 5)
+                                    v184 (copy, index: 6)
+                                    economy (copy, index: 7)
+                                ]]
+                                local productInfo
+
+                                for index = 1, #v185 + 1 do
+                                    local success
+                                    success, productInfo = pcall(
+                                        function()
+                                            --[[
+                                              line: 585
+                                              upvalues:
+                                                marketplaceService (copy, index: 1)
+                                                v213 (copy, index: 2)
+                                            ]]
+                                            return marketplaceService:GetProductInfo(v213, Enum.InfoType.Product)
+                                        end
+                                    )
+
+                                    if success
+                                        and type(productInfo) == "table"
+                                        and type(productInfo.PriceInRobux) == "number"
+                                    then
+                                        assetIds[v212] = productInfo.PriceInRobux
+                                        v184[v212] = nil
+                                        economy.Changed:Fire()
+
+                                        return
                                     end
-                                )
-                                if not (success_12) or type(v91) ~= "table" or type(v91.PriceInRobux) ~= "number" then
-                                    local v92 = tbl_upv_9[n_1]
-                                    if v92 then
-                                        task.wait(v92)
-                                        continue
-                                    else
+
+                                    local v217 = v185[index]
+                                    if not v217 then
                                         break
                                     end
+
+                                    task.wait(v217)
                                 end
-                                tbl_upv_7[key_upv_2] = v91.PriceInRobux
-                                tbl_upv_8[key_upv_2] = nil
-                                tbl_upv_3.Changed:Fire()
-                                return
+
+                                v184[v212] = nil
                             end
-                            tbl_upv_8[key_upv_2] = nil
-                        end
-                    )
+                        )
+                    end
                 end
             end
         end
     )
-    local tbl_upv_10 = {}
-    function items.Pending(a29)
+
+    local v218 = {}
+
+    function economy.Pending(key)
         --[[
           name: Pending
           line: 634
           upvalues:
-            tbl_upv_10 (copy, index: 1)
+            v218 (copy, index: 1)
         ]]
-        if a29 then
-            return tbl_upv_10[a29] ~= nil
+        if key then
+            return v218[key] ~= nil
         end
-        local v93 = next(tbl_upv_10) ~= nil
-        return v93
+
+        return next(v218) ~= nil
     end
-    local function setPending(a30, a31)
+
+    local function setPending(key, a222)
         --[[
           name: setPending
           line: 640
           upvalues:
-            tbl_upv_10 (copy, index: 1)
+            v218 (copy, index: 1)
+            economy (copy, index: 2)
         ]]
-        local v94
-        if a31 then
-            v94 = os.clock()
-        else
-            v94 = nil
-        end
-        tbl_upv_10[a30] = v94
-        tbl_upv_3.Changed:Fire()
+        v218[key] = if a222 then os.clock() else nil
+        economy.Changed:Fire()
     end
-    local u9 = nil
+
+    local storeAction = nil
+
     task.spawn(
         function()
             --[[
               line: 645
               upvalues:
-                ReplicatedStorage_upv_1 (copy, index: 1)
-                u9 (ref,  index: 2)
+                replicatedStorage (copy, index: 1)
+                storeAction (ref,  index: 2)
             ]]
-            local v95 = ReplicatedStorage_upv_1:WaitForChild("Remotes", 30)
-            local v96 = v95 and (v95:WaitForChild("StoreAction", 30))
-            if not v96 or not v96:IsA("RemoteFunction") then
-                return
+            local remotes = replicatedStorage:WaitForChild("Remotes", 30)
+            local storeAction2 = remotes and remotes:WaitForChild("StoreAction", 30)
+
+            if storeAction2 and storeAction2:IsA("RemoteFunction") then
+                storeAction = storeAction2
             end
-            u9 = v96
         end
     )
-    function items.Buy(a32)
+
+    function economy.Buy(text: string)
         --[[
           name: Buy
           line: 653
           upvalues:
-            tbl_upv_10 (copy, index: 1)
-            Products_upv_1 (copy, index: 3)
-            u2 (copy, index: 4)
-            u9 (ref,  index: 5)
-            a1 (copy, index: 6)
-            MarketplaceService_upv_1 (copy, index: 7)
-            LocalPlayer_upv_1 (copy, index: 8)
+            v218 (copy, index: 1)
+            economy (copy, index: 2)
+            child2 (copy, index: 3)
+            isStudio (copy, index: 4)
+            storeAction (ref,  index: 5)
+            a49 (copy, index: 6)
+            marketplaceService (copy, index: 7)
+            localPlayer (copy, index: 8)
         ]]
-        if tbl_upv_10[a32] or string.sub(a32, 1, 5) == "drop_" and not (tbl_upv_3.DropsAllowed()) then
+        if v218[text] then
             return false
         end
-        local v97 = Products_upv_1.ids[a32]
-        local u10
-        if type(v97) ~= "number" then
-            u10 = 0
-        else
-            u10 = v97
+        if string.sub(text, 1, 5) == "drop_" and not economy.DropsAllowed() then
+            return false
         end
-        if u2 then
-            if u10 ~= 0 and game.GameId == Products_upv_1.universe and not (tbl_upv_3.ForceMock) then
-                if u10 ~= 0 then
-                    tbl_upv_10[a32] = os.clock()
-                    tbl_upv_3.Changed:Fire()
-                    local success_13, v98 = pcall(
-                        function()
-                            --[[
-                              line: 686
-                              upvalues:
-                                MarketplaceService_upv_1 (copy, index: 1)
-                                LocalPlayer_upv_1 (copy, index: 2)
-                                u10 (copy, index: 3)
-                            ]]
-                            MarketplaceService_upv_1:PromptProductPurchase(LocalPlayer_upv_1, u10)
-                        end
-                    )
-                    if success_13 then
-                        return true
-                    end
-                    tbl_upv_10[a32] = nil
-                    tbl_upv_3.Changed:Fire()
-                    a1.Toast("Couldn't open the purchase: " .. tostring(v98), "error")
-                else
-                    a1.Toast("Not available yet", "warning")
-                end
+
+        local v227
+        local v228 = false
+        local v229 = child2.ids[text]
+
+        if type(v229) ~= "number" then
+            v227 = 0
+        else
+            v227 = v229
+        end
+
+        if isStudio then
+            if v227 ~= 0 and game.GameId == child2.universe and not economy.ForceMock then
+                v228 = true
+            end
+        else
+            v228 = true
+        end
+
+        if v228 then
+            if v227 == 0 then
+                a49.Toast("Not available yet", "warning")
                 return false
             end
-            local u11 = u9
-            if u11 then
-                tbl_upv_10[a32] = os.clock()
-                tbl_upv_3.Changed:Fire()
-                task.spawn(
-                    function()
-                        --[[
-                          line: 670
-                          upvalues:
-                            u11 (copy, index: 1)
-                            a32 (copy, index: 2)
-                            tbl_upv_10 (copy, index: 3)
-                            tbl_upv_3 (copy, index: 4)
-                            a1 (copy, index: 5)
-                        ]]
-                        local success_14, v99, v100 = pcall(
-                            function()
-                                --[[
-                                  line: 671
-                                  upvalues:
-                                    u11 (copy, index: 1)
-                                    a32 (copy, index: 2)
-                                ]]
-                                return u11:InvokeServer("Mock", a32)
-                            end
-                        )
-                        tbl_upv_10[a32] = nil
-                        tbl_upv_3.Changed:Fire()
-                        if (success_14) and (v99) then
-                            return
-                        end
-                        a1.Toast("(Studio) mock purchase failed: " .. tostring(v100 or v99), "error")
-                    end
-                )
-                return true
-            end
-            a1.Toast("Store not ready yet", "error")
-            return false
-        end
-        if u10 ~= 0 then
-            tbl_upv_10[a32] = os.clock()
-            tbl_upv_3.Changed:Fire()
-            local success_13, v98 = pcall(
+
+            v218[text] = os.clock()
+            economy.Changed:Fire()
+            local success, result = pcall(
                 function()
                     --[[
                       line: 686
                       upvalues:
-                        MarketplaceService_upv_1 (copy, index: 1)
-                        LocalPlayer_upv_1 (copy, index: 2)
-                        u10 (copy, index: 3)
+                        marketplaceService (copy, index: 1)
+                        localPlayer (copy, index: 2)
+                        v227 (copy, index: 3)
                     ]]
-                    MarketplaceService_upv_1:PromptProductPurchase(LocalPlayer_upv_1, u10)
+                    marketplaceService:PromptProductPurchase(localPlayer, v227)
                 end
             )
-            if success_13 then
+            if success then
                 return true
             end
-            tbl_upv_10[a32] = nil
-            tbl_upv_3.Changed:Fire()
-            a1.Toast("Couldn't open the purchase: " .. tostring(v98), "error")
-        else
-            a1.Toast("Not available yet", "warning")
+
+            v218[text] = nil
+            economy.Changed:Fire()
+            a49.Toast("Couldn't open the purchase: " .. tostring(result), "error")
+
+            return false
         end
-        return false
+
+        local storeAction2 = storeAction
+        if not storeAction2 then
+            a49.Toast("Store not ready yet", "error")
+            return false
+        end
+
+        v218[text] = os.clock()
+        economy.Changed:Fire()
+
+        task.spawn(
+            function()
+                --[[
+                  line: 670
+                  upvalues:
+                    storeAction2 (copy, index: 1)
+                    text (copy, index: 2)
+                    v218 (copy, index: 3)
+                    economy (copy, index: 4)
+                    a49 (copy, index: 5)
+                ]]
+                local success, result, v235 = pcall(
+                    function()
+                        --[[
+                          line: 671
+                          upvalues:
+                            storeAction2 (copy, index: 1)
+                            text (copy, index: 2)
+                        ]]
+                        return storeAction2:InvokeServer("Mock", text)
+                    end
+                )
+                v218[text] = nil
+                economy.Changed:Fire()
+
+                if not success or not result then
+                    a49.Toast("(Studio) mock purchase failed: " .. tostring((v235 or result)), "error")
+                end
+            end
+        )
+
+        return true
     end
-    MarketplaceService_upv_1.PromptProductPurchaseFinished:Connect(
-        function(a33, a34, a35)
+
+    marketplaceService.PromptProductPurchaseFinished:Connect(
+        function(userId: number, productId: number, isPurchased: boolean)
             --[[
               line: 696
               upvalues:
-                LocalPlayer_upv_1 (copy, index: 1)
-                tbl_upv_10 (copy, index: 2)
-                Products_upv_1 (copy, index: 3)
-                a1 (copy, index: 5)
+                localPlayer (copy, index: 1)
+                v218 (copy, index: 2)
+                child2 (copy, index: 3)
+                economy (copy, index: 4)
+                a49 (copy, index: 5)
             ]]
-            if a33 == LocalPlayer_upv_1.UserId then
-                local v101 = nil
-                for key_upv_3 in tbl_upv_10 do
-                    local v102 = Products_upv_1.ids[key_upv_3]
-                    if type(v102) ~= "number" then
-                        v101 = 0
-                    else
-                        v101 = v102
-                    end
-                    if v101 ~= a34 then
-                        continue
-                    end
-                    if a35 then
+            if userId ~= localPlayer.UserId then
+                return
+            end
+
+            for v239 in v218 do
+                local v240 = child2.ids[v239]
+
+                if type(v240) ~= "number" then
+                    v240 = 0
+                end
+
+                if v240 == productId then
+                    if isPurchased then
                         task.delay(
                             20,
                             function()
                                 --[[
                                   line: 704
                                   upvalues:
-                                    tbl_upv_10 (copy, index: 1)
-                                    key_upv_3 (copy, index: 2)
-                                    tbl_upv_3 (copy, index: 3)
-                                    a1 (copy, index: 4)
+                                    v218 (copy, index: 1)
+                                    v239 (copy, index: 2)
+                                    economy (copy, index: 3)
+                                    a49 (copy, index: 4)
                                 ]]
-                                if not tbl_upv_10[key_upv_3] then
-                                    return
+                                if v218[v239] then
+                                    v218[v239] = nil
+                                    economy.Changed:Fire()
+                                    a49.Toast("Your purchase is still processing: it will arrive shortly", "info")
                                 end
-                                tbl_upv_10[key_upv_3] = nil
-                                tbl_upv_3.Changed:Fire()
-                                a1.Toast("Your purchase is still processing: it will arrive shortly", "info")
                             end
                         )
                     else
-                        tbl_upv_10[key_upv_3] = nil
-                        tbl_upv_3.Changed:Fire()
+                        v218[v239] = nil
+                        economy.Changed:Fire()
                     end
                 end
             end
         end
     )
-    local function clearPendingFor(a36)
+
+    local function clearPendingFor(a242)
         --[[
           name: clearPendingFor
           line: 717
           upvalues:
-            tbl_upv_10 (copy, index: 1)
+            v218 (copy, index: 1)
+            economy (copy, index: 2)
         ]]
-        for key_4 in tbl_upv_10 do
-            if string.sub(key_4, 1, #a36) == a36 then
-                tbl_upv_10[key_4] = nil
-                tbl_upv_3.Changed:Fire()
+        for text in v218 do
+            if string.sub(text, 1, #a242) == a242 then
+                v218[text] = nil
+                economy.Changed:Fire()
             end
         end
     end
+
     task.spawn(
         function()
             --[[
               line: 724
               upvalues:
-                ReplicatedStorage_upv_1 (copy, index: 1)
-                tbl_upv_10 (copy, index: 2)
+                replicatedStorage (copy, index: 1)
+                v218 (copy, index: 2)
+                economy (copy, index: 3)
                 noteDrop (copy, index: 4)
             ]]
-            local v103 = ReplicatedStorage_upv_1:WaitForChild("Remotes", 30)
-            local v104 = v103 and (v103:WaitForChild("EconomyEvent", 30))
-            if not v104 or not v104:IsA("RemoteEvent") then
+            local remotes = replicatedStorage:WaitForChild("Remotes", 30)
+            local economyEvent = remotes and remotes:WaitForChild("EconomyEvent", 30)
+
+            if not economyEvent or not economyEvent:IsA("RemoteEvent") then
                 return
             end
-            v104.OnClientEvent:Connect(
-                function(a37, a38)
+
+            economyEvent.OnClientEvent:Connect(
+                function(a246, a247)
                     --[[
                       line: 730
                       upvalues:
-                        tbl_upv_10 (copy, index: 1)
-                        tbl_upv_3 (copy, index: 2)
+                        v218 (copy, index: 1)
+                        economy (copy, index: 2)
                         noteDrop (copy, index: 3)
                     ]]
-                    if type(a37) ~= "string" then
+                    if type(a246) ~= "string" then
                         return
                     end
-                    if type(a38) ~= "table" then
-                        local tbl_11 = {}
-                        a38 = tbl_11
+
+                    local v248
+
+                    if type(a247) ~= "table" then
+                        v248 = {}
+                    else
+                        v248 = a247
                     end
-                    if a37 == "Unlocked" or a37 == "Credit" then
-                        for key_5 in tbl_upv_10 do
-                            if string.sub(key_5, 1, 7) == "unlock_" then
-                                tbl_upv_10[key_5] = nil
-                                tbl_upv_3.Changed:Fire()
+
+                    if a246 == "Unlocked" or a246 == "Credit" then
+                        for text in v218 do
+                            if string.sub(text, 1, 7) == "unlock_" then
+                                v218[text] = nil
+                                economy.Changed:Fire()
                             end
                         end
-                    elseif a37 == "Drop" then
-                        for key_6 in tbl_upv_10 do
-                            if string.sub(key_6, 1, 5) == "drop_" then
-                                tbl_upv_10[key_6] = nil
-                                tbl_upv_3.Changed:Fire()
+                    elseif a246 ~= "Drop" then
+                        if a246 == "StreakRestored" or a246 == "StreakCredit" then
+                            for text in v218 do
+                                if string.sub(text, 1, 7) == "streak_" then
+                                    v218[text] = nil
+                                    economy.Changed:Fire()
+                                end
+                            end
+                        elseif a246 == "TribePass" then
+                            for text in v218 do
+                                if string.sub(text, 1, 6) == "tribe_" then
+                                    v218[text] = nil
+                                    economy.Changed:Fire()
+                                end
                             end
                         end
-                        noteDrop(a38)
-                    elseif a37 == "StreakRestored" or a37 == "StreakCredit" then
-                        for key_7 in tbl_upv_10 do
-                            if string.sub(key_7, 1, 7) == "streak_" then
-                                tbl_upv_10[key_7] = nil
-                                tbl_upv_3.Changed:Fire()
+                    else
+                        for text in v218 do
+                            if string.sub(text, 1, 5) == "drop_" then
+                                v218[text] = nil
+                                economy.Changed:Fire()
                             end
                         end
-                    elseif a37 == "TribePass" then
-                        for key_8 in tbl_upv_10 do
-                            if string.sub(key_8, 1, 6) == "tribe_" then
-                                tbl_upv_10[key_8] = nil
-                                tbl_upv_3.Changed:Fire()
-                            end
-                        end
+
+                        noteDrop(v248)
                     end
-                    tbl_upv_3.Event:Fire(a37, a38)
-                    if a37 == "Unlocked" and type(a38.item) == "string" then
-                        tbl_upv_3.Celebrate:Fire(a38.item)
+
+                    economy.Event:Fire(a246, v248)
+
+                    if a246 == "Unlocked" and type(v248.item) == "string" then
+                        economy.Celebrate:Fire(v248.item)
                     end
-                    tbl_upv_3.Changed:Fire()
+
+                    economy.Changed:Fire()
                 end
             )
         end
     )
-    State_upv_1.MatchEvent:Connect(
-        function(a39, a40)
+
+    state.MatchEvent:Connect(
+        function(a253, a254)
             --[[
               line: 753
               upvalues:
                 noteDrop (copy, index: 1)
             ]]
-            if a39 ~= "MatchEnd" or type(a40) ~= "table" or type(a40.you) ~= "table" then
-                return
+            if a253 == "MatchEnd" and type(a254) == "table" and type(a254.you) == "table" then
+                noteDrop(a254.you.drop)
             end
-            noteDrop(a40.you.drop)
         end
     )
-    local tbl_upv_12 = {}
-    function items.Upgrading(a41)
+
+    local v255 = {}
+
+    function economy.Upgrading(key)
         --[[
           name: Upgrading
           line: 761
           upvalues:
-            tbl_upv_12 (copy, index: 1)
+            v255 (copy, index: 1)
         ]]
-        return tbl_upv_12[a41] == true
+        return v255[key] == true
     end
-    function items.Upgrade(a42, a43, a44)
+
+    function economy.Upgrade(key, a258, a259)
         --[[
           name: Upgrade
           line: 764
           upvalues:
-            tbl_upv_12 (copy, index: 1)
-            items (copy, index: 2)
-            State_upv_1 (copy, index: 3)
-            a1 (copy, index: 4)
+            v255 (copy, index: 1)
+            economy (copy, index: 2)
+            state (copy, index: 3)
+            a49 (copy, index: 4)
             items (copy, index: 5)
         ]]
-        if not (tbl_upv_12[a42]) and tbl_upv_3.CanUpgrade(a42) then
-            local v105 = tbl_upv_3.Level(a42)
-            local v106, v107 = tbl_upv_3.Progress(a42)
-            tbl_upv_12[a42] = true
-            tbl_upv_3.Changed:Fire()
-            local v108 = false
-            local v109 = nil
-            local v115 = nil
-            if tbl_upv_3.Mock or State_upv_1.Mock then
-                v108, v109 = true, v105 + 1
-            else
-                local v110, v112, v113
-                v110, v115, v112, v113 = a1.Remotes.Invoke("ProfileAction", "Upgrade", a42, a43, a44)
-                if v110 then
-                    if v115 == true or type(v115) == "number" then
-                        local v114 = true
-                        if type(v115) == "number" then
-                            v108, v109 = v114, v115
-                        elseif type(v112) == "number" then
-                            v108, v109 = v114, v112
-                        elseif type(v113) ~= "number" then
-                            v108, v109 = v114, v105 + 1
+        if v255[key] or not economy.CanUpgrade(key) then
+            return false, nil
+        end
+
+        local v260 = economy.Level(key)
+        local v261, v262 = economy.Progress(key)
+        v255[key] = true
+        economy.Changed:Fire()
+        local v263 = false
+        local level = nil
+
+        if economy.Mock then
+            v263 = true
+            level = v260 + 1
+        elseif state.Mock then
+            v263 = true
+            level = v260 + 1
+        else
+            local v265, v266, v267, v268 = a49.Remotes.Invoke("ProfileAction", "Upgrade", key, a258, a259)
+
+            if v265 then
+                if v266 == true or type(v266) == "number" then
+                    v263 = true
+
+                    if type(v266) ~= "number" then
+                        if type(v267) ~= "number" then
+                            if type(v268) ~= "number" then
+                                level = v260 + 1
+                            else
+                                level = v268
+                            end
                         else
-                            v108, v109 = v114, v113
+                            level = v267
                         end
                     else
-                        a1.Toast(tostring(v112 or "Couldn't upgrade that"), "error")
+                        level = v266
                     end
                 else
-                    a1.Toast(tostring(v115 or "Server unavailable"), "error")
+                    a49.Toast(tostring((v267 or "Couldn't upgrade that")), "error")
                 end
-                if v108 then
-                    task.delay(0.6, State_upv_1.Refresh)
-                end
+            else
+                a49.Toast(tostring((v266 or "Server unavailable")), "error")
             end
-            tbl_upv_12[a42] = nil
-            if v108 then
-                local v116 = items()
-                v115 = v116[a42]
-                if type(v115) ~= "table" then
-                    v115 = {}
-                    v116[a42] = v115
-                end
-                v115.shards = math.max(0, v106 - v107)
-                v115.level = v109
-                tbl_upv_3.Upgraded:Fire(a42, v105, v109)
+
+            if v263 then
+                task.delay(0.6, state.Refresh)
             end
-            tbl_upv_3.Changed:Fire()
-            return v108, v109
         end
-        return false, nil
+
+        v255[key] = nil
+
+        if v263 then
+            local v269 = items()
+            local v270 = v269[key]
+
+            if type(v270) ~= "table" then
+                v270 = {}
+                v269[key] = v270
+            end
+
+            v270.shards = math.max(0, v261 - v262)
+            v270.level = level
+            economy.Upgraded:Fire(key, v260, level)
+        end
+
+        economy.Changed:Fire()
+
+        return v263, level
     end
-    function items.StreakOffer()
+
+    function economy.StreakOffer()
         --[[
           name: StreakOffer
           line: 810
           upvalues:
-            State_upv_1 (copy, index: 1)
-            Unlocks_upv_1 (copy, index: 2)
-            Workspace_upv_1 (copy, index: 3)
+            state (copy, index: 1)
+            child (copy, index: 2)
+            workspace (copy, index: 3)
         ]]
-        local streakRestore_1 = State_upv_1.Profile.streakRestore
-        if type(streakRestore_1) == "table" and type(streakRestore_1.lost) == "number" and not (streakRestore_1.lost < Unlocks_upv_1.RESTORE_MIN_STREAK) then
-            if type(streakRestore_1.expiresAt) == "number" and streakRestore_1.expiresAt <= Workspace_upv_1:GetServerTimeNow() then
-                return false
+        local streakRestore = state.Profile.streakRestore
+
+        if type(streakRestore) == "table"
+            and type(streakRestore.lost) == "number"
+            and not (streakRestore.lost < child.RESTORE_MIN_STREAK)
+        then
+            if type(streakRestore.expiresAt) == "number" then
+                local serverTimeNow = workspace:GetServerTimeNow()
+
+                if streakRestore.expiresAt <= serverTimeNow then
+                    streakRestore = false
+                end
             end
-            return streakRestore_1
+        else
+            streakRestore = false
         end
-        return false
+
+        return streakRestore
     end
-    local u12 = false
-    function items.SetRevealShowing(a45)
+
+    local v273 = false
+
+    function economy.SetRevealShowing(revealShowing)
         --[[
           name: SetRevealShowing
           line: 822
           upvalues:
-            u12 (ref, index: 1)
+            v273 (ref,  index: 1)
+            economy (copy, index: 2)
         ]]
-        if u12 == a45 then
-            return
+        if v273 ~= revealShowing then
+            v273 = revealShowing
+            economy.RevealChanged:Fire(revealShowing)
         end
-        u12 = a45
-        tbl_upv_3.RevealChanged:Fire(a45)
     end
-    function items.RevealShowing()
+
+    function economy.RevealShowing()
         --[[
           name: RevealShowing
           line: 828
           upvalues:
-            u12 (ref, index: 1)
+            v273 (ref, index: 1)
         ]]
-        return u12
+        return v273
     end
-    State_upv_1.ProfileChanged:Connect(
+
+    state.ProfileChanged:Connect(
         function()
             --[[
               line: 832
+              upvalues:
+                economy (copy, index: 1)
             ]]
-            tbl_upv_3.Changed:Fire()
+            economy.Changed:Fire()
         end
     )
-    local tbl_upv_13 = {mid = 0, maxed = 0, new = 0}
-    function tbl_upv_13.new()
-        --[[
-          name: new
-          line: 838
-        ]]
-        local tbl_14 = {restricted = false}
-        tbl_14.items = {crossbow = {level = 0, shards = 6}}
-        return tbl_14
-    end
-    function tbl_upv_13.mid()
-        --[[
-          name: mid
-          line: 841
-        ]]
-        local tbl_15 = {restricted = false}
-        tbl_15.items = {short_bow = {level = 3, shards = 40}, bronze_sword = {level = 2, shards = 12}, throwing_knives = {level = 1, shards = 10}, bandage = {level = 4, shards = 30}, war_club = {level = 1, shards = 3}, crossbow = {level = 1, shards = 8}, obsidian_dagger = {level = 5, shards = 0}, bear_trap = {level = 1, shards = 4}, spear = {level = 0, shards = 14}, longbow = {level = 0, shards = 30}, musket = {level = 0, shards = 4}, healing_herbs = {level = 0, shards = 9}}
-        return tbl_15
-    end
-    function tbl_upv_13.maxed()
-        --[[
-          name: maxed
-          line: 860
-          upvalues:
-            WeaponInfo_upv_1 (copy, index: 1)
-        ]]
-        local tbl_16 = {}
-        for _, value_7 in WeaponInfo_upv_1.AllItems() do
-            tbl_16[value_7.id] = {shards = 0, level = tbl_upv_3.MAX_LEVEL}
-        end
-        local tbl_17 = {restricted = false}
-        tbl_17.items = tbl_16
-        return tbl_17
-    end
-    tbl_upv_13.restricted = function()
+    local v275 = {
+        new = (function()
+            --[[
+              name: new
+              line: 838
+            ]]
+            return {restricted = false, items = {crossbow = {shards = 6, level = 0}}}
+        end),
+        mid = (function()
+            --[[
+              name: mid
+              line: 841
+            ]]
+            return {
+                restricted = false,
+                items = {short_bow = {shards = 40, level = 3}, bronze_sword = {shards = 12, level = 2}, throwing_knives = {shards = 10, level = 1}, bandage = {shards = 30, level = 4}, war_club = {shards = 3, level = 1}, crossbow = {shards = 8, level = 1}, obsidian_dagger = {shards = 0, level = 5}, bear_trap = {shards = 4, level = 1}, spear = {shards = 14, level = 0}, longbow = {shards = 30, level = 0}, musket = {shards = 4, level = 0}, healing_herbs = {shards = 9, level = 0}}
+            }
+        end),
+        maxed = (function()
+            --[[
+              name: maxed
+              line: 860
+              upvalues:
+                weaponInfo (copy, index: 1)
+                economy (copy, index: 2)
+            ]]
+            local items = {}
+
+            for _, v278 in weaponInfo.AllItems() do
+                items[v278.id] = {shards = 0, level = economy.MAX_LEVEL}
+            end
+
+            return {restricted = false, items = items}
+        end)
+    }
+
+    v275.restricted = function()
         --[[
           line: 868
           upvalues:
-            tbl_upv_13 (copy, index: 1)
+            v275 (copy, index: 1)
         ]]
-        local v117 = tbl_upv_13.mid()
-        v117.restricted = true
-        return v117
+        local v279 = v275.mid()
+        v279.restricted = true
+        return v279
     end
-    function items.SetMock(a46)
+
+    function economy.SetMock(mock)
         --[[
           name: SetMock
           line: 873
           upvalues:
-            tbl_upv_13 (copy, index: 1)
+            v275 (copy, index: 1)
+            economy (copy, index: 2)
         ]]
-        if type(a46) == "string" and (tbl_upv_13[a46]) then
-            tbl_upv_3.Mock = tbl_upv_13[a46]()
-        elseif type(a46) ~= "table" then
-            tbl_upv_3.Mock = nil
+        if type(mock) == "string" and v275[mock] then
+            economy.Mock = v275[mock]()
+        elseif type(mock) ~= "table" then
+            economy.Mock = nil
         else
-            local tbl_18 = {items = 0, restricted = 0}
-            tbl_18.items = type(a46.items) ~= "table" and {} or a46.items
-            tbl_18.restricted = a46.restricted
-            tbl_upv_3.Mock = tbl_18
+            local v281
+            local mock2 = {}
+
+            if type(mock.items) ~= "table" then
+                v281 = {}
+            else
+                v281 = mock.items
+            end
+
+            mock2.items = v281
+            mock2.restricted = mock.restricted
+            economy.Mock = mock2
         end
-        tbl_upv_3.Changed:Fire()
+
+        economy.Changed:Fire()
     end
-    a1.Debug.store = function(a47, a48)
+
+    a49.Debug.store = function(a283, a284)
         --[[
           line: 884
           upvalues:
-            tbl_upv_10 (copy, index: 2)
-            u5 (ref,  index: 3)
-            State_upv_1 (copy, index: 4)
-            u1 (ref,  index: 5)
+            economy (copy, index: 1)
+            v218 (copy, index: 2)
+            arePaidRandomItemsRestricted (ref,  index: 3)
+            state (copy, index: 4)
+            v10 (ref,  index: 5)
         ]]
-        if a47 == "mock" then
-            tbl_upv_3.ForceMock = a48 == true
-        elseif a47 == "buy" then
-            tbl_upv_3.Buy(a48)
-        elseif a47 == "celebrate" then
-            tbl_upv_3.Celebrate:Fire(a48)
+        local arePaidRandomItemsRestricted2
+        local canBuyDrops
+        local v287
+
+        if a283 == "mock" then
+            economy.ForceMock = a284 == true
+        elseif a283 == "buy" then
+            economy.Buy(a284)
+        elseif a283 == "celebrate" then
+            economy.Celebrate:Fire(a284)
         end
-        local tbl_19 = {}
-        for key_9 in tbl_upv_10 do
-            table.insert(tbl_19, key_9)
+
+        local pending = {}
+
+        for v289 in v218 do
+            table.insert(pending, v289)
         end
-        local tbl_20 = {shards = 0, policy = 0, canBuyDrops = 0}
-        tbl_20.mock = tbl_upv_3.ForceMock
-        tbl_20.pending = tbl_19
-        tbl_20.offer = tbl_upv_3.StreakOffer()
-        tbl_20.dropsAllowed = tbl_upv_3.DropsAllowed()
-        tbl_20.policy = ((u5 == nil) and "?") or u5
-        local canBuyDrops_3 = State_upv_1.Profile.canBuyDrops
-        local v119
-        if type(canBuyDrops_3) ~= "boolean" then
-            v119 = nil
+
+        local v290 = {mock = economy.ForceMock, pending = pending, offer = economy.StreakOffer(), dropsAllowed = economy.DropsAllowed()}
+
+        if arePaidRandomItemsRestricted ~= nil then
+            arePaidRandomItemsRestricted2 = arePaidRandomItemsRestricted
         else
-            v119 = canBuyDrops_3
+            arePaidRandomItemsRestricted2 = "?"
         end
-        local v120, v121 = nil, nil
-        if v119 ~= nil then
-            v120 = State_upv_1.Profile.canBuyDrops
-            if type(v120) ~= "boolean" then
-                v121 = nil
+
+        v290.policy = arePaidRandomItemsRestricted2
+        local canBuyDrops2 = state.Profile.canBuyDrops
+
+        if type(canBuyDrops2) ~= "boolean" then
+            canBuyDrops = nil
+        else
+            canBuyDrops = canBuyDrops2
+        end
+
+        if canBuyDrops ~= nil then
+            local canBuyDrops3 = state.Profile.canBuyDrops
+
+            if type(canBuyDrops3) ~= "boolean" then
+                v287 = nil
             else
-                v121 = v120
+                v287 = canBuyDrops3
             end
         else
-            v121 = "none"
+            v287 = "none"
         end
-        tbl_20.canBuyDrops = v121
-        v121 = ((u1.FALLBACK) and "fallback") or "Shared.Shards"
-        tbl_20.shards = v121
-        return tbl_20
+
+        v290.canBuyDrops = v287
+        v290.shards = v10.FALLBACK and "fallback" or "Shared.Shards"
+
+        return v290
     end
 end
-return tbl_upv_3
+
+return economy

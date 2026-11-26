@@ -1,337 +1,354 @@
-local tbl_1 = {}
-function tbl_1.Init(a1)
-    --[[
-      name: Init
-      line: 10
-    ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local WeaponIcon_upv_1 = a1.WeaponIcon
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local u1 = UI_upv_1.new("Frame", {Name = "KillFeed", AnchorPoint = Vector2.new(1, 0), Size = UDim2.fromOffset(460, 190), [1] = UI_upv_1.List(Enum.FillDirection.Vertical, 5, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Top), Parent = a1.Canvas.HUD})
-    local function layout()
+return {
+    Init = (function(a1)
         --[[
-          name: layout
-          line: 21
-          upvalues:
-            a1 (copy, index: 1)
-            u1 (copy, index: 2)
-            UI_upv_1 (copy, index: 3)
+          name: Init
+          line: 10
         ]]
-        local v1 = not (a1.MatchHud) or not (a1.MatchHud.KillFeedTop) or a1.MatchHud.KillFeedTop()
-        local v2 = ((UI_upv_1.Compact) and -14) or -22
-        local v3 = v1 or (UI_upv_1.TopInset())
-        u1.Position = UDim2.new(1, v2, 0, v3)
-    end
-    a1.KillFeedRelayout = layout
-    local v4
-    if (a1.MatchHud) and (a1.MatchHud.KillFeedTop) then
-        v4 = a1.MatchHud.KillFeedTop()
-    else
-        v4 = nil
-    end
-    local v5 = ((UI_upv_1.Compact) and -14) or -22
-    local v6 = v4 or (UI_upv_1.TopInset())
-    u1.Position = UDim2.new(1, v5, 0, v6)
-    UI_upv_1.LayoutChanged:Connect(layout)
-    UI_upv_1.TopInsetChanged:Connect(layout)
-    local tbl_upv_2 = {}
-    local tbl_upv_3 = {}
-    local u2 = 0
-    local function release(a2)
-        --[[
-          name: release
-          line: 89
-          upvalues:
-            tbl_upv_3 (copy, index: 1)
-            tbl_upv_2 (copy, index: 2)
-        ]]
-        local v7 = table.find(tbl_upv_3, a2)
-        if v7 then
-            table.remove(tbl_upv_3, v7)
-        end
-        a2.holder.Parent = nil
-        table.insert(tbl_upv_2, a2)
-    end
-    local function colorFor(a3)
-        --[[
-          name: colorFor
-          line: 98
-          upvalues:
-            Colors_upv_1 (copy, index: 1)
-            State_upv_1 (copy, index: 2)
-            Theme_upv_1 (copy, index: 3)
-        ]]
-        if a3 ~= nil and a3 ~= 0 and a3 ~= false then
-            if State_upv_1.IsAllyTeam(a3) then
-                return (Theme_upv_1.Lighten(Colors_upv_1.Ally, 0.15))
-            end
-            return (Theme_upv_1.Lighten(Colors_upv_1.Enemy, 0.1))
-        end
-        return Colors_upv_1.TextDim
-    end
-    local function newRow()
-        --[[
-          name: newRow
-          line: 37
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
-            Fonts_upv_1 (copy, index: 3)
-        ]]
-        local v8 = UI_upv_1.new("Frame", {Name = "Row", Size = UDim2.fromOffset(0, 33), AutomaticSize = Enum.AutomaticSize.X})
-        local tbl_4 = {}
-        tbl_4.Name = "Inner"
-        tbl_4.Size = UDim2.fromOffset(0, 33)
-        tbl_4.AutomaticSize = Enum.AutomaticSize.X
-        tbl_4.BackgroundColor3 = Colors_upv_1.Void
-        tbl_4.BackgroundTransparency = 0.4
-        tbl_4[1], tbl_4[2], tbl_4[3] = UI_upv_1.Corner(8), UI_upv_1.Padding(0, 10, 0, 10), UI_upv_1.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center)
-        tbl_4.Parent = v8
-        local v9 = UI_upv_1.new("Frame", tbl_4)
-        local v10 = UI_upv_1.Stroke(Colors_upv_1.Accent, 2, 0.1)
-        v10.Parent = v9
-        tbl_4 = UI_upv_1.new("TextLabel", {LayoutOrder = 1, Name = "Killer", TextSize = 18, AutoLocalize = false, Size = UDim2.fromOffset(0, 26), AutomaticSize = Enum.AutomaticSize.X, FontFace = Fonts_upv_1.Heavy, Parent = v9})
-        UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.3).Parent = tbl_4
-        local v11 = UI_upv_1.new("Frame", {LayoutOrder = 2, Name = "Weapon", Size = UDim2.fromOffset(38, 28), Parent = v9})
-        local v12 = UI_upv_1.Image(UI_upv_1.Assets.Icons.Headshot, {Name = "Headshot", LayoutOrder = 3, Size = UDim2.fromOffset(20, 20), ImageColor3 = Colors_upv_1.Accent, Parent = v9})
-        local v13 = UI_upv_1.new("TextLabel", {LayoutOrder = 4, Name = "Victim", TextSize = 18, AutoLocalize = false, Size = UDim2.fromOffset(0, 26), AutomaticSize = Enum.AutomaticSize.X, FontFace = Fonts_upv_1.Heavy, Parent = v9})
-        UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.3).Parent = v13
-        UI_upv_1.new("UISizeConstraint", {MaxSize = Vector2.new(170, 30), Parent = tbl_4})
-        UI_upv_1.new("UISizeConstraint", {MaxSize = Vector2.new(170, 30), Parent = v13})
-        tbl_4.TextTruncate = Enum.TextTruncate.AtEnd
-        v13.TextTruncate = Enum.TextTruncate.AtEnd
-        local tbl_5 = {token = 0}
-        tbl_5.holder = v8
-        tbl_5.inner = v9
-        tbl_5.stroke = v10
-        tbl_5.killer = tbl_4
-        tbl_5.victim = v13
-        tbl_5.icon = v11
-        tbl_5.hs = v12
-        return tbl_5
-    end
-    local function push(a4)
-        --[[
-          name: push
-          line: 105
-          upvalues:
-            State_upv_1 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-            tbl_upv_3 (copy, index: 3)
-            tbl_upv_2 (copy, index: 4)
-            newRow (copy, index: 5)
-            u2 (ref,  index: 6)
-            Colors_upv_1 (copy, index: 7)
-            Theme_upv_1 (copy, index: 8)
-            WeaponIcon_upv_1 (copy, index: 9)
-            u1 (copy, index: 10)
-        ]]
-        local v14 = State_upv_1.MyId()
-        local v15 = ((UI_upv_1.Compact) and 3) or 5
-        while v15 < #tbl_upv_3 do
-            local v16 = table.remove(tbl_upv_3, 1)
-            v16.token = v16.token + 1
-            v16.holder.Parent = nil
-            table.insert(tbl_upv_2, v16)
-        end
-        local u3
-        if v15 <= #tbl_upv_3 then
-            u3 = tbl_upv_3[1]
-            table.remove(tbl_upv_3, 1)
-        else
-            local v17 = table.remove(tbl_upv_2) or newRow()
-            u3 = v17
-        end
-        u3.token = u3.token + 1
-        local token_upv_1 = u3.token
-        u2 = u2 + 1
-        local v18 = (type(a4.killerName) == "string") and ((a4.killerName ~= "") and (a4.killerId ~= a4.victimId))
-        u3.killer.Visible = v18
-        local killer_1 = u3.killer
-        local v19
-        if v18 then
-            local killerName_1 = a4.killerName
-            local v20 = State_upv_1.FindMember(a4.killerId)
-            local v21 = v20 and (v20.tribe)
-            if type(v21) == "table" and type(v21.tag) == "string" then
-                v19 = "[" .. v21.tag .. "] " .. killerName_1
-            else
-                v19 = killerName_1
-            end
-        else
-            v19 = ""
-        end
-        killer_1.Text = v19
-        local killer_2 = u3.killer
-        local killerTeam_1 = a4.killerTeam
-        local v22
-        local function tagged_1(a5, a6)
+        local ui = a1.UI
+        local theme = a1.Theme
+        local state = a1.State
+        local weaponIcon = a1.WeaponIcon
+        local colors = theme.Colors
+        local fonts = theme.Fonts
+        local parent = ui.new("Frame", {Name = "KillFeed", AnchorPoint = Vector2.new(1, 0), Size = UDim2.fromOffset(460, 190), (ui.List(Enum.FillDirection.Vertical, 5, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Top)), Parent = a1.Canvas.HUD})
+
+        local function layout()
             --[[
-              name: tagged
-              line: 126
+              name: layout
+              line: 21
               upvalues:
-                State_upv_1 (copy, index: 1)
+                a1 (copy, index: 1)
+                parent (copy, index: 2)
+                ui (copy, index: 3)
             ]]
-            local v23 = State_upv_1.FindMember(a5)
-            local v24 = v23 and (v23.tribe)
-            if type(v24) == "table" and type(v24.tag) == "string" then
-                return "[" .. v24.tag .. "] " .. a6
+            local v10 = if a1.MatchHud and a1.MatchHud.KillFeedTop then a1.MatchHud.KillFeedTop() else nil
+            local newUDim2 = UDim2.new
+            local v12 = ui.Compact and -14 or -22
+            parent.Position = newUDim2(1, v12, 0, (v10 or ui.TopInset()))
+        end
+
+        a1.KillFeedRelayout = layout
+        local v13 = if a1.MatchHud and a1.MatchHud.KillFeedTop then a1.MatchHud.KillFeedTop() else nil
+        local newUDim2 = UDim2.new
+        local v15 = ui.Compact and -14 or -22
+        parent.Position = newUDim2(1, v15, 0, (v13 or ui.TopInset()))
+        ui.LayoutChanged:Connect(layout)
+        ui.TopInsetChanged:Connect(layout)
+        local v16 = {}
+        local targets = {}
+        local count = 0
+
+        local function newRow()
+            --[[
+              name: newRow
+              line: 37
+              upvalues:
+                ui (copy, index: 1)
+                colors (copy, index: 2)
+                fonts (copy, index: 3)
+            ]]
+            local ui2 = ui.new("Frame", {Name = "Row", Size = UDim2.fromOffset(0, 33), AutomaticSize = Enum.AutomaticSize.X})
+            local ui3 = ui.new("Frame", {Name = "Inner", Size = UDim2.fromOffset(0, 33), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = colors.Void, BackgroundTransparency = 0.4, ui.Corner(8), ui.Padding(0, 10, 0, 10), (ui.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center)), Parent = ui2})
+            local stroke = ui.Stroke(colors.Accent, 2, 0.1)
+            stroke.Parent = ui3
+            local ui4 = ui.new("TextLabel", {Name = "Killer", AutoLocalize = false, TextSize = 18, LayoutOrder = 1, Size = UDim2.fromOffset(0, 26), AutomaticSize = Enum.AutomaticSize.X, FontFace = fonts.Heavy, Parent = ui3})
+            ui.TextStroke(colors.Void, 1.5, 0.3).Parent = ui4
+            local icon = ui.new("Frame", {Name = "Weapon", LayoutOrder = 2, Size = UDim2.fromOffset(38, 28), Parent = ui3})
+            local hs = ui.Image(ui.Assets.Icons.Headshot, {Name = "Headshot", LayoutOrder = 3, Size = UDim2.fromOffset(20, 20), ImageColor3 = colors.Accent, Parent = ui3})
+            local ui5 = ui.new("TextLabel", {Name = "Victim", AutoLocalize = false, TextSize = 18, LayoutOrder = 4, Size = UDim2.fromOffset(0, 26), AutomaticSize = Enum.AutomaticSize.X, FontFace = fonts.Heavy, Parent = ui3})
+            ui.TextStroke(colors.Void, 1.5, 0.3).Parent = ui5
+            ui.new("UISizeConstraint", {MaxSize = Vector2.new(170, 30), Parent = ui4})
+            ui.new("UISizeConstraint", {MaxSize = Vector2.new(170, 30), Parent = ui5})
+            ui4.TextTruncate = Enum.TextTruncate.AtEnd
+            ui5.TextTruncate = Enum.TextTruncate.AtEnd
+
+            return {token = 0, holder = ui2, inner = ui3, stroke = stroke, killer = ui4, victim = ui5, icon = icon, hs = hs}
+        end
+
+        local function release(target)
+            --[[
+              name: release
+              line: 89
+              upvalues:
+                targets (copy, index: 1)
+                v16 (copy, index: 2)
+            ]]
+            if const index = table.find(targets, target) then
+                table.remove(targets, index)
             end
-            return a6
+
+            target.holder.Parent = nil
+            table.insert(v16, target)
         end
-        if killerTeam_1 ~= nil and killerTeam_1 ~= 0 and killerTeam_1 ~= false then
-            State_upv_1.IsAllyTeam(killerTeam_1)
-        end
-        v22 = Colors_upv_1.TextDim
-        killer_2.TextColor3 = v22
-        local victim_1 = u3.victim
-        local str_1 = tostring(a4.victimName or "?")
-        local v25 = State_upv_1.FindMember(a4.victimId)
-        local v26 = v25 and (v25.tribe)
-        if type(v26) == "table" and type(v26.tag) == "string" then
-            v22 = "[" .. v26.tag .. "] " .. str_1
-        else
-            v22 = str_1
-        end
-        victim_1.Text = v22
-        local victim_2 = u3.victim
-        local v27 = a4.victimTeam
-        if v27 ~= nil and v27 ~= 0 and v27 ~= false then
-            State_upv_1.IsAllyTeam(v27)
-        end
-        v22 = Colors_upv_1.TextDim
-        victim_2.TextColor3 = v22
-        local hs_1 = u3.hs
-        hs_1.Visible = a4.headshot == true
-        if type(a4.weaponId) ~= "string" or a4.weaponId == "" then
-            WeaponIcon_upv_1.Set(u3.icon, nil)
-            if not (u3.icon:FindFirstChild("WeaponIcon")) then
-                UI_upv_1.Image(UI_upv_1.Assets.Icons.Skull, {Name = "WeaponIcon", Size = UDim2.fromScale(1, 1), ImageColor3 = Colors_upv_1.TextDim, Parent = u3.icon})
+
+        local function colorFor(a31)
+            --[[
+              name: colorFor
+              line: 98
+              upvalues:
+                colors (copy, index: 1)
+                state (copy, index: 2)
+                theme (copy, index: 3)
+            ]]
+            if a31 == nil or a31 == 0 or a31 == false then
+                return colors.TextDim
             end
-        else
-            WeaponIcon_upv_1.Set(u3.icon, a4.weaponId, {glow = false})
+            if state.IsAllyTeam(a31) then
+                return (theme.Lighten(colors.Ally, 0.15))
+            end
+
+            return (theme.Lighten(colors.Enemy, 0.1))
         end
-        UI_upv_1.Unfade(u3.inner)
-        local v28 = true
-        if a4.killerId ~= v14 then
-            v28 = a4.victimId == v14
-        end
-        u3.stroke.Enabled = v28
-        u3.stroke.Transparency = 0.1
-        local inner_1 = u3.inner
-        if v28 then
-            v27 = 0.2
-        else
-            v27 = 0.4
-        end
-        inner_1.BackgroundTransparency = v27
-        u3.holder.LayoutOrder = u2
-        u3.holder.Parent = u1
-        table.insert(tbl_upv_3, u3)
-        UI_upv_1.SlideIn(u3.inner, Vector2.new(40, 0), Theme_upv_1.Tween.PopSmall, UDim2.new())
-        task.delay(
-            5,
-            function()
+
+        local function push(a33)
+            --[[
+              name: push
+              line: 105
+              upvalues:
+                state (copy, index: 1)
+                ui (copy, index: 2)
+                targets (copy, index: 3)
+                v16 (copy, index: 4)
+                newRow (copy, index: 5)
+                count (ref,  index: 6)
+                colors (copy, index: 7)
+                theme (copy, index: 8)
+                weaponIcon (copy, index: 9)
+                parent (copy, index: 10)
+            ]]
+            local v34, v35
+            local v36
+            local v37
+            local v38
+            local v39
+            local v40 = state.MyId()
+
+            if ui.Compact then
+                v34 = 3
+            else
+                v34 = 5
+            end
+
+            while v34 < #targets do
+                local removedValue = table.remove(targets, 1)
+                removedValue.token += 1
+                removedValue.holder.Parent = nil
+                table.insert(v16, removedValue)
+            end
+
+            if v34 <= #targets then
+                v35 = targets[1]
+                table.remove(targets, 1)
+            else
+                v35 = table.remove(v16) or newRow()
+            end
+
+            local token2 = v35.token + 1
+            v35.token = token2
+            local token = v35.token
+            count += 1
+            local visible = type(a33.killerName) == "string"
+                and a33.killerName ~= ""
+                and a33.killerId ~= a33.victimId
+
+            local function tagged(a46, a47)
                 --[[
-                  line: 161
+                  name: tagged
+                  line: 126
                   upvalues:
-                    u3 (ref,  index: 1)
-                    token_upv_1 (copy, index: 2)
-                    UI_upv_1 (copy, index: 3)
-                    tbl_upv_3 (copy, index: 4)
-                    tbl_upv_2 (copy, index: 5)
+                    state (copy, index: 1)
                 ]]
-                if u3.token ~= token_upv_1 then
+                local member = state.FindMember(a46)
+                local tribe = member and member.tribe
+
+                if type(tribe) == "table" and type(tribe.tag) == "string" then
+                    return "[" .. tribe.tag .. "] " .. a47
+                end
+
+                return a47
+            end
+
+            v35.killer.Visible = visible
+            local killer = v35.killer
+
+            if visible then
+                local killerId = a33.killerId
+                local killerName = a33.killerName
+                local member = state.FindMember(killerId)
+                local tribe = member and member.tribe
+
+                if type(tribe) == "table" and type(tribe.tag) == "string" then
+                    v36 = "[" .. tribe.tag .. "] " .. killerName
+                else
+                    v36 = killerName
+                end
+            else
+                v36 = ""
+            end
+
+            killer.Text = v36
+            local killer2 = v35.killer
+            local killerTeam = a33.killerTeam
+
+            if killerTeam == nil or killerTeam == 0 or killerTeam == false then
+                v37 = colors.TextDim
+            else
+                v37 = if state.IsAllyTeam(killerTeam) then theme.Lighten(colors.Ally, 0.15) else theme.Lighten(colors.Enemy, 0.1)
+            end
+
+            killer2.TextColor3 = v37
+            local victim = v35.victim
+            local victimId = a33.victimId
+            local text = tostring((a33.victimName or "?"))
+            local member = state.FindMember(victimId)
+            local tribe = member and member.tribe
+
+            if type(tribe) == "table" and type(tribe.tag) == "string" then
+                v38 = "[" .. tribe.tag .. "] " .. text
+            else
+                v38 = text
+            end
+
+            victim.Text = v38
+            local victim2 = v35.victim
+            local victimTeam = a33.victimTeam
+
+            if victimTeam == nil or victimTeam == 0 or victimTeam == false then
+                v39 = colors.TextDim
+            else
+                v39 = if state.IsAllyTeam(victimTeam) then theme.Lighten(colors.Ally, 0.15) else theme.Lighten(colors.Enemy, 0.1)
+            end
+
+            victim2.TextColor3 = v39
+            local hs = v35.hs
+            hs.Visible = a33.headshot == true
+
+            if type(a33.weaponId) == "string" and a33.weaponId ~= "" then
+                weaponIcon.Set(v35.icon, a33.weaponId, {glow = false})
+            else
+                weaponIcon.Set(v35.icon, nil)
+
+                if not v35.icon:FindFirstChild("WeaponIcon") then
+                    ui.Image(ui.Assets.Icons.Skull, {Name = "WeaponIcon", Size = UDim2.fromScale(1, 1), ImageColor3 = colors.TextDim, Parent = v35.icon})
+                end
+            end
+
+            ui.Unfade(v35.inner)
+            local enabled = a33.killerId == v40 or a33.victimId == v40
+            v35.stroke.Enabled = enabled
+            v35.stroke.Transparency = 0.1
+            v35.inner.BackgroundTransparency = enabled and 0.2 or 0.4
+            v35.holder.LayoutOrder = count
+            v35.holder.Parent = parent
+            table.insert(targets, v35)
+            ui.SlideIn(v35.inner, Vector2.new(40, 0), theme.Tween.PopSmall, UDim2.new())
+
+            task.delay(
+                5,
+                function()
+                    --[[
+                      line: 161
+                      upvalues:
+                        v35 (ref,  index: 1)
+                        token (copy, index: 2)
+                        ui (copy, index: 3)
+                        targets (copy, index: 4)
+                        v16 (copy, index: 5)
+                    ]]
+                    if v35.token ~= token then
+                        return
+                    end
+
+                    ui.FadeOut(v35.inner, TweenInfo.new(0.3))
+
+                    task.delay(
+                        0.32,
+                        function()
+                            --[[
+                              line: 166
+                              upvalues:
+                                v35 (ref,  index: 1)
+                                token (copy, index: 2)
+                                targets (copy, index: 3)
+                                v16 (copy, index: 4)
+                            ]]
+                            if v35.token == token then
+                                local target = v35
+
+                                if const index = table.find(targets, target) then
+                                    table.remove(targets, index)
+                                end
+
+                                target.holder.Parent = nil
+                                table.insert(v16, target)
+                            end
+                        end
+                    )
+                end
+            )
+        end
+
+        a1.OnMatchEvent(
+            function(a68, a69)
+                --[[
+                  line: 174
+                  upvalues:
+                    push (copy, index: 1)
+                    targets (copy, index: 2)
+                    v16 (copy, index: 3)
+                ]]
+                if a68 == "Elimination" and type(a69) == "table" then
+                    push(a69)
                     return
                 end
-                UI_upv_1.FadeOut(u3.inner, TweenInfo.new(0.3))
-                task.delay(
-                    0.32,
-                    function()
-                        --[[
-                          line: 166
-                          upvalues:
-                            u3 (ref,  index: 1)
-                            token_upv_1 (copy, index: 2)
-                            tbl_upv_3 (copy, index: 3)
-                            tbl_upv_2 (copy, index: 4)
-                        ]]
-                        if u3.token == token_upv_1 then
-                            local v29 = table.find(tbl_upv_3, u3)
-                            if v29 then
-                                table.remove(tbl_upv_3, v29)
-                            end
-                            u3.holder.Parent = nil
-                            table.insert(tbl_upv_2, u3)
+
+                if a68 == "MatchStart" then
+                    for index2 = #targets, 1, -1 do
+                        local v71 = targets[index2]
+                        v71.token += 1
+                        local target = targets[index2]
+
+                        if const index = table.find(targets, target) then
+                            table.remove(targets, index)
                         end
+
+                        target.holder.Parent = nil
+                        table.insert(v16, target)
                     end
-                )
-            end
-        )
-    end
-    a1.OnMatchEvent(
-        function(a7, a8)
-            --[[
-              line: 174
-              upvalues:
-                push (copy, index: 1)
-                tbl_upv_3 (copy, index: 2)
-                tbl_upv_2 (copy, index: 3)
-            ]]
-            if (a7 ~= "Elimination" or type(a8) ~= "table") and a7 == "MatchStart" then
-                for n_1 = #tbl_upv_3, 1, -1 do
-                    local v30 = tbl_upv_3[n_1]
-                    v30.token = v30.token + 1
-                    local v31 = tbl_upv_3[n_1]
-                    local v32 = table.find(tbl_upv_3, v31)
-                    if v32 then
-                        table.remove(tbl_upv_3, v32)
-                    end
-                    v31.holder.Parent = nil
-                    table.insert(tbl_upv_2, v31)
                 end
             end
-            push(a8)
+        )
+
+        local function vis()
+            --[[
+              name: vis
+              line: 185
+              upvalues:
+                parent (copy, index: 1)
+                state (copy, index: 2)
+                a1 (copy, index: 3)
+            ]]
+            local visible = state.SeesMatch() and not a1.HudHidden
+            parent.Visible = visible
         end
-    )
-    u1.Visible = State_upv_1.SeesMatch() and not a1.HudHidden
-    local function vis()
-        --[[
-          name: vis
-          line: 185
-          upvalues:
-            u1 (copy, index: 1)
-            State_upv_1 (copy, index: 2)
-            a1 (copy, index: 3)
-        ]]
-        u1.Visible = State_upv_1.SeesMatch() and not a1.HudHidden
-    end
-    State_upv_1.PlayerStateChanged:Connect(vis)
-    State_upv_1.WatchChanged:Connect(vis)
-    a1.HudHiddenChanged:Connect(vis)
-    a1.Debug.killfeed = function(a9)
-        --[[
-          line: 192
-          upvalues:
-            push (copy, index: 1)
-            State_upv_1 (copy, index: 2)
-            a1 (copy, index: 3)
-        ]]
-        local v35
-        if a9 then
-            v35 = a9
-        else
-            v35 = {headshot = true, weaponId = "short_bow", victimName = "Grimtooth", victimId = "b2"}
-            v35.killerId = State_upv_1.MyId()
-            v35.killerName = a1.Player.DisplayName
-            v35.killerTeam = State_upv_1.MyTeam()
-            v35.victimTeam = 3 - State_upv_1.MyTeam()
+
+        local visible = state.SeesMatch() and not a1.HudHidden
+        parent.Visible = visible
+        state.PlayerStateChanged:Connect(vis)
+        state.WatchChanged:Connect(vis)
+        a1.HudHiddenChanged:Connect(vis)
+
+        a1.Debug.killfeed = function(a77)
+            --[[
+              line: 192
+              upvalues:
+                push (copy, index: 1)
+                state (copy, index: 2)
+                a1 (copy, index: 3)
+            ]]
+            push((a77
+                or {victimId = "b2", victimName = "Grimtooth", weaponId = "short_bow", headshot = true, killerId = state.MyId(), killerName = a1.Player.DisplayName, killerTeam = state.MyTeam(), victimTeam = 3 - state.MyTeam()}))
+            return true
         end
-        push(v35)
-        return true
-    end
-end
-return tbl_1
+    end)
+}

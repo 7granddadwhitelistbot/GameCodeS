@@ -1,212 +1,240 @@
-local tbl_upv_1 = {}
-tbl_upv_1.SEGMENTS = 12
-tbl_upv_1.LAYERS = 2
-local u1 = nil
-local tbl_upv_2 = {}
-local tbl_upv_3 = {}
-local u2 = nil
-local u3 = nil
-local u4 = nil
-local u5 = false
+local v1 = {SEGMENTS = 12, LAYERS = 2}
+local part = nil
+local v3 = {}
+local v4 = {}
+local attachment = nil
+local particleEmitter = nil
+local particleEmitter2 = nil
+local v8 = false
+
 local function build()
     --[[
       name: build
       line: 30
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
-        tbl_upv_3 (copy, index: 3)
-        u2 (ref,  index: 4)
-        u3 (ref,  index: 5)
-        u4 (ref,  index: 6)
+        v1 (copy, index: 1)
+        v3 (copy, index: 2)
+        v4 (copy, index: 3)
+        attachment (ref,  index: 4)
+        particleEmitter (ref,  index: 5)
+        particleEmitter2 (ref,  index: 6)
     ]]
-    local v1 = Instance.new("Part")
-    v1.Name = "TribesBladeSmear"
-    v1.Anchored = true
-    v1.CanCollide = false
-    v1.CanQuery = false
-    v1.CanTouch = false
-    v1.CastShadow = false
-    v1.Transparency = 1
-    v1.Size = Vector3.new(0.05000000074505806, 0.05000000074505806, 0.05000000074505806)
-    for n_1 = 1, tbl_upv_1.LAYERS do
-        local tbl_4 = {}
-        local tbl_5 = {}
-        for n_2 = 1, tbl_upv_1.SEGMENTS + 1 do
-            local v2 = Instance.new("Attachment")
-            v2.Parent = v1
-            tbl_4[n_2] = v2
+    local tribesBladeSmear = Instance.new("Part")
+    tribesBladeSmear.Name = "TribesBladeSmear"
+    tribesBladeSmear.Anchored = true
+    tribesBladeSmear.CanCollide = false
+    tribesBladeSmear.CanQuery = false
+    tribesBladeSmear.CanTouch = false
+    tribesBladeSmear.CastShadow = false
+    tribesBladeSmear.Transparency = 1
+    tribesBladeSmear.Size = Vector3.new(0.05000000074505806, 0.05000000074505806, 0.05000000074505806)
+
+    for index = 1, v1.LAYERS do
+        local v12 = {}
+        local v13 = {}
+
+        for index2 = 1, v1.SEGMENTS + 1 do
+            local attachment2 = Instance.new("Attachment")
+            attachment2.Parent = tribesBladeSmear
+            v12[index2] = attachment2
         end
-        for n_3 = 1, tbl_upv_1.SEGMENTS do
-            local v3 = Instance.new("Beam")
-            v3.Attachment0 = tbl_4[n_3]
-            v3.Attachment1 = tbl_4[n_3 + 1]
-            v3.FaceCamera = false
-            v3.Segments = 1
-            v3.LightEmission = 0.2
-            v3.LightInfluence = 0.3
-            v3.ZOffset = n_1 * 0.01
-            v3.Enabled = false
-            v3.Parent = v1
-            tbl_5[n_3] = v3
+
+        for index3 = 1, v1.SEGMENTS do
+            local beam = Instance.new("Beam")
+            beam.Attachment0 = v12[index3]
+            beam.Attachment1 = v12[index3 + 1]
+            beam.FaceCamera = false
+            beam.Segments = 1
+            beam.LightEmission = 0.2
+            beam.LightInfluence = 0.3
+            beam.ZOffset = index * 0.01
+            beam.Enabled = false
+            beam.Parent = tribesBladeSmear
+            v13[index3] = beam
         end
-        tbl_upv_2[n_1] = tbl_4
-        tbl_upv_3[n_1] = tbl_5
+
+        v3[index] = v12
+        v4[index] = v13
     end
-    local v4 = Instance.new("Attachment")
-    v4.Parent = v1
-    u2 = v4
-    local v5 = Instance.new("ParticleEmitter")
-    v5.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-    v5.Enabled = false
-    v5.LightEmission = 0.4
-    v5.LightInfluence = 0.2
-    v5.Color = ColorSequence.new(Color3.fromRGB(255, 214, 140), Color3.fromRGB(255, 140, 60))
-    v5.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.05), NumberSequenceKeypoint.new(1, 0)})
-    v5.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1)})
-    v5.Lifetime = NumberRange.new(0.12, 0.26)
-    v5.Speed = NumberRange.new(1.2, 3)
-    v5.SpreadAngle = Vector2.new(180, 180)
-    v5.Drag = 7
-    v5.Acceleration = Vector3.new(0, -4, 0)
-    v5.LockedToPart = true
-    v5.Parent = v4
-    u3 = v5
-    v5 = Instance.new("ParticleEmitter")
-    v5.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-    v5.Enabled = false
-    v5.LightEmission = 0.4
-    v5.LightInfluence = 0
-    v5.Color = ColorSequence.new(Color3.fromRGB(255, 236, 200))
-    v5.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.06), NumberSequenceKeypoint.new(0.25, 0.16), NumberSequenceKeypoint.new(1, 0)})
-    v5.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.15), NumberSequenceKeypoint.new(1, 1)})
-    v5.Lifetime = NumberRange.new(0.1, 0.12)
-    v5.Speed = NumberRange.new(0)
-    v5.Rotation = NumberRange.new(0, 45)
-    v5.LockedToPart = true
-    v5.Parent = v4
-    u4 = v5
-    return v1
+
+    local parent = Instance.new("Attachment")
+    parent.Parent = tribesBladeSmear
+    attachment = parent
+    local particleEmitter3 = Instance.new("ParticleEmitter")
+    particleEmitter3.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+    particleEmitter3.Enabled = false
+    particleEmitter3.LightEmission = 0.4
+    particleEmitter3.LightInfluence = 0.2
+    particleEmitter3.Color = ColorSequence.new(Color3.fromRGB(255, 214, 140), Color3.fromRGB(255, 140, 60))
+    particleEmitter3.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.05), NumberSequenceKeypoint.new(1, 0)})
+    particleEmitter3.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1)})
+    particleEmitter3.Lifetime = NumberRange.new(0.12, 0.26)
+    particleEmitter3.Speed = NumberRange.new(1.2, 3)
+    particleEmitter3.SpreadAngle = Vector2.new(180, 180)
+    particleEmitter3.Drag = 7
+    particleEmitter3.Acceleration = Vector3.new(0, -4, 0)
+    particleEmitter3.LockedToPart = true
+    particleEmitter3.Parent = parent
+    particleEmitter = particleEmitter3
+    particleEmitter3 = Instance.new("ParticleEmitter")
+    particleEmitter3.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+    particleEmitter3.Enabled = false
+    particleEmitter3.LightEmission = 0.4
+    particleEmitter3.LightInfluence = 0
+    particleEmitter3.Color = ColorSequence.new(Color3.fromRGB(255, 236, 200))
+    particleEmitter3.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.06), NumberSequenceKeypoint.new(0.25, 0.16), NumberSequenceKeypoint.new(1, 0)})
+    particleEmitter3.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.15), NumberSequenceKeypoint.new(1, 1)})
+    particleEmitter3.Lifetime = NumberRange.new(0.1, 0.12)
+    particleEmitter3.Speed = NumberRange.new(0)
+    particleEmitter3.Rotation = NumberRange.new(0, 45)
+    particleEmitter3.LockedToPart = true
+    particleEmitter3.Parent = parent
+    particleEmitter2 = particleEmitter3
+
+    return tribesBladeSmear
 end
-local function ensure(a1, a2)
+
+local function ensure(parent: Instance?, cFrame: CFrame)
     --[[
       name: ensure
       line: 101
       upvalues:
-        u1 (ref,  index: 1)
+        part (ref,  index: 1)
         build (copy, index: 2)
     ]]
-    local v6 = u1 or (build())
-    u1 = v6
-    v6.CFrame = a2
-    if v6.Parent ~= a1 then
-        v6.Parent = a1
+    local part2 = part or build()
+    part = part2
+    part2.CFrame = cFrame
+
+    if part2.Parent ~= parent then
+        part2.Parent = parent
     end
-    return v6
+
+    return part2
 end
-function tbl_upv_1.Draw(a1, a2, a3, a4, a5, a6, a7)
+
+function v1.Draw(parent: Instance?, cFrame: CFrame, key, a27, a28, a29, a30)
     --[[
       name: Draw
       line: 111
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
+        v1 (copy, index: 1)
+        part (ref,  index: 2)
         build (copy, index: 3)
-        tbl_upv_2 (copy, index: 4)
-        tbl_upv_3 (copy, index: 5)
-        u5 (ref,  index: 6)
+        v3 (copy, index: 4)
+        v4 (copy, index: 5)
+        v8 (ref,  index: 6)
     ]]
-    local v7 = math.min(#a4, tbl_upv_1.SEGMENTS + 1)
-    if v7 < 2 then
-        tbl_upv_1.Hide()
-    else
-        local v8 = u1 or (build())
-        u1 = v8
-        v8.CFrame = a2
-        if v8.Parent ~= a1 then
-            v8.Parent = a1
-        end
-        local v9 = tbl_upv_2[a3]
-        local v10 = tbl_upv_3[a3]
-        if not v9 then
-            return
-        end
-        local v11 = ColorSequence.new(a7)
-        for n_4 = 1, v7 do
-            v9[n_4].CFrame = a4[n_4]
-        end
-        for n_5 = 1, tbl_upv_1.SEGMENTS do
-            local v12 = v10[n_5]
-            if n_5 < v7 then
-                v12.Width0 = a5[n_5]
-                v12.Width1 = a5[n_5 + 1]
-                v12.Transparency = NumberSequence.new(a6[n_5], a6[n_5 + 1])
-                v12.Color = v11
-                v12.Enabled = true
-                continue
-            end
-            if v12.Enabled then
-                v12.Enabled = false
-            end
-        end
-        u5 = true
+    local endIndex = math.min(#a27, v1.SEGMENTS + 1)
+
+    if endIndex < 2 then
+        v1.Hide()
+        return
     end
+
+    local part2 = part or build()
+    part = part2
+    part2.CFrame = cFrame
+
+    if part2.Parent ~= parent then
+        part2.Parent = parent
+    end
+
+    local v33 = v3[key]
+    local v34 = v4[key]
+
+    if not v33 then
+        return
+    end
+
+    local color = ColorSequence.new(a30)
+
+    for index = 1, endIndex do
+        v33[index].CFrame = a27[index]
+    end
+
+    for index = 1, v1.SEGMENTS do
+        local beam = v34[index]
+
+        if index < endIndex then
+            beam.Width0 = a28[index]
+            beam.Width1 = a28[index + 1]
+            beam.Transparency = NumberSequence.new(a29[index], a29[index + 1])
+            beam.Color = color
+            beam.Enabled = true
+        elseif beam.Enabled then
+            beam.Enabled = false
+        end
+    end
+
+    v8 = true
 end
-function tbl_upv_1.Hide()
+
+function v1.Hide()
     --[[
       name: Hide
       line: 141
       upvalues:
-        u5 (ref,  index: 1)
-        tbl_upv_3 (copy, index: 2)
+        v8 (ref,  index: 1)
+        v4 (copy, index: 2)
     ]]
-    if not u5 then
+    if not v8 then
         return
     end
-    u5 = false
-    for _, value_1 in tbl_upv_3 do
-        for v1, value_2 in value_1 do
-            value_2.Enabled = false
+
+    v8 = false
+
+    for _, v40 in v4 do
+        for _, beam in v40 do
+            beam.Enabled = false
         end
     end
 end
-function tbl_upv_1.Follow(a1)
+
+function v1.Follow(cFrame: CFrame)
     --[[
       name: Follow
       line: 154
       upvalues:
-        u1 (ref, index: 1)
+        part (ref, index: 1)
     ]]
-    if not u1 or not u1.Parent then
-        return
+    local part2 = part
+
+    if part2 and part2.Parent then
+        part2.CFrame = cFrame
     end
-    u1.CFrame = a1
 end
-function tbl_upv_1.Spark(a1, a2, a3)
+
+function v1.Spark(parent: Instance?, cFrame: CFrame, position: Vector3)
     --[[
       name: Spark
       line: 161
       upvalues:
-        u1 (ref,  index: 1)
+        part (ref,  index: 1)
         build (copy, index: 2)
-        u2 (ref,  index: 3)
-        u3 (ref,  index: 4)
-        u4 (ref,  index: 5)
+        attachment (ref,  index: 3)
+        particleEmitter (ref,  index: 4)
+        particleEmitter2 (ref,  index: 5)
     ]]
-    local v13 = u1 or (build())
-    u1 = v13
-    v13.CFrame = a2
-    if v13.Parent ~= a1 then
-        v13.Parent = a1
+    local part2 = part or build()
+    part = part2
+    part2.CFrame = cFrame
+
+    if part2.Parent ~= parent then
+        part2.Parent = parent
     end
-    if not u2 or not u3 then
-        return
+
+    local attachment2 = attachment
+    local particleEmitter3 = particleEmitter
+
+    if attachment2 and particleEmitter3 then
+        attachment2.Position = position
+        particleEmitter3:Emit(18)
+
+        if particleEmitter2 then
+            particleEmitter2:Emit(1)
+        end
     end
-    u2.Position = a3
-    u3:Emit(18)
-    if not u4 then
-        return
-    end
-    u4:Emit(1)
 end
-return tbl_upv_1
+
+return v1

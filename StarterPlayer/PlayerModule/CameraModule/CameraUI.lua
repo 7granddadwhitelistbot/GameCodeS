@@ -1,35 +1,39 @@
-local StarterGui_upv_1 = game:GetService("StarterGui")
-local u1 = false
-local tbl_upv_1 = {}
-function tbl_upv_1.setCameraModeToastEnabled(a1)
+local starterGui = game:GetService("StarterGui")
+local v2 = false
+local v3 = {}
+
+function v3.setCameraModeToastEnabled(cameraModeToastEnabled)
     --[[
       name: setCameraModeToastEnabled
       line: 10
       upvalues:
-        u1 (ref,  index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v2 (ref,  index: 1)
+        v3 (copy, index: 2)
     ]]
-    if (a1) or (u1) then
-        if not (u1) then
-            u1 = true
-        end
-        if not (a1) then
-            tbl_upv_1.setCameraModeToastOpen(false)
-        end
+    if not cameraModeToastEnabled and not v2 then
+        return
+    end
+
+    v2 = v2 or true
+
+    if not cameraModeToastEnabled then
+        v3.setCameraModeToastOpen(false)
     end
 end
-function tbl_upv_1.setCameraModeToastOpen(a1)
+
+function v3.setCameraModeToastOpen(cameraModeToastOpen)
     --[[
       name: setCameraModeToastOpen
       line: 24
       upvalues:
-        u1 (ref,  index: 1)
-        StarterGui_upv_1 (copy, index: 2)
+        v2 (ref,  index: 1)
+        starterGui (copy, index: 2)
     ]]
-    assert(u1)
-    if not a1 then
-        return
+    assert(v2)
+
+    if cameraModeToastOpen then
+        starterGui:SetCore("SendNotification", {Title = "Camera Control Enabled", Text = "Right click to toggle", Duration = 3})
     end
-    StarterGui_upv_1:SetCore("SendNotification", {Text = "Right click to toggle", Title = "Camera Control Enabled", Duration = 3})
 end
-return tbl_upv_1
+
+return v3

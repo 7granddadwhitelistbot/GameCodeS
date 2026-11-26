@@ -1,89 +1,113 @@
-local tbl_upv_1 = {}
-function tbl_upv_1.Expt(a1, a2, a3, a4, a5)
+local v1 = {}
+
+function v1.Expt(a2, a3, a4, a5, a6)
     --[[
       name: Expt
       line: 5
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    if math.abs(a3 - a2) < 0.01 then
-        return a3
+    if math.abs(a4 - a3) < 0.01 then
+        return a4
     end
-    return a2 + ((a3 - a2) * tbl_upv_1:Expty(a2, a3, a4, a5))
+
+    local v7 = v1:Expty(a3, a4, a5, a6)
+
+    return a3 + ((a4 - a3) * v7)
 end
-function tbl_upv_1.Expty(a1, a2, a3, a4, a5)
+
+function v1.Expty(a8, a9, a10, a11, a12)
     --[[
       name: Expty
       line: 17
     ]]
-    return 1 - math.exp(-(-math.log(1 - a4)) * a5)
+    return 1 - math.exp(-(-math.log(1 - a11)) * a12)
 end
-function tbl_upv_1.Sign(a1, a2)
+
+function v1.Sign(a13, a14)
     --[[
       name: Sign
       line: 24
     ]]
-    if a2 > 0 then
+    if 0 < a14 then
         return 1
-    elseif a2 < 0 then
-        return -1
-    else
-        return 0
     end
+    if a14 < 0 then
+        return -1
+    end
+
+    return 0
 end
-function tbl_upv_1.BezierValForT(a1, a2, a3, a4, a5, a6)
+
+function v1.BezierValForT(a15, a16, a17, a18, a19, a20)
     --[[
       name: BezierValForT
       line: 34
     ]]
-    return ((((((1 - a6) * (1 - a6)) * (1 - a6)) * a2) + ((((3 * a6) * (1 - a6)) * (1 - a6)) * a3)) + ((((3 * a6) * a6) * (1 - a6)) * a4)) + (((a6 * a6) * a6) * a5)
+    local v21 = (1 - a20) * (1 - a20) * (1 - a20)
+    local v22 = (3 * a20) * (1 - a20) * (1 - a20)
+    local v23 = (3 * a20) * a20 * (1 - a20)
+    local v24 = a20 * a20 * a20
+
+    return ((v21 * a16) + (v22 * a17)) + (v23 * a18) + (v24 * a19)
 end
-tbl_upv_1._BezierPt2ForT = {y = 0, x = 0}
-function tbl_upv_1.BezierPt2ForT(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+
+v1._BezierPt2ForT = {x = 0, y = 0}
+
+function v1.BezierPt2ForT(a25, a26, a27, a28, a29, a30, a31, a32, a33, a34)
     --[[
       name: BezierPt2ForT
       line: 43
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    tbl_upv_1._BezierPt2ForT.x = tbl_upv_1:BezierValForT(a2, a4, a6, a8, a10)
-    tbl_upv_1._BezierPt2ForT.y = tbl_upv_1:BezierValForT(a3, a5, a7, a9, a10)
-    return tbl_upv_1._BezierPt2ForT
+    v1._BezierPt2ForT.x = v1:BezierValForT(a26, a28, a30, a32, a34)
+    v1._BezierPt2ForT.y = v1:BezierValForT(a27, a29, a31, a33, a34)
+
+    return v1._BezierPt2ForT
 end
-function tbl_upv_1.YForPointOf2PtLine(a1, a2, a3, a4)
+
+function v1.YForPointOf2PtLine(a35, a36, a37, a38)
     --[[
       name: YForPointOf2PtLine
       line: 55
     ]]
-    local v1 = (a2.y - a3.y) / (a2.x - a3.x)
-    return (v1 * a4) + (a2.y - (v1 * a2.x))
+    local v39 = (a36.y - a37.y) / (a36.x - a37.x)
+    local v40 = a36.y - v39 * a36.x
+
+    return (v39 * a38) + v40
 end
-function tbl_upv_1.DeltaTimeToTimescale(a1, a2)
+
+function v1.DeltaTimeToTimescale(a41, a42)
     --[[
       name: DeltaTimeToTimescale
       line: 63
     ]]
-    return a2 / 0.016666666666666666
+    return a42 / 0.016666666666666666
 end
-function tbl_upv_1.SecondsToTick(a1, a2)
+
+function v1.SecondsToTick(a43, a44)
     --[[
       name: SecondsToTick
       line: 67
     ]]
-    return 0.016666666666666666 / a2
+    return 0.016666666666666666 / a44
 end
-function tbl_upv_1.ExptValueInSeconds(a1, a2, a3, a4)
+
+function v1.ExptValueInSeconds(a45, a46, a47, a48)
     --[[
       name: ExptValueInSeconds
       line: 71
     ]]
-    return 1 - math.pow(a2 / a3, 1 / (60 * a4))
+    return 1 - math.pow(a46 / a47, 1 / (60 * a48))
 end
-function tbl_upv_1.NormalizedDefaultExptValueInSeconds(a1, a2)
+
+function v1.NormalizedDefaultExptValueInSeconds(a49, a50)
     --[[
       name: NormalizedDefaultExptValueInSeconds
       line: 75
     ]]
-    return a1:ExptValueInSeconds(0.01, 1, a2)
+    return a49:ExptValueInSeconds(0.01, 1, a50)
 end
-return tbl_upv_1
+
+return v1

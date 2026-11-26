@@ -1,501 +1,564 @@
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local Parent_1 = script.Parent.Parent
-local Util_upv_1 = require(Parent_1.Util)
-local Hud_upv_1 = require(Parent_1.Hud)
-local Effects_upv_1 = require(Parent_1.Effects)
-local Combat_upv_1 = require(ReplicatedStorage_1:WaitForChild("Shared"):WaitForChild("Combat"))
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-function tbl_upv_1.new(a1)
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local parent = script.Parent.Parent
+local Util = require(parent.Util)
+local Hud = require(parent.Hud)
+local Effects = require(parent.Effects)
+local Combat = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Combat"))
+local Class = {}
+Class.__index = Class
+
+function Class.new(ctx)
     --[[
       name: new
       line: 20
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    local v1 = setmetatable({}, tbl_upv_1)
-    v1.ctx = a1
-    v1.tuning = a1.tuning
-    v1.preset = a1.preset
-    v1.kind = a1.kind
-    local v2 = true
-    if a1.kind ~= "Javelin" then
-        v2 = a1.kind == "Bomb"
-    end
-    v1.winds = v2
-    v1.winding = false
-    v1.start = 0
-    v1.lastThrow = -math.huge
-    v1.m1Down = false
-    v1.preview = false
-    v1.charges = 0
-    v1.maxCharges = a1.tuning.charges or 0
-    v1.bufferedAt = nil
-    v1.conns = {}
-    v1.stopLoop = nil
-    return v1
+    local v9 = setmetatable({}, Class)
+    v9.ctx = ctx
+    v9.tuning = ctx.tuning
+    v9.preset = ctx.preset
+    v9.kind = ctx.kind
+    v9.winds = (ctx.kind == "Javelin") or (ctx.kind == "Bomb")
+    v9.winding = false
+    v9.start = 0
+    v9.lastThrow = -math.huge
+    v9.m1Down = false
+    v9.preview = false
+    v9.charges = 0
+    v9.maxCharges = ctx.tuning.charges or 0
+    v9.bufferedAt = nil
+    v9.conns = {}
+    v9.stopLoop = nil
+    return v9
 end
-function tbl_upv_1.StopLoop(a1)
+
+function Class.StopLoop(self)
     --[[
       name: StopLoop
       line: 40
     ]]
-    if not a1.stopLoop then
-        return
+    if self.stopLoop then
+        self.stopLoop(0.15)
+        self.stopLoop = nil
     end
-    a1.stopLoop(0.15)
-    a1.stopLoop = nil
 end
-function tbl_upv_1.StartLoop(a1, a2)
+
+function Class.StartLoop(self, a12)
     --[[
       name: StartLoop
       line: 47
       upvalues:
-        Util_upv_1 (copy, index: 1)
+        Util (copy, index: 1)
     ]]
-    if not a2 then
+    if not a12 or self.stopLoop then
         return
     end
-    if not (a1.stopLoop) then
-        local v3 = a1.ctx.tool and (a1.ctx.tool:FindFirstChild("Handle"))
-        a1.stopLoop = Util_upv_1.Loop(a2, v3 or (a1.ctx.root))
-    end
+
+    local handle = self.ctx.tool and self.ctx.tool:FindFirstChild("Handle")
+    self.stopLoop = Util.Loop(a12, (handle or self.ctx.root))
 end
-function tbl_upv_1.Sync(a1)
+
+function Class.Sync(self)
     --[[
       name: Sync
       line: 55
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Hud_upv_1 (copy, index: 2)
+        Util (copy, index: 1)
+        Hud (copy, index: 2)
     ]]
-    local tool_1 = a1.ctx.tool
-    local v4 = tool_1:GetAttribute("Charges")
-    if type(v4) == "number" then
-        if a1.charges < v4 and a1.preset.readySound and a1.ctx.tool.Parent == a1.ctx.char then
-            Util_upv_1.Sound(a1.preset.readySound, a1.ctx.root)
+    local tool = self.ctx.tool
+    local charges = tool:GetAttribute("Charges")
+
+    if type(charges) == "number" then
+        if self.charges < charges
+            and self.preset.readySound
+            and self.ctx.tool.Parent == self.ctx.char
+        then
+            Util.Sound(self.preset.readySound, self.ctx.root)
         end
-        a1.charges = v4
+
+        self.charges = charges
     end
-    if a1.maxCharges > 0 then
-        Hud_upv_1.SetPips(a1.charges, a1.maxCharges)
+
+    if 0 < self.maxCharges then
+        Hud.SetPips(self.charges, self.maxCharges)
     end
-    local v5 = tool_1:GetAttribute("NextCharge")
-    if type(v5) ~= "number" or not (v5 > 0) then
-        return
-    end
-    if a1.tuning.regen then
-        local v6 = v5 - workspace:GetServerTimeNow()
-        if not (v6 > 0) then
-            return
+
+    local nextCharge = tool:GetAttribute("NextCharge")
+
+    if type(nextCharge) == "number" and 0 < nextCharge and self.tuning.regen then
+        local v18 = nextCharge - workspace:GetServerTimeNow()
+
+        if 0 < v18 then
+            Hud.SetArc(self.tuning.regen, Color3.fromRGB(150, 200, 255), self.tuning.regen - v18)
         end
-        Hud_upv_1.SetArc(a1.tuning.regen, Color3.fromRGB(150, 200, 255), a1.tuning.regen - v6)
     end
 end
-function tbl_upv_1.Equip(a1)
+
+function Class.Equip(self)
     --[[
       name: Equip
       line: 77
       upvalues:
-        Hud_upv_1 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
+        Hud (copy, index: 1)
+        Util (copy, index: 2)
     ]]
-    local ctx_1 = a1.ctx
-    Hud_upv_1.SetStyle("Throw")
-    Hud_upv_1.SetPips(0, 0)
-    a1:Sync()
-    Util_upv_1.PlayAnim(ctx_1.animator, a1.preset.hold, 1, 0.2)
-    Util_upv_1.Sound(a1.preset.equip or "Equip_Item", ctx_1.root)
-    local tool_2 = ctx_1.tool
+    local ctx = self.ctx
+    Hud.SetStyle("Throw")
+    Hud.SetPips(0, 0)
+    self:Sync()
+    Util.PlayAnim(ctx.animator, self.preset.hold, 1, 0.2)
+    Util.Sound((self.preset.equip or "Equip_Item"), ctx.root)
+    local tool = ctx.tool
     table.insert(
-        a1.conns,
-        tool_2:GetAttributeChangedSignal("Charges"):Connect(
+        self.conns,
+        tool:GetAttributeChangedSignal("Charges"):Connect(
             function()
                 --[[
                   line: 85
                   upvalues:
-                    a1 (copy, index: 1)
+                    self (copy, index: 1)
                 ]]
-                a1:Sync()
+                self:Sync()
             end
         )
     )
     table.insert(
-        a1.conns,
-        tool_2:GetAttributeChangedSignal("NextCharge"):Connect(
+        self.conns,
+        tool:GetAttributeChangedSignal("NextCharge"):Connect(
             function()
                 --[[
                   line: 88
                   upvalues:
-                    a1 (copy, index: 1)
+                    self (copy, index: 1)
                 ]]
-                a1:Sync()
+                self:Sync()
             end
         )
     )
 end
-function tbl_upv_1.Unequip(a1)
+
+function Class.Unequip(self)
     --[[
       name: Unequip
       line: 93
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Effects_upv_1 (copy, index: 2)
-        Hud_upv_1 (copy, index: 3)
+        Util (copy, index: 1)
+        Effects (copy, index: 2)
+        Hud (copy, index: 3)
     ]]
-    for _, value_1 in a1.conns do
-        value_1:Disconnect()
+    for _, conn in self.conns do
+        conn:Disconnect()
     end
-    table.clear(a1.conns)
-    if a1.winding then
-        a1:Cancel()
+
+    table.clear(self.conns)
+
+    if self.winding then
+        self:Cancel()
     end
-    a1:StopLoop()
-    if a1.preview then
-        a1.preview = false
-        Util_upv_1.SetAiming(false)
+
+    self:StopLoop()
+
+    if self.preview then
+        self.preview = false
+        Util.SetAiming(false)
     end
-    Util_upv_1.StopAnim(a1.ctx.animator, a1.preset.hold, 0.15)
-    Effects_upv_1.Trajectory(nil)
-    Hud_upv_1.SetPips(0, 0)
-    Hud_upv_1.SetArc(nil)
+
+    Util.StopAnim(self.ctx.animator, self.preset.hold, 0.15)
+    Effects.Trajectory(nil)
+    Hud.SetPips(0, 0)
+    Hud.SetArc(nil)
 end
-function tbl_upv_1.Charge(a1)
+
+function Class.Charge(self)
     --[[
       name: Charge
       line: 112
     ]]
-    if a1.winding then
-        return (math.clamp((os.clock() - a1.start) / (a1.tuning.drawTime or 0.5), 0, 1))
+    if not self.winding then
+        return 0
     end
-    return 0
+
+    return (math.clamp((os.clock() - self.start) / (self.tuning.drawTime or 0.5), 0, 1))
 end
-function tbl_upv_1.Launch(a1, a2, a3)
+
+function Class.Launch(self, a27, a28)
     --[[
       name: Launch
       line: 120
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Combat_upv_1 (copy, index: 2)
+        Util (copy, index: 1)
+        Combat (copy, index: 2)
     ]]
-    local ctx_2 = a1.ctx
-    local tuning_1 = a1.tuning
-    local Unit_1 = true
-    if a1.kind ~= "Sling" then
-        Unit_1 = ctx_2.weaponId == "bolas"
+    local v29
+    local ctx = self.ctx
+    local tuning = self.tuning
+    local v32 = if ((self.kind == "Sling") or (ctx.weaponId == "bolas")) and Util.InFirstPerson() then Util.ShotOrigin(nil) else Util.ShotOrigin(ctx.tool, "Tip")
+    local v33 = Util.AimDirection(v32)
+
+    if a28 and self.kind ~= "Bomb" then
+        v33 = Util.AssistDirection(v32, v33, true)
     end
-    local v7
-    if (Unit_1) and (Util_upv_1.InFirstPerson()) then
-        v7 = Util_upv_1.ShotOrigin(nil)
+
+    local unit = (v33 + Vector3.new(0, (self.kind ~= "Bomb"
+        and (self.kind ~= "Sling" and (self.kind ~= "Javelin" and 0.01 or 0.04) or 0.05))
+        or 0.16, 0)).Unit
+
+    if self.winds then
+        local _
+        _, v29 = Combat.DrawnShot(tuning, a27)
     else
-        v7 = Util_upv_1.ShotOrigin(ctx_2.tool, "Tip")
+        v29 = Combat.ShotSpeed(tuning)
     end
-    Unit_1 = Util_upv_1.AimDirection(v7)
-    if a3 and a1.kind ~= "Bomb" then
-        Unit_1 = Util_upv_1.AssistDirection(v7, Unit_1, true)
-    end
-    Unit_1 = (Unit_1 + Vector3.new(0, ((a1.kind == "Bomb") and 0.16) or (((a1.kind == "Sling") and 0.05) or (((a1.kind ~= "Javelin") and 0.01) or 0.04)), 0)).Unit
-    local v8
-    if a1.winds then
-        local _, v9 = Combat_upv_1.DrawnShot(tuning_1, a2)
-        v8 = v9
-    else
-        v8 = Combat_upv_1.ShotSpeed(tuning_1)
-    end
-    return v7, Unit_1, v8
+
+    return v32, unit, v29
 end
-function tbl_upv_1.HasCharge(a1)
+
+function Class.HasCharge(self)
     --[[
       name: HasCharge
       line: 144
     ]]
-    local v10 = true
-    if not (a1.maxCharges <= 0) then
-        v10 = a1.charges >= 1
-    end
-    return v10
+    return (self.maxCharges <= 0) or (1 <= self.charges)
 end
-function tbl_upv_1.NoneLeft(a1)
+
+function Class.NoneLeft(self)
     --[[
       name: NoneLeft
       line: 149
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Hud_upv_1 (copy, index: 2)
+        Util (copy, index: 1)
+        Hud (copy, index: 2)
     ]]
-    local v11 = os.clock()
-    if not (v11 - (a1.lastDry or 0) > 0.4) then
-        return
+    local timestamp = os.clock()
+
+    if 0.4 < timestamp - (self.lastDry or 0) then
+        self.lastDry = timestamp
+        Util.Sound("Dry_Fire", self.ctx.root)
+        Hud.Toast("NONE LEFT THIS ROUND", Color3.fromRGB(255, 110, 90), 1)
     end
-    a1.lastDry = v11
-    Util_upv_1.Sound("Dry_Fire", a1.ctx.root)
-    Hud_upv_1.Toast("NONE LEFT THIS ROUND", Color3.fromRGB(255, 110, 90), 1)
 end
-function tbl_upv_1.Start(a1)
+
+function Class.Start(self)
     --[[
       name: Start
       line: 158
       upvalues:
-        Util_upv_1 (copy, index: 1)
+        Util (copy, index: 1)
     ]]
-    local ctx_3 = a1.ctx
-    local v12 = os.clock()
-    if not (a1.winding) and not (v12 - a1.lastThrow < (a1.tuning.cooldown or 0.5)) and Util_upv_1.CanAct() and not (Util_upv_1.GuardRecovery(ctx_3.tool) > 0) then
-        if a1:HasCharge() then
-            a1.bufferedAt = nil
-            a1.winding = true
-            a1.start = v12
-            ctx_3.send("Charge", {kind = "Throw", on = true, tool = ctx_3.tool})
-            ctx_3.emit("Windup", {on = true, time = a1.tuning.drawTime or 0.5})
-            Util_upv_1.PlayHold(ctx_3.animator, a1.preset.windup, 1)
-            Util_upv_1.Sound(a1.preset.windupSound or "Throw_Windup", ctx_3.root)
-            a1:StartLoop(a1.preset.fuseLoop)
-            local v13 = Util_upv_1.ProbeValues()
-            local v14 = a1.tuning.drawSpeedMult or 0.8
-            local v15 = ctx_3.setSpeed("Throw", v14)
-            if v15 ~= (v13 and (v13.k * (v14 or 1))) then
-                Util_upv_1.Hooked()
-            end
-            return true
-        end
-        a1:NoneLeft()
+    local ctx = self.ctx
+    local timestamp = os.clock()
+
+    if self.winding
+        or timestamp - self.lastThrow < (self.tuning.cooldown or 0.5)
+        or not Util.CanAct()
+        or 0 < Util.GuardRecovery(ctx.tool)
+    then
         return false
     end
-    return false
+
+    if not self:HasCharge() then
+        self:NoneLeft()
+        return false
+    end
+
+    self.bufferedAt = nil
+    self.winding = true
+    self.start = timestamp
+    ctx.send("Charge", {kind = "Throw", on = true, tool = ctx.tool})
+    ctx.emit("Windup", {on = true, time = self.tuning.drawTime or 0.5})
+    Util.PlayHold(ctx.animator, self.preset.windup, 1)
+    Util.Sound((self.preset.windupSound or "Throw_Windup"), ctx.root)
+    self:StartLoop(self.preset.fuseLoop)
+    local v42 = Util.ProbeValues()
+    local drawSpeedMult = self.tuning.drawSpeedMult or 0.8
+    local v44 = ctx.setSpeed("Throw", drawSpeedMult)
+    local v45 = v42 and v42.k * (drawSpeedMult or 1)
+
+    if v44 ~= v45 then
+        Util.Hooked()
+    end
+
+    return true
 end
-function tbl_upv_1.Cancel(a1)
+
+function Class.Cancel(self)
     --[[
       name: Cancel
       line: 186
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Hud_upv_1 (copy, index: 2)
-        Effects_upv_1 (copy, index: 3)
+        Util (copy, index: 1)
+        Hud (copy, index: 2)
+        Effects (copy, index: 3)
     ]]
-    local ctx_4 = a1.ctx
-    a1.winding = false
-    ctx_4.send("Charge", {kind = "Throw", on = false, tool = ctx_4.tool})
-    ctx_4.emit("Windup", {on = false})
-    Util_upv_1.StopAnim(ctx_4.animator, a1.preset.windup, 0.1)
-    ctx_4.setSpeed("Throw", nil)
-    Hud_upv_1.SetCharge(0)
-    Effects_upv_1.Trajectory(nil)
-    a1:StopLoop()
+    local ctx = self.ctx
+    self.winding = false
+    ctx.send("Charge", {kind = "Throw", on = false, tool = ctx.tool})
+    ctx.emit("Windup", {on = false})
+    Util.StopAnim(ctx.animator, self.preset.windup, 0.1)
+    ctx.setSpeed("Throw", nil)
+    Hud.SetCharge(0)
+    Effects.Trajectory(nil)
+    self:StopLoop()
 end
-function tbl_upv_1.Release(a1, a2)
+
+function Class.Release(self, charge)
     --[[
       name: Release
       line: 198
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Combat_upv_1 (copy, index: 2)
-        Effects_upv_1 (copy, index: 3)
-        Hud_upv_1 (copy, index: 4)
+        Util (copy, index: 1)
+        Combat (copy, index: 2)
+        Effects (copy, index: 3)
+        Hud (copy, index: 4)
     ]]
-    local ctx_5 = a1.ctx
-    local tuning_2 = a1.tuning
-    local v16, v17, v18 = a1:Launch(a2, true)
-    a1.lastThrow = os.clock()
-    ctx_5.emit("Throw", {charge = a2})
-    Util_upv_1.FaceCamera()
-    if a1.preset.windup then
-        Util_upv_1.StopAnim(ctx_5.animator, a1.preset.windup, 0.04)
+    local ctx = self.ctx
+    local tuning = self.tuning
+    local origin, dir, v54 = self:Launch(charge, true)
+    self.lastThrow = os.clock()
+    ctx.emit("Throw", {charge = charge})
+    Util.FaceCamera()
+
+    if self.preset.windup then
+        Util.StopAnim(ctx.animator, self.preset.windup, 0.04)
     end
-    Util_upv_1.PlayAnim(ctx_5.animator, a1.preset.throw, a1.preset.throwAnimSpeed or 1.3, 0.03)
-    local v19 = ctx_5.nextId()
-    local v20 = nil
-    if not tuning_2.splash and not tuning_2.smoke and not tuning_2.caltrops then
-        local v21
-        if a1.winds then
-            v21 = Combat_upv_1.DrawnShot(tuning_2, a2)
-        else
-            v21 = tuning_2.damage
-        end
-        local tbl_2 = {}
-        tbl_2.damage = v21 * Util_upv_1.ItemBonus(ctx_5.weaponId)
-        tbl_2.tuning = tuning_2
-        v20 = tbl_2
+
+    Util.PlayAnim(ctx.animator, self.preset.throw, (self.preset.throwAnimSpeed or 1.3), 0.03)
+    local id = ctx.nextId()
+    local v56 = nil
+
+    if not tuning.splash and not tuning.smoke and not tuning.caltrops then
+        local v57 = if self.winds then Combat.DrawnShot(tuning, charge) else tuning.damage
+        v56 = {damage = v57 * Util.ItemBonus(ctx.weaponId), tuning = tuning}
     end
-    if type(tuning_2.returns) ~= "table" then
-        Effects_upv_1.Projectile(Effects_upv_1.MyKey(v19), tuning_2.projectile or "Javelin", v16, v17 * v18, tuning_2.gravity or 60, ctx_5.char, v20)
+
+    if type(tuning.returns) ~= "table" then
+        Effects.Projectile(Effects.MyKey(id), (tuning.projectile or "Javelin"), origin, dir * v54, (tuning.gravity
+            or 60), ctx.char, v56)
     else
-        Effects_upv_1.Chakram(Effects_upv_1.MyKey(v19), v16, v17, v18, tuning_2.returns.range or 45, tuning_2.returns.catch or 4.5, ctx_5.char)
+        Effects.Chakram(Effects.MyKey(id), origin, dir, v54, (tuning.returns.range or 45), (tuning.returns.catch
+            or 4.5), ctx.char)
     end
-    ctx_5.send("Shoot", {tool = ctx_5.tool, origin = v16, dir = v17, id = v19, charge = a2})
-    Util_upv_1.Sound(a1.preset.throwSound or "Throw", ctx_5.root)
-    if a1.kind == "Bomb" then
-        a1:StopLoop()
+
+    ctx.send("Shoot", {tool = ctx.tool, origin = origin, dir = dir, id = id, charge = charge})
+    Util.Sound((self.preset.throwSound or "Throw"), ctx.root)
+
+    if self.kind == "Bomb" then
+        self:StopLoop()
     end
-    Util_upv_1.Recoil(a1.preset.recoil or (((a1.kind ~= "Javelin") and 1) or 2), 0)
-    if a1.preset.shake then
-        Util_upv_1.Shake(a1.preset.shake, 0.16)
+
+    local recoil = Util.Recoil
+    local v59 = self.preset.recoil or self.kind ~= "Javelin" and 1 or 2
+    recoil(v59, 0)
+
+    if self.preset.shake then
+        Util.Shake(self.preset.shake, 0.16)
     end
-    Hud_upv_1.Kick(((a1.preset.recoil) and 7) or 4)
-    if a1.maxCharges > 0 then
-        a1.charges = math.max(0, a1.charges - 1)
-        Hud_upv_1.SetPips(a1.charges, a1.maxCharges)
+
+    local kick = Hud.Kick
+    local v61 = self.preset.recoil and 7 or 4
+    kick(v61)
+
+    if 0 < self.maxCharges then
+        self.charges = math.max(0, self.charges - 1)
+        Hud.SetPips(self.charges, self.maxCharges)
     end
-    if a1.kind ~= "Bomb" then
-        return
+
+    if self.kind == "Bomb" then
+        Hud.SetArc((tuning.cooldown or 0.6), Color3.fromRGB(228, 232, 240))
     end
-    Hud_upv_1.SetArc(tuning_2.cooldown or 0.6, Color3.fromRGB(228, 232, 240))
 end
-function tbl_upv_1.Quick(a1)
+
+function Class.Quick(self)
     --[[
       name: Quick
       line: 241
       upvalues:
-        Util_upv_1 (copy, index: 1)
+        Util (copy, index: 1)
     ]]
-    local v22 = os.clock()
-    if not (v22 - a1.lastThrow < (a1.tuning.fireInterval or (a1.tuning.cooldown or 0.4))) and not (Util_upv_1.GuardRecovery(a1.ctx.tool) > 0) then
-        if Util_upv_1.CanAct() then
-            if a1:HasCharge() then
-                a1.bufferedAt = nil
-                a1:Release(1)
-                return "fired"
-            end
-            a1.lastThrow = v22
-            a1:NoneLeft()
-            return "empty"
-        end
+    local timestamp = os.clock()
+    local v64 = self.tuning.fireInterval or self.tuning.cooldown or 0.4
+
+    if timestamp - self.lastThrow < v64 or 0 < Util.GuardRecovery(self.ctx.tool) then
+        return "cooldown"
+    end
+    if not Util.CanAct() then
         return "frozen"
     end
-    return "cooldown"
+
+    if not self:HasCharge() then
+        self.lastThrow = timestamp
+        self:NoneLeft()
+
+        return "empty"
+    end
+
+    self.bufferedAt = nil
+    self:Release(1)
+
+    return "fired"
 end
-function tbl_upv_1.Throw(a1)
+
+function Class.Throw(self)
     --[[
       name: Throw
       line: 260
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Hud_upv_1 (copy, index: 2)
-        Effects_upv_1 (copy, index: 3)
+        Util (copy, index: 1)
+        Hud (copy, index: 2)
+        Effects (copy, index: 3)
     ]]
-    if not a1.winding then
+    if not self.winding then
         return
     end
-    if Util_upv_1.CanAct() then
-        local v23 = a1:Charge()
-        local minCharge_1 = a1.tuning.minCharge
-        if type(minCharge_1) == "number" and v23 < minCharge_1 then
-            a1:Cancel()
-            local v24 = os.clock()
-            if v24 - (a1.lastShort or 0) > 1.5 then
-                a1.lastShort = v24
-                Hud_upv_1.Toast("HOLD TO WIND UP", Color3.fromRGB(226, 196, 140), 1)
-            end
-            return
+
+    if not Util.CanAct() then
+        self:Cancel()
+        return
+    end
+
+    local v66 = self:Charge()
+    local minCharge = self.tuning.minCharge
+
+    if type(minCharge) == "number" and v66 < minCharge then
+        self:Cancel()
+        local timestamp = os.clock()
+
+        if 1.5 < timestamp - (self.lastShort or 0) then
+            self.lastShort = timestamp
+            Hud.Toast("HOLD TO WIND UP", Color3.fromRGB(226, 196, 140), 1)
         end
-        a1.winding = false
-        a1.ctx.setSpeed("Throw", nil)
-        Hud_upv_1.SetCharge(0)
-        Effects_upv_1.Trajectory(nil)
-        a1:Release(v23)
     else
-        a1:Cancel()
+        self.winding = false
+        self.ctx.setSpeed("Throw", nil)
+        Hud.SetCharge(0)
+        Effects.Trajectory(nil)
+        self:Release(v66)
     end
 end
-function tbl_upv_1.Input(a1, a2, a3)
+
+function Class.Input(self, a70, a71)
     --[[
       name: Input
       line: 287
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Effects_upv_1 (copy, index: 2)
+        Util (copy, index: 1)
+        Effects (copy, index: 2)
     ]]
-    if a2 == "Primary" then
-        a1.m1Down = a3
-        if a1.winds then
-            if a3 then
-                if (a1:Start()) or (a1.winding) then
-                    return
+    if a70 == "Primary" then
+        self.m1Down = a71
+
+        if not self.winds then
+            if a71 and self:Quick() == "cooldown" then
+                self.bufferedAt = os.clock()
+            end
+
+            if self.kind == "Sling" then
+                if a71 then
+                    self:StartLoop(self.preset.whirlLoop)
+                else
+                    self:StopLoop()
                 end
-                a1.bufferedAt = os.clock()
-            else
-                a1:Throw()
             end
-        else
-            if a3 and a1:Quick() == "cooldown" then
-                a1.bufferedAt = os.clock()
-            end
-            if a1.kind == "Sling" then
-                if a3 then
-                    a1:StartLoop(a1.preset.whirlLoop)
-                    return
-                end
-                a1:StopLoop()
-            end
+
+            return
         end
-    elseif a2 == "Secondary" then
-        if a1.winds then
-            if not a3 or not a1.winding then
-                return
+
+        if not a71 then
+            self:Throw()
+            return
+        end
+
+        if not self:Start() and not self.winding then
+            self.bufferedAt = os.clock()
+        end
+    elseif a70 == "Secondary" then
+        if self.winds then
+            if a71 and self.winding then
+                self:Cancel()
             end
-            a1:Cancel()
         else
-            a1.preview = a3
-            Util_upv_1.SetAiming(a3, ((a1.kind ~= "Sling") and 55) or 58)
-            a1.ctx.setSpeed("Aim", (a3 and 0.85) or nil)
-            if (a3) then
-                return
+            self.preview = a71
+            local setAiming = Util.SetAiming
+            local v73 = self.kind ~= "Sling" and 55 or 58
+            setAiming(a71, v73)
+            local setSpeed = self.ctx.setSpeed
+            local v75 = a71 and 0.85 or nil
+            setSpeed("Aim", v75)
+
+            if not a71 then
+                Effects.Trajectory(nil)
             end
-            Effects_upv_1.Trajectory(nil)
         end
     end
 end
-function tbl_upv_1.Update(a1, a2)
+
+function Class.Update(self, a77)
     --[[
       name: Update
       line: 327
       upvalues:
-        Hud_upv_1 (copy, index: 1)
-        Effects_upv_1 (copy, index: 2)
+        Hud (copy, index: 1)
+        Effects (copy, index: 2)
     ]]
-    if a1.kind == "Sling" and a1.m1Down and not (a1.bufferedAt) then
-        a1:Quick()
+    if self.kind == "Sling" and self.m1Down and not self.bufferedAt then
+        self:Quick()
     end
-    if a1.bufferedAt then
-        if a1.winds then
-            if not (a1.winding) then
-                if a1.m1Down or not (os.clock() - a1.bufferedAt > 0.15) then
-                    if a1:Start() and not (a1.m1Down) then
-                        a1:Throw()
-                    end
-                else
-                    a1.bufferedAt = nil
+
+    if self.bufferedAt then
+        if self.winds then
+            if not self.winding then
+                if not self.m1Down and 0.15 < os.clock() - self.bufferedAt then
+                    self.bufferedAt = nil
+                elseif self:Start() and not self.m1Down then
+                    self:Throw()
                 end
             end
-        elseif os.clock() - a1.bufferedAt > 0.15 or a1:Quick() ~= "cooldown" then
-            a1.bufferedAt = nil
-        end
-    end
-    if a1.winding then
-        local tuning_3 = a1:Charge()
-        Hud_upv_1.SetCharge(tuning_3)
-        local v25, v26, v27 = a1:Launch(tuning_3)
-        tuning_3 = a1.tuning
-        local v28 = ((tuning_3.splash) and (tuning_3.splash.radius * 2)) or (((tuning_3.smoke) and (tuning_3.smoke.radius * 1.2)) or (((tuning_3.caltrops) and (tuning_3.caltrops.radius * 2)) or 3))
-        local v29
-        if tuning_3.smoke then
-            v29 = a1.preset.arcSmoke
+        elseif not (0.15 < os.clock() - self.bufferedAt) then
+            if self:Quick() ~= "cooldown" then
+                self.bufferedAt = nil
+            end
         else
-            v29 = a1.preset.arc
+            self.bufferedAt = nil
         end
-        Effects_upv_1.Trajectory(v25, v26 * v27, tuning_3.gravity or 60, v29, v28)
-    elseif a1.preview and a1.kind == "Sling" then
-        local v30, v31, v32 = a1:Launch(1)
-        Effects_upv_1.Trajectory(v30, v31 * v32, a1.tuning.gravity or 80, Color3.fromRGB(215, 195, 160), 2)
     end
+
+    if not self.winding then
+        if self.preview and self.kind == "Sling" then
+            local v78, v79, v80 = self:Launch(1)
+            Effects.Trajectory(v78, v79 * v80, (self.tuning.gravity or 80), Color3.fromRGB(215, 195, 160), 2)
+        end
+
+        return
+    end
+
+    local v81
+    local v82 = self:Charge()
+    Hud.SetCharge(v82)
+    local v83, v84, v85 = self:Launch(v82)
+    local tuning = self.tuning
+
+    if tuning.splash then
+        v81 = tuning.splash.radius * 2
+    elseif tuning.smoke then
+        v81 = tuning.smoke.radius * 1.2
+    else
+        v81 = not tuning.caltrops and 3 or tuning.caltrops.radius * 2
+    end
+
+    local v87 = if tuning.smoke then self.preset.arcSmoke else self.preset.arc
+    Effects.Trajectory(v83, v84 * v85, (tuning.gravity or 60), v87, v81)
 end
-function tbl_upv_1.Interrupt(a1)
+
+function Class.Interrupt(self)
     --[[
       name: Interrupt
       line: 363
     ]]
-    if not a1.winding then
-        return
+    if self.winding then
+        self:Cancel()
     end
-    a1:Cancel()
 end
-return tbl_upv_1
+
+return Class

@@ -1,589 +1,685 @@
-local Players_upv_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local u1 = RunService_upv_1:IsStudio()
-local Simulation_upv_1 = require(script.Parent.Parent:WaitForChild("Simulation"))
-local FrameClock_1 = require(script.Parent:WaitForChild("FrameClock"))
-local BodyProxy_upv_1 = require(script.Parent:WaitForChild("BodyProxy"))
-local tbl_1 = {}
-local u2 = Simulation_upv_1.CORRECTION_MAX or 20
-local u3 = Vector3.new(0, 0, 0)
-local u4 = Vector3.new(0, 0, 0)
-local u5 = Vector3.new(0, 0, 0)
-local u6 = 0
-local u7 = nil
-local u8 = nil
-local u9 = nil
-local u10 = 0
-local u11 = 0
-local tbl_upv_2 = {}
-local tbl_upv_3 = {}
-local u12 = FrameClock_1.new()
-local u13 = nil
-local u14 = nil
-local u15 = nil
-local u16 = nil
-local u17 = 0
-local u18 = false
-local u19 = 0
-local u20 = 0
-local u21 = 1
-local u22 = 0
-local u23 = false
-local u24 = true
-local CFrame_upv_1 = nil
-local u25 = nil
-local u26 = nil
-local u27 = nil
-local function r4(a1)
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local isStudio = runService:IsStudio()
+local Simulation = require(script.Parent.Parent:WaitForChild("Simulation"))
+local FrameClock = require(script.Parent:WaitForChild("FrameClock"))
+local BodyProxy = require(script.Parent:WaitForChild("BodyProxy"))
+local v7 = {}
+local correctionMax = Simulation.CORRECTION_MAX or 20
+local v9 = Vector3.new(0, 0, 0)
+local v10 = Vector3.new(0, 0, 0)
+local v11 = Vector3.new(0, 0, 0)
+local timestamp = 0
+local v13 = nil
+local sTp = nil
+local position = nil
+local count = 0
+local maxMagnitude = 0
+local parts = {}
+local v19 = {}
+local frameClock = FrameClock.new()
+local v21 = nil
+local v22 = nil
+local rotation = nil
+local position2 = nil
+local v25 = 0
+local v26 = false
+local count2 = 0
+local total = 0
+local interpAlphaMin = 1
+local count3 = 0
+local success = false
+local smoothingBody = true
+local cFrame = nil
+local v34 = nil
+local v35 = nil
+local v36 = nil
+
+local function r4(a38)
     --[[
       name: r4
       line: 89
     ]]
-    return math.floor((a1 * 10000) + 0.5) / 10000
+    return math.floor((a38 * 10000) + 0.5) / 10000
 end
-local function traceFrame(a1, a2, a3, a4, a5, a6, a7)
+
+local function traceFrame(a40: number, a41, a42: number, a43: boolean, a44, a45, a46: boolean)
     --[[
       name: traceFrame
       line: 93
       upvalues:
-        u27 (ref, index: 1)
-        u3 (ref, index: 2)
-        u5 (ref, index: 3)
+        v36 (ref, index: 1)
+        v9 (ref, index: 2)
+        v11 (ref, index: 3)
     ]]
-    local v1 = u27
-    if not v1 then
+    local v47 = v36
+
+    if not v47 or 20000 <= #v47 then
         return
     end
-    if not (#v1 >= 20000) then
-        local tbl_4 = {}
-        local v2 = math.floor((os.clock() * 10000) + 0.5) / 10000
-        local v3 = math.floor((a1 * 10000) + 0.5) / 10000
-        local v4 = math.floor((a2 * 10000) + 0.5) / 10000
-        local v5 = (a4 and 1) or 0
-        local v6 = math.floor((a5.X * 10000) + 0.5) / 10000
-        local v7 = math.floor((a5.Y * 10000) + 0.5) / 10000
-        local v8 = math.floor((a5.Z * 10000) + 0.5) / 10000
-        local v9 = math.floor(((u3.X + u5.X) * 10000) + 0.5) / 10000
-        local v10 = math.floor(((u3.Y + u5.Y) * 10000) + 0.5) / 10000
-        local v11 = math.floor(((u3.Z + u5.Z) * 10000) + 0.5) / 10000
-        local v12 = math.floor((a6.X * 10000) + 0.5) / 10000
-        local v13 = math.floor((a6.Y * 10000) + 0.5) / 10000
-        local v14 = math.floor((a6.Z * 10000) + 0.5) / 10000
-        tbl_4[1], tbl_4[2], tbl_4[3], tbl_4[4], tbl_4[5], tbl_4[6], tbl_4[7], tbl_4[8], tbl_4[9], tbl_4[10], tbl_4[11], tbl_4[12], tbl_4[13], tbl_4[14], tbl_4[15] = v2, v3, v4, a3, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, (a7 and 1) or 0
-        table.insert(u27, tbl_4)
+
+    local v48
+    local v49
+    local v50 = math.floor((os.clock() * 10000) + 0.5) / 10000
+    local v51 = math.floor((a40 * 10000) + 0.5) / 10000
+    local v52 = math.floor((a41 * 10000) + 0.5) / 10000
+
+    if a43 then
+        v48 = 1
+    else
+        v48 = 0
     end
+
+    local v53 = math.floor((a44.X * 10000) + 0.5) / 10000
+    local v54 = math.floor((a44.Y * 10000) + 0.5) / 10000
+    local v55 = math.floor((a44.Z * 10000) + 0.5) / 10000
+    local v56 = math.floor(((v9.X + v11.X) * 10000) + 0.5) / 10000
+    local v57 = math.floor(((v9.Y + v11.Y) * 10000) + 0.5) / 10000
+    local v58 = math.floor(((v9.Z + v11.Z) * 10000) + 0.5) / 10000
+    local v59 = math.floor((a45.X * 10000) + 0.5) / 10000
+    local v60 = math.floor((a45.Y * 10000) + 0.5) / 10000
+    local v61 = math.floor((a45.Z * 10000) + 0.5) / 10000
+
+    if a46 then
+        v49 = 1
+    else
+        v49 = 0
+    end
+
+    table.insert(v47, {v50, v51, v52, a42, v48, v53, v54, v55, v56, v57, v58, v59, v60, v61, v49})
 end
-local function onStep(a1)
+
+local function onStep(a63)
     --[[
       name: onStep
       line: 108
       upvalues:
-        RunService_upv_1 (copy, index: 1)
-        u18 (ref,  index: 2)
-        u17 (ref,  index: 3)
-        u12 (copy, index: 4)
-        u13 (ref,  index: 5)
-        u15 (ref,  index: 6)
-        u16 (ref,  index: 7)
-        u14 (ref,  index: 8)
+        runService (copy, index: 1)
+        v26 (ref,  index: 2)
+        v25 (ref,  index: 3)
+        frameClock (copy, index: 4)
+        v21 (ref,  index: 5)
+        rotation (ref,  index: 6)
+        position2 (ref,  index: 7)
+        v22 (ref,  index: 8)
     ]]
-    if RunService_upv_1:IsResimulating() then
-        u18 = true
+    if runService:IsResimulating() then
+        v26 = true
     else
-        u17 = u17 + 1
-        u12:Step()
+        v25 += 1
+        frameClock:Step()
     end
-    if u13 then
-        local CFrame_2 = u13.CFrame
-        u15 = CFrame_2.Rotation
-        u16 = CFrame_2.Position
-        u14 = u13
-    else
-        u15 = nil
-        u16 = nil
-        u14 = nil
+
+    if const v64 = v21 then
+        local cFrame = v64.CFrame
+        local rotation2 = cFrame.Rotation
+        local position = cFrame.Position
+        rotation = rotation2
+        position2 = position
+        v22 = v64
+
+        return
     end
+
+    rotation = nil
+    position2 = nil
+    v22 = nil
 end
+
 local function localRoot()
     --[[
       name: localRoot
       line: 124
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    local LocalPlayer_1 = Players_upv_1.LocalPlayer
-    local v15 = LocalPlayer_1 and (LocalPlayer_1.Character)
-    LocalPlayer_1 = v15 and (v15:FindFirstChild("HumanoidRootPart"))
-    if LocalPlayer_1 and LocalPlayer_1:IsA("BasePart") and LocalPlayer_1:IsDescendantOf(workspace) then
-        return LocalPlayer_1
+    local v69 = players.LocalPlayer
+    v69 = v69 and v69.Character
+    local humanoidRootPart = v69 and v69:FindFirstChild("HumanoidRootPart")
+
+    if humanoidRootPart and humanoidRootPart:IsA("BasePart") and v69:IsDescendantOf(workspace) then
+        return humanoidRootPart
     end
+
     return nil
 end
-local function noteCorrection(a1, a2, a3)
+
+local function noteCorrection(magnitude, timestamp: number, a74)
     --[[
       name: noteCorrection
       line: 134
       upvalues:
-        u10 (ref,  index: 1)
-        u11 (ref,  index: 2)
-        tbl_upv_3 (copy, index: 3)
-        u1 (copy, index: 4)
-        tbl_upv_2 (copy, index: 5)
+        count (ref,  index: 1)
+        maxMagnitude (ref,  index: 2)
+        v19 (copy, index: 3)
+        isStudio (copy, index: 4)
+        parts (copy, index: 5)
     ]]
-    u10 = u10 + 1
-    if u11 < a1 then
-        u11 = a1
+    count += 1
+
+    if maxMagnitude < magnitude then
+        maxMagnitude = magnitude
     end
-    table.insert(tbl_upv_3, {a2, a3.X, a3.Y, a3.Z})
-    if #tbl_upv_3 > 64 then
-        table.remove(tbl_upv_3, 1)
+
+    table.insert(v19, {timestamp, a74.X, a74.Y, a74.Z})
+
+    if 64 < #v19 then
+        table.remove(v19, 1)
     end
-    if not u1 then
-        return
+
+    if isStudio then
+        table.insert(parts, string.format("%.2f:%.2f", timestamp, magnitude))
+
+        if 40 < #parts then
+            table.remove(parts, 1)
+        end
     end
-    table.insert(tbl_upv_2, string.format("%.2f:%.2f", a2, a1))
-    if not (#tbl_upv_2 > 40) then
-        return
-    end
-    table.remove(tbl_upv_2, 1)
 end
+
 local function clearFrame()
     --[[
       name: clearFrame
       line: 151
       upvalues:
-        CFrame_upv_1 (ref, index: 1)
-        u25 (ref, index: 2)
-        u26 (ref, index: 3)
+        cFrame (ref, index: 1)
+        v34 (ref, index: 2)
+        v35 (ref, index: 3)
     ]]
-    CFrame_upv_1 = nil
-    u25 = nil
-    u26 = nil
+    cFrame = nil
+    v34 = nil
+    v35 = nil
 end
-local function step(a1)
+
+local function step(deltaTime: number)
     --[[
       name: step
       line: 156
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        u1 (copy, index: 2)
-        Simulation_upv_1 (copy, index: 4)
-        u17 (ref,  index: 5)
-        u18 (ref,  index: 6)
-        u23 (ref,  index: 7)
-        u12 (copy, index: 8)
-        u7 (ref,  index: 9)
-        u9 (ref,  index: 10)
-        u3 (ref,  index: 11)
-        u4 (ref,  index: 12)
-        u5 (ref,  index: 13)
-        CFrame_upv_1 (ref,  index: 14)
-        u25 (ref,  index: 15)
-        u26 (ref,  index: 16)
-        BodyProxy_upv_1 (copy, index: 17)
-        u15 (ref,  index: 18)
-        u16 (ref,  index: 19)
-        u8 (ref,  index: 20)
-        u22 (ref,  index: 21)
-        u2 (copy, index: 22)
-        u6 (ref,  index: 23)
+        players (copy, index: 1)
+        isStudio (copy, index: 2)
+        v21 (ref,  index: 3)
+        Simulation (copy, index: 4)
+        v25 (ref,  index: 5)
+        v26 (ref,  index: 6)
+        success (ref,  index: 7)
+        frameClock (copy, index: 8)
+        v13 (ref,  index: 9)
+        position (ref,  index: 10)
+        v9 (ref,  index: 11)
+        v10 (ref,  index: 12)
+        v11 (ref,  index: 13)
+        cFrame (ref,  index: 14)
+        v34 (ref,  index: 15)
+        v35 (ref,  index: 16)
+        BodyProxy (copy, index: 17)
+        rotation (ref,  index: 18)
+        position2 (ref,  index: 19)
+        sTp (ref,  index: 20)
+        count3 (ref,  index: 21)
+        correctionMax (copy, index: 22)
+        timestamp (ref,  index: 23)
         noteCorrection (copy, index: 24)
-        u24 (ref,  index: 25)
-        u14 (ref,  index: 26)
-        u19 (ref,  index: 27)
-        u20 (ref,  index: 28)
-        u21 (ref,  index: 29)
-        u27 (ref,  index: 30)
+        smoothingBody (ref,  index: 25)
+        v22 (ref,  index: 26)
+        count2 (ref,  index: 27)
+        total (ref,  index: 28)
+        interpAlphaMin (ref,  index: 29)
+        v36 (ref,  index: 30)
         traceFrame (copy, index: 31)
     ]]
-    local LocalPlayer_2 = Players_upv_1.LocalPlayer
-    local v16 = LocalPlayer_2 and (LocalPlayer_2.Character)
-    LocalPlayer_2 = v16 and (v16:FindFirstChild("HumanoidRootPart"))
-    local v17
-    if LocalPlayer_2 and LocalPlayer_2:IsA("BasePart") and LocalPlayer_2:IsDescendantOf(workspace) then
-        v17 = LocalPlayer_2
+    local alpha
+    local v79 = players.LocalPlayer
+    v79 = v79 and v79.Character
+    local humanoidRootPart = v79 and v79:FindFirstChild("HumanoidRootPart")
+    local v81 = if humanoidRootPart and humanoidRootPart:IsA("BasePart") and v79:IsDescendantOf(workspace) then humanoidRootPart else nil
+    local camSmoothingOff = isStudio and workspace:GetAttribute("CamSmoothingOff") == true
+    v21 = v81
+    local v83 = Simulation.TakeCorrection()
+    local v84 = v25
+    local v85 = v26
+    v25 = 0
+    v26 = false
+
+    if success then
+        local timestamp2 = os.clock()
+        local smoothingInterp = isStudio and workspace:GetAttribute("SmoothingInterp") == true
+        alpha = frameClock:Alpha(timestamp2, smoothingInterp)
     else
-        v17 = nil
+        alpha = 1
     end
-    local v18 = u1 and (workspace:GetAttribute("CamSmoothingOff") == true)
-    _ = v17
-    local v19 = Simulation_upv_1.TakeCorrection()
-    u17 = 0
-    u18 = false
-    local v20
-    if u23 then
-        local v21 = os.clock()
-        v20 = u12:Alpha(v21, u1)
-    else
-        v20 = 1
-    end
-    if v17 then
-        local v22 = nil
-        if not (v18) then
-            v22 = v17.CFrame
-            if v22.Position == v22.Position and v22.LookVector == v22.LookVector then
-                local v23 = v17:GetAttribute("STp")
-                local v24 = false
-                if v17 == u7 then
-                    if v23 == u8 then
-                        v24 = true
-                    else
-                        v24 = false
-                    end
-                end
-                local v25 = false
-                if v24 and u18 and u17 == 0 then
-                    local v26 = nil
-                    if u9 then
-                        v26 = v22.Position - u9
-                        if v26.Magnitude > 0.02 then
-                            v19 = v19 + v26
-                            u22 = u22 + 1
-                            v25 = true
-                        end
-                        Simulation_upv_1.RebaseCorrection()
-                    end
-                end
-                local v27 = os.clock()
-                if v24 then
-                    local v28 = nil
-                    if v19 ~= Vector3.new(0, 0, 0) then
-                        v28 = v19.Magnitude
-                        if u2 < v28 then
-                            u3 = Vector3.new(0, 0, 0)
-                            u4 = Vector3.new(0, 0, 0)
-                            u5 = Vector3.new(0, 0, 0)
-                        else
-                            if u5 == Vector3.new(0, 0, 0) then
-                                u6 = v27
-                            end
-                            u5 = u5 - v19
-                            noteCorrection(v28, v27, v19)
-                        end
-                    end
-                else
-                    u3 = Vector3.new(0, 0, 0)
-                    u4 = Vector3.new(0, 0, 0)
-                    u5 = Vector3.new(0, 0, 0)
-                    u15 = nil
-                    u16 = nil
-                    u12:Reset()
-                end
-                if u5 ~= Vector3.new(0, 0, 0) then
-                    local v29 = nil
-                    if v27 - u6 >= 0.05 then
-                        u3 = u3 + u5
-                        u5 = Vector3.new(0, 0, 0)
-                        v29 = u3.Magnitude
-                        if v29 > 1e-04 then
-                            local v30 = u4:Dot(u3) / v29
-                            if v30 > 0 then
-                                u4 = u4 - (u3 * (v30 / v29))
-                            end
-                        end
-                    end
-                end
-                u7 = v17
-                u8 = v23
-                u9 = v22.Position
-                local v31 = math.min(a1, 0.1)
-                if u5 == Vector3.new(0, 0, 0) or u5:Dot(u3) >= 0 then
-                    local v32 = math.exp(v31 * -16)
-                    local v33 = u4 + u3 * 16
-                    u3 = (u3 + (v33 * v31)) * v32
-                    u4 = (u4 - ((v33 * 16) * v31)) * v32
-                    if u3.Magnitude < 0.003 and u4.Magnitude < 0.05 then
-                        u3 = Vector3.new(0, 0, 0)
-                        u4 = Vector3.new(0, 0, 0)
-                    end
-                end
-                local v34 = u16
-                local v35 = u15
-                local v36
-                local v39 = nil
-                if u24 and v20 < 1 and v24 and v34 and v35 then
-                    if u14 ~= v17 then
-                        v36 = v22
-                    else
-                        v39 = v22.Position - v34
-                        if v39.Magnitude < 6 then
-                            v36 = CFrame.new(v22.Position - v39 * (1 - v20)) * v35:Lerp(v22.Rotation, v20)
-                            u19 = u19 + 1
-                            u20 = u20 + v20
-                            u21 = math.min(u21, v20)
-                        else
-                            v36 = v22
-                        end
-                    end
-                else
-                    v36 = v22
-                end
-                local v38 = u3 + u5
-                if u1 then
-                    v39 = workspace:GetAttribute("SmoothingForceOffset")
-                    if typeof(v39) == "Vector3" then
-                        v38 = v38 + v39
-                    end
-                end
-                if u27 then
-                    traceFrame(v31, v20, u17, u18, v19, v22.Position - v36.Position, v25)
-                end
-                local v40 = v36.Position + v38
-                if v40 ~= v40 or v36.LookVector ~= v36.LookVector then
-                    u3 = Vector3.new(0, 0, 0)
-                    u4 = Vector3.new(0, 0, 0)
-                    u5 = Vector3.new(0, 0, 0)
-                    u15 = nil
-                    u16 = nil
-                    u12:Reset()
-                    v36, v38 = v22, Vector3.new(0, 0, 0)
-                end
-                CFrame_upv_1 = v22
-                u26 = v36 + v38
-                local v41
-                if u24 then
-                    v41 = u26
-                else
-                    v41 = nil
-                end
-                u25 = v41
-                BodyProxy_upv_1.Render(v17, u25)
-                if not (BodyProxy_upv_1.IsShown()) then
-                    u25 = nil
-                    u26 = v22 + v38
-                end
-                return
-            end
-            u7 = nil
-            u9 = nil
-            u3 = Vector3.new(0, 0, 0)
-            u4 = Vector3.new(0, 0, 0)
-            u5 = Vector3.new(0, 0, 0)
-            u15 = nil
-            u16 = nil
-            CFrame_upv_1 = nil
-            u25 = nil
-            u26 = nil
-            BodyProxy_upv_1.Render(nil, nil)
+
+    if v81 and not camSmoothingOff then
+        local cFrame2 = v81.CFrame
+
+        if cFrame2.Position ~= cFrame2.Position or cFrame2.LookVector ~= cFrame2.LookVector then
+            v13 = nil
+            position = nil
+            v9 = Vector3.new(0, 0, 0)
+            v10 = Vector3.new(0, 0, 0)
+            v11 = Vector3.new(0, 0, 0)
+            rotation = nil
+            position2 = nil
+            cFrame = nil
+            v34 = nil
+            v35 = nil
+            BodyProxy.Render(nil, nil)
+
             return
         end
+
+        local sTp2 = v81:GetAttribute("STp")
+        local v90 = v81 == v13 and sTp2 == sTp
+        local v91 = false
+
+        if v90 and v85 and v84 == 0 and position then
+            local v92 = cFrame2.Position - position
+
+            if 0.02 < v92.Magnitude then
+                v83 += v92
+                count3 += 1
+                v91 = true
+            end
+
+            Simulation.RebaseCorrection()
+        end
+
+        local smoothingForceOffset, magnitude
+        local v95
+        local v96, v97, v98 = false, false, false
+        local timestamp3 = os.clock()
+
+        if v90 then
+            if v83 ~= Vector3.new(0, 0, 0) then
+                magnitude = v83.Magnitude
+
+                if not (correctionMax < magnitude) then
+                    if v11 == Vector3.new(0, 0, 0) then
+                        timestamp = timestamp3
+                    end
+
+                    v96 = true
+                else
+                    v9 = Vector3.new(0, 0, 0)
+                    v10 = Vector3.new(0, 0, 0)
+                    v11 = Vector3.new(0, 0, 0)
+                end
+            end
+        else
+            v9 = Vector3.new(0, 0, 0)
+            v10 = Vector3.new(0, 0, 0)
+            v11 = Vector3.new(0, 0, 0)
+            rotation = nil
+            position2 = nil
+            frameClock:Reset()
+        end
+
+        if v96 then
+            v11 -= v83
+            noteCorrection(magnitude, timestamp3, v83)
+        end
+
+        if v11 ~= Vector3.new(0, 0, 0) and 0.05 <= timestamp3 - timestamp then
+            v9 += v11
+            v11 = Vector3.new(0, 0, 0)
+            local magnitude2 = v9.Magnitude
+
+            if 1e-04 < magnitude2 then
+                local v101 = v10:Dot(v9) / magnitude2
+
+                if 0 < v101 then
+                    v10 -= (v9 * (v101 / magnitude2))
+                end
+            end
+        end
+
+        local position3 = cFrame2.Position
+        v13 = v81
+        sTp = sTp2
+        position = position3
+        local v103 = math.min(deltaTime, 0.1)
+
+        if v11 == Vector3.new(0, 0, 0) then
+            v97 = true
+        elseif 0 <= v11:Dot(v9) then
+            v97 = true
+        end
+
+        if v97 then
+            local v104 = math.exp(v103 * -16)
+            local v105 = v10 + v9 * 16
+            local v106 = (v9 + (v105 * v103)) * v104
+            local v107 = (v10 - ((v105 * 16) * v103)) * v104
+            v9 = v106
+            v10 = v107
+
+            if v9.Magnitude < 0.003 and v10.Magnitude < 0.05 then
+                v9 = Vector3.new(0, 0, 0)
+                v10 = Vector3.new(0, 0, 0)
+            end
+        end
+
+        local cFrame3 = cFrame2
+        local position4 = position2
+        local rotation2 = rotation
+
+        if smoothingBody then
+            if not (alpha < 1) then
+                v95 = cFrame3
+            elseif v90 then
+                if position4 then
+                    if rotation2 then
+                        if v22 ~= v81 then
+                            v95 = cFrame3
+                        else
+                            local v111 = cFrame2.Position - position4
+
+                            if not (v111.Magnitude < 6) then
+                                v95 = cFrame3
+                            else
+                                v95 = CFrame.new(cFrame2.Position - (v111 * (1 - alpha))) * rotation2:Lerp(cFrame2.Rotation, alpha)
+                                count2 += 1
+                                total += alpha
+                                interpAlphaMin = math.min(interpAlphaMin, alpha)
+                            end
+                        end
+                    else
+                        v95 = cFrame3
+                    end
+                else
+                    v95 = cFrame3
+                end
+            else
+                v95 = cFrame3
+            end
+        else
+            v95 = cFrame3
+        end
+
+        local v112 = v9 + v11
+
+        if isStudio then
+            smoothingForceOffset = workspace:GetAttribute("SmoothingForceOffset")
+
+            if typeof(smoothingForceOffset) == "Vector3" then
+                v112 += smoothingForceOffset
+            end
+        end
+
+        if v36 then
+            traceFrame(v103, alpha, v84, v85, v83, cFrame2.Position - v95.Position, v91)
+        end
+
+        local v113 = v95.Position + v112
+
+        if v113 ~= v113 then
+            v98 = true
+        elseif v95.LookVector ~= v95.LookVector then
+            v98 = true
+        end
+
+        if v98 then
+            v9 = Vector3.new(0, 0, 0)
+            v10 = Vector3.new(0, 0, 0)
+            v11 = Vector3.new(0, 0, 0)
+            rotation = nil
+            position2 = nil
+            frameClock:Reset()
+            v112 = Vector3.new(0, 0, 0)
+            v95 = cFrame2
+        end
+
+        cFrame = cFrame2
+        v35 = v95 + v112
+
+        if smoothingBody then
+            v34 = v35
+        else
+            v34 = nil
+        end
+
+        BodyProxy.Render(v81, v34)
+
+        if not BodyProxy.IsShown() then
+            v34 = nil
+            v35 = cFrame2 + v112
+        end
+
+        return
     end
-    u7 = nil
-    u9 = nil
-    u3 = Vector3.new(0, 0, 0)
-    u4 = Vector3.new(0, 0, 0)
-    u5 = Vector3.new(0, 0, 0)
-    CFrame_upv_1 = nil
-    u25 = nil
-    u26 = nil
-    if v17 then
-        CFrame_upv_1 = v17.CFrame
-        u26 = CFrame_upv_1
+
+    v13 = nil
+    position = nil
+    v9 = Vector3.new(0, 0, 0)
+    v10 = Vector3.new(0, 0, 0)
+    v11 = Vector3.new(0, 0, 0)
+    cFrame = nil
+    v34 = nil
+    v35 = nil
+
+    if v81 then
+        cFrame = v81.CFrame
+        v35 = cFrame
     end
-    BodyProxy_upv_1.Render(nil, nil)
+
+    BodyProxy.Render(nil, nil)
 end
-local u28 = false
-function tbl_1.Start()
+
+local v114 = false
+
+function v7.Start()
     --[[
       name: Start
       line: 290
       upvalues:
-        u28 (ref,  index: 1)
-        RunService_upv_1 (copy, index: 2)
+        v114 (ref,  index: 1)
+        runService (copy, index: 2)
         step (copy, index: 3)
-        BodyProxy_upv_1 (copy, index: 4)
-        Simulation_upv_1 (copy, index: 5)
+        BodyProxy (copy, index: 4)
+        Simulation (copy, index: 5)
         onStep (copy, index: 6)
-        u23 (ref,  index: 7)
-        u1 (copy, index: 8)
+        success (ref,  index: 7)
+        isStudio (copy, index: 8)
     ]]
-    if (u28) then
-        return
-    end
-    if RunService_upv_1:IsClient() then
-        u28 = true
-        RunService_upv_1:BindToRenderStep("TribesSmoothing", Enum.RenderPriority.First.Value, step)
-        RunService_upv_1:BindToRenderStep("TribesDrawnBodyHide", Enum.RenderPriority.Last.Value + 1, BodyProxy_upv_1.EnforceHidden)
-        local success_1, v42 = pcall(
+    if not v114 and runService:IsClient() then
+        v114 = true
+        runService:BindToRenderStep("TribesSmoothing", Enum.RenderPriority.First.Value, step)
+        runService:BindToRenderStep("TribesDrawnBodyHide", Enum.RenderPriority.Last.Value + 1, BodyProxy.EnforceHidden)
+        local success2, result = pcall(
             function()
                 --[[
                   line: 298
                   upvalues:
-                    Simulation_upv_1 (copy, index: 1)
+                    Simulation (copy, index: 1)
                     onStep (copy, index: 2)
                 ]]
-                Simulation_upv_1.BindStep(onStep, 0)
+                Simulation.BindStep(onStep, 0)
             end
         )
-        u23 = success_1
-        if not (success_1) and u1 then
-            warn("[Smoothing] BindToSimulation unavailable, no interpolation (glide only): " .. tostring(v42))
+        success = success2
+
+        if not success2 and isStudio then
+            warn("[Smoothing] BindToSimulation unavailable, no interpolation (glide only): " .. tostring(result))
         end
     end
 end
-function tbl_1.Offset()
+
+function v7.Offset()
     --[[
       name: Offset
       line: 309
       upvalues:
-        u3 (ref, index: 1)
-        u5 (ref, index: 2)
+        v9 (ref, index: 1)
+        v11 (ref, index: 2)
     ]]
-    return u3 + u5
+    return v9 + v11
 end
-function tbl_1.CameraOffset()
+
+function v7.CameraOffset()
     --[[
       name: CameraOffset
       line: 315
       upvalues:
-        u26 (ref, index: 1)
-        CFrame_upv_1 (ref, index: 2)
+        v35 (ref, index: 1)
+        cFrame (ref, index: 2)
     ]]
-    if u26 and CFrame_upv_1 then
-        return u26.Position - CFrame_upv_1.Position
+    local v117 = v35
+    local cFrame2 = cFrame
+
+    if v117 and cFrame2 then
+        return v117.Position - cFrame2.Position
     end
+
     return Vector3.new(0, 0, 0)
 end
-function tbl_1.DrawnCFrame()
+
+function v7.DrawnCFrame()
     --[[
       name: DrawnCFrame
       line: 325
       upvalues:
-        u26 (ref, index: 1)
+        v35 (ref, index: 1)
     ]]
-    return u26
+    return v35
 end
-function tbl_1.Drawn(a1)
+
+function v7.Drawn(a119)
     --[[
       name: Drawn
       line: 331
       upvalues:
-        BodyProxy_upv_1 (copy, index: 1)
+        BodyProxy (copy, index: 1)
     ]]
-    return BodyProxy_upv_1.Drawn(a1)
+    return BodyProxy.Drawn(a119)
 end
-function tbl_1.DrawnModel()
+
+function v7.DrawnModel()
     --[[
       name: DrawnModel
       line: 336
       upvalues:
-        BodyProxy_upv_1 (copy, index: 1)
+        BodyProxy (copy, index: 1)
     ]]
-    return BodyProxy_upv_1.Model()
+    return BodyProxy.Model()
 end
-tbl_1.DrawnChanged = BodyProxy_upv_1.Changed
-function tbl_1.SetBody(a1)
+
+v7.DrawnChanged = BodyProxy.Changed
+
+function v7.SetBody(body)
     --[[
       name: SetBody
       line: 344
       upvalues:
-        u24 (ref,  index: 1)
-        BodyProxy_upv_1 (copy, index: 2)
+        smoothingBody (ref,  index: 1)
+        BodyProxy (copy, index: 2)
     ]]
-    u24 = a1 == true
-    BodyProxy_upv_1.SetEnabled(u24)
+    smoothingBody = body == true
+    BodyProxy.SetEnabled(smoothingBody)
 end
-function tbl_1.BodyOn()
+
+function v7.BodyOn()
     --[[
       name: BodyOn
       line: 348
       upvalues:
-        u24 (ref, index: 1)
+        smoothingBody (ref, index: 1)
     ]]
-    return u24
+    return smoothingBody
 end
-function tbl_1.CorrectionsSince(a1)
+
+function v7.CorrectionsSince(a121)
     --[[
       name: CorrectionsSince
       line: 353
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v19 (copy, index: 1)
     ]]
-    local tbl_5 = {}
-    for _, value_1 in tbl_upv_3 do
-        if a1 <= value_1[1] then
-            table.insert(tbl_5, value_1)
+    local v122 = {}
+
+    for _, v124 in v19 do
+        if a121 <= v124[1] then
+            table.insert(v122, v124)
         end
     end
-    return tbl_5
+
+    return v122
 end
-function tbl_1.SimCFrame(a1)
+
+function v7.SimCFrame(a125)
     --[[
       name: SimCFrame
       line: 365
     ]]
-    return a1.CFrame
+    return a125.CFrame
 end
-function tbl_1.Trace(a1)
+
+function v7.Trace(a126)
     --[[
       name: Trace
       line: 371
       upvalues:
-        u1 (copy, index: 1)
-        u27 (ref,  index: 2)
+        isStudio (copy, index: 1)
+        v36 (ref,  index: 2)
     ]]
-    if not u1 then
+    if not isStudio then
         return nil
     end
-    local v43 = u27
-    u27 = (a1 and {}) or nil
-    return v43
+
+    local v127 = v36
+    v36 = a126 and {} or nil
+
+    return v127
 end
-function tbl_1.Reset()
+
+function v7.Reset()
     --[[
       name: Reset
       line: 380
       upvalues:
-        u3 (ref,  index: 1)
-        u4 (ref,  index: 2)
-        u5 (ref,  index: 3)
-        u7 (ref,  index: 4)
-        u9 (ref,  index: 5)
-        u15 (ref,  index: 6)
-        u16 (ref,  index: 7)
-        u12 (copy, index: 8)
+        v9 (ref,  index: 1)
+        v10 (ref,  index: 2)
+        v11 (ref,  index: 3)
+        v13 (ref,  index: 4)
+        position (ref,  index: 5)
+        rotation (ref,  index: 6)
+        position2 (ref,  index: 7)
+        frameClock (copy, index: 8)
     ]]
-    u3 = Vector3.new(0, 0, 0)
-    u4 = Vector3.new(0, 0, 0)
-    u5 = Vector3.new(0, 0, 0)
-    u7 = nil
-    u9 = nil
-    u15 = nil
-    u16 = nil
-    u12:Reset()
+    v9 = Vector3.new(0, 0, 0)
+    v10 = Vector3.new(0, 0, 0)
+    v11 = Vector3.new(0, 0, 0)
+    v13 = nil
+    position = nil
+    rotation = nil
+    position2 = nil
+    frameClock:Reset()
 end
-function tbl_1.Stats()
+
+function v7.Stats()
     --[[
       name: Stats
       line: 386
       upvalues:
-        u10 (ref,  index: 1)
-        u11 (ref,  index: 2)
-        u3 (ref,  index: 3)
-        u5 (ref,  index: 4)
-        tbl_upv_2 (copy, index: 5)
-        u24 (ref,  index: 6)
-        u23 (ref,  index: 7)
-        u22 (ref,  index: 8)
-        u19 (ref,  index: 9)
-        u20 (ref,  index: 10)
-        u21 (ref,  index: 11)
-        BodyProxy_upv_1 (copy, index: 12)
+        count (ref,  index: 1)
+        maxMagnitude (ref,  index: 2)
+        v9 (ref,  index: 3)
+        v11 (ref,  index: 4)
+        parts (copy, index: 5)
+        smoothingBody (ref,  index: 6)
+        success (ref,  index: 7)
+        count3 (ref,  index: 8)
+        count2 (ref,  index: 9)
+        total (ref,  index: 10)
+        interpAlphaMin (ref,  index: 11)
+        BodyProxy (copy, index: 12)
     ]]
-    local tbl_6 = {interpAlphaMin = 0, interpAlphaAvg = 0}
-    tbl_6.smoothedCorrections = u10
-    tbl_6.largestCorrection = u11
-    tbl_6.smoothingOffset = (u3 + u5).Magnitude
-    tbl_6.recentCorrections = table.concat(tbl_upv_2, ",")
-    tbl_6.smoothingBody = u24
-    tbl_6.smoothingStepHook = u23
-    tbl_6.smoothingNoStepCorrections = u22
-    tbl_6.interpFrames = u19
-    tbl_6.interpAlphaAvg = ((u19 > 0) and (u20 / u19)) or 1
-    tbl_6.interpAlphaMin = u21
-    for key_1, value_2 in BodyProxy_upv_1.Stats() do
-        tbl_6[key_1] = value_2
+    local v128 = {smoothedCorrections = count, largestCorrection = maxMagnitude, smoothingOffset = (v9 + v11).Magnitude, recentCorrections = table.concat(parts, ","), smoothingBody = smoothingBody, smoothingStepHook = success, smoothingNoStepCorrections = count3, interpFrames = count2, interpAlphaAvg = if 0 < count2 then total / count2 else 1}
+    v128.interpAlphaMin = interpAlphaMin
+
+    for v129, v130 in BodyProxy.Stats() do
+        v128[v129] = v130
     end
-    return tbl_6
+
+    return v128
 end
-return tbl_1
+
+return v7

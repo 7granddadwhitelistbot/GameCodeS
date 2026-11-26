@@ -1,952 +1,979 @@
-local GuiService_upv_1 = game:GetService("GuiService")
-local _ = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local StarterGui_upv_1 = game:GetService("StarterGui")
-local TextChatService_upv_1 = game:GetService("TextChatService")
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local tbl_1 = {}
-local u1 = nil
+local guiService = game:GetService("GuiService")
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local starterGui = game:GetService("StarterGui")
+local textChatService = game:GetService("TextChatService")
+local userInputService = game:GetService("UserInputService")
+local v7 = {}
+local v8 = nil
+
 local function hideChat()
     --[[
       name: hideChat
       line: 33
       upvalues:
-        u1 (ref, index: 1)
+        v8 (ref,  index: 1)
+        textChatService (copy, index: 2)
+        starterGui (copy, index: 3)
     ]]
-    if u1 then
+    if v8 then
         return
     end
-    local tbl_2 = {}
-    pcall(function() end)
-    u1 = tbl_2
+
+    local v10 = {}
+
+    pcall(
+        function()
+            --[[
+              line: 38
+              upvalues:
+                textChatService (copy, index: 1)
+                v10 (copy, index: 2)
+                starterGui (copy, index: 3)
+            ]]
+            local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+            if chatWindowConfiguration then
+                v10.window = chatWindowConfiguration.Enabled
+                chatWindowConfiguration.Enabled = false
+            end
+
+            if chatInputBarConfiguration then
+                v10.bar = chatInputBarConfiguration.Enabled
+                chatInputBarConfiguration.Enabled = false
+            end
+
+            v10.core = starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
+            starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+        end
+    )
+
+    v8 = v10
 end
+
 local function restoreChat()
     --[[
       name: restoreChat
       line: 54
       upvalues:
-        u1 (ref, index: 1)
+        v8 (ref,  index: 1)
+        textChatService (copy, index: 2)
+        starterGui (copy, index: 3)
     ]]
-    local v1 = u1
-    if not v1 then
+    local v14 = v8
+    if not v14 then
         return
     end
-    u1 = nil
-    pcall(function() end)
+
+    v8 = nil
+
+    pcall(
+        function()
+            --[[
+              line: 60
+              upvalues:
+                textChatService (copy, index: 1)
+                v14 (copy, index: 2)
+                starterGui (copy, index: 3)
+            ]]
+            local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+            if chatWindowConfiguration and v14.window ~= nil then
+                chatWindowConfiguration.Enabled = v14.window
+            end
+
+            if chatInputBarConfiguration and v14.bar ~= nil then
+                chatInputBarConfiguration.Enabled = v14.bar
+            end
+
+            if v14.core ~= nil then
+                starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, v14.core)
+            end
+        end
+    )
 end
-local tbl_upv_3 = {{root = "Root", label = "ATTACK", name = "Attack", gui = "CombatTouch"}, {root = "Root", label = "ALT", name = "Secondary", gui = "CombatTouch"}, {root = "Root", label = "RELOAD", name = "Reload", gui = "CombatTouch"}, {root = "Buttons", label = "JUMP", name = "Jump", gui = "CharacterTouch"}, {root = "Buttons", label = "SLIDE", name = "Slide", gui = "CharacterTouch"}, {root = "Buttons", label = "1P / 3P", name = "View", gui = "CharacterTouch"}}
-function tbl_1.Init(a1)
+
+local v17 = {{name = "Attack", gui = "CombatTouch", root = "Root", label = "ATTACK"}, {name = "Secondary", gui = "CombatTouch", root = "Root", label = "ALT"}, {name = "Reload", gui = "CombatTouch", root = "Root", label = "RELOAD"}, {name = "Jump", gui = "CharacterTouch", root = "Buttons", label = "JUMP"}, {name = "Slide", gui = "CharacterTouch", root = "Buttons", label = "SLIDE"}, {name = "View", gui = "CharacterTouch", root = "Buttons", label = "1P / 3P"}}
+
+function v7.Init(a18)
     --[[
       name: Init
       line: 89
       upvalues:
-        tbl_upv_3 (copy, index: 2)
-        GuiService_upv_1 (copy, index: 3)
-        u1 (ref,  index: 4)
-        TextChatService_upv_1 (copy, index: 5)
-        StarterGui_upv_1 (copy, index: 6)
-        RunService_upv_1 (copy, index: 7)
-        UserInputService_upv_1 (copy, index: 8)
+        players (copy, index: 1)
+        v17 (copy, index: 2)
+        guiService (copy, index: 3)
+        v8 (ref,  index: 4)
+        textChatService (copy, index: 5)
+        starterGui (copy, index: 6)
+        runService (copy, index: 7)
+        userInputService (copy, index: 8)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local PlayerGui_upv_1 = a1.PlayerGui
-    local function guiOf(a2)
+    local ui = a18.UI
+    local theme = a18.Theme
+    local state = a18.State
+    local colors = theme.Colors
+    local fonts = theme.Fonts
+    local _ = players.LocalPlayer
+    local playerGui = a18.PlayerGui
+
+    local function guiOf(a27)
         --[[
           name: guiOf
           line: 95
           upvalues:
-            PlayerGui_upv_1 (copy, index: 1)
+            playerGui (copy, index: 1)
         ]]
-        local v2 = PlayerGui_upv_1:FindFirstChild(a2.gui)
-        if v2 and v2:IsA("ScreenGui") then
-            return v2
+        local v28 = playerGui:FindFirstChild(a27.gui)
+
+        if v28 and v28:IsA("ScreenGui") then
+            return v28
         end
+
         return nil
     end
-    local function buttonOf(a3)
+
+    local function buttonOf(a30)
         --[[
           name: buttonOf
           line: 99
           upvalues:
-            PlayerGui_upv_1 (copy, index: 1)
+            playerGui (copy, index: 1)
         ]]
-        local v3 = PlayerGui_upv_1:FindFirstChild(a3.gui)
-        local v4 = not (v3) or not (v3:IsA("ScreenGui")) or v3
-        local v5 = v4 and (v4:FindFirstChild(a3.root))
-        v4 = v5 and (v5:FindFirstChild(a3.name))
-        if v4 and v4:IsA("GuiObject") then
-            return v4
+        local v31 = playerGui:FindFirstChild(a30.gui)
+        local v32 = if v31 and v31:IsA("ScreenGui") then v31 else nil
+        local v33 = v32 and v32:FindFirstChild(a30.root)
+        local v34 = v33 and v33:FindFirstChild(a30.name)
+
+        if v34 and v34:IsA("GuiObject") then
+            return v34
         end
+
         return nil
     end
-    local u2 = false
-    local function savedValue(a4)
+
+    local editing = false
+
+    local function savedValue(a37)
         --[[
           name: savedValue
           line: 108
           upvalues:
-            State_upv_1 (copy, index: 1)
+            state (copy, index: 1)
         ]]
-        local v6 = State_upv_1.Profile and (State_upv_1.Profile.settings)
-        local v7 = false
-        if type(v6) == "table" then
-            v7 = v6["touch_" .. a4]
-        end
-        if type(v7) ~= "string" then
+        local settings = state.Profile and state.Profile.settings
+        local setting = type(settings) == "table" and settings["touch_" .. a37]
+
+        if type(setting) ~= "string" then
             return ""
         end
-        return v7
+
+        return setting
     end
+
     local function applySaved()
         --[[
           name: applySaved
           line: 113
           upvalues:
-            u2 (ref,  index: 1)
-            tbl_upv_3 (copy, index: 2)
-            PlayerGui_upv_1 (copy, index: 3)
-            State_upv_1 (copy, index: 4)
+            editing (ref,  index: 1)
+            v17 (copy, index: 2)
+            playerGui (copy, index: 3)
+            state (copy, index: 4)
         ]]
-        if u2 then
+        if editing then
             return
         end
-        local v8, v9, v10 = nil, nil, nil
-        local v11 = nil
-        for _, value_1 in tbl_upv_3 do
-            v11 = PlayerGui_upv_1:FindFirstChild(value_1.gui)
-            if not (v11) or not (v11:IsA("ScreenGui")) then
-                v8 = nil
-                if not (v8) then
+
+        for _, v42 in v17 do
+            local v43 = playerGui:FindFirstChild(v42.gui)
+
+            if not v43 or not v43:IsA("ScreenGui") then
+                v43 = nil
+            end
+
+            if v43 then
+                local setting
+                local name = v42.name
+                local settings = state.Profile and state.Profile.settings
+                local setting2 = type(settings) == "table" and settings["touch_" .. name]
+
+                if type(setting2) == "string" then
+                    setting = setting2
+                else
+                    setting = ""
+                end
+
+                local v48 = if setting ~= "" then setting else nil
+
+                if v43:GetAttribute("Override_" .. v42.name) == v48 then
                     continue
                 end
-                v10 = value_1.name
-                local v12 = State_upv_1.Profile and (State_upv_1.Profile.settings)
-                v9 = false
-                if type(v12) == "table" then
-                    v9 = v12["touch_" .. v10]
-                end
-                if type(v9) ~= "string" then
-                    v11 = ""
-                else
-                    v11 = v9
-                end
-                if v11 == "" then
-                    v10 = nil
-                else
-                    v10 = v11
-                end
-                if v8:GetAttribute("Override_" .. value_1.name) ~= v10 then
-                    v8:SetAttribute("Override_" .. value_1.name, v10)
-                    continue
-                end
-            end
-            v8 = v11
-            if not (v8) then
-                continue
-            end
-            v10 = value_1.name
-            local v12 = State_upv_1.Profile and (State_upv_1.Profile.settings)
-            v9 = false
-            if type(v12) == "table" then
-                v9 = v12["touch_" .. v10]
-            end
-            if type(v9) ~= "string" then
-                v11 = ""
-            else
-                v11 = v9
-            end
-            if v11 == "" then
-                v10 = nil
-            else
-                v10 = v11
-            end
-            if v8:GetAttribute("Override_" .. value_1.name) ~= v10 then
-                v8:SetAttribute("Override_" .. value_1.name, v10)
+
+                v43:SetAttribute("Override_" .. v42.name, v48)
             end
         end
     end
-    State_upv_1.ProfileChanged:Connect(applySaved)
-    PlayerGui_upv_1.ChildAdded:Connect(
-        function(a5)
+
+    state.ProfileChanged:Connect(applySaved)
+
+    playerGui.ChildAdded:Connect(
+        function(a49)
             --[[
               line: 129
               upvalues:
                 applySaved (copy, index: 1)
             ]]
-            if a5.Name ~= "CombatTouch" and a5.Name ~= "CharacterTouch" then
-                return
+            if a49.Name == "CombatTouch" or a49.Name == "CharacterTouch" then
+                task.defer(applySaved)
             end
-            task.defer(applySaved)
         end
     )
+
     task.defer(applySaved)
-    local u3 = nil
-    local u4 = nil
-    local tbl_upv_4 = {}
-    local tbl_upv_5 = {}
-    local tbl_upv_6 = {}
-    local u5 = nil
-    local u6 = nil
-    local u7 = ""
-    local u8 = 0
+    local screenGui = nil
+    local ui2 = nil
+    local v52 = {}
+    local v53 = {}
+    local v54 = {}
+    local name2 = nil
+    local ui3 = nil
+    local text = ""
+    local v58 = 0
+
     local function rootSize()
         --[[
           name: rootSize
           line: 148
           upvalues:
-            u4 (ref, index: 1)
+            ui2 (ref, index: 1)
         ]]
-        return u4.AbsoluteSize
+        return ui2.AbsoluteSize
     end
-    local function encode(a6, a7)
+
+    local function encode(a61, a62)
         --[[
           name: encode
           line: 154
           upvalues:
-            u4 (ref, index: 1)
+            ui2 (ref, index: 1)
         ]]
-        local AbsoluteSize_1 = u4.AbsoluteSize
-        return string.format("%d,%d,%d", math.floor(((a6.x / AbsoluteSize_1.X) * 1000) + 0.5), math.floor(((a6.y / AbsoluteSize_1.Y) * 1000) + 0.5), math.floor(((a6.d / math.max(a7, 1)) * 1000) + 0.5))
+        local absoluteSize = ui2.AbsoluteSize
+        return string.format("%d,%d,%d", math.floor(((a61.x / absoluteSize.X) * 1000) + 0.5), math.floor(((a61.y / absoluteSize.Y) * 1000) + 0.5), (math.floor(((a61.d / math.max(a62, 1)) * 1000) + 0.5)))
     end
+
+    local function push(a65)
+        --[[
+          name: push
+          line: 158
+          upvalues:
+            v53 (copy, index: 1)
+            v17 (copy, index: 2)
+            playerGui (copy, index: 3)
+            encode (copy, index: 4)
+        ]]
+        local v66 = v53[a65]
+
+        for _, v68 in v17 do
+            if v68.name == a65 then
+                local v69 = playerGui:FindFirstChild(v68.gui)
+
+                if not v69 or not v69:IsA("ScreenGui") then
+                    v69 = nil
+                end
+
+                local v70 = playerGui:FindFirstChild(v68.gui)
+
+                if not v70 or not v70:IsA("ScreenGui") then
+                    v70 = nil
+                end
+
+                local v71 = v70 and v70:FindFirstChild(v68.root)
+                local v72 = v71 and v71:FindFirstChild(v68.name)
+                local v73 = if v72 and v72:IsA("GuiObject") then v72 else nil
+
+                if not v69 then
+                    continue
+                end
+                if not v73 then
+                    continue
+                end
+                if not v66 then
+                    continue
+                end
+
+                local v74 = v73:GetAttribute("DefaultSize")
+                local v75 = "Override_" .. a65
+
+                if type(v74) ~= "number" then
+                    v74 = v66.d
+                end
+
+                v69:SetAttribute(v75, encode(v66, v74))
+            end
+        end
+    end
+
     local function readLive()
         --[[
           name: readLive
           line: 172
           upvalues:
-            u4 (ref,  index: 1)
-            tbl_upv_3 (copy, index: 2)
-            PlayerGui_upv_1 (copy, index: 3)
-            tbl_upv_5 (copy, index: 4)
+            ui2 (ref,  index: 1)
+            v17 (copy, index: 2)
+            playerGui (copy, index: 3)
+            v53 (copy, index: 4)
         ]]
-        local v13, v14 = nil, nil
-        for _, value_2 in tbl_upv_3 do
-            local v15 = PlayerGui_upv_1:FindFirstChild(value_2.gui)
-            if not (v15) or not (v15:IsA("ScreenGui")) then
-                v13 = nil
-                v15 = v13 and (v13:FindFirstChild(value_2.root))
-                v13 = v15 and (v15:FindFirstChild(value_2.name))
-                if not (v13) or not (v13:IsA("GuiObject")) then
-                    v14 = nil
-                    if not (v14) then
-                        continue
-                    end
-                    if v14.AbsoluteSize.X > 4 then
-                        v13 = v14.AbsolutePosition + (v14.AbsoluteSize / 2) - u4.AbsolutePosition
-                        tbl_upv_5[value_2.name] = {x = v13.X, y = v13.Y, d = v14.AbsoluteSize.X}
-                        continue
-                    end
-                end
-                v14 = v13
-                if not (v14) then
-                    continue
-                end
-                if v14.AbsoluteSize.X > 4 then
-                    v13 = v14.AbsolutePosition + (v14.AbsoluteSize / 2) - u4.AbsolutePosition
-                    tbl_upv_5[value_2.name] = {x = v13.X, y = v13.Y, d = v14.AbsoluteSize.X}
-                    continue
-                end
+        local ui = ui2
+
+        for _, v79 in v17 do
+            local v80 = playerGui:FindFirstChild(v79.gui)
+
+            if not v80 or not v80:IsA("ScreenGui") then
+                v80 = nil
             end
-            v13 = v15
-            v15 = v13 and (v13:FindFirstChild(value_2.root))
-            v13 = v15 and (v15:FindFirstChild(value_2.name))
-            if not (v13) or not (v13:IsA("GuiObject")) then
-                v14 = nil
-                if not (v14) then
-                    continue
-                end
-                if v14.AbsoluteSize.X > 4 then
-                    v13 = v14.AbsolutePosition + (v14.AbsoluteSize / 2) - u4.AbsolutePosition
-                    tbl_upv_5[value_2.name] = {x = v13.X, y = v13.Y, d = v14.AbsoluteSize.X}
-                    continue
-                end
-            end
-            v14 = v13
-            if not (v14) then
-                continue
-            end
-            if v14.AbsoluteSize.X > 4 then
-                v13 = v14.AbsolutePosition + (v14.AbsoluteSize / 2) - u4.AbsolutePosition
-                tbl_upv_5[value_2.name] = {x = v13.X, y = v13.Y, d = v14.AbsoluteSize.X}
+
+            local v81 = v80 and v80:FindFirstChild(v79.root)
+            local v82 = v81 and v81:FindFirstChild(v79.name)
+            local v83 = if v82 and v82:IsA("GuiObject") then v82 else nil
+
+            if v83 and 4 < v83.AbsoluteSize.X then
+                local v84 = v83.AbsolutePosition + (v83.AbsoluteSize / 2) - ui.AbsolutePosition
+                v53[v79.name] = {x = v84.X, y = v84.Y, d = v83.AbsoluteSize.X}
             end
         end
     end
-    local u9 = nil
-    local X_upv_1 = 0
+
+    local ui4 = nil
+    local v86 = 0
+
     local function hotbarRect()
         --[[
           name: hotbarRect
           line: 185
           upvalues:
-            u4 (ref,  index: 1)
-            a1 (copy, index: 2)
-            UI_upv_1 (copy, index: 3)
+            ui2 (ref,  index: 1)
+            a18 (copy, index: 2)
+            ui (copy, index: 3)
         ]]
-        local AbsoluteSize_2 = u4.AbsoluteSize
-        local v16 = ((not (a1.HotbarWidth)) and 404) or (a1.HotbarWidth())
-        local v17 = v16 * UI_upv_1.Scale + 16
-        local v18 = ((not (a1.HotbarTop)) and 84) or (a1.HotbarTop())
-        local v19 = (v18 + 58) * UI_upv_1.Scale
-        return Vector2.new((AbsoluteSize_2.X / 2) - (v17 / 2), AbsoluteSize_2.Y - v19), Vector2.new(v17, v19)
+        local absoluteSize = ui2.AbsoluteSize
+        local v89 = not a18.HotbarWidth and 404 or a18.HotbarWidth()
+        local x = v89 * ui.Scale + 16
+        local v91 = not a18.HotbarTop and 84 or a18.HotbarTop()
+        local y = (v91 + 58) * ui.Scale
+
+        return Vector2.new((absoluteSize.X / 2) - (x / 2), absoluteSize.Y - y), Vector2.new(x, y)
     end
-    local function hitsBox(a8, a9, a10)
+
+    local function hitsBox(a94, a95, a96)
         --[[
           name: hitsBox
           line: 191
         ]]
-        local v20 = (Vector2.new(math.clamp(a8.x, a9.X, a9.X + a10.X), math.clamp(a8.y, a9.Y, a9.Y + a10.Y)) - Vector2.new(a8.x, a8.y)).Magnitude < a8.d / 2
-        return v20
+        local x = math.clamp(a94.x, a95.X, a95.X + a96.X)
+        local y = math.clamp(a94.y, a95.Y, a95.Y + a96.Y)
+
+        return (Vector2.new(x, y) - Vector2.new(a94.x, a94.y)).Magnitude < a94.d / 2
     end
-    local function valid(a11, a12)
+
+    local function valid(a100, a101)
         --[[
           name: valid
           line: 196
           upvalues:
-            u4 (ref,  index: 1)
-            u9 (ref,  index: 2)
+            ui2 (ref,  index: 1)
+            ui4 (ref,  index: 2)
             hitsBox (copy, index: 3)
             hotbarRect (copy, index: 4)
-            GuiService_upv_1 (copy, index: 5)
-            X_upv_1 (ref,  index: 6)
-            tbl_upv_5 (copy, index: 7)
-            tbl_upv_4 (copy, index: 8)
+            guiService (copy, index: 5)
+            v86 (ref,  index: 6)
+            v53 (copy, index: 7)
+            v52 (copy, index: 8)
         ]]
-        local AbsoluteSize_3 = u4.AbsoluteSize
-        local v21 = a12.d / 2
-        if a12.x - v21 < 0 or a12.y - v21 < 0 or AbsoluteSize_3.X < a12.x + v21 or AbsoluteSize_3.Y < a12.y + v21 or u9 and u4 and hitsBox(a12, u9.AbsolutePosition - u4.AbsolutePosition, u9.AbsoluteSize) then
-            return false
-        end
-        local v22, v23 = hotbarRect()
-        if hitsBox(a12, v22, v23) then
-            return false
-        end
-        local TopbarInset_1 = GuiService_upv_1.TopbarInset
-        X_upv_1 = math.max(X_upv_1, TopbarInset_1.Min.X)
-        if TopbarInset_1.Height > 0 and hitsBox(a12, Vector2.zero, Vector2.new(X_upv_1, TopbarInset_1.Max.Y)) then
-            return false
-        end
-        for key_1, value_3 in tbl_upv_5 do
-            if key_1 == a11 or not (tbl_upv_4[key_1]) or not (tbl_upv_4[key_1].frame.Visible) or not ((Vector2.new(a12.x, a12.y) - Vector2.new(value_3.x, value_3.y)).Magnitude < (v21 + (value_3.d / 2)) + 6) then
-                continue
+        local absoluteSize = ui2.AbsoluteSize
+        local v103 = a101.d / 2
+
+        if not (a101.x - v103 < 0) and not (a101.y - v103 < 0) then
+            local v104 = a101.x + v103
+
+            if not (absoluteSize.X < v104) then
+                local v105 = a101.y + v103
+
+                if not (absoluteSize.Y < v105) then
+                    local ui = ui4
+
+                    if ui
+                        and ui2
+                        and hitsBox(a101, ui.AbsolutePosition - ui2.AbsolutePosition, ui.AbsoluteSize)
+                    then
+                        return false
+                    end
+
+                    local vector2, v108 = hotbarRect()
+
+                    if hitsBox(a101, vector2, v108) then
+                        return false
+                    end
+
+                    local topbarInset = guiService.TopbarInset
+                    v86 = math.max(v86, topbarInset.Min.X)
+
+                    if 0 < topbarInset.Height
+                        and hitsBox(a101, Vector2.zero, Vector2.new(v86, topbarInset.Max.Y))
+                    then
+                        return false
+                    end
+
+                    for v110, v111 in v53 do
+                        if v110 ~= a100
+                            and v52[v110]
+                            and v52[v110].frame.Visible
+                            and (Vector2.new(a101.x, a101.y) - Vector2.new(v111.x, v111.y)).Magnitude < (v103 + (v111.d / 2)) + 6
+                        then
+                            return false
+                        end
+                    end
+
+                    return true
+                end
             end
-            return false
         end
-        return true
+
+        return false
     end
-    local function clampInside(a13)
+
+    local function clampInside(a113)
         --[[
           name: clampInside
           line: 228
           upvalues:
-            u4 (ref, index: 1)
+            ui2 (ref, index: 1)
         ]]
-        local AbsoluteSize_4 = u4.AbsoluteSize
-        local v24 = a13.d / 2
-        local tbl_7 = {}
-        tbl_7.x = math.clamp(a13.x, v24, AbsoluteSize_4.X - v24)
-        tbl_7.y = math.clamp(a13.y, v24, AbsoluteSize_4.Y - v24)
-        tbl_7.d = a13.d
-        return tbl_7
+        local absoluteSize = ui2.AbsoluteSize
+        local minValue = a113.d / 2
+
+        return {x = math.clamp(a113.x, minValue, absoluteSize.X - minValue), y = math.clamp(a113.y, minValue, absoluteSize.Y - minValue), d = a113.d}
     end
-    local function snap(a14)
+
+    local function snap(a117)
         --[[
           name: snap
           line: 233
         ]]
-        return math.floor((a14 / 8) + 0.5) * 8
+        return math.floor((a117 / 8) + 0.5) * 8
     end
+
     local function paintHandles()
         --[[
           name: paintHandles
           line: 237
           upvalues:
-            tbl_upv_4 (copy, index: 1)
-            tbl_upv_5 (copy, index: 2)
-            u5 (ref,  index: 3)
-            Colors_upv_1 (copy, index: 4)
-            u6 (ref,  index: 5)
-            u8 (ref,  index: 6)
-            u7 (ref,  index: 7)
+            v52 (copy, index: 1)
+            v53 (copy, index: 2)
+            name2 (ref,  index: 3)
+            colors (copy, index: 4)
+            ui3 (ref,  index: 5)
+            v58 (ref,  index: 6)
+            text (ref,  index: 7)
         ]]
-        local v25 = nil
-        for key_2, value_4 in tbl_upv_4 do
-            local v26 = tbl_upv_5[key_2]
-            value_4.frame.Visible = v26 ~= nil
-            if v26 then
-                value_4.frame.Position = UDim2.fromOffset(v26.x, v26.y)
-                value_4.frame.Size = UDim2.fromOffset(v26.d, v26.d)
+        for v119, v120 in v52 do
+            local v121 = v53[v119]
+            v120.frame.Visible = v121 ~= nil
+
+            if v121 then
+                v120.frame.Position = UDim2.fromOffset(v121.x, v121.y)
+                v120.frame.Size = UDim2.fromOffset(v121.d, v121.d)
             end
-            v26 = key_2 == u5
-            local stroke_1 = value_4.stroke
-            if v26 then
-                v25 = Colors_upv_1.Accent
-            else
-                v25 = Colors_upv_1.Text
-            end
-            stroke_1.Color = v25
-            value_4.stroke.Transparency = (v26 and 0) or 0.35
-            value_4.stroke.Thickness = (v26 and 3) or 2
-            value_4.knob.Visible = v26
-            value_4.frame.BackgroundTransparency = (v26 and 0.8) or 0.9
+
+            local visible = v119 == name2
+            v120.stroke.Color = if visible then colors.Accent else colors.Text
+            v120.stroke.Transparency = visible and 0 or 0.35
+            v120.stroke.Thickness = visible and 3 or 2
+            v120.knob.Visible = visible
+            v120.frame.BackgroundTransparency = visible and 0.8 or 0.9
         end
-        if u6 then
-            local v27 = u5 and (tbl_upv_5[u5])
-            if os.clock() < u8 then
-                u6.Text = u7
-                u6.TextColor3 = Colors_upv_1.Danger
-            else
-                u6.Text = not v27 and "TAP A BUTTON" or string.format("%s  \194\183  %d", tbl_upv_4[u5].spec.label, math.floor(v27.d))
-                local v29 = u6
-                local v30
-                if v27 then
-                    v30 = Colors_upv_1.Text
-                else
-                    v30 = Colors_upv_1.TextDim
-                end
-                v29.TextColor3 = v30
+
+        if ui3 then
+            local v123 = name2 and v53[name2]
+
+            if os.clock() < v58 then
+                ui3.Text = text
+                ui3.TextColor3 = colors.Danger
+
+                return
             end
+
+            ui3.Text = not v123 and "TAP A BUTTON"
+                or string.format("%s  ·  %d", v52[name2].spec.label, (math.floor(v123.d)))
+            ui3.TextColor3 = if v123 then colors.Text else colors.TextDim
         end
     end
-    local function flash(a15)
+
+    local function flash(a125)
         --[[
           name: flash
           line: 264
           upvalues:
-            u7 (ref,  index: 1)
-            u8 (ref,  index: 2)
+            text (ref,  index: 1)
+            v58 (ref,  index: 2)
             paintHandles (copy, index: 3)
         ]]
-        local v31 = os.clock() + 1.2
-        u7 = a15
-        u8 = v31
+        local v126 = os.clock() + 1.2
+        text = a125
+        v58 = v126
         paintHandles()
     end
-    local function push(a16)
-        --[[
-          name: push
-          line: 158
-          upvalues:
-            tbl_upv_5 (copy, index: 1)
-            tbl_upv_3 (copy, index: 2)
-            PlayerGui_upv_1 (copy, index: 3)
-            encode (copy, index: 4)
-        ]]
-        local v32 = tbl_upv_5[a16]
-        local v33, v34, v35, v36 = nil, nil, nil, nil
-        for _, value_5 in tbl_upv_3 do
-            if value_5.name ~= a16 then
-                continue
-            end
-            v35 = PlayerGui_upv_1:FindFirstChild(value_5.gui)
-            if not (v35) or not (v35:IsA("ScreenGui")) then
-                v33 = nil
-                local v37 = PlayerGui_upv_1:FindFirstChild(value_5.gui)
-                if not (v37) or not (v37:IsA("ScreenGui")) then
-                    v34 = nil
-                    v37 = v34 and (v34:FindFirstChild(value_5.root))
-                    v34 = v37 and (v37:FindFirstChild(value_5.name))
-                    if not (v34) or not (v34:IsA("GuiObject")) then
-                        v35 = nil
-                        if not (v33) or not (v35) or not (v32) then
-                            continue
-                        end
-                        v34 = v35:GetAttribute("DefaultSize")
-                        local v38 = "Override_" .. a16
-                        if type(v34) ~= "number" then
-                            v36 = v32.d
-                        else
-                            v36 = v34
-                        end
-                        v33:SetAttribute(v38, encode(v32, v36))
-                    end
-                    v35 = v34
-                    if not (v33) or not (v35) or not (v32) then
-                        continue
-                    end
-                    v34 = v35:GetAttribute("DefaultSize")
-                    local v38 = "Override_" .. a16
-                    if type(v34) ~= "number" then
-                        v36 = v32.d
-                    else
-                        v36 = v34
-                    end
-                    v33:SetAttribute(v38, encode(v32, v36))
-                end
-                v34 = v37
-                v37 = v34 and (v34:FindFirstChild(value_5.root))
-                v34 = v37 and (v37:FindFirstChild(value_5.name))
-                if not (v34) or not (v34:IsA("GuiObject")) then
-                    v35 = nil
-                    if not (v33) or not (v35) or not (v32) then
-                        continue
-                    end
-                    v34 = v35:GetAttribute("DefaultSize")
-                    local v38 = "Override_" .. a16
-                    if type(v34) ~= "number" then
-                        v36 = v32.d
-                    else
-                        v36 = v34
-                    end
-                    v33:SetAttribute(v38, encode(v32, v36))
-                end
-                v35 = v34
-                if not (v33) or not (v35) or not (v32) then
-                    continue
-                end
-                v34 = v35:GetAttribute("DefaultSize")
-                local v38 = "Override_" .. a16
-                if type(v34) ~= "number" then
-                    v36 = v32.d
-                else
-                    v36 = v34
-                end
-                v33:SetAttribute(v38, encode(v32, v36))
-            end
-            v33 = v35
-            local v37 = PlayerGui_upv_1:FindFirstChild(value_5.gui)
-            if not (v37) or not (v37:IsA("ScreenGui")) then
-                v34 = nil
-                v37 = v34 and (v34:FindFirstChild(value_5.root))
-                v34 = v37 and (v37:FindFirstChild(value_5.name))
-                if not (v34) or not (v34:IsA("GuiObject")) then
-                    v35 = nil
-                    if not (v33) or not (v35) or not (v32) then
-                        continue
-                    end
-                    v34 = v35:GetAttribute("DefaultSize")
-                    local v38 = "Override_" .. a16
-                    if type(v34) ~= "number" then
-                        v36 = v32.d
-                    else
-                        v36 = v34
-                    end
-                    v33:SetAttribute(v38, encode(v32, v36))
-                end
-                v35 = v34
-                if not (v33) or not (v35) or not (v32) then
-                    continue
-                end
-                v34 = v35:GetAttribute("DefaultSize")
-                local v38 = "Override_" .. a16
-                if type(v34) ~= "number" then
-                    v36 = v32.d
-                else
-                    v36 = v34
-                end
-                v33:SetAttribute(v38, encode(v32, v36))
-            end
-            v34 = v37
-            v37 = v34 and (v34:FindFirstChild(value_5.root))
-            v34 = v37 and (v37:FindFirstChild(value_5.name))
-            if not (v34) or not (v34:IsA("GuiObject")) then
-                v35 = nil
-                if not (v33) or not (v35) or not (v32) then
-                    continue
-                end
-                v34 = v35:GetAttribute("DefaultSize")
-                local v38 = "Override_" .. a16
-                if type(v34) ~= "number" then
-                    v36 = v32.d
-                else
-                    v36 = v34
-                end
-                v33:SetAttribute(v38, encode(v32, v36))
-            end
-            v35 = v34
-            if not (v33) or not (v35) or not (v32) then
-                continue
-            end
-            v34 = v35:GetAttribute("DefaultSize")
-            local v38 = "Override_" .. a16
-            if type(v34) ~= "number" then
-                v36 = v32.d
-            else
-                v36 = v34
-            end
-            v33:SetAttribute(v38, encode(v32, v36))
-        end
-    end
-    local function tryMove(a17, a18)
+
+    local function tryMove(a128, a129)
         --[[
           name: tryMove
           line: 269
           upvalues:
             clampInside (copy, index: 1)
             valid (copy, index: 2)
-            u7 (ref,  index: 3)
-            u8 (ref,  index: 4)
+            text (ref,  index: 3)
+            v58 (ref,  index: 4)
             paintHandles (copy, index: 5)
-            tbl_upv_5 (copy, index: 6)
+            v53 (copy, index: 6)
             push (copy, index: 7)
         ]]
-        a18 = clampInside({x = math.floor((a18.x / 8) + 0.5) * 8, y = math.floor((a18.y / 8) + 0.5) * 8, d = a18.d})
-        if valid(a17, a18) then
-            tbl_upv_5[a17] = a18
-            push(a17)
-            u8 = 0
+        a129 = clampInside({x = math.floor((a129.x / 8) + 0.5) * 8, y = math.floor((a129.y / 8) + 0.5) * 8, d = a129.d})
+
+        if valid(a128, a129) then
+            v53[a128] = a129
+            push(a128)
+            v58 = 0
             paintHandles()
+
             return true
-        else
-            local v39 = os.clock() + 1.2
-            u7 = "TOO CLOSE"
-            u8 = v39
-            paintHandles()
-            return false
         end
+
+        local v130 = os.clock() + 1.2
+        text = "TOO CLOSE"
+        v58 = v130
+        paintHandles()
+
+        return false
     end
-    local function tryResize(a19, a20)
+
+    local function tryResize(a132, a133)
         --[[
           name: tryResize
           line: 281
           upvalues:
-            tbl_upv_5 (copy, index: 1)
+            v53 (copy, index: 1)
             clampInside (copy, index: 2)
             valid (copy, index: 3)
-            u7 (ref,  index: 4)
-            u8 (ref,  index: 5)
+            text (ref,  index: 4)
+            v58 (ref,  index: 5)
             paintHandles (copy, index: 6)
             push (copy, index: 7)
         ]]
-        local v40 = tbl_upv_5[a19]
-        if not v40 then
+        local v134 = v53[a132]
+        if not v134 then
             return false
         end
-        local v41 = clampInside({x = v40.x, y = v40.y, d = math.clamp(math.floor((a20 / 4) + 0.5) * 4, 52, 170)})
-        if valid(a19, v41) then
-            tbl_upv_5[a19] = v41
-            push(a19)
+
+        local d = math.clamp(math.floor((a133 / 4) + 0.5) * 4, 52, 170)
+        local v136 = clampInside({x = v134.x, y = v134.y, d = d})
+
+        if valid(a132, v136) then
+            v53[a132] = v136
+            push(a132)
             paintHandles()
+
             return true
-        else
-            local v42 = os.clock() + 1.2
-            u7 = "NO ROOM"
-            u8 = v42
-            paintHandles()
-            return false
         end
+
+        local v137 = os.clock() + 1.2
+        text = "NO ROOM"
+        v58 = v137
+        paintHandles()
+
+        return false
     end
-    local u10 = nil
-    local function pointerOf(a21)
+
+    local v138 = nil
+
+    local function pointerOf(a140)
         --[[
           name: pointerOf
           line: 300
           upvalues:
-            u4 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
+            ui2 (ref,  index: 1)
+            ui (copy, index: 2)
         ]]
-        if a21.UserInputType ~= Enum.UserInputType.Touch then
-            return UI_upv_1.PointerAbs() - u4.AbsolutePosition
+        local ui3 = ui2
+
+        if a140.UserInputType == Enum.UserInputType.Touch then
+            return Vector2.new(a140.Position.X, a140.Position.Y) - ui3.AbsolutePosition
         end
-        return Vector2.new(a21.Position.X, a21.Position.Y) - u4.AbsolutePosition
+
+        return ui.PointerAbs() - ui3.AbsolutePosition
     end
-    local function hideOthers(a22)
+
+    local function hideOthers(a143)
         --[[
           name: hideOthers
           line: 309
           upvalues:
-            a1 (copy, index: 1)
-            u1 (ref,  index: 2)
+            a18 (copy, index: 1)
+            v8 (ref,  index: 2)
+            textChatService (copy, index: 3)
+            starterGui (copy, index: 4)
         ]]
-        a1.SetHudHidden("TouchEditor", a22)
-        if a1.TopbarSettings and a1.TopbarSettings.SetHidden then
-            a1.TopbarSettings.SetHidden("TouchEditor", a22)
+        a18.SetHudHidden("TouchEditor", a143)
+
+        if a18.TopbarSettings and a18.TopbarSettings.SetHidden then
+            a18.TopbarSettings.SetHidden("TouchEditor", a143)
         end
-        if a22 then
-            if u1 then
+
+        if a143 then
+            if v8 then
                 return
             end
-            local tbl_8 = {}
-            pcall(function() end)
-            u1 = tbl_8
-        else
-            local v43 = u1
-            if not v43 then
-                return
-            end
-            u1 = nil
-            pcall(function() end)
+
+            local v144 = {}
+
+            pcall(
+                function()
+                    --[[
+                      line: 38
+                      upvalues:
+                        textChatService (copy, index: 1)
+                        v144 (copy, index: 2)
+                        starterGui (copy, index: 3)
+                    ]]
+                    local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                    local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                    if chatWindowConfiguration then
+                        v144.window = chatWindowConfiguration.Enabled
+                        chatWindowConfiguration.Enabled = false
+                    end
+
+                    if chatInputBarConfiguration then
+                        v144.bar = chatInputBarConfiguration.Enabled
+                        chatInputBarConfiguration.Enabled = false
+                    end
+
+                    v144.core = starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
+                    starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+                end
+            )
+
+            v8 = v144
+
+            return
         end
+
+        local v147 = v8
+        if not v147 then
+            return
+        end
+
+        v8 = nil
+
+        pcall(
+            function()
+                --[[
+                  line: 60
+                  upvalues:
+                    textChatService (copy, index: 1)
+                    v147 (copy, index: 2)
+                    starterGui (copy, index: 3)
+                ]]
+                local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                if chatWindowConfiguration and v147.window ~= nil then
+                    chatWindowConfiguration.Enabled = v147.window
+                end
+
+                if chatInputBarConfiguration and v147.bar ~= nil then
+                    chatInputBarConfiguration.Enabled = v147.bar
+                end
+
+                if v147.core ~= nil then
+                    starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, v147.core)
+                end
+            end
+        )
     end
-    local u11 = nil
+
+    local v150 = nil
+
     local function build()
         --[[
           name: build
           line: 322
           upvalues:
-            PlayerGui_upv_1 (copy, index: 1)
-            u3 (ref,  index: 2)
-            UI_upv_1 (copy, index: 3)
-            Colors_upv_1 (copy, index: 4)
-            u4 (ref,  index: 5)
-            u5 (ref,  index: 6)
+            playerGui (copy, index: 1)
+            screenGui (ref,  index: 2)
+            ui (copy, index: 3)
+            colors (copy, index: 4)
+            ui2 (ref,  index: 5)
+            name2 (ref,  index: 6)
             paintHandles (copy, index: 7)
-            Fonts_upv_1 (copy, index: 8)
-            RunService_upv_1 (copy, index: 9)
-            u2 (ref,  index: 10)
+            fonts (copy, index: 8)
+            runService (copy, index: 9)
+            editing (ref,  index: 10)
             hotbarRect (copy, index: 11)
-            tbl_upv_3 (copy, index: 12)
-            Theme_upv_1 (copy, index: 13)
-            tbl_upv_4 (copy, index: 14)
-            u10 (ref,  index: 15)
-            tbl_upv_5 (copy, index: 16)
-            a1 (copy, index: 17)
-            u9 (ref,  index: 18)
-            GuiService_upv_1 (copy, index: 19)
-            u6 (ref,  index: 20)
+            v17 (copy, index: 12)
+            theme (copy, index: 13)
+            v52 (copy, index: 14)
+            v138 (ref,  index: 15)
+            v53 (copy, index: 16)
+            a18 (copy, index: 17)
+            ui4 (ref,  index: 18)
+            guiService (copy, index: 19)
+            ui3 (ref,  index: 20)
             tryResize (copy, index: 21)
             readLive (copy, index: 22)
-            u11 (ref,  index: 23)
-            UserInputService_upv_1 (copy, index: 24)
+            v150 (ref,  index: 23)
+            userInputService (copy, index: 24)
             tryMove (copy, index: 25)
         ]]
-        local v44 = Instance.new("ScreenGui")
-        v44.Name = "TR_TouchEditor"
-        v44.ResetOnSpawn = false
-        v44.IgnoreGuiInset = true
-        v44.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
-        v44.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        v44.DisplayOrder = 60
-        v44.Enabled = false
-        v44.Parent = PlayerGui_upv_1
-        u3 = v44
-        local u12 = UI_upv_1.new("TextButton", {BackgroundTransparency = 0.72, Name = "Root", AutoButtonColor = false, Text = "", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Void, Parent = v44})
-        u4 = u12
-        local v45 = UI_upv_1.new("Frame", {ClipsDescendants = true, Name = "Grid", Size = UDim2.fromScale(1, 1), Parent = u12})
-        for n_1 = 1, 60 do
-            UI_upv_1.new("Frame", {BackgroundTransparency = 0.94, BorderSizePixel = 0, Position = UDim2.fromOffset((n_1 * 8) * 4, 0), Size = UDim2.new(0, 1, 1, 0), BackgroundColor3 = Colors_upv_1.Text, Parent = v45})
-            UI_upv_1.new("Frame", {BackgroundTransparency = 0.94, BorderSizePixel = 0, Position = UDim2.fromOffset(0, (n_1 * 8) * 4), Size = UDim2.new(1, 0, 0, 1), BackgroundColor3 = Colors_upv_1.Text, Parent = v45})
+        local trTouchEditor = Instance.new("ScreenGui")
+        trTouchEditor.Name = "TR_TouchEditor"
+        trTouchEditor.ResetOnSpawn = false
+        trTouchEditor.IgnoreGuiInset = true
+        trTouchEditor.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+        trTouchEditor.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        trTouchEditor.DisplayOrder = 60
+        trTouchEditor.Enabled = false
+        trTouchEditor.Parent = playerGui
+        screenGui = trTouchEditor
+        local parent = ui.new("TextButton", {Name = "Root", BackgroundTransparency = 0.72, Text = "", AutoButtonColor = false, Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, Parent = trTouchEditor})
+        ui2 = parent
+        local parent2 = ui.new("Frame", {Name = "Grid", ClipsDescendants = true, Size = UDim2.fromScale(1, 1), Parent = parent})
+
+        for index = 1, 60 do
+            ui.new("Frame", {BackgroundTransparency = 0.94, BorderSizePixel = 0, Position = UDim2.fromOffset((index * 8) * 4, 0), Size = UDim2.new(0, 1, 1, 0), BackgroundColor3 = colors.Text, Parent = parent2})
+            ui.new("Frame", {BackgroundTransparency = 0.94, BorderSizePixel = 0, Position = UDim2.fromOffset(0, (index * 8) * 4), Size = UDim2.new(1, 0, 0, 1), BackgroundColor3 = colors.Text, Parent = parent2})
         end
-        u12.Activated:Connect(
+
+        parent.Activated:Connect(
             function()
                 --[[
                   line: 349
                   upvalues:
-                    u5 (ref,  index: 1)
+                    name2 (ref,  index: 1)
                     paintHandles (copy, index: 2)
                 ]]
-                u5 = nil
+                name2 = nil
                 paintHandles()
             end
         )
-        local tbl_9 = {}
-        tbl_9.Name = "HotbarZone"
-        tbl_9.BackgroundColor3 = Colors_upv_1.Text
-        tbl_9.BackgroundTransparency = 0.9
-        tbl_9.ZIndex = 2
-        tbl_9[1], tbl_9[2] = UI_upv_1.Corner(10), UI_upv_1.Stroke(Colors_upv_1.Text, 1, 0.7)
-        tbl_9.Parent = u12
-        local u13 = UI_upv_1.new("Frame", tbl_9)
-        UI_upv_1.new("TextLabel", {ZIndex = 2, Text = "HOTBAR", TextSize = 13, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, Parent = u13})
-        RunService_upv_1.Heartbeat:Connect(
+
+        local parent3 = ui.new("Frame", {Name = "HotbarZone", BackgroundColor3 = colors.Text, BackgroundTransparency = 0.9, ZIndex = 2, ui.Corner(10), (ui.Stroke(colors.Text, 1, 0.7)), Parent = parent})
+        ui.new("TextLabel", {Text = "HOTBAR", TextSize = 13, ZIndex = 2, Size = UDim2.fromScale(1, 1), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, Parent = parent3})
+
+        runService.Heartbeat:Connect(
             function()
                 --[[
                   line: 371
                   upvalues:
-                    u2 (ref,  index: 1)
+                    editing (ref,  index: 1)
                     hotbarRect (copy, index: 2)
-                    u13 (copy, index: 3)
+                    parent3 (copy, index: 3)
                 ]]
-                if u2 then
-                    local v46, v47 = hotbarRect()
-                    u13.Position = UDim2.fromOffset(v46.X, v46.Y)
-                    u13.Size = UDim2.fromOffset(v47.X, v47.Y)
+                if editing then
+                    local vector2, v158 = hotbarRect()
+                    parent3.Position = UDim2.fromOffset(vector2.X, vector2.Y)
+                    parent3.Size = UDim2.fromOffset(v158.X, v158.Y)
                 end
             end
         )
-        for _, value_upv_6 in tbl_upv_3 do
-            local v48 = UI_upv_1.new("TextButton", {Name = value_upv_6.name, AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Colors_upv_1.Accent, BackgroundTransparency = 0.9, Text = "", AutoButtonColor = false, ZIndex = 5, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u12})
-            local v49 = UI_upv_1.Stroke(Colors_upv_1.Text, 2, 0.35)
-            v49.Parent = v48
-            local v50 = UI_upv_1.new("TextLabel", {ZIndex = 5, TextSize = 12, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, 4), Size = UDim2.fromOffset(120, 16), Text = value_upv_6.label, FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, Parent = v48})
-            UI_upv_1.TextStroke(Colors_upv_1.Void, 1, 0.3).Parent = v50
-            local tbl_10 = {}
-            tbl_10.Name = "Resize"
-            tbl_10.AnchorPoint = Vector2.new(0.5, 0.5)
-            tbl_10.Position = UDim2.fromScale(0.854, 0.854)
-            tbl_10.Size = UDim2.fromOffset(30, 30)
-            tbl_10.BackgroundColor3 = Colors_upv_1.Accent
-            tbl_10.Text = ""
-            tbl_10.AutoButtonColor = false
-            tbl_10.Visible = false
-            tbl_10.ZIndex = 7
-            tbl_10[1], tbl_10[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Text, 2, 0)
-            tbl_10.Parent = v48
-            local v51 = UI_upv_1.new("TextButton", tbl_10)
-            tbl_upv_4[value_upv_6.name] = {spec = value_upv_6, frame = v48, stroke = v49, label = v50, knob = v51}
-            local function begin_upv_1(a23, a24)
+
+        for _, spec in v17 do
+            local ui5 = ui.new("TextButton", {Name = spec.name, AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = colors.Accent, BackgroundTransparency = 0.9, Text = "", AutoButtonColor = false, ZIndex = 5, (ui.Corner(theme.Radius.Pill)), Parent = parent})
+            local stroke = ui.Stroke(colors.Text, 2, 0.35)
+            stroke.Parent = ui5
+            local ui6 = ui.new("TextLabel", {TextSize = 12, ZIndex = 5, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, 4), Size = UDim2.fromOffset(120, 16), Text = spec.label, FontFace = fonts.Heavy, TextColor3 = colors.TextDim, Parent = ui5})
+            ui.TextStroke(colors.Void, 1, 0.3).Parent = ui6
+            local knob = ui.new("TextButton", {Name = "Resize", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.854, 0.854), Size = UDim2.fromOffset(30, 30), BackgroundColor3 = colors.Accent, Text = "", AutoButtonColor = false, Visible = false, ZIndex = 7, ui.Corner(theme.Radius.Pill), (ui.Stroke(colors.Text, 2, 0)), Parent = ui5})
+            v52[spec.name] = {spec = spec, frame = ui5, stroke = stroke, label = ui6, knob = knob}
+
+            local function begin(input, mode: string)
                 --[[
                   name: begin
                   line: 420
                   upvalues:
-                    u10 (ref,  index: 1)
-                    tbl_upv_5 (copy, index: 2)
-                    value_upv_6 (copy, index: 3)
-                    u5 (ref,  index: 4)
-                    u4 (ref,  index: 5)
-                    UI_upv_1 (copy, index: 6)
+                    v138 (ref,  index: 1)
+                    v53 (copy, index: 2)
+                    spec (copy, index: 3)
+                    name2 (ref,  index: 4)
+                    ui2 (ref,  index: 5)
+                    ui (copy, index: 6)
                     paintHandles (copy, index: 7)
-                    a1 (copy, index: 8)
+                    a18 (copy, index: 8)
                 ]]
-                local UserInputType_1 = a23.UserInputType
-                if UserInputType_1 ~= Enum.UserInputType.Touch and UserInputType_1 ~= Enum.UserInputType.MouseButton1 or a23.UserInputState ~= Enum.UserInputState.Begin or u10 then
+                local userInputType = input.UserInputType
+
+                if userInputType ~= Enum.UserInputType.Touch and userInputType ~= Enum.UserInputType.MouseButton1
+                    or input.UserInputState ~= Enum.UserInputState.Begin
+                    or v138
+                then
                     return
                 end
-                local v52 = tbl_upv_5[value_upv_6.name]
-                if not v52 then
+
+                local v169 = v53[spec.name]
+                if not v169 then
                     return
                 end
-                u5 = value_upv_6.name
-                local v53 = ((a23.UserInputType ~= Enum.UserInputType.Touch) and (UI_upv_1.PointerAbs() - u4.AbsolutePosition)) or (Vector2.new(a23.Position.X, a23.Position.Y) - u4.AbsolutePosition)
-                local v54 = v53 - Vector2.new(v52.x, v52.y)
-                local tbl_11 = {}
-                tbl_11.input = a23
-                tbl_11.name = value_upv_6.name
-                tbl_11.mode = a24
-                tbl_11.offset = v54
-                tbl_11.d0 = v52.d
-                tbl_11.dist0 = math.max(v54.Magnitude, 8)
-                u10 = tbl_11
+
+                name2 = spec.name
+                local ui3 = ui2
+                local v171 = if input.UserInputType == Enum.UserInputType.Touch then Vector2.new(input.Position.X, input.Position.Y) - ui3.AbsolutePosition else ui.PointerAbs() - ui3.AbsolutePosition
+                local offset = v171 - Vector2.new(v169.x, v169.y)
+                v138 = {input = input, name = spec.name, mode = mode, offset = offset, d0 = v169.d, dist0 = math.max(offset.Magnitude, 8)}
                 paintHandles()
-                a1.Sounds.Play("Select")
+                a18.Sounds.Play("Select")
             end
-            v48.InputBegan:Connect(
-                function(a25)
+
+            ui5.InputBegan:Connect(
+                function(input)
                     --[[
                       line: 436
                       upvalues:
-                        begin_upv_1 (copy, index: 1)
+                        begin (copy, index: 1)
                     ]]
-                    begin_upv_1(a25, "move")
+                    begin(input, "move")
                 end
             )
-            v51.InputBegan:Connect(
-                function(a26)
+            knob.InputBegan:Connect(
+                function(input)
                     --[[
                       line: 439
                       upvalues:
-                        begin_upv_1 (copy, index: 1)
+                        begin (copy, index: 1)
                     ]]
-                    begin_upv_1(a26, "resize")
+                    begin(input, "resize")
                 end
             )
         end
-        local tbl_12 = {}
-        tbl_12.Name = "Toolbar"
-        tbl_12.AnchorPoint = Vector2.new(0, 0.5)
-        tbl_12.Size = UDim2.fromOffset(476, 44)
-        tbl_12.BackgroundColor3 = Colors_upv_1.Panel
-        tbl_12.BackgroundTransparency = 0.08
-        tbl_12.ZIndex = 10
-        tbl_12[1], tbl_12[2], tbl_12[3], tbl_12[4] = UI_upv_1.Corner(14), UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.88), UI_upv_1.Padding(0, 4), UI_upv_1.List(Enum.FillDirection.Horizontal, 4, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)
-        tbl_12.Parent = u12
-        local u14 = UI_upv_1.new("Frame", tbl_12)
-        u9 = u14
-        local u15 = UI_upv_1.new("UIScale", {Parent = u14})
-        local function placeBar_1()
+
+        local parent4 = ui.new("Frame", {Name = "Toolbar", AnchorPoint = Vector2.new(0, 0.5), Size = UDim2.fromOffset(476, 44), BackgroundColor3 = colors.Panel, BackgroundTransparency = 0.08, ZIndex = 10, ui.Corner(14), ui.Stroke(colors.Stroke, 1, 0.88), ui.Padding(0, 4), (ui.List(Enum.FillDirection.Horizontal, 4, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)), Parent = parent})
+        ui4 = parent4
+        local ui7 = ui.new("UIScale", {Parent = parent4})
+
+        local function placeBar()
             --[[
               name: placeBar
               line: 461
               upvalues:
-                u12 (copy, index: 1)
-                GuiService_upv_1 (copy, index: 2)
-                u15 (copy, index: 3)
-                u14 (copy, index: 4)
+                parent (copy, index: 1)
+                guiService (copy, index: 2)
+                ui7 (copy, index: 3)
+                parent4 (copy, index: 4)
             ]]
-            local AbsoluteSize_5 = u12.AbsoluteSize
-            local TopbarInset_2 = GuiService_upv_1.TopbarInset
-            local v55 = ((AbsoluteSize_5.X >= 1000) and 1.15) or 1
-            local v56 = 12
-            local v57 = (v55 * 44) / 2 + 8
-            local v58 = AbsoluteSize_5.X - 12
-            if TopbarInset_2.Height > 0 then
-                v56 = TopbarInset_2.Min.X + 8
-                v57 = TopbarInset_2.Min.Y + TopbarInset_2.Height / 2
-                v58 = math.min(v58, TopbarInset_2.Max.X - 8)
-            end
-            local v59 = math.min(v55, (v58 - v56) / 476)
-            if v59 >= 0.8 then
-                u15.Scale = v59
-                u14.Position = UDim2.fromOffset(v56, v57)
+            local v178
+            local absoluteSize = parent.AbsoluteSize
+            local topbarInset = guiService.TopbarInset
+
+            if not (1000 <= absoluteSize.X) then
+                v178 = 1
             else
-                local v60 = math.min(v55, (AbsoluteSize_5.X - 24) / 476)
-                u15.Scale = v60
-                u14.Position = UDim2.fromOffset((AbsoluteSize_5.X - (v60 * 476)) / 2, (math.max(v57 + 22, 44) + 6) + ((v60 * 44) / 2))
+                v178 = 1.15
             end
+
+            local v181 = 12
+            local v182 = (v178 * 44) / 2 + 8
+            local v183 = absoluteSize.X - 12
+
+            if 0 < topbarInset.Height then
+                v181 = topbarInset.Min.X + 8
+                v182 = topbarInset.Min.Y + topbarInset.Height / 2
+                v183 = math.min(v183, topbarInset.Max.X - 8)
+            end
+
+            local scale = math.min(v178, (v183 - v181) / 476)
+
+            if 0.8 <= scale then
+                ui7.Scale = scale
+                parent4.Position = UDim2.fromOffset(v181, v182)
+
+                return
+            end
+
+            local scale2 = math.min(v178, (absoluteSize.X - 24) / 476)
+            ui7.Scale = scale2
+            parent4.Position = UDim2.fromOffset((absoluteSize.X - (scale2 * 476)) / 2, math.max(v182 + 22, 44) + 6 + ((scale2 * 44) / 2))
         end
-        placeBar_1()
-        u12:GetPropertyChangedSignal("AbsoluteSize"):Connect(placeBar_1)
-        GuiService_upv_1:GetPropertyChangedSignal("TopbarInset"):Connect(placeBar_1)
-        local v61 = UI_upv_1.new("TextLabel", {LayoutOrder = 1, Text = "", Name = "Selected", ZIndex = 10, TextSize = 14, Size = UDim2.fromOffset(116, 36), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, TextTruncate = Enum.TextTruncate.AtEnd, Parent = u14})
-        u6 = v61
-        local function stepBtn_1(a27, a28, a29, a30)
+
+        placeBar()
+        parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(placeBar)
+        guiService:GetPropertyChangedSignal("TopbarInset"):Connect(placeBar)
+        ui3 = ui.new("TextLabel", {Name = "Selected", Text = "", TextSize = 14, LayoutOrder = 1, ZIndex = 10, Size = UDim2.fromOffset(116, 36), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, TextTruncate = Enum.TextTruncate.AtEnd, Parent = parent4})
+
+        local function stepBtn(name: string, iconName: string, layoutOrder: number, a190: number)
             --[[
               name: stepBtn
               line: 496
               upvalues:
-                UI_upv_1 (copy, index: 1)
-                Colors_upv_1 (copy, index: 2)
-                u14 (copy, index: 3)
-                u5 (ref,  index: 4)
-                tbl_upv_5 (copy, index: 5)
+                ui (copy, index: 1)
+                colors (copy, index: 2)
+                parent4 (copy, index: 3)
+                name2 (ref,  index: 4)
+                v53 (copy, index: 5)
                 tryResize (copy, index: 6)
-                a1 (copy, index: 7)
+                a18 (copy, index: 7)
             ]]
-            local tbl_13 = {IconScale = 0.42, Transparency = 0.1, ZIndex = 10}
-            tbl_13.Name = a27
-            tbl_13.IconName = a28
-            tbl_13.Size = UDim2.fromOffset(36, 36)
-            tbl_13.Color = Colors_upv_1.Raised
-            tbl_13.LayoutOrder = a29
-            tbl_13.Parent = u14
-            UI_upv_1.IconButton(tbl_13).Activated:Connect(
+            local v191 = ui.IconButton({IconScale = 0.42, Transparency = 0.1, ZIndex = 10, Name = name, IconName = iconName, Size = UDim2.fromOffset(36, 36), Color = colors.Raised, LayoutOrder = layoutOrder, Parent = parent4})
+
+            v191.Activated:Connect(
                 function()
                     --[[
                       line: 508
                       upvalues:
-                        u5 (ref,  index: 1)
-                        tbl_upv_5 (copy, index: 2)
+                        name2 (ref,  index: 1)
+                        v53 (copy, index: 2)
                         tryResize (copy, index: 3)
-                        a30 (copy, index: 4)
-                        a1 (copy, index: 5)
+                        a190 (copy, index: 4)
+                        a18 (copy, index: 5)
                     ]]
-                    if not u5 or not tbl_upv_5[u5] then
-                        return
-                    end
-                    if tryResize(u5, tbl_upv_5[u5].d + a30) then
-                        local Play_1 = a1.Sounds.Play
-                        local tbl_14 = {pitch = 0}
-                        tbl_14.pitch = ((a30 > 0) and 1.15) or 0.9
-                        Play_1("Tick", tbl_14)
-                    else
-                        a1.Sounds.Play("Error")
+                    if name2 and v53[name2] then
+                        if tryResize(name2, v53[name2].d + a190) then
+                            local pitch
+                            local play = a18.Sounds.Play
+                            local v194 = {}
+
+                            if not (0 < a190) then
+                                pitch = 0.9
+                            else
+                                pitch = 1.15
+                            end
+
+                            v194.pitch = pitch
+                            play("Tick", v194)
+                        else
+                            a18.Sounds.Play("Error")
+                        end
                     end
                 end
             )
         end
-        stepBtn_1("Smaller", "minus", 2, -8)
-        stepBtn_1("Bigger", "plus", 3, 8)
-        UI_upv_1.new("Frame", {LayoutOrder = 4, Name = "Gap", Size = UDim2.fromOffset(6, 1), Parent = u14})
-        local function action_1(a31, a32, a33, a34, a35, a36)
+
+        stepBtn("Smaller", "minus", 2, -8)
+        stepBtn("Bigger", "plus", 3, 8)
+        ui.new("Frame", {Name = "Gap", LayoutOrder = 4, Size = UDim2.fromOffset(6, 1), Parent = parent4})
+
+        local function action(name: string, text: string, style: string, a199: number, layoutOrder: number, a201)
             --[[
               name: action
               line: 521
               upvalues:
-                UI_upv_1 (copy, index: 1)
-                u14 (copy, index: 2)
+                ui (copy, index: 1)
+                parent4 (copy, index: 2)
             ]]
-            local tbl_15 = {Radius = 10, ZIndex = 10, TextSize = 15}
-            tbl_15.Name = a31
-            tbl_15.Text = a32
-            tbl_15.Style = a33
-            tbl_15.Size = UDim2.fromOffset(a34, 36)
-            tbl_15.LayoutOrder = a35
-            tbl_15.Parent = u14
-            UI_upv_1.Button(tbl_15).Activated:Connect(a36)
+            local v202 = ui.Button({TextSize = 15, Radius = 10, ZIndex = 10, Name = name, Text = text, Style = style, Size = UDim2.fromOffset(a199, 36), LayoutOrder = layoutOrder, Parent = parent4})
+            v202.Activated:Connect(a201)
         end
-        action_1(
+
+        action(
             "Reset",
             "RESET",
             "Dark",
@@ -956,38 +983,38 @@ function tbl_1.Init(a1)
                 --[[
                   line: 525
                   upvalues:
-                    tbl_upv_3 (copy, index: 1)
-                    PlayerGui_upv_1 (copy, index: 2)
+                    v17 (copy, index: 1)
+                    playerGui (copy, index: 2)
                     readLive (copy, index: 3)
-                    tbl_upv_5 (copy, index: 4)
+                    v53 (copy, index: 4)
                     paintHandles (copy, index: 5)
                 ]]
-                local v62 = nil
-                for _, value_7 in tbl_upv_3 do
-                    local v63 = PlayerGui_upv_1:FindFirstChild(value_7.gui)
-                    if not (v63) or not (v63:IsA("ScreenGui")) then
-                        v62 = nil
-                        if v62 then
-                            v62:SetAttribute("Override_" .. value_7.name, nil)
-                            continue
-                        end
+                for _, v204 in v17 do
+                    local v205 = playerGui:FindFirstChild(v204.gui)
+
+                    if not v205 or not v205:IsA("ScreenGui") then
+                        v205 = nil
                     end
-                    v62 = v63
-                    if v62 then
-                        v62:SetAttribute("Override_" .. value_7.name, nil)
+
+                    if v205 then
+                        v205:SetAttribute("Override_" .. v204.name, nil)
                     end
                 end
+
                 task.wait()
                 task.wait()
                 readLive()
-                for key_3 in tbl_upv_5 do
-                    tbl_upv_5[key_3].x = math.floor((tbl_upv_5[key_3].x / 8) + 0.5) * 8
-                    tbl_upv_5[key_3].y = math.floor((tbl_upv_5[key_3].y / 8) + 0.5) * 8
+
+                for v206 in v53 do
+                    v53[v206].x = math.floor((v53[v206].x / 8) + 0.5) * 8
+                    v53[v206].y = math.floor((v53[v206].y / 8) + 0.5) * 8
                 end
+
                 paintHandles()
             end
         )
-        action_1(
+
+        action(
             "Cancel",
             "CANCEL",
             "Dark",
@@ -997,12 +1024,12 @@ function tbl_1.Init(a1)
                 --[[
                   line: 541
                   upvalues:
-                    u11 (ref, index: 1)
+                    v150 (ref, index: 1)
                 ]]
-                u11(false)
+                v150(false)
             end
         )
-        action_1(
+        action(
             "Save",
             "SAVE",
             "Primary",
@@ -1012,345 +1039,374 @@ function tbl_1.Init(a1)
                 --[[
                   line: 544
                   upvalues:
-                    u11 (ref, index: 1)
+                    v150 (ref, index: 1)
                 ]]
-                u11(true)
+                v150(true)
             end
         )
-        UserInputService_upv_1.InputChanged:Connect(
-            function(a37)
+
+        userInputService.InputChanged:Connect(
+            function(input2: InputObject)
                 --[[
                   line: 549
                   upvalues:
-                    u10 (ref,  index: 1)
-                    u4 (ref,  index: 2)
-                    UI_upv_1 (copy, index: 3)
-                    tbl_upv_5 (copy, index: 4)
+                    v138 (ref,  index: 1)
+                    ui2 (ref,  index: 2)
+                    ui (copy, index: 3)
+                    v53 (copy, index: 4)
                     tryMove (copy, index: 5)
                     tryResize (copy, index: 6)
                 ]]
-                if not u10 then
+                local v208 = v138
+                if not v208 then
                     return
                 end
-                if u10.input.UserInputType ~= Enum.UserInputType.Touch then
-                    if a37.UserInputType ~= Enum.UserInputType.MouseMovement then
+
+                if v208.input.UserInputType ~= Enum.UserInputType.Touch then
+                    if input2.UserInputType ~= Enum.UserInputType.MouseMovement then
                         return
                     end
-                elseif a37 ~= u10.input then
+                elseif input2 ~= v208.input then
                     return
                 end
-                local input_1 = u10.input
-                local v64 = ((input_1.UserInputType ~= Enum.UserInputType.Touch) and (UI_upv_1.PointerAbs() - u4.AbsolutePosition)) or (Vector2.new(input_1.Position.X, input_1.Position.Y) - u4.AbsolutePosition)
-                local v65 = tbl_upv_5[u10.name]
-                if not v65 then
+
+                local input = v208.input
+                local ui3 = ui2
+                local v211 = if input.UserInputType == Enum.UserInputType.Touch then Vector2.new(input.Position.X, input.Position.Y) - ui3.AbsolutePosition else ui.PointerAbs() - ui3.AbsolutePosition
+                local v212 = v53[v208.name]
+                if not v212 then
                     return
                 end
-                if u10.mode ~= "move" then
-                    tryResize(u10.name, (u10.d0 * (v64 - Vector2.new(v65.x, v65.y)).Magnitude) / u10.dist0)
-                else
-                    tryMove(u10.name, {x = v64.X - u10.offset.X, y = v64.Y - u10.offset.Y, d = v65.d})
+
+                if v208.mode == "move" then
+                    tryMove(v208.name, {x = v211.X - v208.offset.X, y = v211.Y - v208.offset.Y, d = v212.d})
+                    return
                 end
+
+                local magnitude = (v211 - Vector2.new(v212.x, v212.y)).Magnitude
+                tryResize(v208.name, v208.d0 * magnitude / v208.dist0)
             end
         )
-        local function ended_1(a38)
+
+        local function ended(inputObject: InputObject)
             --[[
               name: ended
               line: 574
               upvalues:
-                u10 (ref, index: 1)
+                v138 (ref, index: 1)
             ]]
-            if not u10 then
+            local v216 = v138
+            if not v216 then
                 return
             end
-            if u10.input.UserInputType ~= Enum.UserInputType.Touch then
-                if a38.UserInputType ~= Enum.UserInputType.MouseButton1 then
+
+            if v216.input.UserInputType ~= Enum.UserInputType.Touch then
+                if inputObject.UserInputType ~= Enum.UserInputType.MouseButton1 then
                     return
                 end
-            elseif a38 ~= u10.input then
+            elseif inputObject ~= v216.input then
                 return
             end
-            u10 = nil
+
+            v138 = nil
         end
-        UserInputService_upv_1.InputEnded:Connect(ended_1)
-        UserInputService_upv_1.TouchEnded:Connect(ended_1)
-        RunService_upv_1.Heartbeat:Connect(
+
+        userInputService.InputEnded:Connect(ended)
+        userInputService.TouchEnded:Connect(ended)
+
+        runService.Heartbeat:Connect(
             function()
                 --[[
                   line: 593
                   upvalues:
-                    u2 (ref,  index: 1)
-                    u10 (ref,  index: 2)
-                    tbl_upv_5 (copy, index: 3)
+                    editing (ref,  index: 1)
+                    v138 (ref,  index: 2)
+                    v53 (copy, index: 3)
                     readLive (copy, index: 4)
                     paintHandles (copy, index: 5)
                 ]]
-                if not u2 then
+                if not editing then
                     return
                 end
-                local v66 = u10 and (u10.name)
-                local v67 = v66 and (tbl_upv_5[v66])
+
+                local name = v138 and v138.name
+                local v218 = name and v53[name]
                 readLive()
-                if v66 and v67 then
-                    tbl_upv_5[v66] = v67
+
+                if name and v218 then
+                    v53[name] = v218
                 end
+
                 paintHandles()
             end
         )
     end
+
     local function open()
         --[[
           name: open
           line: 607
           upvalues:
-            u2 (ref,  index: 1)
-            u3 (ref,  index: 2)
+            editing (ref,  index: 1)
+            screenGui (ref,  index: 2)
             build (copy, index: 3)
-            X_upv_1 (ref,  index: 4)
-            GuiService_upv_1 (copy, index: 5)
-            a1 (copy, index: 6)
-            u1 (ref,  index: 7)
-            TextChatService_upv_1 (copy, index: 8)
-            StarterGui_upv_1 (copy, index: 9)
-            tbl_upv_6 (copy, index: 10)
-            tbl_upv_3 (copy, index: 11)
-            PlayerGui_upv_1 (copy, index: 12)
-            u5 (ref,  index: 13)
-            u8 (ref,  index: 14)
-            tbl_upv_5 (copy, index: 15)
+            v86 (ref,  index: 4)
+            guiService (copy, index: 5)
+            a18 (copy, index: 6)
+            v8 (ref,  index: 7)
+            textChatService (copy, index: 8)
+            starterGui (copy, index: 9)
+            v54 (copy, index: 10)
+            v17 (copy, index: 11)
+            playerGui (copy, index: 12)
+            name2 (ref,  index: 13)
+            v58 (ref,  index: 14)
+            v53 (copy, index: 15)
             readLive (copy, index: 16)
             paintHandles (copy, index: 17)
         ]]
-        if not u2 then
-            if not (u3) then
-                build()
-            end
-            u2 = true
-            X_upv_1 = GuiService_upv_1.TopbarInset.Min.X
-            a1.MenuManager.CloseAll(true)
-            a1.MenuManager.PushMouse("TouchEditor")
-            a1.SetHudHidden("TouchEditor", true)
-            if a1.TopbarSettings and a1.TopbarSettings.SetHidden then
-                a1.TopbarSettings.SetHidden("TouchEditor", true)
-            end
-            if not (u1) then
-                local tbl_upv_16 = {}
-                pcall(
-                    function()
-                        --[[
-                          line: 38
-                          upvalues:
-                            TextChatService_upv_1 (copy, index: 1)
-                            tbl_upv_16 (copy, index: 2)
-                            StarterGui_upv_1 (copy, index: 3)
-                        ]]
-                        local v68 = TextChatService_upv_1:FindFirstChildOfClass("ChatWindowConfiguration")
-                        local v69 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                        if v68 then
-                            tbl_upv_16.window = v68.Enabled
-                            v68.Enabled = false
-                        end
-                        if v69 then
-                            tbl_upv_16.bar = v69.Enabled
-                            v69.Enabled = false
-                        end
-                        tbl_upv_16.core = StarterGui_upv_1:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
-                        StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
-                    end
-                )
-                u1 = tbl_upv_16
-            end
-            table.clear(tbl_upv_6)
-            local v70 = nil
-            for _, value_8 in tbl_upv_3 do
-                local v71 = PlayerGui_upv_1:FindFirstChild(value_8.gui)
-                if not (v71) or not (v71:IsA("ScreenGui")) then
-                    v70 = nil
-                    if v70 then
-                        tbl_upv_6[value_8.name] = v70:GetAttribute("Override_" .. value_8.name)
-                        v70:SetAttribute("EditPreview", true)
-                        continue
-                    end
-                end
-                v70 = v71
-                if v70 then
-                    tbl_upv_6[value_8.name] = v70:GetAttribute("Override_" .. value_8.name)
-                    v70:SetAttribute("EditPreview", true)
-                end
-            end
-            u5 = nil
-            u8 = 0
-            u3.Enabled = true
-            task.wait()
-            task.wait()
-            table.clear(tbl_upv_5)
-            readLive()
-            paintHandles()
-            a1.Sounds.Play("Open")
+        if editing then
+            return
         end
+
+        if not screenGui then
+            build()
+        end
+
+        editing = true
+        v86 = guiService.TopbarInset.Min.X
+        a18.MenuManager.CloseAll(true)
+        a18.MenuManager.PushMouse("TouchEditor")
+        a18.SetHudHidden("TouchEditor", true)
+
+        if a18.TopbarSettings and a18.TopbarSettings.SetHidden then
+            a18.TopbarSettings.SetHidden("TouchEditor", true)
+        end
+
+        if not v8 then
+            local v220 = {}
+
+            pcall(
+                function()
+                    --[[
+                      line: 38
+                      upvalues:
+                        textChatService (copy, index: 1)
+                        v220 (copy, index: 2)
+                        starterGui (copy, index: 3)
+                    ]]
+                    local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                    local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                    if chatWindowConfiguration then
+                        v220.window = chatWindowConfiguration.Enabled
+                        chatWindowConfiguration.Enabled = false
+                    end
+
+                    if chatInputBarConfiguration then
+                        v220.bar = chatInputBarConfiguration.Enabled
+                        chatInputBarConfiguration.Enabled = false
+                    end
+
+                    v220.core = starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
+                    starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+                end
+            )
+
+            v8 = v220
+        end
+
+        table.clear(v54)
+
+        for _, v224 in v17 do
+            local v225 = playerGui:FindFirstChild(v224.gui)
+
+            if not v225 or not v225:IsA("ScreenGui") then
+                v225 = nil
+            end
+
+            if v225 then
+                v54[v224.name] = v225:GetAttribute("Override_" .. v224.name)
+                v225:SetAttribute("EditPreview", true)
+            end
+        end
+
+        name2 = nil
+        v58 = 0
+        screenGui.Enabled = true
+        task.wait()
+        task.wait()
+        table.clear(v53)
+        readLive()
+        paintHandles()
+        a18.Sounds.Play("Open")
     end
-    u11 = function(a39)
+
+    v150 = function(a226)
         --[[
           line: 638
           upvalues:
-            u2 (ref,  index: 1)
-            u10 (ref,  index: 2)
-            tbl_upv_3 (copy, index: 3)
-            PlayerGui_upv_1 (copy, index: 4)
-            tbl_upv_6 (copy, index: 5)
-            u3 (ref,  index: 6)
-            a1 (copy, index: 7)
-            u1 (ref,  index: 8)
-            TextChatService_upv_1 (copy, index: 9)
-            StarterGui_upv_1 (copy, index: 10)
-            State_upv_1 (copy, index: 11)
+            editing (ref,  index: 1)
+            v138 (ref,  index: 2)
+            v17 (copy, index: 3)
+            playerGui (copy, index: 4)
+            v54 (copy, index: 5)
+            screenGui (ref,  index: 6)
+            a18 (copy, index: 7)
+            v8 (ref,  index: 8)
+            textChatService (copy, index: 9)
+            starterGui (copy, index: 10)
+            state (copy, index: 11)
             applySaved (copy, index: 12)
         ]]
-        if not u2 then
+        if not editing then
             return
         end
-        u10 = nil
-        local tbl_upv_17 = {}
-        local v72, v73 = nil, nil
-        for _, value_9 in tbl_upv_3 do
-            local v74 = PlayerGui_upv_1:FindFirstChild(value_9.gui)
-            if not (v74) or not (v74:IsA("ScreenGui")) then
-                v72 = nil
-                if not (v72) then
-                    continue
+
+        v138 = nil
+        local v227 = {}
+
+        for _, v229 in v17 do
+            local v230 = playerGui:FindFirstChild(v229.gui)
+
+            if not v230 or not v230:IsA("ScreenGui") then
+                v230 = nil
+            end
+
+            if v230 then
+                local v231 = v230:GetAttribute("Override_" .. v229.name)
+                local name = v229.name
+
+                if type(v231) ~= "string" then
+                    v231 = ""
                 end
-                v74 = v72:GetAttribute("Override_" .. value_9.name)
-                local name_1 = value_9.name
-                if type(v74) ~= "string" then
-                    v73 = ""
-                else
-                    v73 = v74
+
+                v227[name] = v231
+
+                if not a226 then
+                    v230:SetAttribute("Override_" .. v229.name, v54[v229.name])
                 end
-                tbl_upv_17[name_1] = v73
-                if not (a39) then
-                    v72:SetAttribute("Override_" .. value_9.name, tbl_upv_6[value_9.name])
-                end
-                v72:SetAttribute("EditPreview", nil)
+
+                v230:SetAttribute("EditPreview", nil)
             end
-            v72 = v74
-            if not (v72) then
-                continue
-            end
-            v74 = v72:GetAttribute("Override_" .. value_9.name)
-            local name_1 = value_9.name
-            if type(v74) ~= "string" then
-                v73 = ""
-            else
-                v73 = v74
-            end
-            tbl_upv_17[name_1] = v73
-            if not (a39) then
-                v72:SetAttribute("Override_" .. value_9.name, tbl_upv_6[value_9.name])
-            end
-            v72:SetAttribute("EditPreview", nil)
         end
-        u3.Enabled = false
-        u2 = false
-        a1.MenuManager.PopMouse("TouchEditor")
-        a1.SetHudHidden("TouchEditor", false)
-        if a1.TopbarSettings and a1.TopbarSettings.SetHidden then
-            a1.TopbarSettings.SetHidden("TouchEditor", false)
+
+        screenGui.Enabled = false
+        editing = false
+        a18.MenuManager.PopMouse("TouchEditor")
+        a18.SetHudHidden("TouchEditor", false)
+
+        if a18.TopbarSettings and a18.TopbarSettings.SetHidden then
+            a18.TopbarSettings.SetHidden("TouchEditor", false)
         end
-        local u16 = u1
-        if u16 then
-            u1 = nil
+
+        if const v233 = v8 then
+            v8 = nil
+
             pcall(
                 function()
                     --[[
                       line: 60
                       upvalues:
-                        TextChatService_upv_1 (copy, index: 1)
-                        u16 (copy, index: 2)
-                        StarterGui_upv_1 (copy, index: 3)
+                        textChatService (copy, index: 1)
+                        v233 (copy, index: 2)
+                        starterGui (copy, index: 3)
                     ]]
-                    local v75 = TextChatService_upv_1:FindFirstChildOfClass("ChatWindowConfiguration")
-                    local v76 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                    if v75 and u16.window ~= nil then
-                        v75.Enabled = u16.window
+                    local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                    local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                    if chatWindowConfiguration and v233.window ~= nil then
+                        chatWindowConfiguration.Enabled = v233.window
                     end
-                    if v76 and u16.bar ~= nil then
-                        v76.Enabled = u16.bar
+
+                    if chatInputBarConfiguration and v233.bar ~= nil then
+                        chatInputBarConfiguration.Enabled = v233.bar
                     end
-                    if u16.core == nil then
-                        return
+
+                    if v233.core ~= nil then
+                        starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, v233.core)
                     end
-                    StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, u16.core)
                 end
             )
         end
-        if a39 then
-            a1.Sounds.Play("Equip")
-            local u17 = State_upv_1.Profile.settings
-            if type(u17) ~= "table" then
-                local tbl_18 = {}
-                State_upv_1.Profile.settings = tbl_18
-                u17 = tbl_18
-            end
-            task.spawn(
-                function()
-                    --[[
-                      line: 666
-                      upvalues:
-                        tbl_upv_3 (copy, index: 1)
-                        tbl_upv_17 (copy, index: 2)
-                        State_upv_1 (copy, index: 3)
-                        a1 (copy, index: 4)
-                        u17 (ref,  index: 5)
-                        applySaved (copy, index: 6)
-                    ]]
-                    local v77 = true
-                    local v78, v79 = nil, nil
-                    for _, value_10 in tbl_upv_3 do
-                        local v80 = tbl_upv_17[value_10.name] or ""
-                        local name_2 = value_10.name
-                        local v81 = State_upv_1.Profile and (State_upv_1.Profile.settings)
-                        v78 = false
-                        if type(v81) == "table" then
-                            v78 = v81["touch_" .. name_2]
-                        end
-                        if type(v78) ~= "string" then
-                            v79 = ""
-                        else
-                            v79 = v78
-                        end
-                        if v79 == v80 then
-                            continue
-                        end
-                        if a1.ProfileAction("SetSetting", "touch_" .. value_10.name, v80) then
-                            u17["touch_" .. value_10.name] = v80
-                        else
-                            v77 = false
-                        end
-                    end
-                    local Toast_1 = a1.Toast
-                    local v82 = (v77 and "Controls saved") or "Couldn't save every button"
-                    Toast_1(v82, (v77 and "info") or "error")
-                    applySaved()
-                end
-            )
+
+        if not a226 then
+            a18.Sounds.Play("Close")
+            return
+        end
+
+        local v236
+        a18.Sounds.Play("Equip")
+        local settings = state.Profile.settings
+
+        if type(settings) == "table" then
+            v236 = settings
         else
-            a1.Sounds.Play("Close")
+            local settings2 = {}
+            state.Profile.settings = settings2
+            v236 = settings2
         end
+
+        task.spawn(
+            function()
+                --[[
+                  line: 666
+                  upvalues:
+                    v17 (copy, index: 1)
+                    v227 (copy, index: 2)
+                    state (copy, index: 3)
+                    a18 (copy, index: 4)
+                    v236 (ref,  index: 5)
+                    applySaved (copy, index: 6)
+                ]]
+                local v239 = true
+
+                for _, v241 in v17 do
+                    local setting
+                    local v243 = v227[v241.name] or ""
+                    local name = v241.name
+                    local settings = state.Profile and state.Profile.settings
+                    local setting2 = type(settings) == "table" and settings["touch_" .. name]
+
+                    if type(setting2) == "string" then
+                        setting = setting2
+                    else
+                        setting = ""
+                    end
+
+                    if setting ~= v243 then
+                        if a18.ProfileAction("SetSetting", "touch_" .. v241.name, v243) then
+                            v236["touch_" .. v241.name] = v243
+                        else
+                            v239 = false
+                        end
+                    end
+                end
+
+                local toast = a18.Toast
+                local v248 = v239 and "Controls saved" or "Couldn't save every button"
+                local v249 = v239 and "info" or "error"
+                toast(v248, v249)
+                applySaved()
+            end
+        )
     end
-    State_upv_1.PlayerStateChanged:Connect(
+
+    state.PlayerStateChanged:Connect(
         function()
             --[[
               line: 688
               upvalues:
-                u2 (ref, index: 1)
-                u11 (ref, index: 2)
+                editing (ref, index: 1)
+                v150 (ref, index: 2)
             ]]
-            if not u2 then
-                return
+            if editing then
+                v150(false)
             end
-            u11(false)
         end
     )
-    a1.OpenTouchEditor = function()
+
+    a18.OpenTouchEditor = function()
         --[[
           line: 694
           upvalues:
@@ -1358,59 +1414,52 @@ function tbl_1.Init(a1)
         ]]
         task.spawn(open)
     end
-    a1.Debug.touchEditor = function(a40, a41, a42, a43)
+
+    a18.Debug.touchEditor = function(a250, key, a252, a253)
         --[[
           line: 697
           upvalues:
             open (copy, index: 1)
-            u11 (ref,  index: 2)
-            tbl_upv_5 (copy, index: 3)
+            v150 (ref,  index: 2)
+            v53 (copy, index: 3)
             tryMove (copy, index: 4)
             tryResize (copy, index: 5)
-            u9 (ref,  index: 6)
-            GuiService_upv_1 (copy, index: 7)
-            u2 (ref,  index: 8)
-            u5 (ref,  index: 9)
-            u6 (ref,  index: 10)
+            ui4 (ref,  index: 6)
+            guiService (copy, index: 7)
+            editing (ref,  index: 8)
+            name2 (ref,  index: 9)
+            ui3 (ref,  index: 10)
         ]]
-        local v85 = nil
-        if a40 == "open" then
+        if a250 == "open" then
             task.spawn(open)
-        elseif a40 == "save" then
-            u11(true)
-        elseif a40 == "cancel" then
-            u11(false)
-        elseif a40 == "move" and type(a41) == "string" and tbl_upv_5[a41] then
-            v85 = {y = 0, x = 0, d = 0}
-            v85.x = tonumber(a42) or tbl_upv_5[a41].x
-            v85.y = tonumber(a43) or tbl_upv_5[a41].y
-            v85.d = tbl_upv_5[a41].d
-            tryMove(a41, v85)
-        elseif a40 == "size" and type(a41) == "string" then
-            tryResize(a41, tonumber(a42) or 80)
+        elseif a250 == "save" then
+            v150(true)
+        elseif a250 == "cancel" then
+            v150(false)
+        elseif a250 == "move" and type(key) == "string" and v53[key] then
+            local v254 = {}
+            local v255 = tonumber(a252) or v53[key].x
+            v254.x = v255
+            local v256 = tonumber(a253) or v53[key].y
+            v254.y = v256
+            v254.d = v53[key].d
+            tryMove(key, v254)
+        elseif a250 == "size" and type(key) == "string" then
+            tryResize(key, (tonumber(a252) or 80))
         end
-        local tbl_20 = {}
-        for key_4, value_11 in tbl_upv_5 do
-            tbl_20[key_4] = string.format("%d,%d,%d", value_11.x, value_11.y, value_11.d)
+
+        local rects = {}
+
+        for v258, v259 in v53 do
+            rects[v258] = string.format("%d,%d,%d", v259.x, v259.y, v259.d)
         end
-        if u9 then
-            v85 = {}
-            v85.x = u9.AbsolutePosition.X
-            v85.y = u9.AbsolutePosition.Y
-            v85.w = u9.AbsoluteSize.X
-            v85.h = u9.AbsoluteSize.Y
-        else
-            v85 = nil
-        end
-        local TopbarInset_3 = GuiService_upv_1.TopbarInset
-        local tbl_21 = {label = 0}
-        tbl_21.editing = u2
-        tbl_21.rects = tbl_20
-        tbl_21.selected = u5
-        tbl_21.bar = v85
-        tbl_21.inset = {TopbarInset_3.Min.X, TopbarInset_3.Min.Y, TopbarInset_3.Max.X, TopbarInset_3.Max.Y}
-        tbl_21.label = u6 and (u6.Text)
-        return tbl_21
+
+        local bar = if const ui = ui4 then {x = ui.AbsolutePosition.X, y = ui.AbsolutePosition.Y, w = ui.AbsoluteSize.X, h = ui.AbsoluteSize.Y} else nil
+        local topbarInset = guiService.TopbarInset
+        local v263 = {editing = editing, rects = rects, selected = name2, bar = bar, inset = {topbarInset.Min.X, topbarInset.Min.Y, topbarInset.Max.X, topbarInset.Max.Y}}
+        v263.label = ui3 and ui3.Text
+        return v263
     end
 end
-return tbl_1
+
+return v7

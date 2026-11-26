@@ -1,3442 +1,3924 @@
-local Lighting_upv_1 = game:GetService("Lighting")
-local Players_upv_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local RunService_upv_1 = game:GetService("RunService")
-local TweenService_upv_1 = game:GetService("TweenService")
-local ContextActionService_upv_1 = game:GetService("ContextActionService")
-local ProximityPromptService_upv_1 = game:GetService("ProximityPromptService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local tbl_1 = {}
-local u1 = Font.new("rbxasset://fonts/families/Oswald.json", Enum.FontWeight.Bold)
-local fromRGB_upv_1 = Color3.fromRGB
-local tbl_upv_2 = {}
-tbl_upv_2.drop = {burst = 20, wiggle = 5, fit = 0.84, title = "DROP", model = "Drop", idle = 1.2, rays = 0.8, sparkle = 5, primary = fromRGB_upv_1(116, 158, 222), deep = fromRGB_upv_1(16, 28, 54), light = fromRGB_upv_1(186, 212, 246)}
-tbl_upv_2.victory = {burst = 30, wiggle = 6, fit = 1, title = "VICTORY DROP", model = "Victory", idle = 1.2, rays = 0.68, sparkle = 8, primary = fromRGB_upv_1(40, 150, 255), deep = fromRGB_upv_1(8, 32, 84), light = fromRGB_upv_1(148, 206, 255)}
-tbl_upv_2.golden = {burst = 54, legendary = true, wiggle = 8, fit = 0.98, title = "GOLDEN DROP", model = "Golden", idle = 1.55, rays = 0.52, sparkle = 16, primary = fromRGB_upv_1(255, 186, 46), deep = fromRGB_upv_1(92, 50, 4), light = fromRGB_upv_1(255, 226, 150)}
-local tbl_upv_3 = {hold = 0.55, flip = 0.2, openCrouch = 0.1, bar = 0.5, newItem = 2, cardOut = 0.16, dwell = 0.45, count = 0.42, openHold = 0.6, toCards = 0.42, fall = 0.42, cardFly = 0.32, settle = 0.5}
-tbl_upv_3.summaryAuto = {robux = 20, lobby = 20, match = 15}
-local tbl_upv_4 = {chestCardScale = 0.46, promptY = 332, barW = 330, cardH = 322, chestCardY = 290, titleY = -335, barY = 128, cardW = 232, stageW = 1200, chestY = 20, cardY = -64, stageH = 780}
-local tbl_upv_5 = {small = 10, starter = 0, large = 40, medium = 20}
-local tbl_upv_6 = {}
-tbl_upv_6.small = {10, 20, 40, 80}
-tbl_upv_6.medium = {20, 40, 80, 160}
-tbl_upv_6.large = {40, 80, 160, 320}
-tbl_upv_6.starter = {10, 20, 40, 80}
-function tbl_1.Init(a1)
+local lighting = game:GetService("Lighting")
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+local contextActionService = game:GetService("ContextActionService")
+local proximityPromptService = game:GetService("ProximityPromptService")
+local workspace = game:GetService("Workspace")
+local v9 = {}
+local fontFace = Font.new("rbxasset://fonts/families/Oswald.json", Enum.FontWeight.Bold)
+local color3FromRGB = Color3.fromRGB
+local v12 = {
+    drop = {title = "DROP", model = "Drop", fit = 0.84, rays = 0.8, burst = 20, sparkle = 5, idle = 1.2, wiggle = 5, primary = color3FromRGB(116, 158, 222), deep = color3FromRGB(16, 28, 54), light = color3FromRGB(186, 212, 246)},
+    victory = {title = "VICTORY DROP", model = "Victory", fit = 1, rays = 0.68, burst = 30, sparkle = 8, idle = 1.2, wiggle = 6, primary = color3FromRGB(40, 150, 255), deep = color3FromRGB(8, 32, 84), light = color3FromRGB(148, 206, 255)},
+    golden = {title = "GOLDEN DROP", model = "Golden", fit = 0.98, rays = 0.52, burst = 54, sparkle = 16, idle = 1.55, wiggle = 8, legendary = true, primary = color3FromRGB(255, 186, 46), deep = color3FromRGB(92, 50, 4), light = color3FromRGB(255, 226, 150)}
+}
+local v13 = {fall = 0.42, settle = 0.5, openCrouch = 0.1, openHold = 0.6, toCards = 0.42, cardFly = 0.32, flip = 0.2, count = 0.42, bar = 0.5, dwell = 0.45, cardOut = 0.16, newItem = 2, hold = 0.55, summaryAuto = {match = 15, lobby = 20, robux = 20}}
+local v14 = {stageH = 780, stageW = 1200, titleY = -335, chestY = 20, chestCardY = 290, chestCardScale = 0.46, cardY = -64, cardW = 232, cardH = 322, barY = 128, barW = 330, promptY = 332}
+local v15 = {small = 10, medium = 20, large = 40, starter = 0}
+local v16 = {small = {10, 20, 40, 80}, medium = {20, 40, 80, 160}, large = {40, 80, 160, 320}, starter = {10, 20, 40, 80}}
+
+function v9.Init(a17)
     --[[
       name: Init
       line: 103
       upvalues:
-        ReplicatedStorage_upv_1 (copy, index: 1)
-        Players_upv_1 (copy, index: 2)
-        tbl_upv_5 (copy, index: 3)
-        tbl_upv_6 (copy, index: 4)
-        TweenService_upv_1 (copy, index: 5)
-        fromRGB_upv_1 (copy, index: 6)
-        u1 (copy, index: 7)
-        Lighting_upv_1 (copy, index: 8)
-        tbl_upv_3 (copy, index: 9)
-        tbl_upv_4 (copy, index: 10)
-        Workspace_upv_1 (copy, index: 11)
-        ProximityPromptService_upv_1 (copy, index: 12)
-        tbl_upv_2 (copy, index: 13)
-        RunService_upv_1 (copy, index: 14)
-        ContextActionService_upv_1 (copy, index: 15)
+        replicatedStorage (copy, index: 1)
+        players (copy, index: 2)
+        v15 (copy, index: 3)
+        v16 (copy, index: 4)
+        tweenService (copy, index: 5)
+        color3FromRGB (copy, index: 6)
+        fontFace (copy, index: 7)
+        lighting (copy, index: 8)
+        v13 (copy, index: 9)
+        v14 (copy, index: 10)
+        workspace (copy, index: 11)
+        proximityPromptService (copy, index: 12)
+        v12 (copy, index: 13)
+        runService (copy, index: 14)
+        contextActionService (copy, index: 15)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local WeaponInfo_upv_1 = a1.WeaponInfo
-    local WeaponIcon_upv_1 = a1.WeaponIcon
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local u2 = UI_upv_1.Assets.Fx or {}
-    local Fx_upv_1 = require(script.Parent.Parent.Fx)
-    local Signal_1 = require(ReplicatedStorage_upv_1:WaitForChild("Shared"):WaitForChild("Signal"))
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local tbl_upv_7 = {}
-    tbl_upv_7.Changed = Signal_1.new()
-    a1.DropReveal = tbl_upv_7
-    local Shared_upv_1 = ReplicatedStorage_upv_1:WaitForChild("Shared")
-    local u3 = nil
-    local u4 = -math.huge
+    local buildChest
+    local v19
+    local v20
+    local ui = a17.UI
+    local theme = a17.Theme
+    local state = a17.State
+    local weaponInfo = a17.WeaponInfo
+    local weaponIcon = a17.WeaponIcon
+    local colors = theme.Colors
+    local fonts = theme.Fonts
+    local v28 = ui.Assets.Fx or {}
+    local Fx = require(script.Parent.Parent.Fx)
+    local Signal = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Signal"))
+    local localPlayer = players.LocalPlayer
+    local dropReveal = {Changed = Signal.new()}
+    a17.DropReveal = dropReveal
+    local shared = replicatedStorage:WaitForChild("Shared")
+    local result = nil
+    local timestamp = -math.huge
+
     local function shards()
         --[[
           name: shards
           line: 120
           upvalues:
-            u3 (ref,  index: 1)
-            u4 (ref,  index: 2)
-            Shared_upv_1 (copy, index: 3)
+            result (ref,  index: 1)
+            timestamp (ref,  index: 2)
+            shared (copy, index: 3)
         ]]
-        if u3 then
-            return u3
-        end
-        if os.clock() - u4 < 5 then
-            return nil
-        end
-        u4 = os.clock()
-        local Shards_1 = Shared_upv_1:FindFirstChild("Shards")
-        if Shards_1 and Shards_1:IsA("ModuleScript") then
-            local success_1, v1 = pcall(require, Shards_1)
-            if success_1 and type(v1) == "table" then
-                u3 = v1
+        if not result then
+            if os.clock() - timestamp < 5 then
+                return nil
+            end
+
+            timestamp = os.clock()
+            local shards = shared:FindFirstChild("Shards")
+
+            if shards and shards:IsA("ModuleScript") then
+                local success, result2 = pcall(require, shards)
+
+                if success and type(result2) == "table" then
+                    result = result2
+                end
             end
         end
-        return u3
+
+        return result
     end
-    local u5 = nil
-    local function sizeOf(a2)
+
+    local v40 = nil
+
+    local function sizeOf(a42)
         --[[
           name: sizeOf
           line: 138
           upvalues:
-            u5 (ref,  index: 1)
-            Shared_upv_1 (copy, index: 2)
+            v40 (ref,  index: 1)
+            shared (copy, index: 2)
         ]]
-        if not (u5) then
-            local success_2, v2 = pcall(require, Shared_upv_1:FindFirstChild("Unlocks"))
-            local v3
-            if (success_2) and type(v2) == "table" then
-                v3 = v2
+        if not v40 then
+            local success, result = pcall(require, (shared:FindFirstChild("Unlocks")))
+
+            if not success or type(result) ~= "table" then
+                v40 = {}
             else
-                v3 = {}
-            end
-            u5 = v3
-        end
-        if type(u5.SizeOf) == "function" then
-            local success_3, v4 = pcall(u5.SizeOf, a2)
-            if success_3 and type(v4) == "string" then
-                return v4
+                v40 = result
             end
         end
+
+        if type(v40.SizeOf) == "function" then
+            local success, result = pcall(v40.SizeOf, a42)
+
+            if success and type(result) == "string" then
+                return result
+            end
+        end
+
         return "medium"
     end
-    local function unlockCost(a3)
+
+    local function unlockCost(a48)
         --[[
           name: unlockCost
           line: 152
           upvalues:
             shards (copy, index: 1)
-            tbl_upv_5 (copy, index: 2)
+            v15 (copy, index: 2)
             sizeOf (copy, index: 3)
         ]]
-        local v5 = shards()
-        if v5 and type(v5.UnlockCost) == "function" then
-            local success_4, v6 = pcall(v5.UnlockCost, a3)
-            if success_4 and type(v6) == "number" then
-                return v6
+        local v49 = shards()
+
+        if v49 and type(v49.UnlockCost) == "function" then
+            local success, result = pcall(v49.UnlockCost, a48)
+
+            if success and type(result) == "number" then
+                return result
             end
         end
-        return tbl_upv_5[sizeOf(a3)] or 20
+
+        return v15[sizeOf(a48)] or 20
     end
-    local function catColor(a4)
-        --[[
-          name: catColor
-          line: 173
-          upvalues:
-            a1 (copy, index: 1)
-            WeaponInfo_upv_1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-        ]]
-        local Economy_1 = a1.Economy
-        if Economy_1 then
-            local v7 = nil
-            if type(Economy_1.CategoryColor) == "function" then
-                local success_5, v7 = pcall(Economy_1.CategoryColor, a4)
-                if success_5 and typeof(v7) == "Color3" then
-                    return v7
-                end
-            end
-        end
-        local v8 = WeaponInfo_upv_1.Get(a4)
-        return ((v8 and (WeaponInfo_upv_1.CATEGORY_COLORS)) and (WeaponInfo_upv_1.CATEGORY_COLORS[v8.category])) or (Colors_upv_1.Accent)
-    end
-    local function catWord(a5)
-        --[[
-          name: catWord
-          line: 184
-          upvalues:
-            WeaponInfo_upv_1 (copy, index: 1)
-        ]]
-        local v9 = WeaponInfo_upv_1.Get(a5)
-        return ((v9 and (WeaponInfo_upv_1.CATEGORY_SINGULAR)) and (WeaponInfo_upv_1.CATEGORY_SINGULAR[v9.category])) or "ITEM"
-    end
-    local function upgradeCost(a6, a7)
+
+    local function upgradeCost(item, key: number)
         --[[
           name: upgradeCost
           line: 162
           upvalues:
             shards (copy, index: 1)
-            tbl_upv_6 (copy, index: 2)
+            v16 (copy, index: 2)
             sizeOf (copy, index: 3)
         ]]
-        local v10 = shards()
-        if v10 and type(v10.UpgradeCost) == "function" then
-            local success_6, v11 = pcall(v10.UpgradeCost, a6, a7)
-            if success_6 then
-                if type(v11) ~= "number" then
+        local v55 = shards()
+
+        if v55 and type(v55.UpgradeCost) == "function" then
+            local success, result = pcall(v55.UpgradeCost, item, key)
+            if success then
+                if type(result) ~= "number" then
                     return nil
                 end
-                return v11
+
+                return result
             end
         end
-        local v12 = tbl_upv_6[sizeOf(a6)] or (tbl_upv_6.medium)
-        return v12[a7]
+
+        local v58 = v16[sizeOf(item)] or v16.medium
+
+        return v58[key]
     end
-    local function normStack(a8)
+
+    local function catColor(item)
+        --[[
+          name: catColor
+          line: 173
+          upvalues:
+            a17 (copy, index: 1)
+            weaponInfo (copy, index: 2)
+            colors (copy, index: 3)
+        ]]
+        local economy = a17.Economy
+
+        if economy and type(economy.CategoryColor) == "function" then
+            local success, result = pcall(economy.CategoryColor, item)
+
+            if success and typeof(result) == "Color3" then
+                return result
+            end
+        end
+
+        local v64 = weaponInfo.Get(item)
+
+        return v64 and weaponInfo.CATEGORY_COLORS and weaponInfo.CATEGORY_COLORS[v64.category]
+            or colors.Accent
+    end
+
+    local function catWord(a66)
+        --[[
+          name: catWord
+          line: 184
+          upvalues:
+            weaponInfo (copy, index: 1)
+        ]]
+        local v67 = weaponInfo.Get(a66)
+        return v67 and weaponInfo.CATEGORY_SINGULAR and weaponInfo.CATEGORY_SINGULAR[v67.category] or "ITEM"
+    end
+
+    local function normStack(stack)
         --[[
           name: normStack
           line: 203
           upvalues:
             shards (copy, index: 1)
-            tbl_upv_5 (copy, index: 2)
+            v15 (copy, index: 2)
             sizeOf (copy, index: 3)
             upgradeCost (copy, index: 4)
         ]]
-        if type(a8) == "table" and type(a8.item) == "string" then
-            local item_1 = a8.item
-            local v13 = math.max(0, math.floor(tonumber(a8.shards) or 0))
-            local v14 = math.max(0, math.floor(tonumber(a8.before) or 0))
-            local v15 = math.max(0, math.floor(tonumber(a8.levelBefore) or 0))
-            local tbl_8 = {bonus = 0, unlocked = false, surplus = 0, ready = false}
-            tbl_8.item = item_1
-            tbl_8.shards = v13
-            tbl_8.before = v14
-            tbl_8.levelBefore = v15
-            tbl_8.total = v14 + v13
-            tbl_8.bonus = a8.bonus == true
-            local num_1 = tonumber(a8.need)
-            local v16, v17 = nil, nil
-            if v15 <= 0 then
-                local v18
-                if (num_1) and (num_1 > 0) then
-                    v18 = num_1
-                else
-                    v17 = shards()
-                    if v17 then
-                        local v19 = nil
-                        if type(v17.UnlockCost) ~= "function" then
-                            v18 = tbl_upv_5[sizeOf(item_1)] or 20
-                        else
-                            local success_7, v19 = pcall(v17.UnlockCost, item_1)
-                            if success_7 then
-                                if type(v19) ~= "number" then
-                                    v18 = tbl_upv_5[sizeOf(item_1)] or 20
-                                else
-                                    v18 = v19
-                                end
-                            else
-                                v18 = tbl_upv_5[sizeOf(item_1)] or 20
-                            end
-                        end
+        if type(stack) ~= "table" or type(stack.item) ~= "string" then
+            return nil
+        end
+
+        local v70
+        local item = stack.item
+        local shards2 = math.max(0, (math.floor((tonumber(stack.shards) or 0))))
+        local before = math.max(0, (math.floor((tonumber(stack.before) or 0))))
+        local levelBefore = math.max(0, (math.floor((tonumber(stack.levelBefore) or 0))))
+        local v75 = {unlocked = false, ready = false, surplus = 0, needAfter = nil, item = item, shards = shards2, before = before, levelBefore = levelBefore, total = before + shards2, bonus = stack.bonus == true}
+        local number = tonumber(stack.need)
+
+        if levelBefore <= 0 then
+            local v77
+
+            if number then
+                if not (0 < number) then
+                    local v78 = shards()
+
+                    if not v78 or type(v78.UnlockCost) ~= "function" then
+                        v77 = v15[sizeOf(item)] or 20
                     else
-                        v18 = tbl_upv_5[sizeOf(item_1)] or 20
+                        local success, result = pcall(v78.UnlockCost, item)
+
+                        if not success or type(result) ~= "number" then
+                            v77 = v15[sizeOf(item)] or 20
+                        else
+                            v77 = result
+                        end
                     end
-                end
-                tbl_8.need = math.max(1, v18)
-                tbl_8.unlocked = true
-                if tbl_8.unlocked then
-                    tbl_8.surplus = math.max(0, tbl_8.total - tbl_8.need)
-                    tbl_8.needAfter = upgradeCost(item_1, 1)
-                    v17 = true
-                    if a8.ready ~= true then
-                        v17 = (tbl_8.needAfter ~= nil) and (tbl_8.needAfter <= tbl_8.surplus)
-                    end
-                    tbl_8.ready = v17
-                    return tbl_8
+                else
+                    v77 = number
                 end
             else
-                if num_1 == nil then
-                    tbl_8.need = upgradeCost(item_1, v15)
+                local v78 = shards()
+
+                if not v78 or type(v78.UnlockCost) ~= "function" then
+                    v77 = v15[sizeOf(item)] or 20
                 else
-                    if num_1 > 0 then
-                        v16 = num_1
+                    local success, result = pcall(v78.UnlockCost, item)
+
+                    if not success or type(result) ~= "number" then
+                        v77 = v15[sizeOf(item)] or 20
                     else
-                        v16 = nil
+                        v77 = result
                     end
-                    tbl_8.need = v16
                 end
-                v16 = tonumber(a8.after)
-                if v16 and v14 <= v16 then
-                    tbl_8.total = v16
-                end
-                v17 = true
-                if a8.ready ~= true then
-                    v17 = (tbl_8.need ~= nil) and (tbl_8.need <= tbl_8.total)
-                end
-                tbl_8.ready = v17
             end
-            return tbl_8
+
+            v75.need = math.max(1, v77)
+            v75.unlocked = stack.unlocked == true or v75.need <= v75.total
+
+            if not v75.unlocked then
+                return v75
+            end
+
+            v75.surplus = math.max(0, v75.total - v75.need)
+            v75.needAfter = upgradeCost(item, 1)
+            local v81 = stack.ready == true
+
+            if v81 or v75.needAfter == nil then
+                v75.ready = v81
+                return v75
+            end
+
+            local surplus = v75.surplus
+            v81 = v75.needAfter <= surplus
+            v75.ready = v81
+
+            return v75
         end
-        return nil
+
+        if number == nil then
+            v75.need = upgradeCost(item, levelBefore)
+        else
+            v75.need = if 0 < number then number else nil
+        end
+
+        local number2 = tonumber(stack.after)
+
+        if number2 and before <= number2 then
+            v75.total = number2
+        end
+
+        local v84 = stack.ready == true
+
+        if not v84 and v75.need ~= nil then
+            local total = v75.total
+            v84 = v75.need <= total
+        end
+
+        v75.ready = v84
+        v70 = v75
+
+        return v70
     end
-    local function normReveal(a9)
+
+    local function normReveal(raw)
         --[[
           name: normReveal
           line: 238
           upvalues:
             normStack (copy, index: 1)
         ]]
-        if type(a9) ~= "table" then
+        if type(raw) ~= "table" then
             return nil
         end
-        local v20
-        if a9.kind == "golden" or a9.kind == "victory" then
-            v20 = a9.kind
-        else
-            v20 = "drop"
-        end
-        local tbl_9 = {}
-        if type(a9.stacks) == "table" then
-            for _, value_1 in a9.stacks do
-                local v21 = normStack(value_1)
-                if v21 then
-                    table.insert(tbl_9, v21)
+
+        local source
+        local v89 = raw.kind ~= "golden" and raw.kind ~= "victory" and "drop" or raw.kind
+        local stacks = {}
+
+        if type(raw.stacks) == "table" then
+            for _, stack in raw.stacks do
+                if const v93 = normStack(stack) then
+                    table.insert(stacks, v93)
                 end
             end
         end
-        local tbl_10 = {raw = 0, stacks = 0, source = 0, xp = 0}
-        tbl_10.id = tostring(a9.id or "")
-        tbl_10.kind = v20
-        tbl_10.source = type(a9.source) ~= "string" and "match" or a9.source
-        tbl_10.stacks = tbl_9
-        tbl_10.xp = tonumber(a9.xp)
-        tbl_10.raw = a9
-        return tbl_10
-    end
-    tbl_upv_7.Normalize = normReveal
-    local u6 = nil
-    local DropModels_1 = script.Parent.Parent:FindFirstChild("DropModels")
-    if DropModels_1 then
-        local success_8, v23 = pcall(require, DropModels_1)
-        if success_8 and type(v23) == "table" then
-            u6 = v23
+
+        local v94 = {id = tostring((raw.id or "")), kind = v89}
+
+        if type(raw.source) ~= "string" then
+            source = "match"
+        else
+            source = raw.source
         end
+
+        v94.source = source
+        v94.stacks = stacks
+        v94.xp = tonumber(raw.xp)
+        v94.raw = raw
+
+        return v94
     end
-    local u7 = 1
-    local u8 = false
-    local tbl_upv_11 = {}
-    local u9 = nil
-    local u10 = 0
-    local u11 = false
-    local function strokeFor(a10, a11)
+
+    dropReveal.Normalize = normReveal
+    local v95 = nil
+
+    if const dropModels = script.Parent.Parent:FindFirstChild("DropModels") then
+        local success, result2 = pcall(require, dropModels)
+
+        if success then
+            if type(result2) ~= "table" then
+                v19 = v95
+            else
+                v19 = result2
+            end
+        else
+            v19 = v95
+        end
+    else
+        v19 = v95
+    end
+
+    local pace = 1
+    local hasRun = false
+    local v101 = {}
+    local v102 = nil
+    local count = 0
+    local v104 = false
+
+    local function strokeFor(a106, a107)
         --[[
           name: strokeFor
           line: 285
         ]]
-        local v24
-        if a10:IsA("TextLabel") then
-            v24 = a10:FindFirstChildWhichIsA("UIStroke")
-        else
-            v24 = nil
-        end
-        if not v24 then
+        local v108 = if a106:IsA("TextLabel") then a106:FindFirstChildWhichIsA("UIStroke") else nil
+        if not v108 then
             return nil, 1
         end
-        local v25 = v24:GetAttribute("Authored")
-        if type(v25) ~= "number" then
-            local Transparency_1 = v24.Transparency
-            v24:SetAttribute("Authored", Transparency_1)
-            v25 = Transparency_1
+
+        local v109 = v108:GetAttribute("Authored")
+
+        if type(v109) ~= "number" then
+            v109 = v108.Transparency
+            v108:SetAttribute("Authored", v109)
         end
-        if a11 >= 0.99 then
-            return v24, 1
+
+        if 0.99 <= a107 then
+            return v108, 1
         end
-        return v24, v25 + ((1 - v25) * a11)
+
+        return v108, v109 + ((1 - v109) * a107)
     end
-    local function setTT(a12, a13)
+
+    local function setTT(tt, textTransparency)
         --[[
           name: setTT
           line: 297
           upvalues:
             strokeFor (copy, index: 1)
         ]]
-        a12.TextTransparency = a13
-        local v26, v27 = strokeFor(a12, a13)
-        if not v26 then
-            return
+        tt.TextTransparency = textTransparency
+        local v113, transparency = strokeFor(tt, textTransparency)
+        if v113 then
+            v113.Transparency = transparency
         end
-        v26.Transparency = v27
     end
-    local function tw(a14, a15, a16, a17, a18, a19)
+
+    local function tw(instance, a117, propertyTable, easingStyle: Enum.EasingStyle?, easingDirection: Enum.EasingDirection?, a121)
         --[[
           name: tw
           line: 304
           upvalues:
-            u7 (ref,  index: 1)
-            TweenService_upv_1 (copy, index: 2)
-            u9 (ref,  index: 3)
+            pace (ref,  index: 1)
+            tweenService (copy, index: 2)
+            v102 (ref,  index: 3)
             strokeFor (copy, index: 4)
         ]]
-        local v28 = math.max(0, a15 * u7)
-        local v29 = a17 or (Enum.EasingStyle.Quint)
-        local v30 = TweenInfo.new(v28, v29, a18 or (Enum.EasingDirection.Out), 0, false, (a19 or 0) * u7)
-        local v31 = TweenService_upv_1:Create(a14, v30, a16)
-        v31:Play()
-        if u9 and u9.group then
-            table.insert(u9.group, {v31, a14, a16})
+        local easingStyle2
+        local v123 = TweenInfo.new
+        local v124 = math.max(0, a117 * pace)
+
+        if easingStyle then
+            easingStyle2 = easingStyle
+        else
+            easingStyle2 = Enum.EasingStyle.Quint
         end
-        if a16.TextTransparency ~= nil then
-            local v32, v33 = strokeFor(a14, a16.TextTransparency)
-            if v32 then
-                local tbl_12 = {}
-                tbl_12.Transparency = v33
-                TweenService_upv_1:Create(v32, v30, tbl_12):Play()
-                if u9 and u9.group then
-                    table.insert(u9.group, {nil, v32, tbl_12})
+
+        v123 = v123(v124, easingStyle2, (easingDirection or Enum.EasingDirection.Out), 0, false, (a121 or 0) * pace)
+        local tween = tweenService:Create(instance, v123, propertyTable)
+        tween:Play()
+
+        if v102 and v102.group then
+            table.insert(v102.group, {tween, instance, propertyTable})
+        end
+
+        if propertyTable.TextTransparency ~= nil then
+            local instance2, transparency = strokeFor(instance, propertyTable.TextTransparency)
+            if instance2 then
+                local propertyTable2 = {Transparency = transparency}
+                tweenService:Create(instance2, v123, propertyTable2):Play()
+
+                if v102 and v102.group then
+                    table.insert(v102.group, {nil, instance2, propertyTable2})
                 end
             end
         end
-        return v31
+
+        return tween
     end
+
     local function finishGroup()
         --[[
           name: finishGroup
           line: 324
           upvalues:
-            u9 (ref, index: 1)
+            v102 (ref, index: 1)
         ]]
-        if not u9 or not u9.group then
+        if not v102 or not v102.group then
             return
         end
-        for _, value_upv_2 in u9.group do
-            if value_upv_2[1] then
-                value_upv_2[1]:Cancel()
+
+        for _, v131 in v102.group do
+            if v131[1] then
+                v131[1]:Cancel()
             end
-            for key_upv_1, value_upv_3 in value_upv_2[3] do
+
+            for v132, v133 in v131[3] do
                 pcall(
                     function()
                         --[[
                           line: 333
                           upvalues:
-                            value_upv_2 (copy, index: 1)
-                            key_upv_1 (copy, index: 2)
-                            value_upv_3 (copy, index: 3)
+                            v131 (copy, index: 1)
+                            v132 (copy, index: 2)
+                            v133 (copy, index: 3)
                         ]]
-                        value_upv_2[2][key_upv_1] = value_upv_3
+                        v131[2][v132] = v133
                     end
                 )
             end
         end
-        table.clear(u9.group)
+
+        table.clear(v102.group)
     end
-    local tbl_upv_13 = {pitch = 0, glow = 0, s = 1, lid = 0, raysSpin = 8, y = 0, roll = 0, yaw = 0, sq = 0}
-    local tbl_upv_14 = {}
-    local tbl_upv_15 = {inQuad = 0, linear = 0, outQuad = 0, outCubic = 0, inOutSine = 0, outBack = 0}
-    function tbl_upv_15.linear(a20)
+
+    local v134 = {y = 0, yaw = 0, roll = 0, pitch = 0, sq = 0, lid = 0, s = 1, raysSpin = 8, glow = 0}
+    local v135 = {}
+    local v136 = {
+        linear = (function(a137)
+            --[[
+              name: linear
+              line: 345
+            ]]
+            return a137
+        end),
+        outQuad = (function(a138)
+            --[[
+              name: outQuad
+              line: 348
+            ]]
+            return 1 - ((1 - a138) * (1 - a138))
+        end),
+        inQuad = (function(a139)
+            --[[
+              name: inQuad
+              line: 351
+            ]]
+            return a139 * a139
+        end),
+        outCubic = (function(a140)
+            --[[
+              name: outCubic
+              line: 354
+            ]]
+            return 1 - ((function(...) return (...) ^ 3 end)(((1 - a140))))
+        end),
+        inOutSine = (function(a141)
+            --[[
+              name: inOutSine
+              line: 357
+            ]]
+            return -(math.cos(math.pi * a141) - 1) / 2
+        end),
+        outBack = (function(a142)
+            --[[
+              name: outBack
+              line: 360
+            ]]
+            return 1 + (2.9 * ((function(...) return (...) ^ 3 end)(((a142 - 1))))) + (1.9 * ((function(...) return (...) ^ 2 end)(((a142 - 1)))))
+        end)
+    }
+
+    local function animate(key: string, a145)
         --[[
-          name: linear
-          line: 345
+          name: animate
+          line: 366
+          upvalues:
+            v136 (copy, index: 1)
+            v135 (copy, index: 2)
         ]]
-        return a20
+        local v146 = {}
+
+        for _, v148 in a145 do
+            local v149 = {t = 0, from = nil, to = v148[1], dur = math.max(0.001, v148[2]), ease = v136[v148[3]
+                or "outQuad"]
+                or v136.outQuad}
+            v149.delay = v148[4] or 0
+            table.insert(v146, v149)
+        end
+
+        v135[key] = v146
     end
-    function tbl_upv_15.outQuad(a21)
-        --[[
-          name: outQuad
-          line: 348
-        ]]
-        return 1 - ((1 - a21) * (1 - a21))
-    end
-    function tbl_upv_15.inQuad(a22)
-        --[[
-          name: inQuad
-          line: 351
-        ]]
-        return a22 * a22
-    end
-    function tbl_upv_15.outCubic(a23)
-        --[[
-          name: outCubic
-          line: 354
-        ]]
-        return 1 - ((1 - a23) ^ 3)
-    end
-    function tbl_upv_15.inOutSine(a24)
-        --[[
-          name: inOutSine
-          line: 357
-        ]]
-        return -(math.cos(math.pi * a24) - 1) / 2
-    end
-    function tbl_upv_15.outBack(a25)
-        --[[
-          name: outBack
-          line: 360
-        ]]
-        return (1 + (2.9 * ((a25 - 1) ^ 3))) + (1.9 * ((a25 - 1) ^ 2))
-    end
+
     local function snapAnims()
         --[[
           name: snapAnims
           line: 373
           upvalues:
-            tbl_upv_14 (copy, index: 1)
-            tbl_upv_13 (copy, index: 2)
+            v135 (copy, index: 1)
+            v134 (copy, index: 2)
         ]]
-        for key_2, value_4 in tbl_upv_14 do
-            local v34 = value_4[#value_4]
-            if v34 then
-                tbl_upv_13[key_2] = v34.to
+        for v151, v152 in v135 do
+            if const v153 = v152[#v152] then
+                v134[v151] = v153.to
             end
         end
-        table.clear(tbl_upv_14)
+
+        table.clear(v135)
     end
-    local tbl_upv_16 = {}
-    local u12 = nil
-    local u13 = CFrame.new()
-    local u14 = CFrame.new()
-    local u15 = CFrame.lookAt(Vector3.new(0, 4.800000190734863, -14), Vector3.new(0, 2.799999952316284, 0))
+
+    local function stepAnims(a155)
+        --[[
+          name: stepAnims
+          line: 382
+          upvalues:
+            v135 (copy, index: 1)
+            v134 (copy, index: 2)
+        ]]
+        for v156, v157 in v135 do
+            local v158 = false
+            local v159 = v157[1]
+
+            if v159 then
+                if not (0 < v159.delay) then
+                    v158 = true
+                else
+                    v159.delay -= a155
+
+                    if not (0 < v159.delay) then
+                        a155 = -v159.delay
+                        v159.delay = 0
+                        v158 = true
+                    end
+                end
+            else
+                v135[v156] = nil
+            end
+
+            if v158 then
+                if v159.from == nil then
+                    v159.from = v134[v156]
+                end
+
+                v159.t += a155
+                local v160 = math.min(1, v159.t / v159.dur)
+                v134[v156] = v159.from + ((v159.to - v159.from) * v159.ease(v160))
+
+                if 1 <= v160 then
+                    table.remove(v157, 1)
+
+                    if #v157 == 0 then
+                        v135[v156] = nil
+                    end
+                end
+            end
+        end
+    end
+
+    local v161 = {}
+    local v162 = nil
+    local cframe = CFrame.new()
+    local cframe2 = CFrame.new()
+    local cFrame = CFrame.lookAt(Vector3.new(0, 4.800000190734863, -14), Vector3.new(0, 2.799999952316284, 0))
+
     local function build()
         --[[
           name: build
           line: 421
           upvalues:
-            u8 (ref,  index: 1)
-            a1 (copy, index: 3)
-            tbl_upv_11 (copy, index: 4)
-            Colors_upv_1 (copy, index: 5)
-            u2 (copy, index: 6)
-            Fx_upv_1 (copy, index: 7)
-            fromRGB_upv_1 (copy, index: 8)
-            u15 (copy, index: 9)
-            Theme_upv_1 (copy, index: 10)
-            Fonts_upv_1 (copy, index: 11)
-            u1 (copy, index: 12)
+            hasRun (ref,  index: 1)
+            ui (copy, index: 2)
+            a17 (copy, index: 3)
+            v101 (copy, index: 4)
+            colors (copy, index: 5)
+            v28 (copy, index: 6)
+            Fx (copy, index: 7)
+            color3FromRGB (copy, index: 8)
+            cFrame (copy, index: 9)
+            theme (copy, index: 10)
+            fonts (copy, index: 11)
+            fontFace (copy, index: 12)
         ]]
-        if u8 then
+        local transparency, v168
+        local transparency2, v170
+        local transparency3, v172
+        local transparency4, v174
+
+        if hasRun then
             return
         end
-        u8 = true
-        local v35, v36 = img_1.Screen("TR_Reveal", 30, a1.PlayerGui, {fullBleed = true})
-        v35.Enabled = true
-        tbl_upv_11.gui = v35
-        tbl_upv_11.canvas = v36
-        local v37 = img_1.new("Frame", {Visible = false, Name = "Reveal", Size = UDim2.fromScale(1, 1), Parent = v36})
-        tbl_upv_11.root = v37
-        tbl_upv_11.dim = img_1.new("Frame", {Name = "Dim", BackgroundTransparency = 1, ZIndex = 1, Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Void, Parent = v37})
-        tbl_upv_11.tint = img_1.new("ImageLabel", {Name = "Tint", ZIndex = 1, ImageTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1.3, 1.6), Image = img_1.Assets.Icons.Glow or "", Parent = v37})
-        tbl_upv_11.vignette = img_1.new("ImageLabel", {Name = "Vignette", ImageTransparency = 1, ZIndex = 2, Size = UDim2.fromScale(1, 1), Image = u2.Vignette or "", ImageColor3 = Colors_upv_1.Void, ScaleType = Enum.ScaleType.Stretch, Parent = v37})
-        tbl_upv_11.flash = img_1.new("Frame", {Name = "Flash", BackgroundTransparency = 1, ZIndex = 20, Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Accent, Parent = v37})
-        tbl_upv_11.catcher = img_1.new("TextButton", {Name = "Input", Modal = true, Selectable = false, ZIndex = 3, Size = UDim2.fromScale(1, 1), Parent = v37})
-        local v38 = img_1.new("Frame", {Name = "Stage", ZIndex = 4, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(0, 0), Parent = v37})
-        tbl_upv_11.stage = v38
-        tbl_upv_11.stageScale = img_1.new("UIScale", {Parent = v38})
-        local u16 = img_1.new("Frame", {ZIndex = 4, Name = "Shaker", Size = UDim2.fromOffset(0, 0), Parent = v38})
-        tbl_upv_11.shaker = u16
-        local function img_1(a26, a27, a28, a29)
+
+        hasRun = true
+        local gui, v176 = ui.Screen("TR_Reveal", 30, a17.PlayerGui, {fullBleed = true})
+        gui.Enabled = true
+        v101.gui = gui
+        v101.canvas = v176
+        local ui2 = ui.new("Frame", {Name = "Reveal", Visible = false, Size = UDim2.fromScale(1, 1), Parent = v176})
+        v101.root = ui2
+        v101.dim = ui.new("Frame", {Name = "Dim", BackgroundTransparency = 1, ZIndex = 1, Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, Parent = ui2})
+        v101.tint = ui.new("ImageLabel", {Name = "Tint", ImageTransparency = 1, ZIndex = 1, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1.3, 1.6), Image = ui.Assets.Icons.Glow
+            or "", Parent = ui2})
+        v101.vignette = ui.new("ImageLabel", {Name = "Vignette", ImageTransparency = 1, ZIndex = 2, Size = UDim2.fromScale(1, 1), Image = v28.Vignette
+            or "", ImageColor3 = colors.Void, ScaleType = Enum.ScaleType.Stretch, Parent = ui2})
+        v101.flash = ui.new("Frame", {Name = "Flash", BackgroundTransparency = 1, ZIndex = 20, Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Accent, Parent = ui2})
+        v101.catcher = ui.new("TextButton", {Name = "Input", Modal = true, Selectable = false, ZIndex = 3, Size = UDim2.fromScale(1, 1), Parent = ui2})
+        local ui3 = ui.new("Frame", {Name = "Stage", ZIndex = 4, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(0, 0), Parent = ui2})
+        v101.stage = ui3
+        v101.stageScale = ui.new("UIScale", {Parent = ui3})
+        local ui4 = ui.new("Frame", {Name = "Shaker", ZIndex = 4, Size = UDim2.fromOffset(0, 0), Parent = ui3})
+        v101.shaker = ui4
+
+        local function img(name: string, a182, zIndex: number, options)
             --[[
               name: img
               line: 465
               upvalues:
-                u16 (copy, index: 1)
+                ui4 (copy, index: 1)
+                ui (copy, index: 2)
             ]]
-            local v39 = a29 or {}
-            v39.Name = a26
-            v39.AnchorPoint = v39.AnchorPoint or Vector2.new(0.5, 0.5)
-            v39.Image = a27 or ""
-            v39.ImageTransparency = ((v39.ImageTransparency == nil) and 1) or (v39.ImageTransparency)
-            v39.ZIndex = a28
-            v39.Parent = v39.Parent or u16
-            return UI_upv_1.new("ImageLabel", v39)
+            local v185 = options or {}
+            v185.Name = name
+            local v186 = v185.AnchorPoint or Vector2.new(0.5, 0.5)
+            v185.AnchorPoint = v186
+            v185.Image = a182 or ""
+            v185.ImageTransparency = v185.ImageTransparency == nil and 1 or v185.ImageTransparency
+            v185.ZIndex = zIndex
+            v185.Parent = v185.Parent or ui4
+
+            return ui.new("ImageLabel", v185)
         end
-        tbl_upv_11.raysHolder = img_1.new("Frame", {ZIndex = 4, Name = "RaysHolder", Size = UDim2.fromOffset(0, 0), Parent = u16})
-        tbl_upv_11.raysScale = img_1.new("UIScale", {Parent = tbl_upv_11.raysHolder})
-        tbl_upv_11.raysA = img_1("RaysA", u2.Rays, 4, {Size = UDim2.fromOffset(1100, 1100), Parent = tbl_upv_11.raysHolder})
-        tbl_upv_11.raysB = img_1("RaysB", u2.RaysThin, 4, {Size = UDim2.fromOffset(1250, 1250), Parent = tbl_upv_11.raysHolder})
-        tbl_upv_11.halo = img_1("Halo", img_1.Assets.Icons.Glow, 5, {Size = UDim2.fromOffset(620, 620), Parent = tbl_upv_11.raysHolder})
-        tbl_upv_11.backLayer = img_1.new("Frame", {ZIndex = 6, Name = "BackFx", Size = UDim2.fromOffset(0, 0), Parent = u16})
-        tbl_upv_11.backPool = Fx_upv_1.Pool(tbl_upv_11.backLayer, 60, 6)
-        tbl_upv_11.floorRing = img_1("FloorRing", u2.GlowRing, 6, {Size = UDim2.fromOffset(200, 50)})
-        tbl_upv_11.shadow = img_1("Shadow", img_1.Assets.Icons.Glow, 6, {Size = UDim2.fromOffset(380, 76), ImageColor3 = Colors_upv_1.Void})
-        tbl_upv_11.beam = img_1("Beam", u2.Beam, 7, {AnchorPoint = Vector2.new(0.5, 1), Size = UDim2.fromOffset(220, 620)})
-        tbl_upv_11.chestHolder = img_1.new("Frame", {Name = "Chest", ZIndex = 8, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(600, 600), Parent = u16})
-        tbl_upv_11.chestScale = img_1.new("UIScale", {Parent = tbl_upv_11.chestHolder})
-        tbl_upv_11.chestGlow = img_1("ChestGlow", img_1.Assets.Icons.Glow, 7, {Size = UDim2.fromOffset(540, 460), Position = UDim2.fromScale(0.5, 0.6), Parent = tbl_upv_11.chestHolder})
-        local v42 = img_1.new("ViewportFrame", {LightDirection = Vector3.new(0.44999998807907104, -1, 0.550000011920929), Name = "View", ZIndex = 8, Size = UDim2.fromScale(1, 1), Ambient = fromRGB_upv_1(150, 146, 150), LightColor = fromRGB_upv_1(255, 244, 228), Parent = tbl_upv_11.chestHolder})
-        tbl_upv_11.vpf = v42
-        local v43 = Instance.new("Camera")
-        v43.FieldOfView = 28
-        v43.CFrame = u15
-        v43.Parent = v42
-        v42.CurrentCamera = v43
-        tbl_upv_11.cam = v43
-        tbl_upv_11.leak = img_1("Leak", img_1.Assets.Icons.Glow, 9, {Size = UDim2.fromOffset(300, 90), Parent = tbl_upv_11.chestHolder})
-        tbl_upv_11.leakFlare = img_1("LeakFlare", u2.Flare, 9, {Size = UDim2.fromOffset(420, 44), Parent = tbl_upv_11.chestHolder})
-        tbl_upv_11.counter = img_1.new("Frame", {Name = "Counter", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(74, 50), BackgroundColor3 = Colors_upv_1.Panel, BackgroundTransparency = 0.05, Visible = false, ZIndex = 10, [1] = img_1.Corner(Theme_upv_1.Radius.Pill), Parent = u16})
-        tbl_upv_11.counterStroke = img_1.Stroke(Colors_upv_1.Accent, 2, 0.2)
-        tbl_upv_11.counterStroke.Parent = tbl_upv_11.counter
-        tbl_upv_11.counterText = img_1.new("TextLabel", {ZIndex = 11, Text = "x3", TextSize = 30, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, Parent = tbl_upv_11.counter})
-        tbl_upv_11.frontLayer = img_1.new("Frame", {ZIndex = 14, Name = "FrontFx", Size = UDim2.fromOffset(0, 0), Parent = u16})
-        tbl_upv_11.frontPool = Fx_upv_1.Pool(tbl_upv_11.frontLayer, 120, 14)
-        local function headline_1(a30, a31, a32)
+
+        v101.raysHolder = ui.new("Frame", {Name = "RaysHolder", ZIndex = 4, Size = UDim2.fromOffset(0, 0), Parent = ui4})
+        v101.raysScale = ui.new("UIScale", {Parent = v101.raysHolder})
+        v101.raysA = img("RaysA", v28.Rays, 4, {Size = UDim2.fromOffset(1100, 1100), Parent = v101.raysHolder})
+        v101.raysB = img("RaysB", v28.RaysThin, 4, {Size = UDim2.fromOffset(1250, 1250), Parent = v101.raysHolder})
+        v101.halo = img("Halo", ui.Assets.Icons.Glow, 5, {Size = UDim2.fromOffset(620, 620), Parent = v101.raysHolder})
+        v101.backLayer = ui.new("Frame", {Name = "BackFx", ZIndex = 6, Size = UDim2.fromOffset(0, 0), Parent = ui4})
+        v101.backPool = Fx.Pool(v101.backLayer, 60, 6)
+        v101.floorRing = img("FloorRing", v28.GlowRing, 6, {Size = UDim2.fromOffset(200, 50)})
+        v101.shadow = img("Shadow", ui.Assets.Icons.Glow, 6, {Size = UDim2.fromOffset(380, 76), ImageColor3 = colors.Void})
+        v101.beam = img("Beam", v28.Beam, 7, {AnchorPoint = Vector2.new(0.5, 1), Size = UDim2.fromOffset(220, 620)})
+        v101.chestHolder = ui.new("Frame", {Name = "Chest", ZIndex = 8, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(600, 600), Parent = ui4})
+        v101.chestScale = ui.new("UIScale", {Parent = v101.chestHolder})
+        v101.chestGlow = img("ChestGlow", ui.Assets.Icons.Glow, 7, {Size = UDim2.fromOffset(540, 460), Position = UDim2.fromScale(0.5, 0.6), Parent = v101.chestHolder})
+        local ui5 = ui.new("ViewportFrame", {Name = "View", LightDirection = Vector3.new(0.44999998807907104, -1, 0.550000011920929), ZIndex = 8, Size = UDim2.fromScale(1, 1), Ambient = color3FromRGB(150, 146, 150), LightColor = color3FromRGB(255, 244, 228), Parent = v101.chestHolder})
+        v101.vpf = ui5
+        local camera = Instance.new("Camera")
+        camera.FieldOfView = 28
+        camera.CFrame = cFrame
+        camera.Parent = ui5
+        ui5.CurrentCamera = camera
+        v101.cam = camera
+        v101.leak = img("Leak", ui.Assets.Icons.Glow, 9, {Size = UDim2.fromOffset(300, 90), Parent = v101.chestHolder})
+        v101.leakFlare = img("LeakFlare", v28.Flare, 9, {Size = UDim2.fromOffset(420, 44), Parent = v101.chestHolder})
+        v101.counter = ui.new("Frame", {Name = "Counter", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(74, 50), BackgroundColor3 = colors.Panel, BackgroundTransparency = 0.05, Visible = false, ZIndex = 10, (ui.Corner(theme.Radius.Pill)), Parent = ui4})
+        v101.counterStroke = ui.Stroke(colors.Accent, 2, 0.2)
+        v101.counterStroke.Parent = v101.counter
+        v101.counterText = ui.new("TextLabel", {Text = "x3", TextSize = 30, ZIndex = 11, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, Parent = v101.counter})
+        v101.frontLayer = ui.new("Frame", {Name = "FrontFx", ZIndex = 14, Size = UDim2.fromOffset(0, 0), Parent = ui4})
+        v101.frontPool = Fx.Pool(v101.frontLayer, 120, 14)
+
+        local function headline(name: string, textSize: number, zIndex: number)
             --[[
               name: headline
               line: 535
               upvalues:
-                u1 (copy, index: 2)
-                Colors_upv_1 (copy, index: 3)
-                u16 (copy, index: 4)
+                ui (copy, index: 1)
+                fontFace (copy, index: 2)
+                colors (copy, index: 3)
+                ui4 (copy, index: 4)
             ]]
-            return UI_upv_1.new("TextLabel", {TextTransparency = 1, Text = "", Name = a30, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(1200, a31 * 1.2), FontFace = u1, TextSize = a31, TextColor3 = Colors_upv_1.Text, ZIndex = a32, Parent = u16})
+            return ui.new("TextLabel", {Text = "", TextTransparency = 1, Name = name, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(1200, textSize * 1.2), FontFace = fontFace, TextSize = textSize, TextColor3 = colors.Text, ZIndex = zIndex, Parent = ui4})
         end
-        tbl_upv_11.titleShadow = headline_1("TitleShadow", 64, 15)
-        tbl_upv_11.titleShadow.TextColor3 = Colors_upv_1.Void
-        tbl_upv_11.title = headline_1("Title", 64, 16)
-        tbl_upv_11.titleScale = img_1.new("UIScale", {Parent = tbl_upv_11.title})
-        tbl_upv_11.titleShadowScale = img_1.new("UIScale", {Parent = tbl_upv_11.titleShadow})
-        tbl_upv_11.titleGrad = img_1.new("UIGradient", {Rotation = 90, Parent = tbl_upv_11.title})
-        tbl_upv_11.subtitle = img_1.new("TextLabel", {TextTransparency = 1, Text = "", Name = "Subtitle", ZIndex = 16, TextSize = 22, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(800, 30), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, Parent = u16})
-        img_1.TextStroke(Colors_upv_1.Void, 1.5, 0.5).Parent = tbl_upv_11.subtitle
-        local subtitle_1 = tbl_upv_11.subtitle
-        subtitle_1.TextTransparency = 1
-        if subtitle_1:IsA("TextLabel") then
-            v43 = subtitle_1:FindFirstChildWhichIsA("UIStroke")
-        else
-            v43 = nil
-        end
-        local v44, v45
-        if v43 then
-            if type(v43:GetAttribute("Authored")) ~= "number" then
-                v43:SetAttribute("Authored", v43.Transparency)
+
+        v101.titleShadow = headline("TitleShadow", 64, 15)
+        v101.titleShadow.TextColor3 = colors.Void
+        v101.title = headline("Title", 64, 16)
+        v101.titleScale = ui.new("UIScale", {Parent = v101.title})
+        v101.titleShadowScale = ui.new("UIScale", {Parent = v101.titleShadow})
+        v101.titleGrad = ui.new("UIGradient", {Rotation = 90, Parent = v101.title})
+        v101.subtitle = ui.new("TextLabel", {Name = "Subtitle", Text = "", TextSize = 22, TextTransparency = 1, ZIndex = 16, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(800, 30), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, Parent = ui4})
+        ui.TextStroke(colors.Void, 1.5, 0.5).Parent = v101.subtitle
+        local subtitle = v101.subtitle
+        subtitle.TextTransparency = 1
+
+        if const v194 = if subtitle:IsA("TextLabel") then subtitle:FindFirstChildWhichIsA("UIStroke") else nil then
+            if type((v194:GetAttribute("Authored"))) ~= "number" then
+                v194:SetAttribute("Authored", v194.Transparency)
             end
-            v44, v45 = v43, 1
+
+            transparency = 1
+            v168 = v194
         else
-            v44 = nil
-            v45 = 1
+            transparency = 1
+            v168 = nil
         end
-        if v44 then
-            v44.Transparency = v45
+
+        if v168 then
+            v168.Transparency = transparency
         end
-        tbl_upv_11.prompt = img_1.new("Frame", {Name = "OpenPrompt", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(190, 52), BackgroundColor3 = Colors_upv_1.Panel, BackgroundTransparency = 0.15, Visible = false, ZIndex = 16, ClipsDescendants = true, [1] = img_1.Corner(Theme_upv_1.Radius.Pill), Parent = u16})
-        tbl_upv_11.promptScale = img_1.GetScaleObj(tbl_upv_11.prompt, "AnimScale")
-        tbl_upv_11.promptStroke = img_1.Stroke(Colors_upv_1.Accent, 2, 0.25)
-        tbl_upv_11.promptStroke.Parent = tbl_upv_11.prompt
-        tbl_upv_11.promptFill = img_1.new("Frame", {Name = "Auto", BackgroundTransparency = 0.55, ZIndex = 16, Size = UDim2.fromScale(0, 1), BackgroundColor3 = Colors_upv_1.Accent, Parent = tbl_upv_11.prompt})
-        tbl_upv_11.promptText = img_1.new("TextLabel", {ZIndex = 17, Text = "OPEN", TextSize = 26, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, Parent = tbl_upv_11.prompt})
-        local v46 = img_1.new("Frame", {Name = "Card", ZIndex = 12, Visible = false, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(232, 322), Parent = u16})
-        tbl_upv_11.card = v46
-        tbl_upv_11.cardScale = img_1.new("UIScale", {Parent = v46})
-        tbl_upv_11.cardGlow = img_1("CardGlow", img_1.Assets.Icons.Glow, 11, {Size = UDim2.fromOffset(487.20000000000005, 611.8), Position = UDim2.fromScale(0.5, 0.5), Parent = v46})
-        local v47 = img_1.new("Frame", {Name = "Back", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 12, [1] = img_1.Corner(18), Parent = v46})
-        tbl_upv_11.backGrad = img_1.new("UIGradient", {Rotation = 90, Parent = v47})
-        tbl_upv_11.backStroke = img_1.Stroke(Colors_upv_1.Accent, 3, 0.1)
-        tbl_upv_11.backStroke.Parent = v47
-        tbl_upv_11.backArt = img_1("Art", u2.CardBack, 13, {ImageTransparency = 0.15, AnchorPoint = Vector2.zero, Size = UDim2.fromScale(1, 1), ScaleType = Enum.ScaleType.Stretch, Parent = v47})
-        tbl_upv_11.back = v47
-        local v48 = img_1.new("Frame", {Name = "Face", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), Visible = false, ZIndex = 12, [1] = img_1.Corner(18), Parent = v46})
-        tbl_upv_11.faceGrad = img_1.new("UIGradient", {Rotation = 90, Parent = v48})
-        tbl_upv_11.faceStroke = img_1.Stroke(Colors_upv_1.Accent, 3, 0.05)
-        tbl_upv_11.faceStroke.Parent = v48
-        tbl_upv_11.face = v48
-        local v49 = img_1.new("Frame", {Name = "Well", Position = UDim2.fromOffset(10, 10), Size = UDim2.new(1, -20, 0, 206), BackgroundColor3 = Colors_upv_1.Void, BackgroundTransparency = 0.45, ZIndex = 13, [1] = img_1.Corner(12), Parent = v48})
-        tbl_upv_11.well = v49
-        tbl_upv_11.wellGlow = img_1("WellGlow", img_1.Assets.Icons.Glow, 13, {ImageTransparency = 0.5, Size = UDim2.fromScale(1.1, 1.1), Position = UDim2.fromScale(0.5, 0.5), Parent = v49})
-        tbl_upv_11.icon = img_1.new("Frame", {Name = "Icon", ZIndex = 14, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(196, 196), Parent = v49})
-        tbl_upv_11.iconScale = img_1.new("UIScale", {Parent = tbl_upv_11.icon})
-        tbl_upv_11.tag = img_1.new("Frame", {Name = "Tag", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 6), Size = UDim2.fromOffset(74, 26), BackgroundColor3 = Colors_upv_1.Gold, ZIndex = 15, [1] = img_1.Corner(Theme_upv_1.Radius.Pill), Parent = v49})
-        tbl_upv_11.tagText = img_1.new("TextLabel", {ZIndex = 16, Text = "NEW", TextSize = 16, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, TextColor3 = Colors_upv_1.TextDark, Parent = tbl_upv_11.tag})
-        tbl_upv_11.cat = img_1.new("TextLabel", {Text = "BOW", Name = "Category", ZIndex = 16, TextSize = 14, Position = UDim2.fromOffset(10, 8), Size = UDim2.fromOffset(150, 22), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = v49})
-        tbl_upv_11.name = img_1.new("TextLabel", {Text = "", Name = "ItemName", ZIndex = 14, TextSize = 26, Position = UDim2.fromOffset(12, 222), Size = UDim2.new(1, -24, 0, 30), FontFace = Fonts_upv_1.Display, TextColor3 = Colors_upv_1.Text, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v48})
-        img_1.TextStroke(Colors_upv_1.Void, 1.5, 0.4).Parent = tbl_upv_11.name
-        tbl_upv_11.count = img_1.new("Frame", {Name = "Count", ZIndex = 14, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 258), Size = UDim2.fromOffset(160, 50), Parent = v48})
-        tbl_upv_11.countScale = img_1.new("UIScale", {Parent = tbl_upv_11.count})
-        tbl_upv_11.gem = img_1("Gem", u2.Gem, 15, {ImageTransparency = 0, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Size = UDim2.fromOffset(40, 40), Parent = tbl_upv_11.count})
-        tbl_upv_11.countText = img_1.new("TextLabel", {Text = "x0", Name = "N", ZIndex = 15, TextSize = 40, Position = UDim2.fromOffset(54, 0), Size = UDim2.new(1, -54, 1, 0), FontFace = Fonts_upv_1.Display, TextXAlignment = Enum.TextXAlignment.Left, Parent = tbl_upv_11.count})
-        img_1.TextStroke(Colors_upv_1.Void, 2, 0.35).Parent = tbl_upv_11.countText
-        tbl_upv_11.sheen = img_1.new("Frame", {Name = "Sheen", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, ZIndex = 17, [1] = img_1.Corner(18), Parent = v46})
-        tbl_upv_11.sheenGrad = img_1.new("UIGradient", {Rotation = 25, Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.42, 1), NumberSequenceKeypoint.new(0.5, 0.35), NumberSequenceKeypoint.new(0.58, 1), NumberSequenceKeypoint.new(1, 1)}), Offset = Vector2.new(-1, 0), Parent = tbl_upv_11.sheen})
-        tbl_upv_11.stamp = img_1.new("Frame", {Name = "Stamp", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 158), Size = UDim2.fromOffset(250, 52), BackgroundColor3 = Colors_upv_1.Success, Rotation = -8, Visible = false, ZIndex = 18, [1] = img_1.Corner(12), Parent = v46})
-        img_1.Gradient(Theme_upv_1.Lighten(Colors_upv_1.Success, 0.12), Colors_upv_1.SuccessDark, 90).Parent = tbl_upv_11.stamp
-        img_1.Stroke(fromRGB_upv_1(200, 255, 214), 3, 0.15).Parent = tbl_upv_11.stamp
-        tbl_upv_11.stampScale = img_1.new("UIScale", {Parent = tbl_upv_11.stamp})
-        img_1.Icon("chevUp", 26, Colors_upv_1.Text, {ZIndex = 19, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, -1), Parent = tbl_upv_11.stamp})
-        img_1.new("TextLabel", {ZIndex = 19, Text = "UPGRADE READY", TextSize = 25, Position = UDim2.fromOffset(40, 0), Size = UDim2.new(1, -46, 1, 0), FontFace = Fonts_upv_1.Display, Parent = tbl_upv_11.stamp})
-        local v50 = img_1.new("Frame", {Name = "Bar", ZIndex = 12, Visible = false, AnchorPoint = Vector2.new(0.5, 0), Size = UDim2.fromOffset(330, 62), Parent = u16})
-        tbl_upv_11.barBox = v50
-        tbl_upv_11.barCaption = img_1.new("TextLabel", {RichText = true, Text = "", Name = "Caption", ZIndex = 12, TextSize = 17, Size = UDim2.new(1, 0, 0, 22), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, Parent = v50})
-        img_1.TextStroke(Colors_upv_1.Void, 1.5, 0.45).Parent = tbl_upv_11.barCaption
-        local v51 = {}
-        v51.Name = "Track"
-        v51.Position = UDim2.fromOffset(0, 28)
-        v51.Size = UDim2.new(1, 0, 0, 30)
-        v51.BackgroundColor3 = Colors_upv_1.Void
-        v51.BackgroundTransparency = 0.2
-        v51.ClipsDescendants = true
-        v51.ZIndex = 12
-        v51[1], v51[2] = img_1.Corner(Theme_upv_1.Radius.Pill), img_1.Stroke(Colors_upv_1.Stroke, 1.5, 0.75)
-        v51.Parent = v50
-        local v52 = img_1.new("Frame", v51)
-        tbl_upv_11.track = v52
-        tbl_upv_11.barFill = img_1.new("Frame", {Name = "Fill", Size = UDim2.fromScale(0, 1), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 13, [1] = img_1.Corner(Theme_upv_1.Radius.Pill), Parent = v52})
-        tbl_upv_11.barGrad = img_1.new("UIGradient", {Rotation = 90, Parent = tbl_upv_11.barFill})
-        tbl_upv_11.barText = img_1.new("TextLabel", {Name = "N", ZIndex = 15, Text = "", TextSize = 20, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, Parent = v52})
-        img_1.TextStroke(Colors_upv_1.Void, 2, 0.3).Parent = tbl_upv_11.barText
-        tbl_upv_11.barHead = img_1("Head", u2.Sparkle, 14, {Position = UDim2.fromOffset(0, 43), Size = UDim2.fromOffset(54, 54), Parent = v50})
-        tbl_upv_11.barFlash = img_1.new("Frame", {Name = "Flash", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Gold, BackgroundTransparency = 1, ZIndex = 14, [1] = img_1.Corner(Theme_upv_1.Radius.Pill), Parent = v52})
-        local u17 = img_1.new("Frame", {Visible = false, Name = "NewItem", ZIndex = 13, Size = UDim2.fromOffset(0, 0), Parent = u16})
-        tbl_upv_11.newRoot = u17
-        tbl_upv_11.newDim = img_1.new("Frame", {Name = "Dim", BackgroundTransparency = 1, ZIndex = 20, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(6000, 4000), BackgroundColor3 = Colors_upv_1.Void, Parent = u17})
-        tbl_upv_11.newRaysA = img_1("RaysA", u2.Rays, 21, {Size = UDim2.fromOffset(1300, 1300), Position = UDim2.fromOffset(0, -40), Parent = u17})
-        tbl_upv_11.newRaysB = img_1("RaysB", u2.RaysThin, 21, {Size = UDim2.fromOffset(1500, 1500), Position = UDim2.fromOffset(0, -40), Parent = u17})
-        tbl_upv_11.newGlow = img_1("Glow", img_1.Assets.Icons.Glow, 22, {Size = UDim2.fromOffset(760, 760), Position = UDim2.fromOffset(0, -40), Parent = u17})
-        tbl_upv_11.newRing = img_1("Ring", u2.GlowRing, 22, {Size = UDim2.fromOffset(200, 200), Position = UDim2.fromOffset(0, -40), Parent = u17})
-        tbl_upv_11.newFlare = img_1("Flare", u2.Flare, 25, {Size = UDim2.fromOffset(1400, 140), Position = UDim2.fromOffset(0, -270), Parent = u17})
-        tbl_upv_11.newItem = img_1.new("Frame", {Name = "Item", ZIndex = 23, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(0, -40), Size = UDim2.fromOffset(400, 400), Parent = u17})
-        tbl_upv_11.newItemScale = img_1.new("UIScale", {Parent = tbl_upv_11.newItem})
-        local function newText_1(a33, a34, a35, a36)
+
+        v101.prompt = ui.new("Frame", {Name = "OpenPrompt", AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(190, 52), BackgroundColor3 = colors.Panel, BackgroundTransparency = 0.15, Visible = false, ZIndex = 16, ClipsDescendants = true, (ui.Corner(theme.Radius.Pill)), Parent = ui4})
+        v101.promptScale = ui.GetScaleObj(v101.prompt, "AnimScale")
+        v101.promptStroke = ui.Stroke(colors.Accent, 2, 0.25)
+        v101.promptStroke.Parent = v101.prompt
+        v101.promptFill = ui.new("Frame", {Name = "Auto", BackgroundTransparency = 0.55, ZIndex = 16, Size = UDim2.fromScale(0, 1), BackgroundColor3 = colors.Accent, Parent = v101.prompt})
+        v101.promptText = ui.new("TextLabel", {Text = "OPEN", TextSize = 26, ZIndex = 17, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, Parent = v101.prompt})
+        local ui6 = ui.new("Frame", {Name = "Card", Visible = false, ZIndex = 12, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(232, 322), Parent = ui4})
+        v101.card = ui6
+        v101.cardScale = ui.new("UIScale", {Parent = ui6})
+        v101.cardGlow = img("CardGlow", ui.Assets.Icons.Glow, 11, {Size = UDim2.fromOffset(487.20000000000005, 611.8), Position = UDim2.fromScale(0.5, 0.5), Parent = ui6})
+        local ui7 = ui.new("Frame", {Name = "Back", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 12, (ui.Corner(18)), Parent = ui6})
+        v101.backGrad = ui.new("UIGradient", {Rotation = 90, Parent = ui7})
+        v101.backStroke = ui.Stroke(colors.Accent, 3, 0.1)
+        v101.backStroke.Parent = ui7
+        v101.backArt = img("Art", v28.CardBack, 13, {ImageTransparency = 0.15, AnchorPoint = Vector2.zero, Size = UDim2.fromScale(1, 1), ScaleType = Enum.ScaleType.Stretch, Parent = ui7})
+        v101.back = ui7
+        local ui8 = ui.new("Frame", {Name = "Face", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), Visible = false, ZIndex = 12, (ui.Corner(18)), Parent = ui6})
+        v101.faceGrad = ui.new("UIGradient", {Rotation = 90, Parent = ui8})
+        v101.faceStroke = ui.Stroke(colors.Accent, 3, 0.05)
+        v101.faceStroke.Parent = ui8
+        v101.face = ui8
+        local ui9 = ui.new("Frame", {Name = "Well", Position = UDim2.fromOffset(10, 10), Size = UDim2.new(1, -20, 0, 206), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.45, ZIndex = 13, (ui.Corner(12)), Parent = ui8})
+        v101.well = ui9
+        v101.wellGlow = img("WellGlow", ui.Assets.Icons.Glow, 13, {ImageTransparency = 0.5, Size = UDim2.fromScale(1.1, 1.1), Position = UDim2.fromScale(0.5, 0.5), Parent = ui9})
+        v101.icon = ui.new("Frame", {Name = "Icon", ZIndex = 14, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(196, 196), Parent = ui9})
+        v101.iconScale = ui.new("UIScale", {Parent = v101.icon})
+        v101.tag = ui.new("Frame", {Name = "Tag", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -6, 0, 6), Size = UDim2.fromOffset(74, 26), BackgroundColor3 = colors.Gold, ZIndex = 15, (ui.Corner(theme.Radius.Pill)), Parent = ui9})
+        v101.tagText = ui.new("TextLabel", {Text = "NEW", TextSize = 16, ZIndex = 16, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, TextColor3 = colors.TextDark, Parent = v101.tag})
+        v101.cat = ui.new("TextLabel", {Name = "Category", Text = "BOW", TextSize = 14, ZIndex = 16, Position = UDim2.fromOffset(10, 8), Size = UDim2.fromOffset(150, 22), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = ui9})
+        v101.name = ui.new("TextLabel", {Name = "ItemName", Text = "", TextSize = 26, ZIndex = 14, Position = UDim2.fromOffset(12, 222), Size = UDim2.new(1, -24, 0, 30), FontFace = fonts.Display, TextColor3 = colors.Text, TextTruncate = Enum.TextTruncate.AtEnd, Parent = ui8})
+        ui.TextStroke(colors.Void, 1.5, 0.4).Parent = v101.name
+        v101.count = ui.new("Frame", {Name = "Count", ZIndex = 14, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 258), Size = UDim2.fromOffset(160, 50), Parent = ui8})
+        v101.countScale = ui.new("UIScale", {Parent = v101.count})
+        v101.gem = img("Gem", v28.Gem, 15, {ImageTransparency = 0, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Size = UDim2.fromOffset(40, 40), Parent = v101.count})
+        v101.countText = ui.new("TextLabel", {Name = "N", Text = "x0", TextSize = 40, ZIndex = 15, Position = UDim2.fromOffset(54, 0), Size = UDim2.new(1, -54, 1, 0), FontFace = fonts.Display, TextXAlignment = Enum.TextXAlignment.Left, Parent = v101.count})
+        ui.TextStroke(colors.Void, 2, 0.35).Parent = v101.countText
+        v101.sheen = ui.new("Frame", {Name = "Sheen", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, ZIndex = 17, (ui.Corner(18)), Parent = ui6})
+        v101.sheenGrad = ui.new("UIGradient", {Rotation = 25, Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.42, 1), NumberSequenceKeypoint.new(0.5, 0.35), NumberSequenceKeypoint.new(0.58, 1), NumberSequenceKeypoint.new(1, 1)}), Offset = Vector2.new(-1, 0), Parent = v101.sheen})
+        v101.stamp = ui.new("Frame", {Name = "Stamp", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 158), Size = UDim2.fromOffset(250, 52), BackgroundColor3 = colors.Success, Rotation = -8, Visible = false, ZIndex = 18, (ui.Corner(12)), Parent = ui6})
+        ui.Gradient(theme.Lighten(colors.Success, 0.12), colors.SuccessDark, 90).Parent = v101.stamp
+        ui.Stroke(color3FromRGB(200, 255, 214), 3, 0.15).Parent = v101.stamp
+        v101.stampScale = ui.new("UIScale", {Parent = v101.stamp})
+        ui.Icon("chevUp", 26, colors.Text, {ZIndex = 19, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, -1), Parent = v101.stamp})
+        ui.new("TextLabel", {Text = "UPGRADE READY", TextSize = 25, ZIndex = 19, Position = UDim2.fromOffset(40, 0), Size = UDim2.new(1, -46, 1, 0), FontFace = fonts.Display, Parent = v101.stamp})
+        local ui10 = ui.new("Frame", {Name = "Bar", Visible = false, ZIndex = 12, AnchorPoint = Vector2.new(0.5, 0), Size = UDim2.fromOffset(330, 62), Parent = ui4})
+        v101.barBox = ui10
+        v101.barCaption = ui.new("TextLabel", {Name = "Caption", Text = "", RichText = true, TextSize = 17, ZIndex = 12, Size = UDim2.new(1, 0, 0, 22), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, Parent = ui10})
+        ui.TextStroke(colors.Void, 1.5, 0.45).Parent = v101.barCaption
+        local ui11 = ui.new("Frame", {Name = "Track", Position = UDim2.fromOffset(0, 28), Size = UDim2.new(1, 0, 0, 30), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.2, ClipsDescendants = true, ZIndex = 12, ui.Corner(theme.Radius.Pill), (ui.Stroke(colors.Stroke, 1.5, 0.75)), Parent = ui10})
+        v101.track = ui11
+        v101.barFill = ui.new("Frame", {Name = "Fill", Size = UDim2.fromScale(0, 1), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 13, (ui.Corner(theme.Radius.Pill)), Parent = ui11})
+        v101.barGrad = ui.new("UIGradient", {Rotation = 90, Parent = v101.barFill})
+        v101.barText = ui.new("TextLabel", {Name = "N", Text = "", TextSize = 20, ZIndex = 15, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, Parent = ui11})
+        ui.TextStroke(colors.Void, 2, 0.3).Parent = v101.barText
+        v101.barHead = img("Head", v28.Sparkle, 14, {Position = UDim2.fromOffset(0, 43), Size = UDim2.fromOffset(54, 54), Parent = ui10})
+        v101.barFlash = ui.new("Frame", {Name = "Flash", Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Gold, BackgroundTransparency = 1, ZIndex = 14, (ui.Corner(theme.Radius.Pill)), Parent = ui11})
+        local ui12 = ui.new("Frame", {Name = "NewItem", Visible = false, ZIndex = 13, Size = UDim2.fromOffset(0, 0), Parent = ui4})
+        v101.newRoot = ui12
+        v101.newDim = ui.new("Frame", {Name = "Dim", BackgroundTransparency = 1, ZIndex = 20, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(6000, 4000), BackgroundColor3 = colors.Void, Parent = ui12})
+        v101.newRaysA = img("RaysA", v28.Rays, 21, {Size = UDim2.fromOffset(1300, 1300), Position = UDim2.fromOffset(0, -40), Parent = ui12})
+        v101.newRaysB = img("RaysB", v28.RaysThin, 21, {Size = UDim2.fromOffset(1500, 1500), Position = UDim2.fromOffset(0, -40), Parent = ui12})
+        v101.newGlow = img("Glow", ui.Assets.Icons.Glow, 22, {Size = UDim2.fromOffset(760, 760), Position = UDim2.fromOffset(0, -40), Parent = ui12})
+        v101.newRing = img("Ring", v28.GlowRing, 22, {Size = UDim2.fromOffset(200, 200), Position = UDim2.fromOffset(0, -40), Parent = ui12})
+        v101.newFlare = img("Flare", v28.Flare, 25, {Size = UDim2.fromOffset(1400, 140), Position = UDim2.fromOffset(0, -270), Parent = ui12})
+        v101.newItem = ui.new("Frame", {Name = "Item", ZIndex = 23, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(0, -40), Size = UDim2.fromOffset(400, 400), Parent = ui12})
+        v101.newItemScale = ui.new("UIScale", {Parent = v101.newItem})
+
+        local function newText(name: string, textSize: number, zIndex: number, a206)
             --[[
               name: newText
               line: 767
               upvalues:
-                u1 (copy, index: 2)
-                Colors_upv_1 (copy, index: 3)
-                u17 (copy, index: 4)
+                ui (copy, index: 1)
+                fontFace (copy, index: 2)
+                colors (copy, index: 3)
+                ui12 (copy, index: 4)
             ]]
-            local new_1 = UI_upv_1.new
-            local tbl_17 = {FontFace = 0, TextColor3 = 0, TextTransparency = 1, Text = "", Parent = 0, ZIndex = 0, TextSize = 0}
-            tbl_17.Name = a33
-            tbl_17.AnchorPoint = Vector2.new(0.5, 0.5)
-            tbl_17.Size = UDim2.fromOffset(1400, a34 * 1.25)
-            tbl_17.FontFace = a36 or u1
-            tbl_17.TextSize = a34
-            tbl_17.TextColor3 = Colors_upv_1.Text
-            tbl_17.ZIndex = a35
-            tbl_17.Parent = u17
-            return new_1("TextLabel", tbl_17)
-        end
-        tbl_upv_11.newAura = newText_1("Aura", 104, 24)
-        tbl_upv_11.newAuraScale = img_1.new("UIScale", {Parent = tbl_upv_11.newAura})
-        tbl_upv_11.newShadow = newText_1("Shadow", 104, 24)
-        tbl_upv_11.newShadow.TextColor3 = Colors_upv_1.Void
-        tbl_upv_11.newShadowScale = img_1.new("UIScale", {Parent = tbl_upv_11.newShadow})
-        tbl_upv_11.newHead = newText_1("Headline", 104, 26)
-        tbl_upv_11.newHeadScale = img_1.new("UIScale", {Parent = tbl_upv_11.newHead})
-        tbl_upv_11.newHeadGrad = img_1.new("UIGradient", {Rotation = 90, Parent = tbl_upv_11.newHead})
-        tbl_upv_11.newName = newText_1("ItemName", 50, 26, Fonts_upv_1.Display)
-        img_1.TextStroke(Colors_upv_1.Void, 2, 0.35).Parent = tbl_upv_11.newName
-        tbl_upv_11.newSub = newText_1("Sub", 20, 26, Fonts_upv_1.Heavy)
-        tbl_upv_11.newSub.TextColor3 = Colors_upv_1.TextDim
-        img_1.TextStroke(Colors_upv_1.Void, 1.5, 0.45).Parent = tbl_upv_11.newSub
-        local newName_1 = tbl_upv_11.newName
-        newName_1.TextTransparency = 1
-        if newName_1:IsA("TextLabel") then
-            v44 = newName_1:FindFirstChildWhichIsA("UIStroke")
-        else
-            v44 = nil
-        end
-        local sumTotals_1
-        if v44 then
-            if type(v44:GetAttribute("Authored")) ~= "number" then
-                v44:SetAttribute("Authored", v44.Transparency)
+            local v207
+            local newUi = ui.new
+            local v209 = {Text = "", TextTransparency = 1, Name = name, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(1400, textSize * 1.25)}
+
+            if a206 then
+                v207 = a206
+            else
+                v207 = fontFace
             end
-            sumTotals_1, v51 = v44, 1
-        else
-            sumTotals_1 = nil
-            v51 = 1
+
+            v209.FontFace = v207
+            v209.TextSize = textSize
+            v209.TextColor3 = colors.Text
+            v209.ZIndex = zIndex
+            v209.Parent = ui12
+
+            return newUi("TextLabel", v209)
         end
-        if sumTotals_1 then
-            sumTotals_1.Transparency = v51
-        end
-        local newSub_1 = tbl_upv_11.newSub
-        newSub_1.TextTransparency = 1
-        if newSub_1:IsA("TextLabel") then
-            v38 = newSub_1:FindFirstChildWhichIsA("UIStroke")
-        else
-            v38 = nil
-        end
-        if v38 then
-            if type(v38:GetAttribute("Authored")) ~= "number" then
-                v38:SetAttribute("Authored", v38.Transparency)
+
+        v101.newAura = newText("Aura", 104, 24)
+        v101.newAuraScale = ui.new("UIScale", {Parent = v101.newAura})
+        v101.newShadow = newText("Shadow", 104, 24)
+        v101.newShadow.TextColor3 = colors.Void
+        v101.newShadowScale = ui.new("UIScale", {Parent = v101.newShadow})
+        v101.newHead = newText("Headline", 104, 26)
+        v101.newHeadScale = ui.new("UIScale", {Parent = v101.newHead})
+        v101.newHeadGrad = ui.new("UIGradient", {Rotation = 90, Parent = v101.newHead})
+        v101.newName = newText("ItemName", 50, 26, fonts.Display)
+        ui.TextStroke(colors.Void, 2, 0.35).Parent = v101.newName
+        v101.newSub = newText("Sub", 20, 26, fonts.Heavy)
+        v101.newSub.TextColor3 = colors.TextDim
+        ui.TextStroke(colors.Void, 1.5, 0.45).Parent = v101.newSub
+        local newName = v101.newName
+        newName.TextTransparency = 1
+
+        if const v211 = if newName:IsA("TextLabel") then newName:FindFirstChildWhichIsA("UIStroke") else nil then
+            if type((v211:GetAttribute("Authored"))) ~= "number" then
+                v211:SetAttribute("Authored", v211.Transparency)
             end
-            sumTotals_1, v51 = v38, 1
+
+            transparency2 = 1
+            v170 = v211
         else
-            sumTotals_1, v51 = nil, 1
+            transparency2 = 1
+            v170 = nil
         end
-        if sumTotals_1 then
-            sumTotals_1.Transparency = v51
+
+        if v170 then
+            v170.Transparency = transparency2
         end
-        local v54 = img_1.new("Frame", {Visible = false, Name = "Summary", ZIndex = 12, Size = UDim2.fromOffset(0, 0), Parent = u16})
-        tbl_upv_11.sumRoot = v54
-        tbl_upv_11.sumRow = img_1.new("Frame", {Name = "Row", ZIndex = 12, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(0, -40), Size = UDim2.fromOffset(0, 0), Parent = v54})
-        tbl_upv_11.sumTotals = img_1.new("TextLabel", {RichText = true, AutoLocalize = false, Text = "", Name = "Totals", ZIndex = 13, TextSize = 28, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(0, 150), Size = UDim2.fromOffset(900, 34), FontFace = Fonts_upv_1.Display, Parent = v54})
-        img_1.TextStroke(Colors_upv_1.Void, 2, 0.35).Parent = tbl_upv_11.sumTotals
-        sumTotals_1 = tbl_upv_11.sumTotals
-        sumTotals_1.TextTransparency = 1
-        local v55
-        if sumTotals_1:IsA("TextLabel") then
-            v55 = sumTotals_1:FindFirstChildWhichIsA("UIStroke")
-        else
-            v55 = nil
-        end
-        local v56
-        if v55 then
-            if type(v55:GetAttribute("Authored")) ~= "number" then
-                v55:SetAttribute("Authored", v55.Transparency)
+
+        local newSub = v101.newSub
+        newSub.TextTransparency = 1
+
+        if const v213 = if newSub:IsA("TextLabel") then newSub:FindFirstChildWhichIsA("UIStroke") else nil then
+            if type((v213:GetAttribute("Authored"))) ~= "number" then
+                v213:SetAttribute("Authored", v213.Transparency)
             end
-            v51, v56 = v55, 1
+
+            transparency3 = 1
+            v172 = v213
         else
-            v51 = nil
-            v56 = 1
+            transparency3 = 1
+            v172 = nil
         end
-        if v51 then
-            v51.Transparency = v56
+
+        if v172 then
+            v172.Transparency = transparency3
         end
-        tbl_upv_11.cont = img_1.new("TextButton", {Name = "Continue", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(0, 236), Size = UDim2.fromOffset(280, 60), BackgroundColor3 = Colors_upv_1.Accent, ClipsDescendants = true, ZIndex = 16, [1] = img_1.Corner(Theme_upv_1.Radius.Pill), Parent = v54})
-        tbl_upv_11.contGrad = img_1.Gradient(Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.12), Colors_upv_1.AccentDark, 90)
-        tbl_upv_11.contGrad.Parent = tbl_upv_11.cont
-        tbl_upv_11.contScale = img_1.new("UIScale", {Parent = tbl_upv_11.cont})
-        tbl_upv_11.contFill = img_1.new("Frame", {Name = "Auto", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Void, BackgroundTransparency = 0.8, ZIndex = 16, [1] = img_1.Corner(Theme_upv_1.Radius.Pill), Parent = tbl_upv_11.cont})
-        tbl_upv_11.contFillGrad = img_1.new("UIGradient", {Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(0.501, 1), NumberSequenceKeypoint.new(1, 1)}), Offset = Vector2.new(-0.5, 0), Parent = tbl_upv_11.contFill})
-        img_1.new("TextLabel", {ZIndex = 17, Text = "CONTINUE", TextSize = 28, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, Parent = tbl_upv_11.cont})
-        tbl_upv_11.tiles = {}
-        local tbl_18 = {}
-        tbl_18.Name = "Skip"
-        tbl_18.AnchorPoint = Vector2.new(1, 1)
-        tbl_18.Size = UDim2.fromOffset(128, 52)
-        tbl_18.BackgroundColor3 = Colors_upv_1.Panel
-        tbl_18.BackgroundTransparency = 0.12
-        tbl_18.Text = ""
-        tbl_18.Visible = false
-        tbl_18.ZIndex = 30
-        tbl_18.ClipsDescendants = true
-        tbl_18[1], tbl_18[2] = img_1.Corner(10), img_1.Stroke(Colors_upv_1.Text, 1, 0.8)
-        tbl_18.Parent = v37
-        tbl_upv_11.skip = img_1.new("TextButton", tbl_18)
-        tbl_upv_11.skipScale = img_1.new("UIScale", {Parent = tbl_upv_11.skip})
-        tbl_upv_11.skipFill = img_1.new("Frame", {Name = "Hold", Size = UDim2.fromScale(0, 1), BackgroundColor3 = Colors_upv_1.Text, BackgroundTransparency = 0.82, ZIndex = 30, [1] = img_1.Corner(10), Parent = tbl_upv_11.skip})
-        img_1.new("TextLabel", {ZIndex = 31, Text = "SKIP  \226\128\186", TextSize = 22, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, TextColor3 = Colors_upv_1.Text, Parent = tbl_upv_11.skip})
-        tbl_upv_11.safe = img_1.new("ScreenGui", {ResetOnSpawn = false, IgnoreGuiInset = true, Name = "TR_RevealSafe", Parent = a1.PlayerGui})
+
+        local ui13 = ui.new("Frame", {Name = "Summary", Visible = false, ZIndex = 12, Size = UDim2.fromOffset(0, 0), Parent = ui4})
+        v101.sumRoot = ui13
+        v101.sumRow = ui.new("Frame", {Name = "Row", ZIndex = 12, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(0, -40), Size = UDim2.fromOffset(0, 0), Parent = ui13})
+        v101.sumTotals = ui.new("TextLabel", {AutoLocalize = false, Name = "Totals", Text = "", RichText = true, TextSize = 28, ZIndex = 13, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(0, 150), Size = UDim2.fromOffset(900, 34), FontFace = fonts.Display, Parent = ui13})
+        ui.TextStroke(colors.Void, 2, 0.35).Parent = v101.sumTotals
+        local sumTotals = v101.sumTotals
+        sumTotals.TextTransparency = 1
+
+        if const v216 = if sumTotals:IsA("TextLabel") then sumTotals:FindFirstChildWhichIsA("UIStroke") else nil then
+            if type((v216:GetAttribute("Authored"))) ~= "number" then
+                v216:SetAttribute("Authored", v216.Transparency)
+            end
+
+            transparency4 = 1
+            v174 = v216
+        else
+            transparency4 = 1
+            v174 = nil
+        end
+
+        if v174 then
+            v174.Transparency = transparency4
+        end
+
+        v101.cont = ui.new("TextButton", {Name = "Continue", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(0, 236), Size = UDim2.fromOffset(280, 60), BackgroundColor3 = colors.Accent, ClipsDescendants = true, ZIndex = 16, (ui.Corner(theme.Radius.Pill)), Parent = ui13})
+        v101.contGrad = ui.Gradient(theme.Lighten(colors.Accent, 0.12), colors.AccentDark, 90)
+        v101.contGrad.Parent = v101.cont
+        v101.contScale = ui.new("UIScale", {Parent = v101.cont})
+        v101.contFill = ui.new("Frame", {Name = "Auto", Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.8, ZIndex = 16, (ui.Corner(theme.Radius.Pill)), Parent = v101.cont})
+        v101.contFillGrad = ui.new("UIGradient", {Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(0.501, 1), NumberSequenceKeypoint.new(1, 1)}), Offset = Vector2.new(-0.5, 0), Parent = v101.contFill})
+        ui.new("TextLabel", {Text = "CONTINUE", TextSize = 28, ZIndex = 17, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, Parent = v101.cont})
+        v101.tiles = {}
+        v101.skip = ui.new("TextButton", {Name = "Skip", AnchorPoint = Vector2.new(1, 1), Size = UDim2.fromOffset(128, 52), BackgroundColor3 = colors.Panel, BackgroundTransparency = 0.12, Text = "", Visible = false, ZIndex = 30, ClipsDescendants = true, ui.Corner(10), (ui.Stroke(colors.Text, 1, 0.8)), Parent = ui2})
+        v101.skipScale = ui.new("UIScale", {Parent = v101.skip})
+        v101.skipFill = ui.new("Frame", {Name = "Hold", Size = UDim2.fromScale(0, 1), BackgroundColor3 = colors.Text, BackgroundTransparency = 0.82, ZIndex = 30, (ui.Corner(10)), Parent = v101.skip})
+        ui.new("TextLabel", {Text = "SKIP  ›", TextSize = 22, ZIndex = 31, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, TextColor3 = colors.Text, Parent = v101.skip})
+        v101.safe = ui.new("ScreenGui", {Name = "TR_RevealSafe", IgnoreGuiInset = true, ResetOnSpawn = false, Parent = a17.PlayerGui})
         pcall(
             function()
                 --[[
                   line: 865
                   upvalues:
-                    tbl_upv_11 (copy, index: 1)
+                    v101 (copy, index: 1)
                 ]]
-                tbl_upv_11.safe.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+                v101.safe.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
             end
         )
     end
+
     local function layout()
         --[[
           name: layout
           line: 871
           upvalues:
-            u8 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            tbl_upv_11 (copy, index: 3)
+            hasRun (ref,  index: 1)
+            ui (copy, index: 2)
+            v101 (copy, index: 3)
         ]]
-        if not u8 then
+        local clampedValue
+        local textSize
+
+        if not hasRun then
             return
         end
-        local v57 = UI_upv_1.CanvasSize()
-        local v58 = UI_upv_1.TopInset()
-        tbl_upv_11.stageScale.Scale = math.min(1, ((v57.Y - (v58 * 0.5)) - 6) / 780, (v57.X - 20) / 1200)
-        tbl_upv_11.stage.Position = UDim2.new(0.5, 0, 0.5, math.floor(v58 * 0.25))
-        local v59 = v57 * UI_upv_1.Scale
-        if v59.Y < 560 then
-            v58 = math.clamp(v59.Y / 620, 0.5, 1)
+
+        local v220 = ui.CanvasSize()
+        local v221 = ui.TopInset()
+        local scale = math.min(1, ((v220.Y - (v221 * 0.5)) - 6) / 780, (v220.X - 20) / 1200)
+        v101.stageScale.Scale = scale
+        v101.stage.Position = UDim2.new(0.5, 0, 0.5, (math.floor(v221 * 0.25)))
+        local v223 = v220 * ui.Scale
+
+        if not (v223.Y < 560) then
+            clampedValue = math.clamp(v223.Y / 900, 0.6, 1.4)
         else
-            v58 = math.clamp(v59.Y / 900, 0.6, 1.4)
+            clampedValue = math.clamp(v223.Y / 620, 0.5, 1)
         end
-        v57 = math.floor((v58 * 50) + 0.5) * 0.5
-        local v60 = 0
-        local v61 = 0
-        if not UI_upv_1.DebugDevice and tbl_upv_11.safe.AbsoluteSize.X > 0 then
-            local v62 = tbl_upv_11.gui.AbsolutePosition + tbl_upv_11.gui.AbsoluteSize
-            local v63 = tbl_upv_11.safe.AbsolutePosition + tbl_upv_11.safe.AbsoluteSize
-            v60, v61 = math.max(0, v62.X - v63.X), math.max(0, v62.Y - v63.Y)
+
+        local v224 = math.floor((clampedValue * 50) + 0.5) * 0.5
+        local v225 = 0
+        local v226 = 0
+
+        if not ui.DebugDevice and 0 < v101.safe.AbsoluteSize.X then
+            local v227 = v101.gui.AbsolutePosition + v101.gui.AbsoluteSize
+            local v228 = v101.safe.AbsolutePosition + v101.safe.AbsoluteSize
+            v225 = math.max(0, v227.X - v228.X)
+            v226 = math.max(0, v227.Y - v228.Y)
         end
-        tbl_upv_11.skip.Position = UDim2.new(1, -((v60 + math.floor(math.clamp(v59.X * 0.0225, 12, 44) + 0.5)) + v57) / UI_upv_1.Scale, 1, -((v61 + math.floor(math.clamp(v59.Y * 0.03, 10, 30) + 0.5)) + v57) / UI_upv_1.Scale)
-        tbl_upv_11.skipScale.Scale = v58 / UI_upv_1.Scale
-        local Compact_1 = UI_upv_1.Compact
-        tbl_upv_11.subtitle.TextSize = (Compact_1 and 28) or 22
-        tbl_upv_11.barCaption.TextSize = (Compact_1 and 23) or 17
-        tbl_upv_11.barText.TextSize = (Compact_1 and 25) or 20
-        tbl_upv_11.cat.TextSize = (Compact_1 and 18) or 14
-        tbl_upv_11.tagText.TextSize = (Compact_1 and 19) or 16
-        local tag_1 = tbl_upv_11.tag
-        local v64
-        if Compact_1 then
-            v64 = UDim2.fromOffset(92, 30)
+
+        local v229 = v225 + math.floor(math.clamp(v223.X * 0.0225, 12, 44) + 0.5) + v224
+        local v230 = v226 + math.floor(math.clamp(v223.Y * 0.03, 10, 30) + 0.5) + v224
+        v101.skip.Position = UDim2.new(1, -v229 / ui.Scale, 1, -v230 / ui.Scale)
+        v101.skipScale.Scale = clampedValue / ui.Scale
+        local compact = ui.Compact
+        local subtitle = v101.subtitle
+
+        if compact then
+            textSize = 28
         else
-            v64 = UDim2.fromOffset(74, 26)
+            textSize = 22
         end
-        tag_1.Size = v64
-        tbl_upv_11.sumTotals.TextSize = (Compact_1 and 34) or 28
-        tbl_upv_11.newSub.TextSize = (Compact_1 and 26) or 20
+
+        subtitle.TextSize = textSize
+        v101.barCaption.TextSize = compact and 23 or 17
+        v101.barText.TextSize = compact and 25 or 20
+        v101.cat.TextSize = compact and 18 or 14
+        v101.tagText.TextSize = compact and 19 or 16
+        v101.tag.Size = if compact then UDim2.fromOffset(92, 30) else UDim2.fromOffset(74, 26)
+        v101.sumTotals.TextSize = compact and 34 or 28
+        v101.newSub.TextSize = compact and 26 or 20
     end
+
     local function clearChest()
         --[[
           name: clearChest
           line: 911
           upvalues:
-            tbl_upv_16 (copy, index: 1)
-            u12 (ref,  index: 2)
+            v161 (copy, index: 1)
+            v162 (ref,  index: 2)
         ]]
-        for _, value_5 in tbl_upv_16 do
-            value_5.part:Destroy()
+        for _, v235 in v161 do
+            v235.part:Destroy()
         end
-        table.clear(tbl_upv_16)
-        u12 = nil
+
+        table.clear(v161)
+        v162 = nil
     end
-    local function buildChest(a37, a38)
+
+    buildChest = function(model, fit)
         --[[
           name: buildChest
           line: 918
           upvalues:
-            tbl_upv_16 (copy, index: 1)
-            u12 (ref,  index: 2)
-            u6 (ref,  index: 3)
-            u13 (ref,  index: 4)
-            u14 (ref,  index: 5)
-            fromRGB_upv_1 (copy, index: 6)
-            tbl_upv_11 (copy, index: 7)
+            v161 (copy, index: 1)
+            v162 (ref,  index: 2)
+            v19 (ref,  index: 3)
+            cframe (ref,  index: 4)
+            cframe2 (ref,  index: 5)
+            color3FromRGB (copy, index: 6)
+            v101 (copy, index: 7)
         ]]
-        for _, value_6 in tbl_upv_16 do
-            value_6.part:Destroy()
+        for _, v239 in v161 do
+            v239.part:Destroy()
         end
-        table.clear(tbl_upv_16)
-        u12 = nil
-        local v65 = u6 and (u6[a37])
-        if not (v65) then
-            local tbl_19 = {}
-            tbl_19.size = {5, 3.6, 3.4}
-            tbl_19.hinge = {0, 2.2, 1.7}
-            tbl_19.parts = {{mesh = "", tex = "", material = "Wood", lid = false, size = {5, 2.2, 3.4}, scale = {1, 1, 1}, cf = {0, 1.1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}, color = {150, 96, 52}}, {mesh = "", tex = "", material = "Wood", lid = true, size = {5.1, 1.4, 3.5}, scale = {1, 1, 1}, cf = {0, 2.9, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}, color = {172, 112, 60}}}
-            v65 = tbl_19
-        end
-        u12 = v65
-        u13 = CFrame.new(v65.hinge[1] * a38, v65.hinge[2] * a38, v65.hinge[3] * a38)
-        u14 = u13:Inverse()
-        local v66 = nil
-        for _, value_upv_7 in v65.parts do
-            local u18 = Instance.new("Part")
-            u18.Anchored = true
-            u18.CanCollide = false
-            u18.CanQuery = false
-            u18.CanTouch = false
-            u18.CastShadow = false
-            u18.Size = Vector3.new(value_upv_7.size[1] * a38, value_upv_7.size[2] * a38, value_upv_7.size[3] * a38)
-            u18.Color = fromRGB_upv_1(value_upv_7.color[1], value_upv_7.color[2], value_upv_7.color[3])
+
+        table.clear(v161)
+        v162 = nil
+        local v240 = v19 and v19[model]
+        v240 = v240
+            or {size = {5, 3.6, 3.4}, hinge = {0, 2.2, 1.7}, parts = {{lid = false, mesh = "", tex = "", material = "Wood", size = {5, 2.2, 3.4}, scale = {1, 1, 1}, cf = {0, 1.1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}, color = {150, 96, 52}}, {lid = true, mesh = "", tex = "", material = "Wood", size = {5.1, 1.4, 3.5}, scale = {1, 1, 1}, cf = {0, 2.9, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1}, color = {172, 112, 60}}}}
+        v162 = v240
+        cframe = CFrame.new(v240.hinge[1] * fit, v240.hinge[2] * fit, v240.hinge[3] * fit)
+        cframe2 = cframe:Inverse()
+
+        for _, part in v240.parts do
+            local mesh
+            local part2 = Instance.new("Part")
+            part2.Anchored = true
+            part2.CanCollide = false
+            part2.CanQuery = false
+            part2.CanTouch = false
+            part2.CastShadow = false
+            part2.Size = Vector3.new(part.size[1] * fit, part.size[2] * fit, part.size[3] * fit)
+            part2.Color = color3FromRGB(part.color[1], part.color[2], part.color[3])
             pcall(
                 function()
                     --[[
                       line: 945
                       upvalues:
-                        u18 (copy, index: 1)
-                        value_upv_7 (copy, index: 2)
+                        part2 (copy, index: 1)
+                        part (copy, index: 2)
                     ]]
-                    u18.Material = Enum.Material[value_upv_7.material]
+                    part2.Material = Enum.Material[part.material]
                 end
             )
-            u18.TopSurface = Enum.SurfaceType.Smooth
-            u18.BottomSurface = Enum.SurfaceType.Smooth
-            local v67 = CFrame.new(table.unpack(value_upv_7.cf))
-            local v68 = nil
-            local v69 = Vector3.new(value_upv_7.scale[1], value_upv_7.scale[2], value_upv_7.scale[3]) * a38
-            if value_upv_7.mesh == "" then
-                v66 = v68
+            part2.TopSurface = Enum.SurfaceType.Smooth
+            part2.BottomSurface = Enum.SurfaceType.Smooth
+            local cframe3 = CFrame.new(table.unpack(part.cf))
+            local cf = cframe3.Rotation + cframe3.Position * fit
+            local scale = Vector3.new(part.scale[1], part.scale[2], part.scale[3]) * fit
+
+            if part.mesh == "" then
+                mesh = nil
             else
-                local v70 = Instance.new("SpecialMesh")
-                v70.MeshType = Enum.MeshType.FileMesh
-                v70.MeshId = value_upv_7.mesh
-                v70.TextureId = value_upv_7.tex
-                v70.Scale = v69
-                v70.Parent = u18
-                v66 = v70
+                local specialMesh = Instance.new("SpecialMesh")
+                specialMesh.MeshType = Enum.MeshType.FileMesh
+                specialMesh.MeshId = part.mesh
+                specialMesh.TextureId = part.tex
+                specialMesh.Scale = scale
+                specialMesh.Parent = part2
+                mesh = specialMesh
             end
-            u18.Parent = tbl_upv_11.vpf
-            local tbl_20 = {lid = 0, scale = 0, size = 0}
-            tbl_20.part = u18
-            tbl_20.mesh = v66
-            tbl_20.cf = v67.Rotation + (v67.Position * a38)
-            tbl_20.lid = value_upv_7.lid == true
-            tbl_20.scale = v69
-            tbl_20.size = u18.Size
-            table.insert(tbl_upv_16, tbl_20)
+
+            part2.Parent = v101.vpf
+            table.insert(v161, {part = part2, mesh = mesh, cf = cf, lid = part.lid == true, scale = scale, size = part2.Size})
         end
     end
+
     local function applyPose()
         --[[
           name: applyPose
           line: 968
           upvalues:
-            u12 (ref,  index: 1)
-            tbl_upv_13 (copy, index: 2)
-            tbl_upv_16 (copy, index: 3)
-            u13 (ref,  index: 4)
-            u14 (ref,  index: 5)
+            v162 (ref,  index: 1)
+            v134 (copy, index: 2)
+            v161 (copy, index: 3)
+            cframe (ref,  index: 4)
+            cframe2 (ref,  index: 5)
         ]]
-        if not u12 then
+        if not v162 then
             return
         end
-        local sq_1 = tbl_upv_13.sq
-        local v71 = (1 - sq_1) * tbl_upv_13.s
-        local v72 = (1 + (sq_1 * 0.55)) * tbl_upv_13.s
-        local v73 = CFrame.new(0, tbl_upv_13.y, 0) * CFrame.Angles(0, 0.4188790204786391 + tbl_upv_13.yaw, 0) * CFrame.Angles(tbl_upv_13.pitch, 0, tbl_upv_13.roll)
-        local v74 = CFrame.Angles(math.rad(tbl_upv_13.lid), 0, 0)
-        for _, value_8 in tbl_upv_16 do
-            local cf_1 = value_8.cf
-            cf_1 = ((value_8.lid) and ((u13 * v74) * u14 * cf_1)) or cf_1
-            local Position_1 = cf_1.Position
-            local Rotation_1 = cf_1.Rotation
-            value_8.part.CFrame = v73 * (CFrame.new(Position_1.X * v72, Position_1.Y * v71, Position_1.Z * v72) * Rotation_1)
-            local RightVector_1 = Rotation_1.RightVector
-            local UpVector_1 = Rotation_1.UpVector
-            local LookVector_1 = Rotation_1.LookVector
-            local v75 = math.abs(RightVector_1.Y) * v71 + (1 - math.abs(RightVector_1.Y)) * v72
-            local v76 = math.abs(UpVector_1.Y) * v71 + (1 - math.abs(UpVector_1.Y)) * v72
-            local v77 = math.abs(LookVector_1.Y) * v71 + (1 - math.abs(LookVector_1.Y)) * v72
-            if value_8.mesh then
-                value_8.mesh.Scale = value_8.scale * Vector3.new(v75, v76, v77)
+
+        local sq = v134.sq
+        local v251 = (1 - sq) * v134.s
+        local v252 = (1 + (sq * 0.55)) * v134.s
+        local cframe3 = CFrame.new(0, v134.y, 0) * CFrame.Angles(0, 0.4188790204786391 + v134.yaw, 0) * CFrame.Angles(v134.pitch, 0, v134.roll)
+        local cframe4 = CFrame.Angles(math.rad(v134.lid), 0, 0)
+        local cf
+
+        for _, v257 in v161 do
+            cf = v257.cf
+            local v258 = if v257.lid then cframe * cframe4 * cframe2 * cf else cf
+            local position = v258.Position
+            local rotation = v258.Rotation
+            v257.part.CFrame = cframe3 * (CFrame.new(position.X * v252, position.Y * v251, position.Z * v252) * rotation)
+            local rightVector = rotation.RightVector
+            local upVector = rotation.UpVector
+            local lookVector = rotation.LookVector
+            local x = math.abs(rightVector.Y) * v251 + (1 - math.abs(rightVector.Y)) * v252
+            local y = math.abs(upVector.Y) * v251 + (1 - math.abs(upVector.Y)) * v252
+            local z = math.abs(lookVector.Y) * v251 + (1 - math.abs(lookVector.Y)) * v252
+
+            if v257.mesh then
+                v257.mesh.Scale = v257.scale * Vector3.new(x, y, z)
             else
-                value_8.part.Size = value_8.size * Vector3.new(v75, v76, v77)
+                v257.part.Size = v257.size * Vector3.new(x, y, z)
             end
         end
     end
+
+    local function project(a268)
+        --[[
+          name: project
+          line: 998
+          upvalues:
+            v134 (copy, index: 1)
+            cFrame (copy, index: 2)
+            v101 (copy, index: 3)
+        ]]
+        local objectSpacePoint = cFrame:PointToObjectSpace((CFrame.new(0, v134.y, 0) * CFrame.Angles(0, 0.4188790204786391 + v134.yaw, 0)) * a268)
+        local size = v101.chestHolder.Size
+        local offset = size.X.Offset
+        local offset2 = size.Y.Offset
+        local v273 = math.max(-objectSpacePoint.Z, 0.1)
+        local v274 = objectSpacePoint.X / (v273 * 0.24932800284318068 * (offset / offset2))
+        local v275 = objectSpacePoint.Y / (v273 * 0.24932800284318068)
+
+        return Vector2.new((v274 * offset) / 2, (-v275 * offset2) / 2)
+    end
+
     local function chestHeight()
         --[[
           name: chestHeight
           line: 1010
           upvalues:
-            u12 (ref, index: 1)
-            u9 (ref, index: 2)
+            v162 (ref, index: 1)
+            v102 (ref, index: 2)
         ]]
-        if not u12 then
+        local v277 = v162
+        if not v277 then
             return 4
         end
-        local v78 = u12.size[2]
-        local v79 = (u9 and (u9.look.fit)) or 1
-        return v78 * v79
+
+        local v278 = v277.size[2]
+        local fit = v102 and v102.look.fit or 1
+
+        return v278 * fit
     end
+
     local function frontZ()
         --[[
           name: frontZ
           line: 1014
           upvalues:
-            u12 (ref, index: 1)
-            u9 (ref, index: 2)
+            v162 (ref, index: 1)
+            v102 (ref, index: 2)
         ]]
-        local v80
-        if u12 then
-            local _ = u12.size[3]
-            local v81 = u9 and u9.look.fit or 1
-            v80 = u12.size[3] * (u9 and u9.look.fit or 1) / 2
+        local v281
+
+        if const v282 = v162 then
+            local v283 = v282.size[3]
+            local fit = v102 and v102.look.fit or 1
+            v281 = v283 * fit / 2
         else
-            v80 = 1.7
+            v281 = 1.7
         end
-        return -v80
+
+        return -v281
     end
+
     local function seamPoint()
         --[[
           name: seamPoint
           line: 1019
           upvalues:
-            u13 (ref, index: 1)
-            u12 (ref, index: 2)
-            u9 (ref, index: 3)
+            cframe (ref, index: 1)
+            v162 (ref, index: 2)
+            v102 (ref, index: 3)
         ]]
-        local Y_1 = u13.Position.Y
-        local v81
-        if u12 then
-            local _ = u12.size[3]
-            local v82 = u9 and u9.look.fit or 1
-            v81 = u12.size[3] * (u9 and u9.look.fit or 1) / 2
+        local v286
+        local y = cframe.Position.Y
+
+        if const v288 = v162 then
+            local v289 = v288.size[3]
+            local fit = v102 and v102.look.fit or 1
+            v286 = v289 * fit / 2
         else
-            v81 = 1.7
+            v286 = 1.7
         end
-        return (Vector3.new(0, Y_1, -v81))
+
+        return (Vector3.new(0, y, -v286))
     end
+
     local function mouthPoint()
         --[[
           name: mouthPoint
           line: 1022
           upvalues:
-            u13 (ref, index: 1)
+            cframe (ref, index: 1)
         ]]
-        return (Vector3.new(0, u13.Position.Y + 0.2, 0))
+        return (Vector3.new(0, cframe.Position.Y + 0.2, 0))
     end
-    local function project(a39)
-        --[[
-          name: project
-          line: 998
-          upvalues:
-            tbl_upv_13 (copy, index: 1)
-            u15 (copy, index: 2)
-            tbl_upv_11 (copy, index: 3)
-        ]]
-        local v82 = u15:PointToObjectSpace((CFrame.new(0, tbl_upv_13.y, 0) * CFrame.Angles(0, 0.4188790204786391 + tbl_upv_13.yaw, 0)) * a39)
-        local Size_1 = tbl_upv_11.chestHolder.Size
-        local Offset_1 = Size_1.X.Offset
-        local Offset_2 = Size_1.Y.Offset
-        local v83 = math.max(-v82.Z, 0.1)
-        return Vector2.new(((v82.X / ((v83 * 0.24932800284318068) * (Offset_1 / Offset_2))) * Offset_1) / 2, (-(v82.Y / (v83 * 0.24932800284318068)) * Offset_2) / 2)
-    end
-    local function stagePoint(a40, a41, a42)
+
+    local function stagePoint(a293, a294, a295)
         --[[
           name: stagePoint
           line: 1026
           upvalues:
             project (copy, index: 1)
-            tbl_upv_11 (copy, index: 2)
+            v101 (copy, index: 2)
         ]]
-        local v84 = project(a40)
-        local Position_2 = tbl_upv_11.chestHolder.Position
-        local v85 = a42 or (tbl_upv_11.chestScale.Scale)
-        return Vector2.new(Position_2.X.Offset + (v84.X * v85), (a41 or (Position_2.Y.Offset)) + (v84.Y * v85))
+        local vector2 = project(a293)
+        local position = v101.chestHolder.Position
+        local v298 = a295 or v101.chestScale.Scale
+        local newVector2 = Vector2.new
+        local x = position.X.Offset + vector2.X * v298
+        local v301 = a294 or position.Y.Offset
+
+        return newVector2(x, v301 + (vector2.Y * v298))
     end
-    local u19 = nil
-    local u20 = nil
-    local function gradeIn(a43)
+
+    local ui2 = nil
+    local ui3 = nil
+
+    local function gradeIn(a305)
         --[[
           name: gradeIn
           line: 1036
           upvalues:
-            u19 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            Lighting_upv_1 (copy, index: 3)
-            u20 (ref,  index: 4)
+            ui2 (ref,  index: 1)
+            ui (copy, index: 2)
+            lighting (copy, index: 3)
+            ui3 (ref,  index: 4)
             tw (copy, index: 5)
         ]]
-        if not (u19) then
-            local v86 = UI_upv_1.new("ColorCorrectionEffect", {Name = "TR_RevealCC", Parent = Lighting_upv_1})
-            u19 = v86
+        local saturation
+        ui2 = ui2 or ui.new("ColorCorrectionEffect", {Name = "TR_RevealCC", Parent = lighting})
+        ui3 = ui3 or ui.new("BlurEffect", {Name = "TR_RevealBlur", Size = 0, Parent = lighting})
+        local ui4 = ui2
+        ui4.Brightness, ui4.Contrast, ui4.Saturation, ui4.TintColor = 0, 0, 0, Color3.new(1, 1, 1)
+        local propertyTable = {Contrast = 0.1, Brightness = -0.02}
+
+        if a305.legendary then
+            saturation = 0.22
+        else
+            saturation = 0.14
         end
-        if not (u20) then
-            local v87 = UI_upv_1.new("BlurEffect", {Name = "TR_RevealBlur", Size = 0, Parent = Lighting_upv_1})
-            u20 = v87
-        end
-        local v88 = Color3.new(1, 1, 1)
-        u19.Brightness = 0
-        u19.Contrast = 0
-        u19.Saturation = 0
-        u19.TintColor = v88
-        local tbl_21 = {TintColor = 0, Brightness = -0.02, Saturation = 0, Contrast = 0.1}
-        tbl_21.Saturation = ((a43.legendary) and 0.22) or 0.14
-        tbl_21.TintColor = a43.light:Lerp(Color3.new(1, 1, 1), 0.85)
-        tw(u19, 0.4, tbl_21)
-        u20.Size = 0
-        tw(u20, 0.45, {Size = 14})
+
+        propertyTable.Saturation = saturation
+        propertyTable.TintColor = a305.light:Lerp(Color3.new(1, 1, 1), 0.85)
+        tw(ui4, 0.4, propertyTable)
+        ui3.Size = 0
+        tw(ui3, 0.45, {Size = 14})
     end
-    local function gradePulse(a44)
+
+    local function gradePulse(saturation)
         --[[
           name: gradePulse
           line: 1050
           upvalues:
-            u19 (ref,  index: 1)
+            ui2 (ref,  index: 1)
             tw (copy, index: 2)
         ]]
-        if not u19 then
-            return
+        if ui2 then
+            local ui = ui2
+            ui.Saturation = saturation
+            tw(ui, 0.6, {Saturation = 0.16}, Enum.EasingStyle.Quad)
         end
-        u19.Saturation = a44
-        tw(u19, 0.6, {Saturation = 0.16}, Enum.EasingStyle.Quad)
     end
-    local function gradeOut(a45)
+
+    local function gradeOut(a313: number)
         --[[
           name: gradeOut
           line: 1057
           upvalues:
-            u19 (ref,  index: 1)
+            ui2 (ref,  index: 1)
             tw (copy, index: 2)
-            u20 (ref,  index: 3)
+            ui3 (ref,  index: 3)
         ]]
-        if u19 then
-            tw(u19, a45, {Brightness = 0, Saturation = 0, Contrast = 0, TintColor = Color3.new(1, 1, 1)}, Enum.EasingStyle.Quad)
+        if ui2 then
+            tw(ui2, a313, {Contrast = 0, Saturation = 0, Brightness = 0, TintColor = Color3.new(1, 1, 1)}, Enum.EasingStyle.Quad)
         end
-        if not u20 then
-            return
+
+        if ui3 then
+            tw(ui3, a313, {Size = 0}, Enum.EasingStyle.Quad)
         end
-        tw(u20, a45, {Size = 0}, Enum.EasingStyle.Quad)
     end
+
     local function gradeOff()
         --[[
           name: gradeOff
           line: 1065
           upvalues:
-            u19 (ref, index: 1)
-            u20 (ref, index: 2)
+            ui2 (ref, index: 1)
+            ui3 (ref, index: 2)
         ]]
-        if u19 then
-            u19:Destroy()
-            u19 = nil
+        if ui2 then
+            ui2:Destroy()
+            ui2 = nil
         end
-        if not u20 then
-            return
+
+        if ui3 then
+            ui3:Destroy()
+            ui3 = nil
         end
-        u20:Destroy()
-        u20 = nil
     end
-    local u21 = nil
-    local u22 = Random.new()
-    local u23 = 0
-    local u24 = 0
-    local u25 = 0
-    local function shake(a46, a47)
+
+    local renderSteppedConnection = nil
+    local random = Random.new()
+    local v317 = 0
+    local v318 = 0
+    local v319 = 0
+
+    local function shake(a321, a322)
         --[[
           name: shake
           line: 1080
           upvalues:
-            u23 (ref, index: 1)
-            u24 (ref, index: 2)
-            u25 (ref, index: 3)
+            v317 (ref, index: 1)
+            v318 (ref, index: 2)
+            v319 (ref, index: 3)
         ]]
-        u23 = a46
-        u24 = 0
-        u25 = a47
+        v317 = a321
+        v318 = 0
+        v319 = a322
     end
-    local tbl_upv_22 = {build = 0, wiggleT = -1, interval = 0.9, t = 0, on = false, nextWiggle = 0.5}
-    local function stepAnims(a48)
-        --[[
-          name: stepAnims
-          line: 382
-          upvalues:
-            tbl_upv_14 (copy, index: 1)
-            tbl_upv_13 (copy, index: 2)
-        ]]
-        for key_3, value_9 in tbl_upv_14 do
-            local v89 = value_9[1]
-            if not (v89) then
-                tbl_upv_14[key_3] = nil
-                continue
-            end
-            if v89.delay > 0 then
-                v89.delay = v89.delay - a48
-                if v89.delay > 0 then
-                    continue
-                end
-                local v90 = -v89.delay
-                v89.delay = 0
-                a48 = v90
-                if v89.from == nil then
-                    v89.from = tbl_upv_13[key_3]
-                end
-                v89.t = v89.t + a48
-                local v91 = math.min(1, v89.t / v89.dur)
-                tbl_upv_13[key_3] = v89.from + ((v89.to - v89.from) * v89.ease(v91))
-                if not (v91 >= 1) then
-                    continue
-                end
-                table.remove(value_9, 1)
-                if #value_9 == 0 then
-                    tbl_upv_14[key_3] = nil
-                end
-            else
-                if v89.from == nil then
-                    v89.from = tbl_upv_13[key_3]
-                end
-                v89.t = v89.t + a48
-                local v91 = math.min(1, v89.t / v89.dur)
-                tbl_upv_13[key_3] = v89.from + ((v89.to - v89.from) * v89.ease(v91))
-                if not (v91 >= 1) then
-                    continue
-                end
-                table.remove(value_9, 1)
-                if #value_9 == 0 then
-                    tbl_upv_14[key_3] = nil
-                end
-            end
-        end
-    end
-    local function onRender(a49)
+
+    local v323 = {on = false, t = 0, nextWiggle = 0.5, wiggleT = -1, interval = 0.9, build = 0}
+
+    local function onRender(deltaTime: number)
         --[[
           name: onRender
           line: 1084
           upvalues:
-            u7 (ref,  index: 1)
+            pace (ref,  index: 1)
             stepAnims (copy, index: 2)
-            u9 (ref,  index: 3)
-            tbl_upv_22 (copy, index: 4)
-            a1 (copy, index: 5)
-            u22 (copy, index: 6)
-            tbl_upv_11 (copy, index: 7)
-            u13 (ref,  index: 8)
-            u12 (ref,  index: 9)
+            v102 (ref,  index: 3)
+            v323 (copy, index: 4)
+            a17 (copy, index: 5)
+            random (copy, index: 6)
+            v101 (copy, index: 7)
+            cframe (ref,  index: 8)
+            v162 (ref,  index: 9)
             project (copy, index: 10)
-            tbl_upv_13 (copy, index: 11)
+            v134 (copy, index: 11)
             applyPose (copy, index: 12)
-            u23 (ref,  index: 13)
-            u24 (ref,  index: 14)
-            u25 (ref,  index: 15)
-            tbl_upv_3 (copy, index: 16)
-            tbl_upv_7 (copy, index: 17)
+            v317 (ref,  index: 13)
+            v318 (ref,  index: 14)
+            v319 (ref,  index: 15)
+            v13 (copy, index: 16)
+            dropReveal (copy, index: 17)
         ]]
-        local v92 = a49 / u7
-        stepAnims(v92)
-        if not u9 then
+        local v326 = deltaTime / pace
+        stepAnims(v326)
+
+        if not v102 then
             return
         end
-        local look_1 = u9.look
-        if tbl_upv_22.on then
-            tbl_upv_22.t = tbl_upv_22.t + v92
-            tbl_upv_22.build = math.min(1, tbl_upv_22.build + (v92 / math.max(look_1.idle, 0.1)))
-            local v93 = math.sin(tbl_upv_22.t * 2.4) * 0.07
-            local v94 = 0
-            local v95 = 0
-            local v99 = nil
-            if tbl_upv_22.nextWiggle <= tbl_upv_22.t and tbl_upv_22.wiggleT < 0 then
-                tbl_upv_22.wiggleT = 0
-                a1.Sounds.Play("Drop_Rattle", {pitch = 0.95 + (u22:NextNumber() * 0.1) + (tbl_upv_22.build * 0.08)})
-                v99 = tbl_upv_11.backPool
-                local v96 = ((look_1.legendary) and 5) or 3
-                local tbl_23 = {lifeMin = 0.45, speedMax = 220, dir = -90, lifeMax = 0.8, drag = 1.6, whiteChance = 0, grav = 120, at = 0, speedMin = 90, colors = 0, jitter = 60, kind = "sparkle", mode = "point", spread = 55, size = 26}
-                local Y_2 = u13.Position.Y
-                local v97
-                if u12 then
-                    local _ = u12.size[3]
-                    local v107 = u9 and u9.look.fit or 1
-                    v97 = u12.size[3] * (u9 and u9.look.fit or 1) / 2
+
+        local look = v102.look
+
+        if v323.on then
+            local v328
+            local v329
+            local v330 = v323
+            v330.t += v326
+            v323.build = math.min(1, v323.build + (v326 / math.max(look.idle, 0.1)))
+            local v331 = math.sin(v323.t * 2.4) * 0.07
+            local roll = 0
+            local lid = 0
+            local t = v323.t
+
+            if v323.nextWiggle <= t and v323.wiggleT < 0 then
+                local v335
+                v323.wiggleT = 0
+                a17.Sounds.Play("Drop_Rattle", {pitch = 0.95 + (random:NextNumber() * 0.1) + (v323.build * 0.08)})
+                local backPool = v101.backPool
+                local v337 = look.legendary and 5 or 3
+                local v338 = {mode = "point", jitter = 60, dir = -90, spread = 55, speedMin = 90, speedMax = 220, kind = "sparkle", size = 26, grav = 120, drag = 1.6, lifeMin = 0.45, lifeMax = 0.8, whiteChance = 0}
+                local y = cframe.Position.Y
+
+                if const v340 = v162 then
+                    local v341 = v340.size[3]
+                    local fit = v102 and v102.look.fit or 1
+                    v335 = v341 * fit / 2
                 else
-                    v97 = 1.7
+                    v335 = 1.7
                 end
-                local v98 = project(Vector3.new(0, Y_2, -v97))
-                local Position_3 = tbl_upv_11.chestHolder.Position
-                local Scale_1 = tbl_upv_11.chestScale.Scale
-                tbl_23.at = Vector2.new(Position_3.X.Offset + (v98.X * Scale_1), Position_3.Y.Offset + (v98.Y * Scale_1))
-                tbl_23.colors = {look_1.light, look_1.primary}
-                v99:Burst(v96, tbl_23)
+
+                local vector2 = project((Vector3.new(0, y, -v335)))
+                local position = v101.chestHolder.Position
+                local scale = v101.chestScale.Scale
+                v338.at = Vector2.new(position.X.Offset + (vector2.X * scale), position.Y.Offset + (vector2.Y * scale))
+                v338.colors = {look.light, look.primary}
+                backPool:Burst(v337, v338)
             end
-            if tbl_upv_22.wiggleT >= 0 then
-                tbl_upv_22.wiggleT = tbl_upv_22.wiggleT + v92
-                v99 = tbl_upv_22.wiggleT / 0.36
-                if v99 >= 1 then
-                    tbl_upv_22.wiggleT = -1
-                    tbl_upv_22.interval = not (look_1.legendary) and 0.9 or math.max(0.32, 0.9 - (tbl_upv_22.build * 0.6))
-                    tbl_upv_22.nextWiggle = tbl_upv_22.t + tbl_upv_22.interval
+
+            if 0 <= v323.wiggleT then
+                local v346 = v323
+                v346.wiggleT += v326
+                local v347 = v323.wiggleT / 0.36
+
+                if not (1 <= v347) then
+                    local v348
+                    local v349
+                    local v350 = math.rad(look.wiggle)
+                    local build = v323.build
+
+                    if look.legendary then
+                        v348 = 0.8
+                    else
+                        v348 = 0.2
+                    end
+
+                    local v352 = v350 * (1 + (build * v348))
+                    roll = math.sin((v347 * math.pi) * 5) * (1 - v347) * v352
+                    local v353 = math.sin(v347 * math.pi)
+
+                    if look.legendary then
+                        v349 = 9
+                    else
+                        v349 = 5
+                    end
+
+                    lid = v353 * v349
                 else
-                    local v101 = math.rad(look_1.wiggle)
-                    local build_2 = tbl_upv_22.build
-                    v94 = math.sin((v99 * math.pi) * 5) * (1 - v99) * (v101 * (1 + (build_2 * (((look_1.legendary) and 0.8) or 0.2))))
-                    local v102 = math.sin(v99 * math.pi)
-                    v95 = v102 * (((look_1.legendary) and 9) or 5)
+                    v323.wiggleT = -1
+                    v323.interval = not look.legendary and 0.9 or math.max(0.32, 0.9 - (v323.build * 0.6))
+                    v323.nextWiggle = v323.t + v323.interval
                 end
             end
-            tbl_upv_13.y = v93 + (((look_1.legendary) and (tbl_upv_22.build * 0.25)) or 0)
-            tbl_upv_13.roll = v94
-            tbl_upv_13.yaw = v94 * 0.6
-            tbl_upv_13.lid = v95
-            local Y_3 = u13.Position.Y
-            local v103
-            if u12 then
-                local _ = u12.size[3]
-                local v108 = u9 and u9.look.fit or 1
-                v103 = u12.size[3] * (u9 and u9.look.fit or 1) / 2
+
+            local v354 = not look.legendary and 0 or v323.build * 0.25
+            v134.y = v331 + v354
+            v134.roll = roll
+            v134.yaw = roll * 0.6
+            v134.lid = lid
+            local y = cframe.Position.Y
+
+            if const v356 = v162 then
+                local v357 = v356.size[3]
+                local fit = v102 and v102.look.fit or 1
+                v328 = v357 * fit / 2
             else
-                v103 = 1.7
+                v328 = 1.7
             end
-            v94 = project(Vector3.new(0, Y_3, -v103))
-            tbl_upv_11.leak.Position = UDim2.new(0.5, v94.X, 0.5, v94.Y)
-            tbl_upv_11.leakFlare.Position = tbl_upv_11.leak.Position
-            v94 = math.clamp(v95 / 9, 0, 1)
-            tbl_upv_11.leak.ImageTransparency = 1 - (v94 * 0.75)
-            tbl_upv_11.leakFlare.ImageTransparency = 1 - (v94 * 0.6)
-            v95 = math.sin(tbl_upv_22.t * 4.2) * 0.5 + 0.5
-            tbl_upv_11.chestGlow.ImageTransparency = 0.62 - (v95 * 0.14) - (tbl_upv_22.build * (((look_1.legendary) and 0.2) or 0.05))
-            tbl_upv_11.promptScale.Scale = (v95 * 0.04) + 1
-            if look_1.legendary then
-                tbl_upv_11.raysA.ImageTransparency = 1 - (tbl_upv_22.build * 0.28)
-                tbl_upv_11.raysB.ImageTransparency = 1 - (tbl_upv_22.build * 0.22)
+
+            local vector2 = project((Vector3.new(0, y, -v328)))
+            v101.leak.Position = UDim2.new(0.5, vector2.X, 0.5, vector2.Y)
+            v101.leakFlare.Position = v101.leak.Position
+            local clampedValue = math.clamp(lid / 9, 0, 1)
+            v101.leak.ImageTransparency = 1 - (clampedValue * 0.75)
+            v101.leakFlare.ImageTransparency = 1 - (clampedValue * 0.6)
+            local v361 = math.sin(v323.t * 4.2) * 0.5 + 0.5
+            local chestGlow = v101.chestGlow
+            local v363 = 0.62 - v361 * 0.14
+            local build = v323.build
+
+            if look.legendary then
+                v329 = 0.2
+            else
+                v329 = 0.05
+            end
+
+            chestGlow.ImageTransparency = v363 - (build * v329)
+            v101.promptScale.Scale = (v361 * 0.04) + 1
+
+            if look.legendary then
+                v101.raysA.ImageTransparency = 1 - (v323.build * 0.28)
+                v101.raysB.ImageTransparency = 1 - (v323.build * 0.22)
             end
         end
-        tbl_upv_11.raysA.Rotation = (tbl_upv_11.raysA.Rotation + (v92 * tbl_upv_13.raysSpin)) % 360
-        tbl_upv_11.raysB.Rotation = (tbl_upv_11.raysB.Rotation - ((v92 * tbl_upv_13.raysSpin) * 0.6)) % 360
-        if tbl_upv_11.newRoot.Visible then
-            tbl_upv_11.newRaysA.Rotation = (tbl_upv_11.newRaysA.Rotation + ((v92 * tbl_upv_13.raysSpin) * 1.6)) % 360
-            tbl_upv_11.newRaysB.Rotation = (tbl_upv_11.newRaysB.Rotation - (v92 * tbl_upv_13.raysSpin)) % 360
+
+        v101.raysA.Rotation = (v101.raysA.Rotation + (v326 * v134.raysSpin)) % 360
+        v101.raysB.Rotation = (v101.raysB.Rotation - ((v326 * v134.raysSpin) * 0.6)) % 360
+
+        if v101.newRoot.Visible then
+            v101.newRaysA.Rotation = (v101.newRaysA.Rotation + ((v326 * v134.raysSpin) * 1.6)) % 360
+            v101.newRaysB.Rotation = (v101.newRaysB.Rotation - (v326 * v134.raysSpin)) % 360
         end
-        if tbl_upv_11.chestHolder.Visible then
+
+        if v101.chestHolder.Visible then
             applyPose()
         end
-        local v104 = nil
-        if u23 > 0 then
-            u24 = u24 + v92
-            v104 = 1 - u24 / math.max(u25, 0.001)
-            if v104 <= 0 then
-                u23 = 0
-                tbl_upv_11.shaker.Position = UDim2.new()
+
+        if 0 < v317 then
+            v318 += v326
+            local v365 = 1 - v318 / math.max(v319, 0.001)
+
+            if not (v365 <= 0) then
+                v101.shaker.Position = UDim2.fromOffset((random:NextNumber(-1, 1) * v317) * v365, (random:NextNumber(-1, 1) * v317) * v365)
             else
-                tbl_upv_11.shaker.Position = UDim2.fromOffset((u22:NextNumber(-1, 1) * u23) * v104, (u22:NextNumber(-1, 1) * u23) * v104)
+                v317 = 0
+                v101.shaker.Position = UDim2.new()
             end
         end
-        if u9.barNeed and tbl_upv_11.barBox.Visible then
-            local v105 = math.clamp(math.floor((tbl_upv_11.barFill.Size.X.Scale * u9.barNeed) + 0.5), u9.barMin, u9.barMax)
-            if v105 ~= u9.barShown then
-                u9.barShown = v105
-                tbl_upv_11.barText.Text = string.format("%d / %d", v105, u9.barNeed)
+
+        if v102.barNeed and v101.barBox.Visible then
+            local barShown = math.clamp(math.floor((v101.barFill.Size.X.Scale * v102.barNeed) + 0.5), v102.barMin, v102.barMax)
+
+            if barShown ~= v102.barShown then
+                v102.barShown = barShown
+                v101.barText.Text = string.format("%d / %d", barShown, v102.barNeed)
             end
         end
-        if u9.fallOpts then
-            local fallOpts_1 = u9.fallOpts
-            fallOpts_1.at = Vector2.new(0, tbl_upv_11.chestHolder.Position.Y.Offset + 40)
+
+        if v102.fallOpts then
+            v102.fallOpts.at = Vector2.new(0, v101.chestHolder.Position.Y.Offset + 40)
         end
-        if u9.headOpts then
-            local headOpts_1 = u9.headOpts
-            headOpts_1.at = Vector2.new(-165 + (tbl_upv_11.barFill.Size.X.Scale * 330), 171)
+
+        if v102.headOpts then
+            v102.headOpts.at = Vector2.new(-165 + (v101.barFill.Size.X.Scale * 330), 171)
         end
-        if u9.holdAt then
-            local v106 = os.clock() - u9.holdAt
-            tbl_upv_11.skipFill.Size = UDim2.fromScale(math.clamp(v106 / tbl_upv_3.hold, 0, 1), 1)
-            if (tbl_upv_3.hold <= v106) and not u9.skip and u9.phase ~= "summary" then
-                u9.holdAt = nil
-                tbl_upv_11.skipFill.Size = UDim2.fromScale(0, 1)
-                tbl_upv_7.Skip()
+
+        if v102.holdAt then
+            local v367 = os.clock() - v102.holdAt
+            v101.skipFill.Size = UDim2.fromScale(math.clamp(v367 / v13.hold, 0, 1), 1)
+
+            if v13.hold <= v367 and not v102.skip and v102.phase ~= "summary" then
+                v102.holdAt = nil
+                v101.skipFill.Size = UDim2.fromScale(0, 1)
+                dropReveal.Skip()
             end
         end
     end
-    local function alive(a50)
+
+    local function alive(a369)
         --[[
           name: alive
           line: 1185
           upvalues:
-            u9 (ref, index: 1)
+            v102 (ref, index: 1)
         ]]
-        local v107 = (u9 ~= nil) and (u9.token == a50)
-        return v107
+        return v102 ~= nil and v102.token == a369
     end
-    local function sleep(a51, a52, a53)
+
+    local function sleep(a371, a372, a373)
         --[[
           name: sleep
           line: 1189
           upvalues:
-            u7 (ref, index: 1)
-            u9 (ref, index: 2)
+            pace (ref, index: 1)
+            v102 (ref, index: 2)
         ]]
-        local v108 = os.clock()
-        local v109 = a52 * u7
-        while os.clock() - v108 < v109 do
-            local v110 = (u9 ~= nil) and (u9.token == a51)
-            if not (v110) or u9.skip then
-                return false
-            elseif not (u9.hurry) or a53 == false then
-                if not (a53) or not (u9.tapped) then
-                    task.wait()
-                    continue
+        local timestamp = os.clock()
+        local v375 = a372 * pace
+
+        while os.clock() - timestamp < v375 do
+            local v376 = v102 ~= nil and v102.token == a371
+            if v376 then
+                if v102.skip then
+                    return false
                 end
-                u9.tapped = false
-                return true
-            else
-                return true
+                if v102.hurry and a373 ~= false then
+                    return true
+                end
+
+                if a373 and v102.tapped then
+                    v102.tapped = false
+                    return true
+                end
+
+                task.wait()
+                continue
             end
+
+            return false
         end
-        local v110 = (u9 ~= nil) and (u9.token == a51)
-        if v110 then
-            v110 = not u9.skip
-        end
-        return v110
+
+        local v377 = v102 ~= nil and v102.token == a371
+
+        return v377 and not v102.skip
     end
-    local function titleIn(a54, a55)
+
+    local function paletteOf(a379)
+        --[[
+          name: paletteOf
+          line: 1209
+          upvalues:
+            v101 (copy, index: 1)
+            colors (copy, index: 2)
+        ]]
+        v101.backGrad.Color = ColorSequence.new(a379.primary:Lerp(colors.Void, 0.25), a379.deep)
+        v101.backStroke.Color = a379.light
+        v101.backArt.ImageColor3 = a379.light
+        v101.counterStroke.Color = a379.primary
+        v101.promptStroke.Color = a379.primary
+        v101.promptFill.BackgroundColor3 = a379.primary
+        v101.cont.BackgroundColor3 = a379.primary
+        v101.contGrad.Color = ColorSequence.new(a379.primary:Lerp(Color3.new(1, 1, 1), 0.08), a379.primary:Lerp(colors.Void, 0.35))
+        v101.flash.BackgroundColor3 = a379.primary
+        v101.tint.ImageColor3 = a379.primary
+        v101.halo.ImageColor3 = a379.primary
+        v101.raysA.ImageColor3 = a379.light:Lerp(a379.primary, 0.35)
+        v101.raysB.ImageColor3 = a379.primary
+        v101.chestGlow.ImageColor3 = a379.primary
+        v101.leak.ImageColor3 = a379.light
+        v101.leakFlare.ImageColor3 = a379.light
+        v101.beam.ImageColor3 = a379.light
+        v101.floorRing.ImageColor3 = a379.light
+        v101.titleGrad.Color = ColorSequence.new(a379.light:Lerp(Color3.new(1, 1, 1), 0.3), a379.primary)
+    end
+
+    local function titleIn(text, text2)
         --[[
           name: titleIn
           line: 1231
           upvalues:
-            tbl_upv_11 (copy, index: 1)
+            v101 (copy, index: 1)
             tw (copy, index: 2)
         ]]
-        tbl_upv_11.title.Visible = true
-        tbl_upv_11.titleShadow.Visible = true
-        tbl_upv_11.subtitle.Visible = true
-        for _, value_10 in {tbl_upv_11.title, tbl_upv_11.titleShadow} do
-            value_10.Text = a54
-            value_10.TextTransparency = 1
+        local transparency, v384
+        local title = v101.title
+        local titleShadow = v101.titleShadow
+        local subtitle = v101.subtitle
+        title.Visible = true
+        titleShadow.Visible = true
+        subtitle.Visible = true
+
+        for _, v389 in {v101.title, v101.titleShadow} do
+            v389.Text = text
+            v389.TextTransparency = 1
         end
-        tbl_upv_11.title.Position = UDim2.fromOffset(0, -335)
-        tbl_upv_11.titleShadow.Position = UDim2.fromOffset(0, -330)
-        tbl_upv_11.titleScale.Scale = 1.8
-        tbl_upv_11.titleShadowScale.Scale = 1.8
-        tw(tbl_upv_11.titleScale, 0.3, {Scale = 1}, Enum.EasingStyle.Back)
-        tw(tbl_upv_11.titleShadowScale, 0.3, {Scale = 1}, Enum.EasingStyle.Back)
-        tw(tbl_upv_11.title, 0.12, {TextTransparency = 0}, Enum.EasingStyle.Quad)
-        tw(tbl_upv_11.titleShadow, 0.2, {TextTransparency = 0.55}, Enum.EasingStyle.Quad)
-        tbl_upv_11.subtitle.Text = a55
-        tbl_upv_11.subtitle.Position = UDim2.fromOffset(0, -279)
-        local subtitle_2 = tbl_upv_11.subtitle
-        subtitle_2.TextTransparency = 1
-        local v111
-        if subtitle_2:IsA("TextLabel") then
-            v111 = subtitle_2:FindFirstChildWhichIsA("UIStroke")
-        else
-            v111 = nil
-        end
-        local v112, v113
-        if v111 then
-            if type(v111:GetAttribute("Authored")) ~= "number" then
-                v111:SetAttribute("Authored", v111.Transparency)
+
+        v101.title.Position = UDim2.fromOffset(0, -335)
+        v101.titleShadow.Position = UDim2.fromOffset(0, -330)
+        v101.titleScale.Scale = 1.8
+        v101.titleShadowScale.Scale = 1.8
+        tw(v101.titleScale, 0.3, {Scale = 1}, Enum.EasingStyle.Back)
+        tw(v101.titleShadowScale, 0.3, {Scale = 1}, Enum.EasingStyle.Back)
+        tw(v101.title, 0.12, {TextTransparency = 0}, Enum.EasingStyle.Quad)
+        tw(v101.titleShadow, 0.2, {TextTransparency = 0.55}, Enum.EasingStyle.Quad)
+        v101.subtitle.Text = text2
+        v101.subtitle.Position = UDim2.fromOffset(0, -279)
+        local subtitle2 = v101.subtitle
+        subtitle2.TextTransparency = 1
+
+        if const v391 = if subtitle2:IsA("TextLabel") then subtitle2:FindFirstChildWhichIsA("UIStroke") else nil then
+            if type((v391:GetAttribute("Authored"))) ~= "number" then
+                v391:SetAttribute("Authored", v391.Transparency)
             end
-            v112, v113 = v111, 1
+
+            transparency = 1
+            v384 = v391
         else
-            v112 = nil
-            v113 = 1
+            transparency = 1
+            v384 = nil
         end
-        if v112 then
-            v112.Transparency = v113
+
+        if v384 then
+            v384.Transparency = transparency
         end
-        tw(tbl_upv_11.subtitle, 0.3, {TextTransparency = 0, Position = UDim2.fromOffset(0, -289)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0.15)
+
+        tw(v101.subtitle, 0.3, {TextTransparency = 0, Position = UDim2.fromOffset(0, -289)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0.15)
     end
-    local function setCounter(a56, a57)
+
+    local function setCounter(a393, a394)
         --[[
           name: setCounter
           line: 1251
           upvalues:
-            tbl_upv_11 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
+            v101 (copy, index: 1)
+            ui (copy, index: 2)
         ]]
-        tbl_upv_11.counter.Visible = a56 > 0
-        tbl_upv_11.counterText.Text = "x" .. a56
-        if not a57 then
-            return
+        v101.counter.Visible = 0 < a393
+        v101.counterText.Text = "x" .. a393
+
+        if a394 then
+            ui.Pop(v101.counter, 1.35)
         end
-        UI_upv_1.Pop(tbl_upv_11.counter, 1.35)
     end
+
     local function placeCounter()
         --[[
           name: placeCounter
           line: 1258
           upvalues:
-            tbl_upv_11 (copy, index: 1)
+            v101 (copy, index: 1)
         ]]
-        tbl_upv_11.counter.Position = UDim2.fromOffset(128, 228)
+        v101.counter.Position = UDim2.fromOffset(128, 228)
     end
-    local function animate(a58, a59)
-        --[[
-          name: animate
-          line: 366
-          upvalues:
-            tbl_upv_15 (copy, index: 1)
-            tbl_upv_14 (copy, index: 2)
-        ]]
-        local tbl_24 = {}
-        for _, value_11 in a59 do
-            local tbl_25 = {t = 0, ease = 0, delay = 0}
-            tbl_25.to = value_11[1]
-            tbl_25.dur = math.max(0.001, value_11[2])
-            local v114 = tbl_upv_15[value_11[3] or "outQuad"]
-            if not (v114) then
-                local v115 = tbl_upv_15.outQuad
-            end
-            tbl_25.ease = v114
-            tbl_25.delay = value_11[4] or 0
-            table.insert(tbl_24, tbl_25)
-        end
-        tbl_upv_14[a58] = tbl_24
-    end
-    local function phaseLand(a60)
+
+    local function phaseLand(token: number)
         --[[
           name: phaseLand
           line: 1264
           upvalues:
-            u9 (ref,  index: 1)
-            tbl_upv_13 (copy, index: 2)
+            v102 (ref,  index: 1)
+            v134 (copy, index: 2)
             applyPose (copy, index: 3)
-            tbl_upv_11 (copy, index: 4)
+            v101 (copy, index: 4)
             tw (copy, index: 5)
-            tbl_upv_3 (copy, index: 6)
+            v13 (copy, index: 6)
             animate (copy, index: 7)
-            a1 (copy, index: 8)
+            a17 (copy, index: 8)
             project (copy, index: 9)
             sleep (copy, index: 10)
-            u23 (ref,  index: 11)
-            u24 (ref,  index: 12)
-            u25 (ref,  index: 13)
-            u12 (ref,  index: 14)
-            Colors_upv_1 (copy, index: 15)
+            v317 (ref,  index: 11)
+            v318 (ref,  index: 12)
+            v319 (ref,  index: 13)
+            v162 (ref,  index: 14)
+            colors (copy, index: 15)
             titleIn (copy, index: 16)
         ]]
-        local look_2 = u9.look
-        u9.phase = "land"
-        tbl_upv_13.y = 0
-        tbl_upv_13.yaw = -0.24434609527920614
-        tbl_upv_13.roll = 0
-        tbl_upv_13.pitch = 0
-        tbl_upv_13.sq = -0.16
-        tbl_upv_13.lid = 0
-        tbl_upv_13.s = 1
+        local pitch
+        local v399
+        local look = v102.look
+        v102.phase = "land"
+        v134.y = 0
+        v134.yaw = -0.24434609527920614
+        v134.roll = 0
+        v134.pitch = 0
+        v134.sq = -0.16
+        v134.lid = 0
+        v134.s = 1
         applyPose()
-        tbl_upv_11.chestHolder.Visible = true
-        tbl_upv_11.chestHolder.Position = UDim2.fromOffset(0, -800)
-        tbl_upv_11.chestScale.Scale = 1
-        tw(tbl_upv_11.chestHolder, tbl_upv_3.fall, {Position = UDim2.fromOffset(0, 20)}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-        animate("yaw", {{0, tbl_upv_3.fall + 0.25, "outQuad"}})
-        a1.Sounds.Play("Whoosh", {pitch = 0.75, volume = 0.3})
-        u9.fallOpts = {lifeMin = 0.12, speedMax = 1700, base = 0.55, dir = -90, lifeMax = 0.22, drag = 0, whiteChance = 0, grav = 0, speedMin = 1100, jitter = 150, kind = "spark", mode = "point", spread = 3, size = 190, at = Vector2.new(0, -800), colors = {look_2.light}}
-        local v115 = tbl_upv_11.backPool:Emit(40, u9.fallOpts)
-        local v116 = project(Vector3.new(0, 0, 0))
-        local v117 = Vector2.new(tbl_upv_11.chestHolder.Position.X.Offset + (v116.X * 1), 20 + (v116.Y * 1))
-        tbl_upv_11.shadow.Position = UDim2.fromOffset(v117.X, v117.Y + 4)
-        tbl_upv_11.shadow.Size = UDim2.fromOffset(120, 24)
-        tbl_upv_11.shadow.ImageTransparency = 0.9
-        tw(tbl_upv_11.shadow, tbl_upv_3.fall, {ImageTransparency = 0.35, Size = UDim2.fromOffset(420, 84)}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-        local v118 = sleep(a60, tbl_upv_3.fall, false)
-        v115()
-        if u9 then
-            u9.fallOpts = nil
+        v101.chestHolder.Visible = true
+        v101.chestHolder.Position = UDim2.fromOffset(0, -800)
+        v101.chestScale.Scale = 1
+        tw(v101.chestHolder, v13.fall, {Position = UDim2.fromOffset(0, 20)}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+        animate("yaw", {{0, v13.fall + 0.25, "outQuad"}})
+        a17.Sounds.Play("Whoosh", {volume = 0.3, pitch = 0.75})
+        v102.fallOpts = {mode = "point", jitter = 150, dir = -90, spread = 3, speedMin = 1100, speedMax = 1700, kind = "spark", size = 190, grav = 0, drag = 0, lifeMin = 0.12, lifeMax = 0.22, whiteChance = 0, base = 0.55, at = Vector2.new(0, -800), colors = {look.light}}
+        local v401 = v101.backPool:Emit(40, v102.fallOpts)
+        local vector2 = project(Vector3.new(0, 0, 0))
+        local position = v101.chestHolder.Position
+        local vector22 = Vector2.new(position.X.Offset + (vector2.X * 1), 20 + (vector2.Y * 1))
+        v101.shadow.Position = UDim2.fromOffset(vector22.X, vector22.Y + 4)
+        v101.shadow.Size = UDim2.fromOffset(120, 24)
+        v101.shadow.ImageTransparency = 0.9
+        tw(v101.shadow, v13.fall, {ImageTransparency = 0.35, Size = UDim2.fromOffset(420, 84)}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+        local v405 = sleep(token, v13.fall, false)
+        v401()
+
+        if v102 then
+            v102.fallOpts = nil
         end
-        if not v118 then
+
+        if not v405 then
             return false
         end
-        local Play_1 = a1.Sounds.Play
-        local tbl_26 = {pitch = 0}
-        tbl_26.pitch = ((look_2.legendary) and 0.9) or 1
-        Play_1("Drop_Land", tbl_26)
-        animate("sq", {{0.3, 0.06, "outQuad"}, {-0.12, 0.13, "inOutSine"}, {0.05, 0.12, "inOutSine"}, {0, 0.14, "outQuad"}})
-        u23 = ((look_2.legendary) and 16) or 11
-        u24 = 0
-        u25 = 0.32
-        local v119 = project(Vector3.new(0, 0.10000000149011612, 0))
-        local Position_4 = tbl_upv_11.chestHolder.Position
-        local Scale_2 = tbl_upv_11.chestScale.Scale
-        local v120 = Vector2.new(Position_4.X.Offset + (v119.X * Scale_2), Position_4.Y.Offset + (v119.Y * Scale_2))
-        local v121
-        if u12 then
-            local _ = u12.size[3]
-            local v125 = u9 and u9.look.fit or 1
-            v121 = u12.size[3] * (u9 and u9.look.fit or 1) / 2
+
+        local play = a17.Sounds.Play
+        local v407 = {}
+
+        if look.legendary then
+            pitch = 0.9
         else
-            v121 = 1.7
+            pitch = 1
         end
-        local v122 = project(Vector3.new(0, 0, -v121))
-        local Position_5 = tbl_upv_11.chestHolder.Position
-        local Scale_3 = tbl_upv_11.chestScale.Scale
-        local v123 = Vector2.new(Position_5.X.Offset + (v122.X * Scale_3), Position_5.Y.Offset + (v122.Y * Scale_3))
-        for _, value_12 in {180, 0} do
-            local frontPool_1 = tbl_upv_11.frontPool
-            local v124 = ((look_2.legendary) and 9) or 7
-            local tbl_27 = {lifeMin = 0.5, speedMax = 480, grow = 2.6, dir = 0, lifeMax = 0.9, drag = 3.2, base = 0.6, color = 0, at = 0, speedMin = 180, grav = -40, jitter = 30, kind = "dust", mode = "point", spread = 14, size = 70}
-            tbl_27.at = v123 + Vector2.new(((value_12 ~= 0) and -120) or 120, -6)
-            tbl_27.dir = value_12
-            tbl_27.color = look_2.light:Lerp(Colors_upv_1.TextDim, 0.55)
-            frontPool_1:Burst(v124, tbl_27)
+
+        v407.pitch = pitch
+        play("Drop_Land", v407)
+        animate("sq", {{0.3, 0.06, "outQuad"}, {-0.12, 0.13, "inOutSine"}, {0.05, 0.12, "inOutSine"}, {0, 0.14, "outQuad"}})
+        v317 = look.legendary and 16 or 11
+        v318 = 0
+        v319 = 0.32
+        local vector23 = project(Vector3.new(0, 0.10000000149011612, 0))
+        local position2 = v101.chestHolder.Position
+        local scale = v101.chestScale.Scale
+        local vector24 = Vector2.new(position2.X.Offset + (vector23.X * scale), position2.Y.Offset + (vector23.Y * scale))
+
+        if const v412 = v162 then
+            local v413 = v412.size[3]
+            local fit = v102 and v102.look.fit or 1
+            v399 = v413 * fit / 2
+        else
+            v399 = 1.7
         end
-        tbl_upv_11.frontPool:Burst(((look_2.legendary) and 16) or 9, {lifeMin = 0.4, speedMax = 620, dir = -90, lifeMax = 0.75, drag = 1.2, whiteChance = 0, grav = 900, speedMin = 260, jitter = 120, kind = "sparkle", mode = "point", spread = 70, size = 24, at = v120 + Vector2.new(0, -20), colors = {look_2.light, look_2.primary}})
-        tbl_upv_11.floorRing.Position = UDim2.fromOffset(v120.X, v120.Y + 4)
-        tbl_upv_11.floorRing.Size = UDim2.fromOffset(160, 40)
-        tbl_upv_11.floorRing.ImageTransparency = 0.2
-        tw(tbl_upv_11.floorRing, 0.55, {ImageTransparency = 1, Size = UDim2.fromOffset(900, 210)}, Enum.EasingStyle.Quart)
-        tbl_upv_11.halo.ImageTransparency = 1
-        tbl_upv_11.raysHolder.Position = UDim2.fromOffset(0, 0)
-        tw(tbl_upv_11.halo, 0.5, {ImageTransparency = 0.55}, Enum.EasingStyle.Quad)
-        titleIn(look_2.title, u9.subtitle)
-        return (sleep(a60, tbl_upv_3.settle, false))
+
+        local vector25 = project((Vector3.new(0, 0, -v399)))
+        local position3 = v101.chestHolder.Position
+        local scale2 = v101.chestScale.Scale
+        local vector26 = Vector2.new(position3.X.Offset + (vector25.X * scale2), position3.Y.Offset + (vector25.Y * scale2))
+
+        for _, v420 in {180, 0} do
+            local x, dir
+            local frontPool = v101.frontPool
+            local v424 = look.legendary and 9 or 7
+            local v425 = {mode = "point", jitter = 30, spread = 14, speedMin = 180, speedMax = 480, kind = "dust", size = 70, grav = -40, drag = 3.2, lifeMin = 0.5, lifeMax = 0.9, base = 0.6, grow = 2.6}
+            local newVector2 = Vector2.new
+
+            if v420 == 0 then
+                x = 120
+                dir = v420
+            else
+                x = -120
+                dir = v420
+            end
+
+            v425.at = vector26 + newVector2(x, -6)
+            v425.dir = dir
+            v425.color = look.light:Lerp(colors.TextDim, 0.55)
+            frontPool:Burst(v424, v425)
+        end
+
+        local frontPool = v101.frontPool
+        local v428 = look.legendary and 16 or 9
+        frontPool:Burst(v428, {mode = "point", jitter = 120, dir = -90, spread = 70, speedMin = 260, speedMax = 620, kind = "sparkle", size = 24, grav = 900, drag = 1.2, lifeMin = 0.4, lifeMax = 0.75, whiteChance = 0, at = vector24 + Vector2.new(0, -20), colors = {look.light, look.primary}})
+        v101.floorRing.Position = UDim2.fromOffset(vector24.X, vector24.Y + 4)
+        v101.floorRing.Size = UDim2.fromOffset(160, 40)
+        v101.floorRing.ImageTransparency = 0.2
+        tw(v101.floorRing, 0.55, {ImageTransparency = 1, Size = UDim2.fromOffset(900, 210)}, Enum.EasingStyle.Quart)
+        v101.halo.ImageTransparency = 1
+        v101.raysHolder.Position = UDim2.fromOffset(0, 0)
+        tw(v101.halo, 0.5, {ImageTransparency = 0.55}, Enum.EasingStyle.Quad)
+        titleIn(look.title, v102.subtitle)
+
+        return (sleep(token, v13.settle, false))
     end
-    local function phaseIdle(a61)
+
+    local function phaseIdle(token: number)
         --[[
           name: phaseIdle
           line: 1314
           upvalues:
-            u9 (ref,  index: 1)
-            tbl_upv_22 (copy, index: 2)
-            tbl_upv_11 (copy, index: 3)
+            v102 (ref,  index: 1)
+            v323 (copy, index: 2)
+            v101 (copy, index: 3)
             tw (copy, index: 4)
-            u12 (ref,  index: 5)
+            v162 (ref,  index: 5)
             project (copy, index: 6)
-            a1 (copy, index: 7)
-            tbl_upv_13 (copy, index: 8)
+            a17 (copy, index: 7)
+            v134 (copy, index: 8)
             sleep (copy, index: 9)
-            u7 (ref,  index: 10)
+            pace (ref,  index: 10)
         ]]
-        local look_3 = u9.look
-        u9.phase = "idle"
-        tbl_upv_22.on = true
-        tbl_upv_22.t = 0
-        tbl_upv_22.nextWiggle = 0.18
-        tbl_upv_22.wiggleT = -1
-        tbl_upv_22.build = 0
-        tbl_upv_11.prompt.Visible = true
-        tbl_upv_11.prompt.Position = UDim2.fromOffset(0, 332)
-        tbl_upv_11.promptFill.Size = UDim2.fromScale(0, 1)
-        local v125 = u9.opts.autoOpen == true
-        local v126
-        if v125 then
-            v126 = look_3.idle
+        local v431
+        local look = v102.look
+        v102.phase = "idle"
+        v323.on = true
+        v323.t = 0
+        v323.nextWiggle = 0.18
+        v323.wiggleT = -1
+        v323.build = 0
+        v101.prompt.Visible = true
+        v101.prompt.Position = UDim2.fromOffset(0, 332)
+        v101.promptFill.Size = UDim2.fromScale(0, 1)
+        local autoOpen = v102.opts.autoOpen == true
+        local v434 = not autoOpen and 86400 or look.idle
+
+        if autoOpen then
+            tw(v101.promptFill, v434, {Size = UDim2.fromScale(1, 1)}, Enum.EasingStyle.Linear)
+        end
+
+        local v435 = v102
+        local backPool = v101.backPool
+        local sparkle = look.sparkle
+        local v438 = {mode = "point", jitter = 170, dir = -90, spread = 15, speedMin = 26, speedMax = 70, grav = -30, drag = 0.2, kind = "sparkle", size = 24, lifeMin = 0.9, lifeMax = 1.6, whiteChance = 0}
+
+        if const v439 = v162 then
+            local v440 = v439.size[2]
+            local fit = v102 and v102.look.fit or 1
+            v431 = v440 * fit
         else
-            v126 = 86400
+            v431 = 4
         end
-        if v125 then
-            tw(tbl_upv_11.promptFill, v126, {Size = UDim2.fromScale(1, 1)}, Enum.EasingStyle.Linear)
+
+        local vector3 = Vector3.new(0, v431 * 0.5, 0)
+        local vector2 = project(vector3)
+        local position = v101.chestHolder.Position
+        local scale = v101.chestScale.Scale
+        v438.at = Vector2.new(position.X.Offset + (vector2.X * scale), position.Y.Offset + (vector2.Y * scale))
+        v438.colors = {look.light, look.primary}
+        v435.stopSparkles = backPool:Emit(sparkle, v438)
+
+        if look.legendary then
+            a17.Sounds.Play("Drop_BuildUp")
+            v101.raysHolder.Position = UDim2.fromOffset(0, 0)
+            v101.raysScale.Scale = 0.75
+            tw(v101.raysScale, look.idle, {Scale = 0.95}, Enum.EasingStyle.Quad)
+            v134.raysSpin = 14
+            tw(v101.vignette, look.idle, {ImageTransparency = 0.25, ImageColor3 = look.deep}, Enum.EasingStyle.Quad)
         end
-        local v127 = u9
-        local backPool_2 = tbl_upv_11.backPool
-        local sparkle_1 = look_3.sparkle
-        local tbl_28 = {lifeMin = 0.9, speedMax = 70, dir = -90, lifeMax = 1.6, drag = 0.2, whiteChance = 0, jitter = 170, at = 0, speedMin = 26, colors = 0, kind = "sparkle", grav = -30, mode = "point", spread = 15, size = 24}
-        local v128
-        if u12 then
-            local _ = u12.size[2]
-            local v131 = u9 and u9.look.fit or 1
-            v128 = u12.size[2] * (u9 and u9.look.fit or 1)
-        else
-            v128 = 4
-        end
-        local v129 = project(Vector3.new(0, v128 * 0.5, 0))
-        local Position_6 = tbl_upv_11.chestHolder.Position
-        local Scale_4 = tbl_upv_11.chestScale.Scale
-        tbl_28.at = Vector2.new(Position_6.X.Offset + (v129.X * Scale_4), Position_6.Y.Offset + (v129.Y * Scale_4))
-        tbl_28.colors = {look_3.light, look_3.primary}
-        v127.stopSparkles = backPool_2:Emit(sparkle_1, tbl_28)
-        if look_3.legendary then
-            a1.Sounds.Play("Drop_BuildUp")
-            tbl_upv_11.raysHolder.Position = UDim2.fromOffset(0, 0)
-            tbl_upv_11.raysScale.Scale = 0.75
-            tw(tbl_upv_11.raysScale, look_3.idle, {Scale = 0.95}, Enum.EasingStyle.Quad)
-            tbl_upv_13.raysSpin = 14
-            tw(tbl_upv_11.vignette, look_3.idle, {ImageTransparency = 0.25, ImageColor3 = look_3.deep}, Enum.EasingStyle.Quad)
-        end
-        if u9.tapped then
-            u9.tapped = false
-            if sleep(a61, 0.15, false) == false then
+
+        if v102.tapped then
+            v102.tapped = false
+
+            if sleep(token, 0.15, false) == false then
                 return false
             end
-        else
-            local v130 = sleep(a61, v126, true)
-            if not (v130) then
-                return false
-            end
+        elseif not sleep(token, v434, true) then
+            return false
         end
-        tbl_upv_22.on = false
-        tbl_upv_13.roll = 0
-        tbl_upv_13.yaw = 0
-        tbl_upv_13.lid = 0
-        tbl_upv_11.leak.ImageTransparency = 1
-        tbl_upv_11.leakFlare.ImageTransparency = 1
-        tw(tbl_upv_11.prompt, 0.15, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
+
+        v323.on = false
+        v134.roll = 0
+        v134.yaw = 0
+        v134.lid = 0
+        v101.leak.ImageTransparency = 1
+        v101.leakFlare.ImageTransparency = 1
+        tw(v101.prompt, 0.15, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
+
         task.delay(
-            u7 * 0.16,
+            pace * 0.16,
             function()
                 --[[
                   line: 1353
                   upvalues:
-                    tbl_upv_11 (copy, index: 1)
+                    v101 (copy, index: 1)
                 ]]
-                if not tbl_upv_11.prompt then
-                    return
+                if v101.prompt then
+                    v101.prompt.Visible = false
+                    v101.prompt.BackgroundTransparency = 0.15
                 end
-                tbl_upv_11.prompt.Visible = false
-                tbl_upv_11.prompt.BackgroundTransparency = 0.15
             end
         )
+
         return true
     end
-    local function phaseOpen(a62)
+
+    local function phaseOpen(token: number)
         --[[
           name: phaseOpen
           line: 1362
           upvalues:
-            u9 (ref,  index: 1)
+            v102 (ref,  index: 1)
             animate (copy, index: 2)
-            tbl_upv_3 (copy, index: 3)
+            v13 (copy, index: 3)
             sleep (copy, index: 4)
-            a1 (copy, index: 5)
-            u23 (ref,  index: 6)
-            u24 (ref,  index: 7)
-            u25 (ref,  index: 8)
-            u19 (ref,  index: 9)
+            a17 (copy, index: 5)
+            v317 (ref,  index: 6)
+            v318 (ref,  index: 7)
+            v319 (ref,  index: 8)
+            ui2 (ref,  index: 9)
             tw (copy, index: 10)
-            tbl_upv_11 (copy, index: 11)
-            u13 (ref,  index: 12)
+            v101 (copy, index: 11)
+            cframe (ref,  index: 12)
             project (copy, index: 13)
-            tbl_upv_13 (copy, index: 14)
-            Colors_upv_1 (copy, index: 15)
+            v134 (copy, index: 14)
+            colors (copy, index: 15)
         ]]
-        local look_4 = u9.look
-        u9.phase = "open"
-        animate("sq", {{0.2, tbl_upv_3.openCrouch, "outQuad"}})
-        if not sleep(a62, tbl_upv_3.openCrouch, false) then
+        local scale2
+        local scale3
+        local raysSpin
+        local look = v102.look
+        v102.phase = "open"
+        animate("sq", {{0.2, v13.openCrouch, "outQuad"}})
+
+        if not sleep(token, v13.openCrouch, false) then
             return false
         end
+
         animate("sq", {{-0.14, 0.1, "outQuad"}, {0.06, 0.14, "inOutSine"}, {0, 0.2, "outQuad"}})
         animate("y", {{0.45, 0.12, "outQuad"}, {0, 0.26, "inQuad"}})
-        animate("lid", {{((look_4.model ~= "Drop") and 118) or 140, 0.34, "outBack"}})
+        local v452 = look.model ~= "Drop" and 118 or 140
+        animate("lid", {{v452, 0.34, "outBack"}})
         animate("s", {{1.06, 0.1, "outQuad"}, {1, 0.3, "outQuad"}})
-        a1.Sounds.Play("Drop_Open")
-        if look_4.legendary then
-            a1.Sounds.Play("Drop_Open_Golden")
+        a17.Sounds.Play("Drop_Open")
+
+        if look.legendary then
+            a17.Sounds.Play("Drop_Open_Golden")
         end
-        u23 = ((look_4.legendary) and 20) or 13
-        u24 = 0
-        u25 = 0.4
-        local v131 = ((look_4.legendary) and 0.45) or 0.32
-        if u19 then
-            u19.Saturation = v131
-            tw(u19, 0.6, {Saturation = 0.16}, Enum.EasingStyle.Quad)
+
+        v317 = look.legendary and 20 or 13
+        v318 = 0
+        v319 = 0.4
+        local saturation = look.legendary and 0.45 or 0.32
+
+        if ui2 then
+            local ui = ui2
+            ui.Saturation = saturation
+            tw(ui, 0.6, {Saturation = 0.16}, Enum.EasingStyle.Quad)
         end
-        tbl_upv_11.flash.BackgroundTransparency = ((look_4.legendary) and 0.55) or 0.64
-        tw(tbl_upv_11.flash, 0.45, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
-        tw(tbl_upv_11.dim, 0.3, {BackgroundTransparency = 0.12}, Enum.EasingStyle.Quad)
-        tbl_upv_11.tint.ImageTransparency = 0.45
-        tw(tbl_upv_11.tint, 1.2, {ImageTransparency = 0.72}, Enum.EasingStyle.Quad)
-        local v132 = project(Vector3.new(0, u13.Position.Y + 0.2, 0))
-        local Position_7 = tbl_upv_11.chestHolder.Position
-        local Scale_5 = tbl_upv_11.chestScale.Scale
-        local v133 = Vector2.new(Position_7.X.Offset + (v132.X * Scale_5), Position_7.Y.Offset + (v132.Y * Scale_5))
-        tbl_upv_11.raysHolder.Position = UDim2.fromOffset(v133.X, v133.Y)
-        tbl_upv_11.raysScale.Scale = ((look_4.legendary) and 0.8) or 0.25
-        local raysScale_1 = tbl_upv_11.raysScale
-        local tbl_29 = {Scale = 0}
-        tbl_29.Scale = ((look_4.legendary) and 1.15) or 1
-        tw(raysScale_1, 0.55, tbl_29, Enum.EasingStyle.Back)
-        tbl_upv_11.raysA.ImageTransparency = ((look_4.legendary) and 0.3) or 0.5
-        tbl_upv_11.raysB.ImageTransparency = ((look_4.legendary) and 0.4) or 0.6
-        tw(tbl_upv_11.raysA, 1.1, {ImageTransparency = look_4.rays}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.3)
-        tw(tbl_upv_11.raysB, 1.1, {ImageTransparency = math.min(0.92, look_4.rays + 0.12)}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.3)
-        tbl_upv_13.raysSpin = ((look_4.legendary) and 60) or 40
-        animate("raysSpin", {{((look_4.legendary) and 12) or 8, 1.4, "outQuad"}})
-        tbl_upv_11.halo.ImageTransparency = 0.2
-        tbl_upv_11.halo.Size = UDim2.fromOffset(380, 380)
-        tw(tbl_upv_11.halo, 0.8, {ImageTransparency = 0.5, Size = UDim2.fromOffset(720, 720)}, Enum.EasingStyle.Quart)
-        tbl_upv_11.beam.Position = UDim2.fromOffset(v133.X, v133.Y + 30)
-        tbl_upv_11.beam.Size = UDim2.fromOffset(120, 300)
-        tbl_upv_11.beam.ImageTransparency = 0.25
-        tw(tbl_upv_11.beam, 0.25, {Size = UDim2.fromOffset(260, 760)}, Enum.EasingStyle.Quart)
-        tw(tbl_upv_11.beam, 0.9, {ImageTransparency = 1}, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0.15)
-        tbl_upv_11.floorRing.Position = UDim2.fromOffset(v133.X, v133.Y)
-        tbl_upv_11.floorRing.Size = UDim2.fromOffset(160, 160)
-        tbl_upv_11.floorRing.ImageTransparency = 0.15
-        tw(tbl_upv_11.floorRing, 0.6, {ImageTransparency = 1, Size = UDim2.fromOffset(1500, 1500)}, Enum.EasingStyle.Quart)
-        tbl_upv_11.frontPool:Burst(look_4.burst, {lifeMin = 0.5, drag = 1.5, speedMin = 700, sparkLen = 170, mode = "point", spread = 62, size = 26, speedMax = 1500, dir = -90, lifeMax = 1, whiteChance = 0.3, jitter = 50, grav = 900, sparkChance = 0.7, at = v133, colors = {look_4.primary, look_4.light}, white = look_4.light})
-        tbl_upv_11.frontPool:Burst(math.floor(look_4.burst * 0.6), {lifeMin = 0.7, speedMax = 700, dir = -90, lifeMax = 1.3, drag = 1.4, whiteChance = 0, grav = 500, speedMin = 250, jitter = 70, kind = "sparkle", mode = "point", spread = 80, size = 32, at = v133, colors = {look_4.light, look_4.primary}})
-        if look_4.legendary then
-            tbl_upv_11.frontPool:Burst(24, {lifeMin = 0.6, speedMax = 1100, lifeMax = 1.2, drag = 1.2, whiteChance = 0, speedMin = 500, kind = "shard", jitter = 40, mode = "point", grav = 700, size = 26, at = v133, colors = {Colors_upv_1.Gold, look_4.light}})
-        end
-        tbl_upv_11.chestGlow.ImageTransparency = 0.25
-        tw(tbl_upv_11.chestGlow, 0.9, {ImageTransparency = 0.55}, Enum.EasingStyle.Quad)
-        if u9.stopSparkles then
-            u9.stopSparkles()
-            u9.stopSparkles = nil
-        end
-        if sleep(a62, tbl_upv_3.openHold, false) then
-            return true
-        end
-        return false
-    end
-    local function paintBar(a63, a64, a65, a66, a67, a68)
-        --[[
-          name: paintBar
-          line: 1437
-          upvalues:
-            tbl_upv_11 (copy, index: 1)
-            u9 (ref,  index: 2)
-            Colors_upv_1 (copy, index: 3)
-            a1 (copy, index: 4)
-            WeaponInfo_upv_1 (copy, index: 5)
-        ]]
-        if a65 then
-            tbl_upv_11.barText.Text = string.format("%d / %d", a64, a65)
+
+        v101.flash.BackgroundTransparency = look.legendary and 0.55 or 0.64
+        tw(v101.flash, 0.45, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
+        tw(v101.dim, 0.3, {BackgroundTransparency = 0.12}, Enum.EasingStyle.Quad)
+        v101.tint.ImageTransparency = 0.45
+        tw(v101.tint, 1.2, {ImageTransparency = 0.72}, Enum.EasingStyle.Quad)
+        local vector2 = project((Vector3.new(0, cframe.Position.Y + 0.2, 0)))
+        local position = v101.chestHolder.Position
+        local scale = v101.chestScale.Scale
+        local at = Vector2.new(position.X.Offset + (vector2.X * scale), position.Y.Offset + (vector2.Y * scale))
+        v101.raysHolder.Position = UDim2.fromOffset(at.X, at.Y)
+        local raysScale = v101.raysScale
+
+        if look.legendary then
+            scale2 = 0.8
         else
-            tbl_upv_11.barText.Text = "MAX"
+            scale2 = 0.25
         end
-        if u9 then
-            u9.barNeed = a65
-            u9.barMin = a64
-            u9.barMax = math.max(a64, a68 or a64)
-            u9.barShown = a64
-        end
-        tbl_upv_11.barGrad.Color = ColorSequence.new(a67:Lerp(Color3.new(1, 1, 1), 0.18), a67:Lerp(Colors_upv_1.Void, 0.18))
-        if a66 <= 0 then
-            a1.Loc.Rich(tbl_upv_11.barCaption, string.format("<font color=\"#%s\">UNLOCK</font>  %s", Colors_upv_1.Gold:ToHex(), string.upper(WeaponInfo_upv_1.Name(a63.item))))
-        elseif a65 then
-            a1.Loc.Rich(tbl_upv_11.barCaption, string.format("LEVEL %d  <font color=\"#%s\">\226\128\186</font>  %d", a66, a67:Lerp(Color3.new(1, 1, 1), 0.3):ToHex(), a66 + 1))
+
+        raysScale.Scale = scale2
+        local raysScale2 = v101.raysScale
+        local propertyTable = {}
+
+        if look.legendary then
+            scale3 = 1.15
         else
-            a1.Loc.Rich(tbl_upv_11.barCaption, string.format("LEVEL %d  \194\183  MAX", a66))
+            scale3 = 1
         end
-    end
-    local function paintFace(a69)
-        --[[
-          name: paintFace
-          line: 1470
-          upvalues:
-            catColor (copy, index: 1)
-            tbl_upv_11 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-            WeaponInfo_upv_1 (copy, index: 4)
-        ]]
-        local v134 = catColor(a69.item)
-        tbl_upv_11.faceGrad.Color = ColorSequence.new(v134:Lerp(Color3.new(1, 1, 1), 0.1), v134:Lerp(Colors_upv_1.Void, 0.55))
-        tbl_upv_11.faceStroke.Color = v134:Lerp(Color3.new(1, 1, 1), 0.45)
-        tbl_upv_11.wellGlow.ImageColor3 = v134
-        local cat_1 = tbl_upv_11.cat
-        local v135
-        if a69.bonus then
-            local v136 = WeaponInfo_upv_1.Get(a69.item)
-            v135 = (((v136 and (WeaponInfo_upv_1.CATEGORY_SINGULAR)) and (WeaponInfo_upv_1.CATEGORY_SINGULAR[v136.category])) or "ITEM") .. "  \194\183  MVP BONUS"
+
+        propertyTable.Scale = scale3
+        tw(raysScale2, 0.55, propertyTable, Enum.EasingStyle.Back)
+        v101.raysA.ImageTransparency = look.legendary and 0.3 or 0.5
+        v101.raysB.ImageTransparency = look.legendary and 0.4 or 0.6
+        tw(v101.raysA, 1.1, {ImageTransparency = look.rays}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.3)
+        tw(v101.raysB, 1.1, {ImageTransparency = math.min(0.92, look.rays + 0.12)}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.3)
+
+        if look.legendary then
+            raysSpin = 60
         else
-            local v137 = WeaponInfo_upv_1.Get(a69.item)
-            v135 = ((v137 and (WeaponInfo_upv_1.CATEGORY_SINGULAR)) and (WeaponInfo_upv_1.CATEGORY_SINGULAR[v137.category])) or "ITEM"
+            raysSpin = 40
         end
-        cat_1.Text = v135
-        tbl_upv_11.name.Text = string.upper(WeaponInfo_upv_1.Name(a69.item))
-        tbl_upv_11.countText.Text = "x0"
-        tbl_upv_11.gem.ImageColor3 = v134:Lerp(Color3.new(1, 1, 1), 0.25)
-        tbl_upv_11.cardGlow.ImageColor3 = v134
-        if a69.levelBefore <= 0 then
-            tbl_upv_11.tag.Visible = true
-            tbl_upv_11.tag.BackgroundColor3 = Colors_upv_1.Raised
-            tbl_upv_11.tagText.Text = "LOCKED"
-            tbl_upv_11.tagText.TextColor3 = Colors_upv_1.TextDim
-        else
-            tbl_upv_11.tag.Visible = true
-            tbl_upv_11.tag.BackgroundColor3 = Colors_upv_1.Raised
-            tbl_upv_11.tagText.Text = "LV " .. a69.levelBefore
-            tbl_upv_11.tagText.TextColor3 = Colors_upv_1.Text
+
+        v134.raysSpin = raysSpin
+        local v462 = look.legendary and 12 or 8
+        animate("raysSpin", {{v462, 1.4, "outQuad"}})
+        v101.halo.ImageTransparency = 0.2
+        v101.halo.Size = UDim2.fromOffset(380, 380)
+        tw(v101.halo, 0.8, {ImageTransparency = 0.5, Size = UDim2.fromOffset(720, 720)}, Enum.EasingStyle.Quart)
+        v101.beam.Position = UDim2.fromOffset(at.X, at.Y + 30)
+        v101.beam.Size = UDim2.fromOffset(120, 300)
+        v101.beam.ImageTransparency = 0.25
+        tw(v101.beam, 0.25, {Size = UDim2.fromOffset(260, 760)}, Enum.EasingStyle.Quart)
+        tw(v101.beam, 0.9, {ImageTransparency = 1}, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0.15)
+        v101.floorRing.Position = UDim2.fromOffset(at.X, at.Y)
+        v101.floorRing.Size = UDim2.fromOffset(160, 160)
+        v101.floorRing.ImageTransparency = 0.15
+        tw(v101.floorRing, 0.6, {ImageTransparency = 1, Size = UDim2.fromOffset(1500, 1500)}, Enum.EasingStyle.Quart)
+        v101.frontPool:Burst(look.burst, {mode = "point", jitter = 50, dir = -90, spread = 62, speedMin = 700, speedMax = 1500, sparkChance = 0.7, sparkLen = 170, size = 26, grav = 900, drag = 1.5, lifeMin = 0.5, lifeMax = 1, whiteChance = 0.3, at = at, colors = {look.primary, look.light}, white = look.light})
+        v101.frontPool:Burst(math.floor(look.burst * 0.6), {mode = "point", jitter = 70, dir = -90, spread = 80, speedMin = 250, speedMax = 700, kind = "sparkle", size = 32, grav = 500, drag = 1.4, lifeMin = 0.7, lifeMax = 1.3, whiteChance = 0, at = at, colors = {look.light, look.primary}})
+
+        if look.legendary then
+            v101.frontPool:Burst(24, {mode = "point", jitter = 40, speedMin = 500, speedMax = 1100, kind = "shard", size = 26, grav = 700, drag = 1.2, lifeMin = 0.6, lifeMax = 1.2, whiteChance = 0, at = at, colors = {colors.Gold, look.light}})
         end
-        tbl_upv_11.stamp.Visible = false
-    end
-    local function phaseNewItem(a70, a71)
-        --[[
-          name: phaseNewItem
-          line: 1496
-          upvalues:
-            u9 (ref,  index: 1)
-            catColor (copy, index: 2)
-            tbl_upv_11 (copy, index: 3)
-            tw (copy, index: 4)
-            tbl_upv_13 (copy, index: 5)
-            animate (copy, index: 6)
-            u19 (ref,  index: 7)
-            WeaponIcon_upv_1 (copy, index: 8)
-            Colors_upv_1 (copy, index: 9)
-            WeaponInfo_upv_1 (copy, index: 10)
-            a1 (copy, index: 11)
-            u7 (ref,  index: 12)
-            sleep (copy, index: 13)
-            u23 (ref,  index: 14)
-            u24 (ref,  index: 15)
-            u25 (ref,  index: 16)
-            tbl_upv_3 (copy, index: 17)
-        ]]
-        u9.phase = "newitem"
-        local v138 = catColor(a71.item)
-        local v139 = v138:Lerp(Color3.new(1, 1, 1), 0.4)
-        tbl_upv_11.newRoot.Visible = true
-        tbl_upv_11.newRoot.Position = UDim2.fromOffset(0, 0)
-        tbl_upv_11.card.Visible = false
-        tbl_upv_11.barBox.Visible = false
-        tbl_upv_11.counter.Visible = false
-        tbl_upv_11.newDim.BackgroundTransparency = 1
-        tw(tbl_upv_11.newDim, 0.25, {BackgroundTransparency = 0.18}, Enum.EasingStyle.Quad)
-        tbl_upv_11.newRaysA.ImageColor3 = v139
-        tbl_upv_11.newRaysB.ImageColor3 = v138
-        tbl_upv_11.newRaysA.ImageTransparency = 0.25
-        tbl_upv_11.newRaysB.ImageTransparency = 0.35
-        tbl_upv_11.newRaysA.Size = UDim2.fromOffset(300, 300)
-        tbl_upv_11.newRaysB.Size = UDim2.fromOffset(300, 300)
-        tw(tbl_upv_11.newRaysA, 0.6, {ImageTransparency = 0.5, Size = UDim2.fromOffset(1300, 1300)}, Enum.EasingStyle.Back)
-        tw(tbl_upv_11.newRaysB, 0.7, {ImageTransparency = 0.62, Size = UDim2.fromOffset(1500, 1500)}, Enum.EasingStyle.Back)
-        tbl_upv_13.raysSpin = 70
-        animate("raysSpin", {{10, 1.6, "outQuad"}})
-        tbl_upv_11.newGlow.ImageColor3 = v138
-        tbl_upv_11.newGlow.ImageTransparency = 0.4
-        tbl_upv_11.newGlow.Size = UDim2.fromOffset(300, 300)
-        tw(tbl_upv_11.newGlow, 0.7, {ImageTransparency = 0.55, Size = UDim2.fromOffset(820, 820)}, Enum.EasingStyle.Quart)
-        tbl_upv_11.newRing.ImageColor3 = v138
-        tbl_upv_11.newRing.Size = UDim2.fromOffset(200, 200)
-        tbl_upv_11.newRing.ImageTransparency = 0.3
-        tw(tbl_upv_11.newRing, 0.7, {ImageTransparency = 1, Size = UDim2.fromOffset(1700, 1700)}, Enum.EasingStyle.Quart)
-        tbl_upv_11.flash.BackgroundColor3 = v138
-        tbl_upv_11.flash.BackgroundTransparency = 0.7
-        tw(tbl_upv_11.flash, 0.5, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
-        if u19 then
-            u19.Saturation = 0.5
-            tw(u19, 0.6, {Saturation = 0.16}, Enum.EasingStyle.Quad)
+
+        v101.chestGlow.ImageTransparency = 0.25
+        tw(v101.chestGlow, 0.9, {ImageTransparency = 0.55}, Enum.EasingStyle.Quad)
+
+        if v102.stopSparkles then
+            v102.stopSparkles()
+            v102.stopSparkles = nil
         end
-        WeaponIcon_upv_1.Set(tbl_upv_11.newItem, a71.item, {outline = true, spin = true, outlineTransparency = 0.4, outlineScale = 1.04, glow = false, outlineColor = v139})
-        tbl_upv_11.newItemScale.Scale = 0.2
-        tw(tbl_upv_11.newItemScale, 0.55, {Scale = 1}, Enum.EasingStyle.Back)
-        for _, value_13 in {tbl_upv_11.newHead, tbl_upv_11.newShadow, tbl_upv_11.newAura} do
-            value_13.Text = "NEW ITEM!"
-            value_13.TextTransparency = 1
-            value_13.Position = UDim2.fromOffset(0, -300)
-        end
-        tbl_upv_11.newShadow.Position = UDim2.fromOffset(0, -293)
-        tbl_upv_11.newHeadGrad.Color = ColorSequence.new(Colors_upv_1.Text, v139)
-        tbl_upv_11.newAura.TextColor3 = v139
-        tbl_upv_11.newHeadScale.Scale = 2.2
-        tbl_upv_11.newShadowScale.Scale = 2.2
-        tw(tbl_upv_11.newHeadScale, 0.26, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 0.08)
-        tw(tbl_upv_11.newShadowScale, 0.26, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 0.08)
-        tw(tbl_upv_11.newHead, 0.1, {TextTransparency = 0}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.08)
-        tw(tbl_upv_11.newShadow, 0.2, {TextTransparency = 0.5}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.08)
-        tbl_upv_11.newName.Text = string.upper(WeaponInfo_upv_1.Name(a71.item))
-        tbl_upv_11.newName.Position = UDim2.fromOffset(0, 230)
-        local v140 = tbl_upv_11.newName
-        v140.TextTransparency = 1
-        local v141
-        if v140:IsA("TextLabel") then
-            v141 = v140:FindFirstChildWhichIsA("UIStroke")
-        else
-            v141 = nil
-        end
-        local v142, v143
-        if v141 then
-            if type(v141:GetAttribute("Authored")) ~= "number" then
-                v141:SetAttribute("Authored", v141.Transparency)
-            end
-            v142, v143 = v141, 1
-        else
-            v142 = nil
-            v143 = 1
-        end
-        if v142 then
-            v142.Transparency = v143
-        end
-        tw(tbl_upv_11.newName, 0.35, {TextTransparency = 0, Position = UDim2.fromOffset(0, 210)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0.3)
-        local newSub_2 = tbl_upv_11.newSub
-        local v144 = WeaponInfo_upv_1.Get(a71.item)
-        newSub_2.Text = string.format("%s  \194\183  UNLOCKED  \194\183  EQUIP IT IN YOUR LOADOUT", ((v144 and (WeaponInfo_upv_1.CATEGORY_SINGULAR)) and (WeaponInfo_upv_1.CATEGORY_SINGULAR[v144.category])) or "ITEM")
-        tbl_upv_11.newSub.Position = UDim2.fromOffset(0, 272)
-        local newSub_3 = tbl_upv_11.newSub
-        newSub_3.TextTransparency = 1
-        local v145
-        if newSub_3:IsA("TextLabel") then
-            v145 = newSub_3:FindFirstChildWhichIsA("UIStroke")
-        else
-            v145 = nil
-        end
-        if v145 then
-            if type(v145:GetAttribute("Authored")) ~= "number" then
-                v145:SetAttribute("Authored", v145.Transparency)
-            end
-            v142, v143 = v145, 1
-        else
-            v142 = nil
-            v143 = 1
-        end
-        if v142 then
-            v142.Transparency = v143
-        end
-        tw(tbl_upv_11.newSub, 0.35, {TextTransparency = 0, Position = UDim2.fromOffset(0, 256)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0.42)
-        a1.Sounds.Play("NewItem_Fanfare")
-        for _, value_14 in {tbl_upv_11.title, tbl_upv_11.titleShadow, tbl_upv_11.subtitle} do
-            tw(value_14, 0.15, {TextTransparency = 1}, Enum.EasingStyle.Quad)
-        end
-        task.delay(
-            u7 * 0.16,
-            function()
-                --[[
-                  line: 1560
-                  upvalues:
-                    a70 (copy, index: 1)
-                    u9 (ref,  index: 2)
-                    tbl_upv_11 (copy, index: 3)
-                ]]
-                local v146 = (u9 ~= nil) and (u9.token == a70)
-                if not v146 or u9.phase ~= "newitem" then
-                    return
-                end
-                tbl_upv_11.title.Visible = false
-                tbl_upv_11.titleShadow.Visible = false
-                tbl_upv_11.subtitle.Visible = false
-            end
-        )
-        if sleep(a70, 0.3, false) then
-            u23 = 18
-            u24 = 0
-            u25 = 0.35
-            tbl_upv_11.newHeadScale.Scale = 1.08
-            tw(tbl_upv_11.newHeadScale, 0.22, {Scale = 1}, Enum.EasingStyle.Back)
-            tbl_upv_11.newAura.TextTransparency = 0.3
-            tbl_upv_11.newAuraScale.Scale = 1.02
-            tw(tbl_upv_11.newAuraScale, 0.6, {Scale = 1.35}, Enum.EasingStyle.Quart)
-            tw(tbl_upv_11.newAura, 0.6, {TextTransparency = 1}, Enum.EasingStyle.Quad)
-            tbl_upv_11.newFlare.ImageColor3 = v139
-            tbl_upv_11.newFlare.ImageTransparency = 0.2
-            tbl_upv_11.newFlare.Size = UDim2.fromOffset(300, 120)
-            tw(tbl_upv_11.newFlare, 0.5, {ImageTransparency = 1, Size = UDim2.fromOffset(1600, 150)}, Enum.EasingStyle.Quart)
-            tbl_upv_11.frontPool:Burst(40, {sparkChance = 0.6, whiteChance = 0.3, speed = 1300, mode = "box", box = Vector2.new(560, 90), at = Vector2.new(0, -300), colors = {v138, v139}, white = v139})
-            tbl_upv_11.frontPool:Burst(36, {lifeMin = 0.6, speedMax = 1300, lifeMax = 1.2, drag = 1.6, whiteChance = 0, sparkChance = 0.55, speedMin = 500, sparkLen = 150, jitter = 90, mode = "point", grav = 500, size = 26, at = Vector2.new(0, -40), colors = {v138, v139, Colors_upv_1.Gold}})
-            tbl_upv_11.frontPool:Burst(20, {lifeMin = 1, speedMax = 260, lifeMax = 1.8, drag = 0.8, whiteChance = 0, speedMin = 60, kind = "sparkle", jitter = 160, mode = "point", grav = -60, size = 36, at = Vector2.new(0, -40), colors = {v139, Colors_upv_1.Gold}})
-            if not sleep(a70, 0.5, false) then
-                return false
-            end
-            u9.tapped = false
-            sleep(a70, tbl_upv_3.newItem - 0.8, true)
-            v140 = (u9 ~= nil) and (u9.token == a70)
-            if not v140 or u9.skip then
-                return false
-            end
-            tw(tbl_upv_11.newItemScale, 0.25, {Scale = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-            for _, value_15 in {tbl_upv_11.newHead, tbl_upv_11.newShadow, tbl_upv_11.newName, tbl_upv_11.newSub} do
-                tw(value_15, 0.2, {TextTransparency = 1}, Enum.EasingStyle.Quad)
-            end
-            tw(tbl_upv_11.newRaysA, 0.3, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
-            tw(tbl_upv_11.newRaysB, 0.3, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
-            tw(tbl_upv_11.newGlow, 0.3, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
-            tw(tbl_upv_11.newDim, 0.3, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
-            tbl_upv_11.title.Visible = true
-            tbl_upv_11.titleShadow.Visible = true
-            tbl_upv_11.subtitle.Visible = true
-            tw(tbl_upv_11.title, 0.25, {TextTransparency = 0}, Enum.EasingStyle.Quad)
-            tw(tbl_upv_11.titleShadow, 0.25, {TextTransparency = 0.55}, Enum.EasingStyle.Quad)
-            tw(tbl_upv_11.subtitle, 0.25, {TextTransparency = 0}, Enum.EasingStyle.Quad)
-            sleep(a70, 0.22, false)
-            tbl_upv_11.newRoot.Visible = false
-            WeaponIcon_upv_1.Set(tbl_upv_11.newItem, nil)
-            tbl_upv_11.card.Visible = true
-            tbl_upv_11.barBox.Visible = true
-            v140 = #u9.reveal.stacks - (u9.cardIndex or 0)
-            tbl_upv_11.counter.Visible = v140 > 0
-            tbl_upv_11.counterText.Text = "x" .. v140
-            tbl_upv_13.raysSpin = 8
-            v140 = (u9 ~= nil) and (u9.token == a70)
-            if v140 then
-                v140 = not u9.skip
-            end
-            return v140
-        end
-        return false
-    end
-    local function setBar(a72, a73, a74)
-        --[[
-          name: setBar
-          line: 1458
-          upvalues:
-            tbl_upv_11 (copy, index: 1)
-            tw (copy, index: 2)
-            tbl_upv_3 (copy, index: 3)
-        ]]
-        local v147 = math.clamp(a72, 0, 1)
-        if a73 then
-            tbl_upv_11.barFill.Size = UDim2.fromScale(v147, 1)
-            tbl_upv_11.barHead.Position = UDim2.fromOffset(v147 * 330, 43)
-        else
-            tw(tbl_upv_11.barFill, a74 or (tbl_upv_3.bar), {Size = UDim2.fromScale(v147, 1)}, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
-            tw(tbl_upv_11.barHead, a74 or (tbl_upv_3.bar), {Position = UDim2.fromOffset(v147 * 330, 43)}, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
-        end
-    end
-    local function phaseCard(a75, a76, a77)
-        --[[
-          name: phaseCard
-          line: 1615
-          upvalues:
-            u9 (ref,  index: 1)
-            catColor (copy, index: 2)
-            paintFace (copy, index: 3)
-            u13 (ref,  index: 4)
-            project (copy, index: 5)
-            tbl_upv_11 (copy, index: 6)
-            WeaponIcon_upv_1 (copy, index: 7)
-            a1 (copy, index: 8)
-            u22 (copy, index: 9)
-            UI_upv_1 (copy, index: 10)
-            animate (copy, index: 11)
-            tw (copy, index: 12)
-            tbl_upv_3 (copy, index: 13)
-            sleep (copy, index: 14)
-            paintBar (copy, index: 15)
-            tbl_upv_4 (copy, index: 16)
-            u7 (ref,  index: 17)
-            setBar (copy, index: 18)
-            finishGroup (copy, index: 19)
-            Colors_upv_1 (copy, index: 20)
-            phaseNewItem (copy, index: 21)
-            u23 (ref,  index: 22)
-            u24 (ref,  index: 23)
-            u25 (ref,  index: 24)
-            Theme_upv_1 (copy, index: 25)
-        ]]
-        local look_5 = u9.look
-        u9.phase = "card"
-        u9.cardIndex = a76
-        u9.hurry = false
-        u9.tapped = false
-        u9.group = {}
-        local v148 = catColor(a77.item)
-        paintFace(a77)
-        local v149 = project(Vector3.new(0, u13.Position.Y + 0.2, 0))
-        local v150 = Vector2.new(tbl_upv_11.chestHolder.Position.X.Offset + (v149.X * 0.46), 290 + (v149.Y * 0.46))
-        local v151 = ((#u9.reveal.stacks >= 4) and 0.82) or 1
-        local card_1 = tbl_upv_11.card
-        card_1.Visible = true
-        tbl_upv_11.back.Visible = true
-        tbl_upv_11.face.Visible = false
-        card_1.Size = UDim2.fromOffset(232, 322)
-        card_1.Position = UDim2.fromOffset(v150.X, v150.Y)
-        card_1.Rotation = ((a76 % 2 ~= 0) and 200) or -200
-        tbl_upv_11.cardScale.Scale = 0.22799999999999998
-        tbl_upv_11.cardGlow.ImageTransparency = 1
-        tbl_upv_11.sheen.BackgroundTransparency = 1
-        WeaponIcon_upv_1.Set(tbl_upv_11.icon, nil)
-        a1.Sounds.Play("Card_Whoosh", {pitch = 0.95 + (u22:NextNumber() * 0.1)})
-        local v152 = #u9.reveal.stacks - a76
-        tbl_upv_11.counter.Visible = v152 > 0
-        tbl_upv_11.counterText.Text = "x" .. v152
-        UI_upv_1.Pop(tbl_upv_11.counter, 1.35)
-        animate("sq", {{0.1, 0.06, "outQuad"}, {0, 0.16, "outQuad"}})
-        tbl_upv_11.chestGlow.ImageTransparency = 0.3
-        tw(tbl_upv_11.chestGlow, 0.5, {ImageTransparency = 0.6}, Enum.EasingStyle.Quad)
-        tbl_upv_11.backPool:Burst(8, {lifeMin = 0.4, speedMax = 600, dir = -90, lifeMax = 0.8, drag = 1.3, whiteChance = 0, grav = 700, speedMin = 250, jitter = 30, kind = "sparkle", mode = "point", spread = 40, size = 26, at = v150, colors = {look_5.light, look_5.primary}})
-        tw(card_1, tbl_upv_3.cardFly * v151, {Position = UDim2.fromOffset(0, -64)}, Enum.EasingStyle.Quint)
-        tw(card_1, tbl_upv_3.cardFly * v151, {Rotation = 0}, Enum.EasingStyle.Quart)
-        tw(tbl_upv_11.cardScale, tbl_upv_3.cardFly * v151, {Scale = 1.14}, Enum.EasingStyle.Back)
-        tbl_upv_11.barBox.Visible = false
-        if not sleep(a75, tbl_upv_3.cardFly * v151, true) then
+
+        if not sleep(token, v13.openHold, false) then
             return false
         end
-        a1.Sounds.Play("Card_Flip")
-        tw(card_1, tbl_upv_3.flip / 2, {Size = UDim2.fromOffset(0, 322)}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-        tw(tbl_upv_11.cardScale, tbl_upv_3.flip / 2, {Scale = 1.254}, Enum.EasingStyle.Quad)
-        if not sleep(a75, tbl_upv_3.flip / 2, true) then
-            return false
-        end
-        tbl_upv_11.back.Visible = false
-        tbl_upv_11.face.Visible = true
-        tbl_upv_11.well.Visible = false
-        tbl_upv_11.name.Visible = false
-        tbl_upv_11.count.Visible = false
-        tw(card_1, tbl_upv_3.flip / 2, {Size = UDim2.fromOffset(232, 322)}, Enum.EasingStyle.Quad)
-        tw(tbl_upv_11.cardScale, 0.3, {Scale = 1.14}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, tbl_upv_3.flip / 2)
-        tbl_upv_11.icon.Visible = false
-        WeaponIcon_upv_1.Set(tbl_upv_11.icon, a77.item, {outline = true, spin = true, outlineTransparency = 0.45, outlineScale = 1.04, glow = false, outlineColor = v148:Lerp(Color3.new(1, 1, 1), 0.5)})
-        if not sleep(a75, tbl_upv_3.flip / 2, true) then
-            return false
-        end
-        tbl_upv_11.well.Visible = true
-        tbl_upv_11.name.Visible = true
-        tbl_upv_11.count.Visible = true
-        tbl_upv_11.icon.Visible = true
-        tbl_upv_11.iconScale.Scale = 0.6
-        tw(tbl_upv_11.iconScale, 0.3, {Scale = 1}, Enum.EasingStyle.Back)
-        a1.Sounds.Play("Card_Reveal", {pitch = (math.min(a76 - 1, 4) * 0.04) + 1})
-        tbl_upv_11.sheen.BackgroundTransparency = 0.55
-        tbl_upv_11.sheenGrad.Offset = Vector2.new(-1, 0)
-        tw(tbl_upv_11.sheenGrad, 0.45, {Offset = Vector2.new(1, 0)}, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
-        tbl_upv_11.cardGlow.ImageTransparency = 0.35
-        tw(tbl_upv_11.cardGlow, 0.8, {ImageTransparency = 0.62}, Enum.EasingStyle.Quad)
-        tbl_upv_11.frontPool:Burst(14, {lifeMin = 0.4, speedMax = 700, lifeMax = 0.8, drag = 2, whiteChance = 0, sparkChance = 0.5, speedMin = 250, sparkLen = 110, jitter = 130, mode = "point", grav = 400, size = 20, at = Vector2.new(0, -64), colors = {v148, v148:Lerp(Color3.new(1, 1, 1), 0.4)}})
-        local need_1 = a77.need
-        paintBar(a77, a77.before, need_1, a77.levelBefore, v148, (math.min(a77.total, need_1 or (a77.total))))
-        local v153 = math.clamp((need_1 and (a77.before / need_1)) or 1, 0, 1)
-        tbl_upv_11.barFill.Size = UDim2.fromScale(v153, 1)
-        tbl_upv_11.barHead.Position = UDim2.fromOffset(v153 * tbl_upv_4.barW, 43)
-        tbl_upv_11.barBox.Visible = true
-        tbl_upv_11.barBox.Position = UDim2.fromOffset(0, 128)
-        UI_upv_1.FadeIn(tbl_upv_11.barBox, TweenInfo.new(u7 * 0.18))
-        local shards_upv_2 = a77.shards
-        task.spawn(
-            function()
-                --[[
-                  line: 1693
-                  upvalues:
-                    shards_upv_2 (copy, index: 1)
-                    tbl_upv_3 (copy, index: 2)
-                    a75 (copy, index: 3)
-                    u9 (ref,  index: 4)
-                    tbl_upv_11 (copy, index: 5)
-                    a1 (copy, index: 6)
-                    u7 (ref,  index: 7)
-                    tw (copy, index: 8)
-                ]]
-                local v154 = math.min(shards_upv_2, 12)
-                local v155 = tbl_upv_3.count / math.max(v154, 1)
-                for n_1 = 1, v154 do
-                    if true or u9.hurry or u9.skip then
-                        break
-                    else
-                        tbl_upv_11.countText.Text = "x" .. math.floor(((shards_upv_2 * n_1) / v154) + 0.5)
-                        a1.Sounds.Play("Tick", {volume = 0.8, pitch = (n_1 * 0.045) + 1})
-                        task.wait(v155 * u7)
-                    end
-                end
-                local v156 = (u9 ~= nil) and (u9.token == a75)
-                if not v156 then
-                    return
-                end
-                tbl_upv_11.countText.Text = "x" .. shards_upv_2
-                tbl_upv_11.countScale.Scale = 1.35
-                tw(tbl_upv_11.countScale, 0.25, {Scale = 1}, Enum.EasingStyle.Back)
-            end
-        )
-        a1.Sounds.Play("XP_Tick", {volume = 0.9})
-        v153 = ((not need_1) and 1) or (math.min(1, a77.total / need_1))
-        tbl_upv_11.barHead.ImageColor3 = v148:Lerp(Color3.new(1, 1, 1), 0.45)
-        tbl_upv_11.barHead.ImageTransparency = 0.05
-        setBar(v153, false)
-        tw(tbl_upv_11.barHead, tbl_upv_3.bar + 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0.1)
-        local tbl_30 = {lifeMin = 0.3, speedMax = 200, dir = -90, lifeMax = 0.6, drag = 1, whiteChance = 0, grav = 300, at = 0, speedMin = 60, colors = 0, jitter = 6, kind = "sparkle", mode = "point", spread = 70, size = 16}
-        tbl_30.at = Vector2.new(-165 + (330 * ((need_1 and (a77.before / need_1)) or 0)), 171)
-        tbl_30.colors = {v148:Lerp(Color3.new(1, 1, 1), 0.4)}
-        u9.headOpts = tbl_30
-        local v157 = tbl_upv_11.frontPool:Emit(34, u9.headOpts)
-        local v158 = sleep(a75, math.max(tbl_upv_3.bar, tbl_upv_3.count) * v151, true)
-        v157()
-        if u9 then
-            u9.headOpts = nil
-        end
-        if not v158 then
-            return false
-        end
-        tbl_upv_11.countText.Text = "x" .. shards_upv_2
-        finishGroup()
-        u9.group = nil
-        u9.hurry = false
-        u9.tapped = false
-        if a77.unlocked then
-            tbl_upv_11.barFlash.BackgroundColor3 = Colors_upv_1.Gold
-            tbl_upv_11.barFlash.BackgroundTransparency = 0.2
-            tw(tbl_upv_11.barFlash, 0.4, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
-            if not sleep(a75, 0.18, false) or not phaseNewItem(a75, a77) then
-                return false
-            end
-            u9.phase = "card"
-            tbl_upv_11.tag.BackgroundColor3 = Colors_upv_1.Gold
-            tbl_upv_11.tagText.Text = "NEW"
-            tbl_upv_11.tagText.TextColor3 = Colors_upv_1.TextDark
-            UI_upv_1.Pop(tbl_upv_11.tag, 1.6)
-            paintBar(a77, a77.surplus, a77.needAfter, 1, v148, a77.surplus)
-            local v159 = math.clamp(((a77.needAfter) and (a77.surplus / a77.needAfter)) or 1, 0, 1)
-            tbl_upv_11.barFill.Size = UDim2.fromScale(v159, 1)
-            tbl_upv_11.barHead.Position = UDim2.fromOffset(v159 * tbl_upv_4.barW, 43)
-        end
-        if a77.ready then
-            tbl_upv_11.stamp.Visible = true
-            tbl_upv_11.stampScale.Scale = 2.4
-            tbl_upv_11.stamp.Rotation = -18
-            tw(tbl_upv_11.stampScale, 0.22, {Scale = 1}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-            tw(tbl_upv_11.stamp, 0.22, {Rotation = -8}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-            a1.Sounds.Play("Upgrade_Ready")
-            if sleep(a75, 0.22, false) then
-                u23 = 8
-                u24 = 0
-                u25 = 0.2
-                tbl_upv_11.barGrad.Color = ColorSequence.new(Theme_upv_1.Lighten(Colors_upv_1.Success, 0.15), Colors_upv_1.SuccessDark)
-                tbl_upv_11.barFlash.BackgroundColor3 = Colors_upv_1.Success
-                tbl_upv_11.barFlash.BackgroundTransparency = 0.25
-                tw(tbl_upv_11.barFlash, 0.4, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
-                tbl_upv_11.frontPool:Burst(16, {lifeMin = 0.4, speedMax = 650, lifeMax = 0.8, drag = 1.8, whiteChance = 0, sparkChance = 0.5, speedMin = 250, sparkLen = 110, jitter = 110, mode = "point", grav = 500, size = 20, at = Vector2.new(0, -67.42), colors = {Colors_upv_1.Success, Theme_upv_1.Lighten(Colors_upv_1.Success, 0.4)}})
-            else
-                return false
-            end
-        end
-        u9.hurry = false
-        u9.tapped = false
-        sleep(a75, tbl_upv_3.dwell * v151 + (((a77.ready) and 0.35) or 0), true)
-        local v160 = (u9 ~= nil) and (u9.token == a75)
-        if v160 and not (u9.skip) then
-            local v161 = a76 == #u9.reveal.stacks
-            if not (v161) then
-                local cardOut_1 = tbl_upv_3.cardOut
-                local tbl_31 = {Rotation = 0, Position = 0}
-                tbl_31.Position = UDim2.fromOffset(((a76 % 2 ~= 0) and -520) or 520, -104)
-                tbl_31.Rotation = ((a76 % 2 ~= 0) and -14) or 14
-                tw(card_1, cardOut_1, tbl_31, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-                tw(tbl_upv_11.cardScale, tbl_upv_3.cardOut, {Scale = 0.6839999999999999}, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-                UI_upv_1.FadeOut(tbl_upv_11.barBox, TweenInfo.new((tbl_upv_3.cardOut * 0.8) * u7))
-                if sleep(a75, tbl_upv_3.cardOut, false) then
-                    card_1.Visible = false
-                    UI_upv_1.Unfade(tbl_upv_11.barBox)
-                    tbl_upv_11.barBox.Visible = false
-                else
-                    return false
-                end
-            end
-            return true
-        end
-        return false
+
+        return true
     end
-    local function tileFor(a78)
-        --[[
-          name: tileFor
-          line: 1794
-          upvalues:
-            tbl_upv_11 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-            Fonts_upv_1 (copy, index: 4)
-            Theme_upv_1 (copy, index: 5)
-        ]]
-        local v162 = tbl_upv_11.tiles[a78]
-        if v162 then
-            return v162
-        end
-        local v163 = {}
-        v163.Name = "Tile" .. a78
-        v163.AnchorPoint = Vector2.new(0.5, 0.5)
-        v163.Size = UDim2.fromOffset(168, 236)
-        v163.BackgroundColor3 = Color3.new(1, 1, 1)
-        v163.ZIndex = 12
-        v163[1] = UI_upv_1.Corner(14)
-        v163.Parent = tbl_upv_11.sumRow
-        local v164 = UI_upv_1.new("Frame", v163)
-        local v165 = UI_upv_1.new("UIGradient", {Rotation = 90, Parent = v164})
-        v163 = UI_upv_1.Stroke(Colors_upv_1.Accent, 2.5, 0.1)
-        v163.Parent = v164
-        local v166 = UI_upv_1.new("UIScale", {Parent = v164})
-        local tbl_32 = {}
-        tbl_32.Position = UDim2.fromOffset(8, 8)
-        tbl_32.Size = UDim2.new(1, -16, 0, 132)
-        tbl_32.BackgroundColor3 = Colors_upv_1.Void
-        tbl_32.BackgroundTransparency = 0.45
-        tbl_32.ZIndex = 13
-        tbl_32[1] = UI_upv_1.Corner(10)
-        tbl_32.Parent = v164
-        local v167 = UI_upv_1.new("Frame", tbl_32)
-        local v168 = UI_upv_1.new("Frame", {ZIndex = 14, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(126, 126), Parent = v167})
-        v167 = UI_upv_1.new("TextLabel", {ZIndex = 14, Text = "", TextSize = 17, Position = UDim2.fromOffset(8, 146), Size = UDim2.new(1, -16, 0, 22), FontFace = Fonts_upv_1.Heavy, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v164})
-        UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.45).Parent = v167
-        tbl_32 = UI_upv_1.new("TextLabel", {ZIndex = 14, Text = "", TextSize = 28, Position = UDim2.fromOffset(8, 168), Size = UDim2.new(1, -16, 0, 30), FontFace = Fonts_upv_1.Display, Parent = v164})
-        UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.4).Parent = tbl_32
-        local tbl_33 = {}
-        tbl_33.Position = UDim2.fromOffset(12, 206)
-        tbl_33.Size = UDim2.new(1, -24, 0, 12)
-        tbl_33.BackgroundColor3 = Colors_upv_1.Void
-        tbl_33.BackgroundTransparency = 0.25
-        tbl_33.ClipsDescendants = true
-        tbl_33.ZIndex = 14
-        tbl_33[1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill)
-        tbl_33.Parent = v164
-        local v169 = UI_upv_1.new("Frame", tbl_33)
-        local tbl_34 = {}
-        tbl_34.Size = UDim2.fromScale(0, 1)
-        tbl_34.BackgroundColor3 = Colors_upv_1.Accent
-        tbl_34.ZIndex = 15
-        tbl_34[1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill)
-        tbl_34.Parent = v169
-        local v170 = UI_upv_1.new("Frame", tbl_34)
-        local tbl_35 = {}
-        tbl_35.AnchorPoint = Vector2.new(0.5, 0.5)
-        tbl_35.Position = UDim2.new(0.5, 0, 0, 8)
-        tbl_35.Size = UDim2.fromOffset(120, 28)
-        tbl_35.BackgroundColor3 = Colors_upv_1.Gold
-        tbl_35.ZIndex = 16
-        tbl_35[1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill)
-        tbl_35.Parent = v164
-        local v171 = UI_upv_1.new("Frame", tbl_35)
-        local tbl_36 = {frame = v164, grad = v165, stroke = v163, scale = v166, icon = v168, name = v167, count = tbl_32, barFill = v170, tag = v171, tagText = UI_upv_1.new("TextLabel", {ZIndex = 17, Text = "NEW", TextSize = 16, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, TextColor3 = Colors_upv_1.TextDark, Parent = v171})}
-        tbl_upv_11.tiles[a78] = tbl_36
-        return tbl_36
-    end
-    local function phaseSummary(a79)
-        --[[
-          name: phaseSummary
-          line: 1818
-          upvalues:
-            u9 (ref,  index: 1)
-            tbl_upv_22 (copy, index: 2)
-            tbl_upv_11 (copy, index: 3)
-            WeaponIcon_upv_1 (copy, index: 4)
-            tw (copy, index: 5)
-            titleIn (copy, index: 6)
-            tbl_upv_13 (copy, index: 7)
-            tileFor (copy, index: 8)
-            catColor (copy, index: 9)
-            Colors_upv_1 (copy, index: 10)
-            WeaponInfo_upv_1 (copy, index: 11)
-            Theme_upv_1 (copy, index: 12)
-            a1 (copy, index: 13)
-            tbl_upv_3 (copy, index: 14)
-            sleep (copy, index: 15)
-        ]]
-        local reveal_1 = u9.reveal
-        local look_6 = u9.look
-        u9.phase = "summary"
-        u9.skip = false
-        u9.hurry = false
-        u9.tapped = false
-        tbl_upv_22.on = false
-        if u9.stopSparkles then
-            u9.stopSparkles()
-            u9.stopSparkles = nil
-        end
-        tbl_upv_11.card.Visible = false
-        tbl_upv_11.barBox.Visible = false
-        tbl_upv_11.newRoot.Visible = false
-        WeaponIcon_upv_1.Set(tbl_upv_11.newItem, nil)
-        WeaponIcon_upv_1.Set(tbl_upv_11.icon, nil)
-        tbl_upv_11.prompt.Visible = false
-        tbl_upv_11.counter.Visible = false
-        tbl_upv_11.skip.Visible = false
-        tbl_upv_11.leak.ImageTransparency = 1
-        tbl_upv_11.leakFlare.ImageTransparency = 1
-        tbl_upv_11.beam.ImageTransparency = 1
-        if not (u9.summaryOnly) then
-            tw(tbl_upv_11.chestHolder, 0.3, {Position = UDim2.fromOffset(0, 350)}, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-            tw(tbl_upv_11.vpf, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
-            tw(tbl_upv_11.chestGlow, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
-            tw(tbl_upv_11.shadow, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
-        end
-        if tbl_upv_11.title.TextTransparency > 0.5 then
-            titleIn(look_6.title, u9.subtitle)
-        end
-        tw(tbl_upv_11.dim, 0.3, {BackgroundTransparency = 0.12}, Enum.EasingStyle.Quad)
-        tbl_upv_11.raysHolder.Position = UDim2.fromOffset(0, -40)
-        tbl_upv_11.raysScale.Scale = 1
-        tw(tbl_upv_11.raysA, 0.4, {ImageTransparency = math.min(0.9, look_6.rays + 0.1)}, Enum.EasingStyle.Quad)
-        tw(tbl_upv_11.raysB, 0.4, {ImageTransparency = math.min(0.94, look_6.rays + 0.2)}, Enum.EasingStyle.Quad)
-        tw(tbl_upv_11.halo, 0.4, {ImageTransparency = 0.62, Size = UDim2.fromOffset(900, 700)}, Enum.EasingStyle.Quad)
-        tbl_upv_13.raysSpin = 6
-        local v172 = #reveal_1.stacks
-        local v173 = math.min(1.14, 1040 / math.max(1, (v172 * 186) - 18))
-        local v174, v175 = nil, nil
-        for n_2 = 1, math.max(v172, #tbl_upv_11.tiles) do
-            local v176 = reveal_1.stacks[n_2]
-            if v176 then
-                local v177 = tileFor(n_2)
-                local v178 = catColor(v176.item)
-                v177.frame.Visible = true
-                v177.grad.Color = ColorSequence.new(v178:Lerp(Colors_upv_1.Void, 0.2), v178:Lerp(Colors_upv_1.Void, 0.7))
-                v177.stroke.Color = v178:Lerp(Color3.new(1, 1, 1), 0.4)
-                v177.name.Text = string.upper(WeaponInfo_upv_1.Name(v176.item))
-                v177.count.Text = "x" .. v176.shards
-                local levelBefore_1 = v176.levelBefore
-                v175 = v176.total
-                v174 = v176.need
-                if v176.unlocked then
-                    local _ = 1
-                    v175 = v176.surplus
-                    v174 = v176.needAfter
-                end
-                local barFill_1 = v177.barFill
-                local v179
-                if v174 then
-                    v179 = math.clamp(v175 / v174, 0, 1)
-                else
-                    v179 = 1
-                end
-                barFill_1.Size = UDim2.fromScale(v179, 1)
-                local barFill_2 = v177.barFill
-                local v180
-                if v176.ready then
-                    v180 = Colors_upv_1.Success
-                else
-                    v180 = v178
-                end
-                barFill_2.BackgroundColor3 = v180
-                if v176.unlocked then
-                    v177.tag.Visible = true
-                    v177.tag.BackgroundColor3 = Colors_upv_1.Gold
-                    v177.tagText.Text = "NEW ITEM"
-                    v177.tagText.TextColor3 = Colors_upv_1.TextDark
-                    WeaponIcon_upv_1.Set(v177.icon, v176.item, {outline = false, glow = false})
-                    v174 = ((n_2 - 1) - ((v172 - 1) / 2)) * 186 * v173
-                    v177.frame.Position = UDim2.fromOffset(v174, 60)
-                    v177.scale.Scale = 0
-                    tw(v177.frame, 0.4, {Position = UDim2.fromOffset(v174, 0)}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, ((n_2 - 1) * 0.07) + 0.05)
-                    tw(v177.scale, 0.4, {Scale = v173}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, ((n_2 - 1) * 0.07) + 0.05)
-                    continue
-                end
-                if v176.ready then
-                    v177.tag.Visible = true
-                    v177.tag.BackgroundColor3 = Colors_upv_1.Success
-                    v177.tagText.Text = "UPGRADE"
-                    v177.tagText.TextColor3 = Colors_upv_1.Text
-                    WeaponIcon_upv_1.Set(v177.icon, v176.item, {outline = false, glow = false})
-                    v174 = ((n_2 - 1) - ((v172 - 1) / 2)) * 186 * v173
-                    v177.frame.Position = UDim2.fromOffset(v174, 60)
-                    v177.scale.Scale = 0
-                    tw(v177.frame, 0.4, {Position = UDim2.fromOffset(v174, 0)}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, ((n_2 - 1) * 0.07) + 0.05)
-                    tw(v177.scale, 0.4, {Scale = v173}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, ((n_2 - 1) * 0.07) + 0.05)
-                    continue
-                end
-                if levelBefore_1 <= 0 then
-                    v177.tag.Visible = true
-                    v177.tag.BackgroundColor3 = Colors_upv_1.Raised
-                    v177.tagText.Text = string.format("%d / %d", v175, v174 or 0)
-                    v177.tagText.TextColor3 = Colors_upv_1.TextDim
-                else
-                    v177.tag.Visible = true
-                    v177.tag.BackgroundColor3 = Colors_upv_1.Raised
-                    v177.tagText.Text = "LV " .. levelBefore_1
-                    v177.tagText.TextColor3 = Colors_upv_1.Text
-                end
-                WeaponIcon_upv_1.Set(v177.icon, v176.item, {outline = false, glow = false})
-                v174 = ((n_2 - 1) - ((v172 - 1) / 2)) * 186 * v173
-                v177.frame.Position = UDim2.fromOffset(v174, 60)
-                v177.scale.Scale = 0
-                tw(v177.frame, 0.4, {Position = UDim2.fromOffset(v174, 0)}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, ((n_2 - 1) * 0.07) + 0.05)
-                tw(v177.scale, 0.4, {Scale = v173}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, ((n_2 - 1) * 0.07) + 0.05)
-            else
-                local v181 = tbl_upv_11.tiles[n_2]
-                if v181 then
-                    v181.frame.Visible = false
-                    WeaponIcon_upv_1.Set(v181.icon, nil)
-                end
-            end
-        end
-        local v182 = 0
-        local v183 = 0
-        local v184 = 0
-        local v185, v186, v187
-        v185, v186, v187 = v182, v183, v184
-        for _, value_16 in reveal_1.stacks do
-            local v188 = v185 + value_16.shards
-            local v189 = ((value_16.unlocked) and (v186 + 1)) or v186
-            v187 = ((value_16.ready) and (v187 + 1)) or v187
-            v185, v186 = v188, v189
-        end
-        v173 = {string.format("<font color=\"#%s\">+%d</font> SHARDS", look_6.light:ToHex(), v185)}
-        if v186 > 0 then
-            local v190 = Colors_upv_1.Gold:ToHex()
-            table.insert(v173, string.format("<font color=\"#%s\">%d NEW ITEM%s</font>", v190, v186, ((v186 > 1) and "S") or ""))
-        end
-        if v187 > 0 then
-            local v191 = Theme_upv_1.Lighten(Colors_upv_1.Success, 0.2):ToHex()
-            table.insert(v173, string.format("<font color=\"#%s\">%d UPGRADE%s READY</font>", v191, v187, ((v187 > 1) and "S") or ""))
-        end
-        if v172 == 0 then
-            local tbl_37 = {}
-            tbl_37[1] = not (reveal_1.xp) and "EVERYTHING MAXED" or string.format("EVERYTHING MAXED  \194\183  +%d XP", reveal_1.xp)
-            v173 = tbl_37
-        end
-        for key_4, value_17 in v173 do
-            v173[key_4] = a1.Loc.T(value_17)
-        end
-        tbl_upv_11.sumTotals.Text = table.concat(v173, "   \194\183   ")
-        local sumTotals_2 = tbl_upv_11.sumTotals
-        sumTotals_2.TextTransparency = 1
-        if sumTotals_2:IsA("TextLabel") then
-            v187 = sumTotals_2:FindFirstChildWhichIsA("UIStroke")
-        else
-            v187 = nil
-        end
-        local v193, v194
-        if v187 then
-            if type(v187:GetAttribute("Authored")) ~= "number" then
-                v187:SetAttribute("Authored", v187.Transparency)
-            end
-            v193, v194 = v187, 1
-        else
-            v193 = nil
-            v194 = 1
-        end
-        if v193 then
-            v193.Transparency = v194
-        end
-        tw(tbl_upv_11.sumTotals, 0.3, {TextTransparency = 0}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, (v172 * 0.07) + 0.25)
-        tbl_upv_11.sumRoot.Visible = true
-        tbl_upv_11.cont.Visible = true
-        tbl_upv_11.contScale.Scale = 0
-        tw(tbl_upv_11.contScale, 0.35, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, (v172 * 0.07) + 0.35)
-        a1.Sounds.Play("Reward")
-        tbl_upv_11.frontPool:Burst(((look_6.legendary) and 34) or 20, {lifeMin = 0.9, speedMax = 180, lifeMax = 1.7, drag = 0.6, whiteChance = 0, speedMin = 40, kind = "sparkle", jitter = 380, mode = "point", grav = -40, size = 28, at = Vector2.new(0, -40), colors = {look_6.light, look_6.primary}})
-        local v195 = u9.opts.autoContinue or (tbl_upv_3.summaryAuto[u9.source] or 6)
-        tbl_upv_11.contFillGrad.Offset = Vector2.new(-0.5, 0)
-        tw(tbl_upv_11.contFillGrad, v195, {Offset = Vector2.new(0.5, 0)}, Enum.EasingStyle.Linear)
-        if not sleep(a79, 0.45, false) then
-            return
-        end
-        sleep(a79, v195 - 0.45, true)
-    end
-    local function hideAll()
-        --[[
-          name: hideAll
-          line: 1958
-          upvalues:
-            tbl_upv_11 (copy, index: 1)
-            WeaponIcon_upv_1 (copy, index: 2)
-            tbl_upv_16 (copy, index: 3)
-            u12 (ref,  index: 4)
-        ]]
-        tbl_upv_11.root.Visible = false
-        tbl_upv_11.card.Visible = false
-        tbl_upv_11.barBox.Visible = false
-        tbl_upv_11.newRoot.Visible = false
-        tbl_upv_11.sumRoot.Visible = false
-        tbl_upv_11.prompt.Visible = false
-        tbl_upv_11.counter.Visible = false
-        tbl_upv_11.skip.Visible = false
-        tbl_upv_11.chestHolder.Visible = false
-        WeaponIcon_upv_1.Set(tbl_upv_11.icon, nil)
-        WeaponIcon_upv_1.Set(tbl_upv_11.newItem, nil)
-        for _, value_18 in tbl_upv_11.tiles do
-            WeaponIcon_upv_1.Set(value_18.icon, nil)
-            value_18.frame.Visible = false
-        end
-        tbl_upv_11.backPool:Clear()
-        tbl_upv_11.frontPool:Clear()
-        for _, value_19 in tbl_upv_16 do
-            value_19.part:Destroy()
-        end
-        table.clear(tbl_upv_16)
-        u12 = nil
-    end
-    local tbl_upv_38 = {}
-    local function cancelOut()
-        --[[
-          name: cancelOut
-          line: 1981
-          upvalues:
-            tbl_upv_38 (copy, index: 1)
-        ]]
-        for _, value_20 in tbl_upv_38 do
-            value_20:Cancel()
-        end
-        table.clear(tbl_upv_38)
-    end
-    local function snap(a80, a81)
-        --[[
-          name: snap
-          line: 2017
-          upvalues:
-            TweenService_upv_1 (copy, index: 1)
-        ]]
-        TweenService_upv_1:Create(a80, TweenInfo.new(0), a81):Play()
-        for key_5, value_21 in a81 do
-            a80[key_5] = value_21
-        end
-    end
-    local tbl_upv_39 = {BubbleChat = true, Chat = true, TR_TopbarSettings = true, CombatTouch = true, CharacterTouch = true, CombatHUD = true, TR_RevealSafe = true, TouchGui = true}
-    local tbl_upv_40 = {TR_ReplayFrame = true, TR_Replay = true, TR_ReplayHud = true}
-    local tbl_upv_41 = {}
-    local tbl_upv_42 = {}
-    local u26 = false
-    local function hideCollector(a82)
-        --[[
-          name: hideCollector
-          line: 2043
-          upvalues:
-            tbl_upv_11 (copy, index: 1)
-            tbl_upv_39 (copy, index: 2)
-            a1 (copy, index: 3)
-            tbl_upv_40 (copy, index: 4)
-            tbl_upv_41 (copy, index: 5)
-            tbl_upv_42 (copy, index: 6)
-        ]]
-        if a82 == tbl_upv_11.gui then
-            return
-        end
-        if not (tbl_upv_39[a82.Name]) then
-            local v196 = a82:FindFirstAncestorWhichIsA("ScreenGui")
-            if not v196 then
-                if a82:IsA("ScreenGui") then
-                    if a82.Parent == a1.PlayerGui and a82.Enabled then
-                        a82.Enabled = false
-                        if not (tbl_upv_40[a82.Name]) then
-                            tbl_upv_41[a82] = true
-                            return
-                        end
-                    end
-                else
-                    if not (a82:IsA("BillboardGui")) and not (a82:IsA("SurfaceGui")) or tbl_upv_42[a82] ~= nil then
-                        return
-                    end
-                    pcall(
-                        function()
-                            --[[
-                              line: 2059
-                              upvalues:
-                                a82 (copy, index: 1)
-                                tbl_upv_42 (copy, index: 2)
-                            ]]
-                            local MaxDistance_1 = a82.MaxDistance
-                            a82.MaxDistance = 0.001
-                            tbl_upv_42[a82] = MaxDistance_1
-                        end
-                    )
-                end
-                return
-            end
-            if v196.Name ~= "Chat" and v196.Name ~= "BubbleChat" then
-                if a82:IsA("ScreenGui") then
-                    if a82.Parent == a1.PlayerGui and a82.Enabled then
-                        a82.Enabled = false
-                        if not (tbl_upv_40[a82.Name]) then
-                            tbl_upv_41[a82] = true
-                            return
-                        end
-                    end
-                else
-                    if not (a82:IsA("BillboardGui")) and not (a82:IsA("SurfaceGui")) or tbl_upv_42[a82] ~= nil then
-                        return
-                    end
-                    pcall(
-                        function()
-                            --[[
-                              line: 2059
-                              upvalues:
-                                a82 (copy, index: 1)
-                                tbl_upv_42 (copy, index: 2)
-                            ]]
-                            local MaxDistance_1 = a82.MaxDistance
-                            a82.MaxDistance = 0.001
-                            tbl_upv_42[a82] = MaxDistance_1
-                        end
-                    )
-                end
-                return
-            end
-        end
-    end
-    local function sweepUi()
-        --[[
-          name: sweepUi
-          line: 2066
-          upvalues:
-            a1 (copy, index: 1)
-            hideCollector (copy, index: 2)
-            Workspace_upv_1 (copy, index: 3)
-        ]]
-        for _, value_22 in a1.PlayerGui:GetDescendants() do
-            if value_22:IsA("LayerCollector") then
-                hideCollector(value_22)
-            end
-        end
-        local TR_ContractDisplay_1 = Workspace_upv_1:FindFirstChild("TR_ContractDisplay")
-        if not TR_ContractDisplay_1 then
-            return
-        end
-        for _, value_23 in TR_ContractDisplay_1:GetDescendants() do
-            if value_23:IsA("LayerCollector") then
-                hideCollector(value_23)
-            end
-        end
-    end
-    local function setAllUiHidden(a83)
-        --[[
-          name: setAllUiHidden
-          line: 2081
-          upvalues:
-            u26 (ref,  index: 1)
-            sweepUi (copy, index: 2)
-            ProximityPromptService_upv_1 (copy, index: 3)
-            tbl_upv_41 (copy, index: 4)
-            tbl_upv_42 (copy, index: 5)
-            a1 (copy, index: 6)
-        ]]
-        if u26 == a83 then
-            return
-        end
-        u26 = a83
-        if a83 then
-            sweepUi()
-            ProximityPromptService_upv_1.Enabled = false
-        else
-            for key_6 in tbl_upv_41 do
-                if key_6.Parent then
-                    key_6.Enabled = true
-                end
-            end
-            table.clear(tbl_upv_41)
-            for key_upv_7, value_upv_24 in tbl_upv_42 do
-                if key_upv_7.Parent then
-                    pcall(
-                        function()
-                            --[[
-                              line: 2098
-                              upvalues:
-                                key_upv_7 (copy, index: 1)
-                                value_upv_24 (copy, index: 2)
-                            ]]
-                            key_upv_7.MaxDistance = value_upv_24
-                        end
-                    )
-                end
-            end
-            table.clear(tbl_upv_42)
-            ProximityPromptService_upv_1.Enabled = not a1.MenuManager.IsOpen()
-        end
-    end
-    tbl_upv_7._SweepUi = function()
-        --[[
-          line: 2107
-          upvalues:
-            u26 (ref,  index: 1)
-            sweepUi (copy, index: 2)
-        ]]
-        if not u26 then
-            return
-        end
-        sweepUi()
-    end
-    local u28 = false
-    local function setPlaying(a84)
-        --[[
-          name: setPlaying
-          line: 2115
-          upvalues:
-            u11 (ref,  index: 1)
-            a1 (copy, index: 2)
-            u28 (ref,  index: 3)
-            tbl_upv_7 (copy, index: 4)
-            setAllUiHidden (copy, index: 5)
-        ]]
-        if u11 == a84 then
-            return
-        end
-        u11 = a84
-        a1.SetHudHidden("Reveal", a84)
-        a1.MenuManager.HoldChat("Reveal", a84)
-        if a84 then
-            a1.MenuManager.PushMouse("DropReveal")
-            if a1.Canvas.Menus.Visible then
-                a1.Canvas.Menus.Visible = false
-                u28 = true
-            end
-        else
-            a1.MenuManager.PopMouse("DropReveal")
-            if u28 then
-                a1.Canvas.Menus.Visible = true
-                u28 = false
-            end
-        end
-        tbl_upv_7.Changed:Fire(a84)
-        if a1.TopbarSettings and type(a1.TopbarSettings.SetHidden) == "function" then
-            pcall(a1.TopbarSettings.SetHidden, "Reveal", a84)
-        end
-        setAllUiHidden(a84)
-        local Economy_2 = a1.Economy
-        if not Economy_2 then
-            return
-        end
-        if type(Economy_2.SetRevealShowing) == "function" then
-            pcall(Economy_2.SetRevealShowing, a84)
-        end
-    end
-    local function fadeOut(a85)
-        --[[
-          name: fadeOut
-          line: 1987
-          upvalues:
-            tbl_upv_38 (copy, index: 1)
-            TweenService_upv_1 (copy, index: 2)
-            tbl_upv_11 (copy, index: 3)
-        ]]
-        for _, value_25 in tbl_upv_38 do
-            value_25:Cancel()
-        end
-        table.clear(tbl_upv_38)
-        local u29 = TweenInfo.new(a85, Enum.EasingStyle.Quad)
-        local function add_1(a86, a87)
-            --[[
-              name: add
-              line: 1990
-              upvalues:
-                TweenService_upv_1 (copy, index: 1)
-                u29 (copy, index: 2)
-                tbl_upv_38 (copy, index: 3)
-            ]]
-            local v197 = TweenService_upv_1:Create(a86, u29, a87)
-            v197:Play()
-            table.insert(tbl_upv_38, v197)
-        end
-        local v198 = TweenService_upv_1:Create(tbl_upv_11.dim, u29, {BackgroundTransparency = 1})
-        v198:Play()
-        table.insert(tbl_upv_38, v198)
-        local v199 = TweenService_upv_1:Create(tbl_upv_11.vignette, u29, {ImageTransparency = 1})
-        v199:Play()
-        table.insert(tbl_upv_38, v199)
-        local v200 = TweenService_upv_1:Create(tbl_upv_11.tint, u29, {ImageTransparency = 1})
-        v200:Play()
-        table.insert(tbl_upv_38, v200)
-        local v201 = TweenService_upv_1:Create(tbl_upv_11.flash, u29, {BackgroundTransparency = 1})
-        v201:Play()
-        table.insert(tbl_upv_38, v201)
-        for _, value_26 in {tbl_upv_11.raysA, tbl_upv_11.raysB, tbl_upv_11.halo, tbl_upv_11.vpf, tbl_upv_11.chestGlow, tbl_upv_11.shadow} do
-            local v202 = TweenService_upv_1:Create(value_26, u29, {ImageTransparency = 1})
-            v202:Play()
-            table.insert(tbl_upv_38, v202)
-        end
-        local v203, v204 = nil, nil
-        for _, value_27 in {tbl_upv_11.title, tbl_upv_11.titleShadow, tbl_upv_11.subtitle, tbl_upv_11.sumTotals} do
-            local v205 = TweenService_upv_1:Create(value_27, u29, {TextTransparency = 1})
-            v205:Play()
-            table.insert(tbl_upv_38, v205)
-            if value_27:IsA("TextLabel") then
-                v203 = value_27:FindFirstChildWhichIsA("UIStroke")
-            else
-                v203 = nil
-            end
-            if v203 then
-                if type(v203:GetAttribute("Authored")) ~= "number" then
-                    v203:SetAttribute("Authored", v203.Transparency)
-                end
-                v204 = v203
-            else
-                v204 = nil
-            end
-            if v204 then
-                local v206 = TweenService_upv_1:Create(v204, u29, {Transparency = 1})
-                v206:Play()
-                table.insert(tbl_upv_38, v206)
-            end
-        end
-        local v207 = TweenService_upv_1:Create(tbl_upv_11.contScale, u29, {Scale = 0})
-        v207:Play()
-        table.insert(tbl_upv_38, v207)
-        local v208 = TweenService_upv_1:Create(tbl_upv_11.cardScale, u29, {Scale = 0})
-        v208:Play()
-        table.insert(tbl_upv_38, v208)
-        local v209 = TweenService_upv_1:Create(tbl_upv_11.skip, u29, {BackgroundTransparency = 1})
-        v209:Play()
-        table.insert(tbl_upv_38, v209)
-        for _, value_28 in tbl_upv_11.tiles do
-            local v210 = TweenService_upv_1:Create(value_28.scale, u29, {Scale = 0})
-            v210:Play()
-            table.insert(tbl_upv_38, v210)
-        end
-    end
-    local function u27(a88, a89)
-        --[[
-          name: finish
-          line: 2150
-          upvalues:
-            u9 (ref,  index: 1)
-            u10 (ref,  index: 2)
-            tbl_upv_22 (copy, index: 3)
-            tbl_upv_14 (copy, index: 4)
-            u27 (ref,  index: 5)
-            hideAll (copy, index: 6)
-            u19 (ref,  index: 7)
-            u20 (ref,  index: 8)
-            u21 (ref,  index: 9)
-            u7 (ref,  index: 10)
-            fadeOut (copy, index: 11)
-            gradeOut (copy, index: 12)
-            setPlaying (copy, index: 13)
-            tbl_upv_7 (copy, index: 14)
-        ]]
-        if not u9 then
-            return
-        end
-        local v211 = u9
-        u9 = nil
-        u10 = u10 + 1
-        local u30 = u10
-        tbl_upv_22.on = false
-        table.clear(tbl_upv_14)
-        if u27 then
-            u27()
-            u27 = nil
-        end
-        local function tail_1()
-            --[[
-              name: tail
-              line: 2164
-              upvalues:
-                u30 (copy, index: 1)
-                u10 (ref,  index: 2)
-                hideAll (copy, index: 3)
-                u19 (ref,  index: 4)
-                u20 (ref,  index: 5)
-                u21 (ref,  index: 6)
-                u7 (ref,  index: 7)
-            ]]
-            if u30 ~= u10 then
-                return
-            end
-            hideAll()
-            if u19 then
-                u19:Destroy()
-                u19 = nil
-            end
-            if u20 then
-                u20:Destroy()
-                u20 = nil
-            end
-            if u21 then
-                u21:Disconnect()
-                u21 = nil
-            end
-            u7 = 1
-        end
-        if a89 then
-            if u30 == u10 then
-                hideAll()
-                if u19 then
-                    u19:Destroy()
-                    u19 = nil
-                end
-                if u20 then
-                    u20:Destroy()
-                    u20 = nil
-                end
-                if u21 then
-                    u21:Disconnect()
-                    u21 = nil
-                end
-                u7 = 1
-            end
-        else
-            fadeOut(0.28)
-            gradeOut(0.3)
-            task.delay(
-                0.3,
-                function()
-                    --[[
-                      line: 2181
-                      upvalues:
-                        u30 (copy, index: 1)
-                        u10 (ref,  index: 2)
-                        hideAll (copy, index: 3)
-                        u19 (ref,  index: 4)
-                        u20 (ref,  index: 5)
-                        u21 (ref,  index: 6)
-                        u7 (ref,  index: 7)
-                    ]]
-                    if u30 ~= u10 or u30 ~= u10 then
-                        return
-                    end
-                    hideAll()
-                    if u19 then
-                        u19:Destroy()
-                        u19 = nil
-                    end
-                    if u20 then
-                        u20:Destroy()
-                        u20 = nil
-                    end
-                    if u21 then
-                        u21:Disconnect()
-                        u21 = nil
-                    end
-                    u7 = 1
-                end
-            )
-        end
-        setPlaying(false)
-        if v211.opts.onDone then
-            task.spawn(v211.opts.onDone, a88, v211.reveal.raw)
-        end
-        if a88 ~= "interrupted" and v211.reveal.id ~= "" and not (v211.summaryOnly) then
-            tbl_upv_7._Seen(v211.reveal.id)
-        end
-        tbl_upv_7._Pump()
-    end
-    function tbl_upv_7.Skip()
-        --[[
-          name: Skip
-          line: 2197
-          upvalues:
-            u9 (ref,  index: 1)
-            a1 (copy, index: 2)
-        ]]
-        if not u9 or u9.phase == "summary" or (u9.skip) then
-            return
-        end
-        u9.skip = true
-        a1.Sounds.Play("Click")
-    end
-    local function tap()
-        --[[
-          name: tap
-          line: 2203
-          upvalues:
-            u9 (ref,  index: 1)
-            u7 (ref,  index: 2)
-            finishGroup (copy, index: 3)
-            tbl_upv_14 (copy, index: 4)
-            tbl_upv_13 (copy, index: 5)
-        ]]
-        if not u9 then
-            return
-        end
-        if u9.phase == "land" then
-            u9.tapped = true
-        elseif u9.phase == "summary" then
-            local v212 = os.clock() - (u9.summaryAt or 0)
-            if not (u7 * 0.35 < v212) then
-                return
-            end
-            u9.tapped = true
-        elseif u9.phase == "card" and not u9.hurry and u9.group then
-            u9.hurry = true
-            finishGroup()
-            for key_8, value_29 in tbl_upv_14 do
-                local v213 = value_29[#value_29]
-                if v213 then
-                    tbl_upv_13[key_8] = v213.to
-                end
-            end
-            table.clear(tbl_upv_14)
-        else
-            u9.tapped = true
-        end
-    end
-    tbl_upv_7.Tap = tap
+
     local function chestToCards()
         --[[
           name: chestToCards
           line: 1428
           upvalues:
             tw (copy, index: 1)
-            tbl_upv_11 (copy, index: 2)
-            tbl_upv_3 (copy, index: 3)
+            v101 (copy, index: 2)
+            v13 (copy, index: 3)
             project (copy, index: 4)
         ]]
-        tw(tbl_upv_11.chestHolder, tbl_upv_3.toCards, {Position = UDim2.fromOffset(0, 290)})
-        tw(tbl_upv_11.chestScale, tbl_upv_3.toCards, {Scale = 0.46})
-        local v214 = project(Vector3.new(0, 0, 0))
-        local v215 = Vector2.new(tbl_upv_11.chestHolder.Position.X.Offset + (v214.X * 0.46), 290 + (v214.Y * 0.46))
-        tw(tbl_upv_11.shadow, tbl_upv_3.toCards, {Position = UDim2.fromOffset(v215.X, v215.Y + 3), Size = UDim2.fromOffset(250, 50)})
-        tw(tbl_upv_11.raysHolder, tbl_upv_3.toCards + 0.1, {Position = UDim2.fromOffset(0, -64)})
-        tw(tbl_upv_11.halo, tbl_upv_3.toCards, {ImageTransparency = 0.6}, Enum.EasingStyle.Quad)
+        tw(v101.chestHolder, v13.toCards, {Position = UDim2.fromOffset(0, 290)})
+        tw(v101.chestScale, v13.toCards, {Scale = 0.46})
+        local vector2 = project(Vector3.new(0, 0, 0))
+        local position = v101.chestHolder.Position
+        local vector22 = Vector2.new(position.X.Offset + (vector2.X * 0.46), 290 + (vector2.Y * 0.46))
+        tw(v101.shadow, v13.toCards, {Position = UDim2.fromOffset(vector22.X, vector22.Y + 3), Size = UDim2.fromOffset(250, 50)})
+        tw(v101.raysHolder, v13.toCards + 0.1, {Position = UDim2.fromOffset(0, -64)})
+        tw(v101.halo, v13.toCards, {ImageTransparency = 0.6}, Enum.EasingStyle.Quad)
     end
-    local function paletteOf(a90)
+
+    local function paintBar(stack, a469, barNeed, a471, startValue, a473)
         --[[
-          name: paletteOf
-          line: 1209
+          name: paintBar
+          line: 1437
           upvalues:
-            tbl_upv_11 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
+            v101 (copy, index: 1)
+            v102 (ref,  index: 2)
+            colors (copy, index: 3)
+            a17 (copy, index: 4)
+            weaponInfo (copy, index: 5)
         ]]
-        tbl_upv_11.backGrad.Color = ColorSequence.new(a90.primary:Lerp(Colors_upv_1.Void, 0.25), a90.deep)
-        tbl_upv_11.backStroke.Color = a90.light
-        tbl_upv_11.backArt.ImageColor3 = a90.light
-        tbl_upv_11.counterStroke.Color = a90.primary
-        tbl_upv_11.promptStroke.Color = a90.primary
-        tbl_upv_11.promptFill.BackgroundColor3 = a90.primary
-        tbl_upv_11.cont.BackgroundColor3 = a90.primary
-        tbl_upv_11.contGrad.Color = ColorSequence.new(a90.primary:Lerp(Color3.new(1, 1, 1), 0.08), a90.primary:Lerp(Colors_upv_1.Void, 0.35))
-        tbl_upv_11.flash.BackgroundColor3 = a90.primary
-        tbl_upv_11.tint.ImageColor3 = a90.primary
-        tbl_upv_11.halo.ImageColor3 = a90.primary
-        tbl_upv_11.raysA.ImageColor3 = a90.light:Lerp(a90.primary, 0.35)
-        tbl_upv_11.raysB.ImageColor3 = a90.primary
-        tbl_upv_11.chestGlow.ImageColor3 = a90.primary
-        tbl_upv_11.leak.ImageColor3 = a90.light
-        tbl_upv_11.leakFlare.ImageColor3 = a90.light
-        tbl_upv_11.beam.ImageColor3 = a90.light
-        tbl_upv_11.floorRing.ImageColor3 = a90.light
-        tbl_upv_11.titleGrad.Color = ColorSequence.new(a90.light:Lerp(Color3.new(1, 1, 1), 0.3), a90.primary)
+        if barNeed then
+            v101.barText.Text = string.format("%d / %d", a469, barNeed)
+        else
+            v101.barText.Text = "MAX"
+        end
+
+        if v102 then
+            v102.barNeed = barNeed
+            v102.barMin = a469
+            v102.barMax = math.max(a469, (a473 or a469))
+            v102.barShown = a469
+        end
+
+        v101.barGrad.Color = ColorSequence.new(startValue:Lerp(Color3.new(1, 1, 1), 0.18), startValue:Lerp(colors.Void, 0.18))
+
+        if a471 <= 0 then
+            a17.Loc.Rich(v101.barCaption, string.format("<font color=\"#%s\">UNLOCK</font>  %s", colors.Gold:ToHex(), string.upper(weaponInfo.Name(stack.item))))
+            return
+        end
+
+        if barNeed then
+            a17.Loc.Rich(v101.barCaption, string.format("LEVEL %d  <font color=\"#%s\">›</font>  %d", a471, startValue:Lerp(Color3.new(1, 1, 1), 0.3):ToHex(), a471 + 1))
+            return
+        end
+
+        a17.Loc.Rich(v101.barCaption, string.format("LEVEL %d  ·  MAX", a471))
     end
-    function tbl_upv_7.Play(a91, a92)
+
+    local function setBar(a475, a476: boolean, a477: nil)
+        --[[
+          name: setBar
+          line: 1458
+          upvalues:
+            v101 (copy, index: 1)
+            tw (copy, index: 2)
+            v13 (copy, index: 3)
+        ]]
+        local clampedValue = math.clamp(a475, 0, 1)
+
+        if a476 then
+            v101.barFill.Size = UDim2.fromScale(clampedValue, 1)
+            v101.barHead.Position = UDim2.fromOffset(clampedValue * 330, 43)
+
+            return
+        end
+
+        tw(v101.barFill, (a477 or v13.bar), {Size = UDim2.fromScale(clampedValue, 1)}, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+        tw(v101.barHead, (a477 or v13.bar), {Position = UDim2.fromOffset(clampedValue * 330, 43)}, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+    end
+
+    local function paintFace(stack)
+        --[[
+          name: paintFace
+          line: 1470
+          upvalues:
+            catColor (copy, index: 1)
+            v101 (copy, index: 2)
+            colors (copy, index: 3)
+            weaponInfo (copy, index: 4)
+        ]]
+        local text
+        local startValue = catColor(stack.item)
+        v101.faceGrad.Color = ColorSequence.new(startValue:Lerp(Color3.new(1, 1, 1), 0.1), startValue:Lerp(colors.Void, 0.55))
+        v101.faceStroke.Color = startValue:Lerp(Color3.new(1, 1, 1), 0.45)
+        v101.wellGlow.ImageColor3 = startValue
+        local cat = v101.cat
+
+        if stack.bonus then
+            local item = stack.item
+            local v485 = weaponInfo.Get(item)
+            local v486 = v485 and weaponInfo.CATEGORY_SINGULAR and weaponInfo.CATEGORY_SINGULAR[v485.category]
+                or "ITEM"
+            text = v486 .. "  ·  MVP BONUS"
+        else
+            local item = stack.item
+            local v488 = weaponInfo.Get(item)
+            text = v488 and weaponInfo.CATEGORY_SINGULAR and weaponInfo.CATEGORY_SINGULAR[v488.category]
+                or "ITEM"
+        end
+
+        cat.Text = text
+        v101.name.Text = string.upper(weaponInfo.Name(stack.item))
+        v101.countText.Text = "x0"
+        v101.gem.ImageColor3 = startValue:Lerp(Color3.new(1, 1, 1), 0.25)
+        v101.cardGlow.ImageColor3 = startValue
+
+        if not (stack.levelBefore <= 0) then
+            v101.tag.Visible = true
+            v101.tag.BackgroundColor3 = colors.Raised
+            v101.tagText.Text = "LV " .. stack.levelBefore
+            v101.tagText.TextColor3 = colors.Text
+        else
+            v101.tag.Visible = true
+            v101.tag.BackgroundColor3 = colors.Raised
+            v101.tagText.Text = "LOCKED"
+            v101.tagText.TextColor3 = colors.TextDim
+        end
+
+        v101.stamp.Visible = false
+    end
+
+    local function phaseNewItem(token: number, stack)
+        --[[
+          name: phaseNewItem
+          line: 1496
+          upvalues:
+            v102 (ref,  index: 1)
+            catColor (copy, index: 2)
+            v101 (copy, index: 3)
+            tw (copy, index: 4)
+            v134 (copy, index: 5)
+            animate (copy, index: 6)
+            ui2 (ref,  index: 7)
+            weaponIcon (copy, index: 8)
+            colors (copy, index: 9)
+            weaponInfo (copy, index: 10)
+            a17 (copy, index: 11)
+            pace (ref,  index: 12)
+            sleep (copy, index: 13)
+            v317 (ref,  index: 14)
+            v318 (ref,  index: 15)
+            v319 (ref,  index: 16)
+            v13 (copy, index: 17)
+        ]]
+        local transparency, v493
+        local transparency2, v495
+        v102.phase = "newitem"
+        local startValue = catColor(stack.item)
+        local interpolatedValue = startValue:Lerp(Color3.new(1, 1, 1), 0.4)
+        v101.newRoot.Visible = true
+        v101.newRoot.Position = UDim2.fromOffset(0, 0)
+        local card = v101.card
+        local barBox = v101.barBox
+        local counter = v101.counter
+        card.Visible = false
+        barBox.Visible = false
+        counter.Visible = false
+        v101.newDim.BackgroundTransparency = 1
+        tw(v101.newDim, 0.25, {BackgroundTransparency = 0.18}, Enum.EasingStyle.Quad)
+        v101.newRaysA.ImageColor3 = interpolatedValue
+        v101.newRaysB.ImageColor3 = startValue
+        local newRaysA = v101.newRaysA
+        local newRaysB = v101.newRaysB
+        newRaysA.ImageTransparency = 0.25
+        newRaysB.ImageTransparency = 0.35
+        v101.newRaysA.Size = UDim2.fromOffset(300, 300)
+        v101.newRaysB.Size = UDim2.fromOffset(300, 300)
+        tw(v101.newRaysA, 0.6, {ImageTransparency = 0.5, Size = UDim2.fromOffset(1300, 1300)}, Enum.EasingStyle.Back)
+        tw(v101.newRaysB, 0.7, {ImageTransparency = 0.62, Size = UDim2.fromOffset(1500, 1500)}, Enum.EasingStyle.Back)
+        v134.raysSpin = 70
+        animate("raysSpin", {{10, 1.6, "outQuad"}})
+        v101.newGlow.ImageColor3 = startValue
+        v101.newGlow.ImageTransparency = 0.4
+        v101.newGlow.Size = UDim2.fromOffset(300, 300)
+        tw(v101.newGlow, 0.7, {ImageTransparency = 0.55, Size = UDim2.fromOffset(820, 820)}, Enum.EasingStyle.Quart)
+        v101.newRing.ImageColor3 = startValue
+        v101.newRing.Size = UDim2.fromOffset(200, 200)
+        v101.newRing.ImageTransparency = 0.3
+        tw(v101.newRing, 0.7, {ImageTransparency = 1, Size = UDim2.fromOffset(1700, 1700)}, Enum.EasingStyle.Quart)
+        v101.flash.BackgroundColor3 = startValue
+        v101.flash.BackgroundTransparency = 0.7
+        tw(v101.flash, 0.5, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
+
+        if ui2 then
+            local ui = ui2
+            ui.Saturation = 0.5
+            tw(ui, 0.6, {Saturation = 0.16}, Enum.EasingStyle.Quad)
+        end
+
+        weaponIcon.Set(v101.newItem, stack.item, {spin = true, outline = true, glow = false, outlineScale = 1.04, outlineTransparency = 0.4, outlineColor = interpolatedValue})
+        v101.newItemScale.Scale = 0.2
+        tw(v101.newItemScale, 0.55, {Scale = 1}, Enum.EasingStyle.Back)
+
+        for _, v505 in {v101.newHead, v101.newShadow, v101.newAura} do
+            v505.Text = "NEW ITEM!"
+            v505.TextTransparency = 1
+            v505.Position = UDim2.fromOffset(0, -300)
+        end
+
+        v101.newShadow.Position = UDim2.fromOffset(0, -293)
+        v101.newHeadGrad.Color = ColorSequence.new(colors.Text, interpolatedValue)
+        v101.newAura.TextColor3 = interpolatedValue
+        v101.newHeadScale.Scale = 2.2
+        v101.newShadowScale.Scale = 2.2
+        tw(v101.newHeadScale, 0.26, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 0.08)
+        tw(v101.newShadowScale, 0.26, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 0.08)
+        tw(v101.newHead, 0.1, {TextTransparency = 0}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.08)
+        tw(v101.newShadow, 0.2, {TextTransparency = 0.5}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, 0.08)
+        v101.newName.Text = string.upper(weaponInfo.Name(stack.item))
+        v101.newName.Position = UDim2.fromOffset(0, 230)
+        local newName = v101.newName
+        newName.TextTransparency = 1
+
+        if const v507 = if newName:IsA("TextLabel") then newName:FindFirstChildWhichIsA("UIStroke") else nil then
+            if type((v507:GetAttribute("Authored"))) ~= "number" then
+                v507:SetAttribute("Authored", v507.Transparency)
+            end
+
+            transparency = 1
+            v493 = v507
+        else
+            transparency = 1
+            v493 = nil
+        end
+
+        if v493 then
+            v493.Transparency = transparency
+        end
+
+        tw(v101.newName, 0.35, {TextTransparency = 0, Position = UDim2.fromOffset(0, 210)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0.3)
+        local newSub = v101.newSub
+        local stringFormat = string.format
+        local item = stack.item
+        local v511 = weaponInfo.Get(item)
+        local v512 = v511 and weaponInfo.CATEGORY_SINGULAR and weaponInfo.CATEGORY_SINGULAR[v511.category]
+            or "ITEM"
+        newSub.Text = stringFormat("%s  ·  UNLOCKED  ·  EQUIP IT IN YOUR LOADOUT", v512)
+        v101.newSub.Position = UDim2.fromOffset(0, 272)
+        local newSub2 = v101.newSub
+        newSub2.TextTransparency = 1
+
+        if const v514 = if newSub2:IsA("TextLabel") then newSub2:FindFirstChildWhichIsA("UIStroke") else nil then
+            if type((v514:GetAttribute("Authored"))) ~= "number" then
+                v514:SetAttribute("Authored", v514.Transparency)
+            end
+
+            transparency2 = 1
+            v495 = v514
+        else
+            transparency2 = 1
+            v495 = nil
+        end
+
+        if v495 then
+            v495.Transparency = transparency2
+        end
+
+        tw(v101.newSub, 0.35, {TextTransparency = 0, Position = UDim2.fromOffset(0, 256)}, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0.42)
+        a17.Sounds.Play("NewItem_Fanfare")
+
+        for _, instance in {v101.title, v101.titleShadow, v101.subtitle} do
+            tw(instance, 0.15, {TextTransparency = 1}, Enum.EasingStyle.Quad)
+        end
+
+        task.delay(
+            pace * 0.16,
+            function()
+                --[[
+                  line: 1560
+                  upvalues:
+                    token (copy, index: 1)
+                    v102 (ref,  index: 2)
+                    v101 (copy, index: 3)
+                ]]
+                local v517 = v102 ~= nil and v102.token == token
+
+                if v517 and v102.phase == "newitem" then
+                    local title = v101.title
+                    local titleShadow = v101.titleShadow
+                    local subtitle = v101.subtitle
+                    title.Visible = false
+                    titleShadow.Visible = false
+                    subtitle.Visible = false
+                end
+            end
+        )
+
+        if not sleep(token, 0.3, false) then
+            return false
+        end
+
+        v317 = 18
+        v318 = 0
+        v319 = 0.35
+        v101.newHeadScale.Scale = 1.08
+        tw(v101.newHeadScale, 0.22, {Scale = 1}, Enum.EasingStyle.Back)
+        v101.newAura.TextTransparency = 0.3
+        v101.newAuraScale.Scale = 1.02
+        tw(v101.newAuraScale, 0.6, {Scale = 1.35}, Enum.EasingStyle.Quart)
+        tw(v101.newAura, 0.6, {TextTransparency = 1}, Enum.EasingStyle.Quad)
+        v101.newFlare.ImageColor3 = interpolatedValue
+        v101.newFlare.ImageTransparency = 0.2
+        v101.newFlare.Size = UDim2.fromOffset(300, 120)
+        tw(v101.newFlare, 0.5, {ImageTransparency = 1, Size = UDim2.fromOffset(1600, 150)}, Enum.EasingStyle.Quart)
+        v101.frontPool:Burst(40, {mode = "box", speed = 1300, sparkChance = 0.6, whiteChance = 0.3, box = Vector2.new(560, 90), at = Vector2.new(0, -300), colors = {startValue, interpolatedValue}, white = interpolatedValue})
+        local frontPool = v101.frontPool
+        local v522 = {mode = "point", jitter = 90, speedMin = 500, speedMax = 1300, sparkChance = 0.55, sparkLen = 150, size = 26, grav = 500, drag = 1.6, lifeMin = 0.6, lifeMax = 1.2, whiteChance = 0, at = Vector2.new(0, -40), colors = {startValue, interpolatedValue, colors.Gold}}
+        frontPool:Burst(36, v522)
+        local frontPool2 = v101.frontPool
+        local v524 = {mode = "point", jitter = 160, speedMin = 60, speedMax = 260, kind = "sparkle", size = 36, grav = -60, drag = 0.8, lifeMin = 1, lifeMax = 1.8, whiteChance = 0, at = Vector2.new(0, -40), colors = {interpolatedValue, colors.Gold}}
+        frontPool2:Burst(20, v524)
+
+        if not sleep(token, 0.5, false) then
+            return false
+        end
+
+        v102.tapped = false
+        sleep(token, v13.newItem - 0.8, true)
+        local v525 = v102 ~= nil and v102.token == token
+
+        if not v525 or v102.skip then
+            return false
+        end
+
+        tw(v101.newItemScale, 0.25, {Scale = 0}, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
+
+        for _, instance in {v101.newHead, v101.newShadow, v101.newName, v101.newSub} do
+            tw(instance, 0.2, {TextTransparency = 1}, Enum.EasingStyle.Quad)
+        end
+
+        tw(v101.newRaysA, 0.3, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
+        tw(v101.newRaysB, 0.3, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
+        tw(v101.newGlow, 0.3, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
+        tw(v101.newDim, 0.3, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
+        local title = v101.title
+        local titleShadow = v101.titleShadow
+        local subtitle = v101.subtitle
+        title.Visible = true
+        titleShadow.Visible = true
+        subtitle.Visible = true
+        tw(v101.title, 0.25, {TextTransparency = 0}, Enum.EasingStyle.Quad)
+        tw(v101.titleShadow, 0.25, {TextTransparency = 0.55}, Enum.EasingStyle.Quad)
+        tw(v101.subtitle, 0.25, {TextTransparency = 0}, Enum.EasingStyle.Quad)
+        sleep(token, 0.22, false)
+        v101.newRoot.Visible = false
+        weaponIcon.Set(v101.newItem, nil)
+        local card2 = v101.card
+        local barBox2 = v101.barBox
+        card2.Visible = true
+        barBox2.Visible = true
+        local v533 = #v102.reveal.stacks - (v102.cardIndex or 0)
+        local counter2 = v101.counter
+        local visible = 0 < v533
+        counter2.Visible = visible
+        v101.counterText.Text = "x" .. v533
+        v134.raysSpin = 8
+        local v536 = v102 ~= nil and v102.token == token
+
+        return v536 and not v102.skip
+    end
+
+    local function phaseCard(token: number, cardIndex, stack)
+        --[[
+          name: phaseCard
+          line: 1615
+          upvalues:
+            v102 (ref,  index: 1)
+            catColor (copy, index: 2)
+            paintFace (copy, index: 3)
+            cframe (ref,  index: 4)
+            project (copy, index: 5)
+            v101 (copy, index: 6)
+            weaponIcon (copy, index: 7)
+            a17 (copy, index: 8)
+            random (copy, index: 9)
+            ui (copy, index: 10)
+            animate (copy, index: 11)
+            tw (copy, index: 12)
+            v13 (copy, index: 13)
+            sleep (copy, index: 14)
+            paintBar (copy, index: 15)
+            v14 (copy, index: 16)
+            pace (ref,  index: 17)
+            setBar (copy, index: 18)
+            finishGroup (copy, index: 19)
+            colors (copy, index: 20)
+            phaseNewItem (copy, index: 21)
+            v317 (ref,  index: 22)
+            v318 (ref,  index: 23)
+            v319 (ref,  index: 24)
+            theme (copy, index: 25)
+        ]]
+        local v541
+        local rotation
+        local v543
+        local v544
+        local v545
+        local v546
+        local look = v102.look
+        v102.phase = "card"
+        v102.cardIndex = cardIndex
+        v102.hurry = false
+        v102.tapped = false
+        v102.group = {}
+        local startValue = catColor(stack.item)
+        paintFace(stack)
+        local vector2 = project((Vector3.new(0, cframe.Position.Y + 0.2, 0)))
+        local position = v101.chestHolder.Position
+        local at = Vector2.new(position.X.Offset + (vector2.X * 0.46), 290 + (vector2.Y * 0.46))
+
+        if not (4 <= #v102.reveal.stacks) then
+            v541 = 1
+        else
+            v541 = 0.82
+        end
+
+        local card = v101.card
+        card.Visible = true
+        v101.back.Visible = true
+        v101.face.Visible = false
+        card.Size = UDim2.fromOffset(232, 322)
+        card.Position = UDim2.fromOffset(at.X, at.Y)
+
+        if cardIndex % 2 ~= 0 then
+            rotation = 200
+        else
+            rotation = -200
+        end
+
+        card.Rotation = rotation
+        v101.cardScale.Scale = 0.22799999999999998
+        v101.cardGlow.ImageTransparency = 1
+        v101.sheen.BackgroundTransparency = 1
+        weaponIcon.Set(v101.icon, nil)
+        a17.Sounds.Play("Card_Whoosh", {pitch = 0.95 + (random:NextNumber() * 0.1)})
+        local v553 = #v102.reveal.stacks - cardIndex
+        v101.counter.Visible = 0 < v553
+        v101.counterText.Text = "x" .. v553
+        ui.Pop(v101.counter, 1.35)
+        animate("sq", {{0.1, 0.06, "outQuad"}, {0, 0.16, "outQuad"}})
+        v101.chestGlow.ImageTransparency = 0.3
+        tw(v101.chestGlow, 0.5, {ImageTransparency = 0.6}, Enum.EasingStyle.Quad)
+        v101.backPool:Burst(8, {mode = "point", jitter = 30, dir = -90, spread = 40, speedMin = 250, speedMax = 600, kind = "sparkle", size = 26, grav = 700, drag = 1.3, lifeMin = 0.4, lifeMax = 0.8, whiteChance = 0, at = at, colors = {look.light, look.primary}})
+        tw(card, v13.cardFly * v541, {Position = UDim2.fromOffset(0, -64)}, Enum.EasingStyle.Quint)
+        tw(card, v13.cardFly * v541, {Rotation = 0}, Enum.EasingStyle.Quart)
+        tw(v101.cardScale, v13.cardFly * v541, {Scale = 1.14}, Enum.EasingStyle.Back)
+        v101.barBox.Visible = false
+
+        if not sleep(token, v13.cardFly * v541, true) then
+            return false
+        end
+
+        a17.Sounds.Play("Card_Flip")
+        tw(card, v13.flip / 2, {Size = UDim2.fromOffset(0, 322)}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+        tw(v101.cardScale, v13.flip / 2, {Scale = 1.254}, Enum.EasingStyle.Quad)
+
+        if not sleep(token, v13.flip / 2, true) then
+            return false
+        end
+
+        v101.back.Visible = false
+        v101.face.Visible = true
+        local well = v101.well
+        local name = v101.name
+        local count = v101.count
+        well.Visible = false
+        name.Visible = false
+        count.Visible = false
+        tw(card, v13.flip / 2, {Size = UDim2.fromOffset(232, 322)}, Enum.EasingStyle.Quad)
+        tw(v101.cardScale, 0.3, {Scale = 1.14}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, v13.flip / 2)
+        v101.icon.Visible = false
+        weaponIcon.Set(v101.icon, stack.item, {spin = true, outline = true, glow = false, outlineScale = 1.04, outlineTransparency = 0.45, outlineColor = startValue:Lerp(Color3.new(1, 1, 1), 0.5)})
+
+        if not sleep(token, v13.flip / 2, true) then
+            return false
+        end
+
+        local well2 = v101.well
+        local name2 = v101.name
+        local count2 = v101.count
+        well2.Visible = true
+        name2.Visible = true
+        count2.Visible = true
+        v101.icon.Visible = true
+        v101.iconScale.Scale = 0.6
+        tw(v101.iconScale, 0.3, {Scale = 1}, Enum.EasingStyle.Back)
+        a17.Sounds.Play("Card_Reveal", {pitch = (math.min(cardIndex - 1, 4) * 0.04) + 1})
+        v101.sheen.BackgroundTransparency = 0.55
+        v101.sheenGrad.Offset = Vector2.new(-1, 0)
+        tw(v101.sheenGrad, 0.45, {Offset = Vector2.new(1, 0)}, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+        v101.cardGlow.ImageTransparency = 0.35
+        tw(v101.cardGlow, 0.8, {ImageTransparency = 0.62}, Enum.EasingStyle.Quad)
+        v101.frontPool:Burst(14, {mode = "point", jitter = 130, speedMin = 250, speedMax = 700, sparkChance = 0.5, sparkLen = 110, size = 20, grav = 400, drag = 2, lifeMin = 0.4, lifeMax = 0.8, whiteChance = 0, at = Vector2.new(0, -64), colors = {startValue, startValue:Lerp(Color3.new(1, 1, 1), 0.4)}})
+        local levelBefore = stack.levelBefore
+        local need = stack.need
+        local before = stack.before
+        local total = stack.total
+        v543 = if const need2 = need then need2 else stack.total
+        paintBar(stack, before, need, levelBefore, startValue, (math.min(total, v543)))
+
+        if need then
+            v544 = stack.before / need
+            v544 = ui
+        else
+            v544 = 1
+            v544 = ui
+        end
+
+        local clampedValue = math.clamp(v544, 0, 1)
+        v101.barFill.Size = UDim2.fromScale(clampedValue, 1)
+        v101.barHead.Position = UDim2.fromOffset(clampedValue * v14.barW, 43)
+        v101.barBox.Visible = true
+        v101.barBox.Position = UDim2.fromOffset(0, 128)
+        v544.FadeIn(v101.barBox, TweenInfo.new(pace * 0.18))
+        local shards = stack.shards
+
+        task.spawn(
+            function()
+                --[[
+                  line: 1693
+                  upvalues:
+                    shards (copy, index: 1)
+                    v13 (copy, index: 2)
+                    token (copy, index: 3)
+                    v102 (ref,  index: 4)
+                    v101 (copy, index: 5)
+                    a17 (copy, index: 6)
+                    pace (ref,  index: 7)
+                    tw (copy, index: 8)
+                ]]
+                local v567 = math.min(shards, 12)
+                local v568 = v13.count / math.max(v567, 1)
+
+                for index = 1, v567 do
+                    local v570 = v102 ~= nil and v102.token == token
+                    if not v570 then
+                        break
+                    end
+                    if v102.hurry then
+                        break
+                    end
+                    if v102.skip then
+                        break
+                    end
+
+                    v101.countText.Text = "x" .. math.floor(((shards * index) / v567) + 0.5)
+                    a17.Sounds.Play("Tick", {volume = 0.8, pitch = (index * 0.045) + 1})
+                    task.wait(v568 * pace)
+                end
+
+                local v571 = v102 ~= nil and v102.token == token
+                if v571 then
+                    v101.countText.Text = "x" .. shards
+                    v101.countScale.Scale = 1.35
+                    tw(v101.countScale, 0.25, {Scale = 1}, Enum.EasingStyle.Back)
+                end
+            end
+        )
+
+        a17.Sounds.Play("XP_Tick", {volume = 0.9})
+
+        if need then
+            v545 = math.min(1, stack.total / need)
+        else
+            v545 = 1
+        end
+
+        v101.barHead.ImageColor3 = startValue:Lerp(Color3.new(1, 1, 1), 0.45)
+        v101.barHead.ImageTransparency = 0.05
+        setBar(v545, false)
+        tw(v101.barHead, v13.bar + 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0.1)
+        local v572 = v102
+        local headOpts = {mode = "point", jitter = 6, dir = -90, spread = 70, speedMin = 60, speedMax = 200, kind = "sparkle", size = 16, grav = 300, drag = 1, lifeMin = 0.3, lifeMax = 0.6, whiteChance = 0}
+        local newVector2 = Vector2.new
+
+        if need then
+            v546 = stack.before / need
+            v546 = sleep
+        else
+            v546 = 0
+            v546 = sleep
+        end
+
+        headOpts.at = newVector2(-165 + (330 * v546), 171)
+        headOpts.colors = {startValue:Lerp(Color3.new(1, 1, 1), 0.4)}
+        v572.headOpts = headOpts
+        local v575 = v101.frontPool:Emit(34, v102.headOpts)
+        local v576 = v546(token, math.max(v13.bar, v13.count) * v541, true)
+        v575()
+
+        if v102 then
+            v102.headOpts = nil
+        end
+
+        if not v576 then
+            return false
+        end
+
+        v101.countText.Text = "x" .. shards
+        finishGroup()
+        v102.group = nil
+        v102.hurry = false
+        v102.tapped = false
+
+        if stack.unlocked then
+            local v577
+            v101.barFlash.BackgroundColor3 = colors.Gold
+            v101.barFlash.BackgroundTransparency = 0.2
+            tw(v101.barFlash, 0.4, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
+
+            if not sleep(token, 0.18, false) then
+                return false
+            end
+            if not phaseNewItem(token, stack) then
+                return false
+            end
+
+            v102.phase = "card"
+            v101.tag.BackgroundColor3 = colors.Gold
+            v101.tagText.Text = "NEW"
+            v101.tagText.TextColor3 = colors.TextDark
+            ui.Pop(v101.tag, 1.6)
+            paintBar(stack, stack.surplus, stack.needAfter, 1, startValue, stack.surplus)
+
+            if stack.needAfter then
+                v577, v577 = stack.surplus / stack.needAfter, v14
+            else
+                v577, v577 = 1, v14
+            end
+
+            local clampedValue2 = math.clamp(v577, 0, 1)
+            v101.barFill.Size = UDim2.fromScale(clampedValue2, 1)
+            v101.barHead.Position = UDim2.fromOffset(clampedValue2 * v577.barW, 43)
+        end
+
+        if stack.ready then
+            v101.stamp.Visible = true
+            v101.stampScale.Scale = 2.4
+            v101.stamp.Rotation = -18
+            tw(v101.stampScale, 0.22, {Scale = 1}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+            tw(v101.stamp, 0.22, {Rotation = -8}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+            a17.Sounds.Play("Upgrade_Ready")
+
+            if not sleep(token, 0.22, false) then
+                return false
+            end
+
+            v317 = 8
+            v318 = 0
+            v319 = 0.2
+            v101.barGrad.Color = ColorSequence.new(theme.Lighten(colors.Success, 0.15), colors.SuccessDark)
+            v101.barFlash.BackgroundColor3 = colors.Success
+            v101.barFlash.BackgroundTransparency = 0.25
+            tw(v101.barFlash, 0.4, {BackgroundTransparency = 1}, Enum.EasingStyle.Quad)
+            v101.frontPool:Burst(16, {mode = "point", jitter = 110, speedMin = 250, speedMax = 650, sparkChance = 0.5, sparkLen = 110, size = 20, grav = 500, drag = 1.8, lifeMin = 0.4, lifeMax = 0.8, whiteChance = 0, at = Vector2.new(0, -67.42), colors = {colors.Success, theme.Lighten(colors.Success, 0.4)}})
+        end
+
+        v102.hurry = false
+        v102.tapped = false
+        local v579 = v13.dwell * v541
+        local v580 = stack.ready and 0.35 or 0
+        sleep(token, v579 + v580, true)
+        local v581 = v102 ~= nil and v102.token == token
+
+        if not v581 or v102.skip then
+            return false
+        end
+
+        if cardIndex ~= #v102.reveal.stacks then
+            local cardOut = v13.cardOut
+            local propertyTable = {}
+            local udim2FromOffset = UDim2.fromOffset
+            local v585 = cardIndex % 2 ~= 0 and -520 or 520
+            propertyTable.Position = udim2FromOffset(v585, -104)
+            propertyTable.Rotation = cardIndex % 2 ~= 0 and -14 or 14
+            tw(card, cardOut, propertyTable, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
+            tw(v101.cardScale, v13.cardOut, {Scale = 0.6839999999999999}, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
+            ui.FadeOut(v101.barBox, TweenInfo.new(v13.cardOut * 0.8 * pace))
+
+            if not sleep(token, v13.cardOut, false) then
+                return false
+            end
+
+            card.Visible = false
+            ui.Unfade(v101.barBox)
+            v101.barBox.Visible = false
+        end
+
+        return true
+    end
+
+    local function tileFor(tileKey: number)
+        --[[
+          name: tileFor
+          line: 1794
+          upvalues:
+            v101 (copy, index: 1)
+            ui (copy, index: 2)
+            colors (copy, index: 3)
+            fonts (copy, index: 4)
+            theme (copy, index: 5)
+        ]]
+        if const tile = v101.tiles[tileKey] then
+            return tile
+        end
+
+        local ui2 = ui.new("Frame", {Name = "Tile" .. tileKey, AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(168, 236), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 12, (ui.Corner(14)), Parent = v101.sumRow})
+        local grad = ui.new("UIGradient", {Rotation = 90, Parent = ui2})
+        local stroke = ui.Stroke(colors.Accent, 2.5, 0.1)
+        stroke.Parent = ui2
+        local scale = ui.new("UIScale", {Parent = ui2})
+        local parent = ui.new("Frame", {Position = UDim2.fromOffset(8, 8), Size = UDim2.new(1, -16, 0, 132), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.45, ZIndex = 13, (ui.Corner(10)), Parent = ui2})
+        local icon = ui.new("Frame", {ZIndex = 14, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(126, 126), Parent = parent})
+        local ui3 = ui.new("TextLabel", {Text = "", TextSize = 17, ZIndex = 14, Position = UDim2.fromOffset(8, 146), Size = UDim2.new(1, -16, 0, 22), FontFace = fonts.Heavy, TextTruncate = Enum.TextTruncate.AtEnd, Parent = ui2})
+        ui.TextStroke(colors.Void, 1.5, 0.45).Parent = ui3
+        local ui4 = ui.new("TextLabel", {Text = "", TextSize = 28, ZIndex = 14, Position = UDim2.fromOffset(8, 168), Size = UDim2.new(1, -16, 0, 30), FontFace = fonts.Display, Parent = ui2})
+        ui.TextStroke(colors.Void, 1.5, 0.4).Parent = ui4
+        local parent2 = ui.new("Frame", {Position = UDim2.fromOffset(12, 206), Size = UDim2.new(1, -24, 0, 12), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.25, ClipsDescendants = true, ZIndex = 14, (ui.Corner(theme.Radius.Pill)), Parent = ui2})
+        local barFill = ui.new("Frame", {Size = UDim2.fromScale(0, 1), BackgroundColor3 = colors.Accent, ZIndex = 15, (ui.Corner(theme.Radius.Pill)), Parent = parent2})
+        local ui5 = ui.new("Frame", {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 8), Size = UDim2.fromOffset(120, 28), BackgroundColor3 = colors.Gold, ZIndex = 16, (ui.Corner(theme.Radius.Pill)), Parent = ui2})
+        local v600 = {frame = ui2, grad = grad, stroke = stroke, scale = scale, icon = icon, name = ui3, count = ui4, barFill = barFill, tag = ui5, tagText = ui.new("TextLabel", {Text = "NEW", TextSize = 16, ZIndex = 17, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, TextColor3 = colors.TextDark, Parent = ui5})}
+        v101.tiles[tileKey] = v600
+
+        return v600
+    end
+
+    local function phaseSummary(token: number)
+        --[[
+          name: phaseSummary
+          line: 1818
+          upvalues:
+            v102 (ref,  index: 1)
+            v323 (copy, index: 2)
+            v101 (copy, index: 3)
+            weaponIcon (copy, index: 4)
+            tw (copy, index: 5)
+            titleIn (copy, index: 6)
+            v134 (copy, index: 7)
+            tileFor (copy, index: 8)
+            catColor (copy, index: 9)
+            colors (copy, index: 10)
+            weaponInfo (copy, index: 11)
+            theme (copy, index: 12)
+            a17 (copy, index: 13)
+            v13 (copy, index: 14)
+            sleep (copy, index: 15)
+        ]]
+        local parts
+        local transparency, v605
+        local reveal = v102.reveal
+        local look = v102.look
+        v102.phase = "summary"
+        v102.skip = false
+        v102.hurry = false
+        v102.tapped = false
+        v323.on = false
+
+        if v102.stopSparkles then
+            v102.stopSparkles()
+            v102.stopSparkles = nil
+        end
+
+        v101.card.Visible = false
+        v101.barBox.Visible = false
+        v101.newRoot.Visible = false
+        weaponIcon.Set(v101.newItem, nil)
+        weaponIcon.Set(v101.icon, nil)
+        v101.prompt.Visible = false
+        v101.counter.Visible = false
+        v101.skip.Visible = false
+        v101.leak.ImageTransparency = 1
+        v101.leakFlare.ImageTransparency = 1
+        v101.beam.ImageTransparency = 1
+
+        if not v102.summaryOnly then
+            tw(v101.chestHolder, 0.3, {Position = UDim2.fromOffset(0, 350)}, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
+            tw(v101.vpf, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
+            tw(v101.chestGlow, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
+            tw(v101.shadow, 0.25, {ImageTransparency = 1}, Enum.EasingStyle.Quad)
+        end
+
+        if 0.5 < v101.title.TextTransparency then
+            titleIn(look.title, v102.subtitle)
+        end
+
+        tw(v101.dim, 0.3, {BackgroundTransparency = 0.12}, Enum.EasingStyle.Quad)
+        v101.raysHolder.Position = UDim2.fromOffset(0, -40)
+        v101.raysScale.Scale = 1
+        tw(v101.raysA, 0.4, {ImageTransparency = math.min(0.9, look.rays + 0.1)}, Enum.EasingStyle.Quad)
+        tw(v101.raysB, 0.4, {ImageTransparency = math.min(0.94, look.rays + 0.2)}, Enum.EasingStyle.Quad)
+        tw(v101.halo, 0.4, {ImageTransparency = 0.62, Size = UDim2.fromOffset(900, 700)}, Enum.EasingStyle.Quad)
+        v134.raysSpin = 6
+        local stackCount = #reveal.stacks
+        local scale = math.min(1.14, 1040 / math.max(1, (stackCount * 186) - 18))
+
+        for v610 = 1, math.max(stackCount, #v101.tiles) do
+            if const stack = reveal.stacks[v610] then
+                local levelBefore, v613, v614
+                local v615 = tileFor(v610)
+                local v616 = catColor(stack.item)
+                v615.frame.Visible = true
+                v615.grad.Color = ColorSequence.new(v616:Lerp(colors.Void, 0.2), v616:Lerp(colors.Void, 0.7))
+                v615.stroke.Color = v616:Lerp(Color3.new(1, 1, 1), 0.4)
+                v615.name.Text = string.upper(weaponInfo.Name(stack.item))
+                v615.count.Text = "x" .. stack.shards
+                local levelBefore2 = stack.levelBefore
+                local total = stack.total
+                local need = stack.need
+
+                if stack.unlocked then
+                    levelBefore = 1
+                    v613 = stack.surplus
+                    v614 = stack.needAfter
+                else
+                    v614, v613, levelBefore = need, total, levelBefore2
+                end
+
+                local barFill = v615.barFill
+                local udim2FromScale = UDim2.fromScale
+                local v622 = not v614 and 1 or math.clamp(v613 / v614, 0, 1)
+                barFill.Size = udim2FromScale(v622, 1)
+                local barFill2 = v615.barFill
+
+                if stack.ready then
+                    v616 = colors.Success
+                end
+
+                barFill2.BackgroundColor3 = v616
+
+                if stack.unlocked then
+                    v615.tag.Visible = true
+                    v615.tag.BackgroundColor3 = colors.Gold
+                    v615.tagText.Text = "NEW ITEM"
+                    v615.tagText.TextColor3 = colors.TextDark
+                elseif stack.ready then
+                    v615.tag.Visible = true
+                    v615.tag.BackgroundColor3 = colors.Success
+                    v615.tagText.Text = "UPGRADE"
+                    v615.tagText.TextColor3 = colors.Text
+                elseif not (levelBefore <= 0) then
+                    v615.tag.Visible = true
+                    v615.tag.BackgroundColor3 = colors.Raised
+                    v615.tagText.Text = "LV " .. levelBefore
+                    v615.tagText.TextColor3 = colors.Text
+                else
+                    v615.tag.Visible = true
+                    v615.tag.BackgroundColor3 = colors.Raised
+                    v615.tagText.Text = string.format("%d / %d", v613, v614 or 0)
+                    v615.tagText.TextColor3 = colors.TextDim
+                end
+
+                weaponIcon.Set(v615.icon, stack.item, {outline = false, glow = false})
+                local v624 = (v610 - 1 - ((stackCount - 1) / 2)) * 186 * scale
+                v615.frame.Position = UDim2.fromOffset(v624, 60)
+                v615.scale.Scale = 0
+                tw(v615.frame, 0.4, {Position = UDim2.fromOffset(v624, 0)}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, ((v610 - 1) * 0.07) + 0.05)
+                tw(v615.scale, 0.4, {Scale = scale}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, ((v610 - 1) * 0.07) + 0.05)
+            elseif const tile = v101.tiles[v610] then
+                tile.frame.Visible = false
+                weaponIcon.Set(tile.icon, nil)
+            end
+        end
+
+        local total = 0
+        local count = 0
+        local count2 = 0
+
+        for _, stack in reveal.stacks do
+            total += stack.shards
+
+            if stack.unlocked then
+                count += 1
+            end
+
+            if stack.ready then
+                count2 += 1
+            end
+        end
+
+        local v631 = {string.format("<font color=\"#%s\">+%d</font> SHARDS", look.light:ToHex(), total)}
+
+        if 0 < count then
+            local stringFormat = string.format
+            local v633 = colors.Gold:ToHex()
+            local v634 = not (1 < count) and "" or "S"
+            table.insert(v631, stringFormat("<font color=\"#%s\">%d NEW ITEM%s</font>", v633, count, v634))
+        end
+
+        if 0 < count2 then
+            local stringFormat = string.format
+            local v636 = theme.Lighten(colors.Success, 0.2):ToHex()
+            local v637 = not (1 < count2) and "" or "S"
+            table.insert(v631, stringFormat("<font color=\"#%s\">%d UPGRADE%s READY</font>", v636, count2, v637))
+        end
+
+        if stackCount ~= 0 then
+            parts = v631
+        else
+            local v638 = {}
+            v638[1] = if reveal.xp then string.format("EVERYTHING MAXED  ·  +%d XP", reveal.xp) else "EVERYTHING MAXED"
+            parts = v638
+        end
+
+        for v639, v640 in parts do
+            parts[v639] = a17.Loc.T(v640)
+        end
+
+        v101.sumTotals.Text = table.concat(parts, "   ·   ")
+        local sumTotals = v101.sumTotals
+        sumTotals.TextTransparency = 1
+
+        if const v642 = if sumTotals:IsA("TextLabel") then sumTotals:FindFirstChildWhichIsA("UIStroke") else nil then
+            if type((v642:GetAttribute("Authored"))) ~= "number" then
+                v642:SetAttribute("Authored", v642.Transparency)
+            end
+
+            transparency = 1
+            v605 = v642
+        else
+            transparency = 1
+            v605 = nil
+        end
+
+        if v605 then
+            v605.Transparency = transparency
+        end
+
+        tw(v101.sumTotals, 0.3, {TextTransparency = 0}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, (stackCount * 0.07) + 0.25)
+        v101.sumRoot.Visible = true
+        v101.cont.Visible = true
+        v101.contScale.Scale = 0
+        tw(v101.contScale, 0.35, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out, (stackCount * 0.07) + 0.35)
+        a17.Sounds.Play("Reward")
+        local frontPool = v101.frontPool
+        local v644 = look.legendary and 34 or 20
+        frontPool:Burst(v644, {mode = "point", jitter = 380, speedMin = 40, speedMax = 180, kind = "sparkle", size = 28, grav = -40, drag = 0.6, lifeMin = 0.9, lifeMax = 1.7, whiteChance = 0, at = Vector2.new(0, -40), colors = {look.light, look.primary}})
+        local v645 = v102.opts.autoContinue or v13.summaryAuto[v102.source] or 6
+        v101.contFillGrad.Offset = Vector2.new(-0.5, 0)
+        tw(v101.contFillGrad, v645, {Offset = Vector2.new(0.5, 0)}, Enum.EasingStyle.Linear)
+
+        if not sleep(token, 0.45, false) then
+            return
+        end
+
+        sleep(token, v645 - 0.45, true)
+    end
+
+    local function hideAll()
+        --[[
+          name: hideAll
+          line: 1958
+          upvalues:
+            v101 (copy, index: 1)
+            weaponIcon (copy, index: 2)
+            v161 (copy, index: 3)
+            v162 (ref,  index: 4)
+        ]]
+        v101.root.Visible = false
+        v101.card.Visible = false
+        v101.barBox.Visible = false
+        v101.newRoot.Visible = false
+        v101.sumRoot.Visible = false
+        v101.prompt.Visible = false
+        v101.counter.Visible = false
+        v101.skip.Visible = false
+        v101.chestHolder.Visible = false
+        weaponIcon.Set(v101.icon, nil)
+        weaponIcon.Set(v101.newItem, nil)
+
+        for _, tile in v101.tiles do
+            weaponIcon.Set(tile.icon, nil)
+            tile.frame.Visible = false
+        end
+
+        v101.backPool:Clear()
+        v101.frontPool:Clear()
+
+        for _, v650 in v161 do
+            v650.part:Destroy()
+        end
+
+        table.clear(v161)
+        v162 = nil
+    end
+
+    local v651 = {}
+
+    local function cancelOut()
+        --[[
+          name: cancelOut
+          line: 1981
+          upvalues:
+            v651 (copy, index: 1)
+        ]]
+        for _, v654 in v651 do
+            v654:Cancel()
+        end
+
+        table.clear(v651)
+    end
+
+    local function fadeOut(a656: number)
+        --[[
+          name: fadeOut
+          line: 1987
+          upvalues:
+            v651 (copy, index: 1)
+            tweenService (copy, index: 2)
+            v101 (copy, index: 3)
+        ]]
+        for _, v658 in v651 do
+            v658:Cancel()
+        end
+
+        table.clear(v651)
+        local tweenInfo = TweenInfo.new(a656, Enum.EasingStyle.Quad)
+
+        local function add(instance: Instance, propertyTable)
+            --[[
+              name: add
+              line: 1990
+              upvalues:
+                tweenService (copy, index: 1)
+                tweenInfo (copy, index: 2)
+                v651 (copy, index: 3)
+            ]]
+            local tween = tweenService:Create(instance, tweenInfo, propertyTable)
+            tween:Play()
+            table.insert(v651, tween)
+        end
+
+        local tween = tweenService:Create(v101.dim, tweenInfo, {BackgroundTransparency = 1})
+        tween:Play()
+        table.insert(v651, tween)
+        local tween2 = tweenService:Create(v101.vignette, tweenInfo, {ImageTransparency = 1})
+        tween2:Play()
+        table.insert(v651, tween2)
+        local tween3 = tweenService:Create(v101.tint, tweenInfo, {ImageTransparency = 1})
+        tween3:Play()
+        table.insert(v651, tween3)
+        local tween4 = tweenService:Create(v101.flash, tweenInfo, {BackgroundTransparency = 1})
+        tween4:Play()
+        table.insert(v651, tween4)
+
+        for _, instance in {v101.raysA, v101.raysB, v101.halo, v101.vpf, v101.chestGlow, v101.shadow} do
+            local tween5 = tweenService:Create(instance, tweenInfo, {ImageTransparency = 1})
+            tween5:Play()
+            table.insert(v651, tween5)
+        end
+
+        for _, instance in {v101.title, v101.titleShadow, v101.subtitle, v101.sumTotals} do
+            local uiStroke
+            local uiStroke2
+            local tween6 = tweenService:Create(instance, tweenInfo, {TextTransparency = 1})
+            tween6:Play()
+            table.insert(v651, tween6)
+
+            if instance:IsA("TextLabel") then
+                uiStroke = instance:FindFirstChildWhichIsA("UIStroke")
+            else
+                uiStroke = nil
+            end
+
+            if uiStroke then
+                if type((uiStroke:GetAttribute("Authored"))) ~= "number" then
+                    uiStroke:SetAttribute("Authored", uiStroke.Transparency)
+                end
+
+                uiStroke2 = uiStroke
+            else
+                uiStroke2 = nil
+            end
+
+            if uiStroke2 then
+                local tween7 = tweenService:Create(uiStroke2, tweenInfo, {Transparency = 1})
+                tween7:Play()
+                table.insert(v651, tween7)
+            end
+        end
+
+        local tween8 = tweenService:Create(v101.contScale, tweenInfo, {Scale = 0})
+        tween8:Play()
+        table.insert(v651, tween8)
+        local tween9 = tweenService:Create(v101.cardScale, tweenInfo, {Scale = 0})
+        tween9:Play()
+        table.insert(v651, tween9)
+        local tween10 = tweenService:Create(v101.skip, tweenInfo, {BackgroundTransparency = 1})
+        tween10:Play()
+        table.insert(v651, tween10)
+
+        for _, tile in v101.tiles do
+            local tween11 = tweenService:Create(tile.scale, tweenInfo, {Scale = 0})
+            tween11:Play()
+            table.insert(v651, tween11)
+        end
+    end
+
+    local function snap(instance: Instance, propertyTable)
+        --[[
+          name: snap
+          line: 2017
+          upvalues:
+            tweenService (copy, index: 1)
+        ]]
+        tweenService:Create(instance, TweenInfo.new(0), propertyTable):Play()
+
+        for v686, v687 in propertyTable do
+            instance[v686] = v687
+        end
+    end
+
+    local v688 = {TR_RevealSafe = true, TR_TopbarSettings = true, CombatHUD = true, CombatTouch = true, CharacterTouch = true, TouchGui = true, Chat = true, BubbleChat = true}
+    local v689 = {TR_Replay = true, TR_ReplayFrame = true, TR_ReplayHud = true}
+    local v690 = {}
+    local v691 = {}
+    local v692 = false
+
+    local function hideCollector(descendant)
+        --[[
+          name: hideCollector
+          line: 2043
+          upvalues:
+            v101 (copy, index: 1)
+            v688 (copy, index: 2)
+            a17 (copy, index: 3)
+            v689 (copy, index: 4)
+            v690 (copy, index: 5)
+            v691 (copy, index: 6)
+        ]]
+        repeat
+            if descendant == v101.gui or v688[descendant.Name] then
+                return
+            elseif const firstAncestorWhichIsA = descendant:FindFirstAncestorWhichIsA("ScreenGui") then
+                if firstAncestorWhichIsA.Name == "Chat" then
+                    break
+                end
+                if firstAncestorWhichIsA.Name == "BubbleChat" then
+                    break
+                end
+            end
+
+            if descendant:IsA("ScreenGui") then
+                if descendant.Parent == a17.PlayerGui and descendant.Enabled then
+                    descendant.Enabled = false
+
+                    if not v689[descendant.Name] then
+                        v690[descendant] = true
+                        return
+                    end
+                end
+            elseif (descendant:IsA("BillboardGui") or descendant:IsA("SurfaceGui")) and v691[descendant] == nil then
+                pcall(
+                    function()
+                        --[[
+                          line: 2059
+                          upvalues:
+                            descendant (copy, index: 1)
+                            v691 (copy, index: 2)
+                        ]]
+                        descendant.MaxDistance, v691[descendant] = 0.001, descendant.MaxDistance
+                    end
+                )
+            end
+
+            return
+        until true
+    end
+
+    local function sweepUi()
+        --[[
+          name: sweepUi
+          line: 2066
+          upvalues:
+            a17 (copy, index: 1)
+            hideCollector (copy, index: 2)
+            workspace (copy, index: 3)
+        ]]
+        for _, descendant in a17.PlayerGui:GetDescendants() do
+            if descendant:IsA("LayerCollector") then
+                hideCollector(descendant)
+            end
+        end
+
+        if const trContractDisplay = workspace:FindFirstChild("TR_ContractDisplay") then
+            for _, descendant in trContractDisplay:GetDescendants() do
+                if descendant:IsA("LayerCollector") then
+                    hideCollector(descendant)
+                end
+            end
+        end
+    end
+
+    local function setAllUiHidden(allUiHidden: boolean)
+        --[[
+          name: setAllUiHidden
+          line: 2081
+          upvalues:
+            v692 (ref,  index: 1)
+            sweepUi (copy, index: 2)
+            proximityPromptService (copy, index: 3)
+            v690 (copy, index: 4)
+            v691 (copy, index: 5)
+            a17 (copy, index: 6)
+        ]]
+        if v692 == allUiHidden then
+            return
+        end
+
+        v692 = allUiHidden
+
+        if allUiHidden then
+            sweepUi()
+            proximityPromptService.Enabled = false
+
+            return
+        end
+
+        for v704 in v690 do
+            if v704.Parent then
+                v704.Enabled = true
+            end
+        end
+
+        table.clear(v690)
+
+        for v705, maxDistance in v691 do
+            if v705.Parent then
+                pcall(
+                    function()
+                        --[[
+                          line: 2098
+                          upvalues:
+                            v705 (copy, index: 1)
+                            maxDistance (copy, index: 2)
+                        ]]
+                        v705.MaxDistance = maxDistance
+                    end
+                )
+            end
+        end
+
+        table.clear(v691)
+        proximityPromptService.Enabled = not a17.MenuManager.IsOpen()
+    end
+
+    dropReveal._SweepUi = function()
+        --[[
+          line: 2107
+          upvalues:
+            v692 (ref,  index: 1)
+            sweepUi (copy, index: 2)
+        ]]
+        if v692 then
+            sweepUi()
+        end
+    end
+
+    local v707 = nil
+    local v708 = false
+
+    local function setPlaying(playing: boolean)
+        --[[
+          name: setPlaying
+          line: 2115
+          upvalues:
+            v104 (ref,  index: 1)
+            a17 (copy, index: 2)
+            v708 (ref,  index: 3)
+            dropReveal (copy, index: 4)
+            setAllUiHidden (copy, index: 5)
+        ]]
+        if v104 == playing then
+            return
+        end
+
+        v104 = playing
+        a17.SetHudHidden("Reveal", playing)
+        a17.MenuManager.HoldChat("Reveal", playing)
+
+        if playing then
+            a17.MenuManager.PushMouse("DropReveal")
+
+            if a17.Canvas.Menus.Visible then
+                a17.Canvas.Menus.Visible = false
+                v708 = true
+            end
+        else
+            a17.MenuManager.PopMouse("DropReveal")
+
+            if v708 then
+                a17.Canvas.Menus.Visible = true
+                v708 = false
+            end
+        end
+
+        dropReveal.Changed:Fire(playing)
+
+        if a17.TopbarSettings and type(a17.TopbarSettings.SetHidden) == "function" then
+            pcall(a17.TopbarSettings.SetHidden, "Reveal", playing)
+        end
+
+        setAllUiHidden(playing)
+        local economy = a17.Economy
+
+        if economy and type(economy.SetRevealShowing) == "function" then
+            pcall(economy.SetRevealShowing, playing)
+        end
+    end
+
+    local function finish(a713, a714: boolean?)
+        --[[
+          name: finish
+          line: 2150
+          upvalues:
+            v102 (ref,  index: 1)
+            count (ref,  index: 2)
+            v323 (copy, index: 3)
+            v135 (copy, index: 4)
+            v707 (ref,  index: 5)
+            hideAll (copy, index: 6)
+            ui2 (ref,  index: 7)
+            ui3 (ref,  index: 8)
+            renderSteppedConnection (ref,  index: 9)
+            pace (ref,  index: 10)
+            fadeOut (copy, index: 11)
+            gradeOut (copy, index: 12)
+            setPlaying (copy, index: 13)
+            dropReveal (copy, index: 14)
+        ]]
+        if not v102 then
+            return
+        end
+
+        local v715 = v102
+        v102 = nil
+        count += 1
+        local v716 = count
+        v323.on = false
+        table.clear(v135)
+
+        if v707 then
+            v707()
+            v707 = nil
+        end
+
+        local function tail()
+            --[[
+              name: tail
+              line: 2164
+              upvalues:
+                v716 (copy, index: 1)
+                count (ref,  index: 2)
+                hideAll (copy, index: 3)
+                ui2 (ref,  index: 4)
+                ui3 (ref,  index: 5)
+                renderSteppedConnection (ref,  index: 6)
+                pace (ref,  index: 7)
+            ]]
+            if v716 ~= count then
+                return
+            end
+
+            hideAll()
+
+            if ui2 then
+                ui2:Destroy()
+                ui2 = nil
+            end
+
+            if ui3 then
+                ui3:Destroy()
+                ui3 = nil
+            end
+
+            if renderSteppedConnection then
+                renderSteppedConnection:Disconnect()
+                renderSteppedConnection = nil
+            end
+
+            pace = 1
+        end
+
+        if a714 then
+            if v716 == count then
+                hideAll()
+
+                if ui2 then
+                    ui2:Destroy()
+                    ui2 = nil
+                end
+
+                if ui3 then
+                    ui3:Destroy()
+                    ui3 = nil
+                end
+
+                if renderSteppedConnection then
+                    renderSteppedConnection:Disconnect()
+                    renderSteppedConnection = nil
+                end
+
+                pace = 1
+            end
+        else
+            fadeOut(0.28)
+            gradeOut(0.3)
+
+            task.delay(
+                0.3,
+                function()
+                    --[[
+                      line: 2181
+                      upvalues:
+                        v716 (copy, index: 1)
+                        count (ref,  index: 2)
+                        hideAll (copy, index: 3)
+                        ui2 (ref,  index: 4)
+                        ui3 (ref,  index: 5)
+                        renderSteppedConnection (ref,  index: 6)
+                        pace (ref,  index: 7)
+                    ]]
+                    if v716 == count then
+                        if v716 ~= count then
+                            return
+                        end
+
+                        hideAll()
+
+                        if ui2 then
+                            ui2:Destroy()
+                            ui2 = nil
+                        end
+
+                        if ui3 then
+                            ui3:Destroy()
+                            ui3 = nil
+                        end
+
+                        if renderSteppedConnection then
+                            renderSteppedConnection:Disconnect()
+                            renderSteppedConnection = nil
+                        end
+
+                        pace = 1
+                    end
+                end
+            )
+        end
+
+        setPlaying(false)
+
+        if v715.opts.onDone then
+            task.spawn(v715.opts.onDone, a713, v715.reveal.raw)
+        end
+
+        if a713 ~= "interrupted" and v715.reveal.id ~= "" and not v715.summaryOnly then
+            dropReveal._Seen(v715.reveal.id)
+        end
+
+        dropReveal._Pump()
+    end
+
+    function dropReveal.Skip()
+        --[[
+          name: Skip
+          line: 2197
+          upvalues:
+            v102 (ref,  index: 1)
+            a17 (copy, index: 2)
+        ]]
+        if v102 and v102.phase ~= "summary" and not v102.skip then
+            v102.skip = true
+            a17.Sounds.Play("Click")
+        end
+    end
+
+    local function tap()
+        --[[
+          name: tap
+          line: 2203
+          upvalues:
+            v102 (ref,  index: 1)
+            pace (ref,  index: 2)
+            finishGroup (copy, index: 3)
+            v135 (copy, index: 4)
+            v134 (copy, index: 5)
+        ]]
+        if not v102 then
+            return
+        end
+
+        if v102.phase == "land" then
+            v102.tapped = true
+            return
+        end
+
+        if v102.phase ~= "summary" then
+            if v102.phase == "card" then
+                if v102.hurry or not v102.group then
+                    v102.tapped = true
+                    return
+                end
+
+                v102.hurry = true
+                finishGroup()
+
+                for v719, v720 in v135 do
+                    if const v721 = v720[#v720] then
+                        v134[v719] = v721.to
+                    end
+                end
+
+                table.clear(v135)
+
+                return
+            end
+
+            v102.tapped = true
+        else
+            local v722 = os.clock() - (v102.summaryAt or 0)
+
+            if pace * 0.35 < v722 then
+                v102.tapped = true
+            end
+        end
+    end
+
+    dropReveal.Tap = tap
+
+    function dropReveal.Play(raw, options)
         --[[
           name: Play
           line: 2230
           upvalues:
             normReveal (copy, index: 1)
-            a1 (copy, index: 2)
-            tbl_upv_7 (copy, index: 3)
-            u9 (ref,  index: 4)
-            u27 (copy, index: 5)
+            a17 (copy, index: 2)
+            dropReveal (copy, index: 3)
+            v102 (ref,  index: 4)
+            finish (copy, index: 5)
             build (copy, index: 6)
             layout (copy, index: 7)
-            u7 (ref,  index: 8)
-            tbl_upv_11 (copy, index: 9)
-            u10 (ref,  index: 10)
-            tbl_upv_2 (copy, index: 11)
-            tbl_upv_38 (copy, index: 12)
-            tbl_upv_14 (copy, index: 13)
-            tbl_upv_13 (copy, index: 14)
-            TweenService_upv_1 (copy, index: 15)
-            Colors_upv_1 (copy, index: 16)
-            u23 (ref,  index: 17)
+            pace (ref,  index: 8)
+            v101 (copy, index: 9)
+            count (ref,  index: 10)
+            v12 (copy, index: 11)
+            v651 (copy, index: 12)
+            v135 (copy, index: 13)
+            v134 (copy, index: 14)
+            tweenService (copy, index: 15)
+            colors (copy, index: 16)
+            v317 (ref,  index: 17)
             paletteOf (copy, index: 18)
             buildChest (copy, index: 19)
             setPlaying (copy, index: 20)
             tw (copy, index: 21)
             gradeIn (copy, index: 22)
-            u21 (ref,  index: 23)
-            RunService_upv_1 (copy, index: 24)
+            renderSteppedConnection (ref,  index: 23)
+            runService (copy, index: 24)
             onRender (copy, index: 25)
-            ContextActionService_upv_1 (copy, index: 26)
+            contextActionService (copy, index: 26)
             tap (copy, index: 27)
-            u27 (ref,  index: 28)
+            v707 (ref,  index: 28)
             titleIn (copy, index: 29)
             phaseSummary (copy, index: 30)
             phaseLand (copy, index: 31)
             phaseIdle (copy, index: 32)
             phaseOpen (copy, index: 33)
             chestToCards (copy, index: 34)
-            tbl_upv_4 (copy, index: 35)
+            v14 (copy, index: 35)
             sleep (copy, index: 36)
-            tbl_upv_3 (copy, index: 37)
+            v13 (copy, index: 37)
             phaseCard (copy, index: 38)
         ]]
-        local u31 = normReveal(a91)
-        if not u31 then
+        local v725
+        local reveal = normReveal(raw)
+        if not reveal then
             return false
         end
-        local u32 = a92 or {}
-        if u31.source ~= "rank" or u32.rankShown == true then
-            if u9 then
-                finish("interrupted", true)
+
+        local opts = options or {}
+
+        if reveal.source == "rank" and opts.rankShown ~= true then
+            if not a17.RankUp then
+                a17.EnsureScreen("RankUp")
             end
-        else
-            if not (a1.RankUp) then
-                a1.EnsureScreen("RankUp")
-            end
-            if a1.RankUp then
-                u32 = table.clone(u32)
-                u32.rankShown = true
-                return a1.RankUp.Play(
-                    a91,
-                    function(a93)
+
+            if a17.RankUp then
+                local values = table.clone(opts)
+                values.rankShown = true
+
+                return a17.RankUp.Play(
+                    raw,
+                    function(a729)
                         --[[
                           line: 2244
                           upvalues:
-                            u32 (copy, index: 1)
-                            a91 (copy, index: 2)
-                            tbl_upv_7 (copy, index: 3)
+                            values (copy, index: 1)
+                            raw (copy, index: 2)
+                            dropReveal (copy, index: 3)
                         ]]
-                        if a93 ~= "interrupted" then
-                            tbl_upv_7.Play(a91, u32)
-                        elseif u32.onDone then
-                            u32.onDone("interrupted", a91)
+                        if a729 ~= "interrupted" then
+                            dropReveal.Play(raw, values)
+                            return
+                        end
+
+                        if values.onDone then
+                            values.onDone("interrupted", raw)
                         end
                     end
                 )
-            elseif u9 then
-                finish("interrupted", true)
             end
         end
+
+        if v102 then
+            finish("interrupted", true)
+        end
+
         build()
         layout()
-        local v216
-        if type(u32.pace) == "number" and (u32.pace > 0) then
-            v216 = u32.pace
+
+        if type(opts.pace) ~= "number" or not (0 < opts.pace) then
+            pace = 1
         else
-            v216 = 1
+            pace = opts.pace
         end
-        u7 = v216
-        tbl_upv_11.backPool.Pace = u7
-        tbl_upv_11.frontPool.Pace = u7
-        u10 = u10 + 1
-        local _ = u10
-        local u33 = tbl_upv_2[u31.kind] or (tbl_upv_2.drop)
-        if u31.source == "rank" then
-            u33 = table.clone(u33)
-            u33.title = "RANK REWARD"
+
+        v101.backPool.Pace = pace
+        v101.frontPool.Pace = pace
+        count += 1
+        local token = count
+        local v731 = v12[reveal.kind] or v12.drop
+
+        if reveal.source == "rank" then
+            v731 = table.clone(v731)
+            v731.title = "RANK REWARD"
         end
-        local v217 = 0
-        for v219, value_30 in u31.stacks do
-            v217 = v217 + value_30.shards
+
+        local total = 0
+
+        for _, stack in reveal.stacks do
+            total += stack.shards
         end
-        local tbl_43 = {skip = false, subtitle = 0, source = 0, phase = "start", tapped = false, summaryOnly = 0, hurry = false}
-        tbl_43.token = u10
-        tbl_43.reveal = u31
-        tbl_43.look = u33
-        tbl_43.opts = u32
-        tbl_43.source = u32.source or (u31.source or "lobby")
-        tbl_43.summaryOnly = u32.summaryOnly == true
-        tbl_43.subtitle = string.format("%d ITEM%s  \194\183  %d SHARDS", #u31.stacks, ((#u31.stacks ~= 1) and "S") or "", v217)
-        u9 = tbl_43
-        for v220, value_31 in tbl_upv_38 do
-            value_31:Cancel()
+
+        local v735 = {phase = "start", tapped = false, skip = false, hurry = false, token = token, reveal = reveal, look = v731, opts = opts}
+        local source = opts.source or reveal.source or "lobby"
+        v735.source = source
+        v735.summaryOnly = opts.summaryOnly == true
+        local stringFormat = string.format
+        local stackCount = #reveal.stacks
+        local v739 = #reveal.stacks ~= 1 and "S" or ""
+        v735.subtitle = stringFormat("%d ITEM%s  ·  %d SHARDS", stackCount, v739, total)
+        v102 = v735
+
+        for _, v741 in v651 do
+            v741:Cancel()
         end
-        table.clear(tbl_upv_38)
-        table.clear(tbl_upv_14)
-        tbl_upv_13.y = 0
-        tbl_upv_13.yaw = 0
-        tbl_upv_13.roll = 0
-        tbl_upv_13.pitch = 0
-        tbl_upv_13.sq = 0
-        tbl_upv_13.lid = 0
-        tbl_upv_13.s = 1
-        tbl_upv_13.raysSpin = 8
-        tbl_upv_11.backPool:Clear()
-        tbl_upv_11.frontPool:Clear()
-        tbl_upv_11.root.Visible = true
-        local dim_1 = tbl_upv_11.dim
-        local tbl_44 = {BackgroundTransparency = 1}
-        TweenService_upv_1:Create(dim_1, TweenInfo.new(0), tbl_44):Play()
-        for key_9, value_32 in tbl_44 do
-            dim_1[key_9] = value_32
+
+        table.clear(v651)
+        table.clear(v135)
+        v134.y = 0
+        v134.yaw = 0
+        v134.roll = 0
+        v134.pitch = 0
+        v134.sq = 0
+        v134.lid = 0
+        v134.s = 1
+        v134.raysSpin = 8
+        v101.backPool:Clear()
+        v101.frontPool:Clear()
+        v101.root.Visible = true
+        local dim = v101.dim
+        local propertyTable = {BackgroundTransparency = 1}
+        tweenService:Create(dim, TweenInfo.new(0), propertyTable):Play()
+
+        for v744, v745 in propertyTable do
+            dim[v744] = v745
         end
-        local flash_1 = tbl_upv_11.flash
-        local tbl_45 = {BackgroundTransparency = 1}
-        TweenService_upv_1:Create(flash_1, TweenInfo.new(0), tbl_45):Play()
-        for key_10, value_33 in tbl_45 do
-            flash_1[key_10] = value_33
+
+        local flash = v101.flash
+        local propertyTable2 = {BackgroundTransparency = 1}
+        tweenService:Create(flash, TweenInfo.new(0), propertyTable2):Play()
+
+        for v748, v749 in propertyTable2 do
+            flash[v748] = v749
         end
-        local vignette_1 = tbl_upv_11.vignette
-        local tbl_46 = {ImageTransparency = 1}
-        tbl_46.ImageColor3 = Colors_upv_1.Void
-        TweenService_upv_1:Create(vignette_1, TweenInfo.new(0), tbl_46):Play()
-        for key_11, value_34 in tbl_46 do
-            vignette_1[key_11] = value_34
+
+        local vignette = v101.vignette
+        local propertyTable3 = {ImageTransparency = 1, ImageColor3 = colors.Void}
+        tweenService:Create(vignette, TweenInfo.new(0), propertyTable3):Play()
+
+        for v752, v753 in propertyTable3 do
+            vignette[v752] = v753
         end
-        local skip_1 = tbl_upv_11.skip
-        local tbl_47 = {BackgroundTransparency = 0.12}
-        TweenService_upv_1:Create(skip_1, TweenInfo.new(0), tbl_47):Play()
-        for key_12, value_35 in tbl_47 do
-            skip_1[key_12] = value_35
+
+        local skip = v101.skip
+        local propertyTable4 = {BackgroundTransparency = 0.12}
+        tweenService:Create(skip, TweenInfo.new(0), propertyTable4):Play()
+
+        for v756, v757 in propertyTable4 do
+            skip[v756] = v757
         end
-        for v221, value_36 in {tbl_upv_11.tint, tbl_upv_11.raysA, tbl_upv_11.raysB, tbl_upv_11.halo, tbl_upv_11.beam, tbl_upv_11.floorRing, tbl_upv_11.shadow, tbl_upv_11.leak, tbl_upv_11.leakFlare, tbl_upv_11.chestGlow} do
-            local tbl_48 = {ImageTransparency = 1}
-            TweenService_upv_1:Create(value_36, TweenInfo.new(0), tbl_48):Play()
-            for key_13, value_37 in tbl_48 do
-                value_36[key_13] = value_37
+
+        for _, instance in {v101.tint, v101.raysA, v101.raysB, v101.halo, v101.beam, v101.floorRing, v101.shadow, v101.leak, v101.leakFlare, v101.chestGlow} do
+            local propertyTable5 = {ImageTransparency = 1}
+            tweenService:Create(instance, TweenInfo.new(0), propertyTable5):Play()
+
+            for v761, v762 in propertyTable5 do
+                instance[v761] = v762
             end
         end
-        local vpf_1 = tbl_upv_11.vpf
-        local tbl_49 = {ImageTransparency = 0}
-        TweenService_upv_1:Create(vpf_1, TweenInfo.new(0), tbl_49):Play()
-        for key_14, value_38 in tbl_49 do
-            vpf_1[key_14] = value_38
+
+        local vpf = v101.vpf
+        local propertyTable6 = {ImageTransparency = 0}
+        tweenService:Create(vpf, TweenInfo.new(0), propertyTable6):Play()
+
+        for v765, v766 in propertyTable6 do
+            vpf[v765] = v766
         end
-        local v218 = nil
-        for v222, value_39 in {tbl_upv_11.title, tbl_upv_11.titleShadow, tbl_upv_11.subtitle, tbl_upv_11.sumTotals} do
-            local tbl_50 = {TextTransparency = 1}
-            TweenService_upv_1:Create(value_39, TweenInfo.new(0), tbl_50):Play()
-            for key_15, value_40 in tbl_50 do
-                value_39[key_15] = value_40
+
+        for _, instance in {v101.title, v101.titleShadow, v101.subtitle, v101.sumTotals} do
+            local v769
+            local propertyTable7 = {TextTransparency = 1}
+            tweenService:Create(instance, TweenInfo.new(0), propertyTable7):Play()
+
+            for v771, v772 in propertyTable7 do
+                instance[v771] = v772
             end
-            if value_39:IsA("TextLabel") then
-                v218 = value_39:FindFirstChildWhichIsA("UIStroke")
-            else
-                v218 = nil
-            end
-            if v218 then
-                if type(v218:GetAttribute("Authored")) ~= "number" then
-                    v218:SetAttribute("Authored", v218.Transparency)
+
+            if const v773 = if instance:IsA("TextLabel") then instance:FindFirstChildWhichIsA("UIStroke") else nil then
+                if type((v773:GetAttribute("Authored"))) ~= "number" then
+                    v773:SetAttribute("Authored", v773.Transparency)
                 end
-                v217 = v218
+
+                v769 = v773
             else
-                v217 = nil
+                v769 = nil
             end
-            if not (v217) then
-                continue
+
+            if v769 then
+                local propertyTable8 = {Transparency = 1}
+                tweenService:Create(v769, TweenInfo.new(0), propertyTable8):Play()
+
+                for v775, v776 in propertyTable8 do
+                    v769[v775] = v776
+                end
             end
-            local tbl_51 = {Transparency = 1}
-            TweenService_upv_1:Create(v217, TweenInfo.new(0), tbl_51):Play()
-            for key_16, value_41 in tbl_51 do
-                v217[key_16] = value_41
-            end
         end
-        local raysScale_2 = tbl_upv_11.raysScale
-        local tbl_52 = {Scale = 1}
-        TweenService_upv_1:Create(raysScale_2, TweenInfo.new(0), tbl_52):Play()
-        for key_17, value_42 in tbl_52 do
-            raysScale_2[key_17] = value_42
+
+        local raysScale = v101.raysScale
+        local propertyTable9 = {Scale = 1}
+        tweenService:Create(raysScale, TweenInfo.new(0), propertyTable9):Play()
+
+        for v779, v780 in propertyTable9 do
+            raysScale[v779] = v780
         end
-        local contScale_1 = tbl_upv_11.contScale
-        local tbl_53 = {Scale = 0}
-        TweenService_upv_1:Create(contScale_1, TweenInfo.new(0), tbl_53):Play()
-        for key_18, value_43 in tbl_53 do
-            contScale_1[key_18] = value_43
+
+        local contScale = v101.contScale
+        local propertyTable10 = {Scale = 0}
+        tweenService:Create(contScale, TweenInfo.new(0), propertyTable10):Play()
+
+        for v783, v784 in propertyTable10 do
+            contScale[v783] = v784
         end
-        local cardScale_1 = tbl_upv_11.cardScale
-        local tbl_54 = {Scale = 1.14}
-        TweenService_upv_1:Create(cardScale_1, TweenInfo.new(0), tbl_54):Play()
-        for key_19, value_44 in tbl_54 do
-            cardScale_1[key_19] = value_44
+
+        local cardScale = v101.cardScale
+        local propertyTable11 = {Scale = 1.14}
+        tweenService:Create(cardScale, TweenInfo.new(0), propertyTable11):Play()
+        v725 = v731
+
+        for v787, v788 in propertyTable11 do
+            cardScale[v787] = v788
         end
-        tbl_upv_11.card.Visible = false
-        tbl_upv_11.barBox.Visible = false
-        tbl_upv_11.newRoot.Visible = false
-        tbl_upv_11.sumRoot.Visible = false
-        tbl_upv_11.prompt.Visible = false
-        tbl_upv_11.counter.Visible = false
-        tbl_upv_11.shaker.Position = UDim2.new()
-        u23 = 0
-        tbl_upv_11.chestHolder.Visible = false
-        paletteOf(u33)
-        buildChest(u33.model, u33.fit)
+
+        local card = v101.card
+        local barBox = v101.barBox
+        local newRoot = v101.newRoot
+        local sumRoot = v101.sumRoot
+        card.Visible = false
+        barBox.Visible = false
+        newRoot.Visible = false
+        sumRoot.Visible = false
+        local prompt = v101.prompt
+        local counter = v101.counter
+        prompt.Visible = false
+        counter.Visible = false
+        v101.shaker.Position = UDim2.new()
+        v317 = 0
+        v101.chestHolder.Visible = false
+        paletteOf(v725)
+        buildChest(v725.model, v725.fit)
         setPlaying(true)
-        tw(tbl_upv_11.dim, 0.35, {BackgroundTransparency = 0.2}, Enum.EasingStyle.Quad)
-        tw(tbl_upv_11.vignette, 0.4, {ImageTransparency = 0.25}, Enum.EasingStyle.Quad)
-        tw(tbl_upv_11.tint, 0.6, {ImageTransparency = 0.8}, Enum.EasingStyle.Quad)
-        gradeIn(u33)
-        if not (u21) then
-            u21 = RunService_upv_1.RenderStepped:Connect(onRender)
-        end
-        tbl_upv_11.skip.Visible = not u9.summaryOnly
-        tbl_upv_11.skipFill.Size = UDim2.fromScale(0, 1)
-        ContextActionService_upv_1:BindActionAtPriority(
+        tw(v101.dim, 0.35, {BackgroundTransparency = 0.2}, Enum.EasingStyle.Quad)
+        tw(v101.vignette, 0.4, {ImageTransparency = 0.25}, Enum.EasingStyle.Quad)
+        tw(v101.tint, 0.6, {ImageTransparency = 0.8}, Enum.EasingStyle.Quad)
+        gradeIn(v725)
+        renderSteppedConnection = renderSteppedConnection or runService.RenderStepped:Connect(onRender)
+        v101.skip.Visible = not v102.summaryOnly
+        v101.skipFill.Size = UDim2.fromScale(0, 1)
+
+        contextActionService:BindActionAtPriority(
             "TR_RevealKeys",
-            function(a94, a95, a96)
+            function(actionName: string, inputState: Enum.UserInputState, inputObject: InputObject)
                 --[[
                   line: 2332
                   upvalues:
-                    tbl_upv_7 (copy, index: 1)
+                    dropReveal (copy, index: 1)
                     tap (copy, index: 2)
                 ]]
-                if a95 == Enum.UserInputState.Begin then
-                    if a96.KeyCode == Enum.KeyCode.ButtonB or a96.KeyCode == Enum.KeyCode.ButtonY then
-                        tbl_upv_7.Skip()
-                    else
-                        tap()
-                    end
+                if inputState ~= Enum.UserInputState.Begin then
+                    return Enum.ContextActionResult.Sink
                 end
+
+                if inputObject.KeyCode == Enum.KeyCode.ButtonB or inputObject.KeyCode == Enum.KeyCode.ButtonY then
+                    dropReveal.Skip()
+                else
+                    tap()
+                end
+
                 return Enum.ContextActionResult.Sink
             end,
             false,
@@ -3447,442 +3929,526 @@ function tbl_1.Init(a1)
             Enum.KeyCode.ButtonB,
             Enum.KeyCode.ButtonY
         )
-        u27 = function()
+
+        v707 = function()
             --[[
               line: 2343
               upvalues:
-                ContextActionService_upv_1 (copy, index: 1)
+                contextActionService (copy, index: 1)
             ]]
-            ContextActionService_upv_1:UnbindAction("TR_RevealKeys")
+            contextActionService:UnbindAction("TR_RevealKeys")
         end
+
         task.spawn(
             xpcall,
             function()
                 --[[
                   line: 2347
                   upvalues:
-                    u9 (ref,  index: 1)
+                    v102 (ref,  index: 1)
                     titleIn (copy, index: 2)
-                    u33 (ref,  index: 3)
+                    v725 (ref,  index: 3)
                     phaseSummary (copy, index: 4)
-                    u10 (copy, index: 5)
+                    token (copy, index: 5)
                     finish (copy, index: 6)
                     phaseLand (copy, index: 7)
                     phaseIdle (copy, index: 8)
                     phaseOpen (copy, index: 9)
-                    u31 (copy, index: 10)
+                    reveal (copy, index: 10)
                     chestToCards (copy, index: 11)
-                    tbl_upv_11 (copy, index: 12)
-                    tbl_upv_4 (copy, index: 13)
+                    v101 (copy, index: 12)
+                    v14 (copy, index: 13)
                     sleep (copy, index: 14)
-                    tbl_upv_3 (copy, index: 15)
+                    v13 (copy, index: 15)
                     phaseCard (copy, index: 16)
                 ]]
-                if u9 and u9.summaryOnly then
-                    titleIn(u33.title, u9.subtitle)
-                    u9.summaryAt = os.clock()
-                    phaseSummary(u10)
-                    local v219 = (u9 ~= nil) and (u9.token == u10)
-                    if v219 then
+                if v102 and v102.summaryOnly then
+                    titleIn(v725.title, v102.subtitle)
+                    v102.summaryAt = os.clock()
+                    phaseSummary(token)
+                    local v798 = v102 ~= nil and v102.token == token
+                    if v798 then
                         finish("done")
                     end
+
                     return
                 end
-                local v220 = phaseLand(u10) and (phaseIdle(u10))
-                if v220 then
-                    v220 = phaseOpen(u10)
-                end
-                if v220 and #u31.stacks > 0 then
+
+                local v799 = phaseLand(token) and phaseIdle(token)
+                v799 = v799 and phaseOpen(token)
+
+                if v799 and 0 < #reveal.stacks then
                     chestToCards()
-                    local v221 = #u31.stacks
-                    tbl_upv_11.counter.Visible = v221 > 0
-                    tbl_upv_11.counterText.Text = "x" .. v221
-                    if u9 then
-                        tbl_upv_11.counter.Position = UDim2.fromOffset(128, tbl_upv_4.chestCardY - 62)
+                    local stackCount = #reveal.stacks
+                    v101.counter.Visible = 0 < stackCount
+                    v101.counterText.Text = "x" .. stackCount
+
+                    if v102 then
+                        v101.counter.Position = UDim2.fromOffset(128, v14.chestCardY - 62)
                     end
-                    if sleep(u10, tbl_upv_3.toCards * 0.6, false) then
-                        for key_20, value_45 in u31.stacks do
-                            if not (phaseCard(u10, key_20, value_45)) then
+
+                    if sleep(token, v13.toCards * 0.6, false) then
+                        for cardIndex, stack in reveal.stacks do
+                            if not phaseCard(token, cardIndex, stack) then
                                 break
                             end
                         end
                     end
                 end
-                local v222 = (u9 ~= nil) and (u9.token == u10)
-                if not v222 then
+
+                local v803 = v102 ~= nil and v102.token == token
+                if not v803 then
                     return
                 end
-                local skip_2 = u9.skip
-                u9.summaryAt = os.clock()
-                phaseSummary(u10)
-                local v223 = (u9 ~= nil) and (u9.token == u10)
-                if not v223 then
-                    return
+
+                local skip = v102.skip
+                v102.summaryAt = os.clock()
+                phaseSummary(token)
+                local v805 = v102 ~= nil and v102.token == token
+                if v805 then
+                    local v806 = skip and "skipped" or "done"
+                    finish(v806)
                 end
-                finish((skip_2 and "skipped") or "done")
             end,
-            function(a97)
+            function(a807)
                 --[[
                   line: 2392
                   upvalues:
-                    u9 (ref,  index: 1)
-                    u10 (copy, index: 2)
+                    v102 (ref,  index: 1)
+                    token (copy, index: 2)
                     finish (copy, index: 3)
                 ]]
-                warn("[DropReveal] " .. tostring(a97) .. "\n" .. debug.traceback())
-                if not u9 or u9.token ~= u10 then
-                    return
+                warn("[DropReveal] " .. tostring(a807) .. "\n" .. debug.traceback())
+
+                if v102 and v102.token == token then
+                    finish("interrupted", true)
                 end
-                finish("interrupted", true)
             end
         )
+
         return true
     end
-    function tbl_upv_7.ShowSummary(a98, a99)
+
+    function dropReveal.ShowSummary(a808, a809)
         --[[
           name: ShowSummary
           line: 2402
           upvalues:
-            tbl_upv_7 (copy, index: 1)
+            dropReveal (copy, index: 1)
         ]]
-        local v224 = (a99 and (table.clone(a99))) or {}
-        v224.summaryOnly = true
-        return tbl_upv_7.Play(a98, v224)
+        local v810 = a809 and table.clone(a809) or {}
+        v810.summaryOnly = true
+
+        return dropReveal.Play(a808, v810)
     end
-    function tbl_upv_7.Stop(a100)
+
+    function dropReveal.Stop(a811)
         --[[
           name: Stop
           line: 2407
           upvalues:
-            u9 (ref, index: 1)
+            v102 (ref,  index: 1)
+            finish (copy, index: 2)
         ]]
-        if not u9 then
-            return
+        if v102 then
+            finish("interrupted", a811 ~= false)
         end
-        finish("interrupted", a100 ~= false)
     end
-    function tbl_upv_7.IsPlaying()
+
+    function dropReveal.IsPlaying()
         --[[
           name: IsPlaying
           line: 2412
           upvalues:
-            u9 (ref, index: 1)
+            v102 (ref, index: 1)
         ]]
-        local v225 = u9 ~= nil
-        return v225
+        return v102 ~= nil
     end
-    function tbl_upv_7.State()
+
+    function dropReveal.State()
         --[[
           name: State
           line: 2415
           upvalues:
-            u9 (ref, index: 1)
-            u7 (ref, index: 2)
+            v102 (ref, index: 1)
+            pace (ref, index: 2)
         ]]
-        local tbl_55 = {pace = 0, phase = 0, kind = 0, id = 0, playing = 0}
-        tbl_55.playing = u9 ~= nil
-        tbl_55.phase = u9 and u9.phase or nil
-        tbl_55.id = u9 and u9.reveal.id or nil
-        tbl_55.kind = u9 and u9.reveal.kind or nil
-        tbl_55.pace = u7
-        return tbl_55
+        local v812 = {}
+        local playing = v102 ~= nil
+        v812.playing = playing
+        local v814 = v102 and v102.phase or nil
+        v812.phase = v814
+        v814 = v102 and v102.reveal.id or nil
+        v812.id = v814
+        v812.kind = v102 and v102.reveal.kind or nil
+        v812.pace = pace
+
+        return v812
     end
-    local u34 = false
+
+    local v815 = false
+
     local function wire()
         --[[
           name: wire
           line: 2421
           upvalues:
-            u34 (ref,  index: 1)
-            u8 (ref,  index: 2)
-            tbl_upv_11 (copy, index: 3)
-            u9 (ref,  index: 4)
+            v815 (ref,  index: 1)
+            hasRun (ref,  index: 2)
+            v101 (copy, index: 3)
+            v102 (ref,  index: 4)
             tap (copy, index: 5)
-            tbl_upv_7 (copy, index: 6)
-            UI_upv_1 (copy, index: 7)
+            dropReveal (copy, index: 6)
+            ui (copy, index: 7)
             layout (copy, index: 8)
         ]]
-        if (u34) or not u8 then
+        if v815 or not hasRun then
             return
         end
-        u34 = true
-        tbl_upv_11.catcher.InputBegan:Connect(
-            function(a101)
+
+        v815 = true
+
+        v101.catcher.InputBegan:Connect(
+            function(a817)
                 --[[
                   line: 2430
                   upvalues:
-                    u9 (ref, index: 1)
+                    v102 (ref, index: 1)
                 ]]
-                local UserInputType_1 = a101.UserInputType
-                if (UserInputType_1 == Enum.UserInputType.MouseButton1 or UserInputType_1 == Enum.UserInputType.Touch) and (u9) then
-                    u9.holdAt = os.clock()
+                local userInputType = a817.UserInputType
+
+                if (userInputType == Enum.UserInputType.MouseButton1 or userInputType == Enum.UserInputType.Touch)
+                    and v102
+                then
+                    v102.holdAt = os.clock()
                 end
             end
         )
-        tbl_upv_11.catcher.InputEnded:Connect(
-            function(a102)
+
+        v101.catcher.InputEnded:Connect(
+            function(a819)
                 --[[
                   line: 2438
                   upvalues:
-                    u9 (ref,  index: 1)
-                    tbl_upv_11 (copy, index: 2)
+                    v102 (ref,  index: 1)
+                    v101 (copy, index: 2)
                     tap (copy, index: 3)
                 ]]
-                local UserInputType_2 = a102.UserInputType
-                if (UserInputType_2 == Enum.UserInputType.MouseButton1 or UserInputType_2 == Enum.UserInputType.Touch) and (u9) and (u9.holdAt) then
-                    u9.holdAt = nil
-                    tbl_upv_11.skipFill.Size = UDim2.fromScale(0, 1)
+                local userInputType = a819.UserInputType
+
+                if (userInputType == Enum.UserInputType.MouseButton1 or userInputType == Enum.UserInputType.Touch)
+                    and v102
+                    and v102.holdAt
+                then
+                    v102.holdAt = nil
+                    v101.skipFill.Size = UDim2.fromScale(0, 1)
                     tap()
                 end
             end
         )
-        tbl_upv_11.skip.Activated:Connect(
+
+        v101.skip.Activated:Connect(
             function()
                 --[[
                   line: 2448
                   upvalues:
-                    tbl_upv_7 (copy, index: 1)
+                    dropReveal (copy, index: 1)
                 ]]
-                tbl_upv_7.Skip()
+                dropReveal.Skip()
             end
         )
-        tbl_upv_11.cont.Activated:Connect(
+
+        v101.cont.Activated:Connect(
             function()
                 --[[
                   line: 2451
                   upvalues:
-                    u9 (ref, index: 1)
+                    v102 (ref, index: 1)
                 ]]
-                if not u9 or u9.phase ~= "summary" then
-                    return
+                if v102 and v102.phase == "summary" then
+                    v102.tapped = true
                 end
-                u9.tapped = true
             end
         )
-        UI_upv_1.ScaleChanged:Connect(layout)
-        UI_upv_1.TopInsetChanged:Connect(layout)
-        tbl_upv_11.safe:GetPropertyChangedSignal("AbsoluteSize"):Connect(layout)
+
+        ui.ScaleChanged:Connect(layout)
+        ui.TopInsetChanged:Connect(layout)
+        v101.safe:GetPropertyChangedSignal("AbsoluteSize"):Connect(layout)
     end
-    local Play_upv_2 = tbl_upv_7.Play
-    tbl_upv_7.Play = function(a103, a104)
+
+    local play = dropReveal.Play
+
+    dropReveal.Play = function(a822, a823)
         --[[
           line: 2461
           upvalues:
-            Play_upv_2 (copy, index: 1)
+            play (copy, index: 1)
             wire (copy, index: 2)
         ]]
-        local v230 = Play_upv_2(a103, a104)
-        if v230 then
+        local v824 = play(a822, a823)
+        if v824 then
             wire()
         end
-        return v230
+
+        return v824
     end
-    State_upv_1.MatchEvent:Connect(
-        function(a105)
+
+    state.MatchEvent:Connect(
+        function(a825)
             --[[
               line: 2470
               upvalues:
-                u9 (ref, index: 1)
+                v102 (ref,  index: 1)
+                finish (copy, index: 2)
             ]]
-            if a105 ~= "MatchStart" or not u9 then
-                return
+            if a825 == "MatchStart" and v102 then
+                finish("interrupted", true)
             end
-            finish("interrupted", true)
         end
     )
+
     local function blocked()
         --[[
           name: blocked
           line: 2475
           upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            a1 (copy, index: 2)
+            localPlayer (copy, index: 1)
+            a17 (copy, index: 2)
         ]]
-        local v231 = true
-        if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-            v231 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
-        end
-        return v231
+        return localPlayer:GetAttribute("ReplayPlaying") == true
+            or a17.IsHudHiddenFor("Intro")
+            or a17.IsHudHiddenFor("Celebrate")
     end
+
     task.spawn(
         function()
             --[[
               line: 2478
               upvalues:
-                u9 (ref,  index: 1)
-                LocalPlayer_upv_1 (copy, index: 2)
-                a1 (copy, index: 3)
-                tbl_upv_7 (copy, index: 5)
+                v102 (ref,  index: 1)
+                localPlayer (copy, index: 2)
+                a17 (copy, index: 3)
+                finish (copy, index: 4)
+                dropReveal (copy, index: 5)
             ]]
-            task.wait(0.25)
-            local v232 = nil
-            if u9 then
-                v232 = true
-                if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-                    v232 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
+            while true do
+                task.wait(0.25)
+                local isHudHiddenFor
+
+                if v102 then
+                    local isHudHiddenFor2 = true
+
+                    if localPlayer:GetAttribute("ReplayPlaying") ~= true then
+                        isHudHiddenFor = a17.IsHudHiddenFor("Intro")
+
+                        if isHudHiddenFor then
+                            isHudHiddenFor2 = isHudHiddenFor
+                        else
+                            isHudHiddenFor2 = a17.IsHudHiddenFor("Celebrate")
+                        end
+                    end
+
+                    if isHudHiddenFor2 then
+                        finish("interrupted", true)
+                        continue
+                    end
                 end
-                if v232 then
-                    finish("interrupted", true)
-                elseif u9 then
-                    tbl_upv_7._SweepUi()
+
+                if v102 then
+                    dropReveal._SweepUi()
                 end
-            elseif u9 then
-                tbl_upv_7._SweepUi()
             end
         end
     )
-    local tbl_upv_56 = {}
-    local tbl_upv_57 = {}
-    local tbl_upv_58 = {}
-    local tbl_upv_59 = {}
-    local u35 = ((State_upv_1.GetPlayerState() ~= "Lobby") and math.huge) or (os.clock())
-    local function tryAck(a106)
+
+    local v829 = {}
+    local v830 = {}
+    local v831 = {}
+    local v832 = {}
+
+    if state.GetPlayerState() ~= "Lobby" then
+        v20 = math.huge
+    else
+        v20 = os.clock()
+    end
+
+    local function tryAck(a834)
         --[[
           name: tryAck
           line: 2495
           upvalues:
-            tbl_upv_57 (copy, index: 1)
-            tbl_upv_58 (copy, index: 2)
-            State_upv_1 (copy, index: 3)
-            Players_upv_1 (copy, index: 4)
-            a1 (copy, index: 5)
+            v830 (copy, index: 1)
+            v831 (copy, index: 2)
+            state (copy, index: 3)
+            players (copy, index: 4)
+            a17 (copy, index: 5)
         ]]
-        if (tbl_upv_57[a106]) or ((tbl_upv_58[a106] or 0) >= 4) or (State_upv_1.Mock) or State_upv_1.GetPlayerState() ~= "Lobby" and ((tbl_upv_58[a106] or 0) > 0) then
+        if v830[a834] or 4 <= (v831[a834] or 0) or state.Mock then
             return
         end
-        tbl_upv_58[a106] = (tbl_upv_58[a106] or 0) + 1
+        if state.GetPlayerState() ~= "Lobby" and 0 < (v831[a834] or 0) then
+            return
+        end
+
+        v831[a834] = (v831[a834] or 0) + 1
+
         task.spawn(
             function()
                 --[[
                   line: 2503
                   upvalues:
-                    Players_upv_1 (copy, index: 1)
-                    a1 (copy, index: 2)
-                    a106 (copy, index: 3)
-                    tbl_upv_57 (copy, index: 4)
+                    players (copy, index: 1)
+                    a17 (copy, index: 2)
+                    a834 (copy, index: 3)
+                    v830 (copy, index: 4)
                 ]]
-                local v233 = Players_upv_1.LocalPlayer:FindFirstChild("PlayerScripts") and (Players_upv_1.LocalPlayer.PlayerScripts:FindFirstChild("Core"))
-                local v234 = v233 and (v233:FindFirstChild("InputStats"))
-                if (v234) and (v234:IsA("ModuleScript")) then
-                    v233 = require(v234).Take()
-                else
-                    v233 = 0
+                local core = players.LocalPlayer:FindFirstChild("PlayerScripts")
+                    and players.LocalPlayer.PlayerScripts:FindFirstChild("Core")
+                local inputStats = core and core:FindFirstChild("InputStats")
+                local v837 = if inputStats and inputStats:IsA("ModuleScript") then require(inputStats).Take() else 0
+                local v838, v839 = a17.Remotes.Invoke("ProfileAction", "AckReveal", a834, v837)
+
+                if v838 and v839 == true then
+                    v830[a834] = true
                 end
-                local v235, v236 = a1.Remotes.Invoke("ProfileAction", "AckReveal", a106, v233)
-                if not v235 or v236 ~= true then
-                    return
-                end
-                tbl_upv_57[a106] = true
             end
         )
     end
-    function tbl_upv_7._Seen(a107)
+
+    function dropReveal._Seen(key)
         --[[
           name: _Seen
           line: 2514
           upvalues:
-            tbl_upv_56 (copy, index: 1)
+            v829 (copy, index: 1)
             tryAck (copy, index: 2)
         ]]
-        tbl_upv_56[a107] = true
-        tryAck(a107)
+        v829[key] = true
+        tryAck(key)
     end
-    local function canPlayLobby(a108)
+
+    local function canPlayLobby(a842: boolean)
         --[[
           name: canPlayLobby
           line: 2518
           upvalues:
-            u9 (ref,  index: 1)
-            State_upv_1 (copy, index: 2)
-            LocalPlayer_upv_1 (copy, index: 3)
-            a1 (copy, index: 4)
-            u35 (ref,  index: 5)
+            v102 (ref,  index: 1)
+            state (copy, index: 2)
+            localPlayer (copy, index: 3)
+            a17 (copy, index: 4)
+            v20 (ref,  index: 5)
         ]]
-        if not (u9) and State_upv_1.GetPlayerState() == "Lobby" then
-            local v237 = true
-            if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-                v237 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
-            end
-            if not (v237) then
-                if a1.RankUp and a1.RankUp.IsPlaying() or a1.LossForgiven and a1.LossForgiven.IsPlaying() or a1.IsHudHiddenFor("MatchEnd") then
+        if not v102 and state.GetPlayerState() == "Lobby" then
+            local v843 = localPlayer:GetAttribute("ReplayPlaying") == true
+                or a17.IsHudHiddenFor("Intro")
+                or a17.IsHudHiddenFor("Celebrate")
+            if not v843 then
+                if a17.RankUp and a17.RankUp.IsPlaying() then
                     return false
-                elseif not (a108) then
-                    if not (a1.MenuManager.IsOpen()) and not (os.clock() - u35 < 1.5) and LocalPlayer_upv_1.Character then
-                        if State_upv_1.Get("CombatMode") ~= true then
-                            return true
-                        end
+                end
+                if a17.LossForgiven and a17.LossForgiven.IsPlaying() then
+                    return false
+                end
+                if a17.IsHudHiddenFor("MatchEnd") then
+                    return false
+                end
+
+                if not a842 then
+                    if a17.MenuManager.IsOpen() or os.clock() - v20 < 1.5 or not localPlayer.Character then
                         return false
                     end
-                    return false
-                else
-                    return true
+                    if state.Get("CombatMode") == true then
+                        return false
+                    end
                 end
+
+                return true
             end
         end
+
         return false
     end
+
     local function pump()
         --[[
           name: pump
           line: 2541
           upvalues:
-            u9 (ref,  index: 1)
-            tbl_upv_59 (copy, index: 2)
-            State_upv_1 (copy, index: 3)
-            LocalPlayer_upv_1 (copy, index: 4)
-            a1 (copy, index: 5)
-            tbl_upv_7 (copy, index: 6)
+            v102 (ref,  index: 1)
+            v832 (copy, index: 2)
+            state (copy, index: 3)
+            localPlayer (copy, index: 4)
+            a17 (copy, index: 5)
+            dropReveal (copy, index: 6)
             canPlayLobby (copy, index: 7)
-            tbl_upv_56 (copy, index: 8)
-            tbl_upv_57 (copy, index: 9)
+            v829 (copy, index: 8)
+            v830 (copy, index: 9)
             tryAck (copy, index: 10)
         ]]
-        if u9 then
+        if v102 then
             return
         end
-        if #tbl_upv_59 > 0 then
-            local v238
-            if u9 or State_upv_1.GetPlayerState() ~= "Lobby" then
-                v238 = false
+
+        if 0 < #v832 then
+            local v845
+
+            if v102 or state.GetPlayerState() ~= "Lobby" then
+                v845 = false
             else
-                local v239 = true
-                if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-                    v239 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
-                end
-                if v239 or (a1.RankUp) and (a1.RankUp.IsPlaying()) or (a1.LossForgiven) and (a1.LossForgiven.IsPlaying()) then
-                    v238 = false
+                local v846 = localPlayer:GetAttribute("ReplayPlaying") == true
+                    or a17.IsHudHiddenFor("Intro")
+                    or a17.IsHudHiddenFor("Celebrate")
+
+                if v846 then
+                    v845 = false
                 else
-                    v238 = not (a1.IsHudHiddenFor("MatchEnd"))
+                    v845 = (not a17.RankUp or not a17.RankUp.IsPlaying())
+                        and (if a17.LossForgiven and a17.LossForgiven.IsPlaying() then false else not a17.IsHudHiddenFor("MatchEnd"))
                 end
             end
-            if v238 then
-                tbl_upv_7.Play(table.remove(tbl_upv_59, 1), {source = "robux"})
+
+            if v845 then
+                local removedValue = table.remove(v832, 1)
+                dropReveal.Play(removedValue, {source = "robux"})
+
                 return
             end
         end
+
         if not canPlayLobby(false) then
             return
         end
-        local v240 = State_upv_1.Profile and (State_upv_1.Profile.reveals)
-        if type(v240) ~= "table" then
+
+        local reveals = state.Profile and state.Profile.reveals
+
+        if type(reveals) ~= "table" then
             return
         end
-        for _, value_46 in v240 do
-            local v241 = ((type(value_46) == "table" and value_46.id ~= nil) and (tostring(value_46.id))) or nil
-            if not (v241) or tbl_upv_56[v241] then
-                if not (v241) or not (tbl_upv_56[v241]) then
-                    continue
-                end
-                if not (tbl_upv_57[v241]) then
-                    tryAck(v241)
-                    continue
+
+        for _, reveal in reveals do
+            local text
+
+            if type(reveal) ~= "table" or reveal.id == nil then
+                text = nil
+            else
+                text = tostring(reveal.id)
+                text = text or nil
+            end
+
+            if text and not v829[text] then
+                dropReveal.Play(reveal, {source = "lobby"})
+                return
+            end
+
+            if text then
+                if v829[text] and not v830[text] then
+                    tryAck(text)
                 end
             end
-            tbl_upv_7.Play(value_46, {source = "lobby"})
-            return
         end
     end
-    tbl_upv_7._Pump = function()
+
+    dropReveal._Pump = function()
         --[[
           line: 2567
           upvalues:
@@ -3890,37 +4456,38 @@ function tbl_1.Init(a1)
         ]]
         task.delay(0.6, pump)
     end
-    function tbl_upv_7.Queue(a109)
+
+    function dropReveal.Queue(a852)
         --[[
           name: Queue
           line: 2570
           upvalues:
-            tbl_upv_59 (copy, index: 1)
+            v832 (copy, index: 1)
             pump (copy, index: 2)
         ]]
-        if type(a109) ~= "table" then
-            return
+        if type(a852) == "table" then
+            table.insert(v832, a852)
+            pump()
         end
-        table.insert(tbl_upv_59, a109)
-        pump()
     end
-    State_upv_1.PlayerStateChanged:Connect(
-        function(a110)
+
+    state.PlayerStateChanged:Connect(
+        function(a853)
             --[[
               line: 2576
               upvalues:
-                u35 (ref,  index: 1)
+                v20 (ref,  index: 1)
                 pump (copy, index: 2)
             ]]
-            local v242 = ((a110 ~= "Lobby") and math.huge) or (os.clock())
-            u35 = v242
-            if a110 ~= "Lobby" then
-                return
+            v20 = a853 ~= "Lobby" and math.huge or os.clock()
+
+            if a853 == "Lobby" then
+                task.delay(1.6, pump)
             end
-            task.delay(1.6, pump)
         end
     )
-    State_upv_1.ProfileChanged:Connect(
+
+    state.ProfileChanged:Connect(
         function()
             --[[
               line: 2582
@@ -3930,7 +4497,7 @@ function tbl_1.Init(a1)
             task.defer(pump)
         end
     )
-    a1.MenuManager.Changed:Connect(
+    a17.MenuManager.Changed:Connect(
         function()
             --[[
               line: 2585
@@ -3940,6 +4507,7 @@ function tbl_1.Init(a1)
             task.defer(pump)
         end
     )
+
     task.spawn(
         function()
             --[[
@@ -3953,153 +4521,209 @@ function tbl_1.Init(a1)
             end
         end
     )
+
     local function hookEconomy()
         --[[
           name: hookEconomy
           line: 2595
           upvalues:
-            a1 (copy, index: 1)
+            a17 (copy, index: 1)
+            dropReveal (copy, index: 2)
         ]]
-        local Economy_3 = a1.Economy
-        if not Economy_3 or not Economy_3.Event then
-            return
+        local economy = a17.Economy
+
+        if economy and economy.Event then
+            economy.Event:Connect(
+                function(a856, a857)
+                    --[[
+                      line: 2598
+                      upvalues:
+                        dropReveal (copy, index: 1)
+                    ]]
+                    if a856 ~= "Drop" or type(a857) ~= "table" then
+                        return
+                    end
+
+                    if type(a857.reveals) ~= "table" then
+                        dropReveal.Queue(a857)
+                        return
+                    end
+
+                    for _, reveal in a857.reveals do
+                        dropReveal.Queue(reveal)
+                    end
+                end
+            )
         end
-        Economy_3.Event:Connect(function() end)
     end
-    local Economy_4 = a1.Economy
-    if Economy_4 and Economy_4.Event then
-        Economy_4.Event:Connect(
-            function(a111, a112)
+
+    local economy = a17.Economy
+
+    if economy and economy.Event then
+        economy.Event:Connect(
+            function(a861, a862)
                 --[[
                   line: 2598
                   upvalues:
-                    tbl_upv_7 (copy, index: 1)
+                    dropReveal (copy, index: 1)
                 ]]
-                if a111 ~= "Drop" or type(a112) ~= "table" then
+                if a861 ~= "Drop" or type(a862) ~= "table" then
                     return
                 end
-                if type(a112.reveals) ~= "table" then
-                    tbl_upv_7.Queue(a112)
-                else
-                    for _, value_47 in a112.reveals do
-                        tbl_upv_7.Queue(value_47)
-                    end
+
+                if type(a862.reveals) ~= "table" then
+                    dropReveal.Queue(a862)
+                    return
+                end
+
+                for _, reveal in a862.reveals do
+                    dropReveal.Queue(reveal)
                 end
             end
         )
     end
-    local tbl_upv_60 = {}
-    tbl_upv_60.drop = {kind = "drop", stacks = {{before = 4, levelBefore = 0, item = "crossbow", shards = 6}, {before = 6, levelBefore = 1, item = "bronze_sword", shards = 4}}}
-    tbl_upv_60.victory = {kind = "victory", stacks = {{before = 3, levelBefore = 0, item = "spear", shards = 8}, {before = 1, levelBefore = 2, item = "short_bow", shards = 7}, {before = 1, levelBefore = 1, item = "throwing_knives", shards = 5}}}
-    tbl_upv_60.golden = {kind = "golden", stacks = {{before = 26, levelBefore = 0, item = "longbow", shards = 18}, {before = 2, levelBefore = 0, item = "battle_axe", shards = 16}, {before = 0, levelBefore = 0, item = "fire_bomb", shards = 14}, {before = 3, levelBefore = 1, item = "bandage", shards = 12}}}
-    tbl_upv_60.newitem = {kind = "victory", stacks = {{before = 14, levelBefore = 0, item = "crossbow", shards = 9}, {before = 2, levelBefore = 1, item = "war_club", shards = 6}, {before = 12, levelBefore = 2, item = "sling", shards = 5}}}
-    tbl_upv_7.Mock = function(a113)
+
+    local v865 = {
+        drop = {kind = "drop", stacks = {{item = "crossbow", shards = 6, before = 4, levelBefore = 0}, {item = "bronze_sword", shards = 4, before = 6, levelBefore = 1}}},
+        victory = {kind = "victory", stacks = {{item = "spear", shards = 8, before = 3, levelBefore = 0}, {item = "short_bow", shards = 7, before = 1, levelBefore = 2}, {item = "throwing_knives", shards = 5, before = 1, levelBefore = 1}}},
+        golden = {kind = "golden", stacks = {{item = "longbow", shards = 18, before = 26, levelBefore = 0}, {item = "battle_axe", shards = 16, before = 2, levelBefore = 0}, {item = "fire_bomb", shards = 14, before = 0, levelBefore = 0}, {item = "bandage", shards = 12, before = 3, levelBefore = 1}}},
+        newitem = {kind = "victory", stacks = {{item = "crossbow", shards = 9, before = 14, levelBefore = 0}, {item = "war_club", shards = 6, before = 2, levelBefore = 1}, {item = "sling", shards = 5, before = 12, levelBefore = 2}}}
+    }
+
+    dropReveal.Mock = function(a866)
         --[[
           line: 2649
           upvalues:
-            tbl_upv_60 (copy, index: 1)
+            v865 (copy, index: 1)
         ]]
-        local v243 = tbl_upv_60[a113 or "victory"] or (tbl_upv_60.victory)
-        local v244 = table.clone(v243)
-        v244.id = "mock-" .. tostring(a113 or "victory") .. "-" .. tostring(math.floor(os.clock() * 1000))
-        v244.source = "match"
-        v244.stacks = table.clone(v243.stacks)
-        for key_21, value_48 in v244.stacks do
-            local v245 = table.clone(value_48)
-            v245.after = v245.before + v245.shards
-            v244.stacks[key_21] = v245
+        local v867 = v865[a866 or "victory"] or v865.victory
+        local values = table.clone(v867)
+        values.id = "mock-" .. tostring((a866 or "victory")) .. "-" .. tostring((math.floor(os.clock() * 1000)))
+        values.source = "match"
+        values.stacks = table.clone(v867.stacks)
+
+        for stackKey, stack in values.stacks do
+            local values2 = table.clone(stack)
+            values2.after = values2.before + values2.shards
+            values.stacks[stackKey] = values2
         end
-        return v244
+
+        return values
     end
-    a1.Debug.reveal = function(a114, a115, a116)
+
+    a17.Debug.reveal = function(a872, a873, a874)
         --[[
           line: 2662
           upvalues:
-            tbl_upv_7 (copy, index: 1)
+            dropReveal (copy, index: 1)
         ]]
-        local v246
-        if type(a114) ~= "table" then
-            local Mock_1 = tbl_upv_7.Mock
-            local v247
-            if type(a114) ~= "string" then
-                v247 = "victory"
+        local v875
+        local v876
+
+        if type(a872) ~= "table" then
+            local v877
+            local mock = dropReveal.Mock
+
+            if type(a872) ~= "string" then
+                v877 = "victory"
             else
-                v247 = a114
+                v877 = a872
             end
-            v246 = Mock_1(v247)
+
+            v875 = mock(v877)
         else
-            v246 = a114
+            v875 = a872
         end
-        local v247 = ((type(a116) ~= "table") and {}) or (table.clone(a116))
-        v247.pace = tonumber(a115) or 1
-        v247.source = v247.source or "lobby"
-        return tbl_upv_7.Play(v246, v247)
+
+        if type(a874) ~= "table" then
+            v876 = {}
+        else
+            v876 = table.clone(a874)
+        end
+
+        v876.pace = tonumber(a873) or 1
+        v876.source = v876.source or "lobby"
+
+        return dropReveal.Play(v875, v876)
     end
-    a1.Debug.revealStop = function()
+
+    a17.Debug.revealStop = function()
         --[[
           line: 2669
           upvalues:
-            tbl_upv_7 (copy, index: 1)
+            dropReveal (copy, index: 1)
         ]]
-        tbl_upv_7.Stop(true)
+        dropReveal.Stop(true)
         return true
     end
-    a1.Debug.revealTap = function()
+
+    a17.Debug.revealTap = function()
         --[[
           line: 2673
           upvalues:
             tap (copy, index: 1)
-            tbl_upv_7 (copy, index: 2)
+            dropReveal (copy, index: 2)
         ]]
         tap()
-        return tbl_upv_7.State()
+        return dropReveal.State()
     end
-    a1.Debug.revealSkip = function()
+
+    a17.Debug.revealSkip = function()
         --[[
           line: 2677
           upvalues:
-            tbl_upv_7 (copy, index: 1)
+            dropReveal (copy, index: 1)
         ]]
-        tbl_upv_7.Skip()
-        return tbl_upv_7.State()
+        dropReveal.Skip()
+        return dropReveal.State()
     end
-    a1.Debug.revealState = function()
+
+    a17.Debug.revealState = function()
         --[[
           line: 2681
           upvalues:
-            tbl_upv_7 (copy, index: 1)
-            tbl_upv_59 (copy, index: 2)
-            tbl_upv_56 (copy, index: 3)
+            dropReveal (copy, index: 1)
+            v832 (copy, index: 2)
+            v829 (copy, index: 3)
         ]]
-        local v248 = tbl_upv_7.State()
-        v248.queue = #tbl_upv_59
-        local tbl_61 = {}
-        for key_22 in tbl_upv_56 do
-            table.insert(tbl_61, key_22)
+        local v879 = dropReveal.State()
+        v879.queue = #v832
+        local seen = {}
+
+        for v881 in v829 do
+            table.insert(seen, v881)
         end
-        v248.seen = tbl_61
-        return v248
+
+        v879.seen = seen
+
+        return v879
     end
-    a1.Debug.revealSummary = function(a117)
+
+    a17.Debug.revealSummary = function(a882)
         --[[
           line: 2691
           upvalues:
-            tbl_upv_7 (copy, index: 1)
+            dropReveal (copy, index: 1)
         ]]
-        local v249
-        if type(a117) ~= "table" then
-            local Mock_2 = tbl_upv_7.Mock
-            local v250
-            if type(a117) ~= "string" then
-                v250 = "victory"
+        local v883
+
+        if type(a882) ~= "table" then
+            local v884
+            local mock = dropReveal.Mock
+
+            if type(a882) ~= "string" then
+                v884 = "victory"
             else
-                v250 = a117
+                v884 = a882
             end
-            v249 = Mock_2(v250)
+
+            v883 = mock(v884)
         else
-            v249 = a117
+            v883 = a882
         end
-        return tbl_upv_7.ShowSummary(v249, {source = "lobby"})
+
+        return dropReveal.ShowSummary(v883, {source = "lobby"})
     end
 end
-return tbl_1
+
+return v9

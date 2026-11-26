@@ -1,85 +1,95 @@
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-function tbl_upv_1.new()
+local Class = {}
+Class.__index = Class
+
+function Class.new()
     --[[
       name: new
       line: 15
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    return (setmetatable({_handlers = {}}, tbl_upv_1))
+    return (setmetatable({_handlers = {}}, Class))
 end
-function tbl_upv_1.Connect(a1, a2)
+
+function Class.Connect(self, target)
     --[[
       name: Connect
       line: 19
     ]]
-    local tbl_2 = {Connected = true}
-    local _handlers_upv_1 = a1._handlers
-    function tbl_2.Disconnect(a3)
+    local v4 = {Connected = true}
+    local handlers = self._handlers
+
+    function v4.Disconnect(a6)
         --[[
           name: Disconnect
           line: 22
           upvalues:
-            _handlers_upv_1 (copy, index: 1)
-            a2 (copy, index: 2)
+            handlers (copy, index: 1)
+            target (copy, index: 2)
         ]]
-        a3.Connected = false
-        local v1 = table.find(_handlers_upv_1, a2)
-        if not v1 then
-            return
+        a6.Connected = false
+
+        if const index = table.find(handlers, target) then
+            table.remove(handlers, index)
         end
-        table.remove(_handlers_upv_1, v1)
     end
-    table.insert(_handlers_upv_1, a2)
-    return tbl_2
+
+    table.insert(handlers, target)
+
+    return v4
 end
-function tbl_upv_1.Once(a1, a2)
+
+function Class.Once(self, callback)
     --[[
       name: Once
       line: 33
     ]]
-    local u1 = nil
-    local v2 = a1:Connect(
+    local v10 = nil
+
+    v10 = self:Connect(
         function(...)
             --[[
               line: 35
               upvalues:
-                u1 (ref,  index: 1)
-                a2 (copy, index: 2)
+                v10 (ref,  index: 1)
+                callback (copy, index: 2)
             ]]
-            u1:Disconnect()
-            a2(...)
+            v10:Disconnect()
+            callback(...)
         end
     )
-    u1 = v2
-    return u1
+
+    return v10
 end
-function tbl_upv_1.Fire(a1, ...)
+
+function Class.Fire(self, ...)
     --[[
       name: Fire
       line: 42
     ]]
-    for _, value_1 in table.clone(a1._handlers) do
-        task.spawn(value_1, ...)
+    for _, value in table.clone(self._handlers) do
+        task.spawn(value, ...)
     end
 end
-function tbl_upv_1.Wait(a1)
+
+function Class.Wait(self)
     --[[
       name: Wait
       line: 48
     ]]
-    local u2 = coroutine.running()
-    a1:Once(
+    local v15 = coroutine.running()
+    self:Once(
         function(...)
             --[[
               line: 50
               upvalues:
-                u2 (copy, index: 1)
+                v15 (copy, index: 1)
             ]]
-            task.spawn(u2, ...)
+            task.spawn(v15, ...)
         end
     )
+
     return coroutine.yield()
 end
-return tbl_upv_1
+
+return Class

@@ -1,128 +1,174 @@
-local Chat_upv_1 = game:GetService("Chat")
-local RunService_upv_1 = game:GetService("RunService")
-local ClientChatModules_1 = Chat_upv_1:WaitForChild("ClientChatModules")
-local ChatSettings_upv_1 = require(ClientChatModules_1:WaitForChild("ChatSettings"))
-local ChatConstants_upv_1 = require(ClientChatModules_1:WaitForChild("ChatConstants"))
-local u1 = nil
+local v1
+
+local function FormatMessageToSend(a3, a4, a5)
+    --[[
+      name: FormatMessageToSend
+      line: 17
+    ]]
+    return a5
+end
+
+local chat = game:GetService("Chat")
+local runService = game:GetService("RunService")
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local ChatSettings = require(clientChatModules:WaitForChild("ChatSettings"))
+local ChatConstants = require(clientChatModules:WaitForChild("ChatConstants"))
+local v11 = nil
 pcall(
     function()
         --[[
           line: 14
           upvalues:
-            u1 (ref, index: 1)
+            v11 (ref, index: 1)
         ]]
-        u1 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
+        v11 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
     end
 )
-if u1 == nil then
-    u1 = {}
+
+if v11 == nil then
+    v11 = {}
 end
-if not (u1.FormatMessageToSend) or not (u1.LocalizeFormattedMessage) then
-    function u1.FormatMessageToSend(a1, a2, a3)
-        --[[
-          name: FormatMessageToSend
-          line: 17
-        ]]
-        return a3
-    end
+
+if not v11.FormatMessageToSend or not v11.LocalizeFormattedMessage then
+    v11.FormatMessageToSend = FormatMessageToSend
 end
-local u2 = {}
-u2[1], u2[2], u2[3], u2[4], u2[5] = "\n", "\r", "\t", "\v", "\f"
-if ChatSettings_upv_1.DisallowedWhiteSpace then
-    u2 = ChatSettings_upv_1.DisallowedWhiteSpace
+
+local v12 = {"\n", "\r", "\t", "\v", "\f"}
+
+if ChatSettings.DisallowedWhiteSpace then
+    v1 = ChatSettings.DisallowedWhiteSpace
+else
+    v1 = v12
 end
-local function CanUserChat(a1)
-    --[[
-      name: CanUserChat
-      line: 47
-      upvalues:
-        RunService_upv_1 (copy, index: 1)
-    ]]
-    if RunService_upv_1:IsStudio() then
-        return true
-    end
-    local success_1, v1 = pcall(function() end)
-    return success_1 and v1
-end
-local function isMessageValidServer(a1)
+
+local function isMessageValidServer(text)
     --[[
       name: isMessageValidServer
       line: 27
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        ChatSettings (copy, index: 1)
     ]]
-    if not (ChatSettings_upv_1.MaximumMessageLength * 6 < a1:len()) and utf8.len(a1) ~= nil then
-        if ChatSettings_upv_1.MaximumMessageLength < utf8.len(utf8.nfcnormalize(a1)) then
-            return false
-        end
+    local v15 = text:len()
+
+    if ChatSettings.MaximumMessageLength * 6 < v15 then
+        return false
+    end
+    if utf8.len(text) == nil then
+        return false
+    end
+
+    local length = utf8.len(utf8.nfcnormalize(text))
+
+    if ChatSettings.MaximumMessageLength < length then
+        return false
+    end
+
+    return true
+end
+
+local function CanUserChat(a18)
+    --[[
+      name: CanUserChat
+      line: 47
+      upvalues:
+        runService (copy, index: 1)
+        chat (copy, index: 2)
+    ]]
+    if runService:IsStudio() then
         return true
     end
-    return false
+
+    local success, canUserChatAsync = pcall(
+        function()
+            --[[
+              line: 51
+              upvalues:
+                chat (copy, index: 1)
+                a18 (copy, index: 2)
+            ]]
+            return chat:CanUserChatAsync(a18.UserId)
+        end
+    )
+
+    return success and canUserChatAsync
 end
-local function Run(a1)
+
+return function(a21)
     --[[
       name: Run
       line: 57
       upvalues:
-        Chat_upv_1 (copy, index: 2)
-        u1 (ref,  index: 3)
+        runService (copy, index: 1)
+        chat (copy, index: 2)
+        v11 (ref,  index: 3)
         isMessageValidServer (copy, index: 4)
-        u2 (ref,  index: 5)
-        ChatConstants_upv_1 (copy, index: 6)
+        v1 (ref,  index: 5)
+        ChatConstants (copy, index: 6)
     ]]
-    local function ValidateChatFunction_1(a2, a3, a4)
-        --[[
-          name: ValidateChatFunction
-          line: 58
-          upvalues:
-            a1 (copy, index: 1)
-            Chat_upv_1 (copy, index: 3)
-            u1 (ref,  index: 4)
-            isMessageValidServer (copy, index: 5)
-            u2 (ref,  index: 6)
-        ]]
-        local v2 = a1:GetSpeaker(a2)
-        local u3 = v2:GetPlayer()
-        if v2 and u3 then
-            if not (RunService_upv_1:IsStudio()) and u3.UserId < 1 then
+    a21:RegisterProcessCommandsFunction(
+        "message_validation",
+        function(a22, text, a24)
+            --[[
+              name: ValidateChatFunction
+              line: 58
+              upvalues:
+                a21 (copy, index: 1)
+                runService (copy, index: 2)
+                chat (copy, index: 3)
+                v11 (ref,  index: 4)
+                isMessageValidServer (copy, index: 5)
+                v1 (ref,  index: 6)
+            ]]
+            local canUserChatAsync
+            local speaker = a21:GetSpeaker(a22)
+            local player = speaker:GetPlayer()
+
+            if not speaker then
+                return false
+            end
+            if not player then
+                return false
+            end
+            if not runService:IsStudio() and player.UserId < 1 then
                 return true
             end
-            local v3
-            if RunService_upv_1:IsStudio() then
-                v3 = true
+
+            if runService:IsStudio() then
+                canUserChatAsync = true
             else
-                local success_2, v4 = pcall(
+                local success, canUserChatAsync2 = pcall(
                     function()
                         --[[
                           line: 51
                           upvalues:
-                            Chat_upv_1 (copy, index: 1)
-                            u3 (copy, index: 2)
+                            chat (copy, index: 1)
+                            player (copy, index: 2)
                         ]]
-                        return Chat_upv_1:CanUserChatAsync(u3.UserId)
+                        return chat:CanUserChatAsync(player.UserId)
                     end
                 )
-                v3 = success_2 and v4
+                canUserChatAsync = success and canUserChatAsync2
             end
-            if v3 then
-                if isMessageValidServer(a3) then
-                    for _, value_1 in pairs(u2) do
-                        if not (a3:find(value_1)) then
-                            continue
-                        end
-                        v2:SendSystemMessage(u1:FormatMessageToSend("GameChat_ChatMessageValidator_WhitespaceError", "Your message contains whitespace that is not allowed."), a4)
-                        return true
-                    end
-                    return false
+
+            if not canUserChatAsync then
+                speaker:SendSystemMessage(v11:FormatMessageToSend("GameChat_ChatMessageValidator_SettingsError", "Your chat settings prevent you from sending messages."), a24)
+                return true
+            end
+
+            if not isMessageValidServer(text) then
+                speaker:SendSystemMessage(v11:FormatMessageToSend("GameChat_ChatMessageValidator_MaxLengthError", "Your message exceeds the maximum message length."), a24)
+                return true
+            end
+
+            for _, v31 in pairs(v1) do
+                if text:find(v31) then
+                    speaker:SendSystemMessage(v11:FormatMessageToSend("GameChat_ChatMessageValidator_WhitespaceError", "Your message contains whitespace that is not allowed."), a24)
+                    return true
                 end
-                v2:SendSystemMessage(u1:FormatMessageToSend("GameChat_ChatMessageValidator_MaxLengthError", "Your message exceeds the maximum message length."), a4)
-            else
-                v2:SendSystemMessage(u1:FormatMessageToSend("GameChat_ChatMessageValidator_SettingsError", "Your chat settings prevent you from sending messages."), a4)
             end
-            return true
-        end
-        return false
-    end
-    a1:RegisterProcessCommandsFunction("message_validation", ValidateChatFunction_1, ChatConstants_upv_1.VeryHighPriority)
+
+            return false
+        end,
+        ChatConstants.VeryHighPriority
+    )
 end
-return Run

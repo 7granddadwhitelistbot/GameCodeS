@@ -1,344 +1,463 @@
-local CollectionService_1 = game:GetService("CollectionService")
-local Players_1 = game:GetService("Players")
-local TweenService_upv_1 = game:GetService("TweenService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local tbl_upv_1 = {18, 34}
-local u1 = TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local u2 = Random.new()
-local tbl_upv_2 = {}
-local function anim(a1)
+local collectionService = game:GetService("CollectionService")
+local players = game:GetService("Players")
+local tweenService = game:GetService("TweenService")
+local workspace = game:GetService("Workspace")
+local v5 = {18, 34}
+local tweenInfo = TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local localPlayer = players.LocalPlayer
+local random = Random.new()
+local v9 = {}
+
+local function anim(animationId: string)
     --[[
       name: anim
       line: 45
     ]]
-    local v1 = Instance.new("Animation")
-    v1.AnimationId = a1
-    return v1
+    local animation = Instance.new("Animation")
+    animation.AnimationId = animationId
+    return animation
 end
-local function load(a1, a2, a3, a4)
+
+local function load(a14, animationId: string, priority, looped)
     --[[
       name: load
       line: 51
     ]]
-    local success_1, v2 = pcall(function() end)
-    if success_1 and v2 then
-        v2.Priority = a3
-        v2.Looped = a4
-        return v2
+    local success, result = pcall(
+        function()
+            --[[
+              line: 52
+              upvalues:
+                a14 (copy, index: 1)
+                animationId (copy, index: 2)
+            ]]
+            local animation = Instance.new("Animation")
+            animation.AnimationId = animationId
+
+            return a14:LoadAnimation(animation)
+        end
+    )
+
+    if not success or not result then
+        return nil
     end
-    return nil
+
+    result.Priority = priority
+    result.Looped = looped
+
+    return result
 end
-local function setup(a1)
+
+local function teardown(a22)
+    --[[
+      name: teardown
+      line: 63
+      upvalues:
+        v9 (copy, index: 1)
+    ]]
+    local v23 = v9[a22]
+    if not v23 then
+        return
+    end
+
+    v23.alive = false
+    v9[a22] = nil
+
+    if v23.plateAlpha then
+        v23.plateAlpha:Destroy()
+    end
+
+    for _, v25 in {v23.idle, v23.wave, v23.cheer} do
+        if v25 then
+            v25:Stop(0)
+            v25:Destroy()
+        end
+    end
+end
+
+local function setup(hallOfFameChampion: Instance)
     --[[
       name: setup
       line: 81
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        u2 (copy, index: 2)
+        v9 (copy, index: 1)
+        random (copy, index: 2)
     ]]
-    if not a1:IsA("Model") or (tbl_upv_2[a1]) then
+    if not hallOfFameChampion:IsA("Model") or v9[hallOfFameChampion] then
         return
     end
-    local tbl_upv_3 = {plateShown = false, greetedAt = -math.huge, alive = true}
-    tbl_upv_3.model = a1
-    tbl_upv_3.nextEmote = os.clock() + u2:NextNumber(6, 16)
-    tbl_upv_2[a1] = tbl_upv_3
+
+    local v28 = {root = nil, idle = nil, wave = nil, cheer = nil, greetedAt = -math.huge, alive = true, plate = nil, plateShown = false, plateAlpha = nil, model = hallOfFameChampion, nextEmote = os.clock() + random:NextNumber(6, 16)}
+    v9[hallOfFameChampion] = v28
+
     task.spawn(
         function()
             --[[
               line: 99
               upvalues:
-                a1 (copy, index: 1)
-                tbl_upv_3 (copy, index: 2)
-                u2 (copy, index: 3)
+                hallOfFameChampion (copy, index: 1)
+                v28 (copy, index: 2)
+                random (copy, index: 3)
             ]]
-            local v3 = a1:WaitForChild("Humanoid", 10)
-            local u3 = v3 and (v3:WaitForChild("Animator", 10))
-            if not tbl_upv_3.alive or not u3 then
+            local humanoid = hallOfFameChampion:WaitForChild("Humanoid", 10)
+            local animator = humanoid and humanoid:WaitForChild("Animator", 10)
+
+            if not v28.alive or not animator or not animator:IsA("Animator") then
                 return
             end
-            if u3:IsA("Animator") then
-                local v4 = a1.PrimaryPart or (a1:FindFirstChild("HumanoidRootPart"))
-                tbl_upv_3.root = v4
-                local v5 = a1:GetAttribute("IdleAnim")
-                if type(v5) ~= "string" or v5 == "" then
-                    v4 = "rbxassetid://507766388"
-                else
-                    v4 = v5
+
+            local idleAnim
+            local result
+            local result2
+            local result3
+            local result4
+            local v36 = hallOfFameChampion.PrimaryPart or hallOfFameChampion:FindFirstChild("HumanoidRootPart")
+            v28.root = v36
+            local idleAnim2 = hallOfFameChampion:GetAttribute("IdleAnim")
+
+            if type(idleAnim2) ~= "string" or idleAnim2 == "" then
+                idleAnim = "rbxassetid://507766388"
+            else
+                idleAnim = idleAnim2
+            end
+
+            local idle = Enum.AnimationPriority.Idle
+
+            local success, result5 = pcall(
+                function()
+                    --[[
+                      line: 52
+                      upvalues:
+                        animator (copy, index: 1)
+                        idleAnim (copy, index: 2)
+                    ]]
+                    local animation = Instance.new("Animation")
+                    animation.AnimationId = idleAnim
+
+                    return animator:LoadAnimation(animation)
                 end
-                local success_2, v6 = pcall(function() end)
-                local u4
-                if (success_2) and (v6) then
-                    v6.Priority = Enum.AnimationPriority.Idle
-                    v6.Looped = true
-                    u4 = v6
-                else
-                    u4 = nil
-                end
-                local v9 = nil
-                if not (u4) then
-                    local _ = "rbxassetid://507766388"
-                    local v7
-                    v9, v7 = pcall(function() end)
-                    if (v9) and (v7) then
-                        v7.Priority = Enum.AnimationPriority.Idle
-                        v7.Looped = true
-                        u4 = v7
-                    else
-                        u4 = nil
-                    end
-                end
-                local _ = "rbxassetid://507770239"
-                local success_4, v8 = pcall(function() end)
-                if (success_4) and (v8) then
-                    v8.Priority = Enum.AnimationPriority.Action
-                    v8.Looped = false
-                    v9 = v8
-                else
-                    v9 = nil
-                end
-                tbl_upv_3.wave = v9
-                local u5 = "rbxassetid://507770677"
-                local success_5, v10 = pcall(
+            )
+
+            if success and result5 then
+                result5.Priority = idle
+                result5.Looped = true
+                result = result5
+            else
+                result = nil
+            end
+
+            if result then
+                result2 = result
+            else
+                local idle2 = Enum.AnimationPriority.Idle
+                local animationId = "rbxassetid://507766388"
+
+                local success2, result6 = pcall(
                     function()
                         --[[
                           line: 52
                           upvalues:
-                            u3 (copy, index: 1)
-                            u5 (copy, index: 2)
+                            animator (copy, index: 1)
+                            animationId (copy, index: 2)
                         ]]
-                        local v11 = Instance.new("Animation")
-                        v11.AnimationId = u5
-                        return u3:LoadAnimation(v11)
+                        local animation = Instance.new("Animation")
+                        animation.AnimationId = animationId
+
+                        return animator:LoadAnimation(animation)
                     end
                 )
-                if (success_5) and (v10) then
-                    v10.Priority = Enum.AnimationPriority.Action
-                    v10.Looped = false
-                    v9 = v10
+
+                if success2 and result6 then
+                    result6.Priority = idle2
+                    result6.Looped = true
+                    result2 = result6
                 else
-                    v9 = nil
+                    result2 = nil
                 end
-                tbl_upv_3.cheer = v9
-                if not tbl_upv_3.alive then
-                    return
+            end
+
+            local action = Enum.AnimationPriority.Action
+            local animationId = "rbxassetid://507770239"
+
+            local success3, result7 = pcall(
+                function()
+                    --[[
+                      line: 52
+                      upvalues:
+                        animator (copy, index: 1)
+                        animationId (copy, index: 2)
+                    ]]
+                    local animation = Instance.new("Animation")
+                    animation.AnimationId = animationId
+
+                    return animator:LoadAnimation(animation)
                 end
-                tbl_upv_3.idle = u4
-                if u4 then
-                    u4:Play(0.4, 1, u2:NextNumber(0.85, 1))
-                    task.delay(
-                        0.2,
-                        function()
-                            --[[
-                              line: 118
-                              upvalues:
-                                tbl_upv_3 (copy, index: 1)
-                                u4 (copy, index: 2)
-                                u2 (copy, index: 3)
-                            ]]
-                            if not tbl_upv_3.alive or not (u4.Length > 0) then
-                                return
-                            end
-                            u4.TimePosition = u2:NextNumber(0, u4.Length)
+            )
+
+            if success3 and result7 then
+                result7.Priority = action
+                result7.Looped = false
+                result3 = result7
+            else
+                result3 = nil
+            end
+
+            v28.wave = result3
+            local action2 = Enum.AnimationPriority.Action
+            local animationId2 = "rbxassetid://507770677"
+
+            local success4, result8 = pcall(
+                function()
+                    --[[
+                      line: 52
+                      upvalues:
+                        animator (copy, index: 1)
+                        animationId2 (copy, index: 2)
+                    ]]
+                    local animation = Instance.new("Animation")
+                    animation.AnimationId = animationId2
+
+                    return animator:LoadAnimation(animation)
+                end
+            )
+
+            if success4 and result8 then
+                result8.Priority = action2
+                result8.Looped = false
+                result4 = result8
+            else
+                result4 = nil
+            end
+
+            v28.cheer = result4
+
+            if not v28.alive then
+                return
+            end
+
+            v28.idle = result2
+
+            if result2 then
+                result2:Play(0.4, 1, random:NextNumber(0.85, 1))
+
+                task.delay(
+                    0.2,
+                    function()
+                        --[[
+                          line: 118
+                          upvalues:
+                            v28 (copy, index: 1)
+                            result2 (copy, index: 2)
+                            random (copy, index: 3)
+                        ]]
+                        if v28.alive and 0 < result2.Length then
+                            result2.TimePosition = random:NextNumber(0, result2.Length)
                         end
-                    )
-                end
+                    end
+                )
             end
         end
     )
 end
-for _, value_1 in CollectionService_1:GetTagged("HallOfFameChampion") do
-    setup(value_1)
-end
-CollectionService_1:GetInstanceAddedSignal("HallOfFameChampion"):Connect(setup)
-local function teardown(a1)
+
+local function emote(wave)
     --[[
-      name: teardown
-      line: 63
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
+      name: emote
+      line: 127
     ]]
-    local v12 = tbl_upv_2[a1]
-    if not v12 then
+    if not wave or wave.IsPlaying then
         return
     end
-    v12.alive = false
-    tbl_upv_2[a1] = nil
-    if v12.plateAlpha then
-        v12.plateAlpha:Destroy()
-    end
-    for _, value_2 in {v12.idle, v12.wave, v12.cheer} do
-        if value_2 then
-            value_2:Stop(0)
-            value_2:Destroy()
-        end
-    end
+
+    wave:Play(0.3, 1, 1)
 end
-CollectionService_1:GetInstanceRemovedSignal("HallOfFameChampion"):Connect(
-    function(a1)
+
+for _, hallOfFameChampion in collectionService:GetTagged("HallOfFameChampion") do
+    setup(hallOfFameChampion)
+end
+
+collectionService:GetInstanceAddedSignal("HallOfFameChampion"):Connect(setup)
+
+collectionService:GetInstanceRemovedSignal("HallOfFameChampion"):Connect(
+    function(hallOfFameChampion: Instance)
         --[[
           line: 138
           upvalues:
             teardown (copy, index: 1)
         ]]
-        if not a1:IsA("Model") then
-            return
+        if hallOfFameChampion:IsA("Model") then
+            teardown(hallOfFameChampion)
         end
-        teardown(a1)
     end
 )
-local function bindPlate(a1, a2, a3)
+
+local function bindPlate(a63, plate, plateShown: boolean)
     --[[
       name: bindPlate
       line: 146
     ]]
-    if a1.plateAlpha then
-        a1.plateAlpha:Destroy()
+    local value
+
+    if a63.plateAlpha then
+        a63.plateAlpha:Destroy()
     end
-    local tbl_upv_4 = {}
-    local v13 = nil
-    for _, value_3 in a2:GetDescendants() do
-        if not (value_3:IsA("GuiObject")) then
-            continue
+
+    local v67 = {}
+
+    for _, gui in plate:GetDescendants() do
+        if gui:IsA("GuiObject") then
+            local v70 = {gui = gui, bg = gui.BackgroundTransparency, text = if gui:IsA("TextLabel") then gui.TextTransparency else nil}
+            table.insert(v67, v70)
         end
-        local tbl_5 = {text = 0}
-        tbl_5.gui = value_3
-        tbl_5.bg = value_3.BackgroundTransparency
-        if value_3:IsA("TextLabel") then
-            v13 = value_3.TextTransparency
-        else
-            v13 = nil
-        end
-        tbl_5.text = v13
-        table.insert(tbl_upv_4, tbl_5)
     end
-    local v14 = Instance.new("NumberValue")
-    local function apply_1(a4)
+
+    local plateAlpha = Instance.new("NumberValue")
+
+    local function apply(a73: number)
         --[[
           name: apply
           line: 157
           upvalues:
-            tbl_upv_4 (copy, index: 1)
-            a2 (copy, index: 2)
+            v67 (copy, index: 1)
+            plate (copy, index: 2)
         ]]
-        for _, value_4 in tbl_upv_4 do
-            value_4.gui.BackgroundTransparency = value_4.bg + ((1 - value_4.bg) * a4)
-            if value_4.text then
-                value_4.gui.TextTransparency = value_4.text + ((1 - value_4.text) * a4)
+        for _, v75 in v67 do
+            v75.gui.BackgroundTransparency = v75.bg + ((1 - v75.bg) * a73)
+
+            if v75.text then
+                v75.gui.TextTransparency = v75.text + ((1 - v75.text) * a73)
             end
         end
-        a2.Enabled = a4 < 0.99
+
+        local enabled = a73 < 0.99
+        plate.Enabled = enabled
     end
-    v14.Changed:Connect(apply_1)
-    v14.Value = (a3 and 0) or 1
-    apply_1(v14.Value)
-    a1.plate = a2
-    a1.plateShown = a3
-    a1.plateAlpha = v14
-end
-local function emote(a1)
-    --[[
-      name: emote
-      line: 127
-    ]]
-    if not a1 or (a1.IsPlaying) then
-        return
+
+    plateAlpha.Changed:Connect(apply)
+
+    if plateShown then
+        value = 0
+    else
+        value = 1
     end
-    a1:Play(0.3, 1, 1)
+
+    plateAlpha.Value = value
+    apply(plateAlpha.Value)
+    a63.plate = plate
+    a63.plateShown = plateShown
+    a63.plateAlpha = plateAlpha
 end
-local function updatePlate(a1, a2, a3)
+
+local function updatePlate(a78, a79, position: Vector3)
     --[[
       name: updatePlate
       line: 172
       upvalues:
         bindPlate (copy, index: 1)
-        TweenService_upv_1 (copy, index: 2)
-        u1 (copy, index: 3)
+        tweenService (copy, index: 2)
+        tweenInfo (copy, index: 3)
     ]]
-    local v15 = a2:FindFirstChild("Nameplate")
-    if v15 and v15:IsA("BillboardGui") then
-        local Magnitude_1 = (a2.Position - a3).Magnitude
-        if v15 == a1.plate then
-            if a1.plateShown then
-                v15 = Magnitude_1 <= 31
-            else
-                v15 = Magnitude_1 <= 27
-            end
-            if v15 ~= a1.plateShown and a1.plateAlpha then
-                a1.plateShown = v15
-                local plateAlpha_1 = a1.plateAlpha
-                local tbl_6 = {Value = 0}
-                tbl_6.Value = (v15 and 0) or 1
-                TweenService_upv_1:Create(plateAlpha_1, u1, tbl_6):Play()
-            end
-        else
-            bindPlate(a1, v15, Magnitude_1 <= 27)
-        end
+    local nameplate = a79:FindFirstChild("Nameplate")
+
+    if not nameplate or not nameplate:IsA("BillboardGui") then
+        a78.plate = nil
         return
     end
-    a1.plate = nil
+
+    local magnitude = (a79.Position - position).Magnitude
+
+    if nameplate ~= a78.plate then
+        bindPlate(a78, nameplate, magnitude <= 27)
+        return
+    end
+
+    local plateShown = if a78.plateShown then magnitude <= 31 else magnitude <= 27
+
+    if plateShown ~= a78.plateShown and a78.plateAlpha then
+        local value
+        a78.plateShown = plateShown
+        local plateAlpha = a78.plateAlpha
+        local propertyTable = {}
+
+        if plateShown then
+            value = 0
+        else
+            value = 1
+        end
+
+        propertyTable.Value = value
+        tweenService:Create(plateAlpha, tweenInfo, propertyTable):Play()
+    end
 end
+
 task.spawn(
     function()
         --[[
           line: 191
           upvalues:
-            Workspace_upv_1 (copy, index: 1)
-            LocalPlayer_upv_1 (copy, index: 2)
-            tbl_upv_2 (copy, index: 3)
+            workspace (copy, index: 1)
+            localPlayer (copy, index: 2)
+            v9 (copy, index: 3)
             teardown (copy, index: 4)
             updatePlate (copy, index: 5)
-            u2 (copy, index: 6)
-            tbl_upv_1 (copy, index: 7)
+            random (copy, index: 6)
+            v5 (copy, index: 7)
             emote (copy, index: 8)
         ]]
-        task.wait(0.25)
-        local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
-        local Character_1 = LocalPlayer_upv_1.Character
-        local _ = Character_1 and (Character_1:FindFirstChild("HumanoidRootPart"))
-        local v16 = os.clock()
-        local v17 = nil
-        for key_1, value_5 in tbl_upv_2 do
-            if not (key_1.Parent) then
-                teardown(key_1)
-                continue
-            end
-            local v18 = value_5.root or (key_1.PrimaryPart)
-            if v18 and CurrentCamera_1 then
-                updatePlate(value_5, v18, CurrentCamera_1.CFrame.Position)
-            end
-            if not (v18) or not (value_5.idle) or not (Character_1) then
-                continue
-            end
-            local Magnitude_2 = (v18.Position - Character_1.Position).Magnitude
-            if not (Magnitude_2 <= 22) or not (v16 - value_5.greetedAt > 40) then
-                if not (Magnitude_2 <= 90) or not (value_5.nextEmote <= v16) then
-                    continue
-                end
-                value_5.nextEmote = v16 + u2:NextNumber(tbl_upv_1[1], tbl_upv_1[2])
-                if key_1:GetAttribute("Rank") ~= 1 or not (u2:NextNumber() < 0.6) then
-                    v17 = value_5.wave
-                    if not (v17) then
-                        continue
+        while true do
+            task.wait(0.25)
+            local camera = workspace.CurrentCamera
+            local instance = localPlayer.Character
+            instance = instance and instance:FindFirstChild("HumanoidRootPart")
+            local timestamp = os.clock()
+
+            for v90, v91 in v9 do
+                if v90.Parent then
+                    local v92 = if const root = v91.root then root else v90.PrimaryPart
+
+                    if v92 and camera then
+                        updatePlate(v91, v92, camera.CFrame.Position)
                     end
-                    if not (v17.IsPlaying) then
-                        v17:Play(0.3, 1, 1)
-                        continue
+
+                    if v92 then
+                        if not v91.idle then
+                            continue
+                        end
+                        if not instance then
+                            continue
+                        end
+
+                        local magnitude = (v92.Position - instance.Position).Magnitude
+
+                        if magnitude <= 22 and 40 < timestamp - v91.greetedAt then
+                            v91.greetedAt = timestamp
+                            v91.nextEmote = timestamp + random:NextNumber(v5[1], v5[2])
+                            task.delay(random:NextNumber(0, 0.7), emote, v91.wave)
+                        elseif magnitude <= 90 then
+                            if v91.nextEmote <= timestamp then
+                                local v95
+                                v91.nextEmote = timestamp + random:NextNumber(v5[1], v5[2])
+
+                                if v90:GetAttribute("Rank") == 1 then
+                                    if not (random:NextNumber() < 0.6) then
+                                        v95 = v91.wave
+                                    else
+                                        v95 = v91.cheer
+                                    end
+                                else
+                                    v95 = v91.wave
+                                end
+
+                                if v95 and not v95.IsPlaying then
+                                    v95:Play(0.3, 1, 1)
+                                end
+                            end
+                        end
                     end
-                end
-                v17 = value_5.cheer
-                if not (v17) then
-                    continue
-                end
-                if not (v17.IsPlaying) then
-                    v17:Play(0.3, 1, 1)
-                    continue
+                else
+                    teardown(v90)
                 end
             end
-            value_5.greetedAt = v16
-            value_5.nextEmote = v16 + u2:NextNumber(tbl_upv_1[1], tbl_upv_1[2])
-            task.delay(u2:NextNumber(0, 0.7), emote, value_5.wave)
         end
     end
 )

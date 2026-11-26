@@ -1,79 +1,83 @@
-local tbl_upv_1 = {}
-tbl_upv_1.ID_PATTERN = "^[%w%-_]+$"
-tbl_upv_1.MAX_ID = 40
-tbl_upv_1.REACTABLE = 8
-tbl_upv_1.LIST = {{heading = "Welcome to Tribes", reactions = true, signature = "\226\128\148 SnickTrix", id = "welcome-2026-09-28", author = 22641473, date = "2026-09-28", body = {"If you're reading this, you're here very early. This is my new team based PvP game. It's based on my Minecraft gamemode from 2016.", "I'm updating the game everyday. The meta will be changing often..", "GLHF"}}}
-local tbl_upv_2 = {}
-local tbl_upv_3 = {}
-local v1 = 0
-for _, value_1 in tbl_upv_1.LIST do
-    local v2 = (type(value_1.id) == "string") and ((#value_1.id <= tbl_upv_1.MAX_ID) and (string.match(value_1.id, tbl_upv_1.ID_PATTERN)))
-    assert(v2, "bad letter id")
-    assert(tbl_upv_2[value_1.id] == nil, "duplicate letter id " .. value_1.id)
-    tbl_upv_2[value_1.id] = value_1
-    if value_1.reactions == false then
-        continue
-    end
-    if v1 < tbl_upv_1.REACTABLE then
-        tbl_upv_3[value_1.id] = true
-        v1 = v1 + 1
+local v1 = {ID_PATTERN = "^[%w%-_]+$", MAX_ID = 40, REACTABLE = 8, LIST = {{id = "welcome-2026-09-28", date = "2026-09-28", author = 22641473, heading = "Welcome to Tribes", signature = "— SnickTrix", reactions = true, body = {"If you're reading this, you're here very early. This is my new team based PvP game. It's based on my Minecraft gamemode from 2016.", "I'm updating the game everyday. The meta will be changing often..", "GLHF"}}}}
+local v2 = {}
+local v3 = {}
+local count = 0
+
+for _, v6 in v1.LIST do
+    assert((type(v6.id) == "string" and #v6.id <= v1.MAX_ID and string.match(v6.id, v1.ID_PATTERN)), "bad letter id")
+    assert(v2[v6.id] == nil, "duplicate letter id " .. v6.id)
+    v2[v6.id] = v6
+
+    if v6.reactions ~= false and count < v1.REACTABLE then
+        v3[v6.id] = true
+        count += 1
     end
 end
-function tbl_upv_1.Current()
+
+function v1.Current()
     --[[
       name: Current
       line: 62
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    return tbl_upv_1.LIST[1]
+    return v1.LIST[1]
 end
-function tbl_upv_1.Get(a1)
+
+function v1.Get(key)
     --[[
       name: Get
       line: 66
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v2 (copy, index: 1)
     ]]
-    if type(a1) ~= "string" then
+    if type(key) ~= "string" then
         return nil
     end
-    return tbl_upv_2[a1]
+
+    return v2[key]
 end
-function tbl_upv_1.CanReact(a1)
+
+function v1.CanReact(key)
     --[[
       name: CanReact
       line: 71
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v3 (copy, index: 1)
     ]]
-    local v3 = (type(a1) == "string") and (tbl_upv_3[a1] == true)
-    return v3
+    return type(key) == "string" and v3[key] == true
 end
-function tbl_upv_1.ReactableIds()
+
+function v1.ReactableIds()
     --[[
       name: ReactableIds
       line: 76
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
+        v1 (copy, index: 1)
+        v3 (copy, index: 2)
     ]]
-    local tbl_4 = {}
-    for _, value_2 in tbl_upv_1.LIST do
-        if tbl_upv_3[value_2.id] then
-            table.insert(tbl_4, value_2.id)
+    local v9 = {}
+
+    for _, v11 in v1.LIST do
+        if v3[v11.id] then
+            table.insert(v9, v11.id)
         end
     end
-    return tbl_4
+
+    return v9
 end
-function tbl_upv_1.IsIdShape(a1)
+
+function v1.IsIdShape(text: string)
     --[[
       name: IsIdShape
       line: 87
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    local v4 = (type(a1) == "string") and ((#a1 > 0) and ((#a1 <= tbl_upv_1.MAX_ID) and (string.match(a1, tbl_upv_1.ID_PATTERN) ~= nil)))
-    return v4
+    return type(text) == "string"
+        and 0 < #text
+        and #text <= v1.MAX_ID
+        and string.match(text, v1.ID_PATTERN) ~= nil
 end
-return tbl_upv_1
+
+return v1

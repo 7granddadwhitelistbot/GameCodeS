@@ -1,488 +1,574 @@
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local SoundService_upv_1 = game:GetService("SoundService")
-local Signal_1 = require(ReplicatedStorage_upv_1:WaitForChild("Shared"):WaitForChild("Signal"))
-local Keybinds_upv_1 = require(ReplicatedStorage_upv_1.Shared:WaitForChild("Keybinds"))
-local tbl_upv_1 = {}
-tbl_upv_1.Changed = Signal_1.new()
-tbl_upv_1.DEFAULTS = {padSensitivity = 1, aimSensitivity = 1, mmRanked = 1, padInvertY = 0, mmRegions = 0, mmAutoRegion = 1, sensitivity = 1, aimZoom = 1, modeSel = 0, aimAssist = 1, mmNoBots = 0, attackAim = 1, friendsOnlyInvites = 0, sfx = 1, fov = 70, mmPremium = 0, music = 0.6, viewBobbing = 1, firstPerson = 0}
-tbl_upv_1.MEMORY = {modeSel = true}
-tbl_upv_1.RANGES = {sensitivity = {0.05, 3}, padSensitivity = {0.2, 3}, padInvertY = {0, 1}, fov = {60, 100}, aimZoom = {0, 1}, aimSensitivity = {0.2, 3}, music = {0, 1}, sfx = {0, 1}, firstPerson = {0, 1}, viewBobbing = {0, 1}, friendsOnlyInvites = {0, 1}, aimAssist = {0, 1}, attackAim = {0, 1}, mmNoBots = {0, 1}, mmAutoRegion = {0, 1}, mmRegions = {0, 63}, mmPremium = {0, 1}, mmRanked = {0, 1}, modeSel = {0, 7}}
-local u1 = table.clone(tbl_upv_1.DEFAULTS)
-local u2 = false
-local u3 = nil
-local function shared(a1)
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local soundService = game:GetService("SoundService")
+local Signal = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Signal"))
+local Keybinds = require(replicatedStorage.Shared:WaitForChild("Keybinds"))
+local v5 = {
+    Changed = Signal.new(),
+    DEFAULTS = {sensitivity = 1, padSensitivity = 1, padInvertY = 0, fov = 70, aimZoom = 1, aimSensitivity = 1, music = 0.6, sfx = 1, firstPerson = 0, viewBobbing = 1, friendsOnlyInvites = 0, aimAssist = 1, attackAim = 1, mmNoBots = 0, mmAutoRegion = 1, mmRegions = 0, mmPremium = 0, mmRanked = 1, modeSel = 0},
+    MEMORY = {modeSel = true},
+    RANGES = {sensitivity = {0.05, 3}, padSensitivity = {0.2, 3}, padInvertY = {0, 1}, fov = {60, 100}, aimZoom = {0, 1}, aimSensitivity = {0.2, 3}, music = {0, 1}, sfx = {0, 1}, firstPerson = {0, 1}, viewBobbing = {0, 1}, friendsOnlyInvites = {0, 1}, aimAssist = {0, 1}, attackAim = {0, 1}, mmNoBots = {0, 1}, mmAutoRegion = {0, 1}, mmRegions = {0, 63}, mmPremium = {0, 1}, mmRanked = {0, 1}, modeSel = {0, 7}}
+}
+local values = table.clone(v5.DEFAULTS)
+local v7 = false
+local v8 = nil
+
+local function shared(childName: string)
     --[[
       name: shared
       line: 51
       upvalues:
-        ReplicatedStorage_upv_1 (copy, index: 1)
+        replicatedStorage (copy, index: 1)
     ]]
-    local v1 = ReplicatedStorage_upv_1.Shared:FindFirstChild(a1)
-    if v1 and v1:IsA("ModuleScript") then
-        local success_1, v2 = pcall(require, v1)
-        if success_1 and type(v2) == "table" then
-            return v2
+    local child = replicatedStorage.Shared:FindFirstChild(childName)
+
+    if child and child:IsA("ModuleScript") then
+        local success, result = pcall(require, child)
+
+        if success and type(result) == "table" then
+            return result
         end
     end
+
     return nil
 end
-local tbl_upv_2 = {}
-local function setGroup(a1, a2)
+
+local v14 = {}
+
+local function setGroup(childName: string, a17)
     --[[
       name: setGroup
       line: 63
       upvalues:
-        SoundService_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
+        soundService (copy, index: 1)
+        v14 (copy, index: 2)
     ]]
-    local v3 = SoundService_upv_1:FindFirstChild(a1)
-    if not v3 or not v3:IsA("SoundGroup") then
-        return
+    local child = soundService:FindFirstChild(childName)
+
+    if child and child:IsA("SoundGroup") then
+        if not v14[child] then
+            v14[child] = child.Volume
+        end
+
+        child.Volume = v14[child] * a17
     end
-    if not (tbl_upv_2[v3]) then
-        tbl_upv_2[v3] = v3.Volume
-    end
-    v3.Volume = tbl_upv_2[v3] * a2
 end
-function tbl_upv_1.Get(a1)
-    --[[
-      name: Get
-      line: 118
-      upvalues:
-        u1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-    ]]
-    return u1[a1] or (tbl_upv_1.DEFAULTS[a1] or 0)
-end
-local tbl_upv_3 = {}
-local function apply(a1)
+
+local function apply(valueKey)
     --[[
       name: apply
       line: 73
       upvalues:
-        u1 (copy, index: 1)
-        ReplicatedStorage_upv_1 (copy, index: 2)
-        SoundService_upv_1 (copy, index: 3)
-        tbl_upv_2 (copy, index: 4)
+        values (copy, index: 1)
+        replicatedStorage (copy, index: 2)
+        soundService (copy, index: 3)
+        v14 (copy, index: 4)
     ]]
-    local v4 = u1[a1]
-    if a1 == "sensitivity" or a1 == "fov" or a1 == "aimZoom" then
-        local v5 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Camera")
-        local v6
-        if v5 then
-            v5:IsA("ModuleScript")
-        end
-        v6 = nil
-        if v6 then
-            if a1 == "sensitivity" then
-                v5 = v6.SetSensitivity
-            elseif a1 == "fov" then
-                v5 = v6.SetFOV
-            elseif a1 ~= "aimZoom" then
-                v5 = v6.SetAimSensitivity
-            else
-                v5 = v6.SetAimZoom
-            end
-        else
-            v5 = v6
-        end
-        if type(v5) ~= "function" then
-            return
-        end
-        pcall(v5, v4)
-    else
-        local v7 = nil
-        if a1 == "aimSensitivity" then
-            v7 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Camera")
-            local v6
-            if v7 then
-                v7:IsA("ModuleScript")
-            end
-            v6 = nil
-            if v6 then
-                if a1 == "sensitivity" then
-                    v7 = v6.SetSensitivity
-                elseif a1 == "fov" then
-                    v7 = v6.SetFOV
-                elseif a1 ~= "aimZoom" then
-                    v7 = v6.SetAimSensitivity
-                else
-                    v7 = v6.SetAimZoom
-                end
-            else
-                v7 = v6
-            end
-            if type(v7) ~= "function" then
-                return
-            end
-            pcall(v7, v4)
-        elseif a1 == "padSensitivity" then
-            v7 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Camera")
-            local v8
-            if v7 then
-                v7:IsA("ModuleScript")
-            end
-            v8 = nil
-            local v9 = v8 and (v8.PadLook)
-            if type(v9) ~= "table" then
-                return
-            end
-            if a1 ~= "padSensitivity" then
-                pcall(v9.SetInvertY, v4 >= 0.5)
-            else
-                pcall(v9.SetSensitivity, v4)
-            end
-        else
-            local v10 = nil
-            if a1 == "padInvertY" then
-                v7 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Camera")
-                local v8
-                if v7 then
-                    v7:IsA("ModuleScript")
-                end
-                v8 = nil
-                local v9 = v8 and (v8.PadLook)
-                if type(v9) ~= "table" then
-                    return
-                end
-                if a1 ~= "padSensitivity" then
-                    pcall(v9.SetInvertY, v4 >= 0.5)
-                else
-                    pcall(v9.SetSensitivity, v4)
-                end
-            elseif a1 ~= "firstPerson" and a1 ~= "viewBobbing" and a1 ~= "aimAssist" then
-                local v11, v6 = nil, nil
-                if a1 == "attackAim" then
-                    v6 = game:GetService("Players").LocalPlayer
-                    if not v6 then
+    local result
+    local value = values[valueKey]
+
+    if valueKey ~= "sensitivity" and valueKey ~= "fov" and valueKey ~= "aimZoom" and valueKey ~= "aimSensitivity" then
+        local result2
+
+        if valueKey ~= "padSensitivity" and valueKey ~= "padInvertY" then
+            local result3
+
+            if valueKey ~= "firstPerson" and valueKey ~= "viewBobbing" and valueKey ~= "aimAssist" then
+                if valueKey == "attackAim" then
+                    local localPlayer = game:GetService("Players").LocalPlayer
+                    if not localPlayer then
                         return
                     end
-                    v6:SetAttribute("TouchAttackLookOff", ((v4 < 0.5) and true) or nil)
-                elseif a1 == "music" or a1 == "sfx" then
-                    v11 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Sfx")
-                    local v12
-                    if v11 then
-                        v11:IsA("ModuleScript")
-                    end
-                    for _, value_1 in ((a1 ~= "music") and {"SFX", "UI", "Ambient"}) or {"Music"} do
-                        if not (v12) or type(v12.SetVolume) ~= "function" then
-                            local v13 = SoundService_upv_1:FindFirstChild(value_1)
-                            if not (v13) or not (v13:IsA("SoundGroup")) then
-                                continue
-                            end
-                            if not (tbl_upv_2[v13]) then
-                                tbl_upv_2[v13] = v13.Volume
-                            end
-                            v13.Volume = tbl_upv_2[v13] * v4
-                        end
-                        pcall(v12.SetVolume, value_1, v4)
-                    end
-                end
-            else
-                v10 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Camera")
-                local v14
-                if v10 then
-                    v10:IsA("ModuleScript")
-                end
-                v14 = nil
-                if v14 then
-                    if a1 == "firstPerson" then
-                        v10 = v14.SetFirstPerson
-                    elseif a1 ~= "aimAssist" then
-                        v10 = v14.SetViewBobbing
-                    else
-                        v10 = v14.SetAimAssist
-                    end
-                else
-                    v10 = v14
-                end
-                if type(v10) ~= "function" then
+
+                    local touchAttackLookOff = value < 0.5 or nil
+                    localPlayer:SetAttribute("TouchAttackLookOff", touchAttackLookOff)
+
                     return
                 end
-                pcall(v10, v4 >= 0.5)
+
+                if valueKey ~= "music" and valueKey ~= "sfx" then
+                    return
+                end
+
+                local result4
+
+                if const sfx = replicatedStorage.Shared:FindFirstChild("Sfx") then
+                    if sfx:IsA("ModuleScript") then
+                        local success, result5 = pcall(require, sfx)
+
+                        if not success or type(result5) ~= "table" then
+                            result4 = nil
+                        else
+                            result4 = result5
+                        end
+                    else
+                        result4 = nil
+                    end
+                else
+                    result4 = nil
+                end
+
+                local childNames = valueKey ~= "music" and {"SFX", "UI", "Ambient"} or {"Music"}
+
+                for _, childName in childNames do
+                    if not result4 or type(result4.SetVolume) ~= "function" then
+                        if const child = soundService:FindFirstChild(childName) then
+                            if not child:IsA("SoundGroup") then
+                                continue
+                            end
+
+                            if not v14[child] then
+                                v14[child] = child.Volume
+                            end
+
+                            child.Volume = v14[child] * value
+                        end
+                    else
+                        pcall(result4.SetVolume, childName, value)
+                    end
+                end
+
+                return
+            elseif const camera = replicatedStorage.Shared:FindFirstChild("Camera") then
+                if camera:IsA("ModuleScript") then
+                    local success, result6 = pcall(require, camera)
+
+                    if not success or type(result6) ~= "table" then
+                        result3 = nil
+                    else
+                        result3 = result6
+                    end
+                else
+                    result3 = nil
+                end
+            else
+                result3 = nil
             end
+
+            local v38 = result3
+            if v38 then
+                if valueKey ~= "firstPerson" then
+                    v38 = if valueKey == "aimAssist" then result3.SetAimAssist else result3.SetViewBobbing
+                else
+                    v38 = result3.SetFirstPerson
+                end
+            end
+
+            if type(v38) ~= "function" then
+                return
+            end
+
+            pcall(v38, 0.5 <= value)
+
+            return
+        elseif const camera = replicatedStorage.Shared:FindFirstChild("Camera") then
+            if camera:IsA("ModuleScript") then
+                local success, result7 = pcall(require, camera)
+
+                if not success or type(result7) ~= "table" then
+                    result2 = nil
+                else
+                    result2 = result7
+                end
+            else
+                result2 = nil
+            end
+        else
+            result2 = nil
+        end
+
+        local padLook = result2 and result2.PadLook
+
+        if type(padLook) ~= "table" then
+            return
+        end
+
+        if valueKey == "padSensitivity" then
+            pcall(padLook.SetSensitivity, value)
+            return
+        end
+
+        pcall(padLook.SetInvertY, 0.5 <= value)
+
+        return
+    end
+
+    local camera = replicatedStorage.Shared:FindFirstChild("Camera")
+
+    if not camera or not camera:IsA("ModuleScript") then
+        result = nil
+    else
+        local success, result8 = pcall(require, camera)
+
+        if not success or type(result8) ~= "table" then
+            result = nil
+        else
+            result = result8
         end
     end
+
+    local v46 = result
+    if v46 then
+        if valueKey == "sensitivity" then
+            v46 = result.SetSensitivity
+        elseif valueKey == "fov" then
+            v46 = result.SetFOV
+        else
+            v46 = if valueKey == "aimZoom" then result.SetAimZoom else result.SetAimSensitivity
+        end
+    end
+
+    if type(v46) ~= "function" then
+        return
+    end
+
+    pcall(v46, value)
 end
-function tbl_upv_1.Set(a1, a2, a3)
+
+function v5.Get(defaultKey)
+    --[[
+      name: Get
+      line: 118
+      upvalues:
+        values (copy, index: 1)
+        v5 (copy, index: 2)
+    ]]
+    return values[defaultKey] or v5.DEFAULTS[defaultKey] or 0
+end
+
+local v48 = {}
+
+function v5.Set(rangeKey, a50, a51)
     --[[
       name: Set
       line: 125
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u1 (copy, index: 2)
+        v5 (copy, index: 1)
+        values (copy, index: 2)
         apply (copy, index: 3)
-        u3 (ref,  index: 4)
-        tbl_upv_3 (copy, index: 5)
+        v8 (ref,  index: 4)
+        v48 (copy, index: 5)
     ]]
-    local v15 = tbl_upv_1.RANGES[a1]
-    if v15 then
-        a2 = math.clamp(a2, v15[1], v15[2])
+    if const range = v5.RANGES[rangeKey] then
+        a50 = math.clamp(a50, range[1], range[2])
     end
-    u1[a1] = a2
-    apply(a1)
-    tbl_upv_1.Changed:Fire(a1, a2)
-    if not a3 then
-        return
-    end
-    if u3 then
-        tbl_upv_3[a1] = (tbl_upv_3[a1] or 0) + 1
-        local u4 = tbl_upv_3[a1]
+
+    values[rangeKey] = a50
+    apply(rangeKey)
+    v5.Changed:Fire(rangeKey, a50)
+
+    if a51 and v8 then
+        v48[rangeKey] = (v48[rangeKey] or 0) + 1
+        local v53 = v48[rangeKey]
+
         local function send()
             --[[
               name: send
               line: 136
               upvalues:
-                tbl_upv_3 (copy, index: 1)
-                a1 (copy, index: 2)
-                u4 (copy, index: 3)
-                u3 (ref,  index: 4)
-                u1 (copy, index: 5)
+                v48 (copy, index: 1)
+                rangeKey (copy, index: 2)
+                v53 (copy, index: 3)
+                v8 (ref,  index: 4)
+                values (copy, index: 5)
             ]]
-            if tbl_upv_3[a1] ~= u4 or (u3.State.Mock) then
-                return
+            if v48[rangeKey] == v53 and not v8.State.Mock then
+                v8.Remotes.Invoke("ProfileAction", "SetSetting", rangeKey, math.floor((values[rangeKey] * 1000) + 0.5) / 1000)
             end
-            u3.Remotes.Invoke("ProfileAction", "SetSetting", a1, math.floor((u1[a1] * 1000) + 0.5) / 1000)
         end
-        if a3 ~= "now" then
+
+        if a51 ~= "now" then
             task.delay(0.8, send)
         else
             task.spawn(send)
         end
     end
 end
-local tbl_upv_4 = {}
-local u5 = false
-local u6 = -math.huge
+
+local v55 = {}
+local v56 = false
+local timestamp = -math.huge
+
 local function flushKeybinds()
     --[[
       name: flushKeybinds
       line: 153
       upvalues:
-        u5 (ref,  index: 1)
-        u3 (ref,  index: 2)
-        tbl_upv_4 (copy, index: 3)
-        u6 (ref,  index: 4)
+        v56 (ref,  index: 1)
+        v8 (ref,  index: 2)
+        v55 (copy, index: 3)
+        timestamp (ref,  index: 4)
         flushKeybinds (copy, index: 5)
-        Keybinds_upv_1 (copy, index: 6)
+        Keybinds (copy, index: 6)
     ]]
-    u5 = false
-    if u3 and not u3.State.Mock and next(tbl_upv_4) ~= nil then
-        local v16 = 2.2 - (os.clock() - u6)
-        if v16 > 0 then
-            u5 = true
-            task.delay(v16, flushKeybinds)
-        else
-            local tbl_5 = {}
-            local tbl_6 = {}
-            for key_1 in tbl_upv_4 do
-                tbl_5[key_1] = Keybinds_upv_1.SettingValueFor(key_1)
-                table.insert(tbl_6, key_1)
-                if #tbl_6 >= 24 then
-                    break
-                end
-            end
-            for _, value_2 in tbl_6 do
-                tbl_upv_4[value_2] = nil
-            end
-            u6 = os.clock()
-            local v17, v18 = u3.Remotes.Invoke("ProfileAction", "SetSettings", tbl_5)
-            if next(tbl_upv_4) ~= nil and not (u5) then
-                u5 = true
-                task.delay(2.3, flushKeybinds)
-            end
-            if not v17 or v18 ~= true then
-                for _, value_3 in tbl_6 do
-                    tbl_upv_4[value_3] = true
-                end
-                if not (u5) then
-                    u5 = true
-                    task.delay(3, flushKeybinds)
-                end
-            end
+    v56 = false
+
+    if not v8 or v8.State.Mock or next(v55) == nil then
+        table.clear(v55)
+        return
+    end
+
+    local v59 = 2.2 - (os.clock() - timestamp)
+
+    if 0 < v59 then
+        v56 = true
+        task.delay(v59, flushKeybinds)
+
+        return
+    end
+
+    local v60 = {}
+    local v61 = {}
+
+    for v62 in v55 do
+        v60[v62] = Keybinds.SettingValueFor(v62)
+        table.insert(v61, v62)
+
+        if 24 <= #v61 then
+            break
         end
-    else
-        table.clear(tbl_upv_4)
+    end
+
+    for _, v64 in v61 do
+        v55[v64] = nil
+    end
+
+    timestamp = os.clock()
+    local v65, v66 = v8.Remotes.Invoke("ProfileAction", "SetSettings", v60)
+
+    if next(v55) ~= nil and not v56 then
+        v56 = true
+        task.delay(2.3, flushKeybinds)
+    end
+
+    if not v65 or v66 ~= true then
+        for _, v68 in v61 do
+            v55[v68] = true
+        end
+
+        if not v56 then
+            v56 = true
+            task.delay(3, flushKeybinds)
+        end
     end
 end
-local u7 = -math.huge
-local function queueKeys(a1, a2)
+
+local timestamp2 = -math.huge
+
+local function queueKeys(a71, a72)
     --[[
       name: queueKeys
       line: 195
       upvalues:
-        u7 (ref,  index: 1)
-        tbl_upv_4 (copy, index: 2)
-        u5 (ref,  index: 3)
+        timestamp2 (ref,  index: 1)
+        v55 (copy, index: 2)
+        v56 (ref,  index: 3)
         flushKeybinds (copy, index: 4)
     ]]
-    u7 = os.clock()
-    for _, value_4 in a2 do
-        tbl_upv_4[a1 .. value_4] = true
+    timestamp2 = os.clock()
+
+    for _, v74 in a72 do
+        v55[a71 .. v74] = true
     end
-    if (u5) then
-        return
+
+    if not v56 then
+        v56 = true
+        task.delay(0.6, flushKeybinds)
     end
-    u5 = true
-    task.delay(0.6, flushKeybinds)
 end
-function tbl_upv_1.SaveKeybinds(a1)
+
+function v5.SaveKeybinds(a75)
     --[[
       name: SaveKeybinds
       line: 205
       upvalues:
-        Keybinds_upv_1 (copy, index: 1)
-        u7 (ref,  index: 2)
-        tbl_upv_4 (copy, index: 3)
-        u5 (ref,  index: 4)
+        Keybinds (copy, index: 1)
+        timestamp2 (ref,  index: 2)
+        v55 (copy, index: 3)
+        v56 (ref,  index: 4)
         flushKeybinds (copy, index: 5)
     ]]
-    local PREFIX_1 = Keybinds_upv_1.PREFIX
-    u7 = os.clock()
-    for _, value_5 in a1 do
-        tbl_upv_4[PREFIX_1 .. value_5] = true
+    local prefix = Keybinds.PREFIX
+    timestamp2 = os.clock()
+
+    for _, v78 in a75 do
+        v55[prefix .. v78] = true
     end
-    if (u5) then
-        return
+
+    if not v56 then
+        v56 = true
+        task.delay(0.6, flushKeybinds)
     end
-    u5 = true
-    task.delay(0.6, flushKeybinds)
 end
-function tbl_upv_1.SavePadBinds(a1)
+
+function v5.SavePadBinds(a79)
     --[[
       name: SavePadBinds
       line: 209
       upvalues:
-        Keybinds_upv_1 (copy, index: 1)
-        u7 (ref,  index: 2)
-        tbl_upv_4 (copy, index: 3)
-        u5 (ref,  index: 4)
+        Keybinds (copy, index: 1)
+        timestamp2 (ref,  index: 2)
+        v55 (copy, index: 3)
+        v56 (ref,  index: 4)
         flushKeybinds (copy, index: 5)
     ]]
-    local PAD_PREFIX_1 = Keybinds_upv_1.PAD_PREFIX
-    u7 = os.clock()
-    for _, value_6 in a1 do
-        tbl_upv_4[PAD_PREFIX_1 .. value_6] = true
+    local padPrefix = Keybinds.PAD_PREFIX
+    timestamp2 = os.clock()
+
+    for _, v82 in a79 do
+        v55[padPrefix .. v82] = true
     end
-    if (u5) then
-        return
+
+    if not v56 then
+        v56 = true
+        task.delay(0.6, flushKeybinds)
     end
-    u5 = true
-    task.delay(0.6, flushKeybinds)
 end
-function tbl_upv_1.PendingKeys()
+
+function v5.PendingKeys()
     --[[
       name: PendingKeys
       line: 213
       upvalues:
-        tbl_upv_4 (copy, index: 1)
+        v55 (copy, index: 1)
     ]]
-    local tbl_7 = {}
-    for key_2 in tbl_upv_4 do
-        table.insert(tbl_7, key_2)
+    local v83 = {}
+
+    for v84 in v55 do
+        table.insert(v83, v84)
     end
-    table.sort(tbl_7)
-    return tbl_7
+
+    table.sort(v83)
+
+    return v83
 end
-function tbl_upv_1.Init(a1)
+
+function v5.Init(a85)
     --[[
       name: Init
       line: 222
       upvalues:
-        u3 (ref,  index: 1)
-        u2 (ref,  index: 2)
-        Keybinds_upv_1 (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
-        u1 (copy, index: 5)
+        v8 (ref,  index: 1)
+        v7 (ref,  index: 2)
+        Keybinds (copy, index: 3)
+        v5 (copy, index: 4)
+        values (copy, index: 5)
         apply (copy, index: 6)
-        tbl_upv_4 (copy, index: 7)
-        u5 (ref,  index: 8)
-        u7 (ref,  index: 9)
-        ReplicatedStorage_upv_1 (copy, index: 10)
+        v55 (copy, index: 7)
+        v56 (ref,  index: 8)
+        timestamp2 (ref,  index: 9)
+        replicatedStorage (copy, index: 10)
     ]]
-    u3 = a1
-    local function fromProfile(a2)
+    local result
+    v8 = a85
+
+    local function fromProfile(a88)
         --[[
           name: fromProfile
           line: 224
           upvalues:
-            u2 (ref,  index: 1)
-            Keybinds_upv_1 (copy, index: 2)
-            tbl_upv_1 (copy, index: 3)
-            u1 (copy, index: 4)
+            v7 (ref,  index: 1)
+            Keybinds (copy, index: 2)
+            v5 (copy, index: 3)
+            values (copy, index: 4)
             apply (copy, index: 5)
         ]]
-        if u2 or type(a2) ~= "table" or type(a2.settings) ~= "table" then
+        if v7 or type(a88) ~= "table" or type(a88.settings) ~= "table" then
             return
         end
-        u2 = true
-        Keybinds_upv_1.Load(a2.settings)
-        for key_3 in tbl_upv_1.DEFAULTS do
-            local v19 = a2.settings[key_3]
-            if type(v19) == "number" then
-                u1[key_3] = v19
+
+        v7 = true
+        Keybinds.Load(a88.settings)
+
+        for settingKey in v5.DEFAULTS do
+            local setting = a88.settings[settingKey]
+
+            if type(setting) == "number" then
+                values[settingKey] = setting
             end
         end
-        for key_4 in tbl_upv_1.DEFAULTS do
-            apply(key_4)
-            tbl_upv_1.Changed:Fire(key_4, u1[key_4])
+
+        for valueKey in v5.DEFAULTS do
+            apply(valueKey)
+            v5.Changed:Fire(valueKey, values[valueKey])
         end
     end
-    a1.State.ProfileChanged:Connect(fromProfile)
-    if a1.State.HasProfile then
-        fromProfile(a1.State.Profile)
+
+    a85.State.ProfileChanged:Connect(fromProfile)
+
+    if a85.State.HasProfile then
+        fromProfile(a85.State.Profile)
     end
-    a1.State.ProfileChanged:Connect(
-        function(a3)
+
+    a85.State.ProfileChanged:Connect(
+        function(a92)
             --[[
               line: 247
               upvalues:
-                u2 (ref,  index: 1)
-                tbl_upv_4 (copy, index: 2)
-                u5 (ref,  index: 3)
-                u7 (ref,  index: 4)
-                Keybinds_upv_1 (copy, index: 5)
+                v7 (ref,  index: 1)
+                v55 (copy, index: 2)
+                v56 (ref,  index: 3)
+                timestamp2 (ref,  index: 4)
+                Keybinds (copy, index: 5)
             ]]
-            if not u2 or type(a3) ~= "table" or type(a3.settings) ~= "table" or next(tbl_upv_4) ~= nil or (u5) or not (os.clock() - u7 > 6) then
-                return
+            if v7
+                and type(a92) == "table"
+                and type(a92.settings) == "table"
+                and next(v55) == nil
+                and not v56
+                and 6 < os.clock() - timestamp2
+            then
+                Keybinds.Load(a92.settings)
             end
-            Keybinds_upv_1.Load(a3.settings)
         end
     )
-    local Camera_1 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Camera")
-    if Camera_1 then
-        Camera_1:IsA("ModuleScript")
+
+    local camera = replicatedStorage.Shared:FindFirstChild("Camera")
+
+    if not camera or not camera:IsA("ModuleScript") then
+        result = nil
+    else
+        local success, result2 = pcall(require, camera)
+
+        if not success or type(result2) ~= "table" then
+            result = nil
+        else
+            result = result2
+        end
     end
-    fromProfile = nil
-    if fromProfile and typeof(fromProfile.FirstPersonChanged) == "RBXScriptSignal" then
-        fromProfile.FirstPersonChanged:Connect(
-            function(a4)
+
+    if result and typeof(result.FirstPersonChanged) == "RBXScriptSignal" then
+        result.FirstPersonChanged:Connect(
+            function(a96)
                 --[[
                   line: 257
                   upvalues:
-                    tbl_upv_1 (copy, index: 1)
+                    v5 (copy, index: 1)
                 ]]
-                local v20 = tbl_upv_1.Get("firstPerson") >= 0.5
-                if v20 == a4 then
-                    return
+                local v97 = 0.5 <= v5.Get("firstPerson")
+
+                if v97 ~= a96 then
+                    local set = v5.Set
+                    local v99 = a96 and 1 or 0
+                    set("firstPerson", v99, true)
                 end
-                tbl_upv_1.Set("firstPerson", (a4 and 1) or 0, true)
             end
         )
     end
+
     task.delay(
         3,
         function()
             --[[
               line: 264
               upvalues:
-                tbl_upv_1 (copy, index: 1)
+                v5 (copy, index: 1)
                 apply (copy, index: 2)
             ]]
-            for key_5 in tbl_upv_1.DEFAULTS do
-                apply(key_5)
+            for valueKey in v5.DEFAULTS do
+                apply(valueKey)
             end
         end
     )
 end
-return tbl_upv_1
+
+return v5

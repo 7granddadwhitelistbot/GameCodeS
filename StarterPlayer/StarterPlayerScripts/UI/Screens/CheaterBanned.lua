@@ -1,487 +1,474 @@
-local Players_upv_1 = game:GetService("Players")
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local RunService_upv_1 = game:GetService("RunService")
-local Ranks_upv_1 = require(ReplicatedStorage_1.Shared.Ranks)
-local RankArt_upv_1 = require(script.Parent.Parent.RankArt)
-local Fx_upv_1 = require(script.Parent.Parent.Fx)
-local tbl_1 = {}
-local u1 = Color3.fromRGB(255, 206, 92)
-local u2 = Color3.fromRGB(255, 236, 170)
-function tbl_1.Init(a1)
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local Ranks = require(replicatedStorage.Shared.Ranks)
+local RankArt = require(script.Parent.Parent.RankArt)
+local Fx = require(script.Parent.Parent.Fx)
+local v7 = {}
+local color3 = Color3.fromRGB(255, 206, 92)
+local color32 = Color3.fromRGB(255, 236, 170)
+
+function v7.Init(a10)
     --[[
       name: Init
       line: 32
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        u1 (copy, index: 2)
-        u2 (copy, index: 3)
-        Fx_upv_1 (copy, index: 4)
-        RankArt_upv_1 (copy, index: 5)
-        Ranks_upv_1 (copy, index: 6)
-        RunService_upv_1 (copy, index: 7)
+        players (copy, index: 1)
+        color3 (copy, index: 2)
+        color32 (copy, index: 3)
+        Fx (copy, index: 4)
+        RankArt (copy, index: 5)
+        Ranks (copy, index: 6)
+        runService (copy, index: 7)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local MenuManager_upv_1 = a1.MenuManager
-    local fromOffset_upv_1 = UDim2.fromOffset
-    local Assets_upv_1 = UI_upv_1.Assets
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local u3 = nil
-    local tbl_upv_2 = {}
-    local u4 = {trophies = 0, matches = 1}
-    local u5 = nil
-    local u6 = nil
-    local u7 = nil
-    local u8 = 0
-    local function text(a2)
-        --[[
-          name: text
-          line: 52
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-        ]]
-        a2.BackgroundTransparency = 1
-        return UI_upv_1.new("TextLabel", a2)
-    end
+    local ui = a10.UI
+    local theme = a10.Theme
+    local state = a10.State
+    local colors = theme.Colors
+    local fonts = theme.Fonts
+    local menuManager = a10.MenuManager
+    local udim2FromOffset = UDim2.fromOffset
+    local assets = ui.Assets
+    local localPlayer = players.LocalPlayer
+    local v20 = nil
+    local v21 = {}
+    local v22 = {trophies = 0, matches = 1}
+    local v23 = nil
+    local renderSteppedConnection = nil
+    local v25 = nil
+    local count = 0
+
     local function close()
         --[[
           name: close
           line: 48
           upvalues:
-            MenuManager_upv_1 (copy, index: 1)
+            menuManager (copy, index: 1)
         ]]
-        MenuManager_upv_1.Close("CheaterBanned")
+        menuManager.Close("CheaterBanned")
     end
+
+    local function text(a29)
+        --[[
+          name: text
+          line: 52
+          upvalues:
+            ui (copy, index: 1)
+        ]]
+        a29.BackgroundTransparency = 1
+        return ui.new("TextLabel", a29)
+    end
+
     local function build()
         --[[
           name: build
           line: 57
           upvalues:
-            u3 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            fromOffset_upv_1 (copy, index: 3)
-            a1 (copy, index: 4)
+            v20 (ref,  index: 1)
+            ui (copy, index: 2)
+            udim2FromOffset (copy, index: 3)
+            a10 (copy, index: 4)
             close (copy, index: 5)
-            u1 (copy, index: 6)
-            Theme_upv_1 (copy, index: 7)
-            tbl_upv_2 (copy, index: 8)
-            Assets_upv_1 (copy, index: 9)
-            u2 (copy, index: 10)
-            Fx_upv_1 (copy, index: 11)
-            RankArt_upv_1 (copy, index: 12)
-            Colors_upv_1 (copy, index: 13)
-            Fonts_upv_1 (copy, index: 14)
+            color3 (copy, index: 6)
+            theme (copy, index: 7)
+            v21 (copy, index: 8)
+            assets (copy, index: 9)
+            color32 (copy, index: 10)
+            Fx (copy, index: 11)
+            RankArt (copy, index: 12)
+            colors (copy, index: 13)
+            fonts (copy, index: 14)
         ]]
-        local v1 = UI_upv_1.Window({HeaderHeight = 76, Subtitle = "A cheater in a recent match was banned", Name = "CheaterBanned", NoClose = true, Title = "LOSS FORGIVEN", Size = fromOffset_upv_1(540, 446), Parent = a1.Canvas.Menus, OnCloseRequested = close})
-        u3 = v1
-        u3.Title.TextColor3 = u1
-        UI_upv_1.SelectionRing(u3.Root)
-        local Content_1 = u3.Content
-        local tbl_3 = {}
-        tbl_3.Name = "Hero"
-        tbl_3.Size = UDim2.new(1, 0, 0, 152)
-        tbl_3.BackgroundColor3 = Color3.fromRGB(46, 36, 16)
-        tbl_3.ClipsDescendants = true
-        tbl_3[1], tbl_3[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Large), UI_upv_1.Gradient(ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 150, 150)), nil, 90)
-        tbl_3.Parent = Content_1
-        local v2 = UI_upv_1.new("Frame", tbl_3)
-        UI_upv_1.Stroke(u1, 1.5, 0.55).Parent = v2
-        local v3 = UDim2.new(0.5, -88, 0.5, 0)
-        tbl_upv_2.glow = UI_upv_1.Image(Assets_upv_1.Icons.Glow, {Name = "Glow", ImageTransparency = 0.5, AnchorPoint = Vector2.new(0.5, 0.5), Position = v3, Size = fromOffset_upv_1(360, 360), ImageColor3 = u1, Parent = v2})
-        tbl_upv_2.rays = UI_upv_1.Image(Assets_upv_1.Fx.Rays, {Name = "Rays", ImageTransparency = 0.82, AnchorPoint = Vector2.new(0.5, 0.5), Position = v3, Size = fromOffset_upv_1(420, 420), ImageColor3 = u2, Parent = v2})
-        tbl_upv_2.fxLayer = UI_upv_1.new("Frame", {Name = "FxLayer", ZIndex = 4, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = fromOffset_upv_1(0, 0), Parent = v2})
-        tbl_upv_2.pool = Fx_upv_1.Pool(tbl_upv_2.fxLayer, 32, 4)
-        local tbl_4 = {}
-        tbl_4.Name = "Row"
-        tbl_4.Size = UDim2.fromScale(1, 1)
-        tbl_4.ZIndex = 3
-        tbl_4[1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 18, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)
-        tbl_4.Parent = v2
-        local v4 = UI_upv_1.new("Frame", tbl_4)
-        tbl_upv_2.trophyHolder = UI_upv_1.new("Frame", {LayoutOrder = 1, Name = "Trophy", ZIndex = 3, Size = fromOffset_upv_1(104, 104), Parent = v4})
-        tbl_upv_2.trophyScale = UI_upv_1.new("UIScale", {Scale = 1, Parent = tbl_upv_2.trophyHolder})
-        local v5 = RankArt_upv_1.Trophy(104, {ZIndex = 3, Parent = tbl_upv_2.trophyHolder})
-        v5.Size = UDim2.fromScale(1, 1)
-        local tbl_5 = {}
-        tbl_5.Name = "Numbers"
-        tbl_5.Size = fromOffset_upv_1(0, 100)
-        tbl_5.AutomaticSize = Enum.AutomaticSize.X
-        tbl_5.LayoutOrder = 2
-        tbl_5.ZIndex = 3
-        tbl_5[1] = UI_upv_1.List(Enum.FillDirection.Vertical, 0, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)
-        tbl_5.Parent = v4
-        local v6 = UI_upv_1.new("Frame", tbl_5)
-        tbl_upv_2.amount = UI_upv_1.DisplayText({LayoutOrder = 1, Text = "+0", StrokeThickness = 2, Name = "Amount", TextSize = 64, ZIndex = 3, AutomaticSize = Enum.AutomaticSize.X, Size = fromOffset_upv_1(0, 66), TextColor3 = Colors_upv_1.Success, TextXAlignment = Enum.TextXAlignment.Left, Parent = v6})
-        local tbl_6 = {}
-        tbl_6.Name = "Returned"
-        tbl_6.AutomaticSize = Enum.AutomaticSize.X
-        tbl_6.Size = fromOffset_upv_1(0, 22)
-        tbl_6.Text = "TROPHIES RETURNED"
-        tbl_6.FontFace = Fonts_upv_1.Heavy
-        tbl_6.TextSize = 18
-        tbl_6.TextColor3 = u2
-        tbl_6.TextXAlignment = Enum.TextXAlignment.Left
-        tbl_6.LayoutOrder = 2
-        tbl_6.ZIndex = 3
-        tbl_6[1] = UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.5)
-        tbl_6.Parent = v6
-        tbl_6.BackgroundTransparency = 1
-        tbl_4 = UI_upv_1.new("TextLabel", tbl_6)
-        tbl_upv_2.line = UI_upv_1.new("TextLabel", {Text = "", Name = "Line", TextWrapped = true, TextSize = 17, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 168), Size = UDim2.new(1, -16, 0, 44), FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextDim, TextYAlignment = Enum.TextYAlignment.Top, Parent = Content_1, BackgroundTransparency = 1})
-        local tbl_7 = {}
-        tbl_7.Name = "Rank"
-        tbl_7.AnchorPoint = Vector2.new(0.5, 0)
-        tbl_7.Position = UDim2.new(0.5, 0, 0, 222)
-        tbl_7.Size = fromOffset_upv_1(0, 40)
-        tbl_7.AutomaticSize = Enum.AutomaticSize.X
-        tbl_7.BackgroundColor3 = Colors_upv_1.PanelHi
-        tbl_7[1], tbl_7[2], tbl_7[3], tbl_7[4] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.86), UI_upv_1.Padding(0, 20, 0, 14), UI_upv_1.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)
-        tbl_7.Parent = Content_1
-        tbl_upv_2.rank = UI_upv_1.new("Frame", tbl_7)
-        tbl_upv_2.emblem = RankArt_upv_1.Emblem(1, 28, {LayoutOrder = 1, Parent = tbl_upv_2.rank})
-        tbl_upv_2.rankName = UI_upv_1.new("TextLabel", {LayoutOrder = 2, Name = "Name", TextSize = 19, Text = "", AutomaticSize = Enum.AutomaticSize.X, Size = fromOffset_upv_1(0, 24), FontFace = Fonts_upv_1.Display, Parent = tbl_upv_2.rank, BackgroundTransparency = 1})
-        RankArt_upv_1.Trophy(18, {LayoutOrder = 3, Parent = tbl_upv_2.rank})
-        tbl_upv_2.rankTotal = UI_upv_1.new("TextLabel", {LayoutOrder = 4, Text = "", Name = "Total", TextSize = 19, AutomaticSize = Enum.AutomaticSize.X, Size = fromOffset_upv_1(0, 24), FontFace = Fonts_upv_1.Display, TextColor3 = Colors_upv_1.Text, Parent = tbl_upv_2.rank, BackgroundTransparency = 1})
-        tbl_upv_2.ok = UI_upv_1.Button({Style = "Primary", Name = "Ok", Text = "NICE", TextSize = 20, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 0), Size = fromOffset_upv_1(240, 56), Parent = Content_1})
-        tbl_upv_2.ok.Activated:Connect(close)
+        v20 = ui.Window({Name = "CheaterBanned", Title = "LOSS FORGIVEN", Subtitle = "A cheater in a recent match was banned", HeaderHeight = 76, NoClose = true, Size = udim2FromOffset(540, 446), Parent = a10.Canvas.Menus, OnCloseRequested = close})
+        v20.Title.TextColor3 = color3
+        ui.SelectionRing(v20.Root)
+        local content = v20.Content
+        local parent = ui.new("Frame", {Name = "Hero", Size = UDim2.new(1, 0, 0, 152), BackgroundColor3 = Color3.fromRGB(46, 36, 16), ClipsDescendants = true, ui.Corner(theme.Radius.Large), (ui.Gradient(ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(150, 150, 150)), nil, 90)), Parent = content})
+        ui.Stroke(color3, 1.5, 0.55).Parent = parent
+        local position = UDim2.new(0.5, -88, 0.5, 0)
+        v21.glow = ui.Image(assets.Icons.Glow, {Name = "Glow", ImageTransparency = 0.5, AnchorPoint = Vector2.new(0.5, 0.5), Position = position, Size = udim2FromOffset(360, 360), ImageColor3 = color3, Parent = parent})
+        v21.rays = ui.Image(assets.Fx.Rays, {Name = "Rays", ImageTransparency = 0.82, AnchorPoint = Vector2.new(0.5, 0.5), Position = position, Size = udim2FromOffset(420, 420), ImageColor3 = color32, Parent = parent})
+        v21.fxLayer = ui.new("Frame", {Name = "FxLayer", ZIndex = 4, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = udim2FromOffset(0, 0), Parent = parent})
+        v21.pool = Fx.Pool(v21.fxLayer, 32, 4)
+        local parent2 = ui.new("Frame", {Name = "Row", Size = UDim2.fromScale(1, 1), ZIndex = 3, (ui.List(Enum.FillDirection.Horizontal, 18, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)), Parent = parent})
+        v21.trophyHolder = ui.new("Frame", {Name = "Trophy", LayoutOrder = 1, ZIndex = 3, Size = udim2FromOffset(104, 104), Parent = parent2})
+        v21.trophyScale = ui.new("UIScale", {Scale = 1, Parent = v21.trophyHolder})
+        RankArt.Trophy(104, {ZIndex = 3, Parent = v21.trophyHolder}).Size = UDim2.fromScale(1, 1)
+        local parent3 = ui.new("Frame", {Name = "Numbers", Size = udim2FromOffset(0, 100), AutomaticSize = Enum.AutomaticSize.X, LayoutOrder = 2, ZIndex = 3, (ui.List(Enum.FillDirection.Vertical, 0, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)), Parent = parent2})
+        v21.amount = ui.DisplayText({Name = "Amount", Text = "+0", TextSize = 64, LayoutOrder = 1, ZIndex = 3, StrokeThickness = 2, AutomaticSize = Enum.AutomaticSize.X, Size = udim2FromOffset(0, 66), TextColor3 = colors.Success, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent3})
+        local v36 = {Name = "Returned", AutomaticSize = Enum.AutomaticSize.X, Size = udim2FromOffset(0, 22), Text = "TROPHIES RETURNED", FontFace = fonts.Heavy, TextSize = 18, TextColor3 = color32, TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = 2, ZIndex = 3, (ui.TextStroke(colors.Void, 1.5, 0.5))}
+        v36.Parent = parent3
+        v36.BackgroundTransparency = 1
+        ui.new("TextLabel", v36)
+        local v37 = {Name = "Line", Text = "", TextSize = 17, TextWrapped = true, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 168), Size = UDim2.new(1, -16, 0, 44), FontFace = fonts.SemiBold, TextColor3 = colors.TextDim, TextYAlignment = Enum.TextYAlignment.Top, Parent = content, BackgroundTransparency = 1}
+        v21.line = ui.new("TextLabel", v37)
+        v21.rank = ui.new("Frame", {Name = "Rank", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 222), Size = udim2FromOffset(0, 40), AutomaticSize = Enum.AutomaticSize.X, BackgroundColor3 = colors.PanelHi, ui.Corner(theme.Radius.Pill), ui.Stroke(colors.Stroke, 1, 0.86), ui.Padding(0, 20, 0, 14), (ui.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)), Parent = content})
+        v21.emblem = RankArt.Emblem(1, 28, {LayoutOrder = 1, Parent = v21.rank})
+        local v38 = {Name = "Name", Text = "", TextSize = 19, LayoutOrder = 2, AutomaticSize = Enum.AutomaticSize.X, Size = udim2FromOffset(0, 24), FontFace = fonts.Display, Parent = v21.rank, BackgroundTransparency = 1}
+        v21.rankName = ui.new("TextLabel", v38)
+        RankArt.Trophy(18, {LayoutOrder = 3, Parent = v21.rank})
+        local v39 = {Name = "Total", Text = "", TextSize = 19, LayoutOrder = 4, AutomaticSize = Enum.AutomaticSize.X, Size = udim2FromOffset(0, 24), FontFace = fonts.Display, TextColor3 = colors.Text, Parent = v21.rank, BackgroundTransparency = 1}
+        v21.rankTotal = ui.new("TextLabel", v39)
+        v21.ok = ui.Button({Name = "Ok", Text = "NICE", TextSize = 20, Style = "Primary", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, 0), Size = udim2FromOffset(240, 56), Parent = content})
+        v21.ok.Activated:Connect(close)
     end
+
     local function paint()
         --[[
           name: paint
           line: 173
           upvalues:
-            u4 (ref,  index: 1)
-            tbl_upv_2 (copy, index: 2)
-            State_upv_1 (copy, index: 3)
-            Ranks_upv_1 (copy, index: 4)
-            RankArt_upv_1 (copy, index: 5)
-            UI_upv_1 (copy, index: 6)
-            u8 (ref,  index: 7)
-            a1 (copy, index: 8)
-            u2 (copy, index: 9)
+            v22 (ref,  index: 1)
+            v21 (copy, index: 2)
+            state (copy, index: 3)
+            Ranks (copy, index: 4)
+            RankArt (copy, index: 5)
+            ui (copy, index: 6)
+            count (ref,  index: 7)
+            a10 (copy, index: 8)
+            color32 (copy, index: 9)
         ]]
-        local u9 = math.max(0, math.floor(tonumber(u4.trophies) or 0))
-        local v7 = math.max(1, math.floor(tonumber(u4.matches) or 1))
-        local line_1 = tbl_upv_2.line
-        line_1.Text = not (v7 > 1) and "A player who beat you in a recent match was banned for cheating. The trophies you lost to them have been returned." or ("A player who beat you in %* recent matches was banned for cheating. The trophies you lost to them have been returned."):format(v7)
-        local v9 = tonumber(u4.total) or (tonumber((State_upv_1.Profile or {}).trophies) or 0)
-        local u10 = math.floor(v9)
-        local v10 = Ranks_upv_1.RankOf(u10)
-        RankArt_upv_1.SetEmblem(tbl_upv_2.emblem, v10)
-        tbl_upv_2.rankName.Text = string.upper(Ranks_upv_1.Get(v10).name)
-        tbl_upv_2.rankName.TextColor3 = RankArt_upv_1.Color(v10)
-        tbl_upv_2.rankTotal.Text = UI_upv_1.FormatNumber(u10)
-        tbl_upv_2.amount.Text = "+0"
-        u8 = u8 + 1
-        u10 = u8
-        tbl_upv_2.trophyScale.Scale = 0.75
-        local tbl_8 = {Scale = 1}
-        UI_upv_1.Tween(tbl_upv_2.trophyScale, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_8)
+        local formattedText
+        local v42 = math.max(0, (math.floor((tonumber(v22.trophies) or 0))))
+        local v43 = math.max(1, (math.floor((tonumber(v22.matches) or 1))))
+        local line = v21.line
+
+        if not (1 < v43) then
+            formattedText = "A player who beat you in a recent match was banned for cheating. The trophies you lost to them have been returned."
+        else
+            formattedText = `A player who beat you in {v43} recent matches was banned for cheating. The trophies you lost to them have been returned.`
+        end
+
+        line.Text = formattedText
+        local v45 = state.Profile or {}
+        local number = tonumber(v22.total) or tonumber(v45.trophies) or 0
+        local v47 = math.floor(number)
+        local v48 = Ranks.RankOf(v47)
+        RankArt.SetEmblem(v21.emblem, v48)
+        v21.rankName.Text = string.upper(Ranks.Get(v48).name)
+        v21.rankName.TextColor3 = RankArt.Color(v48)
+        v21.rankTotal.Text = ui.FormatNumber(v47)
+        v21.amount.Text = "+0"
+        count += 1
+        v47 = count
+        v21.trophyScale.Scale = 0.75
+        local v49 = {Scale = 1}
+        ui.Tween(v21.trophyScale, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), v49)
+
         task.spawn(
             function()
                 --[[
                   line: 193
                   upvalues:
-                    u9 (copy, index: 1)
-                    u8 (ref,  index: 2)
-                    u10 (copy, index: 3)
-                    tbl_upv_2 (copy, index: 4)
-                    a1 (copy, index: 5)
-                    UI_upv_1 (copy, index: 6)
-                    u2 (copy, index: 7)
+                    v42 (copy, index: 1)
+                    count (ref,  index: 2)
+                    v47 (copy, index: 3)
+                    v21 (copy, index: 4)
+                    a10 (copy, index: 5)
+                    ui (copy, index: 6)
+                    color32 (copy, index: 7)
                 ]]
                 task.wait(0.3)
-                local v11 = math.clamp(u9, 1, 20)
-                for n_1 = 1, v11 do
-                    if u8 == u10 then
-                        tbl_upv_2.amount.Text = ("+%*"):format(math.floor(((u9 * n_1) / v11) + 0.5))
-                        task.wait(0.55 / v11)
-                        continue
+                local clampedValue = math.clamp(v42, 1, 20)
+
+                for index = 1, clampedValue do
+                    if count ~= v47 then
+                        return
                     end
+
+                    v21.amount.Text = `+{(math.floor(((v42 * index) / clampedValue) + 0.5))}`
+                    task.wait(0.55 / clampedValue)
+                end
+
+                if count ~= v47 then
                     return
                 end
-                if u8 ~= u10 then
-                    return
-                end
-                a1.Sounds.Play("Coin")
-                UI_upv_1.Pop(tbl_upv_2.amount, 1.15)
-                tbl_upv_2.pool:Burst(12, {drag = 2.2, life = 1.3, kind = "sparkle", speed = 200, mode = "point", grav = -30, size = 18, at = Vector2.new(-88, 0), color = u2})
+
+                a10.Sounds.Play("Coin")
+                ui.Pop(v21.amount, 1.15)
+                v21.pool:Burst(12, {mode = "point", kind = "sparkle", speed = 200, size = 18, life = 1.3, grav = -30, drag = 2.2, at = Vector2.new(-88, 0), color = color32})
             end
         )
     end
+
+    local function hideOthers(a53: boolean)
+        --[[
+          name: hideOthers
+          line: 214
+          upvalues:
+            a10 (copy, index: 1)
+            menuManager (copy, index: 2)
+        ]]
+        a10.SetHudHidden("LossForgiven", a53)
+        menuManager.HoldChat("LossForgiven", a53)
+
+        if a10.TopbarSettings and type(a10.TopbarSettings.SetHidden) == "function" then
+            pcall(a10.TopbarSettings.SetHidden, "LossForgiven", a53)
+        end
+    end
+
     local function stopLoops()
         --[[
           name: stopLoops
           line: 222
           upvalues:
-            u8 (ref,  index: 1)
-            u6 (ref,  index: 2)
-            u7 (ref,  index: 3)
-            tbl_upv_2 (copy, index: 4)
+            count (ref,  index: 1)
+            renderSteppedConnection (ref,  index: 2)
+            v25 (ref,  index: 3)
+            v21 (copy, index: 4)
         ]]
-        u8 = u8 + 1
-        if u6 then
-            u6:Disconnect()
-            u6 = nil
+        count += 1
+
+        if renderSteppedConnection then
+            renderSteppedConnection:Disconnect()
+            renderSteppedConnection = nil
         end
-        if u7 then
-            u7()
-            u7 = nil
+
+        if v25 then
+            v25()
+            v25 = nil
         end
-        if not tbl_upv_2.pool then
-            return
+
+        if v21.pool then
+            v21.pool:Clear()
         end
-        tbl_upv_2.pool:Clear()
     end
-    local tbl_9 = {}
-    local function hideOthers(a3)
-        --[[
-          name: hideOthers
-          line: 214
-          upvalues:
-            a1 (copy, index: 1)
-            MenuManager_upv_1 (copy, index: 2)
-        ]]
-        a1.SetHudHidden("LossForgiven", a3)
-        MenuManager_upv_1.HoldChat("LossForgiven", a3)
-        if not a1.TopbarSettings or type(a1.TopbarSettings.SetHidden) ~= "function" then
-            return
-        end
-        pcall(a1.TopbarSettings.SetHidden, "LossForgiven", a3)
-    end
-    function tbl_9.open()
-        --[[
-          name: open
-          line: 238
-          upvalues:
-            u3 (ref,  index: 1)
-            build (copy, index: 2)
-            paint (copy, index: 3)
-            hideOthers (copy, index: 4)
-            a1 (copy, index: 5)
-            u6 (ref,  index: 6)
-            RunService_upv_1 (copy, index: 7)
-            tbl_upv_2 (copy, index: 8)
-            u7 (ref,  index: 9)
-            u2 (copy, index: 10)
-        ]]
-        if not (u3) then
-            build()
-        end
-        paint()
-        hideOthers(true)
-        u3:Open()
-        a1.Sounds.Play("Reward")
-        local v12 = RunService_upv_1.RenderStepped:Connect(
-            function(a4)
+
+    menuManager.Register(
+        "CheaterBanned",
+        {
+            open = (function()
                 --[[
-                  line: 247
+                  name: open
+                  line: 238
                   upvalues:
-                    tbl_upv_2 (copy, index: 1)
+                    v20 (ref,  index: 1)
+                    build (copy, index: 2)
+                    paint (copy, index: 3)
+                    hideOthers (copy, index: 4)
+                    a10 (copy, index: 5)
+                    renderSteppedConnection (ref,  index: 6)
+                    runService (copy, index: 7)
+                    v21 (copy, index: 8)
+                    v25 (ref,  index: 9)
+                    color32 (copy, index: 10)
                 ]]
-                tbl_upv_2.rays.Rotation = (tbl_upv_2.rays.Rotation + (a4 * 8)) % 360
-            end
-        )
-        u6 = v12
-        local v13 = tbl_upv_2.pool:Emit(3, {dir = -90, drag = 0.6, grav = -15, life = 1.8, jitter = 46, kind = "sparkle", speed = 60, mode = "point", spread = 35, size = 13, at = Vector2.new(-88, 20), color = u2})
-        u7 = v13
-    end
-    function tbl_9.close(a5)
-        --[[
-          name: close
-          line: 252
-          upvalues:
-            u8 (ref,  index: 1)
-            u6 (ref,  index: 2)
-            u7 (ref,  index: 3)
-            tbl_upv_2 (copy, index: 4)
-            hideOthers (copy, index: 5)
-            u3 (ref,  index: 6)
-        ]]
-        u8 = u8 + 1
-        if u6 then
-            u6:Disconnect()
-            u6 = nil
-        end
-        if u7 then
-            u7()
-            u7 = nil
-        end
-        if tbl_upv_2.pool then
-            tbl_upv_2.pool:Clear()
-        end
-        hideOthers(false)
-        if not u3 then
-            return
-        end
-        u3:Close(a5)
-    end
-    function tbl_9.select()
-        --[[
-          name: select
-          line: 259
-          upvalues:
-            tbl_upv_2 (copy, index: 1)
-        ]]
-        if tbl_upv_2.ok then
-            return tbl_upv_2.ok.Instance
-        end
-        return nil
-    end
-    MenuManager_upv_1.Register("CheaterBanned", tbl_9)
+                if not v20 then
+                    build()
+                end
+
+                paint()
+                hideOthers(true)
+                v20:Open()
+                a10.Sounds.Play("Reward")
+                renderSteppedConnection = runService.RenderStepped:Connect(
+                    function(deltaTime: number)
+                        --[[
+                          line: 247
+                          upvalues:
+                            v21 (copy, index: 1)
+                        ]]
+                        v21.rays.Rotation = (v21.rays.Rotation + (deltaTime * 8)) % 360
+                    end
+                )
+                v25 = v21.pool:Emit(3, {mode = "point", jitter = 46, kind = "sparkle", dir = -90, spread = 35, speed = 60, size = 13, life = 1.8, grav = -15, drag = 0.6, at = Vector2.new(-88, 20), color = color32})
+            end),
+            close = (function(a56)
+                --[[
+                  name: close
+                  line: 252
+                  upvalues:
+                    count (ref,  index: 1)
+                    renderSteppedConnection (ref,  index: 2)
+                    v25 (ref,  index: 3)
+                    v21 (copy, index: 4)
+                    hideOthers (copy, index: 5)
+                    v20 (ref,  index: 6)
+                ]]
+                count += 1
+
+                if renderSteppedConnection then
+                    renderSteppedConnection:Disconnect()
+                    renderSteppedConnection = nil
+                end
+
+                if v25 then
+                    v25()
+                    v25 = nil
+                end
+
+                if v21.pool then
+                    v21.pool:Clear()
+                end
+
+                hideOthers(false)
+
+                if v20 then
+                    v20:Close(a56)
+                end
+            end),
+            select = (function()
+                --[[
+                  name: select
+                  line: 259
+                  upvalues:
+                    v21 (copy, index: 1)
+                ]]
+                if v21.ok then
+                    return v21.ok.Instance
+                end
+
+                return nil
+            end)
+        }
+    )
+
     local function blocked()
         --[[
           name: blocked
           line: 264
           upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            a1 (copy, index: 2)
+            localPlayer (copy, index: 1)
+            a10 (copy, index: 2)
         ]]
-        local v14 = true
-        if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-            v14 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
-        end
-        return v14
+        return localPlayer:GetAttribute("ReplayPlaying") == true
+            or a10.IsHudHiddenFor("Intro")
+            or a10.IsHudHiddenFor("Celebrate")
     end
+
     local function canShow()
         --[[
           name: canShow
           line: 267
           upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            a1 (copy, index: 2)
-            State_upv_1 (copy, index: 3)
-            MenuManager_upv_1 (copy, index: 4)
+            localPlayer (copy, index: 1)
+            a10 (copy, index: 2)
+            state (copy, index: 3)
+            menuManager (copy, index: 4)
         ]]
-        local v15 = true
-        if LocalPlayer_upv_1:GetAttribute("ReplayPlaying") ~= true then
-            v15 = a1.IsHudHiddenFor("Intro") or (a1.IsHudHiddenFor("Celebrate"))
+        local v59 = localPlayer:GetAttribute("ReplayPlaying") == true
+            or a10.IsHudHiddenFor("Intro")
+            or a10.IsHudHiddenFor("Celebrate")
+
+        if v59 or state.GetPlayerState() ~= "Lobby" or menuManager.IsOpen() then
+            return false
         end
-        if not (v15) and State_upv_1.GetPlayerState() == "Lobby" and not (MenuManager_upv_1.IsOpen()) then
-            if a1.RankUp and a1.RankUp.IsPlaying() or a1.DropReveal and type(a1.DropReveal.IsPlaying) == "function" and a1.DropReveal.IsPlaying() then
+
+        if a10.RankUp then
+            if a10.RankUp.IsPlaying() then
                 return false
             end
-            return true
         end
-        return false
+
+        if a10.DropReveal and type(a10.DropReveal.IsPlaying) == "function" and a10.DropReveal.IsPlaying() then
+            return false
+        end
+
+        return true
     end
+
     local function pump()
         --[[
           name: pump
           line: 280
           upvalues:
-            u5 (ref,  index: 1)
+            v23 (ref,  index: 1)
             canShow (copy, index: 2)
-            u4 (ref,  index: 3)
-            MenuManager_upv_1 (copy, index: 4)
+            v22 (ref,  index: 3)
+            menuManager (copy, index: 4)
         ]]
-        if not u5 or not canShow() then
-            return
+        if v23 and canShow() then
+            v22 = v23
+            v23 = nil
+            menuManager.Open("CheaterBanned")
         end
-        u4 = u5
-        u5 = nil
-        MenuManager_upv_1.Open("CheaterBanned")
     end
+
     task.spawn(
         function()
             --[[
               line: 287
               upvalues:
-                u5 (ref,  index: 1)
+                v23 (ref,  index: 1)
                 canShow (copy, index: 2)
-                u4 (ref,  index: 3)
-                MenuManager_upv_1 (copy, index: 4)
+                v22 (ref,  index: 3)
+                menuManager (copy, index: 4)
             ]]
-            repeat
+            while true do
                 task.wait(0.5)
-            until u5
-            if not canShow() then
-                return
+
+                if v23 then
+                    if not canShow() then
+                        continue
+                    end
+
+                    v22 = v23
+                    v23 = nil
+                    menuManager.Open("CheaterBanned")
+                end
             end
-            u4 = u5
-            u5 = nil
-            MenuManager_upv_1.Open("CheaterBanned")
         end
     )
-    a1.Remotes.On(
+
+    a10.Remotes.On(
         "CheaterBanned",
-        function(a6)
+        function(a61)
             --[[
               line: 294
               upvalues:
-                u5 (ref,  index: 1)
+                v23 (ref,  index: 1)
                 canShow (copy, index: 2)
-                u4 (ref,  index: 3)
-                MenuManager_upv_1 (copy, index: 4)
+                v22 (ref,  index: 3)
+                menuManager (copy, index: 4)
             ]]
-            if type(a6) ~= "table" then
-                return
+            if type(a61) == "table" then
+                v23 = a61
+
+                if v23 and canShow() then
+                    v22 = v23
+                    v23 = nil
+                    menuManager.Open("CheaterBanned")
+                end
             end
-            u5 = a6
-            if not u5 or not canShow() then
-                return
-            end
-            u4 = u5
-            u5 = nil
-            MenuManager_upv_1.Open("CheaterBanned")
         end
     )
-    local tbl_10 = {}
-    function tbl_10.IsPlaying()
-        --[[
-          name: IsPlaying
-          line: 302
-          upvalues:
-            u5 (ref,  index: 1)
-            MenuManager_upv_1 (copy, index: 2)
-        ]]
-        local v16 = true
-        if u5 == nil then
-            v16 = MenuManager_upv_1.IsOpen("CheaterBanned")
-        end
-        return v16
-    end
-    a1.LossForgiven = tbl_10
-    a1.Debug.forgiven = function(a7, a8)
+
+    a10.LossForgiven = {
+        IsPlaying = (function()
+            --[[
+              name: IsPlaying
+              line: 302
+              upvalues:
+                v23 (ref,  index: 1)
+                menuManager (copy, index: 2)
+            ]]
+            return v23 ~= nil or menuManager.IsOpen("CheaterBanned")
+        end)
+    }
+
+    a10.Debug.forgiven = function(trophies, matches)
         --[[
           line: 307
           upvalues:
-            u5 (ref,  index: 1)
+            v23 (ref,  index: 1)
             canShow (copy, index: 2)
-            u4 (ref,  index: 3)
-            MenuManager_upv_1 (copy, index: 4)
-            tbl_upv_2 (copy, index: 5)
+            v22 (ref,  index: 3)
+            menuManager (copy, index: 4)
+            v21 (copy, index: 5)
         ]]
-        if a7 ~= nil then
-            u5 = {trophies = a7, matches = a8}
-            if u5 and canShow() then
-                u4 = u5
-                u5 = nil
-                MenuManager_upv_1.Open("CheaterBanned")
+        if trophies ~= nil then
+            v23 = {trophies = trophies, matches = matches}
+
+            if v23 and canShow() then
+                v22 = v23
+                v23 = nil
+                menuManager.Open("CheaterBanned")
             end
         end
-        local tbl_11 = {rank = 0, line = 0, amount = 0}
-        tbl_11.open = MenuManager_upv_1.IsOpen("CheaterBanned")
-        local v17, v18
-        if tbl_upv_2.amount then
-            v17 = tbl_upv_2.amount.Text
-            v18 = tbl_upv_2
-        else
-            v17, v18 = false, tbl_upv_2
-        end
-        tbl_11.amount = v17
-        local v19
-        if v18.line then
-            v19 = v18.line.Text
-        else
-            v19 = false
-        end
-        tbl_11.line = v19
-        tbl_11.rank = ((tbl_upv_2.rankName) and (v18.rankName.Text .. " " .. v18.rankTotal.Text)) or false
-        return tbl_11
+
+        local v64 = {open = menuManager.IsOpen("CheaterBanned"), amount = if v21.amount then v21.amount.Text else false, line = if v21.line then v21.line.Text else false, rank = if v21.rankName then v21.rankName.Text .. " " .. v21.rankTotal.Text else false}
+        return v64
     end
 end
-return tbl_1
+
+return v7

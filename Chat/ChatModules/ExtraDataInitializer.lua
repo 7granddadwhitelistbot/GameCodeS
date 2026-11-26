@@ -1,247 +1,280 @@
-local tbl_upv_1 = {}
-tbl_upv_1.Groups = {{GroupId = 1200769, ChatColor = Color3.new(1, 0.8431372549019608, 0)}}
-tbl_upv_1.Players = {{}}
-local function MakeIsInGroup(a1, a2)
+local v1 = {Groups = {{GroupId = 1200769, ChatColor = Color3.new(1, 0.8431372549019608, 0)}}, Players = {{}}}
+
+local function MakeIsInGroup(a3, a4)
     --[[
       name: MakeIsInGroup
       line: 23
     ]]
-    local v1 = true
-    if type(a2) ~= "nil" then
-        v1 = type(a2) == "number"
+    assert(((type(a4) == "nil") or (type(a4) == "number")), "requiredRank must be a number or nil")
+    return function(a5)
+        --[[
+          line: 26
+          upvalues:
+            a4 (copy, index: 1)
+            a3 (copy, index: 2)
+        ]]
+        if not a5 or not a5.UserId then
+            return false
+        end
+
+        local _ = a5.UserId
+        local v7 = false
+
+        local success, result = pcall(
+            function()
+                --[[
+                  line: 31
+                  upvalues:
+                    a4 (copy, index: 1)
+                    v7 (ref,  index: 2)
+                    a5 (copy, index: 3)
+                    a3 (copy, index: 4)
+                ]]
+                if a4 then
+                    v7 = a4 < a5:GetRankInGroup(a3)
+                    return
+                end
+
+                v7 = a5:IsInGroup(a3)
+            end
+        )
+
+        if not success and result then
+            print("Error checking in group: " .. result)
+        end
+
+        return v7
     end
-    assert(v1, "requiredRank must be a number or nil")
-    return function() end
 end
-local function ConstructIsInGroups()
+
+;(function()
     --[[
       name: ConstructIsInGroups
       line: 49
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    if tbl_upv_1.Groups then
-        local v2 = nil
-        for _, value_1 in pairs(tbl_upv_1.Groups) do
-            local GroupId_upv_1 = value_1.GroupId
-            local Rank_upv_1 = value_1.Rank
-            v2 = true
-            if type(Rank_upv_1) ~= "nil" then
-                v2 = type(Rank_upv_1) == "number"
-            end
-            assert(v2, "requiredRank must be a number or nil")
-            value_1.IsInGroup = function(a1)
+    if v1.Groups then
+        for _, group in pairs(v1.Groups) do
+            local groupId = group.GroupId
+            local rank = group.Rank
+            local v14 = type(rank) == "nil" or type(rank) == "number"
+            assert(v14, "requiredRank must be a number or nil")
+
+            group.IsInGroup = function(instance: Instance?)
                 --[[
                   line: 26
                   upvalues:
-                    Rank_upv_1 (copy, index: 1)
-                    GroupId_upv_1 (copy, index: 2)
+                    rank (copy, index: 1)
+                    groupId (copy, index: 2)
                 ]]
-                if a1 and a1.UserId then
-                    local u1 = false
-                    local success_1, v3 = pcall(
-                        function()
-                            --[[
-                              line: 31
-                              upvalues:
-                                Rank_upv_1 (copy, index: 1)
-                                u1 (ref,  index: 2)
-                                a1 (copy, index: 3)
-                                GroupId_upv_1 (copy, index: 4)
-                            ]]
-                            if Rank_upv_1 then
-                                local v4 = Rank_upv_1 < a1:GetRankInGroup(GroupId_upv_1)
-                                u1 = v4
-                            else
-                                u1 = a1:IsInGroup(GroupId_upv_1)
-                            end
-                        end
-                    )
-                    if not (success_1) and v3 then
-                        print("Error checking in group: " .. v3)
-                    end
-                    return u1
+                if not instance or not instance.UserId then
+                    return false
                 end
-                return false
+
+                local _ = instance.UserId
+                local v17 = false
+
+                local success, result = pcall(
+                    function()
+                        --[[
+                          line: 31
+                          upvalues:
+                            rank (copy, index: 1)
+                            v17 (ref,  index: 2)
+                            instance (copy, index: 3)
+                            groupId (copy, index: 4)
+                        ]]
+                        if rank then
+                            v17 = rank < instance:GetRankInGroup(groupId)
+                            return
+                        end
+
+                        v17 = instance:IsInGroup(groupId)
+                    end
+                )
+
+                if not success and result then
+                    print("Error checking in group: " .. result)
+                end
+
+                return v17
             end
         end
     end
-end
-ConstructIsInGroups()
-local Players_upv_1 = game:GetService("Players")
-local function GetSpecialChatColor(a1)
+end)()
+local players = game:GetService("Players")
+
+local function GetSpecialChatColor(childName)
     --[[
       name: GetSpecialChatColor
       line: 60
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        Players_upv_1 (copy, index: 2)
+        v1 (copy, index: 1)
+        players (copy, index: 2)
     ]]
-    local v5 = nil
-    if tbl_upv_1.Players then
-        v5 = Players_upv_1:FindFirstChild(a1)
-        if v5 then
-            for _, value_2 in pairs(tbl_upv_1.Players) do
-                if v5.UserId ~= value_2.UserId then
-                    continue
+    if v1.Players then
+        if const player = players:FindFirstChild(childName) then
+            for _, player2 in pairs(v1.Players) do
+                if player.UserId == player2.UserId then
+                    return player2.ChatColor
                 end
-                return value_2.ChatColor
             end
         end
     end
-    if not tbl_upv_1.Groups then
-        return
-    end
-    for _, value_3 in pairs(tbl_upv_1.Groups) do
-        if not (value_3.IsInGroup(Players_upv_1:FindFirstChild(a1))) then
-            continue
+
+    if v1.Groups then
+        for _, group in pairs(v1.Groups) do
+            if group.IsInGroup(players:FindFirstChild(childName)) then
+                return group.ChatColor
+            end
         end
-        return value_3.ChatColor
     end
 end
-local function Run(a1)
+
+return function(a28)
     --[[
       name: Run
       line: 80
       upvalues:
         GetSpecialChatColor (copy, index: 1)
-        Players_upv_1 (copy, index: 2)
+        players (copy, index: 2)
     ]]
-    local tbl_upv_2 = {Color3.new(0.9921568627450981, 0.1607843137254902, 0.2627450980392157), Color3.new(0.00392156862745098, 0.6352941176470588, 1), Color3.new(0.00784313725490196, 0.7215686274509804, 0.3411764705882353), BrickColor.new("Bright violet").Color, BrickColor.new("Bright orange").Color, BrickColor.new("Bright yellow").Color, BrickColor.new("Light reddish violet").Color, BrickColor.new("Brick yellow").Color}
-    local function GetNameValue_upv_1(a2)
+    local v29 = {Color3.new(0.9921568627450981, 0.1607843137254902, 0.2627450980392157), Color3.new(0.00392156862745098, 0.6352941176470588, 1), Color3.new(0.00784313725490196, 0.7215686274509804, 0.3411764705882353), BrickColor.new("Bright violet").Color, BrickColor.new("Bright orange").Color, BrickColor.new("Bright yellow").Color, BrickColor.new("Light reddish violet").Color, BrickColor.new("Brick yellow").Color}
+
+    local function GetNameValue(text)
         --[[
           name: GetNameValue
           line: 93
         ]]
-        local v6 = 0
-        v6 = v6
-        for n_1 = 1, #a2 do
-            local v7 = string.byte(string.sub(a2, n_1, n_1))
-            local v8 = #a2 - n_1 + 1
-            if #a2 % 2 == 1 then
-                v8 = v8 - 1
+        local total = 0
+
+        for index = 1, #text do
+            local v34 = string.byte((string.sub(text, index, index)))
+            local v35 = #text - index + 1
+
+            if #text % 2 == 1 then
+                v35 -= 1
             end
-            if v8 % 4 >= 2 then
-                v7 = -v7
+
+            if 2 <= v35 % 4 then
+                v34 = -v34
             end
-            v6 = v6 + v7
+
+            total += v34
         end
-        return v6
+
+        return total
     end
-    local function ComputeNameColor_1(a3)
+
+    local function ComputeNameColor(text: string)
         --[[
           name: ComputeNameColor
           line: 110
           upvalues:
-            tbl_upv_2 (copy, index: 1)
-            GetNameValue_upv_1 (copy, index: 2)
+            v29 (copy, index: 1)
+            GetNameValue (copy, index: 2)
         ]]
-        return tbl_upv_2[((GetNameValue_upv_1(a3) + 0) % #tbl_upv_2) + 1]
+        return v29[((GetNameValue(text) + 0) % #v29) + 1]
     end
-    local function GetNameColor_1(a4)
+
+    local function GetNameColor(a39)
         --[[
           name: GetNameColor
           line: 114
           upvalues:
-            tbl_upv_2 (copy, index: 1)
-            GetNameValue_upv_1 (copy, index: 2)
+            v29 (copy, index: 1)
+            GetNameValue (copy, index: 2)
         ]]
-        local v9 = a4:GetPlayer()
-        if v9 and v9.Team ~= nil then
-            return v9.TeamColor.Color
+        local player = a39:GetPlayer()
+
+        if player and player.Team ~= nil then
+            return player.TeamColor.Color
         end
-        return tbl_upv_2[((GetNameValue_upv_1(a4.Name) + 0) % #tbl_upv_2) + 1]
+
+        return v29[((GetNameValue(a39.Name) + 0) % #v29) + 1]
     end
-    local function onNewSpeaker_1(a5)
+
+    local function onNewSpeaker(childName)
         --[[
           name: onNewSpeaker
           line: 124
           upvalues:
-            a1 (copy, index: 1)
-            tbl_upv_2 (copy, index: 2)
-            GetNameValue_upv_1 (copy, index: 3)
+            a28 (copy, index: 1)
+            v29 (copy, index: 2)
+            GetNameValue (copy, index: 3)
             GetSpecialChatColor (copy, index: 4)
         ]]
-        local v10 = a1:GetSpeaker(a5)
-        local v11 = v10:GetExtraData("NameColor")
-        local v12 = nil
-        if not (v11) then
-            v12 = v10:GetPlayer()
-            local v13
-            if (v12) and v12.Team ~= nil then
-                v13 = v12.TeamColor.Color
-            else
-                v13 = tbl_upv_2[((GetNameValue_upv_1(v10.Name) + 0) % #tbl_upv_2) + 1]
-            end
-            v10:SetExtraData("NameColor", v13)
+        local speaker = a28:GetSpeaker(childName)
+
+        if not speaker:GetExtraData("NameColor") then
+            local player = speaker:GetPlayer()
+            local v45 = if player and player.Team ~= nil then player.TeamColor.Color else v29[((GetNameValue(speaker.Name) + 0) % #v29) + 1]
+            speaker:SetExtraData("NameColor", v45)
         end
-        if not (v10:GetExtraData("ChatColor")) then
-            local v14 = GetSpecialChatColor(a5)
-            if v14 then
-                v10:SetExtraData("ChatColor", v14)
+
+        if not speaker:GetExtraData("ChatColor") then
+            if const specialChatColor = GetSpecialChatColor(childName) then
+                speaker:SetExtraData("ChatColor", specialChatColor)
             end
         end
-        if (v10:GetExtraData("Tags")) then
-            return
+
+        if not speaker:GetExtraData("Tags") then
+            speaker:SetExtraData("Tags", {})
         end
-        v10:SetExtraData("Tags", {})
     end
-    a1.SpeakerAdded:connect(onNewSpeaker_1)
-    for _, value_4 in pairs(a1:GetSpeakerList()) do
-        onNewSpeaker_1(value_4)
+
+    a28.SpeakerAdded:connect(onNewSpeaker)
+
+    for _, childName in pairs(a28:GetSpeakerList()) do
+        onNewSpeaker(childName)
     end
-    local tbl_upv_3 = {}
-    Players_upv_1.PlayerAdded:connect(
-        function(a6)
+
+    local v49 = {}
+    players.PlayerAdded:connect(
+        function(player: Player)
             --[[
               line: 161
               upvalues:
-                a1 (copy, index: 1)
-                tbl_upv_2 (copy, index: 2)
-                GetNameValue_upv_1 (copy, index: 3)
-                tbl_upv_3 (copy, index: 4)
+                a28 (copy, index: 1)
+                v29 (copy, index: 2)
+                GetNameValue (copy, index: 3)
+                v49 (copy, index: 4)
             ]]
-            tbl_upv_3[a6] = a6.Changed:connect(
-                function(a7)
+            v49[player] = player.Changed:connect(
+                function(property: string)
                     --[[
                       line: 162
                       upvalues:
-                        a1 (copy, index: 1)
-                        a6 (copy, index: 2)
-                        tbl_upv_2 (copy, index: 3)
-                        GetNameValue_upv_1 (copy, index: 4)
+                        a28 (copy, index: 1)
+                        player (copy, index: 2)
+                        v29 (copy, index: 3)
+                        GetNameValue (copy, index: 4)
                     ]]
-                    local v15 = a1:GetSpeaker(a6.Name)
-                    if not v15 then
-                        return
-                    end
-                    if a7 == "TeamColor" or a7 == "Neutral" or a7 == "Team" then
-                        local v16 = v15:GetPlayer()
-                        local v17
-                        if (v16) and v16.Team ~= nil then
-                            v17 = v16.TeamColor.Color
-                        else
-                            v17 = tbl_upv_2[((GetNameValue_upv_1(v15.Name) + 0) % #tbl_upv_2) + 1]
-                        end
-                        v15:SetExtraData("NameColor", v17)
+                    local speaker = a28:GetSpeaker(player.Name)
+
+                    if speaker and (property == "TeamColor" or property == "Neutral" or property == "Team") then
+                        local player2 = speaker:GetPlayer()
+                        local v54 = if player2 and player2.Team ~= nil then player2.TeamColor.Color else v29[((GetNameValue(speaker.Name) + 0) % #v29) + 1]
+                        speaker:SetExtraData("NameColor", v54)
                     end
                 end
             )
         end
     )
-    Players_upv_1.PlayerRemoving:connect(
-        function(a8)
+
+    players.PlayerRemoving:connect(
+        function(player: Player)
             --[[
               line: 173
               upvalues:
-                tbl_upv_3 (copy, index: 1)
+                v49 (copy, index: 1)
             ]]
-            local v18 = tbl_upv_3[a8]
-            if v18 then
-                v18:Disconnect()
+            if const v56 = v49[player] then
+                v56:Disconnect()
             end
-            tbl_upv_3[a8] = nil
+
+            v49[player] = nil
         end
     )
 end
-return Run

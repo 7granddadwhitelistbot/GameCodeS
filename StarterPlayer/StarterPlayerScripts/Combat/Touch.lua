@@ -1,1019 +1,1114 @@
-local Players_upv_1 = game:GetService("Players")
-local v1 = game:GetService("ReplicatedStorage")
-local TweenService_upv_1 = game:GetService("TweenService")
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local TouchStart_upv_1 = require(v1:WaitForChild("Shared"):WaitForChild("TouchStart"))
-local Loc_upv_1 = require(v1.Shared:WaitForChild("Loc"))
-v1 = {}
-local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-local u1 = nil
-local u2 = nil
-local tbl_upv_1 = {}
-local u3 = nil
-local u4 = nil
-local u5 = {}
-local u6 = false
-local u7 = false
-local u8 = true
-local u9 = nil
-local u10 = false
-local u11 = false
-local u12 = Color3.fromRGB(40, 150, 255)
-local u13 = Color3.fromRGB(18, 20, 26)
-local u14 = Color3.fromRGB(36, 40, 50)
-local u15 = Color3.fromRGB(255, 255, 255)
-local u16 = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Heavy)
-local tbl_upv_2 = {Crossbow = "FIRE", Axe = "ATTACK", Shield = "BASH", Sword = "ATTACK", Spear = "ATTACK", Knives = "THROW", Club = "ATTACK", Gauntlets = "PUNCH", Dagger = "ATTACK", Horn = "BLOW", Bow = "DRAW", Musket = "FIRE", Fists = "PUNCH", Katana = "ATTACK", Scythe = "ATTACK", Trap = "SET", Herbs = "HEAL", Bomb = "THROW", Sling = "SLING", Javelin = "THROW", Blunderbuss = "FIRE", Pistol = "FIRE", Hatchets = "CHOP"}
-local tbl_upv_3 = {Crossbow = true, Musket = true, Blunderbuss = true, Pistol = true}
-local function makeButton(a1, a2, a3, a4, a5)
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local tweenService = game:GetService("TweenService")
+local userInputService = game:GetService("UserInputService")
+local TouchStart = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("TouchStart"))
+local Loc = require(replicatedStorage.Shared:WaitForChild("Loc"))
+local v7 = {}
+local localPlayer = players.LocalPlayer
+local screenGui = nil
+local frame = nil
+local v11 = {}
+local v12 = nil
+local v13 = nil
+local v14 = {}
+local v15 = false
+local v16 = false
+local v17 = true
+local Camera = nil
+local v19 = false
+local v20 = false
+local color = Color3.fromRGB(40, 150, 255)
+local backgroundColor3 = Color3.fromRGB(18, 20, 26)
+local backgroundColor32 = Color3.fromRGB(36, 40, 50)
+local color3 = Color3.fromRGB(255, 255, 255)
+local fontFace = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Heavy)
+local v26 = {Fists = "PUNCH", Sword = "ATTACK", Axe = "ATTACK", Spear = "ATTACK", Dagger = "ATTACK", Club = "ATTACK", Shield = "BASH", Gauntlets = "PUNCH", Scythe = "ATTACK", Katana = "ATTACK", Hatchets = "CHOP", Bow = "DRAW", Crossbow = "FIRE", Musket = "FIRE", Pistol = "FIRE", Blunderbuss = "FIRE", Knives = "THROW", Javelin = "THROW", Sling = "SLING", Bomb = "THROW", Herbs = "HEAL", Trap = "SET", Horn = "BLOW"}
+local v27 = {Crossbow = true, Musket = true, Pistol = true, Blunderbuss = true}
+
+local function secondaryFor(key, a30)
+    --[[
+      name: secondaryFor
+      line: 88
+      upvalues:
+        v27 (copy, index: 1)
+    ]]
+    if not key then
+        return nil, nil
+    end
+    if key == "Bow" or v27[key] or key == "Knives" or key == "Sling" then
+        return "AIM", "toggle"
+    end
+    if key == "Javelin" or key == "Bomb" then
+        return "CANCEL", "tap"
+    end
+    if a30.parry then
+        return "PARRY", "hold"
+    end
+    if a30.throw then
+        return "THROW", "hold"
+    end
+    if a30.block then
+        return "BLOCK", "hold"
+    end
+    if a30.heavy then
+        return "HEAVY", "hold"
+    end
+    if a30.lunge and (a30.lunge.charge or 0.6) <= 0 then
+        return "DASH", "hold"
+    end
+    if a30.lunge then
+        return "LUNGE", "hold"
+    end
+
+    return nil, nil
+end
+
+local function makeButton(parent: Frame, name: string, a34: number, text: string, textSize: number)
     --[[
       name: makeButton
       line: 112
       upvalues:
-        u13 (copy, index: 1)
-        u15 (copy, index: 2)
-        u16 (copy, index: 3)
-        Loc_upv_1 (copy, index: 4)
+        backgroundColor3 (copy, index: 1)
+        color3 (copy, index: 2)
+        fontFace (copy, index: 3)
+        Loc (copy, index: 4)
     ]]
-    local v2 = Instance.new("TextButton")
-    v2.Name = a2
-    v2.AnchorPoint = Vector2.new(0.5, 0.5)
-    v2.Size = UDim2.fromOffset(a3, a3)
-    v2.BackgroundColor3 = u13
-    v2.BackgroundTransparency = 0.3
-    v2.AutoButtonColor = false
-    v2.Text = a4
-    v2.TextColor3 = u15
-    v2.TextSize = a5
-    v2.FontFace = u16
-    v2.Active = true
-    v2.Selectable = false
-    local v3 = Instance.new("UICorner")
-    v3.CornerRadius = UDim.new(1, 0)
-    v3.Parent = v2
-    local v4 = Instance.new("UIStroke")
-    v4.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    v4.Thickness = 2
-    v4.Color = u15
-    v4.Transparency = 0.8
-    v4.Parent = v2
-    Instance.new("UIScale").Parent = v2
-    Loc_upv_1.Fit(v2, 9, 0.06)
-    v2.Parent = a1
-    return v2
+    local parent2 = Instance.new("TextButton")
+    parent2.Name = name
+    parent2.AnchorPoint = Vector2.new(0.5, 0.5)
+    parent2.Size = UDim2.fromOffset(a34, a34)
+    parent2.BackgroundColor3 = backgroundColor3
+    parent2.BackgroundTransparency = 0.3
+    parent2.AutoButtonColor = false
+    parent2.Text = text
+    parent2.TextColor3 = color3
+    parent2.TextSize = textSize
+    parent2.FontFace = fontFace
+    parent2.Active = true
+    parent2.Selectable = false
+
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(1, 0)
+    uiCorner.Parent = parent2
+
+    local uiStroke = Instance.new("UIStroke")
+    uiStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    uiStroke.Thickness = 2
+    uiStroke.Color = color3
+    uiStroke.Transparency = 0.8
+    uiStroke.Parent = parent2
+    Instance.new("UIScale").Parent = parent2
+    Loc.Fit(parent2, 9, 0.06)
+    parent2.Parent = parent
+
+    return parent2
 end
-local function setPressedLook(a1, a2)
+
+local function setPressedLook(pressedLook: TextButton?, a42: boolean)
     --[[
       name: setPressedLook
       line: 143
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u10 (ref,  index: 2)
-        u11 (ref,  index: 3)
-        u14 (copy, index: 4)
-        u13 (copy, index: 5)
-        u12 (copy, index: 6)
+        v11 (copy, index: 1)
+        v19 (ref,  index: 2)
+        v20 (ref,  index: 3)
+        backgroundColor32 (copy, index: 4)
+        backgroundColor3 (copy, index: 5)
+        color (copy, index: 6)
+        color3 (copy, index: 7)
     ]]
-    local v5 = (a1 == tbl_upv_1.Secondary) and (u10 and (not a2))
-    if a1 == tbl_upv_1.Secondary then
-        u11 = a2
+    local v43 = pressedLook == v11.Secondary and v19 and not a42
+
+    if pressedLook == v11.Secondary then
+        v20 = a42
     end
-    local v6
-    if a2 then
-        v6 = u14
-    else
-        v6 = u13
+
+    pressedLook.BackgroundColor3 = if a42 then backgroundColor32 else backgroundColor3
+    pressedLook.BackgroundTransparency = a42 and 0.12 or v43 and 0.6 or 0.3
+    pressedLook.TextTransparency = v43 and 0.55 or 0
+
+    if const uiStroke = pressedLook:FindFirstChildOfClass("UIStroke") then
+        uiStroke.Color = if a42 then color else color3
+        uiStroke.Thickness = a42 and 3 or 2
+        uiStroke.Transparency = a42 and 0 or v43 and 0.92 or 0.8
     end
-    a1.BackgroundColor3 = v6
-    a1.BackgroundTransparency = (a2 and 0.12) or ((v5 and 0.6) or 0.3)
-    a1.TextTransparency = (v5 and 0.55) or 0
-    local v7 = a1:FindFirstChildOfClass("UIStroke")
-    if v7 then
-        v7.Color = u12
-        v7.Thickness = (a2 and 3) or 2
-        v7.Transparency = (a2 and 0) or ((v5 and 0.92) or 0.8)
+
+    if const uiScale = pressedLook:FindFirstChildOfClass("UIScale") then
+        uiScale.Scale = a42 and 0.92 or 1
     end
-    local v8 = a1:FindFirstChildOfClass("UIScale")
-    if not v8 then
-        return
-    end
-    v8.Scale = (a2 and 0.92) or 1
 end
-local u17 = nil
-local u18 = nil
-local function setNudge(a1)
+
+local textButton = nil
+local frame2 = nil
+
+local function setNudge(nudge2: TextButton?)
     --[[
       name: setNudge
       line: 168
       upvalues:
-        u17 (ref,  index: 1)
-        u18 (ref,  index: 2)
-        u12 (copy, index: 3)
-        TweenService_upv_1 (copy, index: 4)
+        textButton (ref,  index: 1)
+        frame2 (ref,  index: 2)
+        color (copy, index: 3)
+        tweenService (copy, index: 4)
     ]]
-    if a1 == u17 then
+    if nudge2 == textButton then
         return
     end
-    u17 = a1
-    if u18 then
-        u18:Destroy()
-        u18 = nil
+
+    textButton = nudge2
+
+    if frame2 then
+        frame2:Destroy()
+        frame2 = nil
     end
-    if not a1 then
+
+    if not nudge2 then
         return
     end
-    local u19 = Instance.new("Frame")
-    u19.Name = "Nudge"
-    u19.AnchorPoint = Vector2.new(0.5, 0.5)
-    u19.Position = UDim2.fromScale(0.5, 0.5)
-    u19.Size = UDim2.fromScale(1, 1)
-    u19.BackgroundTransparency = 1
-    u19.ZIndex = 0
-    local v9 = Instance.new("UICorner")
-    v9.CornerRadius = UDim.new(1, 0)
-    v9.Parent = u19
-    local u20 = Instance.new("UIStroke")
-    u20.Thickness = 3
-    u20.Color = u12
-    u20.Transparency = 1
-    u20.Parent = u19
-    u19.Parent = a1
-    u18 = u19
+
+    local nudge = Instance.new("Frame")
+    nudge.Name = "Nudge"
+    nudge.AnchorPoint = Vector2.new(0.5, 0.5)
+    nudge.Position = UDim2.fromScale(0.5, 0.5)
+    nudge.Size = UDim2.fromScale(1, 1)
+    nudge.BackgroundTransparency = 1
+    nudge.ZIndex = 0
+
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(1, 0)
+    uiCorner.Parent = nudge
+
+    local instance = Instance.new("UIStroke")
+    instance.Thickness = 3
+    instance.Color = color
+    instance.Transparency = 1
+    instance.Parent = nudge
+    nudge.Parent = nudge2
+    frame2 = nudge
+
     task.spawn(
         function()
             --[[
               line: 197
               upvalues:
-                u18 (ref,  index: 1)
-                u19 (copy, index: 2)
-                u20 (copy, index: 3)
-                TweenService_upv_1 (copy, index: 4)
+                frame2 (ref,  index: 1)
+                nudge (copy, index: 2)
+                instance (copy, index: 3)
+                tweenService (copy, index: 4)
             ]]
-            local v10 = TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-            while u18 == u19 do
-                if u19.Parent then
-                    u19.Size = UDim2.fromScale(1, 1)
-                    u20.Transparency = 0.1
-                    local tbl_4 = {}
-                    tbl_4.Size = UDim2.fromScale(1.45, 1.45)
-                    TweenService_upv_1:Create(u19, v10, tbl_4):Play()
-                    TweenService_upv_1:Create(u20, v10, {Transparency = 1}):Play()
-                    task.wait(1.3)
-                    continue
-                else
-                    break
-                end
+            local tweenInfo = TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+            while frame2 == nudge and nudge.Parent do
+                nudge.Size = UDim2.fromScale(1, 1)
+                instance.Transparency = 0.1
+                local propertyTable = {Size = UDim2.fromScale(1.45, 1.45)}
+                tweenService:Create(nudge, tweenInfo, propertyTable):Play()
+                tweenService:Create(instance, tweenInfo, {Transparency = 1}):Play()
+                task.wait(1.3)
             end
         end
     )
 end
-local function fire(a1, a2)
-    --[[
-      name: fire
-      line: 226
-      upvalues:
-        u3 (ref, index: 1)
-    ]]
-    if not u3 then
-        return
-    end
-    u3(a1, a2)
-end
-local function readOverride(a1, a2, a3, a4)
+
+local function readOverride(screenGui: ScreenGui?, a57: string, absoluteSize: Vector2, offset: number)
     --[[
       name: readOverride
       line: 213
     ]]
-    local v11 = a1:GetAttribute("Override_" .. a2)
-    if type(v11) ~= "string" then
+    local text = screenGui:GetAttribute("Override_" .. a57)
+
+    if type(text) ~= "string" then
         return nil, nil
     end
-    local v12, v13, v14 = string.match(v11, "^(%-?%d+),(%-?%d+),(%d+)$")
-    if not v12 then
+
+    local v61, v62, v63 = string.match(text, "^(%-?%d+),(%-?%d+),(%d+)$")
+    if not v61 then
         return nil, nil
     end
-    local v15 = math.floor(((tonumber(v14) / 1000) * a4) + 0.5)
-    return UDim2.fromOffset(tonumber(v12) / 1000 * a3.X, tonumber(v13) / 1000 * a3.Y), (math.max(v15, 24))
+
+    local flooredValue = math.floor(((tonumber(v63) / 1000) * offset) + 0.5)
+
+    return UDim2.fromOffset((tonumber(v61) / 1000) * absoluteSize.X, tonumber(v62) / 1000 * absoluteSize.Y), (math.max(flooredValue, 24))
 end
-local function obstacle(a1)
+
+local function fire(a66, a67)
+    --[[
+      name: fire
+      line: 226
+      upvalues:
+        v12 (ref, index: 1)
+    ]]
+    if v12 then
+        v12(a66, a67)
+    end
+end
+
+local function obstacle(vector2: Vector2)
     --[[
       name: obstacle
       line: 234
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
     ]]
-    local Y_1 = a1.Y
-    local X_1 = a1.X
-    local v16 = LocalPlayer_upv_1:FindFirstChildOfClass("PlayerGui")
-    if not v16 then
-        return Y_1, X_1
+    local v70 = vector2.Y
+    local x = vector2.X
+    local playerGui = localPlayer:FindFirstChildOfClass("PlayerGui")
+    if not playerGui then
+        return v70, x
     end
-    local CharacterTouch_1 = v16:FindFirstChild("CharacterTouch")
-    if CharacterTouch_1 then
-        local v17 = CharacterTouch_1:IsA("ScreenGui")
-        if v17 then
-            local v18 = nil
-            if CharacterTouch_1.Enabled then
-                v18 = CharacterTouch_1:GetAttribute("ReservedMinY")
-                if type(v18) == "number" and v18 > 0 then
-                    Y_1 = math.min(Y_1, v18)
-                end
-            end
+
+    local characterTouch = playerGui:FindFirstChild("CharacterTouch")
+
+    if characterTouch and characterTouch:IsA("ScreenGui") and characterTouch.Enabled then
+        local reservedMinY = characterTouch:GetAttribute("ReservedMinY")
+
+        if type(reservedMinY) == "number" and 0 < reservedMinY then
+            v70 = math.min(v70, reservedMinY)
         end
     end
-    local TouchGui_1 = v16:FindFirstChild("TouchGui")
-    local v19 = TouchGui_1 and (TouchGui_1:FindFirstChild("JumpButton", true))
-    if v19 then
-        local v20 = v19:IsA("GuiObject")
-        if v20 and v19.Visible and v19.AbsoluteSize.X > 0 then
-            Y_1 = math.min(Y_1, v19.AbsolutePosition.Y)
-        end
+
+    local touchGui = playerGui:FindFirstChild("TouchGui")
+    local jumpButton = touchGui and touchGui:FindFirstChild("JumpButton", true)
+
+    if jumpButton and jumpButton:IsA("GuiObject") and jumpButton.Visible and 0 < jumpButton.AbsoluteSize.X then
+        v70 = math.min(v70, jumpButton.AbsolutePosition.Y)
     end
-    return Y_1, X_1
+
+    return v70, x
 end
+
 local function layout()
     --[[
       name: layout
       line: 255
       upvalues:
-        u1 (ref,  index: 1)
-        u2 (ref,  index: 2)
+        screenGui (ref,  index: 1)
+        frame (ref,  index: 2)
         obstacle (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
+        v11 (copy, index: 4)
         readOverride (copy, index: 5)
     ]]
-    if not u1 or not u2 then
+    local screenGui2 = screenGui
+    local frame2 = frame
+
+    if not screenGui2 or not frame2 then
         return
     end
-    local AbsolutePosition_upv_1 = u2.AbsolutePosition
-    local AbsoluteSize_1 = u2.AbsoluteSize
-    if AbsoluteSize_1.X < 10 then
+
+    local v80
+    local absolutePosition = frame2.AbsolutePosition
+    local absoluteSize = frame2.AbsoluteSize
+
+    if absoluteSize.X < 10 then
         return
     end
-    local v21 = AbsolutePosition_upv_1 + AbsoluteSize_1
-    local v22 = obstacle(v21)
-    local v23 = AbsoluteSize_1.Y < 500
-    local v24
-    if v23 then
-        v24 = 92
-    else
-        v24 = 100
-    end
-    local v25 = (v23 and 66) or 72
-    local v26 = (v23 and 58) or 62
-    local v27 = math.min(v22, v21.Y) - 12
-    local v28 = v21.X - 22 - v24 / 2
-    local v29 = math.max(v27 - (v24 / 2), (AbsolutePosition_upv_1.Y + (v24 / 2)) + 70)
-    local function place_1(a1, a2, a3, a4)
+
+    local vector2 = absolutePosition + absoluteSize
+    local v84 = obstacle(vector2)
+    local v85 = absoluteSize.Y < 500
+    local v86 = v85 and 92 or 100
+    local v87 = v85 and 66 or 72
+    local v88 = v85 and 58 or 62
+    local v89 = math.min(v84, vector2.Y) - 12
+    local v90 = vector2.X - 22 - v86 / 2
+    local v91 = math.max(v89 - (v86 / 2), (absolutePosition.Y + (v86 / 2)) + 70)
+
+    local function place(a93, a94, a95, a96: number)
         --[[
           name: place
           line: 275
           upvalues:
-            AbsolutePosition_upv_1 (copy, index: 1)
+            absolutePosition (copy, index: 1)
         ]]
-        a1.Size = UDim2.fromOffset(a4, a4)
-        a1.Position = UDim2.fromOffset(a2 - AbsolutePosition_upv_1.X, a3 - AbsolutePosition_upv_1.Y)
+        a93.Size = UDim2.fromOffset(a96, a96)
+        a93.Position = UDim2.fromOffset(a94 - absolutePosition.X, a95 - absolutePosition.Y)
     end
-    local Attack_1 = tbl_upv_1.Attack
-    Attack_1.Size = UDim2.fromOffset(v24, v24)
-    Attack_1.Position = UDim2.fromOffset(v28 - AbsolutePosition_upv_1.X, v29 - AbsolutePosition_upv_1.Y)
-    local v30 = (v28 - (v24 / 2)) - 14 - v25 / 2
-    local Secondary_1 = tbl_upv_1.Secondary
-    Secondary_1.Size = UDim2.fromOffset(v25, v25)
-    Secondary_1.Position = UDim2.fromOffset(v30 - AbsolutePosition_upv_1.X, (v29 + ((v24 - v25) / 2)) - AbsolutePosition_upv_1.Y)
-    local v31 = ((tbl_upv_1.Secondary.Visible) and (v30 - v25 / 2)) or (v28 - v24 / 2)
-    local Reload_1 = tbl_upv_1.Reload
-    Reload_1.Size = UDim2.fromOffset(v26, v26)
-    Reload_1.Position = UDim2.fromOffset(((v31 - 14) - (v26 / 2)) - AbsolutePosition_upv_1.X, (v29 + ((v24 - v26) / 2)) - AbsolutePosition_upv_1.Y)
-    for key_1, value_1 in tbl_upv_1 do
-        value_1:SetAttribute("DefaultSize", value_1.Size.X.Offset)
-        local v32, v33 = readOverride(u1, key_1, AbsoluteSize_1, value_1.Size.X.Offset)
-        if not (v32) then
-            continue
-        end
-        if v33 then
-            value_1.Position = v32
-            value_1.Size = UDim2.fromOffset(v33, v33)
+
+    local attack = v11.Attack
+    attack.Size = UDim2.fromOffset(v86, v86)
+    attack.Position = UDim2.fromOffset(v90 - absolutePosition.X, v91 - absolutePosition.Y)
+    local v98 = (v90 - (v86 / 2)) - 14 - v87 / 2
+    local secondary = v11.Secondary
+    local v100 = v91 + (v86 - v87) / 2
+    secondary.Size = UDim2.fromOffset(v87, v87)
+    secondary.Position = UDim2.fromOffset(v98 - absolutePosition.X, v100 - absolutePosition.Y)
+
+    if v11.Secondary.Visible then
+        v80 = v98 - v87 / 2
+    else
+        v80 = v90 - v86 / 2
+    end
+
+    local v101 = v80 - 14 - v88 / 2
+    local reload = v11.Reload
+    local v103 = v91 + (v86 - v88) / 2
+    reload.Size = UDim2.fromOffset(v88, v88)
+    reload.Position = UDim2.fromOffset(v101 - absolutePosition.X, v103 - absolutePosition.Y)
+
+    for v104, textButton in v11 do
+        textButton:SetAttribute("DefaultSize", textButton.Size.X.Offset)
+        local position, v107 = readOverride(screenGui2, v104, absoluteSize, textButton.Size.X.Offset)
+
+        if position and v107 then
+            textButton.Position = position
+            textButton.Size = UDim2.fromOffset(v107, v107)
         end
     end
 end
-local function secondaryFor(a1, a2)
-    --[[
-      name: secondaryFor
-      line: 88
-      upvalues:
-        tbl_upv_3 (copy, index: 1)
-    ]]
-    if a1 then
-        if a1 ~= "Bow" and not (tbl_upv_3[a1]) and a1 ~= "Knives" and a1 ~= "Sling" then
-            if a1 ~= "Javelin" and a1 ~= "Bomb" then
-                if a2.parry then
-                    return "PARRY", "hold"
-                end
-                if a2.throw then
-                    return "THROW", "hold"
-                end
-                if a2.block then
-                    return "BLOCK", "hold"
-                end
-                if a2.heavy then
-                    return "HEAVY", "hold"
-                end
-                if a2.lunge and (a2.lunge.charge or 0.6) <= 0 then
-                    return "DASH", "hold"
-                elseif a2.lunge then
-                    return "LUNGE", "hold"
-                else
-                    return nil, nil
-                end
-            end
-            return "CANCEL", "tap"
-        end
-        return "AIM", "toggle"
-    end
-    return nil, nil
-end
+
 local function refresh()
     --[[
       name: refresh
       line: 294
       upvalues:
-        u1 (ref,  index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-        u7 (ref,  index: 3)
-        u8 (ref,  index: 4)
-        tbl_upv_2 (copy, index: 5)
-        u4 (ref,  index: 6)
-        tbl_upv_1 (copy, index: 7)
-        Loc_upv_1 (copy, index: 8)
+        screenGui (ref,  index: 1)
+        localPlayer (copy, index: 2)
+        v16 (ref,  index: 3)
+        v17 (ref,  index: 4)
+        v26 (copy, index: 5)
+        v13 (ref,  index: 6)
+        v11 (copy, index: 7)
+        Loc (copy, index: 8)
         secondaryFor (copy, index: 9)
-        u5 (ref,  index: 10)
-        u6 (ref,  index: 11)
-        tbl_upv_3 (copy, index: 12)
+        v14 (ref,  index: 10)
+        v15 (ref,  index: 11)
+        v27 (copy, index: 12)
         layout (copy, index: 13)
         setNudge (copy, index: 14)
-        u10 (ref,  index: 15)
+        v19 (ref,  index: 15)
     ]]
-    if not u1 then
+    local textButton
+    local textButton2
+    local screenGui2 = screenGui
+    if not screenGui2 then
         return
     end
-    local v34 = LocalPlayer_upv_1.Character
-    local v35 = v34 and (v34:FindFirstChildOfClass("Humanoid"))
-    local v36 = false
-    if v35 == nil then
-        v34 = v36
-    else
-        v34 = v35.Health > 0
-    end
-    local v37 = u1:GetAttribute("EditPreview") == true
-    u1.Enabled = ((u7) or u1:GetAttribute("ForceVisible") == true) and (u8) and (v34) or v37
-    local v38 = tbl_upv_2[u4 or "Fists"] or "ATTACK"
-    tbl_upv_1.Attack.AutoLocalize = v38 ~= "DRAW"
-    local Attack_2 = tbl_upv_1.Attack
-    local v39
-    if v38 ~= "DRAW" then
-        v39 = v38
-    else
-        v39 = Loc_upv_1.Pick("DRAW (bow)", "DRAW")
-    end
-    Attack_2.Text = v39
-    local v40 = secondaryFor(u4, u5)
-    local Secondary_2 = tbl_upv_1.Secondary
-    local v41 = true
-    if v40 == nil then
-        v41 = v37
-    end
-    Secondary_2.Visible = v41
-    local Secondary_3 = tbl_upv_1.Secondary
-    if v40 == "AIM" and (u6) then
-        v41 = "AIM ON"
-    else
-        v41 = v40 or ((v37 and "ALT") or "")
-    end
-    Secondary_3.Text = v41
-    local Reload_2 = tbl_upv_1.Reload
-    if u4 == nil or tbl_upv_3[u4] ~= true then
-        v41 = v37
-    else
-        local v42 = true
-        if (tonumber(u5.magazine) or 1) > 1 then
-            v41 = v42
-        else
-            v41 = v37
-        end
-    end
-    Reload_2.Visible = v41
-    if u1.Enabled then
+
+    local instance = localPlayer.Character
+    instance = instance and instance:FindFirstChildOfClass("Humanoid")
+    local v113 = instance ~= nil and 0 < instance.Health
+    local editPreview = screenGui2:GetAttribute("EditPreview") == true
+    screenGui2.Enabled = (v16 or screenGui2:GetAttribute("ForceVisible") == true) and v17 and v113 or editPreview
+    local v115 = v26[v13 or "Fists"] or "ATTACK"
+    v11.Attack.AutoLocalize = v115 ~= "DRAW"
+    v11.Attack.Text = if v115 == "DRAW" then Loc.Pick("DRAW (bow)", "DRAW") else v115
+    local v116 = secondaryFor(v13, v14)
+    v11.Secondary.Visible = (v116 ~= nil) or editPreview
+    v11.Secondary.Text = v116 == "AIM" and v15 and "AIM ON" or v116 or editPreview and "ALT" or ""
+    local reload = v11.Reload
+    local visible = not not (not (v13 == nil or v27[v13] ~= true or not (1 < (tonumber(v14.magazine) or 1)))
+        or editPreview)
+    reload.Visible = visible
+
+    if screenGui2.Enabled then
         layout()
     end
-    local v43 = u1:GetAttribute("Nudge")
-    local v44 = type(v43) ~= "string" or v37 or tbl_upv_1[v43]
-    if v44 and v44.Visible then
-        if v44 ~= tbl_upv_1.Secondary then
-            v41 = v44
-        else
-            v41 = u10 or v44
-        end
+
+    local nudge = screenGui2:GetAttribute("Nudge")
+
+    if type(nudge) == "string" and not editPreview then
+        textButton = v11[nudge]
     else
-        v41 = nil
+        textButton = nil
     end
-    setNudge(v41)
+
+    if not textButton or not textButton.Visible or textButton == v11.Secondary and v19 then
+        textButton2 = nil
+    else
+        textButton2 = textButton
+    end
+
+    setNudge(textButton2)
 end
-local function bindAttack(a1)
+
+local function bindAttack(attack: TextButton?)
     --[[
       name: bindAttack
       line: 322
       upvalues:
-        TouchStart_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-        u10 (ref,  index: 3)
-        u11 (ref,  index: 4)
-        u14 (copy, index: 5)
-        u12 (copy, index: 6)
-        u3 (ref,  index: 7)
-        UserInputService_upv_1 (copy, index: 8)
-        u9 (ref,  index: 9)
-        Players_upv_1 (copy, index: 10)
-        u13 (copy, index: 11)
-        u15 (copy, index: 12)
+        TouchStart (copy, index: 1)
+        v11 (copy, index: 2)
+        v19 (ref,  index: 3)
+        v20 (ref,  index: 4)
+        backgroundColor32 (copy, index: 5)
+        color (copy, index: 6)
+        v12 (ref,  index: 7)
+        userInputService (copy, index: 8)
+        Camera (ref,  index: 9)
+        players (copy, index: 10)
+        backgroundColor3 (copy, index: 11)
+        color3 (copy, index: 12)
     ]]
-    local u21 = nil
-    a1.InputBegan:Connect(
-        function(a2)
+    local inputObject = nil
+
+    attack.InputBegan:Connect(
+        function(input: InputObject)
             --[[
               line: 324
               upvalues:
-                u21 (ref,  index: 1)
-                TouchStart_upv_1 (copy, index: 2)
-                a1 (copy, index: 3)
-                tbl_upv_1 (copy, index: 4)
-                u10 (ref,  index: 5)
-                u11 (ref,  index: 6)
-                u14 (copy, index: 7)
-                u12 (copy, index: 8)
-                u3 (ref,  index: 9)
+                inputObject (ref,  index: 1)
+                TouchStart (copy, index: 2)
+                attack (copy, index: 3)
+                v11 (copy, index: 4)
+                v19 (ref,  index: 5)
+                v20 (ref,  index: 6)
+                backgroundColor32 (copy, index: 7)
+                color (copy, index: 8)
+                v12 (ref,  index: 9)
             ]]
-            if a2.UserInputType ~= Enum.UserInputType.Touch or (u21) then
+            if input.UserInputType ~= Enum.UserInputType.Touch
+                or inputObject
+                or not TouchStart.BeganOn(attack, input)
+            then
                 return
             end
-            if TouchStart_upv_1.BeganOn(a1, a2) then
-                u21 = a2
-                local v45 = a1
-                local v46 = (v45 == tbl_upv_1.Secondary) and (u10 and false)
-                if v45 == tbl_upv_1.Secondary then
-                    u11 = true
-                end
-                v45.BackgroundColor3 = u14
-                v45.BackgroundTransparency = 0.12
-                v45.TextTransparency = (v46 and 0.55) or 0
-                local v47 = v45:FindFirstChildOfClass("UIStroke")
-                if v47 then
-                    v47.Color = u12
-                    v47.Thickness = 3
-                    v47.Transparency = 0
-                end
-                local v48 = v45:FindFirstChildOfClass("UIScale")
-                if v48 then
-                    v48.Scale = 0.92
-                end
-                if u3 then
-                    u3("Primary", true)
-                end
+
+            inputObject = input
+            local attack2 = attack
+            local v125 = false
+
+            if attack2 == v11.Secondary then
+                v125 = v19 and false
+            end
+
+            if attack2 == v11.Secondary then
+                v20 = true
+            end
+
+            attack2.BackgroundColor3 = backgroundColor32
+            attack2.BackgroundTransparency = 0.12
+            attack2.TextTransparency = v125 and 0.55 or 0
+
+            if const uiStroke = attack2:FindFirstChildOfClass("UIStroke") then
+                uiStroke.Color = color
+                uiStroke.Thickness = 3
+                uiStroke.Transparency = 0
+            end
+
+            if const uiScale = attack2:FindFirstChildOfClass("UIScale") then
+                uiScale.Scale = 0.92
+            end
+
+            if v12 then
+                v12("Primary", true)
             end
         end
     )
-    UserInputService_upv_1.TouchMoved:Connect(
-        function(a3)
+
+    userInputService.TouchMoved:Connect(
+        function(touch: InputObject)
             --[[
               line: 336
               upvalues:
-                u21 (ref,  index: 1)
-                u9 (ref,  index: 2)
-                UserInputService_upv_1 (copy, index: 3)
-                Players_upv_1 (copy, index: 4)
+                inputObject (ref,  index: 1)
+                Camera (ref,  index: 2)
+                userInputService (copy, index: 3)
+                players (copy, index: 4)
             ]]
-            if a3 ~= u21 or not u9 then
-                return
-            end
-            if not (UserInputService_upv_1.MouseEnabled) and Players_upv_1.LocalPlayer:GetAttribute("TouchAttackLookOff") ~= true then
-                local Delta_upv_1 = a3.Delta
-                if not (pcall(
+            if touch == inputObject and Camera and not userInputService.MouseEnabled then
+                if players.LocalPlayer:GetAttribute("TouchAttackLookOff") == true then
+                    return
+                end
+
+                local delta = touch.Delta
+
+                if not pcall(
                     function()
                         --[[
                           line: 344
                           upvalues:
-                            u9 (ref,  index: 1)
-                            Delta_upv_1 (copy, index: 2)
+                            Camera (ref,  index: 1)
+                            delta (copy, index: 2)
                         ]]
-                        u9.AddTouchLook(Vector2.new(Delta_upv_1.X, Delta_upv_1.Y))
+                        Camera.AddTouchLook(Vector2.new(delta.X, delta.Y))
                     end
-                )) then
-                    u9 = nil
+                ) then
+                    Camera = nil
                 end
             end
         end
     )
-    UserInputService_upv_1.TouchEnded:Connect(
-        function(a4)
+
+    userInputService.TouchEnded:Connect(
+        function(touch: InputObject)
             --[[
               line: 351
               upvalues:
-                u21 (ref,  index: 1)
-                a1 (copy, index: 2)
-                tbl_upv_1 (copy, index: 3)
-                u10 (ref,  index: 4)
-                u11 (ref,  index: 5)
-                u13 (copy, index: 6)
-                u15 (copy, index: 7)
-                u3 (ref,  index: 8)
+                inputObject (ref,  index: 1)
+                attack (copy, index: 2)
+                v11 (copy, index: 3)
+                v19 (ref,  index: 4)
+                v20 (ref,  index: 5)
+                backgroundColor3 (copy, index: 6)
+                color3 (copy, index: 7)
+                v12 (ref,  index: 8)
             ]]
-            if a4 ~= u21 then
+            if touch ~= inputObject then
                 return
             end
-            u21 = nil
-            local v49 = a1
-            local v50 = (v49 == tbl_upv_1.Secondary) and (u10 and true)
-            if v49 == tbl_upv_1.Secondary then
-                u11 = false
+
+            inputObject = nil
+            local attack2 = attack
+            local v132 = false
+
+            if attack2 == v11.Secondary then
+                v132 = v19 and true
             end
-            v49.BackgroundColor3 = u13
-            v49.BackgroundTransparency = (v50 and 0.6) or 0.3
-            v49.TextTransparency = (v50 and 0.55) or 0
-            local v51 = v49:FindFirstChildOfClass("UIStroke")
-            if v51 then
-                v51.Color = u15
-                v51.Thickness = 2
-                v51.Transparency = (v50 and 0.92) or 0.8
+
+            if attack2 == v11.Secondary then
+                v20 = false
             end
-            local v52 = a1:FindFirstChildOfClass("UIScale")
-            if v52 then
-                v52.Scale = 1
+
+            attack2.BackgroundColor3 = backgroundColor3
+            attack2.BackgroundTransparency = v132 and 0.6 or 0.3
+            attack2.TextTransparency = v132 and 0.55 or 0
+
+            if const uiStroke = attack2:FindFirstChildOfClass("UIStroke") then
+                uiStroke.Color = color3
+                uiStroke.Thickness = 2
+                uiStroke.Transparency = v132 and 0.92 or 0.8
             end
-            if not u3 then
-                return
+
+            if const uiScale = attack:FindFirstChildOfClass("UIScale") then
+                uiScale.Scale = 1
             end
-            u3("Primary", false)
+
+            if v12 then
+                v12("Primary", false)
+            end
         end
     )
 end
-local function bindSecondary(a1)
+
+local function bindSecondary(secondary: TextButton?)
     --[[
       name: bindSecondary
       line: 361
       upvalues:
-        TouchStart_upv_1 (copy, index: 1)
+        TouchStart (copy, index: 1)
         secondaryFor (copy, index: 2)
-        u4 (ref,  index: 3)
-        u5 (ref,  index: 4)
-        u6 (ref,  index: 5)
+        v13 (ref,  index: 3)
+        v14 (ref,  index: 4)
+        v15 (ref,  index: 5)
         setPressedLook (copy, index: 6)
-        u3 (ref,  index: 7)
+        v12 (ref,  index: 7)
         refresh (copy, index: 8)
-        tbl_upv_1 (copy, index: 9)
-        u10 (ref,  index: 10)
-        u11 (ref,  index: 11)
-        u14 (copy, index: 12)
-        u12 (copy, index: 13)
-        UserInputService_upv_1 (copy, index: 14)
-        u13 (copy, index: 15)
-        u15 (copy, index: 16)
+        v11 (copy, index: 9)
+        v19 (ref,  index: 10)
+        v20 (ref,  index: 11)
+        backgroundColor32 (copy, index: 12)
+        color (copy, index: 13)
+        userInputService (copy, index: 14)
+        backgroundColor3 (copy, index: 15)
+        color3 (copy, index: 16)
     ]]
-    local u22 = nil
-    a1.InputBegan:Connect(
-        function(a2)
+    local inputObject = nil
+
+    secondary.InputBegan:Connect(
+        function(input: InputObject)
             --[[
               line: 363
               upvalues:
-                u22 (ref,  index: 1)
-                TouchStart_upv_1 (copy, index: 2)
-                a1 (copy, index: 3)
+                inputObject (ref,  index: 1)
+                TouchStart (copy, index: 2)
+                secondary (copy, index: 3)
                 secondaryFor (copy, index: 4)
-                u4 (ref,  index: 5)
-                u5 (ref,  index: 6)
-                u6 (ref,  index: 7)
+                v13 (ref,  index: 5)
+                v14 (ref,  index: 6)
+                v15 (ref,  index: 7)
                 setPressedLook (copy, index: 8)
-                u3 (ref,  index: 9)
+                v12 (ref,  index: 9)
                 refresh (copy, index: 10)
-                tbl_upv_1 (copy, index: 11)
-                u10 (ref,  index: 12)
-                u11 (ref,  index: 13)
-                u14 (copy, index: 14)
-                u12 (copy, index: 15)
+                v11 (copy, index: 11)
+                v19 (ref,  index: 12)
+                v20 (ref,  index: 13)
+                backgroundColor32 (copy, index: 14)
+                color (copy, index: 15)
             ]]
-            if a2.UserInputType ~= Enum.UserInputType.Touch or (u22) then
+            if input.UserInputType ~= Enum.UserInputType.Touch
+                or inputObject
+                or not TouchStart.BeganOn(secondary, input)
+            then
                 return
             end
-            if TouchStart_upv_1.BeganOn(a1, a2) then
-                local _, v53 = secondaryFor(u4, u5)
-                if v53 == "toggle" then
-                    u6 = not u6
-                    setPressedLook(a1, u6)
-                    local v54 = u6
-                    if u3 then
-                        u3("Secondary", v54)
-                    end
-                    refresh()
-                elseif v53 == "tap" then
-                    if u3 then
-                        u3("Secondary", true)
-                    end
-                    if u3 then
-                        u3("Secondary", false)
-                        return
-                    end
-                elseif v53 == "hold" then
-                    u22 = a2
-                    local v55 = a1
-                    local v56 = (v55 == tbl_upv_1.Secondary) and (u10 and false)
-                    if v55 == tbl_upv_1.Secondary then
-                        u11 = true
-                    end
-                    v55.BackgroundColor3 = u14
-                    v55.BackgroundTransparency = 0.12
-                    v55.TextTransparency = (v56 and 0.55) or 0
-                    local v57 = v55:FindFirstChildOfClass("UIStroke")
-                    if v57 then
-                        v57.Color = u12
-                        v57.Thickness = 3
-                        v57.Transparency = 0
-                    end
-                    local v58 = v55:FindFirstChildOfClass("UIScale")
-                    if v58 then
-                        v58.Scale = 0.92
-                    end
-                    if u3 then
-                        u3("Secondary", true)
-                    end
+
+            local _, v140 = secondaryFor(v13, v14)
+
+            if v140 == "toggle" then
+                v15 = not v15
+                setPressedLook(secondary, v15)
+                local v141 = v15
+
+                if v12 then
+                    v12("Secondary", v141)
+                end
+
+                refresh()
+
+                return
+            end
+
+            if v140 == "tap" then
+                if v12 then
+                    v12("Secondary", true)
+                end
+
+                if v12 then
+                    v12("Secondary", false)
+                end
+            elseif v140 == "hold" then
+                inputObject = input
+                local secondary2 = secondary
+                local v143 = false
+
+                if secondary2 == v11.Secondary then
+                    v143 = v19 and false
+                end
+
+                if secondary2 == v11.Secondary then
+                    v20 = true
+                end
+
+                secondary2.BackgroundColor3 = backgroundColor32
+                secondary2.BackgroundTransparency = 0.12
+                secondary2.TextTransparency = v143 and 0.55 or 0
+
+                if const uiStroke = secondary2:FindFirstChildOfClass("UIStroke") then
+                    uiStroke.Color = color
+                    uiStroke.Thickness = 3
+                    uiStroke.Transparency = 0
+                end
+
+                if const uiScale = secondary2:FindFirstChildOfClass("UIScale") then
+                    uiScale.Scale = 0.92
+                end
+
+                if v12 then
+                    v12("Secondary", true)
                 end
             end
         end
     )
-    UserInputService_upv_1.TouchEnded:Connect(
-        function(a3)
+
+    userInputService.TouchEnded:Connect(
+        function(touch: InputObject)
             --[[
               line: 382
               upvalues:
-                u22 (ref,  index: 1)
-                a1 (copy, index: 2)
-                tbl_upv_1 (copy, index: 3)
-                u10 (ref,  index: 4)
-                u11 (ref,  index: 5)
-                u13 (copy, index: 6)
-                u15 (copy, index: 7)
-                u3 (ref,  index: 8)
+                inputObject (ref,  index: 1)
+                secondary (copy, index: 2)
+                v11 (copy, index: 3)
+                v19 (ref,  index: 4)
+                v20 (ref,  index: 5)
+                backgroundColor3 (copy, index: 6)
+                color3 (copy, index: 7)
+                v12 (ref,  index: 8)
             ]]
-            if a3 ~= u22 then
+            if touch ~= inputObject then
                 return
             end
-            u22 = nil
-            local v59 = a1
-            local v60 = (v59 == tbl_upv_1.Secondary) and (u10 and true)
-            if v59 == tbl_upv_1.Secondary then
-                u11 = false
+
+            inputObject = nil
+            local secondary2 = secondary
+            local v148 = false
+
+            if secondary2 == v11.Secondary then
+                v148 = v19 and true
             end
-            v59.BackgroundColor3 = u13
-            v59.BackgroundTransparency = (v60 and 0.6) or 0.3
-            v59.TextTransparency = (v60 and 0.55) or 0
-            local v61 = v59:FindFirstChildOfClass("UIStroke")
-            if v61 then
-                v61.Color = u15
-                v61.Thickness = 2
-                v61.Transparency = (v60 and 0.92) or 0.8
+
+            if secondary2 == v11.Secondary then
+                v20 = false
             end
-            local v62 = a1:FindFirstChildOfClass("UIScale")
-            if v62 then
-                v62.Scale = 1
+
+            secondary2.BackgroundColor3 = backgroundColor3
+            secondary2.BackgroundTransparency = v148 and 0.6 or 0.3
+            secondary2.TextTransparency = v148 and 0.55 or 0
+
+            if const uiStroke = secondary2:FindFirstChildOfClass("UIStroke") then
+                uiStroke.Color = color3
+                uiStroke.Thickness = 2
+                uiStroke.Transparency = v148 and 0.92 or 0.8
             end
-            if not u3 then
-                return
+
+            if const uiScale = secondary:FindFirstChildOfClass("UIScale") then
+                uiScale.Scale = 1
             end
-            u3("Secondary", false)
+
+            if v12 then
+                v12("Secondary", false)
+            end
         end
     )
 end
-function v1.SetWeapon(a1, a2)
+
+function v7.SetWeapon(a151, a152)
     --[[
       name: SetWeapon
       line: 393
       upvalues:
-        u4 (ref,  index: 1)
-        u5 (ref,  index: 2)
-        u6 (ref,  index: 3)
-        tbl_upv_1 (copy, index: 4)
-        u10 (ref,  index: 5)
-        u11 (ref,  index: 6)
-        u13 (copy, index: 7)
-        u15 (copy, index: 8)
+        v13 (ref,  index: 1)
+        v14 (ref,  index: 2)
+        v15 (ref,  index: 3)
+        v11 (copy, index: 4)
+        v19 (ref,  index: 5)
+        v20 (ref,  index: 6)
+        backgroundColor3 (copy, index: 7)
+        color3 (copy, index: 8)
         refresh (copy, index: 9)
     ]]
-    u4 = a1
-    u5 = a2 or {}
-    u6 = false
-    if tbl_upv_1.Secondary then
-        local Secondary_4 = tbl_upv_1.Secondary
-        local v63 = (Secondary_4 == tbl_upv_1.Secondary) and (u10 and true)
-        if Secondary_4 == tbl_upv_1.Secondary then
-            u11 = false
+    v13 = a151
+    v14 = a152 or {}
+    v15 = false
+
+    if v11.Secondary then
+        local secondary = v11.Secondary
+        local v154 = false
+
+        if secondary == v11.Secondary then
+            v154 = v19 and true
         end
-        Secondary_4.BackgroundColor3 = u13
-        Secondary_4.BackgroundTransparency = (v63 and 0.6) or 0.3
-        Secondary_4.TextTransparency = (v63 and 0.55) or 0
-        local v64 = Secondary_4:FindFirstChildOfClass("UIStroke")
-        if v64 then
-            v64.Color = u15
-            v64.Thickness = 2
-            v64.Transparency = (v63 and 0.92) or 0.8
+
+        if secondary == v11.Secondary then
+            v20 = false
         end
-        local v65 = Secondary_4:FindFirstChildOfClass("UIScale")
-        if v65 then
-            v65.Scale = 1
+
+        secondary.BackgroundColor3 = backgroundColor3
+        secondary.BackgroundTransparency = v154 and 0.6 or 0.3
+        secondary.TextTransparency = v154 and 0.55 or 0
+
+        if const uiStroke = secondary:FindFirstChildOfClass("UIStroke") then
+            uiStroke.Color = color3
+            uiStroke.Thickness = 2
+            uiStroke.Transparency = v154 and 0.92 or 0.8
+        end
+
+        if const uiScale = secondary:FindFirstChildOfClass("UIScale") then
+            uiScale.Scale = 1
         end
     end
+
     refresh()
 end
-function v1.SetAltDim(a1)
+
+function v7.SetAltDim(altDim)
     --[[
       name: SetAltDim
       line: 404
       upvalues:
-        u10 (ref,  index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v19 (ref,  index: 1)
+        v11 (copy, index: 2)
         setPressedLook (copy, index: 3)
-        u11 (ref,  index: 4)
+        v20 (ref,  index: 4)
         refresh (copy, index: 5)
     ]]
-    if a1 == u10 then
+    if altDim == v19 then
         return
     end
-    u10 = a1
-    if tbl_upv_1.Secondary then
-        setPressedLook(tbl_upv_1.Secondary, u11)
+
+    v19 = altDim
+
+    if v11.Secondary then
+        setPressedLook(v11.Secondary, v20)
     end
+
     refresh()
 end
-function v1.SetVisible(a1)
+
+function v7.SetVisible(visible)
     --[[
       name: SetVisible
       line: 415
       upvalues:
-        u8 (ref,  index: 1)
+        v17 (ref,  index: 1)
         refresh (copy, index: 2)
     ]]
-    if a1 == u8 then
-        return
+    if visible ~= v17 then
+        v17 = visible
+        refresh()
     end
-    u8 = a1
-    refresh()
 end
-function v1.IsActive()
+
+function v7.IsActive()
     --[[
       name: IsActive
       line: 422
       upvalues:
-        u7 (ref, index: 1)
+        v16 (ref, index: 1)
     ]]
-    return u7
+    return v16
 end
-local function updateActive(a1)
+
+local function updateActive(userInputType: Enum.UserInputType?)
     --[[
       name: updateActive
       line: 426
       upvalues:
-        UserInputService_upv_1 (copy, index: 1)
-        u7 (ref,  index: 2)
+        userInputService (copy, index: 1)
+        v16 (ref,  index: 2)
         refresh (copy, index: 3)
     ]]
-    local v66 = a1 or (UserInputService_upv_1:GetLastInputType())
-    local v67
-    if v66 == Enum.UserInputType.Touch then
-        v67 = true
-    elseif v66 == Enum.UserInputType.MouseButton1 or v66 == Enum.UserInputType.MouseMovement or v66 == Enum.UserInputType.Keyboard or string.find(v66.Name, "Gamepad") then
-        v67 = false
+    local v161
+    local userInputType2 = userInputType or userInputService:GetLastInputType()
+
+    if userInputType2 ~= Enum.UserInputType.Touch then
+        if userInputType2 == Enum.UserInputType.MouseButton1
+            or userInputType2 == Enum.UserInputType.MouseMovement
+            or userInputType2 == Enum.UserInputType.Keyboard
+            or string.find(userInputType2.Name, "Gamepad")
+        then
+            v161 = false
+        else
+            v161 = userInputService.TouchEnabled and not userInputService.MouseEnabled
+        end
     else
-        v67 = UserInputService_upv_1.TouchEnabled and not UserInputService_upv_1.MouseEnabled
+        v161 = true
     end
-    if v67 == u7 then
-        return
+
+    if v161 ~= v16 then
+        v16 = v161
+        refresh()
     end
-    u7 = v67
-    refresh()
 end
-function v1.Start(a1)
+
+function v7.Start(a163)
     --[[
       name: Start
       line: 442
       upvalues:
-        u1 (ref,  index: 1)
-        u3 (ref,  index: 2)
-        u9 (ref,  index: 3)
-        LocalPlayer_upv_1 (copy, index: 4)
-        u2 (ref,  index: 5)
-        tbl_upv_1 (copy, index: 6)
+        screenGui (ref,  index: 1)
+        v12 (ref,  index: 2)
+        Camera (ref,  index: 3)
+        localPlayer (copy, index: 4)
+        frame (ref,  index: 5)
+        v11 (copy, index: 6)
         makeButton (copy, index: 7)
         bindAttack (copy, index: 8)
         bindSecondary (copy, index: 9)
-        TouchStart_upv_1 (copy, index: 10)
-        u10 (ref,  index: 11)
-        u11 (ref,  index: 12)
-        u14 (copy, index: 13)
-        u12 (copy, index: 14)
-        u13 (copy, index: 15)
-        u15 (copy, index: 16)
+        TouchStart (copy, index: 10)
+        v19 (ref,  index: 11)
+        v20 (ref,  index: 12)
+        backgroundColor32 (copy, index: 13)
+        color (copy, index: 14)
+        backgroundColor3 (copy, index: 15)
+        color3 (copy, index: 16)
         refresh (copy, index: 17)
         updateActive (copy, index: 18)
-        UserInputService_upv_1 (copy, index: 19)
+        userInputService (copy, index: 19)
         layout (copy, index: 20)
-        u6 (ref,  index: 21)
+        v15 (ref,  index: 21)
     ]]
-    if u1 then
+    if screenGui then
         return
     end
-    u3 = a1
+
+    v12 = a163
+
     task.spawn(
         function()
             --[[
               line: 447
               upvalues:
-                u9 (ref, index: 1)
+                Camera (ref, index: 1)
             ]]
-            local success_1, v69 = pcall(
+            local success, Camera2 = pcall(
                 function()
                     --[[
                       line: 448
                     ]]
-                    return require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Camera", 10))
+                    return require((game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Camera", 10)))
                 end
             )
-            local v70
-            if success_1 and type(v69) == "table" and v69.SetLook and v69.GetYaw then
-                v70 = v69
+
+            if not success or type(Camera2) ~= "table" or not Camera2.SetLook or not Camera2.GetYaw then
+                Camera = nil
             else
-                v70 = nil
+                Camera = Camera2
             end
-            u9 = v70
         end
     )
-    local u23 = Instance.new("ScreenGui")
-    u23.Name = "CombatTouch"
-    u23.ResetOnSpawn = false
-    u23.IgnoreGuiInset = true
-    u23.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
-    u23.DisplayOrder = 5
-    u23.Enabled = false
-    u23.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-    u1 = u23
-    local v71 = Instance.new("Frame")
-    v71.Name = "Root"
-    v71.BackgroundTransparency = 1
-    v71.Size = UDim2.fromScale(1, 1)
-    v71.Parent = u23
-    u2 = v71
-    tbl_upv_1.Attack = makeButton(v71, "Attack", 96, "ATTACK", 16)
-    tbl_upv_1.Secondary = makeButton(v71, "Secondary", 70, "BLOCK", 14)
-    tbl_upv_1.Reload = makeButton(v71, "Reload", 60, "RELOAD", 12)
-    bindAttack(tbl_upv_1.Attack)
-    bindSecondary(tbl_upv_1.Secondary)
-    tbl_upv_1.Reload.InputBegan:Connect(
-        function(a2)
+
+    local combatTouch = Instance.new("ScreenGui")
+    combatTouch.Name = "CombatTouch"
+    combatTouch.ResetOnSpawn = false
+    combatTouch.IgnoreGuiInset = true
+    combatTouch.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+    combatTouch.DisplayOrder = 5
+    combatTouch.Enabled = false
+    combatTouch.Parent = localPlayer:WaitForChild("PlayerGui")
+    screenGui = combatTouch
+    local root = Instance.new("Frame")
+    root.Name = "Root"
+    root.BackgroundTransparency = 1
+    root.Size = UDim2.fromScale(1, 1)
+    root.Parent = combatTouch
+    frame = root
+    v11.Attack = makeButton(root, "Attack", 96, "ATTACK", 16)
+    v11.Secondary = makeButton(root, "Secondary", 70, "BLOCK", 14)
+    v11.Reload = makeButton(root, "Reload", 60, "RELOAD", 12)
+    bindAttack(v11.Attack)
+    bindSecondary(v11.Secondary)
+
+    v11.Reload.InputBegan:Connect(
+        function(input: InputObject)
             --[[
               line: 473
               upvalues:
-                TouchStart_upv_1 (copy, index: 1)
-                tbl_upv_1 (copy, index: 2)
-                u10 (ref,  index: 3)
-                u11 (ref,  index: 4)
-                u14 (copy, index: 5)
-                u12 (copy, index: 6)
-                u3 (ref,  index: 7)
-                u13 (copy, index: 8)
-                u15 (copy, index: 9)
+                TouchStart (copy, index: 1)
+                v11 (copy, index: 2)
+                v19 (ref,  index: 3)
+                v20 (ref,  index: 4)
+                backgroundColor32 (copy, index: 5)
+                color (copy, index: 6)
+                v12 (ref,  index: 7)
+                backgroundColor3 (copy, index: 8)
+                color3 (copy, index: 9)
             ]]
-            if a2.UserInputType ~= Enum.UserInputType.Touch then
-                return
-            end
-            if TouchStart_upv_1.BeganOn(tbl_upv_1.Reload, a2) then
-                local Reload_3 = tbl_upv_1.Reload
-                local v72 = (Reload_3 == tbl_upv_1.Secondary) and (u10 and false)
-                if Reload_3 == tbl_upv_1.Secondary then
-                    u11 = true
+            if input.UserInputType == Enum.UserInputType.Touch and TouchStart.BeganOn(v11.Reload, input) then
+                local reload = v11.Reload
+                local v170 = false
+
+                if reload == v11.Secondary then
+                    v170 = v19 and false
                 end
-                Reload_3.BackgroundColor3 = u14
-                Reload_3.BackgroundTransparency = 0.12
-                Reload_3.TextTransparency = (v72 and 0.55) or 0
-                local v73 = Reload_3:FindFirstChildOfClass("UIStroke")
-                if v73 then
-                    v73.Color = u12
-                    v73.Thickness = 3
-                    v73.Transparency = 0
+
+                if reload == v11.Secondary then
+                    v20 = true
                 end
-                local v74 = Reload_3:FindFirstChildOfClass("UIScale")
-                if v74 then
-                    v74.Scale = 0.92
+
+                reload.BackgroundColor3 = backgroundColor32
+                reload.BackgroundTransparency = 0.12
+                reload.TextTransparency = v170 and 0.55 or 0
+
+                if const uiStroke = reload:FindFirstChildOfClass("UIStroke") then
+                    uiStroke.Color = color
+                    uiStroke.Thickness = 3
+                    uiStroke.Transparency = 0
                 end
-                if u3 then
-                    u3("Reload", true)
+
+                if const uiScale = reload:FindFirstChildOfClass("UIScale") then
+                    uiScale.Scale = 0.92
                 end
-                if u3 then
-                    u3("Reload", false)
+
+                if v12 then
+                    v12("Reload", true)
                 end
+
+                if v12 then
+                    v12("Reload", false)
+                end
+
                 task.delay(
                     0.12,
                     function()
                         --[[
                           line: 478
                           upvalues:
-                            tbl_upv_1 (copy, index: 1)
-                            u10 (ref,  index: 2)
-                            u11 (ref,  index: 3)
-                            u13 (copy, index: 4)
-                            u15 (copy, index: 5)
+                            v11 (copy, index: 1)
+                            v19 (ref,  index: 2)
+                            v20 (ref,  index: 3)
+                            backgroundColor3 (copy, index: 4)
+                            color3 (copy, index: 5)
                         ]]
-                        local Reload_4 = tbl_upv_1.Reload
-                        local v75 = (Reload_4 == tbl_upv_1.Secondary) and (u10 and true)
-                        if Reload_4 == tbl_upv_1.Secondary then
-                            u11 = false
+                        local reload = v11.Reload
+                        local v174 = false
+
+                        if reload == v11.Secondary then
+                            v174 = v19 and true
                         end
-                        Reload_4.BackgroundColor3 = u13
-                        Reload_4.BackgroundTransparency = (v75 and 0.6) or 0.3
-                        Reload_4.TextTransparency = (v75 and 0.55) or 0
-                        local v76 = Reload_4:FindFirstChildOfClass("UIStroke")
-                        if v76 then
-                            v76.Color = u15
-                            v76.Thickness = 2
-                            v76.Transparency = (v75 and 0.92) or 0.8
+
+                        if reload == v11.Secondary then
+                            v20 = false
                         end
-                        local v77 = Reload_4:FindFirstChildOfClass("UIScale")
-                        if not v77 then
-                            return
+
+                        reload.BackgroundColor3 = backgroundColor3
+                        reload.BackgroundTransparency = v174 and 0.6 or 0.3
+                        reload.TextTransparency = v174 and 0.55 or 0
+
+                        if const uiStroke = reload:FindFirstChildOfClass("UIStroke") then
+                            uiStroke.Color = color3
+                            uiStroke.Thickness = 2
+                            uiStroke.Transparency = v174 and 0.92 or 0.8
                         end
-                        v77.Scale = 1
+
+                        if const uiScale = reload:FindFirstChildOfClass("UIScale") then
+                            uiScale.Scale = 1
+                        end
                     end
                 )
             end
         end
     )
-    u23:GetAttributeChangedSignal("ForceVisible"):Connect(refresh)
-    u23.AttributeChanged:Connect(
-        function(a3)
+
+    combatTouch:GetAttributeChangedSignal("ForceVisible"):Connect(refresh)
+
+    combatTouch.AttributeChanged:Connect(
+        function(attribute: string)
             --[[
               line: 484
               upvalues:
                 refresh (copy, index: 1)
             ]]
-            if a3 ~= "EditPreview" and a3 ~= "Nudge" and string.sub(a3, 1, 9) ~= "Override_" then
-                return
+            if attribute == "EditPreview" or attribute == "Nudge" or string.sub(attribute, 1, 9) == "Override_" then
+                refresh()
             end
-            refresh()
         end
     )
+
     updateActive(nil)
-    UserInputService_upv_1.LastInputTypeChanged:Connect(updateActive)
-    v71:GetPropertyChangedSignal("AbsoluteSize"):Connect(
+    userInputService.LastInputTypeChanged:Connect(updateActive)
+
+    root:GetPropertyChangedSignal("AbsoluteSize"):Connect(
         function()
             --[[
               line: 491
               upvalues:
-                u23 (copy, index: 1)
+                combatTouch (copy, index: 1)
                 layout (copy, index: 2)
             ]]
-            if not u23.Enabled then
-                return
+            if combatTouch.Enabled then
+                layout()
             end
-            layout()
         end
     )
-    LocalPlayer_upv_1.CharacterAdded:Connect(
-        function(a4)
+
+    localPlayer.CharacterAdded:Connect(
+        function(character: Model)
             --[[
               line: 496
               upvalues:
-                u6 (ref,  index: 1)
+                v15 (ref,  index: 1)
                 refresh (copy, index: 2)
             ]]
-            u6 = false
-            local v78 = a4:WaitForChild("Humanoid", 10)
-            if v78 then
-                v78.Died:Connect(refresh)
+            v15 = false
+
+            if const humanoid = character:WaitForChild("Humanoid", 10) then
+                humanoid.Died:Connect(refresh)
             end
+
             refresh()
         end
     )
+
     task.spawn(
         function()
             --[[
               line: 505
               upvalues:
-                u23 (copy, index: 1)
+                combatTouch (copy, index: 1)
                 layout (copy, index: 2)
             ]]
-            while u23.Parent do
+            while combatTouch.Parent do
                 task.wait(1.5)
-                if u23.Enabled then
+
+                if combatTouch.Enabled then
                     layout()
                 end
             end
         end
     )
+
     refresh()
 end
-return v1
+
+return v7

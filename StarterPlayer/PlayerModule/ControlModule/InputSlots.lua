@@ -1,432 +1,756 @@
-local v1 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil")
-local _ = game:GetService("StarterPlayer")
-local Players_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local v2 = UserSettings():GetService("UserGameSettings")
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local InputReplication_upv_1 = require(script.Parent:WaitForChild("InputReplication"))
-local u1 = require(script.Parent:WaitForChild("AvatarAbilitiesInterface")).get(Players_1.LocalPlayer)
-local u2 = v1.getUserFlag("UserPlayerScriptsPlayerControlState2")
-local u3 = v1.getUserFlag("UserAbilitiesUserInterfaceB")
-local u4 = v1.getUserFlag("UserPSUseBindToAnimation")
-local u5 = (u3 and "ControlState") or "PlayerControlState"
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-local tbl_upv_2 = {}
-local tbl_upv_3 = {}
-local tbl_upv_4 = {}
-local tbl_upv_5 = {}
-local u6 = Instance.new("BindableEvent")
-local u7 = 0
-local u8 = Instance.new("BindableEvent")
-local function findInSparseTable(a1, a2)
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v2 = CommonUtils.get("FlagUtil")
+local starterPlayer = game:GetService("StarterPlayer")
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+UserSettings():GetService("UserGameSettings")
+local userInputService = game:GetService("UserInputService")
+local InputReplication = require(script.Parent:WaitForChild("InputReplication"))
+local AvatarAbilitiesInterface = require(script.Parent:WaitForChild("AvatarAbilitiesInterface"))
+local v9 = AvatarAbilitiesInterface.get(players.LocalPlayer)
+local userFlag = v2.getUserFlag("UserPlayerScriptsPlayerControlState2")
+    or v2.getUserFlag("UserPlayerScriptsPlayerControlState2GA")
+local userFlag2 = v2.getUserFlag("UserAbilitiesUserInterfaceB")
+local userFlag3 = v2.getUserFlag("UserPSUseBindToAnimation")
+local v13 = userFlag2 and "ControlState" or "PlayerControlState"
+local Class = {}
+Class.__index = Class
+local v15 = {}
+local v16 = {}
+local v17 = {}
+local count = 0
+local v19 = {}
+local v20 = {}
+local v21 = {}
+local bindableEvent = Instance.new("BindableEvent")
+local v23 = 0
+local bindableEvent2 = Instance.new("BindableEvent")
+
+local function shallow_equal(a26, a27)
+    --[[
+      name: shallow_equal
+      line: 44
+    ]]
+    if a26 == a27 then
+        return true
+    end
+
+    for v28, v29 in a26 do
+        if a27[v28] ~= v29 then
+            return false
+        end
+    end
+
+    for v30, _ in a27 do
+        if a26[v30] == nil then
+            return false
+        end
+    end
+
+    return true
+end
+
+local function findInSparseTable(a33, a34)
     --[[
       name: findInSparseTable
-      line: 40
+      line: 61
     ]]
-    for key_1, value_1 in pairs(a1) do
-        if value_1 ~= a2 then
-            continue
+    for v35, v36 in a33 do
+        if v36 == a34 then
+            return v35
         end
-        return key_1
     end
+
     return nil
 end
-function tbl_upv_1.GetNumOverflowSlots()
+
+local v37 = {"ButtonAssetId", "ButtonPressedAssetId", "ButtonInvalidAssetId"}
+
+local function updateAbilityActionMetadata()
+    --[[
+      name: updateAbilityActionMetadata
+      line: 72
+      upvalues:
+        v19 (copy, index: 1)
+        v15 (copy, index: 2)
+        v9 (copy, index: 3)
+        v37 (copy, index: 4)
+        v20 (copy, index: 5)
+    ]]
+    local v39
+
+    for index = 1, 11 do
+        if const v41 = v19[index] then
+            local updateAction
+            v39 = v15[index]
+            local enabled = v39 ~= nil and v39 ~= ""
+            local displayName = not enabled and "" or v39
+            local v45 = if enabled then v9:GetAbilityConfig(v39) else nil
+
+            updateAction = function(a46)
+                --[[
+                  name: updateAction
+                  line: 81
+                  upvalues:
+                    enabled (copy, index: 1)
+                    displayName (copy, index: 2)
+                    v37 (copy, index: 3)
+                    v45 (copy, index: 4)
+                ]]
+                a46.Enabled = enabled
+                a46.DisplayName = displayName
+
+                for _, v48 in v37 do
+                    local v49
+                    local v50 = if v45 then v45[v48] else nil
+
+                    if type(v50) == "string" then
+                        v49 = v50
+                    else
+                        v49 = ""
+                    end
+
+                    a46:SetAttribute(v48, v49)
+                end
+            end
+
+            updateAction(v41)
+            local instance = v20[index]
+
+            if instance and instance ~= v41 then
+                updateAction(instance)
+            end
+        end
+    end
+end
+
+function Class.GetNumAbilitySlots()
+    --[[
+      name: GetNumAbilitySlots
+      line: 102
+    ]]
+    return 11
+end
+
+function Class.GetNumOverflowSlots()
     --[[
       name: GetNumOverflowSlots
-      line: 49
+      line: 106
     ]]
     return 3
 end
-function tbl_upv_1.getOverflowScrollIndex()
+
+function Class.getOverflowScrollIndex()
     --[[
       name: getOverflowScrollIndex
-      line: 53
+      line: 110
       upvalues:
-        u7 (ref, index: 1)
+        v23 (ref, index: 1)
     ]]
-    return u7
+    return v23
 end
-function tbl_upv_1.setOverflowScrollIndex(a1)
+
+function Class.setOverflowScrollIndex(overflowScrollIndex: number)
     --[[
       name: setOverflowScrollIndex
-      line: 57
+      line: 114
       upvalues:
-        u7 (ref,  index: 1)
-        tbl_upv_3 (ref,  index: 2)
-        u8 (copy, index: 3)
+        v23 (ref,  index: 1)
+        v16 (ref,  index: 2)
+        bindableEvent2 (copy, index: 3)
     ]]
-    local v2 = u7
-    u7 = math.max(0, math.min(#tbl_upv_3 - 3, a1))
-    if u7 == v2 then
-        return
+    local v53 = v23
+    v23 = math.max(0, (math.min(#v16 - 3, overflowScrollIndex)))
+
+    if v23 ~= v53 then
+        bindableEvent2:Fire()
     end
-    u8:Fire()
 end
-function tbl_upv_1.getScrollIndexChangedEvent()
+
+function Class.getScrollIndexChangedEvent()
     --[[
       name: getScrollIndexChangedEvent
-      line: 65
+      line: 122
       upvalues:
-        u8 (copy, index: 1)
+        bindableEvent2 (copy, index: 1)
     ]]
-    return u8.Event
+    return bindableEvent2.Event
 end
-local function shallow_equal(a1, a2)
-    --[[
-      name: shallow_equal
-      line: 33
-    ]]
-    if a1 ~= a2 then
-        for key_2, value_2 in pairs(a1) do
-            if a2[key_2] == value_2 then
-                continue
-            end
-            return false
-        end
-        for key_3, _ in pairs(a2) do
-            if a1[key_3] ~= nil then
-                continue
-            end
-            return false
-        end
-    end
-    return true
-end
-function tbl_upv_1.setupSlotActions(a1, a2)
+
+function Class.setupSlotActions(a54, a55, a56)
     --[[
       name: setupSlotActions
-      line: 69
+      line: 126
       upvalues:
-        u2 (copy, index: 1)
-        u4 (copy, index: 2)
-        RunService_upv_1 (copy, index: 3)
-        u1 (copy, index: 4)
-        InputReplication_upv_1 (copy, index: 5)
-        tbl_upv_2 (copy, index: 6)
-        tbl_upv_3 (ref,  index: 7)
-        UserInputService_upv_1 (copy, index: 8)
-        tbl_upv_1 (copy, index: 9)
-        shallow_equal (copy, index: 10)
-        u6 (copy, index: 11)
-        u5 (copy, index: 13)
-        tbl_upv_4 (copy, index: 14)
-        tbl_upv_5 (copy, index: 15)
-        u7 (ref,  index: 16)
+        userFlag (copy, index: 1)
+        userFlag3 (copy, index: 2)
+        runService (copy, index: 3)
+        v9 (copy, index: 4)
+        InputReplication (copy, index: 5)
+        v15 (copy, index: 6)
+        v16 (ref,  index: 7)
+        userInputService (copy, index: 8)
+        starterPlayer (copy, index: 9)
+        v17 (copy, index: 10)
+        count (ref,  index: 11)
+        Class (copy, index: 12)
+        updateAbilityActionMetadata (copy, index: 13)
+        bindableEvent (copy, index: 14)
+        userFlag2 (copy, index: 15)
+        v13 (copy, index: 16)
+        v19 (copy, index: 17)
+        v20 (copy, index: 18)
+        v21 (copy, index: 19)
+        v23 (ref,  index: 20)
     ]]
-    local function getAbilityAction(a3)
+    local function getAbilityAction(a58)
         --[[
           name: getAbilityAction
-          line: 70
+          line: 127
           upvalues:
-            u2 (copy, index: 1)
-            a2 (copy, index: 2)
-            a1 (copy, index: 3)
+            userFlag (copy, index: 1)
+            a55 (ref,  index: 2)
+            a54 (copy, index: 3)
         ]]
-        if not a3 then
+        if not a58 then
             return nil
         end
-        local v3
-        if not (u2) or a2 then
-            v3 = a1:FindFirstChild("InputContexts")
-        else
-            v3 = script.Parent.Parent:FindFirstChild("InputContexts")
-        end
-        if not v3 then
-            return nil
-        end
-        local CharacterContext_1 = v3:FindFirstChild("CharacterContext")
-        if CharacterContext_1 then
-            return (CharacterContext_1:FindFirstChild(a3 .. "Action"))
-        end
-        return nil
+
+        local inputContexts = if userFlag and not a55 then script.Parent.Parent:FindFirstChild("InputContexts") else a54:FindFirstChild("InputContexts")
+        return if not inputContexts then nil elseif const characterContext = inputContexts:FindFirstChild("CharacterContext") then (characterContext:FindFirstChild(a58 .. "Action")) else nil
     end
-    if not (u2) then
-        if u4 then
-            RunService_upv_1:BindToAnimation(
-                function(a4)
+
+    if not userFlag then
+        if userFlag3 then
+            runService:BindToAnimation(
+                function(a61)
                     --[[
-                      line: 85
+                      line: 148
                       upvalues:
-                        u1 (copy, index: 1)
-                        InputReplication_upv_1 (copy, index: 2)
-                        a1 (copy, index: 3)
+                        v9 (copy, index: 1)
+                        InputReplication (copy, index: 2)
+                        a54 (copy, index: 3)
                     ]]
-                    if not u1:isEnabled() then
-                        return
+                    if v9:isEnabled() then
+                        InputReplication.FireCustomInputs(a54)
+                        InputReplication.SendInputToCCLCharacter(a54)
                     end
-                    InputReplication_upv_1.FireCustomInputs(a1)
-                    InputReplication_upv_1.SendInputToCCLCharacter(a1)
                 end,
                 Enum.StepFrequency.Hz60
             )
         else
-            RunService_upv_1:BindToSimulation(
-                function(a5)
+            runService:BindToSimulation(
+                function(a62)
                     --[[
-                      line: 92
+                      line: 155
                       upvalues:
-                        u1 (copy, index: 1)
-                        InputReplication_upv_1 (copy, index: 2)
-                        a1 (copy, index: 3)
+                        v9 (copy, index: 1)
+                        InputReplication (copy, index: 2)
+                        a54 (copy, index: 3)
                     ]]
-                    if not u1:isEnabled() then
-                        return
+                    if v9:isEnabled() then
+                        InputReplication.FireCustomInputs(a54)
+                        InputReplication.SendInputToCCLCharacter(a54)
                     end
-                    InputReplication_upv_1.FireCustomInputs(a1)
-                    InputReplication_upv_1.SendInputToCCLCharacter(a1)
                 end,
                 Enum.StepFrequency.Hz60
             )
         end
     end
-    local tbl_upv_6 = {}
+
+    local v63 = {}
+
     local function updateSlotMap()
         --[[
           name: updateSlotMap
-          line: 103
+          line: 166
           upvalues:
-            tbl_upv_2 (copy, index: 1)
-            tbl_upv_3 (ref,  index: 2)
-            u1 (copy, index: 3)
-            UserInputService_upv_1 (copy, index: 4)
-            tbl_upv_6 (copy, index: 5)
-            tbl_upv_1 (copy, index: 6)
-            shallow_equal (copy, index: 7)
-            u6 (copy, index: 8)
+            v15 (copy, index: 1)
+            v16 (ref,  index: 2)
+            v9 (copy, index: 3)
+            userInputService (copy, index: 4)
+            starterPlayer (copy, index: 5)
+            v63 (copy, index: 6)
+            v17 (copy, index: 7)
+            count (ref,  index: 8)
+            Class (copy, index: 9)
+            updateAbilityActionMetadata (copy, index: 10)
+            bindableEvent (copy, index: 11)
         ]]
-        local v4 = table.clone(tbl_upv_2)
-        local v5 = table.clone(tbl_upv_3)
-        local v6 = u1:GetAbilities()
-        local v7 = ((UserInputService_upv_1.PreferredInput ~= Enum.PreferredInput.Touch) and 11) or 7
-        local v8 = nil
-        for key_4, value_3 in pairs(tbl_upv_2) do
-            for key_5, value_4 in pairs(v6) do
-                if value_4 == value_3 then
-                    v8 = key_5
-                end
-            end
-            if not (v8) or v7 < key_4 then
-                tbl_upv_2[key_4] = nil
-            end
-        end
-        tbl_upv_3 = {}
-        local tbl_7 = {}
-        local v9 = nil
-        for _, value_5 in ipairs(v6) do
-            for key_6, value_6 in pairs(tbl_upv_2) do
-                if value_6 == value_5 then
-                    v9 = key_6
-                end
-            end
-            if not (v9) then
-                table.insert(tbl_7, value_5)
-            end
-        end
-        for _, value_7 in ipairs(tbl_7) do
-            local v10 = u1:GetAbilityConfig(value_7)
-            if not (v10) then
-                continue
-            end
-            local num_1 = tonumber(v10.Slot)
-            if not (num_1 > 0) then
-                continue
-            end
-            if tbl_upv_2[num_1] then
-                table.insert(tbl_upv_3, value_7)
-                continue
-            end
-            if num_1 <= v7 then
-                tbl_upv_2[num_1] = value_7
-            else
-                table.insert(tbl_upv_3, value_7)
-            end
-        end
-        local v11 = nil
-        for _, value_8 in ipairs(tbl_7) do
-            local v12 = u1:GetAbilityConfig(value_8)
-            if not (v12) or tonumber(v12.Slot) ~= 0 then
-                continue
-            end
-            local v13 = tbl_upv_6[value_8]
-            if v13 and v13 > 0 and v13 <= v7 and not (tbl_upv_2[v13]) then
-                tbl_upv_2[v13] = value_8
-                continue
-            end
-            v11 = -1
-            for n_1 = 1, v7 do
-                if not (tbl_upv_2[n_1]) then
-                    v11 = n_1
+        local v65
+        local v66
+        local values = table.clone(v15)
+        local values2 = table.clone(v16)
+        local abilities = v9:GetAbilities()
+        local endIndex = userInputService.PreferredInput ~= Enum.PreferredInput.Touch and 11 or 7
+
+        for v71, v72 in v15 do
+            local v73
+
+            for v74, ability in abilities do
+                if ability == v72 then
+                    v73 = v74
                     break
                 end
             end
-            if v11 == -1 then
-                table.insert(tbl_upv_3, value_8)
-            else
-                tbl_upv_2[v11] = value_8
-                tbl_upv_6[value_8] = v11
+
+            if not v73 or endIndex < v71 then
+                v15[v71] = nil
             end
         end
-        tbl_upv_1.setOverflowScrollIndex(tbl_upv_1.getOverflowScrollIndex())
-        if (shallow_equal(tbl_upv_2, v4)) and (shallow_equal(tbl_upv_3, v5)) then
-            return
-        end
-        u6:Fire()
-    end
-    u1:GetAbilitiesChangedSignal():Connect(updateSlotMap)
-    UserInputService_upv_1:GetPropertyChangedSignal("PreferredInput"):Connect(updateSlotMap)
-    updateSlotMap()
-    task.spawn(
-        function()
-            --[[
-              line: 186
-              upvalues:
-                u5 (copy, index: 2)
-                u2 (copy, index: 3)
-                a2 (copy, index: 4)
-                a1 (copy, index: 5)
-                tbl_upv_4 (copy, index: 6)
-                tbl_upv_2 (copy, index: 7)
-                getAbilityAction (copy, index: 8)
-                tbl_upv_5 (copy, index: 9)
-                tbl_upv_3 (ref,  index: 10)
-                u7 (ref,  index: 11)
-            ]]
-            local function UpdateAbilityInPCS(a6, a7, a8)
-                --[[
-                  name: UpdateAbilityInPCS
-                  line: 187
-                  upvalues:
-                    u5 (copy, index: 2)
-                ]]
-                local Character_1 = a6.Character
-                if Character_1 then
-                    local v14
-                    if u3 then
-                        v14 = Character_1:FindFirstChildOfClass(u5)
-                    else
-                        v14 = Character_1:FindFirstChild(u5)
-                    end
-                    if not v14 then
-                        return
-                    end
-                    v14:UpdateFields({[a7] = a8})
+
+        v16 = {}
+        local targets = {}
+
+        for _, ability in abilities do
+            local v79
+
+            for v80, v81 in v15 do
+                if v81 == ability then
+                    v79 = v80
+                    break
                 end
             end
-            local v15
-            if not (u2) or a2 then
-                v15 = a1:WaitForChild("InputContexts", math.huge)
-            else
-                v15 = script.Parent.Parent:FindFirstChild("InputContexts")
+
+            if not v79 then
+                table.insert(targets, ability)
             end
-            local CharacterContext_2 = v15:WaitForChild("CharacterContext")
-            for n_upv_2 = 1, 11 do
-                local v16 = CharacterContext_2:WaitForChild("AbilityAction" .. tostring(n_upv_2))
-                tbl_upv_4[n_upv_2] = v16
-                v16.StateChanged:Connect(
-                    function(a9)
+        end
+
+        local abilitySlotConflictFifo = starterPlayer:FindFirstChild("AbilitySlotConflictFifo")
+        local value = abilitySlotConflictFifo ~= nil
+            and abilitySlotConflictFifo:IsA("BoolValue")
+            and abilitySlotConflictFifo.Value
+
+        for _, target in targets do
+            if const abilityConfig = v9:GetAbilityConfig(target) then
+                local v87
+                local number = tonumber(abilityConfig.Slot)
+
+                if not (0 < number) then
+                    continue
+                end
+
+                local v89 = v15[number]
+                v87 = nil
+
+                for v90, value2 in values do
+                    if value2 == target then
+                        v87 = v90
+                        break
+                    end
+                end
+
+                local v92 = not v87 and not table.find(values2, target)
+
+                if number <= endIndex and not v89 then
+                    v15[number] = target
+                elseif not (number <= endIndex) or not value or not v92 then
+                    table.insert(v16, target)
+                else
+                    table.insert(v16, v89)
+                    v15[number] = target
+                end
+            end
+        end
+
+        for _, v94 in targets do
+            if const abilityConfig = v9:GetAbilityConfig(v94) then
+                if tonumber(abilityConfig.Slot) ~= 0 then
+                    continue
+                end
+
+                if const v96 = v63[v94] then
+                    if not (v96 <= endIndex) or v15[v96] then
+                        table.insert(v16, v94)
+                    else
+                        v15[v96] = v94
+                    end
+                else
+                    local v97 = -1
+
+                    for index = 1, endIndex do
+                        if not v15[index] then
+                            v97 = index
+                            break
+                        end
+                    end
+
+                    if v97 == -1 then
+                        table.insert(v16, v94)
+                    else
+                        v15[v97] = v94
+                        v63[v94] = v97
+                    end
+                end
+            end
+        end
+
+        local v99 = {}
+
+        for _, v101 in v16 do
+            v99[v101] = true
+
+            if v17[v101] == nil then
+                count += 1
+                v17[v101] = count
+            end
+        end
+
+        for v102 in v17 do
+            if not v99[v102] then
+                v17[v102] = nil
+            end
+        end
+
+        table.sort(
+            v16,
+            function(left, right)
+                --[[
+                  line: 263
+                  upvalues:
+                    v17 (copy, index: 1)
+                ]]
+                return v17[left] < v17[right]
+            end
+        )
+        local v105 = v16
+
+        if v105 ~= values2 then
+            do
+                local v106 = true
+
+                for valueKey, v108 in v105 do
+                    if values2[valueKey] ~= v108 then
+                        v65 = false
+                        v106 = false
+                        break
+                    end
+                end
+
+                if v106 then
+                    v65 = true
+
+                    for v109, _ in values2 do
+                        if v105[v109] == nil then
+                            v65 = false
+                            break
+                        end
+                    end
+                end
+            end
+        else
+            v65 = true
+        end
+
+        local v111 = not v65
+
+        if v111 then
+            Class.setOverflowScrollIndex(#v16 - 3)
+        else
+            Class.setOverflowScrollIndex(Class.getOverflowScrollIndex())
+        end
+
+        local v112 = v15
+
+        if v112 ~= values then
+            do
+                local v113 = true
+
+                for valueKey, v115 in v112 do
+                    if values[valueKey] ~= v115 then
+                        v66 = false
+                        v113 = false
+                        break
+                    end
+                end
+
+                if v113 then
+                    v66 = true
+
+                    for v116, _ in values do
+                        if v15[v116] == nil then
+                            v66 = false
+                            break
+                        end
+                    end
+                end
+            end
+        else
+            v66 = true
+        end
+
+        if not v66 or v111 then
+            updateAbilityActionMetadata()
+            bindableEvent:Fire()
+        end
+    end
+
+    v9:GetAbilitiesChangedSignal():Connect(updateSlotMap)
+    userInputService:GetPropertyChangedSignal("PreferredInput"):Connect(updateSlotMap)
+    updateSlotMap()
+
+    local function UpdateAbilityInPCS(a119, a120, a121)
+        --[[
+          name: UpdateAbilityInPCS
+          line: 285
+          upvalues:
+            userFlag2 (copy, index: 1)
+            v13 (copy, index: 2)
+        ]]
+        local character = a119.Character
+        if not character then
+            return
+        end
+
+        local v123 = if userFlag2 then character:FindFirstChildOfClass(v13) else character:FindFirstChild(v13)
+        if not v123 then
+            return
+        end
+
+        v123:UpdateFields({[a120] = a121})
+    end
+
+    local v124 = {}
+    local v125 = {}
+
+    local function resolveHeldAbility(a127, key, value, a130)
+        --[[
+          name: resolveHeldAbility
+          line: 306
+        ]]
+        if a130 then
+            a127[key] = value
+            return value
+        end
+
+        local v131 = a127[key]
+        a127[key] = nil
+
+        if v131 ~= nil then
+            return v131
+        end
+
+        return value
+    end
+
+    local v132 = {}
+    local count2 = 0
+
+    local function resolveAndWireActions()
+        --[[
+          name: resolveAndWireActions
+          line: 318
+          upvalues:
+            count2 (ref,  index: 1)
+            v132 (copy, index: 2)
+            userFlag (copy, index: 3)
+            a55 (ref,  index: 4)
+            a54 (copy, index: 5)
+            v19 (copy, index: 6)
+            v20 (copy, index: 7)
+            v124 (copy, index: 8)
+            v15 (copy, index: 9)
+            UpdateAbilityInPCS (copy, index: 10)
+            getAbilityAction (copy, index: 11)
+            updateAbilityActionMetadata (copy, index: 12)
+            v21 (copy, index: 13)
+            v125 (copy, index: 14)
+            v16 (ref,  index: 15)
+            v23 (ref,  index: 16)
+            bindableEvent (copy, index: 17)
+        ]]
+        count2 += 1
+        local v135 = count2
+
+        for _, v137 in v132 do
+            v137:Disconnect()
+        end
+
+        table.clear(v132)
+        local inputContexts = if userFlag and not a55 then script.Parent.Parent:WaitForChild("InputContexts", math.huge) else a54:WaitForChild("InputContexts", math.huge)
+        local characterContext = inputContexts:WaitForChild("CharacterContext")
+
+        if v135 ~= count2 then
+            return
+        end
+
+        local inputContexts2 = script.Parent.Parent:FindFirstChild("InputContexts")
+        local characterContext2 = inputContexts2 and inputContexts2:FindFirstChild("CharacterContext")
+
+        for index = 1, 11 do
+            local v143 = characterContext:WaitForChild("AbilityAction" .. tostring(index))
+
+            if v135 ~= count2 then
+                return
+            end
+
+            v19[index] = v143
+            v20[index] = if characterContext2 then characterContext2:FindFirstChild("AbilityAction" .. tostring(index)) else nil
+
+            table.insert(
+                v132,
+                v143.StateChanged:Connect(
+                    function(a144)
                         --[[
-                          line: 208
+                          line: 352
                           upvalues:
-                            u2 (copy, index: 1)
-                            tbl_upv_2 (copy, index: 2)
-                            n_upv_2 (copy, index: 3)
-                            UpdateAbilityInPCS (copy, index: 4)
-                            a1 (copy, index: 5)
-                            getAbilityAction (copy, index: 6)
+                            v124 (copy, index: 1)
+                            index (copy, index: 2)
+                            v15 (copy, index: 3)
+                            userFlag (copy, index: 4)
+                            UpdateAbilityInPCS (copy, index: 5)
+                            a54 (copy, index: 6)
+                            getAbilityAction (copy, index: 7)
                         ]]
-                        local v17, v18 = nil, nil
-                        if u2 then
-                            if tbl_upv_2[n_upv_2] == nil or tbl_upv_2[n_upv_2] == "" then
-                                return
-                            end
-                            UpdateAbilityInPCS(a1, tbl_upv_2[n_upv_2], a9)
+                        local v145
+                        local v146 = index
+                        local v147 = v15[index]
+
+                        if a144 then
+                            v124[v146] = v147
+                            v145 = v147
                         else
-                            v17 = getAbilityAction(tbl_upv_2[n_upv_2])
-                            if not v17 then
-                                return
+                            local v148 = v124[v146]
+                            v124[v146] = nil
+                            v145 = if v148 ~= nil then v148 else v147
+                        end
+
+                        if userFlag then
+                            if v145 ~= nil and v145 ~= "" then
+                                UpdateAbilityInPCS(a54, v145, a144)
                             end
-                            v18 = v17:FindFirstChild("ScriptableBinding")
-                            if not v18 then
-                                return
+                        elseif const abilityAction = getAbilityAction(v145) then
+                            if const scriptableBinding = abilityAction:FindFirstChild("ScriptableBinding") then
+                                scriptableBinding:Fire(a144)
                             end
-                            v18:Fire(a9)
                         end
                     end
                 )
-            end
-            if not u2 then
-                return
-            end
-            for n_upv_3 = 1, 3 do
-                local v19 = CharacterContext_2:WaitForChild("OverflowAction" .. tostring(n_upv_3))
-                tbl_upv_5[n_upv_3] = v19
-                v19.StateChanged:Connect(
-                    function(a10)
-                        --[[
-                          line: 229
-                          upvalues:
-                            tbl_upv_3 (ref,  index: 1)
-                            n_upv_3 (copy, index: 2)
-                            u7 (ref,  index: 3)
-                            UpdateAbilityInPCS (copy, index: 4)
-                            a1 (copy, index: 5)
-                        ]]
-                        local v20 = tbl_upv_3[n_upv_3 + u7]
-                        if v20 == nil or v20 == "" then
-                            return
+            )
+        end
+
+        updateAbilityActionMetadata()
+
+        if userFlag then
+            for index = 1, 3 do
+                local v152 = characterContext:WaitForChild("OverflowAction" .. tostring(index))
+
+                if v135 ~= count2 then
+                    return
+                end
+
+                v21[index] = v152
+
+                table.insert(
+                    v132,
+                    v152.StateChanged:Connect(
+                        function(a153)
+                            --[[
+                              line: 382
+                              upvalues:
+                                v125 (copy, index: 1)
+                                index (copy, index: 2)
+                                v16 (ref,  index: 3)
+                                v23 (ref,  index: 4)
+                                UpdateAbilityInPCS (copy, index: 5)
+                                a54 (copy, index: 6)
+                            ]]
+                            local v154
+                            local v155 = index
+                            local v156 = v16[index + v23]
+
+                            if a153 then
+                                v125[v155] = v156
+                                v154 = v156
+                            else
+                                local v157 = v125[v155]
+                                v125[v155] = nil
+                                v154 = if v157 ~= nil then v157 else v156
+                            end
+
+                            if v154 ~= nil and v154 ~= "" then
+                                UpdateAbilityInPCS(a54, v154, a153)
+                            end
                         end
-                        UpdateAbilityInPCS(a1, v20, a10)
-                    end
+                    )
                 )
             end
         end
-    )
+
+        bindableEvent:Fire()
+    end
+
+    task.spawn(resolveAndWireActions)
+
+    if a56 then
+        a56:subscribe("SERVER_AUTHORITY_CHANGED"):Connect(
+            function(a158)
+                --[[
+                  line: 403
+                  upvalues:
+                    a55 (ref,  index: 1)
+                    resolveAndWireActions (copy, index: 2)
+                ]]
+                if a158 == a55 then
+                    return
+                end
+
+                a55 = a158
+                task.spawn(resolveAndWireActions)
+            end
+        )
+    end
 end
-function tbl_upv_1.GetSlotMapChangedSignal()
+
+function Class.GetSlotMapChangedSignal()
     --[[
       name: GetSlotMapChangedSignal
-      line: 240
+      line: 413
       upvalues:
-        u6 (copy, index: 1)
+        bindableEvent (copy, index: 1)
     ]]
-    return u6.Event
+    return bindableEvent.Event
 end
-function tbl_upv_1.GetSlotMap()
+
+function Class.GetSlotMap()
     --[[
       name: GetSlotMap
-      line: 244
+      line: 417
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v15 (copy, index: 1)
     ]]
-    return tbl_upv_2
+    return v15
 end
-function tbl_upv_1.GetAbilitiesInOverflow()
+
+function Class.GetAbilitiesInOverflow()
     --[[
       name: GetAbilitiesInOverflow
-      line: 248
+      line: 421
       upvalues:
-        tbl_upv_3 (ref, index: 1)
+        v16 (ref, index: 1)
     ]]
-    return tbl_upv_3
+    return v16
 end
-function tbl_upv_1.GetActionInSlot(a1)
+
+function Class.GetActionInSlot(key)
     --[[
       name: GetActionInSlot
-      line: 252
+      line: 425
       upvalues:
-        tbl_upv_4 (copy, index: 1)
+        v19 (copy, index: 1)
     ]]
-    return tbl_upv_4[a1]
+    return v19[key]
 end
-function tbl_upv_1.GetOverflowAction(a1)
+
+function Class.GetOverflowAction(key)
     --[[
       name: GetOverflowAction
-      line: 256
+      line: 429
       upvalues:
-        tbl_upv_5 (copy, index: 1)
+        v21 (copy, index: 1)
     ]]
-    return tbl_upv_5[a1]
+    return v21[key]
 end
-return tbl_upv_1
+
+return Class

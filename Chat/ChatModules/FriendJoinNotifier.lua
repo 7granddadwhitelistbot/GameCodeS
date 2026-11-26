@@ -1,11 +1,11 @@
-local Chat_1 = game:GetService("Chat")
-local Players_upv_1 = game:GetService("Players")
-local _ = game:GetService("FriendService")
-local ClientChatModules_1 = Chat_1:WaitForChild("ClientChatModules")
-local ChatSettings_upv_1 = require(ClientChatModules_1:WaitForChild("ChatSettings"))
-local v1 = require(ClientChatModules_1:WaitForChild("ChatConstants"))
-local u1 = false
-local success_1, v2 = pcall(
+local chat = game:GetService("Chat")
+local players = game:GetService("Players")
+game:GetService("FriendService")
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local ChatSettings = require(clientChatModules:WaitForChild("ChatSettings"))
+local _ = require(clientChatModules:WaitForChild("ChatConstants"))
+local isUserFeatureEnabled = false
+local success, isUserFeatureEnabled2 = pcall(
     function()
         --[[
           line: 16
@@ -13,124 +13,143 @@ local success_1, v2 = pcall(
         return UserSettings():IsUserFeatureEnabled("UserHandleFriendJoinNotifierOnClient")
     end
 )
-if success_1 then
-
+if success then
+    isUserFeatureEnabled = isUserFeatureEnabled2
 end
-local u2 = nil
+
+local v9 = nil
 pcall(
     function()
         --[[
           line: 26
           upvalues:
-            u2 (ref, index: 1)
+            v9 (ref, index: 1)
         ]]
-        u2 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
+        v9 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
     end
 )
-if u2 == nil then
-    u2 = {}
+
+if v9 == nil then
+    v9 = {}
 end
-if not (u2.FormatMessageToSend) or not (u2.LocalizeFormattedMessage) then
-    function u2.FormatMessageToSend(a1, a2, a3)
+
+if not v9.FormatMessageToSend or not v9.LocalizeFormattedMessage then
+    function v9.FormatMessageToSend(a10, a11, a12)
         --[[
           name: FormatMessageToSend
           line: 29
         ]]
-        return a3
+        return a12
     end
 end
-local tbl_upv_1 = {}
-tbl_upv_1.ChatColor = Color3.fromRGB(255, 255, 255)
-local function Run(a1)
+
+local v13 = {ChatColor = Color3.fromRGB(255, 255, 255)}
+
+return function(a14)
     --[[
       name: Run
       line: 35
       upvalues:
-        u1 (ref,  index: 1)
-        ChatSettings_upv_1 (copy, index: 2)
-        u2 (ref,  index: 3)
-        Players_upv_1 (copy, index: 5)
+        isUserFeatureEnabled (ref,  index: 1)
+        ChatSettings (copy, index: 2)
+        v9 (ref,  index: 3)
+        v13 (copy, index: 4)
+        players (copy, index: 5)
     ]]
-    local function ShowFriendJoinNotification_1()
+    local function ShowFriendJoinNotification()
         --[[
           name: ShowFriendJoinNotification
           line: 37
           upvalues:
-            u1 (ref,  index: 1)
-            ChatSettings_upv_1 (copy, index: 2)
+            isUserFeatureEnabled (ref,  index: 1)
+            ChatSettings (copy, index: 2)
         ]]
-        if u1 == false and ChatSettings_upv_1.ShowFriendJoinNotification ~= nil then
-            return ChatSettings_upv_1.ShowFriendJoinNotification
+        if isUserFeatureEnabled == false and ChatSettings.ShowFriendJoinNotification ~= nil then
+            return ChatSettings.ShowFriendJoinNotification
         end
+
         return false
     end
-    local function SendFriendJoinNotification_upv_1(a2, a3)
+
+    local function SendFriendJoinNotification(a17, a18)
         --[[
           name: SendFriendJoinNotification
           line: 46
           upvalues:
-            a1 (copy, index: 1)
-            ChatSettings_upv_1 (copy, index: 2)
-            u2 (ref,  index: 3)
+            a14 (copy, index: 1)
+            ChatSettings (copy, index: 2)
+            v9 (ref,  index: 3)
+            v13 (copy, index: 4)
         ]]
-        local v1 = a1:GetSpeaker(a2.Name)
-        if v1 then
-            local v2 = a3.Name
-            if ChatSettings_upv_1.PlayerDisplayNamesEnabled then
-                v2 = a3.DisplayName
+        if const speaker = a14:GetSpeaker(a17.Name) then
+            local v20 = a18.Name
+
+            if ChatSettings.PlayerDisplayNamesEnabled then
+                v20 = a18.DisplayName
             end
-            v1:SendSystemMessage(u2:FormatMessageToSend("GameChat_FriendChatNotifier_JoinMessage", string.format("Your friend %s has joined the game.", v2), "RBX_NAME", v2), "System", tbl_upv_1)
+
+            speaker:SendSystemMessage(v9:FormatMessageToSend("GameChat_FriendChatNotifier_JoinMessage", string.format("Your friend %s has joined the game.", v20), "RBX_NAME", v20), "System", v13)
         end
     end
-    local function TrySendFriendNotification_1(a4, a5)
+
+    local function TrySendFriendNotification(a22, a23)
         --[[
           name: TrySendFriendNotification
           line: 62
+          upvalues:
+            SendFriendJoinNotification (copy, index: 1)
         ]]
-        if a4 == a5 then
-            return
+        if a22 ~= a23 then
+            coroutine.wrap(
+                function()
+                    --[[
+                      line: 64
+                      upvalues:
+                        a22 (copy, index: 1)
+                        a23 (copy, index: 2)
+                        SendFriendJoinNotification (copy, index: 3)
+                    ]]
+                    if a22:IsFriendsWith(a23.UserId) then
+                        SendFriendJoinNotification(a22, a23)
+                    end
+                end
+            )()
         end
-        coroutine.wrap(function() end)()
     end
-    local v3
-    if u1 ~= false or ChatSettings_upv_1.ShowFriendJoinNotification == nil then
-        v3 = false
-    else
-        v3 = ChatSettings_upv_1.ShowFriendJoinNotification
-    end
-    if not v3 then
-        return
-    end
-    Players_upv_1.PlayerAdded:connect(
-        function(a6)
-            --[[
-              line: 73
-              upvalues:
-                Players_upv_1 (copy, index: 1)
-                SendFriendJoinNotification_upv_1 (copy, index: 2)
-            ]]
-            local v4 = Players_upv_1:GetPlayers()
-            for n_1 = 1, #v4 do
-                local u3 = v4[n_1]
-                if u3 ~= a6 then
-                    coroutine.wrap(
-                        function()
-                            --[[
-                              line: 64
-                              upvalues:
-                                u3 (copy, index: 1)
-                                a6 (copy, index: 2)
-                                SendFriendJoinNotification_upv_1 (copy, index: 3)
-                            ]]
-                            if not u3:IsFriendsWith(a6.UserId) then
-                                return
+
+    local v24 = if isUserFeatureEnabled == false and ChatSettings.ShowFriendJoinNotification ~= nil then ChatSettings.ShowFriendJoinNotification else false
+    if v24 then
+        players.PlayerAdded:connect(
+            function(player: Player)
+                --[[
+                  line: 73
+                  upvalues:
+                    players (copy, index: 1)
+                    SendFriendJoinNotification (copy, index: 2)
+                ]]
+                local players2 = players:GetPlayers()
+
+                for playerKey = 1, #players2 do
+                    local player2 = players2[playerKey]
+
+                    if player2 ~= player then
+                        coroutine.wrap(
+                            function()
+                                --[[
+                                  line: 64
+                                  upvalues:
+                                    player2 (copy, index: 1)
+                                    player (copy, index: 2)
+                                    SendFriendJoinNotification (copy, index: 3)
+                                ]]
+                                if player2:IsFriendsWith(player.UserId) then
+                                    SendFriendJoinNotification(player2, player)
+                                end
                             end
-                            SendFriendJoinNotification_upv_1(u3, a6)
-                        end
-                    )()
+                        )()
+                    end
                 end
             end
-        end
-    )
+        )
+    end
 end
-return Run

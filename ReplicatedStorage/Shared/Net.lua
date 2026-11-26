@@ -1,111 +1,120 @@
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local u1 = game:GetService("RunService"):IsServer()
-local v1, Remotes_upv_1 = nil, nil
-if u1 then
-    v1 = ReplicatedStorage_1:FindFirstChild("Remotes")
-    if v1 then
-        Remotes_upv_1 = v1
+local remotes
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local isServer = runService:IsServer()
+
+if isServer then
+    if const remotes2 = replicatedStorage:FindFirstChild("Remotes") then
+        remotes = remotes2
     else
-        local v2 = Instance.new("Folder")
-        v2.Name = "Remotes"
-        v2.Parent = ReplicatedStorage_1
-        Remotes_upv_1 = v2
+        remotes = Instance.new("Folder")
+        remotes.Name = "Remotes"
+        remotes.Parent = replicatedStorage
     end
 else
-    Remotes_upv_1 = ReplicatedStorage_1:WaitForChild("Remotes")
+    remotes = replicatedStorage:WaitForChild("Remotes")
 end
-local function get(a1, a2)
+
+local function get(a7: string, name: string)
     --[[
       name: get
       line: 26
       upvalues:
-        Remotes_upv_1 (ref,  index: 1)
-        u1 (copy, index: 2)
+        remotes (ref,  index: 1)
+        isServer (copy, index: 2)
     ]]
-    local v3 = Remotes_upv_1:FindFirstChild(a2)
-    if v3 then
-        assert(v3.ClassName == a1, (("Remote %* is a %*, expected %*"):format(a2, v3.ClassName, a1)))
-        return v3
-    elseif u1 then
-        local v4 = Instance.new(a1)
-        v4.Name = a2
-        v4.Parent = Remotes_upv_1
-        return v4
-    else
-        local v5 = Remotes_upv_1:WaitForChild(a2, 15)
-        if not (v5) then
-            warn((("[Net] still waiting for remote '%*' (is its server module loaded?)"):format(a2)))
-            v5 = Remotes_upv_1:WaitForChild(a2)
-        end
-        return v5
+    if const child = remotes:FindFirstChild(name) then
+        assert(child.ClassName == a7, (`Remote {name} is a {child.ClassName}, expected {a7}`))
+        return child
     end
+
+    if isServer then
+        local instance = Instance.new(a7)
+        instance.Name = name
+        instance.Parent = remotes
+        return instance
+    end
+
+    local child2 = remotes:WaitForChild(name, 15)
+    if not child2 then
+        warn((`[Net] still waiting for remote '{name}' (is its server module loaded?)`))
+        child2 = remotes:WaitForChild(name)
+    end
+
+    return child2
 end
-local tbl_1 = {}
-function tbl_1.Event(a1)
-    --[[
-      name: Event
-      line: 48
-      upvalues:
-        get (copy, index: 1)
-    ]]
-    return (get("RemoteEvent", a1))
-end
-function tbl_1.UnreliableEvent(a1)
-    --[[
-      name: UnreliableEvent
-      line: 52
-      upvalues:
-        get (copy, index: 1)
-    ]]
-    return (get("UnreliableRemoteEvent", a1))
-end
-function tbl_1.Function(a1)
-    --[[
-      name: Function
-      line: 56
-      upvalues:
-        get (copy, index: 1)
-    ]]
-    return (get("RemoteFunction", a1))
-end
-function tbl_1.RateLimiter(a1, a2)
-    --[[
-      name: RateLimiter
-      line: 63
-    ]]
-    local u2 = a2 or a1
-    local tbl_upv_2 = {}
-    game:GetService("Players").PlayerRemoving:Connect(
-        function(a3)
-            --[[
-              line: 66
-              upvalues:
-                tbl_upv_2 (copy, index: 1)
-            ]]
-            tbl_upv_2[a3] = nil
-        end
-    )
-    return function(a4)
+
+return {
+    Event = (function(name: string)
         --[[
-          line: 69
+          name: Event
+          line: 48
           upvalues:
-            tbl_upv_2 (copy, index: 1)
-            u2 (copy, index: 2)
-            a1 (copy, index: 3)
+            get (copy, index: 1)
         ]]
-        local v6 = os.clock()
-        local v7 = tbl_upv_2[a4]
-        if not (v7) then
-            v7 = {tokens = u2, t = v6}
-            tbl_upv_2[a4] = v7
-        end
-        v7.tokens = math.min(u2, v7.tokens + ((v6 - v7.t) * a1))
-        v7.t = v6
-        if v7.tokens >= 1 then
-            v7.tokens = v7.tokens - 1
+        return (get("RemoteEvent", name))
+    end),
+    UnreliableEvent = (function(name: string)
+        --[[
+          name: UnreliableEvent
+          line: 52
+          upvalues:
+            get (copy, index: 1)
+        ]]
+        return (get("UnreliableRemoteEvent", name))
+    end),
+    Function = (function(name: string)
+        --[[
+          name: Function
+          line: 56
+          upvalues:
+            get (copy, index: 1)
+        ]]
+        return (get("RemoteFunction", name))
+    end),
+    RateLimiter = (function(a15, a16)
+        --[[
+          name: RateLimiter
+          line: 63
+        ]]
+        local tokens = a16 or a15
+        local v18 = {}
+        game:GetService("Players").PlayerRemoving:Connect(
+            function(player: Player)
+                --[[
+                  line: 66
+                  upvalues:
+                    v18 (copy, index: 1)
+                ]]
+                v18[player] = nil
+            end
+        )
+
+        return function(key)
+            --[[
+              line: 69
+              upvalues:
+                v18 (copy, index: 1)
+                tokens (copy, index: 2)
+                a15 (copy, index: 3)
+            ]]
+            local timestamp = os.clock()
+            local v22 = v18[key]
+            if not v22 then
+                v22 = {tokens = tokens, t = timestamp}
+                v18[key] = v22
+            end
+
+            v22.tokens = math.min(tokens, v22.tokens + ((timestamp - v22.t) * a15))
+            v22.t = timestamp
+
+            if not (1 <= v22.tokens) then
+                return false
+            end
+
+            v22.tokens -= 1
+
             return true
         end
-        return false
-    end
-end
-return tbl_1
+    end)
+}

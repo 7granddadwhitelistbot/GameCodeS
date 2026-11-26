@@ -1,6112 +1,1774 @@
-local Lighting_upv_1 = game:GetService("Lighting")
-local Players_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local RunService_1 = game:GetService("RunService")
-local TweenService_upv_1 = game:GetService("TweenService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local Config_1 = require(ReplicatedStorage_upv_1.Shared.Config)
-require(ReplicatedStorage_upv_1.Shared:WaitForChild("Loc")).Install()
-local UIAssets_upv_1 = require(ReplicatedStorage_upv_1.Shared.UIAssets)
-local Theme_1 = require(script.Parent.Parent.UI.Theme)
-local UPDATE_COUNTDOWN_upv_1 = Config_1.UPDATE_COUNTDOWN
-if not UPDATE_COUNTDOWN_upv_1 then
+local step
+local v2
+
+local function localTime(a4)
+    --[[
+      name: localTime
+      line: 644
+    ]]
+    local success, result = pcall(
+        function()
+            --[[
+              line: 645
+              upvalues:
+                a4 (copy, index: 1)
+            ]]
+            return DateTime.fromUnixTimestamp(a4):FormatLocalTime("dddd h:mm A", "en-us")
+        end
+    )
+    if success then
+        return string.upper(result) .. " YOUR TIME"
+    end
+
+    return ""
+end
+
+local lighting = game:GetService("Lighting")
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+local workspace = game:GetService("Workspace")
+local Config = require(replicatedStorage.Shared.Config)
+require(replicatedStorage.Shared:WaitForChild("Loc")).Install()
+local UIAssets = require(replicatedStorage.Shared.UIAssets)
+local Theme = require(script.Parent.Parent.UI.Theme)
+local updateCountdown2 = Config.UPDATE_COUNTDOWN
+if not updateCountdown2 then
     return
 end
-local function emblem(a1)
+
+local function emblem(a18)
     --[[
       name: emblem
       line: 43
       upvalues:
-        UIAssets_upv_1 (copy, index: 1)
+        UIAssets (copy, index: 1)
     ]]
-    local Ranks_1 = UIAssets_upv_1.Ranks
-    local v1 = (Ranks_1 and (Ranks_1[string.lower(a1.name)])) or (a1.img or "")
-    return v1
+    local ranks = UIAssets.Ranks
+    return ranks and ranks[string.lower(a18.name)] or a18.img or ""
 end
-local Sfx_upv_1 = nil
+
+local Sfx = nil
 pcall(
     function()
         --[[
           line: 48
           upvalues:
-            Sfx_upv_1 (ref,  index: 1)
-            ReplicatedStorage_upv_1 (copy, index: 2)
+            Sfx (ref,  index: 1)
+            replicatedStorage (copy, index: 2)
         ]]
-        Sfx_upv_1 = require(ReplicatedStorage_upv_1.Shared.Sfx)
+        Sfx = require(replicatedStorage.Shared.Sfx)
     end
 )
-local Colors_upv_1 = Theme_1.Colors
-local fromRGB_upv_1 = Color3.fromRGB
-local u1 = UPDATE_COUNTDOWN_upv_1.skyHours * 3600
-local u2 = UPDATE_COUNTDOWN_upv_1.goldenHours * 3600
-local Gold_upv_1 = Colors_upv_1.Gold
-local u3 = fromRGB_upv_1(12, 16, 30)
-local v2 = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.Heavy)
-local v3 = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.ExtraBold)
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
-local v4 = os.clock()
-while LocalPlayer_upv_1:GetAttribute("LoadingShownMs") == nil do
-    if os.clock() - v4 < 30 then
-        task.wait(0.2)
-        continue
-    else
-        break
-    end
+local colors = Theme.Colors
+local color3FromRGB = Color3.fromRGB
+local v23 = updateCountdown2.skyHours * 3600
+local v24 = updateCountdown2.goldenHours * 3600
+local gold = colors.Gold
+local imageColor3 = color3FromRGB(12, 16, 30)
+local fontFace = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.Heavy)
+local fontFace2 = Font.new("rbxasset://fonts/families/Montserrat.json", Enum.FontWeight.ExtraBold)
+local localPlayer = players.LocalPlayer
+local camera = workspace.CurrentCamera
+local timestamp = os.clock()
+
+while localPlayer:GetAttribute("LoadingShownMs") == nil and os.clock() - timestamp < 30 do
+    task.wait(0.2)
 end
+
 local function shipped()
     --[[
       name: shipped
       line: 85
       upvalues:
-        Workspace_upv_1 (copy, index: 1)
-        UPDATE_COUNTDOWN_upv_1 (copy, index: 2)
-        ReplicatedStorage_upv_1 (copy, index: 3)
+        workspace (copy, index: 1)
+        updateCountdown2 (copy, index: 2)
+        replicatedStorage (copy, index: 3)
     ]]
-    if Workspace_upv_1:GetAttribute("CountdownPreviewShipped") == true then
+    if workspace:GetAttribute("CountdownPreviewShipped") == true then
         return true
     end
-    local v5 = (UPDATE_COUNTDOWN_upv_1.shipped ~= nil) and (ReplicatedStorage_upv_1.Shared:FindFirstChild(UPDATE_COUNTDOWN_upv_1.shipped) ~= nil)
-    return v5
+
+    return updateCountdown2.shipped ~= nil
+        and replicatedStorage.Shared:FindFirstChild(updateCountdown2.shipped) ~= nil
 end
-if UPDATE_COUNTDOWN_upv_1.shipped then
-    if ReplicatedStorage_upv_1.Shared:FindFirstChild(UPDATE_COUNTDOWN_upv_1.shipped) then
-        if Workspace_upv_1:GetAttribute("CountdownPreview") ~= nil then
-            local function inLobby()
-                --[[
-                  name: inLobby
-                  line: 100
-                  upvalues:
-                    LocalPlayer_upv_1 (copy, index: 1)
-                ]]
-                local v6 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                return v6
-            end
-            local function now()
-                --[[
-                  name: now
-                  line: 105
-                  upvalues:
-                    Workspace_upv_1 (copy, index: 1)
-                    UPDATE_COUNTDOWN_upv_1 (copy, index: 2)
-                ]]
-                local v7 = Workspace_upv_1:GetServerTimeNow()
-                local v8 = Workspace_upv_1:GetAttribute("CountdownPreview")
-                local v9 = Workspace_upv_1:GetAttribute("CountdownPreviewAt")
-                if type(v8) == "number" and type(v9) == "number" then
-                    return (UPDATE_COUNTDOWN_upv_1.at - v8) + (v7 - v9)
-                end
-                return v7
-            end
-            local function play(a1)
-                --[[
-                  name: play
-                  line: 114
-                  upvalues:
-                    Sfx_upv_1 (ref, index: 1)
-                ]]
-                if not Sfx_upv_1 then
-                    return
-                end
-                pcall(Sfx_upv_1.PlayUI, a1)
-            end
-            local u4 = Instance.new("Part")
-            u4.Name = "UpdateCountdownSky"
-            u4.Anchored = true
-            u4.CanCollide = false
-            u4.CanQuery = false
-            u4.CanTouch = false
-            u4.CastShadow = false
-            u4.Transparency = 1
-            u4.Size = Vector3.new(357, 64, 0.20000000298023224)
-            u4.CFrame = CFrame.lookAt(Vector3.new(0, 66, -135), Vector3.new(0, 9, 120))
-            u4.Parent = Workspace_upv_1
-            local u5 = Instance.new("SurfaceGui")
-            u5.Name = "UpdateCountdown"
-            u5.Adornee = u4
-            u5.Face = Enum.NormalId.Front
-            u5.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-            u5.PixelsPerStud = 3.361344537815126
-            u5.LightInfluence = 0
-            u5.Brightness = 1.25
-            u5.MaxDistance = 2000
-            u5.ResetOnSpawn = false
-            u5.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-            local u6 = Instance.new("Frame")
-            u6.Name = "Root"
-            u6.BackgroundTransparency = 1
-            u6.Size = UDim2.fromScale(1, 1)
-            u6.Parent = u5
-            local v10 = Instance.new("ImageLabel")
-            v10.Name = "Plate"
-            v10.BackgroundTransparency = 1
-            v10.Image = "rbxassetid://90962482350826"
-            v10.ImageColor3 = u3
-            v10.ImageTransparency = 0.3
-            v10.ScaleType = Enum.ScaleType.Stretch
-            v10.AnchorPoint = Vector2.new(0.5, 0.5)
-            v10.Position = UDim2.fromOffset(600, 112)
-            v10.Size = UDim2.fromOffset(1240, 300)
-            v10.Parent = u6
-            local function text(a1, a2, a3, a4, a5, a6, a7, a8)
-                --[[
-                  name: text
-                  line: 155
-                  upvalues:
-                    u6 (copy, index: 1)
-                    u3 (copy, index: 2)
-                    Colors_upv_1 (copy, index: 3)
-                ]]
-                local u7 = Instance.new("Frame")
-                u7.Name = a1
-                u7.BackgroundTransparency = 1
-                u7.AnchorPoint = Vector2.new(0.5, 0.5)
-                u7.Position = UDim2.fromOffset(a2, a3)
-                u7.Size = UDim2.fromOffset(a4, a5)
-                u7.Parent = a8 or u6
-                local v12 = Instance.new("UIScale")
-                v12.Parent = u7
-                local function mk_1(a9, a10, a11, a12, a13)
-                    --[[
-                      name: mk
-                      line: 165
-                      upvalues:
-                        a6 (copy, index: 1)
-                        u7 (copy, index: 2)
-                    ]]
-                    local v13 = Instance.new("TextLabel")
-                    v13.Name = a9
-                    v13.BackgroundTransparency = 1
-                    v13.TextScaled = true
-                    v13.FontFace = a6
-                    v13.TextColor3 = a11
-                    v13.TextTransparency = a12
-                    v13.Position = UDim2.fromOffset(0, a10)
-                    v13.Size = UDim2.fromScale(1, 1)
-                    v13.Text = ""
-                    v13.ZIndex = a13
-                    v13.Parent = u7
-                    return v13
-                end
-                local v14 = mk_1("Shadow", a7, u3, 0.45, 1)
-                local tbl_1 = {}
-                tbl_1.label = mk_1("Text", 0, Colors_upv_1.White, 0, 2)
-                tbl_1.shadow = v14
-                tbl_1.holder = u7
-                tbl_1.scale = v12
-                return tbl_1
-            end
-            local u8 = text("Title", 600, 82, 1000, 84, v2, 4)
-            u8.label.Text = UPDATE_COUNTDOWN_upv_1.title
-            u8.shadow.Text = UPDATE_COUNTDOWN_upv_1.title
-            local u9 = text("Timer", 600, 168, 480, 74, v2, 4)
-            local u10 = text("When", 600, 22, 600, 24, v3, 2)
-            local u11 = u4:Clone()
-            u11.Name = "UpdateCountdownSkyBig"
-            u11.CFrame = u4.CFrame * CFrame.new(0, 0, -0.3)
-            u11.Parent = Workspace_upv_1
-            local u12 = u5:Clone()
-            u12.Name = "UpdateCountdownBig"
-            u12.Adornee = u11
-            u12.PixelsPerStud = 1.680672268907563
-            u12:ClearAllChildren()
-            local v15 = Instance.new("Frame")
-            v15.Name = "Root"
-            v15.BackgroundTransparency = 1
-            v15.Size = UDim2.fromScale(1, 1)
-            v15.Parent = u12
-            local u13 = text("Big", 300, 62, 560, 84, v2, 4, v15)
-            u13.holder.Visible = false
-            local tbl_upv_2 = {u8, u9, u10}
-            local tbl_upv_3 = {}
-            local v16 = math.ceil(#UPDATE_COUNTDOWN_upv_1.ranks / 2)
-            for key_1, value_1 in UPDATE_COUNTDOWN_upv_1.ranks do
-                local v17 = ((key_1 <= v16) and (310 - (v16 - key_1) * 74)) or (890 + ((key_1 - v16) - 1) * 74)
-                local v18 = Instance.new("Frame")
-                v18.Name = value_1.name
-                v18.BackgroundTransparency = 1
-                v18.AnchorPoint = Vector2.new(0.5, 0.5)
-                v18.Position = UDim2.fromOffset(v17, 168)
-                v18.Size = UDim2.fromOffset(62, 62)
-                v18.Parent = u6
-                local v19 = Instance.new("ImageLabel")
-                v19.Name = "Emblem"
-                v19.BackgroundTransparency = 1
-                local Ranks_2 = UIAssets_upv_1.Ranks
-                local v20 = (Ranks_2 and (Ranks_2[string.lower(value_1.name)])) or (value_1.img or "")
-                v19.Image = v20
-                v19.ScaleType = Enum.ScaleType.Fit
-                v19.Size = UDim2.fromScale(1, 1)
-                v19.Parent = v18
-                local v21 = Instance.new("UIScale")
-                v21.Parent = v18
-                table.insert(tbl_upv_3, {cell = v18, img = v19, scale = v21})
-            end
-            local u14 = Instance.new("Frame")
-            u14.Name = "Hero"
-            u14.BackgroundTransparency = 1
-            u14.AnchorPoint = Vector2.new(0.5, 0.5)
-            u14.Position = UDim2.fromOffset(640, 120)
-            u14.Size = UDim2.fromOffset(620, 210)
-            u14.Visible = false
-            u14.ZIndex = 3
-            u14.Parent = u6
-            local u15 = Instance.new("UIScale")
-            u15.Parent = u14
-            local u16 = Instance.new("ImageLabel")
-            u16.Name = "Glow"
-            u16.BackgroundTransparency = 1
-            u16.Image = "rbxassetid://90962482350826"
-            u16.ImageTransparency = 1
-            u16.ScaleType = Enum.ScaleType.Stretch
-            u16.AnchorPoint = Vector2.new(0.5, 0.5)
-            u16.Position = UDim2.fromOffset(100, 105)
-            u16.Size = UDim2.fromOffset(300, 300)
-            u16.Parent = u14
-            local u17 = Instance.new("UIScale")
-            u17.Parent = u16
-            local u18 = Instance.new("ImageLabel")
-            u18.Name = "Emblem"
-            u18.BackgroundTransparency = 1
-            u18.ScaleType = Enum.ScaleType.Fit
-            u18.AnchorPoint = Vector2.new(0.5, 0.5)
-            u18.Position = UDim2.fromOffset(100, 105)
-            u18.Size = UDim2.fromOffset(180, 180)
-            u18.ZIndex = 4
-            u18.Parent = u14
-            local u19 = text("Kicker", 370, 66, 320, 30, v3, 2, u14)
-            local u20 = text("HeroName", 370, 124, 320, 80, v2, 4, u14)
-            for _, value_2 in {u19, u20} do
-                value_2.label.TextXAlignment = Enum.TextXAlignment.Left
-                value_2.shadow.TextXAlignment = Enum.TextXAlignment.Left
-                value_2.label.ZIndex = 5
-                value_2.shadow.ZIndex = 4
-            end
-            u19.label.Text = "NEW RANK REVEALED"
-            u19.shadow.Text = "NEW RANK REVEALED"
-            u19.label.TextColor3 = Gold_upv_1
-            local u21 = Instance.new("ImageLabel")
-            u21.Name = "Flyer"
-            u21.BackgroundTransparency = 1
-            u21.ScaleType = Enum.ScaleType.Fit
-            u21.AnchorPoint = Vector2.new(0.5, 0.5)
-            u21.Visible = false
-            u21.ZIndex = 6
-            u21.Parent = u6
-            u5.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-            u12.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-            local u22 = Instance.new("ScreenGui")
-            u22.Name = "UpdateCountdownBanner"
-            u22.ResetOnSpawn = false
-            u22.DisplayOrder = 30
-            u22.IgnoreGuiInset = false
-            u22.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-            local u23 = Instance.new("Frame")
-            u23.Name = "Banner"
-            u23.AnchorPoint = Vector2.new(0.5, 1)
-            u23.Position = UDim2.new(0.5, 0, 0, -10)
-            u23.Size = UDim2.fromOffset(420, 92)
-            u23.BackgroundColor3 = fromRGB_upv_1(14, 17, 24)
-            u23.BackgroundTransparency = 0.08
-            u23.Visible = false
-            u23.Parent = u22
-            local u24 = Instance.new("UICorner")
-            u24.CornerRadius = UDim.new(0, 14)
-            u24.Parent = u23
-            u24 = Instance.new("UIStroke")
-            u24.Thickness = 2
-            u24.Color = Gold_upv_1
-            u24.Transparency = 0.25
-            u24.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-            u24.Parent = u23
-            u24 = Instance.new("ImageLabel")
-            u24.BackgroundTransparency = 1
-            u24.ScaleType = Enum.ScaleType.Fit
-            u24.Position = UDim2.fromOffset(12, 10)
-            u24.Size = UDim2.fromOffset(72, 72)
-            u24.Parent = u23
-            local v22 = Instance.new("TextLabel")
-            v22.BackgroundTransparency = 1
-            v22.Position = UDim2.fromOffset(98, 14)
-            v22.Size = UDim2.new(1, -110, 0, 22)
-            v22.FontFace = v3
-            v22.TextSize = 17
-            v22.TextColor3 = Gold_upv_1
-            v22.TextXAlignment = Enum.TextXAlignment.Left
-            v22.Text = "NEW RANK REVEALED"
-            v22.Parent = u23
-            local u25 = Instance.new("TextLabel")
-            u25.BackgroundTransparency = 1
-            u25.Position = UDim2.fromOffset(98, 38)
-            u25.Size = UDim2.new(1, -110, 0, 40)
-            u25.FontFace = v2
-            u25.TextScaled = true
-            u25.TextColor3 = Colors_upv_1.White
-            u25.TextXAlignment = Enum.TextXAlignment.Left
-            u25.Parent = u23
-            local u26 = 0
-            local function showBanner(a1)
-                --[[
-                  name: showBanner
-                  line: 368
-                  upvalues:
-                    u26 (ref,  index: 1)
-                    u24 (copy, index: 2)
-                    UIAssets_upv_1 (copy, index: 3)
-                    u25 (copy, index: 4)
-                    u23 (copy, index: 5)
-                    TweenService_upv_1 (copy, index: 6)
-                ]]
-                u26 = u26 + 1
-                local u27 = u26
-                local Ranks_3 = UIAssets_upv_1.Ranks
-                u24.Image = Ranks_3 and Ranks_3[string.lower(a1.name)] or a1.img or ""
-                u25.Text = a1.name
-                u23.Position = UDim2.new(0.5, 0, 0, -10)
-                u23.Visible = true
-                local v24 = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-                local tbl_4 = {}
-                tbl_4.Position = UDim2.new(0.5, 0, 0, 110)
-                TweenService_upv_1:Create(u23, v24, tbl_4):Play()
-                task.delay(
-                    4.2,
-                    function()
-                        --[[
-                          line: 376
-                          upvalues:
-                            u26 (ref,  index: 1)
-                            u27 (copy, index: 2)
-                            TweenService_upv_1 (copy, index: 3)
-                            u23 (copy, index: 4)
-                        ]]
-                        if u26 == u27 then
-                            local v25 = TweenService_upv_1:Create(u23, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(0.5, 0, 0, -10)})
-                            v25.Completed:Once(
-                                function()
-                                    --[[
-                                      line: 379
-                                      upvalues:
-                                        u26 (ref,  index: 1)
-                                        u27 (copy, index: 2)
-                                        u23 (copy, index: 3)
-                                    ]]
-                                    if u26 ~= u27 then
-                                        return
-                                    end
-                                    u23.Visible = false
-                                end
-                            )
-                            v25:Play()
-                        end
-                    end
-                )
-            end
-            local u28 = Instance.new("Folder")
-            u28.Name = "UpdateCountdownFx"
-            u28.Parent = Workspace_upv_1
-            local u29 = Random.new()
-            local RightVector_upv_1 = u4.CFrame.RightVector
-            local UpVector_upv_1 = u4.CFrame.UpVector
-            local u30 = -u4.CFrame.LookVector
-            local function around(a1, a2, a3)
-                --[[
-                  name: around
-                  line: 401
-                  upvalues:
-                    RightVector_upv_1 (copy, index: 1)
-                    UpVector_upv_1 (copy, index: 2)
-                    u30 (copy, index: 3)
-                ]]
-                return ((Vector3.new(0, 66, -135) + (RightVector_upv_1 * a1)) + (UpVector_upv_1 * a2)) + (u30 * (a3 or 30))
-            end
-            local tbl_upv_5 = {}
-            local function fwSound(a1, a2, a3, a4)
-                --[[
-                  name: fwSound
-                  line: 410
-                  upvalues:
-                    Sfx_upv_1 (ref,  index: 1)
-                    tbl_upv_5 (copy, index: 2)
-                    u29 (copy, index: 3)
-                ]]
-                if not Sfx_upv_1 or (os.clock() - (tbl_upv_5[a1] or 0) < a2) then
-                    return
-                end
-                tbl_upv_5[a1] = os.clock()
-                task.delay(
-                    a3,
-                    function()
-                        --[[
-                          line: 415
-                          upvalues:
-                            Sfx_upv_1 (ref,  index: 1)
-                            a1 (copy, index: 2)
-                            a4 (copy, index: 3)
-                            u29 (copy, index: 4)
-                        ]]
-                        pcall(Sfx_upv_1.Play, a1, nil, {volume = a4, pitch = u29:NextNumber(0.94, 1.06)})
-                    end
-                )
-            end
-            local function boom(a1)
-                --[[
-                  name: boom
-                  line: 419
-                  upvalues:
-                    fwSound (copy, index: 1)
-                ]]
-                fwSound("Firework/Explode", 0.25, 0.15, 1)
-                fwSound("Firework/Crackle", 0.6, 0.45, 1)
-            end
-            local function burst(a1, a2, a3)
-                --[[
-                  name: burst
-                  line: 424
-                  upvalues:
-                    u28 (copy, index: 1)
-                    Colors_upv_1 (copy, index: 2)
-                ]]
-                local u31 = Instance.new("Part")
-                u31.Anchored = true
-                u31.CanCollide = false
-                u31.CanQuery = false
-                u31.CanTouch = false
-                u31.Transparency = 1
-                u31.Size = Vector3.new(1, 1, 1)
-                u31.CFrame = CFrame.new(a1)
-                u31.Parent = u28
-                local function emitter_1(a4, a5, a6, a7, a8, a9)
-                    --[[
-                      name: emitter
-                      line: 434
-                      upvalues:
-                        a2 (copy, index: 1)
-                        u31 (copy, index: 2)
-                    ]]
-                    local v26 = Instance.new("ParticleEmitter")
-                    v26.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-                    v26.LightEmission = 1
-                    v26.LightInfluence = 0
-                    v26.Brightness = a9
-                    v26.Color = ColorSequence.new(a8, a2)
-                    v26.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, a5), NumberSequenceKeypoint.new(0.7, a5 * 0.6), NumberSequenceKeypoint.new(1, 0)})
-                    v26.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.75, 0.15), NumberSequenceKeypoint.new(1, 1)})
-                    v26.Lifetime = NumberRange.new(a7 * 0.75, a7)
-                    v26.Speed = NumberRange.new(a6 * 0.8, a6)
-                    v26.SpreadAngle = Vector2.new(180, 180)
-                    v26.Acceleration = Vector3.new(0, -22, 0)
-                    v26.Drag = 1.6
-                    v26.Rate = 0
-                    v26.RotSpeed = NumberRange.new(-180, 180)
-                    v26.Parent = u31
-                    v26:Emit(a4)
-                end
-                emitter_1(math.floor(a3 * 120), a3 * 8, a3 * 72, 2, a2:Lerp(Colors_upv_1.White, 0.1), 3)
-                emitter_1(math.floor(a3 * 26), a3 * 4, a3 * 36, 2.6, a2:Lerp(Colors_upv_1.White, 0.6), 2)
-                task.delay(
-                    4,
-                    function()
-                        --[[
-                          line: 456
-                          upvalues:
-                            u31 (copy, index: 1)
-                        ]]
-                        u31:Destroy()
-                    end
-                )
-            end
-            local tbl_upv_6 = {fromRGB_upv_1(255, 204, 64), fromRGB_upv_1(255, 92, 92), fromRGB_upv_1(86, 202, 255), fromRGB_upv_1(186, 116, 255), fromRGB_upv_1(120, 236, 150), fromRGB_upv_1(255, 150, 80)}
-            local function rocket(a1, a2, a3)
-                --[[
-                  name: rocket
-                  line: 462
-                  upvalues:
-                    u29 (copy, index: 1)
-                    Colors_upv_1 (copy, index: 2)
-                    u28 (copy, index: 3)
-                    TweenService_upv_1 (copy, index: 4)
-                    burst (copy, index: 5)
-                    fwSound (copy, index: 6)
-                ]]
-                local v27 = Vector3.new(a1.X + u29:NextNumber(-20, 20), 30, a1.Z + u29:NextNumber(-10, 10))
-                local u32 = Instance.new("Part")
-                u32.Anchored = true
-                u32.CanCollide = false
-                u32.CanQuery = false
-                u32.CanTouch = false
-                u32.CastShadow = false
-                u32.Material = Enum.Material.Neon
-                u32.Color = a2:Lerp(Colors_upv_1.White, 0.5)
-                u32.Size = Vector3.new(1.600000023841858, 1.600000023841858, 1.600000023841858)
-                u32.Shape = Enum.PartType.Ball
-                u32.CFrame = CFrame.new(v27)
-                v27 = Instance.new("Attachment")
-                v27.Position = Vector3.new(0, 0.800000011920929, 0)
-                v27.Parent = u32
-                local v28 = Instance.new("Attachment")
-                v28.Position = Vector3.new(0, -0.800000011920929, 0)
-                v28.Parent = u32
-                local v29 = Instance.new("Trail")
-                v29.Attachment0 = v27
-                v29.Attachment1 = v28
-                v29.Lifetime = 0.45
-                v29.LightEmission = 1
-                v29.FaceCamera = true
-                v29.Color = ColorSequence.new(a2:Lerp(Colors_upv_1.White, 0.6), a2)
-                v29.Transparency = NumberSequence.new(0, 1)
-                v29.WidthScale = NumberSequence.new(1, 0)
-                v29.Parent = u32
-                u32.Parent = u28
-                local v30 = TweenService_upv_1:Create(u32, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {CFrame = CFrame.new(a1)})
-                v30.Completed:Once(
-                    function()
-                        --[[
-                          line: 493
-                          upvalues:
-                            u32 (copy, index: 1)
-                            burst (copy, index: 2)
-                            a1 (copy, index: 3)
-                            a2 (copy, index: 4)
-                            a3 (copy, index: 5)
-                            fwSound (copy, index: 6)
-                        ]]
-                        u32.Transparency = 1
-                        burst(a1, a2, a3)
-                        fwSound("Firework/Explode", 0.25, 0.15, 1)
-                        fwSound("Firework/Crackle", 0.6, 0.45, 1)
-                        task.delay(
-                            0.6,
-                            function()
-                                --[[
-                                  line: 497
-                                  upvalues:
-                                    u32 (copy, index: 1)
-                                ]]
-                                u32:Destroy()
-                            end
-                        )
-                    end
-                )
-                v30:Play()
-            end
-            local Lighting_2 = ReplicatedStorage_upv_1:FindFirstChild("Lighting")
-            local u33 = Lighting_2 and (Lighting_2:FindFirstChild("Lobby"))
-            local function base(a1, a2)
-                --[[
-                  name: base
-                  line: 529
-                  upvalues:
-                    u33 (copy, index: 1)
-                ]]
-                local v31
-                if u33 then
-                    v31 = u33:GetAttribute(a1)
-                else
-                    v31 = u33
-                end
-                if v31 == nil then
-                    return a2
-                end
-                return v31
-            end
-            local v32 = u33 and (u33:FindFirstChildOfClass("Atmosphere"))
-            local tbl_upv_7 = {atmColor = 0, atmGlare = 0, atmHaze = 0, rays = 0, atmDensity = 0, outdoor = 0, clock = 0, brightness = 0, atmDecay = 0, shiftTop = 0}
-            local v33 = u33 and (u33:GetAttribute("ClockTime"))
-            local u34
-            if v33 == nil then
-                u34 = 16.3
-            else
-                u34 = v33
-            end
-            tbl_upv_7.clock = u34
-            local v34 = fromRGB_upv_1(214, 184, 140)
-            local v35 = u33 and (u33:GetAttribute("ColorShift_Top"))
-            if v35 == nil then
-                u34 = v34
-            else
-                u34 = v35
-            end
-            tbl_upv_7.shiftTop = u34
-            local v36 = u33 and (u33:GetAttribute("Brightness"))
-            if v36 == nil then
-                u34 = 2.5
-            else
-                u34 = v36
-            end
-            tbl_upv_7.brightness = u34
-            local v37 = fromRGB_upv_1(136, 128, 126)
-            local v38 = u33 and (u33:GetAttribute("OutdoorAmbient"))
-            if v38 == nil then
-                u34 = v37
-            else
-                u34 = v38
-            end
-            tbl_upv_7.outdoor = u34
-            if v32 then
-                u34 = v32.Color
-            else
-                u34 = fromRGB_upv_1(224, 210, 190)
-            end
-            tbl_upv_7.atmColor = u34
-            if v32 then
-                u34 = v32.Decay
-            else
-                u34 = fromRGB_upv_1(170, 160, 178)
-            end
-            tbl_upv_7.atmDecay = u34
-            tbl_upv_7.atmHaze = ((not v32) and 1.2) or (v32.Haze)
-            tbl_upv_7.atmDensity = ((not v32) and 0.24) or (v32.Density)
-            tbl_upv_7.atmGlare = ((not v32) and 0.08) or (v32.Glare)
-            local v39 = u33 and (u33:FindFirstChildOfClass("SunRaysEffect"))
-            if v39 then
-                u34 = v39.Intensity
-            else
-                u34 = 0.035
-            end
-            tbl_upv_7.rays = u34
-            local tbl_upv_8 = {bright = 2.9, density = 0.27, rays = 0.14, clock = 17.35, glare = 2.2, haze = 1.6}
-            tbl_upv_8.shiftTop = fromRGB_upv_1(255, 176, 110)
-            tbl_upv_8.atmColor = fromRGB_upv_1(255, 178, 130)
-            tbl_upv_8.atmDecay = fromRGB_upv_1(232, 128, 140)
-            tbl_upv_8.outdoor = fromRGB_upv_1(170, 132, 118)
-            local tbl_upv_9 = {bright = 2.6, density = 0.29, rays = 0.2, clock = 17.62, glare = 3, haze = 1.9}
-            tbl_upv_9.shiftTop = fromRGB_upv_1(255, 140, 100)
-            tbl_upv_9.atmColor = fromRGB_upv_1(255, 150, 120)
-            tbl_upv_9.atmDecay = fromRGB_upv_1(196, 98, 150)
-            tbl_upv_9.outdoor = fromRGB_upv_1(156, 112, 128)
-            u34 = Instance.new("ColorCorrectionEffect")
-            u34.Name = "UpdateCountdownGrade"
-            u34.Enabled = false
-            u34.Parent = CurrentCamera_1
-            local LightingController_upv_1 = nil
-            pcall(
-                function()
-                    --[[
-                      line: 560
-                      upvalues:
-                        LightingController_upv_1 (ref, index: 1)
-                    ]]
-                    LightingController_upv_1 = require(script.Parent.Parent.Core.LightingController)
-                end
-            )
-            local function lobbyLit()
-                --[[
-                  name: lobbyLit
-                  line: 563
-                  upvalues:
-                    LightingController_upv_1 (ref, index: 1)
-                ]]
-                if not LightingController_upv_1 then
-                    return true
-                end
-                local success_1, v40 = pcall(LightingController_upv_1.Current)
-                return success_1 and (v40 == "Lobby")
-            end
-            local tbl_upv_10 = {w = 0, d = 0}
-            local u35 = false
-            local function paintSky(a1, a2)
-                --[[
-                  name: paintSky
-                  line: 573
-                  upvalues:
-                    LocalPlayer_upv_1 (copy, index: 1)
-                    LightingController_upv_1 (ref,  index: 2)
-                    u34 (copy, index: 3)
-                    u35 (ref,  index: 4)
-                    Lighting_upv_1 (copy, index: 5)
-                    tbl_upv_7 (copy, index: 6)
-                    tbl_upv_8 (copy, index: 7)
-                    tbl_upv_9 (copy, index: 8)
-                    Colors_upv_1 (copy, index: 9)
-                    fromRGB_upv_1 (copy, index: 10)
-                ]]
-                local v41 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                if v41 then
-                    if LightingController_upv_1 then
-                        local success_2, v42 = pcall(LightingController_upv_1.Current)
-                        v41 = success_2 and (v42 == "Lobby")
-                    else
-                        v41 = true
-                    end
-                    if v41 then
-                        if a1 <= 0.001 and a2 <= 0.001 then
-                            if u35 then
-                                Lighting_upv_1.ClockTime = tbl_upv_7.clock
-                                Lighting_upv_1.ColorShift_Top = tbl_upv_7.shiftTop
-                                Lighting_upv_1.Brightness = tbl_upv_7.brightness
-                                Lighting_upv_1.OutdoorAmbient = tbl_upv_7.outdoor
-                                v41 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                                if v41 then
-                                    v41.Color = tbl_upv_7.atmColor
-                                    v41.Decay = tbl_upv_7.atmDecay
-                                    v41.Haze = tbl_upv_7.atmHaze
-                                    v41.Density = tbl_upv_7.atmDensity
-                                    v41.Glare = tbl_upv_7.atmGlare
-                                end
-                                v41 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                                if v41 then
-                                    v41.Intensity = tbl_upv_7.rays
-                                end
-                                u35 = false
-                            end
-                            u34.Enabled = false
-                            return
-                        end
-                        u35 = true
-                        local function mix_1(a3, a4, a5)
-                            --[[
-                              name: mix
-                              line: 600
-                              upvalues:
-                                a1 (copy, index: 1)
-                                a2 (copy, index: 2)
-                            ]]
-                            if typeof(a3) == "Color3" then
-                                return a3:Lerp(a4, a1):Lerp(a5, a2)
-                            end
-                            local v43 = a3 + (a4 - a3) * a1
-                            return v43 + ((a5 - v43) * a2)
-                        end
-                        local clock_1 = tbl_upv_7.clock
-                        local clock_2 = tbl_upv_8.clock
-                        local clock_3 = tbl_upv_9.clock
-                        local v42
-                        if typeof(clock_1) ~= "Color3" then
-                            local _ = clock_1 + (clock_2 - clock_1) * a1
-                            v42 = clock_1 + (clock_2 - clock_1) * a1 + (clock_3 - (clock_1 + (clock_2 - clock_1) * a1)) * a2
-                        else
-                            v42 = clock_1:Lerp(clock_2, a1):Lerp(clock_3, a2)
-                        end
-                        Lighting_upv_1.ClockTime = v42
-                        local shiftTop_1 = tbl_upv_7.shiftTop
-                        local shiftTop_2 = tbl_upv_8.shiftTop
-                        local shiftTop_3 = tbl_upv_9.shiftTop
-                        if typeof(shiftTop_1) ~= "Color3" then
-                            local _ = shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1
-                            v42 = shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1 + (shiftTop_3 - (shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1)) * a2
-                        else
-                            v42 = shiftTop_1:Lerp(shiftTop_2, a1):Lerp(shiftTop_3, a2)
-                        end
-                        Lighting_upv_1.ColorShift_Top = v42
-                        local brightness_1 = tbl_upv_7.brightness
-                        local bright_1 = tbl_upv_8.bright
-                        local bright_2 = tbl_upv_9.bright
-                        if typeof(brightness_1) ~= "Color3" then
-                            local _ = brightness_1 + (bright_1 - brightness_1) * a1
-                            v42 = brightness_1 + (bright_1 - brightness_1) * a1 + (bright_2 - (brightness_1 + (bright_1 - brightness_1) * a1)) * a2
-                        else
-                            v42 = brightness_1:Lerp(bright_1, a1):Lerp(bright_2, a2)
-                        end
-                        Lighting_upv_1.Brightness = v42
-                        local v44 = tbl_upv_7.outdoor
-                        local outdoor_1 = tbl_upv_8.outdoor
-                        local outdoor_2 = tbl_upv_9.outdoor
-                        if typeof(v44) ~= "Color3" then
-                            local _ = v44 + (outdoor_1 - v44) * a1
-                            v42 = v44 + (outdoor_1 - v44) * a1 + (outdoor_2 - (v44 + (outdoor_1 - v44) * a1)) * a2
-                        else
-                            v42 = v44:Lerp(outdoor_1, a1):Lerp(outdoor_2, a2)
-                        end
-                        Lighting_upv_1.OutdoorAmbient = v42
-                        local v45 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                        local v46 = nil
-                        if v45 then
-                            v46 = tbl_upv_7.rays
-                            local rays_1 = tbl_upv_8.rays
-                            local rays_2 = tbl_upv_9.rays
-                            if typeof(v46) ~= "Color3" then
-                                local _ = v46 + (rays_1 - v46) * a1
-                                v42 = v46 + (rays_1 - v46) * a1 + (rays_2 - (v46 + (rays_1 - v46) * a1)) * a2
-                            else
-                                v42 = v46:Lerp(rays_1, a1):Lerp(rays_2, a2)
-                            end
-                            v45.Intensity = v42
-                        end
-                        local v47 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                        local v48, v49, v50, v51, v52 = nil, nil, nil, nil, nil
-                        if v47 then
-                            v48 = tbl_upv_7.atmColor
-                            local atmColor_1 = tbl_upv_8.atmColor
-                            local atmColor_2 = tbl_upv_9.atmColor
-                            if typeof(v48) ~= "Color3" then
-                                local _ = v48 + (atmColor_1 - v48) * a1
-                                v42 = v48 + (atmColor_1 - v48) * a1 + (atmColor_2 - (v48 + (atmColor_1 - v48) * a1)) * a2
-                            else
-                                v42 = v48:Lerp(atmColor_1, a1):Lerp(atmColor_2, a2)
-                            end
-                            v47.Color = v42
-                            v49 = tbl_upv_7.atmDecay
-                            local atmDecay_1 = tbl_upv_8.atmDecay
-                            local atmDecay_2 = tbl_upv_9.atmDecay
-                            if typeof(v49) ~= "Color3" then
-                                local _ = v49 + (atmDecay_1 - v49) * a1
-                                v42 = v49 + (atmDecay_1 - v49) * a1 + (atmDecay_2 - (v49 + (atmDecay_1 - v49) * a1)) * a2
-                            else
-                                v42 = v49:Lerp(atmDecay_1, a1):Lerp(atmDecay_2, a2)
-                            end
-                            v47.Decay = v42
-                            v50 = tbl_upv_7.atmHaze
-                            local haze_1 = tbl_upv_8.haze
-                            local haze_2 = tbl_upv_9.haze
-                            if typeof(v50) ~= "Color3" then
-                                local _ = v50 + (haze_1 - v50) * a1
-                                v42 = v50 + (haze_1 - v50) * a1 + (haze_2 - (v50 + (haze_1 - v50) * a1)) * a2
-                            else
-                                v42 = v50:Lerp(haze_1, a1):Lerp(haze_2, a2)
-                            end
-                            v47.Haze = v42
-                            v51 = tbl_upv_7.atmDensity
-                            local density_1 = tbl_upv_8.density
-                            local density_2 = tbl_upv_9.density
-                            if typeof(v51) ~= "Color3" then
-                                local _ = v51 + (density_1 - v51) * a1
-                                v42 = v51 + (density_1 - v51) * a1 + (density_2 - (v51 + (density_1 - v51) * a1)) * a2
-                            else
-                                v42 = v51:Lerp(density_1, a1):Lerp(density_2, a2)
-                            end
-                            v47.Density = v42
-                            v52 = tbl_upv_7.atmGlare
-                            local glare_1 = tbl_upv_8.glare
-                            local glare_2 = tbl_upv_9.glare
-                            if typeof(v52) ~= "Color3" then
-                                local _ = v52 + (glare_1 - v52) * a1
-                                v42 = v52 + (glare_1 - v52) * a1 + (glare_2 - (v52 + (glare_1 - v52) * a1)) * a2
-                            else
-                                v42 = v52:Lerp(glare_1, a1):Lerp(glare_2, a2)
-                            end
-                            v47.Glare = v42
-                        end
-                        u34.Enabled = true
-                        local White_1 = Colors_upv_1.White
-                        local v53 = fromRGB_upv_1(255, 238, 222)
-                        local v54 = fromRGB_upv_1(255, 228, 226)
-                        if typeof(White_1) ~= "Color3" then
-                            local _ = White_1 + (v53 - White_1) * a1
-                            v44 = White_1 + (v53 - White_1) * a1 + (v54 - (White_1 + (v53 - White_1) * a1)) * a2
-                        else
-                            v44 = White_1:Lerp(v53, a1):Lerp(v54, a2)
-                        end
-                        u34.TintColor = v44
-                        u34.Saturation = a1 * 0.12
-                        u34.Contrast = a1 * 0.05
-                        u34.Brightness = a1 * 0.03
-                        return
-                    end
-                end
-                u34.Enabled = false
-                u35 = false
-            end
-            local function localTime(a1)
-                --[[
-                  name: localTime
-                  line: 644
-                ]]
-                local success_3, v55 = pcall(function() end)
-                if success_3 then
-                    return string.upper(v55) .. " YOUR TIME"
-                end
-                return ""
-            end
-            local at_upv_1 = UPDATE_COUNTDOWN_upv_1.at
-            local success_4, v56 = pcall(
-                function()
-                    --[[
-                      line: 645
-                      upvalues:
-                        at_upv_1 (copy, index: 1)
-                    ]]
-                    return DateTime.fromUnixTimestamp(at_upv_1):FormatLocalTime("dddd h:mm A", "en-us")
-                end
-            )
-            local u36 = (success_4 and (string.upper(v56) .. " YOUR TIME")) or ""
-            local tbl_upv_11 = {}
-            local function set(a1, a2)
-                --[[
-                  name: set
-                  line: 653
-                  upvalues:
-                    tbl_upv_11 (copy, index: 1)
-                ]]
-                if tbl_upv_11[a1] == a2 then
-                    return
-                end
-                tbl_upv_11[a1] = a2
-                a1.label.Text = a2
-                a1.shadow.Text = a2
-            end
-            local function paintSlot(a1, a2)
-                --[[
-                  name: paintSlot
-                  line: 668
-                  upvalues:
-                    tbl_upv_3 (copy, index: 1)
-                    Colors_upv_1 (copy, index: 3)
-                    u3 (copy, index: 4)
-                ]]
-                local v57 = tbl_upv_3[a1]
-                v57.out = a2
-                if a2 then
-                    v57.img.ImageColor3 = Colors_upv_1.White
-                    v57.img.ImageTransparency = 0
-                else
-                    v57.img.ImageColor3 = u3
-                    v57.img.ImageTransparency = 0.15
-                end
-            end
-            local u37 = false
-            local u38 = 0
-            local function fadeText(a1, a2)
-                --[[
-                  name: fadeText
-                  line: 661
-                  upvalues:
-                    tbl_upv_2 (copy, index: 1)
-                    TweenService_upv_1 (copy, index: 2)
-                ]]
-                for _, value_3 in tbl_upv_2 do
-                    local tbl_12 = {}
-                    tbl_12.TextTransparency = a1
-                    TweenService_upv_1:Create(value_3.label, TweenInfo.new(a2), tbl_12):Play()
-                    local v58 = TweenInfo.new(a2)
-                    local tbl_13 = {}
-                    tbl_13.TextTransparency = math.max(a1, 0.45)
-                    TweenService_upv_1:Create(value_3.shadow, v58, tbl_13):Play()
-                end
-            end
-            local function volley(a1, a2, a3, a4)
-                --[[
-                  name: volley
-                  line: 507
-                  upvalues:
-                    u29 (copy, index: 1)
-                    LocalPlayer_upv_1 (copy, index: 2)
-                    rocket (copy, index: 3)
-                    RightVector_upv_1 (copy, index: 4)
-                    UpVector_upv_1 (copy, index: 5)
-                    u30 (copy, index: 6)
-                    tbl_upv_6 (copy, index: 7)
-                ]]
-                for n_upv_1 = 1, a1 do
-                    task.delay(
-                        (((n_upv_1 - 1) / math.max(1, a1 - 1)) * a2) + u29:NextNumber(0, 0.15),
-                        function()
-                            --[[
-                              line: 509
-                              upvalues:
-                                LocalPlayer_upv_1 (copy, index: 1)
-                                n_upv_1 (copy, index: 2)
-                                u29 (copy, index: 3)
-                                rocket (copy, index: 4)
-                                RightVector_upv_1 (copy, index: 5)
-                                UpVector_upv_1 (copy, index: 6)
-                                u30 (copy, index: 7)
-                                a3 (copy, index: 8)
-                                tbl_upv_6 (copy, index: 9)
-                                a4 (copy, index: 10)
-                            ]]
-                            local v59 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                            if not v59 then
-                                return
-                            end
-                            local v60 = (((n_upv_1 % 2 ~= 0) and -1) or 1) * u29:NextNumber(150, 260)
-                            v59 = u29:NextNumber(10, 80)
-                            if n_upv_1 % 3 == 0 then
-                                v60, v59 = u29:NextNumber(-140, 140), u29:NextNumber(70, 110)
-                            end
-                            local v61 = a3 or (tbl_upv_6[u29:NextInteger(1, #tbl_upv_6)])
-                            rocket(((Vector3.new(0, 66, -135) + (RightVector_upv_1 * v60)) + (UpVector_upv_1 * v59)) + (u30 * 30), v61, a4)
-                        end
-                    )
-                end
-            end
-            local function reveal(a1)
-                --[[
-                  name: reveal
-                  line: 685
-                  upvalues:
-                    UPDATE_COUNTDOWN_upv_1 (copy, index: 1)
-                    Gold_upv_1 (copy, index: 2)
-                    u37 (ref,  index: 3)
-                    u38 (ref,  index: 4)
-                    tbl_upv_3 (copy, index: 5)
-                    u3 (copy, index: 6)
-                    u18 (copy, index: 7)
-                    UIAssets_upv_1 (copy, index: 8)
-                    u20 (copy, index: 9)
-                    tbl_upv_11 (copy, index: 10)
-                    Colors_upv_1 (copy, index: 11)
-                    u19 (copy, index: 12)
-                    u14 (copy, index: 13)
-                    u15 (copy, index: 14)
-                    fadeText (copy, index: 15)
-                    TweenService_upv_1 (copy, index: 16)
-                    u16 (copy, index: 17)
-                    u17 (copy, index: 18)
-                    Sfx_upv_1 (ref,  index: 19)
-                    volley (copy, index: 20)
-                    showBanner (copy, index: 21)
-                    u21 (copy, index: 22)
-                ]]
-                local u39 = UPDATE_COUNTDOWN_upv_1.ranks[a1]
-                local v62 = u39.color or Gold_upv_1
-                local v63 = a1 == #UPDATE_COUNTDOWN_upv_1.ranks
-                u37 = true
-                u38 = a1
-                local v64 = tbl_upv_3[a1]
-                v64.out = false
-                v64.img.ImageColor3 = u3
-                v64.img.ImageTransparency = 0.15
-                local Ranks_4 = UIAssets_upv_1.Ranks
-                u18.Image = Ranks_4 and Ranks_4[string.lower(u39.name)] or u39.img or ""
-                u18.ImageTransparency = 0
-                local name_1 = u39.name
-                if tbl_upv_11[u20] ~= name_1 then
-                    tbl_upv_11[u20] = name_1
-                    u20.label.Text = name_1
-                    u20.shadow.Text = name_1
-                end
-                u20.label.TextColor3 = v62:Lerp(Colors_upv_1.White, 0.35)
-                for _, value_4 in {u20, u19} do
-                    value_4.label.TextTransparency = 0
-                    value_4.shadow.TextTransparency = 0.45
-                end
-                u14.Position = UDim2.fromOffset(640, 120)
-                u14.Visible = true
-                u15.Scale = 0.3
-                fadeText(1, 0.2)
-                local tbl_14 = {Scale = 1}
-                TweenService_upv_1:Create(u15, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_14):Play()
-                u16.ImageColor3 = v62
-                u16.ImageTransparency = 0
-                u17.Scale = 0.4
-                local tbl_15 = {ImageTransparency = 0.55}
-                TweenService_upv_1:Create(u16, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_15):Play()
-                local tbl_16 = {Scale = 1.3}
-                TweenService_upv_1:Create(u17, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_16):Play()
-                if Sfx_upv_1 then
-                    pcall(Sfx_upv_1.PlayUI, "UI/Unlock")
-                end
-                if v63 then
-                    task.delay(
-                        0.15,
-                        function()
-                            --[[
-                              line: 712
-                              upvalues:
-                                Sfx_upv_1 (ref, index: 1)
-                            ]]
-                            if not Sfx_upv_1 then
-                                return
-                            end
-                            pcall(Sfx_upv_1.PlayUI, "UI/NewItem_Fanfare")
-                        end
-                    )
-                end
-                volley((v63 and 14) or 8, 2.4, v62, (v63 and 1.35) or 1.1)
-                showBanner(u39)
-                task.delay(
-                    3.4,
-                    function()
-                        --[[
-                          line: 718
-                          upvalues:
-                            tbl_upv_3 (copy, index: 1)
-                            a1 (copy, index: 2)
-                            u21 (copy, index: 3)
-                            u39 (copy, index: 4)
-                            UIAssets_upv_1 (copy, index: 5)
-                            u14 (copy, index: 6)
-                            u16 (copy, index: 7)
-                            TweenService_upv_1 (copy, index: 8)
-                            Colors_upv_1 (copy, index: 10)
-                            Sfx_upv_1 (ref,  index: 11)
-                            fadeText (copy, index: 12)
-                            u37 (ref,  index: 13)
-                            u38 (ref,  index: 14)
-                        ]]
-                        local v66 = tbl_upv_3[a1]
-                        local v67 = Vector2.new(430, 120)
-                        local Ranks_5 = UIAssets_upv_1.Ranks
-                        u21.Image = Ranks_5 and Ranks_5[string.lower(u39.name)] or u39.img or ""
-                        u21.Position = UDim2.fromOffset(v67.X, v67.Y)
-                        u21.Size = UDim2.fromOffset(180, 180)
-                        u21.Visible = true
-                        u14.Visible = false
-                        u16.ImageTransparency = 1
-                        local v69 = TweenInfo.new(0.55, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-                        local tbl_17 = {}
-                        tbl_17.Position = v66.cell.Position
-                        tbl_17.Size = UDim2.fromOffset(62, 62)
-                        TweenService_upv_1:Create(u21, v69, tbl_17):Play()
-                        task.wait(0.55)
-                        u21.Visible = false
-                        local v70 = tbl_upv_3[a1]
-                        v70.out = true
-                        v70.img.ImageColor3 = Colors_upv_1.White
-                        v70.img.ImageTransparency = 0
-                        v66.scale.Scale = 1.6
-                        local tbl_18 = {Scale = 1}
-                        TweenService_upv_1:Create(v66.scale, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_18):Play()
-                        if Sfx_upv_1 then
-                            pcall(Sfx_upv_1.PlayUI, "UI/Card_Reveal")
-                        end
-                        fadeText(0, 0.35)
-                        u37 = false
-                        u38 = 0
-                    end
-                )
-            end
-            local u40 = -1
-            local u41 = ""
-            local u42 = false
-            local u43 = os.clock()
-            local u44 = nil
-            local u45 = 0
-            local tbl_upv_19 = {}
-            Workspace_upv_1:GetAttributeChangedSignal("CountdownPreviewAt"):Connect(
-                function()
-                    --[[
-                      line: 754
-                      upvalues:
-                        u42 (ref,  index: 1)
-                        u41 (ref,  index: 2)
-                        u44 (ref,  index: 3)
-                        tbl_upv_19 (copy, index: 4)
-                    ]]
-                    u42 = false
-                    u41 = ""
-                    u44 = nil
-                    table.clear(tbl_upv_19)
-                end
-            )
-            local function clock_4(a1)
-                --[[
-                  name: clock
-                  line: 633
-                ]]
-                local v71 = a1 // 86400
-                local v72 = a1 // 3600 % 24
-                local v73 = a1 // 60 % 60
-                local v74 = a1 % 60
-                if v71 > 0 then
-                    return string.format("%dD %02d:%02d:%02d", v71, v72, v73, v74)
-                elseif v72 > 0 then
-                    return string.format("%d:%02d:%02d", v72, v73, v74)
-                else
-                    return string.format("%d:%02d", v73, v74)
-                end
-            end
-            local function step(a1)
-                --[[
-                  name: step
-                  line: 761
-                  upvalues:
-                    Workspace_upv_1 (copy, index: 1)
-                    UPDATE_COUNTDOWN_upv_1 (copy, index: 2)
-                    LocalPlayer_upv_1 (copy, index: 3)
-                    u5 (copy, index: 4)
-                    u12 (copy, index: 5)
-                    u22 (copy, index: 6)
-                    tbl_upv_3 (copy, index: 7)
-                    u42 (ref,  index: 8)
-                    Colors_upv_1 (copy, index: 9)
-                    u3 (copy, index: 10)
-                    tbl_upv_19 (copy, index: 11)
-                    u38 (ref,  index: 12)
-                    u43 (copy, index: 13)
-                    u37 (ref,  index: 14)
-                    reveal (copy, index: 15)
-                    u1 (copy, index: 16)
-                    u2 (copy, index: 17)
-                    ReplicatedStorage_upv_1 (copy, index: 18)
-                    tbl_upv_10 (copy, index: 19)
-                    paintSky (copy, index: 20)
-                    u8 (copy, index: 21)
-                    Gold_upv_1 (copy, index: 22)
-                    u9 (copy, index: 23)
-                    u10 (copy, index: 24)
-                    tbl_upv_11 (copy, index: 25)
-                    u13 (copy, index: 26)
-                    u40 (ref,  index: 27)
-                    TweenService_upv_1 (copy, index: 28)
-                    Sfx_upv_1 (ref,  index: 29)
-                    u36 (copy, index: 30)
-                    clock_4 (copy, index: 31)
-                    u41 (ref,  index: 32)
-                    u44 (ref,  index: 33)
-                    volley (copy, index: 34)
-                    u45 (ref,  index: 35)
-                    u29 (copy, index: 36)
-                ]]
-                local v75 = Workspace_upv_1:GetServerTimeNow()
-                local v76 = Workspace_upv_1:GetAttribute("CountdownPreview")
-                local v77 = Workspace_upv_1:GetAttribute("CountdownPreviewAt")
-                local v78
-                if type(v76) == "number" and type(v77) == "number" then
-                    v78 = UPDATE_COUNTDOWN_upv_1.at - v76 + (v75 - v77)
-                else
-                    v78 = v75
-                end
-                local v79 = UPDATE_COUNTDOWN_upv_1.at - v78
-                local v80 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                u5.Enabled = v80
-                u12.Enabled = v80
-                u22.Enabled = v80
-                for key_2, value_5 in UPDATE_COUNTDOWN_upv_1.ranks do
-                    local v81 = UPDATE_COUNTDOWN_upv_1.at - value_5.hours * 3600
-                    local v82 = v81 <= v78
-                    local v83 = tbl_upv_3[key_2]
-                    if v83.out == nil or not (u42) then
-                        local v84 = tbl_upv_3[key_2]
-                        v84.out = v82
-                        if v82 then
-                            v84.img.ImageColor3 = Colors_upv_1.White
-                            v84.img.ImageTransparency = 0
-                        else
-                            v84.img.ImageColor3 = u3
-                            v84.img.ImageTransparency = 0.15
-                        end
-                        continue
-                    end
-                    if v82 then
-                        if v83.out or table.find(tbl_upv_19, key_2) or u38 == key_2 then
-                            if v82 then
-                                continue
-                            end
-                            if v83.out then
-                                local v85 = tbl_upv_3[key_2]
-                                v85.out = false
-                                v85.img.ImageColor3 = u3
-                                v85.img.ImageTransparency = 0.15
-                            end
-                        else
-                            if not (v78 - v81 < 4) then
-                                local v86 = tbl_upv_3[key_2]
-                                v86.out = true
-                                v86.img.ImageColor3 = Colors_upv_1.White
-                                v86.img.ImageTransparency = 0
-                                continue
-                            end
-                            if os.clock() - u43 > 6 then
-                                table.insert(tbl_upv_19, key_2)
-                            else
-                                local v86 = tbl_upv_3[key_2]
-                                v86.out = true
-                                v86.img.ImageColor3 = Colors_upv_1.White
-                                v86.img.ImageTransparency = 0
-                            end
-                        end
-                    else
-                        if v82 then
-                            continue
-                        end
-                        if v83.out then
-                            local v85 = tbl_upv_3[key_2]
-                            v85.out = false
-                            v85.img.ImageColor3 = u3
-                            v85.img.ImageTransparency = 0.15
-                        end
-                    end
-                end
-                u42 = true
-                if not (u37) and #tbl_upv_19 > 0 then
-                    local v87 = table.remove(tbl_upv_19, 1)
-                    if v80 then
-                        reveal(v87)
-                    else
-                        local v88 = tbl_upv_3[v87]
-                        v88.out = true
-                        v88.img.ImageColor3 = Colors_upv_1.White
-                        v88.img.ImageTransparency = 0
-                    end
-                end
-                local v89 = 0
-                local v90 = 0
-                if (v79 > 0) and (v79 <= u1) then
-                    if u2 < v79 then
-                        local _ = (u1 - v79) / (u1 - u2)
-                        v89 = 0.6 * ((u1 - v79) / (u1 - u2)) * ((u1 - v79) / (u1 - u2)) * (3 - 2 * ((u1 - v79) / (u1 - u2)))
-                    else
-                        v89 = 0.6 + 0.4 * (1 - (math.max(0, v79 - 60) / (u2 - 60)))
-                    end
-                    v90 = ((v79 <= 60) and (1 - v79 / 60)) or 0
-                elseif v79 <= 0 then
-                    local v91 = ((Workspace_upv_1:GetAttribute("CountdownPreviewShipped") == true) and true) or ((UPDATE_COUNTDOWN_upv_1.shipped ~= nil) and (ReplicatedStorage_upv_1.Shared:FindFirstChild(UPDATE_COUNTDOWN_upv_1.shipped) ~= nil))
-                    if not v91 then
-                        v89, v90 = 1, 1
-                    end
-                end
-                local v92 = ((os.clock() - u43 < 0.4) and 1) or (math.min(1, a1 * 0.6))
-                tbl_upv_10.w = tbl_upv_10.w + ((v89 - tbl_upv_10.w) * v92)
-                tbl_upv_10.d = tbl_upv_10.d + ((v90 - tbl_upv_10.d) * v92)
-                paintSky(tbl_upv_10.w, tbl_upv_10.d)
-                local v93 = nil
-                if v79 > 0 then
-                    local v94 = math.ceil(v79)
-                    v90 = ((v79 <= 60) and "final") or (((v79 <= u2) and "close") or "far")
-                    for _, value_6 in tbl_upv_3 do
-                        value_6.cell.Visible = true
-                    end
-                    v89 = v90 ~= "far"
-                    local label_1 = u8.label
-                    local v95
-                    if v89 then
-                        v95 = Gold_upv_1
-                    else
-                        v95 = Colors_upv_1.White
-                    end
-                    label_1.TextColor3 = v95
-                    local label_2 = u9.label
-                    local v96
-                    if v89 then
-                        v96 = Gold_upv_1
-                    else
-                        v96 = Colors_upv_1.White
-                    end
-                    label_2.TextColor3 = v96
-                    local v97, v98, v99 = nil, nil, nil
-                    if v90 ~= "final" then
-                        v97 = u36
-                        if tbl_upv_11[u10] ~= v97 then
-                            tbl_upv_11[u10] = v97
-                            u10.label.Text = v97
-                            u10.shadow.Text = v97
-                        end
-                        u10.label.TextColor3 = Colors_upv_1.White
-                        u8.holder.Visible = true
-                        u9.holder.Visible = true
-                        u13.holder.Visible = false
-                        v98 = clock_4(v94)
-                        if tbl_upv_11[u9] ~= v98 then
-                            tbl_upv_11[u9] = v98
-                            u9.label.Text = v98
-                            u9.shadow.Text = v98
-                        end
-                    else
-                        v99 = string.upper(UPDATE_COUNTDOWN_upv_1.title) .. " IN"
-                        if tbl_upv_11[u10] ~= v99 then
-                            tbl_upv_11[u10] = v99
-                            u10.label.Text = v99
-                            u10.shadow.Text = v99
-                        end
-                        u10.label.TextColor3 = Gold_upv_1
-                        u8.holder.Visible = false
-                        u9.holder.Visible = false
-                        u13.holder.Visible = not u37
-                        local label_3 = u13.label
-                        local v100
-                        if v94 <= 10 then
-                            v100 = Colors_upv_1.White
-                        else
-                            v100 = Gold_upv_1
-                        end
-                        label_3.TextColor3 = v100
-                        local v101 = nil
-                        if v94 ~= u40 then
-                            v101 = tostring(v94)
-                            if tbl_upv_11[u13] ~= v101 then
-                                tbl_upv_11[u13] = v101
-                                u13.label.Text = v101
-                                u13.shadow.Text = v101
-                            end
-                            u13.scale.Scale = ((v94 <= 10) and 1.2) or 1.12
-                            local tbl_20 = {Scale = 1}
-                            TweenService_upv_1:Create(u13.scale, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), tbl_20):Play()
-                            if v80 then
-                                local v102 = ((v94 <= 3) and "Match/Countdown_1") or "Match/Countdown_Tick"
-                                if Sfx_upv_1 then
-                                    pcall(Sfx_upv_1.PlayUI, v102)
-                                end
-                            end
-                        end
-                    end
-                    u40 = v94
-                    u41 = v90
-                else
-                    if u41 == "final" or u41 == "close" then
-                        u44 = os.clock()
-                        if v80 then
-                            if Sfx_upv_1 then
-                                pcall(Sfx_upv_1.PlayUI, "Match/Victory")
-                            end
-                            volley(16, 7, nil, 1.5)
-                            task.delay(
-                                7.5,
-                                function()
-                                    --[[
-                                      line: 863
-                                      upvalues:
-                                        volley (copy, index: 1)
-                                    ]]
-                                    volley(10, 3, nil, 1.8)
-                                end
-                            )
-                        end
-                    end
-                    if u41 ~= "done" then
-                        u13.scale.Scale = 0.4
-                        local tbl_21 = {Scale = 1}
-                        TweenService_upv_1:Create(u13.scale, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_21):Play()
-                    end
-                    u41 = "done"
-                    for _, value_7 in tbl_upv_3 do
-                        value_7.cell.Visible = false
-                    end
-                    u8.holder.Visible = false
-                    u9.holder.Visible = false
-                    u10.holder.Visible = true
-                    u13.holder.Visible = true
-                    u10.label.TextColor3 = Gold_upv_1
-                    v93 = string.upper(UPDATE_COUNTDOWN_upv_1.title)
-                    if tbl_upv_11[u10] ~= v93 then
-                        tbl_upv_11[u10] = v93
-                        u10.label.Text = v93
-                        u10.shadow.Text = v93
-                    end
-                    local v103 = ((Workspace_upv_1:GetAttribute("CountdownPreviewShipped") == true) and true) or ((UPDATE_COUNTDOWN_upv_1.shipped ~= nil) and (ReplicatedStorage_upv_1.Shared:FindFirstChild(UPDATE_COUNTDOWN_upv_1.shipped) ~= nil))
-                    if v103 then
-                        if UPDATE_COUNTDOWN_upv_1.OUT_FOR < -v79 then
-                            return false
-                        end
-                        if tbl_upv_11[u13] ~= "OUT NOW!" then
-                            tbl_upv_11[u13] = "OUT NOW!"
-                            u13.label.Text = "OUT NOW!"
-                            u13.shadow.Text = "OUT NOW!"
-                        end
-                        u13.label.TextColor3 = Gold_upv_1
-                        if v80 then
-                            local v104 = os.clock()
-                            if u45 <= v104 and -v79 < 7200 then
-                                u45 = os.clock() + u29:NextNumber(25, 40)
-                                if u44 == nil or os.clock() - u44 > 15 then
-                                    volley(5, 2.5, nil, 1.1)
-                                end
-                            end
-                        end
-                    else
-                        if tbl_upv_11[u13] ~= "SERVERS RESTARTING..." then
-                            tbl_upv_11[u13] = "SERVERS RESTARTING..."
-                            u13.label.Text = "SERVERS RESTARTING..."
-                            u13.shadow.Text = "SERVERS RESTARTING..."
-                        end
-                        u13.label.TextColor3 = Colors_upv_1.White
-                    end
-                end
-                return true
-            end
-            local u46 = nil
-            local u47 = 0
-            local v105 = RunService_1.Heartbeat:Connect(
-                function(a1)
-                    --[[
-                      line: 904
-                      upvalues:
-                        u47 (ref,  index: 1)
-                        step (copy, index: 2)
-                        u46 (ref,  index: 3)
-                        LocalPlayer_upv_1 (copy, index: 4)
-                        LightingController_upv_1 (ref,  index: 5)
-                        u34 (copy, index: 6)
-                        u35 (ref,  index: 7)
-                        Lighting_upv_1 (copy, index: 8)
-                        tbl_upv_7 (copy, index: 9)
-                        u5 (copy, index: 10)
-                        u12 (copy, index: 11)
-                        u22 (copy, index: 12)
-                        u4 (copy, index: 13)
-                        u11 (copy, index: 14)
-                        u28 (copy, index: 15)
-                    ]]
-                    u47 = u47 + a1
-                    if u47 < 0.05 then
-                        return
-                    end
-                    local success_5, v106 = pcall(step, u47)
-                    u47 = 0
-                    if success_5 and v106 == false then
-                        if u46 then
-                            u46:Disconnect()
-                        end
-                        local v107 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                        if v107 then
-                            if LightingController_upv_1 then
-                                local success_6, v108 = pcall(LightingController_upv_1.Current)
-                                v107 = success_6 and (v108 == "Lobby")
-                            else
-                                v107 = true
-                            end
-                            if v107 then
-                                if u35 then
-                                    Lighting_upv_1.ClockTime = tbl_upv_7.clock
-                                    Lighting_upv_1.ColorShift_Top = tbl_upv_7.shiftTop
-                                    Lighting_upv_1.Brightness = tbl_upv_7.brightness
-                                    Lighting_upv_1.OutdoorAmbient = tbl_upv_7.outdoor
-                                    v107 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                                    if v107 then
-                                        v107.Color = tbl_upv_7.atmColor
-                                        v107.Decay = tbl_upv_7.atmDecay
-                                        v107.Haze = tbl_upv_7.atmHaze
-                                        v107.Density = tbl_upv_7.atmDensity
-                                        v107.Glare = tbl_upv_7.atmGlare
-                                    end
-                                    v107 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                                    if v107 then
-                                        v107.Intensity = tbl_upv_7.rays
-                                    end
-                                    u35 = false
-                                end
-                                u34.Enabled = false
-                            else
-                                u34.Enabled = false
-                                u35 = false
-                            end
-                        else
-                            u34.Enabled = false
-                            u35 = false
-                        end
-                        u5:Destroy()
-                        u12:Destroy()
-                        u22:Destroy()
-                        u4:Destroy()
-                        u11:Destroy()
-                        u28:Destroy()
-                        u34:Destroy()
-                        return
-                    end
-                    if (success_5) then
-                        return
-                    end
-                    warn("[UpdateCountdown] " .. tostring(v106))
-                end
-            )
-            u46 = v105
-        elseif Workspace_upv_1:GetAttribute("CountdownPreviewAt") ~= nil then
-            local function inLobby()
-                --[[
-                  name: inLobby
-                  line: 100
-                  upvalues:
-                    LocalPlayer_upv_1 (copy, index: 1)
-                ]]
-                local v6 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                return v6
-            end
-            local function now()
-                --[[
-                  name: now
-                  line: 105
-                  upvalues:
-                    Workspace_upv_1 (copy, index: 1)
-                    UPDATE_COUNTDOWN_upv_1 (copy, index: 2)
-                ]]
-                local v7 = Workspace_upv_1:GetServerTimeNow()
-                local v8 = Workspace_upv_1:GetAttribute("CountdownPreview")
-                local v9 = Workspace_upv_1:GetAttribute("CountdownPreviewAt")
-                if type(v8) == "number" and type(v9) == "number" then
-                    return (UPDATE_COUNTDOWN_upv_1.at - v8) + (v7 - v9)
-                end
-                return v7
-            end
-            local function play(a1)
-                --[[
-                  name: play
-                  line: 114
-                  upvalues:
-                    Sfx_upv_1 (ref, index: 1)
-                ]]
-                if not Sfx_upv_1 then
-                    return
-                end
-                pcall(Sfx_upv_1.PlayUI, a1)
-            end
-            local u4 = Instance.new("Part")
-            u4.Name = "UpdateCountdownSky"
-            u4.Anchored = true
-            u4.CanCollide = false
-            u4.CanQuery = false
-            u4.CanTouch = false
-            u4.CastShadow = false
-            u4.Transparency = 1
-            u4.Size = Vector3.new(357, 64, 0.20000000298023224)
-            u4.CFrame = CFrame.lookAt(Vector3.new(0, 66, -135), Vector3.new(0, 9, 120))
-            u4.Parent = Workspace_upv_1
-            local u5 = Instance.new("SurfaceGui")
-            u5.Name = "UpdateCountdown"
-            u5.Adornee = u4
-            u5.Face = Enum.NormalId.Front
-            u5.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-            u5.PixelsPerStud = 3.361344537815126
-            u5.LightInfluence = 0
-            u5.Brightness = 1.25
-            u5.MaxDistance = 2000
-            u5.ResetOnSpawn = false
-            u5.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-            local u6 = Instance.new("Frame")
-            u6.Name = "Root"
-            u6.BackgroundTransparency = 1
-            u6.Size = UDim2.fromScale(1, 1)
-            u6.Parent = u5
-            local v10 = Instance.new("ImageLabel")
-            v10.Name = "Plate"
-            v10.BackgroundTransparency = 1
-            v10.Image = "rbxassetid://90962482350826"
-            v10.ImageColor3 = u3
-            v10.ImageTransparency = 0.3
-            v10.ScaleType = Enum.ScaleType.Stretch
-            v10.AnchorPoint = Vector2.new(0.5, 0.5)
-            v10.Position = UDim2.fromOffset(600, 112)
-            v10.Size = UDim2.fromOffset(1240, 300)
-            v10.Parent = u6
-            local function text(a1, a2, a3, a4, a5, a6, a7, a8)
-                --[[
-                  name: text
-                  line: 155
-                  upvalues:
-                    u6 (copy, index: 1)
-                    u3 (copy, index: 2)
-                    Colors_upv_1 (copy, index: 3)
-                ]]
-                local u7 = Instance.new("Frame")
-                u7.Name = a1
-                u7.BackgroundTransparency = 1
-                u7.AnchorPoint = Vector2.new(0.5, 0.5)
-                u7.Position = UDim2.fromOffset(a2, a3)
-                u7.Size = UDim2.fromOffset(a4, a5)
-                u7.Parent = a8 or u6
-                local v12 = Instance.new("UIScale")
-                v12.Parent = u7
-                local function mk_1(a9, a10, a11, a12, a13)
-                    --[[
-                      name: mk
-                      line: 165
-                      upvalues:
-                        a6 (copy, index: 1)
-                        u7 (copy, index: 2)
-                    ]]
-                    local v13 = Instance.new("TextLabel")
-                    v13.Name = a9
-                    v13.BackgroundTransparency = 1
-                    v13.TextScaled = true
-                    v13.FontFace = a6
-                    v13.TextColor3 = a11
-                    v13.TextTransparency = a12
-                    v13.Position = UDim2.fromOffset(0, a10)
-                    v13.Size = UDim2.fromScale(1, 1)
-                    v13.Text = ""
-                    v13.ZIndex = a13
-                    v13.Parent = u7
-                    return v13
-                end
-                local v14 = mk_1("Shadow", a7, u3, 0.45, 1)
-                local tbl_1 = {}
-                tbl_1.label = mk_1("Text", 0, Colors_upv_1.White, 0, 2)
-                tbl_1.shadow = v14
-                tbl_1.holder = u7
-                tbl_1.scale = v12
-                return tbl_1
-            end
-            local u8 = text("Title", 600, 82, 1000, 84, v2, 4)
-            u8.label.Text = UPDATE_COUNTDOWN_upv_1.title
-            u8.shadow.Text = UPDATE_COUNTDOWN_upv_1.title
-            local u9 = text("Timer", 600, 168, 480, 74, v2, 4)
-            local u10 = text("When", 600, 22, 600, 24, v3, 2)
-            local u11 = u4:Clone()
-            u11.Name = "UpdateCountdownSkyBig"
-            u11.CFrame = u4.CFrame * CFrame.new(0, 0, -0.3)
-            u11.Parent = Workspace_upv_1
-            local u12 = u5:Clone()
-            u12.Name = "UpdateCountdownBig"
-            u12.Adornee = u11
-            u12.PixelsPerStud = 1.680672268907563
-            u12:ClearAllChildren()
-            local v15 = Instance.new("Frame")
-            v15.Name = "Root"
-            v15.BackgroundTransparency = 1
-            v15.Size = UDim2.fromScale(1, 1)
-            v15.Parent = u12
-            local u13 = text("Big", 300, 62, 560, 84, v2, 4, v15)
-            u13.holder.Visible = false
-            local tbl_upv_2 = {u8, u9, u10}
-            local tbl_upv_3 = {}
-            local v16 = math.ceil(#UPDATE_COUNTDOWN_upv_1.ranks / 2)
-            for key_1, value_1 in UPDATE_COUNTDOWN_upv_1.ranks do
-                local v17 = ((key_1 <= v16) and (310 - (v16 - key_1) * 74)) or (890 + ((key_1 - v16) - 1) * 74)
-                local v18 = Instance.new("Frame")
-                v18.Name = value_1.name
-                v18.BackgroundTransparency = 1
-                v18.AnchorPoint = Vector2.new(0.5, 0.5)
-                v18.Position = UDim2.fromOffset(v17, 168)
-                v18.Size = UDim2.fromOffset(62, 62)
-                v18.Parent = u6
-                local v19 = Instance.new("ImageLabel")
-                v19.Name = "Emblem"
-                v19.BackgroundTransparency = 1
-                local Ranks_2 = UIAssets_upv_1.Ranks
-                local v20 = (Ranks_2 and (Ranks_2[string.lower(value_1.name)])) or (value_1.img or "")
-                v19.Image = v20
-                v19.ScaleType = Enum.ScaleType.Fit
-                v19.Size = UDim2.fromScale(1, 1)
-                v19.Parent = v18
-                local v21 = Instance.new("UIScale")
-                v21.Parent = v18
-                table.insert(tbl_upv_3, {cell = v18, img = v19, scale = v21})
-            end
-            local u14 = Instance.new("Frame")
-            u14.Name = "Hero"
-            u14.BackgroundTransparency = 1
-            u14.AnchorPoint = Vector2.new(0.5, 0.5)
-            u14.Position = UDim2.fromOffset(640, 120)
-            u14.Size = UDim2.fromOffset(620, 210)
-            u14.Visible = false
-            u14.ZIndex = 3
-            u14.Parent = u6
-            local u15 = Instance.new("UIScale")
-            u15.Parent = u14
-            local u16 = Instance.new("ImageLabel")
-            u16.Name = "Glow"
-            u16.BackgroundTransparency = 1
-            u16.Image = "rbxassetid://90962482350826"
-            u16.ImageTransparency = 1
-            u16.ScaleType = Enum.ScaleType.Stretch
-            u16.AnchorPoint = Vector2.new(0.5, 0.5)
-            u16.Position = UDim2.fromOffset(100, 105)
-            u16.Size = UDim2.fromOffset(300, 300)
-            u16.Parent = u14
-            local u17 = Instance.new("UIScale")
-            u17.Parent = u16
-            local u18 = Instance.new("ImageLabel")
-            u18.Name = "Emblem"
-            u18.BackgroundTransparency = 1
-            u18.ScaleType = Enum.ScaleType.Fit
-            u18.AnchorPoint = Vector2.new(0.5, 0.5)
-            u18.Position = UDim2.fromOffset(100, 105)
-            u18.Size = UDim2.fromOffset(180, 180)
-            u18.ZIndex = 4
-            u18.Parent = u14
-            local u19 = text("Kicker", 370, 66, 320, 30, v3, 2, u14)
-            local u20 = text("HeroName", 370, 124, 320, 80, v2, 4, u14)
-            for _, value_2 in {u19, u20} do
-                value_2.label.TextXAlignment = Enum.TextXAlignment.Left
-                value_2.shadow.TextXAlignment = Enum.TextXAlignment.Left
-                value_2.label.ZIndex = 5
-                value_2.shadow.ZIndex = 4
-            end
-            u19.label.Text = "NEW RANK REVEALED"
-            u19.shadow.Text = "NEW RANK REVEALED"
-            u19.label.TextColor3 = Gold_upv_1
-            local u21 = Instance.new("ImageLabel")
-            u21.Name = "Flyer"
-            u21.BackgroundTransparency = 1
-            u21.ScaleType = Enum.ScaleType.Fit
-            u21.AnchorPoint = Vector2.new(0.5, 0.5)
-            u21.Visible = false
-            u21.ZIndex = 6
-            u21.Parent = u6
-            u5.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-            u12.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-            local u22 = Instance.new("ScreenGui")
-            u22.Name = "UpdateCountdownBanner"
-            u22.ResetOnSpawn = false
-            u22.DisplayOrder = 30
-            u22.IgnoreGuiInset = false
-            u22.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-            local u23 = Instance.new("Frame")
-            u23.Name = "Banner"
-            u23.AnchorPoint = Vector2.new(0.5, 1)
-            u23.Position = UDim2.new(0.5, 0, 0, -10)
-            u23.Size = UDim2.fromOffset(420, 92)
-            u23.BackgroundColor3 = fromRGB_upv_1(14, 17, 24)
-            u23.BackgroundTransparency = 0.08
-            u23.Visible = false
-            u23.Parent = u22
-            local u24 = Instance.new("UICorner")
-            u24.CornerRadius = UDim.new(0, 14)
-            u24.Parent = u23
-            u24 = Instance.new("UIStroke")
-            u24.Thickness = 2
-            u24.Color = Gold_upv_1
-            u24.Transparency = 0.25
-            u24.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-            u24.Parent = u23
-            u24 = Instance.new("ImageLabel")
-            u24.BackgroundTransparency = 1
-            u24.ScaleType = Enum.ScaleType.Fit
-            u24.Position = UDim2.fromOffset(12, 10)
-            u24.Size = UDim2.fromOffset(72, 72)
-            u24.Parent = u23
-            local v22 = Instance.new("TextLabel")
-            v22.BackgroundTransparency = 1
-            v22.Position = UDim2.fromOffset(98, 14)
-            v22.Size = UDim2.new(1, -110, 0, 22)
-            v22.FontFace = v3
-            v22.TextSize = 17
-            v22.TextColor3 = Gold_upv_1
-            v22.TextXAlignment = Enum.TextXAlignment.Left
-            v22.Text = "NEW RANK REVEALED"
-            v22.Parent = u23
-            local u25 = Instance.new("TextLabel")
-            u25.BackgroundTransparency = 1
-            u25.Position = UDim2.fromOffset(98, 38)
-            u25.Size = UDim2.new(1, -110, 0, 40)
-            u25.FontFace = v2
-            u25.TextScaled = true
-            u25.TextColor3 = Colors_upv_1.White
-            u25.TextXAlignment = Enum.TextXAlignment.Left
-            u25.Parent = u23
-            local u26 = 0
-            local function showBanner(a1)
-                --[[
-                  name: showBanner
-                  line: 368
-                  upvalues:
-                    u26 (ref,  index: 1)
-                    u24 (copy, index: 2)
-                    UIAssets_upv_1 (copy, index: 3)
-                    u25 (copy, index: 4)
-                    u23 (copy, index: 5)
-                    TweenService_upv_1 (copy, index: 6)
-                ]]
-                u26 = u26 + 1
-                local u27 = u26
-                local Ranks_3 = UIAssets_upv_1.Ranks
-                u24.Image = Ranks_3 and Ranks_3[string.lower(a1.name)] or a1.img or ""
-                u25.Text = a1.name
-                u23.Position = UDim2.new(0.5, 0, 0, -10)
-                u23.Visible = true
-                local v24 = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-                local tbl_4 = {}
-                tbl_4.Position = UDim2.new(0.5, 0, 0, 110)
-                TweenService_upv_1:Create(u23, v24, tbl_4):Play()
-                task.delay(
-                    4.2,
-                    function()
-                        --[[
-                          line: 376
-                          upvalues:
-                            u26 (ref,  index: 1)
-                            u27 (copy, index: 2)
-                            TweenService_upv_1 (copy, index: 3)
-                            u23 (copy, index: 4)
-                        ]]
-                        if u26 == u27 then
-                            local v25 = TweenService_upv_1:Create(u23, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(0.5, 0, 0, -10)})
-                            v25.Completed:Once(
-                                function()
-                                    --[[
-                                      line: 379
-                                      upvalues:
-                                        u26 (ref,  index: 1)
-                                        u27 (copy, index: 2)
-                                        u23 (copy, index: 3)
-                                    ]]
-                                    if u26 ~= u27 then
-                                        return
-                                    end
-                                    u23.Visible = false
-                                end
-                            )
-                            v25:Play()
-                        end
-                    end
-                )
-            end
-            local u28 = Instance.new("Folder")
-            u28.Name = "UpdateCountdownFx"
-            u28.Parent = Workspace_upv_1
-            local u29 = Random.new()
-            local RightVector_upv_1 = u4.CFrame.RightVector
-            local UpVector_upv_1 = u4.CFrame.UpVector
-            local u30 = -u4.CFrame.LookVector
-            local function around(a1, a2, a3)
-                --[[
-                  name: around
-                  line: 401
-                  upvalues:
-                    RightVector_upv_1 (copy, index: 1)
-                    UpVector_upv_1 (copy, index: 2)
-                    u30 (copy, index: 3)
-                ]]
-                return ((Vector3.new(0, 66, -135) + (RightVector_upv_1 * a1)) + (UpVector_upv_1 * a2)) + (u30 * (a3 or 30))
-            end
-            local tbl_upv_5 = {}
-            local function fwSound(a1, a2, a3, a4)
-                --[[
-                  name: fwSound
-                  line: 410
-                  upvalues:
-                    Sfx_upv_1 (ref,  index: 1)
-                    tbl_upv_5 (copy, index: 2)
-                    u29 (copy, index: 3)
-                ]]
-                if not Sfx_upv_1 or (os.clock() - (tbl_upv_5[a1] or 0) < a2) then
-                    return
-                end
-                tbl_upv_5[a1] = os.clock()
-                task.delay(
-                    a3,
-                    function()
-                        --[[
-                          line: 415
-                          upvalues:
-                            Sfx_upv_1 (ref,  index: 1)
-                            a1 (copy, index: 2)
-                            a4 (copy, index: 3)
-                            u29 (copy, index: 4)
-                        ]]
-                        pcall(Sfx_upv_1.Play, a1, nil, {volume = a4, pitch = u29:NextNumber(0.94, 1.06)})
-                    end
-                )
-            end
-            local function boom(a1)
-                --[[
-                  name: boom
-                  line: 419
-                  upvalues:
-                    fwSound (copy, index: 1)
-                ]]
-                fwSound("Firework/Explode", 0.25, 0.15, 1)
-                fwSound("Firework/Crackle", 0.6, 0.45, 1)
-            end
-            local function burst(a1, a2, a3)
-                --[[
-                  name: burst
-                  line: 424
-                  upvalues:
-                    u28 (copy, index: 1)
-                    Colors_upv_1 (copy, index: 2)
-                ]]
-                local u31 = Instance.new("Part")
-                u31.Anchored = true
-                u31.CanCollide = false
-                u31.CanQuery = false
-                u31.CanTouch = false
-                u31.Transparency = 1
-                u31.Size = Vector3.new(1, 1, 1)
-                u31.CFrame = CFrame.new(a1)
-                u31.Parent = u28
-                local function emitter_1(a4, a5, a6, a7, a8, a9)
-                    --[[
-                      name: emitter
-                      line: 434
-                      upvalues:
-                        a2 (copy, index: 1)
-                        u31 (copy, index: 2)
-                    ]]
-                    local v26 = Instance.new("ParticleEmitter")
-                    v26.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-                    v26.LightEmission = 1
-                    v26.LightInfluence = 0
-                    v26.Brightness = a9
-                    v26.Color = ColorSequence.new(a8, a2)
-                    v26.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, a5), NumberSequenceKeypoint.new(0.7, a5 * 0.6), NumberSequenceKeypoint.new(1, 0)})
-                    v26.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.75, 0.15), NumberSequenceKeypoint.new(1, 1)})
-                    v26.Lifetime = NumberRange.new(a7 * 0.75, a7)
-                    v26.Speed = NumberRange.new(a6 * 0.8, a6)
-                    v26.SpreadAngle = Vector2.new(180, 180)
-                    v26.Acceleration = Vector3.new(0, -22, 0)
-                    v26.Drag = 1.6
-                    v26.Rate = 0
-                    v26.RotSpeed = NumberRange.new(-180, 180)
-                    v26.Parent = u31
-                    v26:Emit(a4)
-                end
-                emitter_1(math.floor(a3 * 120), a3 * 8, a3 * 72, 2, a2:Lerp(Colors_upv_1.White, 0.1), 3)
-                emitter_1(math.floor(a3 * 26), a3 * 4, a3 * 36, 2.6, a2:Lerp(Colors_upv_1.White, 0.6), 2)
-                task.delay(
-                    4,
-                    function()
-                        --[[
-                          line: 456
-                          upvalues:
-                            u31 (copy, index: 1)
-                        ]]
-                        u31:Destroy()
-                    end
-                )
-            end
-            local tbl_upv_6 = {fromRGB_upv_1(255, 204, 64), fromRGB_upv_1(255, 92, 92), fromRGB_upv_1(86, 202, 255), fromRGB_upv_1(186, 116, 255), fromRGB_upv_1(120, 236, 150), fromRGB_upv_1(255, 150, 80)}
-            local function rocket(a1, a2, a3)
-                --[[
-                  name: rocket
-                  line: 462
-                  upvalues:
-                    u29 (copy, index: 1)
-                    Colors_upv_1 (copy, index: 2)
-                    u28 (copy, index: 3)
-                    TweenService_upv_1 (copy, index: 4)
-                    burst (copy, index: 5)
-                    fwSound (copy, index: 6)
-                ]]
-                local v27 = Vector3.new(a1.X + u29:NextNumber(-20, 20), 30, a1.Z + u29:NextNumber(-10, 10))
-                local u32 = Instance.new("Part")
-                u32.Anchored = true
-                u32.CanCollide = false
-                u32.CanQuery = false
-                u32.CanTouch = false
-                u32.CastShadow = false
-                u32.Material = Enum.Material.Neon
-                u32.Color = a2:Lerp(Colors_upv_1.White, 0.5)
-                u32.Size = Vector3.new(1.600000023841858, 1.600000023841858, 1.600000023841858)
-                u32.Shape = Enum.PartType.Ball
-                u32.CFrame = CFrame.new(v27)
-                v27 = Instance.new("Attachment")
-                v27.Position = Vector3.new(0, 0.800000011920929, 0)
-                v27.Parent = u32
-                local v28 = Instance.new("Attachment")
-                v28.Position = Vector3.new(0, -0.800000011920929, 0)
-                v28.Parent = u32
-                local v29 = Instance.new("Trail")
-                v29.Attachment0 = v27
-                v29.Attachment1 = v28
-                v29.Lifetime = 0.45
-                v29.LightEmission = 1
-                v29.FaceCamera = true
-                v29.Color = ColorSequence.new(a2:Lerp(Colors_upv_1.White, 0.6), a2)
-                v29.Transparency = NumberSequence.new(0, 1)
-                v29.WidthScale = NumberSequence.new(1, 0)
-                v29.Parent = u32
-                u32.Parent = u28
-                local v30 = TweenService_upv_1:Create(u32, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {CFrame = CFrame.new(a1)})
-                v30.Completed:Once(
-                    function()
-                        --[[
-                          line: 493
-                          upvalues:
-                            u32 (copy, index: 1)
-                            burst (copy, index: 2)
-                            a1 (copy, index: 3)
-                            a2 (copy, index: 4)
-                            a3 (copy, index: 5)
-                            fwSound (copy, index: 6)
-                        ]]
-                        u32.Transparency = 1
-                        burst(a1, a2, a3)
-                        fwSound("Firework/Explode", 0.25, 0.15, 1)
-                        fwSound("Firework/Crackle", 0.6, 0.45, 1)
-                        task.delay(
-                            0.6,
-                            function()
-                                --[[
-                                  line: 497
-                                  upvalues:
-                                    u32 (copy, index: 1)
-                                ]]
-                                u32:Destroy()
-                            end
-                        )
-                    end
-                )
-                v30:Play()
-            end
-            local Lighting_2 = ReplicatedStorage_upv_1:FindFirstChild("Lighting")
-            local u33 = Lighting_2 and (Lighting_2:FindFirstChild("Lobby"))
-            local function base(a1, a2)
-                --[[
-                  name: base
-                  line: 529
-                  upvalues:
-                    u33 (copy, index: 1)
-                ]]
-                local v31
-                if u33 then
-                    v31 = u33:GetAttribute(a1)
-                else
-                    v31 = u33
-                end
-                if v31 == nil then
-                    return a2
-                end
-                return v31
-            end
-            local v32 = u33 and (u33:FindFirstChildOfClass("Atmosphere"))
-            local tbl_upv_7 = {atmColor = 0, atmGlare = 0, atmHaze = 0, rays = 0, atmDensity = 0, outdoor = 0, clock = 0, brightness = 0, atmDecay = 0, shiftTop = 0}
-            local v33 = u33 and (u33:GetAttribute("ClockTime"))
-            local u34
-            if v33 == nil then
-                u34 = 16.3
-            else
-                u34 = v33
-            end
-            tbl_upv_7.clock = u34
-            local v34 = fromRGB_upv_1(214, 184, 140)
-            local v35 = u33 and (u33:GetAttribute("ColorShift_Top"))
-            if v35 == nil then
-                u34 = v34
-            else
-                u34 = v35
-            end
-            tbl_upv_7.shiftTop = u34
-            local v36 = u33 and (u33:GetAttribute("Brightness"))
-            if v36 == nil then
-                u34 = 2.5
-            else
-                u34 = v36
-            end
-            tbl_upv_7.brightness = u34
-            local v37 = fromRGB_upv_1(136, 128, 126)
-            local v38 = u33 and (u33:GetAttribute("OutdoorAmbient"))
-            if v38 == nil then
-                u34 = v37
-            else
-                u34 = v38
-            end
-            tbl_upv_7.outdoor = u34
-            if v32 then
-                u34 = v32.Color
-            else
-                u34 = fromRGB_upv_1(224, 210, 190)
-            end
-            tbl_upv_7.atmColor = u34
-            if v32 then
-                u34 = v32.Decay
-            else
-                u34 = fromRGB_upv_1(170, 160, 178)
-            end
-            tbl_upv_7.atmDecay = u34
-            tbl_upv_7.atmHaze = ((not v32) and 1.2) or (v32.Haze)
-            tbl_upv_7.atmDensity = ((not v32) and 0.24) or (v32.Density)
-            tbl_upv_7.atmGlare = ((not v32) and 0.08) or (v32.Glare)
-            local v39 = u33 and (u33:FindFirstChildOfClass("SunRaysEffect"))
-            if v39 then
-                u34 = v39.Intensity
-            else
-                u34 = 0.035
-            end
-            tbl_upv_7.rays = u34
-            local tbl_upv_8 = {bright = 2.9, density = 0.27, rays = 0.14, clock = 17.35, glare = 2.2, haze = 1.6}
-            tbl_upv_8.shiftTop = fromRGB_upv_1(255, 176, 110)
-            tbl_upv_8.atmColor = fromRGB_upv_1(255, 178, 130)
-            tbl_upv_8.atmDecay = fromRGB_upv_1(232, 128, 140)
-            tbl_upv_8.outdoor = fromRGB_upv_1(170, 132, 118)
-            local tbl_upv_9 = {bright = 2.6, density = 0.29, rays = 0.2, clock = 17.62, glare = 3, haze = 1.9}
-            tbl_upv_9.shiftTop = fromRGB_upv_1(255, 140, 100)
-            tbl_upv_9.atmColor = fromRGB_upv_1(255, 150, 120)
-            tbl_upv_9.atmDecay = fromRGB_upv_1(196, 98, 150)
-            tbl_upv_9.outdoor = fromRGB_upv_1(156, 112, 128)
-            u34 = Instance.new("ColorCorrectionEffect")
-            u34.Name = "UpdateCountdownGrade"
-            u34.Enabled = false
-            u34.Parent = CurrentCamera_1
-            local LightingController_upv_1 = nil
-            pcall(
-                function()
-                    --[[
-                      line: 560
-                      upvalues:
-                        LightingController_upv_1 (ref, index: 1)
-                    ]]
-                    LightingController_upv_1 = require(script.Parent.Parent.Core.LightingController)
-                end
-            )
-            local function lobbyLit()
-                --[[
-                  name: lobbyLit
-                  line: 563
-                  upvalues:
-                    LightingController_upv_1 (ref, index: 1)
-                ]]
-                if not LightingController_upv_1 then
-                    return true
-                end
-                local success_1, v40 = pcall(LightingController_upv_1.Current)
-                return success_1 and (v40 == "Lobby")
-            end
-            local tbl_upv_10 = {w = 0, d = 0}
-            local u35 = false
-            local function paintSky(a1, a2)
-                --[[
-                  name: paintSky
-                  line: 573
-                  upvalues:
-                    LocalPlayer_upv_1 (copy, index: 1)
-                    LightingController_upv_1 (ref,  index: 2)
-                    u34 (copy, index: 3)
-                    u35 (ref,  index: 4)
-                    Lighting_upv_1 (copy, index: 5)
-                    tbl_upv_7 (copy, index: 6)
-                    tbl_upv_8 (copy, index: 7)
-                    tbl_upv_9 (copy, index: 8)
-                    Colors_upv_1 (copy, index: 9)
-                    fromRGB_upv_1 (copy, index: 10)
-                ]]
-                local v41 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                if v41 then
-                    if LightingController_upv_1 then
-                        local success_2, v42 = pcall(LightingController_upv_1.Current)
-                        v41 = success_2 and (v42 == "Lobby")
-                    else
-                        v41 = true
-                    end
-                    if v41 then
-                        if a1 <= 0.001 and a2 <= 0.001 then
-                            if u35 then
-                                Lighting_upv_1.ClockTime = tbl_upv_7.clock
-                                Lighting_upv_1.ColorShift_Top = tbl_upv_7.shiftTop
-                                Lighting_upv_1.Brightness = tbl_upv_7.brightness
-                                Lighting_upv_1.OutdoorAmbient = tbl_upv_7.outdoor
-                                v41 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                                if v41 then
-                                    v41.Color = tbl_upv_7.atmColor
-                                    v41.Decay = tbl_upv_7.atmDecay
-                                    v41.Haze = tbl_upv_7.atmHaze
-                                    v41.Density = tbl_upv_7.atmDensity
-                                    v41.Glare = tbl_upv_7.atmGlare
-                                end
-                                v41 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                                if v41 then
-                                    v41.Intensity = tbl_upv_7.rays
-                                end
-                                u35 = false
-                            end
-                            u34.Enabled = false
-                            return
-                        end
-                        u35 = true
-                        local function mix_1(a3, a4, a5)
-                            --[[
-                              name: mix
-                              line: 600
-                              upvalues:
-                                a1 (copy, index: 1)
-                                a2 (copy, index: 2)
-                            ]]
-                            if typeof(a3) == "Color3" then
-                                return a3:Lerp(a4, a1):Lerp(a5, a2)
-                            end
-                            local v43 = a3 + (a4 - a3) * a1
-                            return v43 + ((a5 - v43) * a2)
-                        end
-                        local clock_1 = tbl_upv_7.clock
-                        local clock_2 = tbl_upv_8.clock
-                        local clock_3 = tbl_upv_9.clock
-                        local v42
-                        if typeof(clock_1) ~= "Color3" then
-                            local _ = clock_1 + (clock_2 - clock_1) * a1
-                            v42 = clock_1 + (clock_2 - clock_1) * a1 + (clock_3 - (clock_1 + (clock_2 - clock_1) * a1)) * a2
-                        else
-                            v42 = clock_1:Lerp(clock_2, a1):Lerp(clock_3, a2)
-                        end
-                        Lighting_upv_1.ClockTime = v42
-                        local shiftTop_1 = tbl_upv_7.shiftTop
-                        local shiftTop_2 = tbl_upv_8.shiftTop
-                        local shiftTop_3 = tbl_upv_9.shiftTop
-                        if typeof(shiftTop_1) ~= "Color3" then
-                            local _ = shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1
-                            v42 = shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1 + (shiftTop_3 - (shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1)) * a2
-                        else
-                            v42 = shiftTop_1:Lerp(shiftTop_2, a1):Lerp(shiftTop_3, a2)
-                        end
-                        Lighting_upv_1.ColorShift_Top = v42
-                        local brightness_1 = tbl_upv_7.brightness
-                        local bright_1 = tbl_upv_8.bright
-                        local bright_2 = tbl_upv_9.bright
-                        if typeof(brightness_1) ~= "Color3" then
-                            local _ = brightness_1 + (bright_1 - brightness_1) * a1
-                            v42 = brightness_1 + (bright_1 - brightness_1) * a1 + (bright_2 - (brightness_1 + (bright_1 - brightness_1) * a1)) * a2
-                        else
-                            v42 = brightness_1:Lerp(bright_1, a1):Lerp(bright_2, a2)
-                        end
-                        Lighting_upv_1.Brightness = v42
-                        local v44 = tbl_upv_7.outdoor
-                        local outdoor_1 = tbl_upv_8.outdoor
-                        local outdoor_2 = tbl_upv_9.outdoor
-                        if typeof(v44) ~= "Color3" then
-                            local _ = v44 + (outdoor_1 - v44) * a1
-                            v42 = v44 + (outdoor_1 - v44) * a1 + (outdoor_2 - (v44 + (outdoor_1 - v44) * a1)) * a2
-                        else
-                            v42 = v44:Lerp(outdoor_1, a1):Lerp(outdoor_2, a2)
-                        end
-                        Lighting_upv_1.OutdoorAmbient = v42
-                        local v45 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                        local v46 = nil
-                        if v45 then
-                            v46 = tbl_upv_7.rays
-                            local rays_1 = tbl_upv_8.rays
-                            local rays_2 = tbl_upv_9.rays
-                            if typeof(v46) ~= "Color3" then
-                                local _ = v46 + (rays_1 - v46) * a1
-                                v42 = v46 + (rays_1 - v46) * a1 + (rays_2 - (v46 + (rays_1 - v46) * a1)) * a2
-                            else
-                                v42 = v46:Lerp(rays_1, a1):Lerp(rays_2, a2)
-                            end
-                            v45.Intensity = v42
-                        end
-                        local v47 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                        local v48, v49, v50, v51, v52 = nil, nil, nil, nil, nil
-                        if v47 then
-                            v48 = tbl_upv_7.atmColor
-                            local atmColor_1 = tbl_upv_8.atmColor
-                            local atmColor_2 = tbl_upv_9.atmColor
-                            if typeof(v48) ~= "Color3" then
-                                local _ = v48 + (atmColor_1 - v48) * a1
-                                v42 = v48 + (atmColor_1 - v48) * a1 + (atmColor_2 - (v48 + (atmColor_1 - v48) * a1)) * a2
-                            else
-                                v42 = v48:Lerp(atmColor_1, a1):Lerp(atmColor_2, a2)
-                            end
-                            v47.Color = v42
-                            v49 = tbl_upv_7.atmDecay
-                            local atmDecay_1 = tbl_upv_8.atmDecay
-                            local atmDecay_2 = tbl_upv_9.atmDecay
-                            if typeof(v49) ~= "Color3" then
-                                local _ = v49 + (atmDecay_1 - v49) * a1
-                                v42 = v49 + (atmDecay_1 - v49) * a1 + (atmDecay_2 - (v49 + (atmDecay_1 - v49) * a1)) * a2
-                            else
-                                v42 = v49:Lerp(atmDecay_1, a1):Lerp(atmDecay_2, a2)
-                            end
-                            v47.Decay = v42
-                            v50 = tbl_upv_7.atmHaze
-                            local haze_1 = tbl_upv_8.haze
-                            local haze_2 = tbl_upv_9.haze
-                            if typeof(v50) ~= "Color3" then
-                                local _ = v50 + (haze_1 - v50) * a1
-                                v42 = v50 + (haze_1 - v50) * a1 + (haze_2 - (v50 + (haze_1 - v50) * a1)) * a2
-                            else
-                                v42 = v50:Lerp(haze_1, a1):Lerp(haze_2, a2)
-                            end
-                            v47.Haze = v42
-                            v51 = tbl_upv_7.atmDensity
-                            local density_1 = tbl_upv_8.density
-                            local density_2 = tbl_upv_9.density
-                            if typeof(v51) ~= "Color3" then
-                                local _ = v51 + (density_1 - v51) * a1
-                                v42 = v51 + (density_1 - v51) * a1 + (density_2 - (v51 + (density_1 - v51) * a1)) * a2
-                            else
-                                v42 = v51:Lerp(density_1, a1):Lerp(density_2, a2)
-                            end
-                            v47.Density = v42
-                            v52 = tbl_upv_7.atmGlare
-                            local glare_1 = tbl_upv_8.glare
-                            local glare_2 = tbl_upv_9.glare
-                            if typeof(v52) ~= "Color3" then
-                                local _ = v52 + (glare_1 - v52) * a1
-                                v42 = v52 + (glare_1 - v52) * a1 + (glare_2 - (v52 + (glare_1 - v52) * a1)) * a2
-                            else
-                                v42 = v52:Lerp(glare_1, a1):Lerp(glare_2, a2)
-                            end
-                            v47.Glare = v42
-                        end
-                        u34.Enabled = true
-                        local White_1 = Colors_upv_1.White
-                        local v53 = fromRGB_upv_1(255, 238, 222)
-                        local v54 = fromRGB_upv_1(255, 228, 226)
-                        if typeof(White_1) ~= "Color3" then
-                            local _ = White_1 + (v53 - White_1) * a1
-                            v44 = White_1 + (v53 - White_1) * a1 + (v54 - (White_1 + (v53 - White_1) * a1)) * a2
-                        else
-                            v44 = White_1:Lerp(v53, a1):Lerp(v54, a2)
-                        end
-                        u34.TintColor = v44
-                        u34.Saturation = a1 * 0.12
-                        u34.Contrast = a1 * 0.05
-                        u34.Brightness = a1 * 0.03
-                        return
-                    end
-                end
-                u34.Enabled = false
-                u35 = false
-            end
-            local function localTime(a1)
-                --[[
-                  name: localTime
-                  line: 644
-                ]]
-                local success_3, v55 = pcall(function() end)
-                if success_3 then
-                    return string.upper(v55) .. " YOUR TIME"
-                end
-                return ""
-            end
-            local at_upv_1 = UPDATE_COUNTDOWN_upv_1.at
-            local success_4, v56 = pcall(
-                function()
-                    --[[
-                      line: 645
-                      upvalues:
-                        at_upv_1 (copy, index: 1)
-                    ]]
-                    return DateTime.fromUnixTimestamp(at_upv_1):FormatLocalTime("dddd h:mm A", "en-us")
-                end
-            )
-            local u36 = (success_4 and (string.upper(v56) .. " YOUR TIME")) or ""
-            local tbl_upv_11 = {}
-            local function set(a1, a2)
-                --[[
-                  name: set
-                  line: 653
-                  upvalues:
-                    tbl_upv_11 (copy, index: 1)
-                ]]
-                if tbl_upv_11[a1] == a2 then
-                    return
-                end
-                tbl_upv_11[a1] = a2
-                a1.label.Text = a2
-                a1.shadow.Text = a2
-            end
-            local function paintSlot(a1, a2)
-                --[[
-                  name: paintSlot
-                  line: 668
-                  upvalues:
-                    tbl_upv_3 (copy, index: 1)
-                    Colors_upv_1 (copy, index: 3)
-                    u3 (copy, index: 4)
-                ]]
-                local v57 = tbl_upv_3[a1]
-                v57.out = a2
-                if a2 then
-                    v57.img.ImageColor3 = Colors_upv_1.White
-                    v57.img.ImageTransparency = 0
-                else
-                    v57.img.ImageColor3 = u3
-                    v57.img.ImageTransparency = 0.15
-                end
-            end
-            local u37 = false
-            local u38 = 0
-            local function fadeText(a1, a2)
-                --[[
-                  name: fadeText
-                  line: 661
-                  upvalues:
-                    tbl_upv_2 (copy, index: 1)
-                    TweenService_upv_1 (copy, index: 2)
-                ]]
-                for _, value_3 in tbl_upv_2 do
-                    local tbl_12 = {}
-                    tbl_12.TextTransparency = a1
-                    TweenService_upv_1:Create(value_3.label, TweenInfo.new(a2), tbl_12):Play()
-                    local v58 = TweenInfo.new(a2)
-                    local tbl_13 = {}
-                    tbl_13.TextTransparency = math.max(a1, 0.45)
-                    TweenService_upv_1:Create(value_3.shadow, v58, tbl_13):Play()
-                end
-            end
-            local function volley(a1, a2, a3, a4)
-                --[[
-                  name: volley
-                  line: 507
-                  upvalues:
-                    u29 (copy, index: 1)
-                    LocalPlayer_upv_1 (copy, index: 2)
-                    rocket (copy, index: 3)
-                    RightVector_upv_1 (copy, index: 4)
-                    UpVector_upv_1 (copy, index: 5)
-                    u30 (copy, index: 6)
-                    tbl_upv_6 (copy, index: 7)
-                ]]
-                for n_upv_1 = 1, a1 do
-                    task.delay(
-                        (((n_upv_1 - 1) / math.max(1, a1 - 1)) * a2) + u29:NextNumber(0, 0.15),
-                        function()
-                            --[[
-                              line: 509
-                              upvalues:
-                                LocalPlayer_upv_1 (copy, index: 1)
-                                n_upv_1 (copy, index: 2)
-                                u29 (copy, index: 3)
-                                rocket (copy, index: 4)
-                                RightVector_upv_1 (copy, index: 5)
-                                UpVector_upv_1 (copy, index: 6)
-                                u30 (copy, index: 7)
-                                a3 (copy, index: 8)
-                                tbl_upv_6 (copy, index: 9)
-                                a4 (copy, index: 10)
-                            ]]
-                            local v59 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                            if not v59 then
-                                return
-                            end
-                            local v60 = (((n_upv_1 % 2 ~= 0) and -1) or 1) * u29:NextNumber(150, 260)
-                            v59 = u29:NextNumber(10, 80)
-                            if n_upv_1 % 3 == 0 then
-                                v60, v59 = u29:NextNumber(-140, 140), u29:NextNumber(70, 110)
-                            end
-                            local v61 = a3 or (tbl_upv_6[u29:NextInteger(1, #tbl_upv_6)])
-                            rocket(((Vector3.new(0, 66, -135) + (RightVector_upv_1 * v60)) + (UpVector_upv_1 * v59)) + (u30 * 30), v61, a4)
-                        end
-                    )
-                end
-            end
-            local function reveal(a1)
-                --[[
-                  name: reveal
-                  line: 685
-                  upvalues:
-                    UPDATE_COUNTDOWN_upv_1 (copy, index: 1)
-                    Gold_upv_1 (copy, index: 2)
-                    u37 (ref,  index: 3)
-                    u38 (ref,  index: 4)
-                    tbl_upv_3 (copy, index: 5)
-                    u3 (copy, index: 6)
-                    u18 (copy, index: 7)
-                    UIAssets_upv_1 (copy, index: 8)
-                    u20 (copy, index: 9)
-                    tbl_upv_11 (copy, index: 10)
-                    Colors_upv_1 (copy, index: 11)
-                    u19 (copy, index: 12)
-                    u14 (copy, index: 13)
-                    u15 (copy, index: 14)
-                    fadeText (copy, index: 15)
-                    TweenService_upv_1 (copy, index: 16)
-                    u16 (copy, index: 17)
-                    u17 (copy, index: 18)
-                    Sfx_upv_1 (ref,  index: 19)
-                    volley (copy, index: 20)
-                    showBanner (copy, index: 21)
-                    u21 (copy, index: 22)
-                ]]
-                local u39 = UPDATE_COUNTDOWN_upv_1.ranks[a1]
-                local v62 = u39.color or Gold_upv_1
-                local v63 = a1 == #UPDATE_COUNTDOWN_upv_1.ranks
-                u37 = true
-                u38 = a1
-                local v64 = tbl_upv_3[a1]
-                v64.out = false
-                v64.img.ImageColor3 = u3
-                v64.img.ImageTransparency = 0.15
-                local Ranks_4 = UIAssets_upv_1.Ranks
-                u18.Image = Ranks_4 and Ranks_4[string.lower(u39.name)] or u39.img or ""
-                u18.ImageTransparency = 0
-                local name_1 = u39.name
-                if tbl_upv_11[u20] ~= name_1 then
-                    tbl_upv_11[u20] = name_1
-                    u20.label.Text = name_1
-                    u20.shadow.Text = name_1
-                end
-                u20.label.TextColor3 = v62:Lerp(Colors_upv_1.White, 0.35)
-                for _, value_4 in {u20, u19} do
-                    value_4.label.TextTransparency = 0
-                    value_4.shadow.TextTransparency = 0.45
-                end
-                u14.Position = UDim2.fromOffset(640, 120)
-                u14.Visible = true
-                u15.Scale = 0.3
-                fadeText(1, 0.2)
-                local tbl_14 = {Scale = 1}
-                TweenService_upv_1:Create(u15, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_14):Play()
-                u16.ImageColor3 = v62
-                u16.ImageTransparency = 0
-                u17.Scale = 0.4
-                local tbl_15 = {ImageTransparency = 0.55}
-                TweenService_upv_1:Create(u16, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_15):Play()
-                local tbl_16 = {Scale = 1.3}
-                TweenService_upv_1:Create(u17, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_16):Play()
-                if Sfx_upv_1 then
-                    pcall(Sfx_upv_1.PlayUI, "UI/Unlock")
-                end
-                if v63 then
-                    task.delay(
-                        0.15,
-                        function()
-                            --[[
-                              line: 712
-                              upvalues:
-                                Sfx_upv_1 (ref, index: 1)
-                            ]]
-                            if not Sfx_upv_1 then
-                                return
-                            end
-                            pcall(Sfx_upv_1.PlayUI, "UI/NewItem_Fanfare")
-                        end
-                    )
-                end
-                volley((v63 and 14) or 8, 2.4, v62, (v63 and 1.35) or 1.1)
-                showBanner(u39)
-                task.delay(
-                    3.4,
-                    function()
-                        --[[
-                          line: 718
-                          upvalues:
-                            tbl_upv_3 (copy, index: 1)
-                            a1 (copy, index: 2)
-                            u21 (copy, index: 3)
-                            u39 (copy, index: 4)
-                            UIAssets_upv_1 (copy, index: 5)
-                            u14 (copy, index: 6)
-                            u16 (copy, index: 7)
-                            TweenService_upv_1 (copy, index: 8)
-                            Colors_upv_1 (copy, index: 10)
-                            Sfx_upv_1 (ref,  index: 11)
-                            fadeText (copy, index: 12)
-                            u37 (ref,  index: 13)
-                            u38 (ref,  index: 14)
-                        ]]
-                        local v66 = tbl_upv_3[a1]
-                        local v67 = Vector2.new(430, 120)
-                        local Ranks_5 = UIAssets_upv_1.Ranks
-                        u21.Image = Ranks_5 and Ranks_5[string.lower(u39.name)] or u39.img or ""
-                        u21.Position = UDim2.fromOffset(v67.X, v67.Y)
-                        u21.Size = UDim2.fromOffset(180, 180)
-                        u21.Visible = true
-                        u14.Visible = false
-                        u16.ImageTransparency = 1
-                        local v69 = TweenInfo.new(0.55, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-                        local tbl_17 = {}
-                        tbl_17.Position = v66.cell.Position
-                        tbl_17.Size = UDim2.fromOffset(62, 62)
-                        TweenService_upv_1:Create(u21, v69, tbl_17):Play()
-                        task.wait(0.55)
-                        u21.Visible = false
-                        local v70 = tbl_upv_3[a1]
-                        v70.out = true
-                        v70.img.ImageColor3 = Colors_upv_1.White
-                        v70.img.ImageTransparency = 0
-                        v66.scale.Scale = 1.6
-                        local tbl_18 = {Scale = 1}
-                        TweenService_upv_1:Create(v66.scale, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_18):Play()
-                        if Sfx_upv_1 then
-                            pcall(Sfx_upv_1.PlayUI, "UI/Card_Reveal")
-                        end
-                        fadeText(0, 0.35)
-                        u37 = false
-                        u38 = 0
-                    end
-                )
-            end
-            local u40 = -1
-            local u41 = ""
-            local u42 = false
-            local u43 = os.clock()
-            local u44 = nil
-            local u45 = 0
-            local tbl_upv_19 = {}
-            Workspace_upv_1:GetAttributeChangedSignal("CountdownPreviewAt"):Connect(
-                function()
-                    --[[
-                      line: 754
-                      upvalues:
-                        u42 (ref,  index: 1)
-                        u41 (ref,  index: 2)
-                        u44 (ref,  index: 3)
-                        tbl_upv_19 (copy, index: 4)
-                    ]]
-                    u42 = false
-                    u41 = ""
-                    u44 = nil
-                    table.clear(tbl_upv_19)
-                end
-            )
-            local function clock_4(a1)
-                --[[
-                  name: clock
-                  line: 633
-                ]]
-                local v71 = a1 // 86400
-                local v72 = a1 // 3600 % 24
-                local v73 = a1 // 60 % 60
-                local v74 = a1 % 60
-                if v71 > 0 then
-                    return string.format("%dD %02d:%02d:%02d", v71, v72, v73, v74)
-                elseif v72 > 0 then
-                    return string.format("%d:%02d:%02d", v72, v73, v74)
-                else
-                    return string.format("%d:%02d", v73, v74)
-                end
-            end
-            local function step(a1)
-                --[[
-                  name: step
-                  line: 761
-                  upvalues:
-                    Workspace_upv_1 (copy, index: 1)
-                    UPDATE_COUNTDOWN_upv_1 (copy, index: 2)
-                    LocalPlayer_upv_1 (copy, index: 3)
-                    u5 (copy, index: 4)
-                    u12 (copy, index: 5)
-                    u22 (copy, index: 6)
-                    tbl_upv_3 (copy, index: 7)
-                    u42 (ref,  index: 8)
-                    Colors_upv_1 (copy, index: 9)
-                    u3 (copy, index: 10)
-                    tbl_upv_19 (copy, index: 11)
-                    u38 (ref,  index: 12)
-                    u43 (copy, index: 13)
-                    u37 (ref,  index: 14)
-                    reveal (copy, index: 15)
-                    u1 (copy, index: 16)
-                    u2 (copy, index: 17)
-                    ReplicatedStorage_upv_1 (copy, index: 18)
-                    tbl_upv_10 (copy, index: 19)
-                    paintSky (copy, index: 20)
-                    u8 (copy, index: 21)
-                    Gold_upv_1 (copy, index: 22)
-                    u9 (copy, index: 23)
-                    u10 (copy, index: 24)
-                    tbl_upv_11 (copy, index: 25)
-                    u13 (copy, index: 26)
-                    u40 (ref,  index: 27)
-                    TweenService_upv_1 (copy, index: 28)
-                    Sfx_upv_1 (ref,  index: 29)
-                    u36 (copy, index: 30)
-                    clock_4 (copy, index: 31)
-                    u41 (ref,  index: 32)
-                    u44 (ref,  index: 33)
-                    volley (copy, index: 34)
-                    u45 (ref,  index: 35)
-                    u29 (copy, index: 36)
-                ]]
-                local v75 = Workspace_upv_1:GetServerTimeNow()
-                local v76 = Workspace_upv_1:GetAttribute("CountdownPreview")
-                local v77 = Workspace_upv_1:GetAttribute("CountdownPreviewAt")
-                local v78
-                if type(v76) == "number" and type(v77) == "number" then
-                    v78 = UPDATE_COUNTDOWN_upv_1.at - v76 + (v75 - v77)
-                else
-                    v78 = v75
-                end
-                local v79 = UPDATE_COUNTDOWN_upv_1.at - v78
-                local v80 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                u5.Enabled = v80
-                u12.Enabled = v80
-                u22.Enabled = v80
-                for key_2, value_5 in UPDATE_COUNTDOWN_upv_1.ranks do
-                    local v81 = UPDATE_COUNTDOWN_upv_1.at - value_5.hours * 3600
-                    local v82 = v81 <= v78
-                    local v83 = tbl_upv_3[key_2]
-                    if v83.out == nil or not (u42) then
-                        local v84 = tbl_upv_3[key_2]
-                        v84.out = v82
-                        if v82 then
-                            v84.img.ImageColor3 = Colors_upv_1.White
-                            v84.img.ImageTransparency = 0
-                        else
-                            v84.img.ImageColor3 = u3
-                            v84.img.ImageTransparency = 0.15
-                        end
-                        continue
-                    end
-                    if v82 then
-                        if v83.out or table.find(tbl_upv_19, key_2) or u38 == key_2 then
-                            if v82 then
-                                continue
-                            end
-                            if v83.out then
-                                local v85 = tbl_upv_3[key_2]
-                                v85.out = false
-                                v85.img.ImageColor3 = u3
-                                v85.img.ImageTransparency = 0.15
-                            end
-                        else
-                            if not (v78 - v81 < 4) then
-                                local v86 = tbl_upv_3[key_2]
-                                v86.out = true
-                                v86.img.ImageColor3 = Colors_upv_1.White
-                                v86.img.ImageTransparency = 0
-                                continue
-                            end
-                            if os.clock() - u43 > 6 then
-                                table.insert(tbl_upv_19, key_2)
-                            else
-                                local v86 = tbl_upv_3[key_2]
-                                v86.out = true
-                                v86.img.ImageColor3 = Colors_upv_1.White
-                                v86.img.ImageTransparency = 0
-                            end
-                        end
-                    else
-                        if v82 then
-                            continue
-                        end
-                        if v83.out then
-                            local v85 = tbl_upv_3[key_2]
-                            v85.out = false
-                            v85.img.ImageColor3 = u3
-                            v85.img.ImageTransparency = 0.15
-                        end
-                    end
-                end
-                u42 = true
-                if not (u37) and #tbl_upv_19 > 0 then
-                    local v87 = table.remove(tbl_upv_19, 1)
-                    if v80 then
-                        reveal(v87)
-                    else
-                        local v88 = tbl_upv_3[v87]
-                        v88.out = true
-                        v88.img.ImageColor3 = Colors_upv_1.White
-                        v88.img.ImageTransparency = 0
-                    end
-                end
-                local v89 = 0
-                local v90 = 0
-                if (v79 > 0) and (v79 <= u1) then
-                    if u2 < v79 then
-                        local _ = (u1 - v79) / (u1 - u2)
-                        v89 = 0.6 * ((u1 - v79) / (u1 - u2)) * ((u1 - v79) / (u1 - u2)) * (3 - 2 * ((u1 - v79) / (u1 - u2)))
-                    else
-                        v89 = 0.6 + 0.4 * (1 - (math.max(0, v79 - 60) / (u2 - 60)))
-                    end
-                    v90 = ((v79 <= 60) and (1 - v79 / 60)) or 0
-                elseif v79 <= 0 then
-                    local v91 = ((Workspace_upv_1:GetAttribute("CountdownPreviewShipped") == true) and true) or ((UPDATE_COUNTDOWN_upv_1.shipped ~= nil) and (ReplicatedStorage_upv_1.Shared:FindFirstChild(UPDATE_COUNTDOWN_upv_1.shipped) ~= nil))
-                    if not v91 then
-                        v89, v90 = 1, 1
-                    end
-                end
-                local v92 = ((os.clock() - u43 < 0.4) and 1) or (math.min(1, a1 * 0.6))
-                tbl_upv_10.w = tbl_upv_10.w + ((v89 - tbl_upv_10.w) * v92)
-                tbl_upv_10.d = tbl_upv_10.d + ((v90 - tbl_upv_10.d) * v92)
-                paintSky(tbl_upv_10.w, tbl_upv_10.d)
-                local v93 = nil
-                if v79 > 0 then
-                    local v94 = math.ceil(v79)
-                    v90 = ((v79 <= 60) and "final") or (((v79 <= u2) and "close") or "far")
-                    for _, value_6 in tbl_upv_3 do
-                        value_6.cell.Visible = true
-                    end
-                    v89 = v90 ~= "far"
-                    local label_1 = u8.label
-                    local v95
-                    if v89 then
-                        v95 = Gold_upv_1
-                    else
-                        v95 = Colors_upv_1.White
-                    end
-                    label_1.TextColor3 = v95
-                    local label_2 = u9.label
-                    local v96
-                    if v89 then
-                        v96 = Gold_upv_1
-                    else
-                        v96 = Colors_upv_1.White
-                    end
-                    label_2.TextColor3 = v96
-                    local v97, v98, v99 = nil, nil, nil
-                    if v90 ~= "final" then
-                        v97 = u36
-                        if tbl_upv_11[u10] ~= v97 then
-                            tbl_upv_11[u10] = v97
-                            u10.label.Text = v97
-                            u10.shadow.Text = v97
-                        end
-                        u10.label.TextColor3 = Colors_upv_1.White
-                        u8.holder.Visible = true
-                        u9.holder.Visible = true
-                        u13.holder.Visible = false
-                        v98 = clock_4(v94)
-                        if tbl_upv_11[u9] ~= v98 then
-                            tbl_upv_11[u9] = v98
-                            u9.label.Text = v98
-                            u9.shadow.Text = v98
-                        end
-                    else
-                        v99 = string.upper(UPDATE_COUNTDOWN_upv_1.title) .. " IN"
-                        if tbl_upv_11[u10] ~= v99 then
-                            tbl_upv_11[u10] = v99
-                            u10.label.Text = v99
-                            u10.shadow.Text = v99
-                        end
-                        u10.label.TextColor3 = Gold_upv_1
-                        u8.holder.Visible = false
-                        u9.holder.Visible = false
-                        u13.holder.Visible = not u37
-                        local label_3 = u13.label
-                        local v100
-                        if v94 <= 10 then
-                            v100 = Colors_upv_1.White
-                        else
-                            v100 = Gold_upv_1
-                        end
-                        label_3.TextColor3 = v100
-                        local v101 = nil
-                        if v94 ~= u40 then
-                            v101 = tostring(v94)
-                            if tbl_upv_11[u13] ~= v101 then
-                                tbl_upv_11[u13] = v101
-                                u13.label.Text = v101
-                                u13.shadow.Text = v101
-                            end
-                            u13.scale.Scale = ((v94 <= 10) and 1.2) or 1.12
-                            local tbl_20 = {Scale = 1}
-                            TweenService_upv_1:Create(u13.scale, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), tbl_20):Play()
-                            if v80 then
-                                local v102 = ((v94 <= 3) and "Match/Countdown_1") or "Match/Countdown_Tick"
-                                if Sfx_upv_1 then
-                                    pcall(Sfx_upv_1.PlayUI, v102)
-                                end
-                            end
-                        end
-                    end
-                    u40 = v94
-                    u41 = v90
-                else
-                    if u41 == "final" or u41 == "close" then
-                        u44 = os.clock()
-                        if v80 then
-                            if Sfx_upv_1 then
-                                pcall(Sfx_upv_1.PlayUI, "Match/Victory")
-                            end
-                            volley(16, 7, nil, 1.5)
-                            task.delay(
-                                7.5,
-                                function()
-                                    --[[
-                                      line: 863
-                                      upvalues:
-                                        volley (copy, index: 1)
-                                    ]]
-                                    volley(10, 3, nil, 1.8)
-                                end
-                            )
-                        end
-                    end
-                    if u41 ~= "done" then
-                        u13.scale.Scale = 0.4
-                        local tbl_21 = {Scale = 1}
-                        TweenService_upv_1:Create(u13.scale, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_21):Play()
-                    end
-                    u41 = "done"
-                    for _, value_7 in tbl_upv_3 do
-                        value_7.cell.Visible = false
-                    end
-                    u8.holder.Visible = false
-                    u9.holder.Visible = false
-                    u10.holder.Visible = true
-                    u13.holder.Visible = true
-                    u10.label.TextColor3 = Gold_upv_1
-                    v93 = string.upper(UPDATE_COUNTDOWN_upv_1.title)
-                    if tbl_upv_11[u10] ~= v93 then
-                        tbl_upv_11[u10] = v93
-                        u10.label.Text = v93
-                        u10.shadow.Text = v93
-                    end
-                    local v103 = ((Workspace_upv_1:GetAttribute("CountdownPreviewShipped") == true) and true) or ((UPDATE_COUNTDOWN_upv_1.shipped ~= nil) and (ReplicatedStorage_upv_1.Shared:FindFirstChild(UPDATE_COUNTDOWN_upv_1.shipped) ~= nil))
-                    if v103 then
-                        if UPDATE_COUNTDOWN_upv_1.OUT_FOR < -v79 then
-                            return false
-                        end
-                        if tbl_upv_11[u13] ~= "OUT NOW!" then
-                            tbl_upv_11[u13] = "OUT NOW!"
-                            u13.label.Text = "OUT NOW!"
-                            u13.shadow.Text = "OUT NOW!"
-                        end
-                        u13.label.TextColor3 = Gold_upv_1
-                        if v80 then
-                            local v104 = os.clock()
-                            if u45 <= v104 and -v79 < 7200 then
-                                u45 = os.clock() + u29:NextNumber(25, 40)
-                                if u44 == nil or os.clock() - u44 > 15 then
-                                    volley(5, 2.5, nil, 1.1)
-                                end
-                            end
-                        end
-                    else
-                        if tbl_upv_11[u13] ~= "SERVERS RESTARTING..." then
-                            tbl_upv_11[u13] = "SERVERS RESTARTING..."
-                            u13.label.Text = "SERVERS RESTARTING..."
-                            u13.shadow.Text = "SERVERS RESTARTING..."
-                        end
-                        u13.label.TextColor3 = Colors_upv_1.White
-                    end
-                end
-                return true
-            end
-            local u46 = nil
-            local u47 = 0
-            local v105 = RunService_1.Heartbeat:Connect(
-                function(a1)
-                    --[[
-                      line: 904
-                      upvalues:
-                        u47 (ref,  index: 1)
-                        step (copy, index: 2)
-                        u46 (ref,  index: 3)
-                        LocalPlayer_upv_1 (copy, index: 4)
-                        LightingController_upv_1 (ref,  index: 5)
-                        u34 (copy, index: 6)
-                        u35 (ref,  index: 7)
-                        Lighting_upv_1 (copy, index: 8)
-                        tbl_upv_7 (copy, index: 9)
-                        u5 (copy, index: 10)
-                        u12 (copy, index: 11)
-                        u22 (copy, index: 12)
-                        u4 (copy, index: 13)
-                        u11 (copy, index: 14)
-                        u28 (copy, index: 15)
-                    ]]
-                    u47 = u47 + a1
-                    if u47 < 0.05 then
-                        return
-                    end
-                    local success_5, v106 = pcall(step, u47)
-                    u47 = 0
-                    if success_5 and v106 == false then
-                        if u46 then
-                            u46:Disconnect()
-                        end
-                        local v107 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                        if v107 then
-                            if LightingController_upv_1 then
-                                local success_6, v108 = pcall(LightingController_upv_1.Current)
-                                v107 = success_6 and (v108 == "Lobby")
-                            else
-                                v107 = true
-                            end
-                            if v107 then
-                                if u35 then
-                                    Lighting_upv_1.ClockTime = tbl_upv_7.clock
-                                    Lighting_upv_1.ColorShift_Top = tbl_upv_7.shiftTop
-                                    Lighting_upv_1.Brightness = tbl_upv_7.brightness
-                                    Lighting_upv_1.OutdoorAmbient = tbl_upv_7.outdoor
-                                    v107 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                                    if v107 then
-                                        v107.Color = tbl_upv_7.atmColor
-                                        v107.Decay = tbl_upv_7.atmDecay
-                                        v107.Haze = tbl_upv_7.atmHaze
-                                        v107.Density = tbl_upv_7.atmDensity
-                                        v107.Glare = tbl_upv_7.atmGlare
-                                    end
-                                    v107 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                                    if v107 then
-                                        v107.Intensity = tbl_upv_7.rays
-                                    end
-                                    u35 = false
-                                end
-                                u34.Enabled = false
-                            else
-                                u34.Enabled = false
-                                u35 = false
-                            end
-                        else
-                            u34.Enabled = false
-                            u35 = false
-                        end
-                        u5:Destroy()
-                        u12:Destroy()
-                        u22:Destroy()
-                        u4:Destroy()
-                        u11:Destroy()
-                        u28:Destroy()
-                        u34:Destroy()
-                        return
-                    end
-                    if (success_5) then
-                        return
-                    end
-                    warn("[UpdateCountdown] " .. tostring(v106))
-                end
-            )
-            u46 = v105
+
+if updateCountdown2.shipped
+    and replicatedStorage.Shared:FindFirstChild(updateCountdown2.shipped)
+    and workspace:GetAttribute("CountdownPreview") == nil
+    and workspace:GetAttribute("CountdownPreviewAt") == nil
+then
+    return
+end
+
+local function inLobby()
+    --[[
+      name: inLobby
+      line: 100
+      upvalues:
+        localPlayer (copy, index: 1)
+    ]]
+    return localPlayer:GetAttribute("State") ~= "Match"
+end
+
+local function now()
+    --[[
+      name: now
+      line: 105
+      upvalues:
+        workspace (copy, index: 1)
+        updateCountdown2 (copy, index: 2)
+    ]]
+    local serverTimeNow = workspace:GetServerTimeNow()
+    local countdownPreview = workspace:GetAttribute("CountdownPreview")
+    local countdownPreviewAt = workspace:GetAttribute("CountdownPreviewAt")
+
+    if type(countdownPreview) == "number" and type(countdownPreviewAt) == "number" then
+        return updateCountdown2.at - countdownPreview + (serverTimeNow - countdownPreviewAt)
+    end
+
+    return serverTimeNow
+end
+
+local function play(a39)
+    --[[
+      name: play
+      line: 114
+      upvalues:
+        Sfx (ref, index: 1)
+    ]]
+    if Sfx then
+        pcall(Sfx.PlayUI, a39)
+    end
+end
+
+local updateCountdownSky = Instance.new("Part")
+updateCountdownSky.Name = "UpdateCountdownSky"
+updateCountdownSky.Anchored = true
+updateCountdownSky.CanCollide = false
+updateCountdownSky.CanQuery = false
+updateCountdownSky.CanTouch = false
+updateCountdownSky.CastShadow = false
+updateCountdownSky.Transparency = 1
+updateCountdownSky.Size = Vector3.new(357, 64, 0.20000000298023224)
+updateCountdownSky.CFrame = CFrame.lookAt(Vector3.new(0, 66, -135), Vector3.new(0, 9, 120))
+updateCountdownSky.Parent = workspace
+
+local updateCountdown = Instance.new("SurfaceGui")
+updateCountdown.Name = "UpdateCountdown"
+updateCountdown.Adornee = updateCountdownSky
+updateCountdown.Face = Enum.NormalId.Front
+updateCountdown.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+updateCountdown.PixelsPerStud = 3.361344537815126
+updateCountdown.LightInfluence = 0
+updateCountdown.Brightness = 1.25
+updateCountdown.MaxDistance = 2000
+updateCountdown.ResetOnSpawn = false
+updateCountdown.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local root = Instance.new("Frame")
+root.Name = "Root"
+root.BackgroundTransparency = 1
+root.Size = UDim2.fromScale(1, 1)
+root.Parent = updateCountdown
+
+local function text(name: string, a45: number, a46: number, a47: number, a48: number, fontFace, a50: number, frame: Frame?)
+    --[[
+      name: text
+      line: 155
+      upvalues:
+        root (copy, index: 1)
+        imageColor3 (copy, index: 2)
+        colors (copy, index: 3)
+    ]]
+    local frame2 = Instance.new("Frame")
+    frame2.Name = name
+    frame2.BackgroundTransparency = 1
+    frame2.AnchorPoint = Vector2.new(0.5, 0.5)
+    frame2.Position = UDim2.fromOffset(a45, a46)
+    frame2.Size = UDim2.fromOffset(a47, a48)
+    frame2.Parent = frame or root
+
+    local scale = Instance.new("UIScale")
+    scale.Parent = frame2
+
+    local function mk(name: string, a56: number, textColor3, textTransparency: number, zIndex: number)
+        --[[
+          name: mk
+          line: 165
+          upvalues:
+            fontFace (copy, index: 1)
+            frame2 (copy, index: 2)
+        ]]
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Name = name
+        textLabel.BackgroundTransparency = 1
+        textLabel.TextScaled = true
+        textLabel.FontFace = fontFace
+        textLabel.TextColor3 = textColor3
+        textLabel.TextTransparency = textTransparency
+        textLabel.Position = UDim2.fromOffset(0, a56)
+        textLabel.Size = UDim2.fromScale(1, 1)
+        textLabel.Text = ""
+        textLabel.ZIndex = zIndex
+        textLabel.Parent = frame2
+        return textLabel
+    end
+
+    local shadow = mk("Shadow", a50, imageColor3, 0.45, 1)
+    local label = mk("Text", 0, colors.White, 0, 2)
+
+    return {label = label, shadow = shadow, holder = frame2, scale = scale}
+end
+
+local plate = Instance.new("ImageLabel")
+plate.Name = "Plate"
+plate.BackgroundTransparency = 1
+plate.Image = "rbxassetid://90962482350826"
+plate.ImageColor3 = imageColor3
+plate.ImageTransparency = 0.3
+plate.ScaleType = Enum.ScaleType.Stretch
+plate.AnchorPoint = Vector2.new(0.5, 0.5)
+plate.Position = UDim2.fromOffset(600, 112)
+plate.Size = UDim2.fromOffset(1240, 300)
+plate.Parent = root
+local v64 = text("Title", 600, 82, 1000, 84, fontFace, 4)
+v64.label.Text = updateCountdown2.title
+v64.shadow.Text = updateCountdown2.title
+local v65 = text("Timer", 600, 168, 480, 74, fontFace, 4)
+local v66 = text("When", 600, 22, 600, 24, fontFace2, 2)
+local updateCountdownSkyBig = updateCountdownSky:Clone()
+updateCountdownSkyBig.Name = "UpdateCountdownSkyBig"
+updateCountdownSkyBig.CFrame = updateCountdownSky.CFrame * CFrame.new(0, 0, -0.3)
+updateCountdownSkyBig.Parent = workspace
+
+local updateCountdownBig = updateCountdown:Clone()
+updateCountdownBig.Name = "UpdateCountdownBig"
+updateCountdownBig.Adornee = updateCountdownSkyBig
+updateCountdownBig.PixelsPerStud = 1.680672268907563
+updateCountdownBig:ClearAllChildren()
+local root2 = Instance.new("Frame")
+root2.Name = "Root"
+root2.BackgroundTransparency = 1
+root2.Size = UDim2.fromScale(1, 1)
+root2.Parent = updateCountdownBig
+local v70 = text("Big", 300, 62, 560, 84, fontFace, 4, root2)
+v70.holder.Visible = false
+local v71 = {v64, v65, v66}
+local v72 = {}
+local ceilingValue = math.ceil(#updateCountdown2.ranks / 2)
+
+for v74, rank in updateCountdown2.ranks do
+    local v76 = if v74 <= ceilingValue then 310 - (ceilingValue - v74) * 74 else 890 + ((v74 - ceilingValue) - 1) * 74
+    local rank2, img
+    local v79
+    local v80 = false
+    local frame = Instance.new("Frame")
+    frame.Name = rank.name
+    frame.BackgroundTransparency = 1
+    frame.AnchorPoint = Vector2.new(0.5, 0.5)
+    frame.Position = UDim2.fromOffset(v76, 168)
+    frame.Size = UDim2.fromOffset(62, 62)
+    frame.Parent = root
+
+    local emblem2 = Instance.new("ImageLabel")
+    emblem2.Name = "Emblem"
+    emblem2.BackgroundTransparency = 1
+
+    if const ranks = UIAssets.Ranks then
+        rank2 = ranks[string.lower(rank.name)]
+
+        if rank2 then
+            v79 = rank2
+        else
+            v80 = true
         end
     else
-        local function inLobby()
+        v80 = true
+    end
+
+    if v80 then
+        img = rank.img
+
+        if img then
+            v79 = img
+        else
+            v79 = ""
+        end
+    end
+
+    emblem2.Image = v79
+    emblem2.ScaleType = Enum.ScaleType.Fit
+    emblem2.Size = UDim2.fromScale(1, 1)
+    emblem2.Parent = frame
+    local scale = Instance.new("UIScale")
+    scale.Parent = frame
+    table.insert(v72, {cell = frame, img = emblem2, scale = scale})
+end
+
+local hero = Instance.new("Frame")
+hero.Name = "Hero"
+hero.BackgroundTransparency = 1
+hero.AnchorPoint = Vector2.new(0.5, 0.5)
+hero.Position = UDim2.fromOffset(640, 120)
+hero.Size = UDim2.fromOffset(620, 210)
+hero.Visible = false
+hero.ZIndex = 3
+hero.Parent = root
+
+local instance = Instance.new("UIScale")
+instance.Parent = hero
+
+local glow = Instance.new("ImageLabel")
+glow.Name = "Glow"
+glow.BackgroundTransparency = 1
+glow.Image = "rbxassetid://90962482350826"
+glow.ImageTransparency = 1
+glow.ScaleType = Enum.ScaleType.Stretch
+glow.AnchorPoint = Vector2.new(0.5, 0.5)
+glow.Position = UDim2.fromOffset(100, 105)
+glow.Size = UDim2.fromOffset(300, 300)
+glow.Parent = hero
+
+local instance2 = Instance.new("UIScale")
+instance2.Parent = glow
+
+local emblem3 = Instance.new("ImageLabel")
+emblem3.Name = "Emblem"
+emblem3.BackgroundTransparency = 1
+emblem3.ScaleType = Enum.ScaleType.Fit
+emblem3.AnchorPoint = Vector2.new(0.5, 0.5)
+emblem3.Position = UDim2.fromOffset(100, 105)
+emblem3.Size = UDim2.fromOffset(180, 180)
+emblem3.ZIndex = 4
+emblem3.Parent = hero
+local v90 = text("Kicker", 370, 66, 320, 30, fontFace2, 2, hero)
+local v91 = text("HeroName", 370, 124, 320, 80, fontFace, 4, hero)
+
+for _, v93 in {v90, v91} do
+    local v94 = v93
+    v94.label.TextXAlignment = Enum.TextXAlignment.Left
+    v94.shadow.TextXAlignment = Enum.TextXAlignment.Left
+    v94.label.ZIndex = 5
+    v94.shadow.ZIndex = 4
+end
+
+v90.label.Text = "NEW RANK REVEALED"
+v90.shadow.Text = "NEW RANK REVEALED"
+v90.label.TextColor3 = gold
+local flyer = Instance.new("ImageLabel")
+flyer.Name = "Flyer"
+flyer.BackgroundTransparency = 1
+flyer.ScaleType = Enum.ScaleType.Fit
+flyer.AnchorPoint = Vector2.new(0.5, 0.5)
+flyer.Visible = false
+flyer.ZIndex = 6
+flyer.Parent = root
+updateCountdown.Parent = localPlayer:WaitForChild("PlayerGui")
+updateCountdownBig.Parent = localPlayer:WaitForChild("PlayerGui")
+local updateCountdownBanner = Instance.new("ScreenGui")
+updateCountdownBanner.Name = "UpdateCountdownBanner"
+updateCountdownBanner.ResetOnSpawn = false
+updateCountdownBanner.DisplayOrder = 30
+updateCountdownBanner.IgnoreGuiInset = false
+updateCountdownBanner.Parent = localPlayer:WaitForChild("PlayerGui")
+
+local banner = Instance.new("Frame")
+banner.Name = "Banner"
+banner.AnchorPoint = Vector2.new(0.5, 1)
+banner.Position = UDim2.new(0.5, 0, 0, -10)
+banner.Size = UDim2.fromOffset(420, 92)
+banner.BackgroundColor3 = color3FromRGB(14, 17, 24)
+banner.BackgroundTransparency = 0.08
+banner.Visible = false
+banner.Parent = updateCountdownBanner
+
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 14)
+uiCorner.Parent = banner
+
+local uiStroke = Instance.new("UIStroke")
+uiStroke.Thickness = 2
+uiStroke.Color = gold
+uiStroke.Transparency = 0.25
+uiStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+uiStroke.Parent = banner
+
+local imageLabel = Instance.new("ImageLabel")
+imageLabel.BackgroundTransparency = 1
+imageLabel.ScaleType = Enum.ScaleType.Fit
+imageLabel.Position = UDim2.fromOffset(12, 10)
+imageLabel.Size = UDim2.fromOffset(72, 72)
+imageLabel.Parent = banner
+
+local textLabel = Instance.new("TextLabel")
+textLabel.BackgroundTransparency = 1
+textLabel.Position = UDim2.fromOffset(98, 14)
+textLabel.Size = UDim2.new(1, -110, 0, 22)
+textLabel.FontFace = fontFace2
+textLabel.TextSize = 17
+textLabel.TextColor3 = gold
+textLabel.TextXAlignment = Enum.TextXAlignment.Left
+textLabel.Text = "NEW RANK REVEALED"
+textLabel.Parent = banner
+
+local textLabel2 = Instance.new("TextLabel")
+textLabel2.BackgroundTransparency = 1
+textLabel2.Position = UDim2.fromOffset(98, 38)
+textLabel2.Size = UDim2.new(1, -110, 0, 40)
+textLabel2.FontFace = fontFace
+textLabel2.TextScaled = true
+textLabel2.TextColor3 = colors.White
+textLabel2.TextXAlignment = Enum.TextXAlignment.Left
+textLabel2.Parent = banner
+local count = 0
+
+local function showBanner(rank)
+    --[[
+      name: showBanner
+      line: 368
+      upvalues:
+        count (ref,  index: 1)
+        imageLabel (copy, index: 2)
+        UIAssets (copy, index: 3)
+        textLabel2 (copy, index: 4)
+        banner (copy, index: 5)
+        tweenService (copy, index: 6)
+    ]]
+    count += 1
+    local v106 = count
+    local ranks = UIAssets.Ranks
+    imageLabel.Image = ranks and ranks[string.lower(rank.name)] or rank.img or ""
+    textLabel2.Text = rank.name
+    banner.Position = UDim2.new(0.5, 0, 0, -10)
+    banner.Visible = true
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+    local propertyTable = {Position = UDim2.new(0.5, 0, 0, 110)}
+    tweenService:Create(banner, tweenInfo, propertyTable):Play()
+
+    task.delay(
+        4.2,
+        function()
             --[[
-              name: inLobby
-              line: 100
+              line: 376
               upvalues:
-                LocalPlayer_upv_1 (copy, index: 1)
+                count (ref,  index: 1)
+                v106 (copy, index: 2)
+                tweenService (copy, index: 3)
+                banner (copy, index: 4)
             ]]
-            local v6 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-            return v6
-        end
-        local function now()
-            --[[
-              name: now
-              line: 105
-              upvalues:
-                Workspace_upv_1 (copy, index: 1)
-                UPDATE_COUNTDOWN_upv_1 (copy, index: 2)
-            ]]
-            local v7 = Workspace_upv_1:GetServerTimeNow()
-            local v8 = Workspace_upv_1:GetAttribute("CountdownPreview")
-            local v9 = Workspace_upv_1:GetAttribute("CountdownPreviewAt")
-            if type(v8) == "number" and type(v9) == "number" then
-                return (UPDATE_COUNTDOWN_upv_1.at - v8) + (v7 - v9)
-            end
-            return v7
-        end
-        local function play(a1)
-            --[[
-              name: play
-              line: 114
-              upvalues:
-                Sfx_upv_1 (ref, index: 1)
-            ]]
-            if not Sfx_upv_1 then
-                return
-            end
-            pcall(Sfx_upv_1.PlayUI, a1)
-        end
-        local u4 = Instance.new("Part")
-        u4.Name = "UpdateCountdownSky"
-        u4.Anchored = true
-        u4.CanCollide = false
-        u4.CanQuery = false
-        u4.CanTouch = false
-        u4.CastShadow = false
-        u4.Transparency = 1
-        u4.Size = Vector3.new(357, 64, 0.20000000298023224)
-        u4.CFrame = CFrame.lookAt(Vector3.new(0, 66, -135), Vector3.new(0, 9, 120))
-        u4.Parent = Workspace_upv_1
-        local u5 = Instance.new("SurfaceGui")
-        u5.Name = "UpdateCountdown"
-        u5.Adornee = u4
-        u5.Face = Enum.NormalId.Front
-        u5.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-        u5.PixelsPerStud = 3.361344537815126
-        u5.LightInfluence = 0
-        u5.Brightness = 1.25
-        u5.MaxDistance = 2000
-        u5.ResetOnSpawn = false
-        u5.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-        local u6 = Instance.new("Frame")
-        u6.Name = "Root"
-        u6.BackgroundTransparency = 1
-        u6.Size = UDim2.fromScale(1, 1)
-        u6.Parent = u5
-        local v10 = Instance.new("ImageLabel")
-        v10.Name = "Plate"
-        v10.BackgroundTransparency = 1
-        v10.Image = "rbxassetid://90962482350826"
-        v10.ImageColor3 = u3
-        v10.ImageTransparency = 0.3
-        v10.ScaleType = Enum.ScaleType.Stretch
-        v10.AnchorPoint = Vector2.new(0.5, 0.5)
-        v10.Position = UDim2.fromOffset(600, 112)
-        v10.Size = UDim2.fromOffset(1240, 300)
-        v10.Parent = u6
-        local function text(a1, a2, a3, a4, a5, a6, a7, a8)
-            --[[
-              name: text
-              line: 155
-              upvalues:
-                u6 (copy, index: 1)
-                u3 (copy, index: 2)
-                Colors_upv_1 (copy, index: 3)
-            ]]
-            local u7 = Instance.new("Frame")
-            u7.Name = a1
-            u7.BackgroundTransparency = 1
-            u7.AnchorPoint = Vector2.new(0.5, 0.5)
-            u7.Position = UDim2.fromOffset(a2, a3)
-            u7.Size = UDim2.fromOffset(a4, a5)
-            u7.Parent = a8 or u6
-            local v12 = Instance.new("UIScale")
-            v12.Parent = u7
-            local function mk_1(a9, a10, a11, a12, a13)
-                --[[
-                  name: mk
-                  line: 165
-                  upvalues:
-                    a6 (copy, index: 1)
-                    u7 (copy, index: 2)
-                ]]
-                local v13 = Instance.new("TextLabel")
-                v13.Name = a9
-                v13.BackgroundTransparency = 1
-                v13.TextScaled = true
-                v13.FontFace = a6
-                v13.TextColor3 = a11
-                v13.TextTransparency = a12
-                v13.Position = UDim2.fromOffset(0, a10)
-                v13.Size = UDim2.fromScale(1, 1)
-                v13.Text = ""
-                v13.ZIndex = a13
-                v13.Parent = u7
-                return v13
-            end
-            local v14 = mk_1("Shadow", a7, u3, 0.45, 1)
-            local tbl_1 = {}
-            tbl_1.label = mk_1("Text", 0, Colors_upv_1.White, 0, 2)
-            tbl_1.shadow = v14
-            tbl_1.holder = u7
-            tbl_1.scale = v12
-            return tbl_1
-        end
-        local u8 = text("Title", 600, 82, 1000, 84, v2, 4)
-        u8.label.Text = UPDATE_COUNTDOWN_upv_1.title
-        u8.shadow.Text = UPDATE_COUNTDOWN_upv_1.title
-        local u9 = text("Timer", 600, 168, 480, 74, v2, 4)
-        local u10 = text("When", 600, 22, 600, 24, v3, 2)
-        local u11 = u4:Clone()
-        u11.Name = "UpdateCountdownSkyBig"
-        u11.CFrame = u4.CFrame * CFrame.new(0, 0, -0.3)
-        u11.Parent = Workspace_upv_1
-        local u12 = u5:Clone()
-        u12.Name = "UpdateCountdownBig"
-        u12.Adornee = u11
-        u12.PixelsPerStud = 1.680672268907563
-        u12:ClearAllChildren()
-        local v15 = Instance.new("Frame")
-        v15.Name = "Root"
-        v15.BackgroundTransparency = 1
-        v15.Size = UDim2.fromScale(1, 1)
-        v15.Parent = u12
-        local u13 = text("Big", 300, 62, 560, 84, v2, 4, v15)
-        u13.holder.Visible = false
-        local tbl_upv_2 = {u8, u9, u10}
-        local tbl_upv_3 = {}
-        local v16 = math.ceil(#UPDATE_COUNTDOWN_upv_1.ranks / 2)
-        for key_1, value_1 in UPDATE_COUNTDOWN_upv_1.ranks do
-            local v17 = ((key_1 <= v16) and (310 - (v16 - key_1) * 74)) or (890 + ((key_1 - v16) - 1) * 74)
-            local v18 = Instance.new("Frame")
-            v18.Name = value_1.name
-            v18.BackgroundTransparency = 1
-            v18.AnchorPoint = Vector2.new(0.5, 0.5)
-            v18.Position = UDim2.fromOffset(v17, 168)
-            v18.Size = UDim2.fromOffset(62, 62)
-            v18.Parent = u6
-            local v19 = Instance.new("ImageLabel")
-            v19.Name = "Emblem"
-            v19.BackgroundTransparency = 1
-            local Ranks_2 = UIAssets_upv_1.Ranks
-            local v20 = (Ranks_2 and (Ranks_2[string.lower(value_1.name)])) or (value_1.img or "")
-            v19.Image = v20
-            v19.ScaleType = Enum.ScaleType.Fit
-            v19.Size = UDim2.fromScale(1, 1)
-            v19.Parent = v18
-            local v21 = Instance.new("UIScale")
-            v21.Parent = v18
-            table.insert(tbl_upv_3, {cell = v18, img = v19, scale = v21})
-        end
-        local u14 = Instance.new("Frame")
-        u14.Name = "Hero"
-        u14.BackgroundTransparency = 1
-        u14.AnchorPoint = Vector2.new(0.5, 0.5)
-        u14.Position = UDim2.fromOffset(640, 120)
-        u14.Size = UDim2.fromOffset(620, 210)
-        u14.Visible = false
-        u14.ZIndex = 3
-        u14.Parent = u6
-        local u15 = Instance.new("UIScale")
-        u15.Parent = u14
-        local u16 = Instance.new("ImageLabel")
-        u16.Name = "Glow"
-        u16.BackgroundTransparency = 1
-        u16.Image = "rbxassetid://90962482350826"
-        u16.ImageTransparency = 1
-        u16.ScaleType = Enum.ScaleType.Stretch
-        u16.AnchorPoint = Vector2.new(0.5, 0.5)
-        u16.Position = UDim2.fromOffset(100, 105)
-        u16.Size = UDim2.fromOffset(300, 300)
-        u16.Parent = u14
-        local u17 = Instance.new("UIScale")
-        u17.Parent = u16
-        local u18 = Instance.new("ImageLabel")
-        u18.Name = "Emblem"
-        u18.BackgroundTransparency = 1
-        u18.ScaleType = Enum.ScaleType.Fit
-        u18.AnchorPoint = Vector2.new(0.5, 0.5)
-        u18.Position = UDim2.fromOffset(100, 105)
-        u18.Size = UDim2.fromOffset(180, 180)
-        u18.ZIndex = 4
-        u18.Parent = u14
-        local u19 = text("Kicker", 370, 66, 320, 30, v3, 2, u14)
-        local u20 = text("HeroName", 370, 124, 320, 80, v2, 4, u14)
-        for _, value_2 in {u19, u20} do
-            value_2.label.TextXAlignment = Enum.TextXAlignment.Left
-            value_2.shadow.TextXAlignment = Enum.TextXAlignment.Left
-            value_2.label.ZIndex = 5
-            value_2.shadow.ZIndex = 4
-        end
-        u19.label.Text = "NEW RANK REVEALED"
-        u19.shadow.Text = "NEW RANK REVEALED"
-        u19.label.TextColor3 = Gold_upv_1
-        local u21 = Instance.new("ImageLabel")
-        u21.Name = "Flyer"
-        u21.BackgroundTransparency = 1
-        u21.ScaleType = Enum.ScaleType.Fit
-        u21.AnchorPoint = Vector2.new(0.5, 0.5)
-        u21.Visible = false
-        u21.ZIndex = 6
-        u21.Parent = u6
-        u5.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-        u12.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-        local u22 = Instance.new("ScreenGui")
-        u22.Name = "UpdateCountdownBanner"
-        u22.ResetOnSpawn = false
-        u22.DisplayOrder = 30
-        u22.IgnoreGuiInset = false
-        u22.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-        local u23 = Instance.new("Frame")
-        u23.Name = "Banner"
-        u23.AnchorPoint = Vector2.new(0.5, 1)
-        u23.Position = UDim2.new(0.5, 0, 0, -10)
-        u23.Size = UDim2.fromOffset(420, 92)
-        u23.BackgroundColor3 = fromRGB_upv_1(14, 17, 24)
-        u23.BackgroundTransparency = 0.08
-        u23.Visible = false
-        u23.Parent = u22
-        local u24 = Instance.new("UICorner")
-        u24.CornerRadius = UDim.new(0, 14)
-        u24.Parent = u23
-        u24 = Instance.new("UIStroke")
-        u24.Thickness = 2
-        u24.Color = Gold_upv_1
-        u24.Transparency = 0.25
-        u24.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-        u24.Parent = u23
-        u24 = Instance.new("ImageLabel")
-        u24.BackgroundTransparency = 1
-        u24.ScaleType = Enum.ScaleType.Fit
-        u24.Position = UDim2.fromOffset(12, 10)
-        u24.Size = UDim2.fromOffset(72, 72)
-        u24.Parent = u23
-        local v22 = Instance.new("TextLabel")
-        v22.BackgroundTransparency = 1
-        v22.Position = UDim2.fromOffset(98, 14)
-        v22.Size = UDim2.new(1, -110, 0, 22)
-        v22.FontFace = v3
-        v22.TextSize = 17
-        v22.TextColor3 = Gold_upv_1
-        v22.TextXAlignment = Enum.TextXAlignment.Left
-        v22.Text = "NEW RANK REVEALED"
-        v22.Parent = u23
-        local u25 = Instance.new("TextLabel")
-        u25.BackgroundTransparency = 1
-        u25.Position = UDim2.fromOffset(98, 38)
-        u25.Size = UDim2.new(1, -110, 0, 40)
-        u25.FontFace = v2
-        u25.TextScaled = true
-        u25.TextColor3 = Colors_upv_1.White
-        u25.TextXAlignment = Enum.TextXAlignment.Left
-        u25.Parent = u23
-        local u26 = 0
-        local function showBanner(a1)
-            --[[
-              name: showBanner
-              line: 368
-              upvalues:
-                u26 (ref,  index: 1)
-                u24 (copy, index: 2)
-                UIAssets_upv_1 (copy, index: 3)
-                u25 (copy, index: 4)
-                u23 (copy, index: 5)
-                TweenService_upv_1 (copy, index: 6)
-            ]]
-            u26 = u26 + 1
-            local u27 = u26
-            local Ranks_3 = UIAssets_upv_1.Ranks
-            u24.Image = Ranks_3 and Ranks_3[string.lower(a1.name)] or a1.img or ""
-            u25.Text = a1.name
-            u23.Position = UDim2.new(0.5, 0, 0, -10)
-            u23.Visible = true
-            local v24 = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-            local tbl_4 = {}
-            tbl_4.Position = UDim2.new(0.5, 0, 0, 110)
-            TweenService_upv_1:Create(u23, v24, tbl_4):Play()
-            task.delay(
-                4.2,
-                function()
-                    --[[
-                      line: 376
-                      upvalues:
-                        u26 (ref,  index: 1)
-                        u27 (copy, index: 2)
-                        TweenService_upv_1 (copy, index: 3)
-                        u23 (copy, index: 4)
-                    ]]
-                    if u26 == u27 then
-                        local v25 = TweenService_upv_1:Create(u23, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(0.5, 0, 0, -10)})
-                        v25.Completed:Once(
-                            function()
-                                --[[
-                                  line: 379
-                                  upvalues:
-                                    u26 (ref,  index: 1)
-                                    u27 (copy, index: 2)
-                                    u23 (copy, index: 3)
-                                ]]
-                                if u26 ~= u27 then
-                                    return
-                                end
-                                u23.Visible = false
-                            end
-                        )
-                        v25:Play()
+            if count == v106 then
+                local tween = tweenService:Create(banner, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(0.5, 0, 0, -10)})
+
+                tween.Completed:Once(
+                    function()
+                        --[[
+                          line: 379
+                          upvalues:
+                            count (ref,  index: 1)
+                            v106 (copy, index: 2)
+                            banner (copy, index: 3)
+                        ]]
+                        if count == v106 then
+                            banner.Visible = false
+                        end
                     end
-                end
-            )
-        end
-        local u28 = Instance.new("Folder")
-        u28.Name = "UpdateCountdownFx"
-        u28.Parent = Workspace_upv_1
-        local u29 = Random.new()
-        local RightVector_upv_1 = u4.CFrame.RightVector
-        local UpVector_upv_1 = u4.CFrame.UpVector
-        local u30 = -u4.CFrame.LookVector
-        local function around(a1, a2, a3)
-            --[[
-              name: around
-              line: 401
-              upvalues:
-                RightVector_upv_1 (copy, index: 1)
-                UpVector_upv_1 (copy, index: 2)
-                u30 (copy, index: 3)
-            ]]
-            return ((Vector3.new(0, 66, -135) + (RightVector_upv_1 * a1)) + (UpVector_upv_1 * a2)) + (u30 * (a3 or 30))
-        end
-        local tbl_upv_5 = {}
-        local function fwSound(a1, a2, a3, a4)
-            --[[
-              name: fwSound
-              line: 410
-              upvalues:
-                Sfx_upv_1 (ref,  index: 1)
-                tbl_upv_5 (copy, index: 2)
-                u29 (copy, index: 3)
-            ]]
-            if not Sfx_upv_1 or (os.clock() - (tbl_upv_5[a1] or 0) < a2) then
-                return
+                )
+
+                tween:Play()
             end
-            tbl_upv_5[a1] = os.clock()
-            task.delay(
-                a3,
-                function()
-                    --[[
-                      line: 415
-                      upvalues:
-                        Sfx_upv_1 (ref,  index: 1)
-                        a1 (copy, index: 2)
-                        a4 (copy, index: 3)
-                        u29 (copy, index: 4)
-                    ]]
-                    pcall(Sfx_upv_1.Play, a1, nil, {volume = a4, pitch = u29:NextNumber(0.94, 1.06)})
-                end
-            )
         end
-        local function boom(a1)
+    )
+end
+
+local updateCountdownFx = Instance.new("Folder")
+updateCountdownFx.Name = "UpdateCountdownFx"
+updateCountdownFx.Parent = workspace
+local random = Random.new()
+local rightVector = updateCountdownSky.CFrame.RightVector
+local upVector = updateCountdownSky.CFrame.UpVector
+local vector3 = -updateCountdownSky.CFrame.LookVector
+
+local function around(a117, a118, a119)
+    --[[
+      name: around
+      line: 401
+      upvalues:
+        rightVector (copy, index: 1)
+        upVector (copy, index: 2)
+        vector3 (copy, index: 3)
+    ]]
+    return (Vector3.new(0, 66, -135) + (rightVector * a117)) + (upVector * a118) + (vector3 * (a119 or 30))
+end
+
+local v120 = {}
+
+local function fwSound(key: string, a123: number, a124: number, volume: number)
+    --[[
+      name: fwSound
+      line: 410
+      upvalues:
+        Sfx (ref,  index: 1)
+        v120 (copy, index: 2)
+        random (copy, index: 3)
+    ]]
+    if not Sfx or os.clock() - (v120[key] or 0) < a123 then
+        return
+    end
+
+    v120[key] = os.clock()
+    task.delay(
+        a124,
+        function()
             --[[
-              name: boom
-              line: 419
+              line: 415
               upvalues:
-                fwSound (copy, index: 1)
+                Sfx (ref,  index: 1)
+                key (copy, index: 2)
+                volume (copy, index: 3)
+                random (copy, index: 4)
             ]]
-            fwSound("Firework/Explode", 0.25, 0.15, 1)
-            fwSound("Firework/Crackle", 0.6, 0.45, 1)
+            pcall(Sfx.Play, key, nil, {volume = volume, pitch = random:NextNumber(0.94, 1.06)})
         end
-        local function burst(a1, a2, a3)
+    )
+end
+
+local function boom(a127)
+    --[[
+      name: boom
+      line: 419
+      upvalues:
+        fwSound (copy, index: 1)
+    ]]
+    fwSound("Firework/Explode", 0.25, 0.15, 1)
+    fwSound("Firework/Crackle", 0.6, 0.45, 1)
+end
+
+local function burst(a129, startValue, a131)
+    --[[
+      name: burst
+      line: 424
+      upvalues:
+        updateCountdownFx (copy, index: 1)
+        colors (copy, index: 2)
+    ]]
+    local parent = Instance.new("Part")
+    parent.Anchored = true
+    parent.CanCollide = false
+    parent.CanQuery = false
+    parent.CanTouch = false
+    parent.Transparency = 1
+    parent.Size = Vector3.new(1, 1, 1)
+    parent.CFrame = CFrame.new(a129)
+    parent.Parent = updateCountdownFx
+
+    local function emitter(particleCount: number, a135, a136, a137: number, interpolatedValue, brightness: number)
+        --[[
+          name: emitter
+          line: 434
+          upvalues:
+            startValue (copy, index: 1)
+            parent (copy, index: 2)
+        ]]
+        local particleEmitter = Instance.new("ParticleEmitter")
+        particleEmitter.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+        particleEmitter.LightEmission = 1
+        particleEmitter.LightInfluence = 0
+        particleEmitter.Brightness = brightness
+        particleEmitter.Color = ColorSequence.new(interpolatedValue, startValue)
+        particleEmitter.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, a135), NumberSequenceKeypoint.new(0.7, a135 * 0.6), NumberSequenceKeypoint.new(1, 0)})
+        particleEmitter.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.75, 0.15), NumberSequenceKeypoint.new(1, 1)})
+        particleEmitter.Lifetime = NumberRange.new(a137 * 0.75, a137)
+        particleEmitter.Speed = NumberRange.new(a136 * 0.8, a136)
+        particleEmitter.SpreadAngle = Vector2.new(180, 180)
+        particleEmitter.Acceleration = Vector3.new(0, -22, 0)
+        particleEmitter.Drag = 1.6
+        particleEmitter.Rate = 0
+        particleEmitter.RotSpeed = NumberRange.new(-180, 180)
+        particleEmitter.Parent = parent
+        particleEmitter:Emit(particleCount)
+    end
+
+    emitter(math.floor(a131 * 120), a131 * 8, a131 * 72, 2, startValue:Lerp(colors.White, 0.1), 3)
+    emitter(math.floor(a131 * 26), a131 * 4, a131 * 36, 2.6, startValue:Lerp(colors.White, 0.6), 2)
+    task.delay(
+        4,
+        function()
             --[[
-              name: burst
-              line: 424
+              line: 456
               upvalues:
-                u28 (copy, index: 1)
-                Colors_upv_1 (copy, index: 2)
+                parent (copy, index: 1)
             ]]
-            local u31 = Instance.new("Part")
-            u31.Anchored = true
-            u31.CanCollide = false
-            u31.CanQuery = false
-            u31.CanTouch = false
-            u31.Transparency = 1
-            u31.Size = Vector3.new(1, 1, 1)
-            u31.CFrame = CFrame.new(a1)
-            u31.Parent = u28
-            local function emitter_1(a4, a5, a6, a7, a8, a9)
-                --[[
-                  name: emitter
-                  line: 434
-                  upvalues:
-                    a2 (copy, index: 1)
-                    u31 (copy, index: 2)
-                ]]
-                local v26 = Instance.new("ParticleEmitter")
-                v26.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-                v26.LightEmission = 1
-                v26.LightInfluence = 0
-                v26.Brightness = a9
-                v26.Color = ColorSequence.new(a8, a2)
-                v26.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, a5), NumberSequenceKeypoint.new(0.7, a5 * 0.6), NumberSequenceKeypoint.new(1, 0)})
-                v26.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.75, 0.15), NumberSequenceKeypoint.new(1, 1)})
-                v26.Lifetime = NumberRange.new(a7 * 0.75, a7)
-                v26.Speed = NumberRange.new(a6 * 0.8, a6)
-                v26.SpreadAngle = Vector2.new(180, 180)
-                v26.Acceleration = Vector3.new(0, -22, 0)
-                v26.Drag = 1.6
-                v26.Rate = 0
-                v26.RotSpeed = NumberRange.new(-180, 180)
-                v26.Parent = u31
-                v26:Emit(a4)
-            end
-            emitter_1(math.floor(a3 * 120), a3 * 8, a3 * 72, 2, a2:Lerp(Colors_upv_1.White, 0.1), 3)
-            emitter_1(math.floor(a3 * 26), a3 * 4, a3 * 36, 2.6, a2:Lerp(Colors_upv_1.White, 0.6), 2)
-            task.delay(
-                4,
-                function()
-                    --[[
-                      line: 456
-                      upvalues:
-                        u31 (copy, index: 1)
-                    ]]
-                    u31:Destroy()
-                end
-            )
+            parent:Destroy()
         end
-        local tbl_upv_6 = {fromRGB_upv_1(255, 204, 64), fromRGB_upv_1(255, 92, 92), fromRGB_upv_1(86, 202, 255), fromRGB_upv_1(186, 116, 255), fromRGB_upv_1(120, 236, 150), fromRGB_upv_1(255, 150, 80)}
-        local function rocket(a1, a2, a3)
+    )
+end
+
+local function rocket(a142, startValue, a144)
+    --[[
+      name: rocket
+      line: 462
+      upvalues:
+        random (copy, index: 1)
+        colors (copy, index: 2)
+        updateCountdownFx (copy, index: 3)
+        tweenService (copy, index: 4)
+        burst (copy, index: 5)
+        fwSound (copy, index: 6)
+    ]]
+    local vector3 = Vector3.new(a142.X + random:NextNumber(-20, 20), 30, a142.Z + random:NextNumber(-10, 10))
+    local instance = Instance.new("Part")
+    instance.Anchored = true
+    instance.CanCollide = false
+    instance.CanQuery = false
+    instance.CanTouch = false
+    instance.CastShadow = false
+    instance.Material = Enum.Material.Neon
+    instance.Color = startValue:Lerp(colors.White, 0.5)
+    instance.Size = Vector3.new(1.600000023841858, 1.600000023841858, 1.600000023841858)
+    instance.Shape = Enum.PartType.Ball
+    instance.CFrame = CFrame.new(vector3)
+
+    local attachment0 = Instance.new("Attachment")
+    attachment0.Position = Vector3.new(0, 0.800000011920929, 0)
+    attachment0.Parent = instance
+
+    local attachment1 = Instance.new("Attachment")
+    attachment1.Position = Vector3.new(0, -0.800000011920929, 0)
+    attachment1.Parent = instance
+
+    local trail = Instance.new("Trail")
+    trail.Attachment0 = attachment0
+    trail.Attachment1 = attachment1
+    trail.Lifetime = 0.45
+    trail.LightEmission = 1
+    trail.FaceCamera = true
+    trail.Color = ColorSequence.new(startValue:Lerp(colors.White, 0.6), startValue)
+    trail.Transparency = NumberSequence.new(0, 1)
+    trail.WidthScale = NumberSequence.new(1, 0)
+    trail.Parent = instance
+    instance.Parent = updateCountdownFx
+    local tween = tweenService:Create(instance, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {CFrame = CFrame.new(a142)})
+
+    tween.Completed:Once(
+        function()
             --[[
-              name: rocket
-              line: 462
+              line: 493
               upvalues:
-                u29 (copy, index: 1)
-                Colors_upv_1 (copy, index: 2)
-                u28 (copy, index: 3)
-                TweenService_upv_1 (copy, index: 4)
-                burst (copy, index: 5)
+                instance (copy, index: 1)
+                burst (copy, index: 2)
+                a142 (copy, index: 3)
+                startValue (copy, index: 4)
+                a144 (copy, index: 5)
                 fwSound (copy, index: 6)
             ]]
-            local v27 = Vector3.new(a1.X + u29:NextNumber(-20, 20), 30, a1.Z + u29:NextNumber(-10, 10))
-            local u32 = Instance.new("Part")
-            u32.Anchored = true
-            u32.CanCollide = false
-            u32.CanQuery = false
-            u32.CanTouch = false
-            u32.CastShadow = false
-            u32.Material = Enum.Material.Neon
-            u32.Color = a2:Lerp(Colors_upv_1.White, 0.5)
-            u32.Size = Vector3.new(1.600000023841858, 1.600000023841858, 1.600000023841858)
-            u32.Shape = Enum.PartType.Ball
-            u32.CFrame = CFrame.new(v27)
-            v27 = Instance.new("Attachment")
-            v27.Position = Vector3.new(0, 0.800000011920929, 0)
-            v27.Parent = u32
-            local v28 = Instance.new("Attachment")
-            v28.Position = Vector3.new(0, -0.800000011920929, 0)
-            v28.Parent = u32
-            local v29 = Instance.new("Trail")
-            v29.Attachment0 = v27
-            v29.Attachment1 = v28
-            v29.Lifetime = 0.45
-            v29.LightEmission = 1
-            v29.FaceCamera = true
-            v29.Color = ColorSequence.new(a2:Lerp(Colors_upv_1.White, 0.6), a2)
-            v29.Transparency = NumberSequence.new(0, 1)
-            v29.WidthScale = NumberSequence.new(1, 0)
-            v29.Parent = u32
-            u32.Parent = u28
-            local v30 = TweenService_upv_1:Create(u32, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {CFrame = CFrame.new(a1)})
-            v30.Completed:Once(
-                function()
-                    --[[
-                      line: 493
-                      upvalues:
-                        u32 (copy, index: 1)
-                        burst (copy, index: 2)
-                        a1 (copy, index: 3)
-                        a2 (copy, index: 4)
-                        a3 (copy, index: 5)
-                        fwSound (copy, index: 6)
-                    ]]
-                    u32.Transparency = 1
-                    burst(a1, a2, a3)
-                    fwSound("Firework/Explode", 0.25, 0.15, 1)
-                    fwSound("Firework/Crackle", 0.6, 0.45, 1)
-                    task.delay(
-                        0.6,
-                        function()
-                            --[[
-                              line: 497
-                              upvalues:
-                                u32 (copy, index: 1)
-                            ]]
-                            u32:Destroy()
-                        end
-                    )
-                end
-            )
-            v30:Play()
-        end
-        local Lighting_2 = ReplicatedStorage_upv_1:FindFirstChild("Lighting")
-        local u33 = Lighting_2 and (Lighting_2:FindFirstChild("Lobby"))
-        local function base(a1, a2)
-            --[[
-              name: base
-              line: 529
-              upvalues:
-                u33 (copy, index: 1)
-            ]]
-            local v31
-            if u33 then
-                v31 = u33:GetAttribute(a1)
-            else
-                v31 = u33
-            end
-            if v31 == nil then
-                return a2
-            end
-            return v31
-        end
-        local v32 = u33 and (u33:FindFirstChildOfClass("Atmosphere"))
-        local tbl_upv_7 = {atmColor = 0, atmGlare = 0, atmHaze = 0, rays = 0, atmDensity = 0, outdoor = 0, clock = 0, brightness = 0, atmDecay = 0, shiftTop = 0}
-        local v33 = u33 and (u33:GetAttribute("ClockTime"))
-        local u34
-        if v33 == nil then
-            u34 = 16.3
-        else
-            u34 = v33
-        end
-        tbl_upv_7.clock = u34
-        local v34 = fromRGB_upv_1(214, 184, 140)
-        local v35 = u33 and (u33:GetAttribute("ColorShift_Top"))
-        if v35 == nil then
-            u34 = v34
-        else
-            u34 = v35
-        end
-        tbl_upv_7.shiftTop = u34
-        local v36 = u33 and (u33:GetAttribute("Brightness"))
-        if v36 == nil then
-            u34 = 2.5
-        else
-            u34 = v36
-        end
-        tbl_upv_7.brightness = u34
-        local v37 = fromRGB_upv_1(136, 128, 126)
-        local v38 = u33 and (u33:GetAttribute("OutdoorAmbient"))
-        if v38 == nil then
-            u34 = v37
-        else
-            u34 = v38
-        end
-        tbl_upv_7.outdoor = u34
-        if v32 then
-            u34 = v32.Color
-        else
-            u34 = fromRGB_upv_1(224, 210, 190)
-        end
-        tbl_upv_7.atmColor = u34
-        if v32 then
-            u34 = v32.Decay
-        else
-            u34 = fromRGB_upv_1(170, 160, 178)
-        end
-        tbl_upv_7.atmDecay = u34
-        tbl_upv_7.atmHaze = ((not v32) and 1.2) or (v32.Haze)
-        tbl_upv_7.atmDensity = ((not v32) and 0.24) or (v32.Density)
-        tbl_upv_7.atmGlare = ((not v32) and 0.08) or (v32.Glare)
-        local v39 = u33 and (u33:FindFirstChildOfClass("SunRaysEffect"))
-        if v39 then
-            u34 = v39.Intensity
-        else
-            u34 = 0.035
-        end
-        tbl_upv_7.rays = u34
-        local tbl_upv_8 = {bright = 2.9, density = 0.27, rays = 0.14, clock = 17.35, glare = 2.2, haze = 1.6}
-        tbl_upv_8.shiftTop = fromRGB_upv_1(255, 176, 110)
-        tbl_upv_8.atmColor = fromRGB_upv_1(255, 178, 130)
-        tbl_upv_8.atmDecay = fromRGB_upv_1(232, 128, 140)
-        tbl_upv_8.outdoor = fromRGB_upv_1(170, 132, 118)
-        local tbl_upv_9 = {bright = 2.6, density = 0.29, rays = 0.2, clock = 17.62, glare = 3, haze = 1.9}
-        tbl_upv_9.shiftTop = fromRGB_upv_1(255, 140, 100)
-        tbl_upv_9.atmColor = fromRGB_upv_1(255, 150, 120)
-        tbl_upv_9.atmDecay = fromRGB_upv_1(196, 98, 150)
-        tbl_upv_9.outdoor = fromRGB_upv_1(156, 112, 128)
-        u34 = Instance.new("ColorCorrectionEffect")
-        u34.Name = "UpdateCountdownGrade"
-        u34.Enabled = false
-        u34.Parent = CurrentCamera_1
-        local LightingController_upv_1 = nil
-        pcall(
-            function()
-                --[[
-                  line: 560
-                  upvalues:
-                    LightingController_upv_1 (ref, index: 1)
-                ]]
-                LightingController_upv_1 = require(script.Parent.Parent.Core.LightingController)
-            end
-        )
-        local function lobbyLit()
-            --[[
-              name: lobbyLit
-              line: 563
-              upvalues:
-                LightingController_upv_1 (ref, index: 1)
-            ]]
-            if not LightingController_upv_1 then
-                return true
-            end
-            local success_1, v40 = pcall(LightingController_upv_1.Current)
-            return success_1 and (v40 == "Lobby")
-        end
-        local tbl_upv_10 = {w = 0, d = 0}
-        local u35 = false
-        local function paintSky(a1, a2)
-            --[[
-              name: paintSky
-              line: 573
-              upvalues:
-                LocalPlayer_upv_1 (copy, index: 1)
-                LightingController_upv_1 (ref,  index: 2)
-                u34 (copy, index: 3)
-                u35 (ref,  index: 4)
-                Lighting_upv_1 (copy, index: 5)
-                tbl_upv_7 (copy, index: 6)
-                tbl_upv_8 (copy, index: 7)
-                tbl_upv_9 (copy, index: 8)
-                Colors_upv_1 (copy, index: 9)
-                fromRGB_upv_1 (copy, index: 10)
-            ]]
-            local v41 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-            if v41 then
-                if LightingController_upv_1 then
-                    local success_2, v42 = pcall(LightingController_upv_1.Current)
-                    v41 = success_2 and (v42 == "Lobby")
-                else
-                    v41 = true
-                end
-                if v41 then
-                    if a1 <= 0.001 and a2 <= 0.001 then
-                        if u35 then
-                            Lighting_upv_1.ClockTime = tbl_upv_7.clock
-                            Lighting_upv_1.ColorShift_Top = tbl_upv_7.shiftTop
-                            Lighting_upv_1.Brightness = tbl_upv_7.brightness
-                            Lighting_upv_1.OutdoorAmbient = tbl_upv_7.outdoor
-                            v41 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                            if v41 then
-                                v41.Color = tbl_upv_7.atmColor
-                                v41.Decay = tbl_upv_7.atmDecay
-                                v41.Haze = tbl_upv_7.atmHaze
-                                v41.Density = tbl_upv_7.atmDensity
-                                v41.Glare = tbl_upv_7.atmGlare
-                            end
-                            v41 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                            if v41 then
-                                v41.Intensity = tbl_upv_7.rays
-                            end
-                            u35 = false
-                        end
-                        u34.Enabled = false
-                        return
-                    end
-                    u35 = true
-                    local function mix_1(a3, a4, a5)
-                        --[[
-                          name: mix
-                          line: 600
-                          upvalues:
-                            a1 (copy, index: 1)
-                            a2 (copy, index: 2)
-                        ]]
-                        if typeof(a3) == "Color3" then
-                            return a3:Lerp(a4, a1):Lerp(a5, a2)
-                        end
-                        local v43 = a3 + (a4 - a3) * a1
-                        return v43 + ((a5 - v43) * a2)
-                    end
-                    local clock_1 = tbl_upv_7.clock
-                    local clock_2 = tbl_upv_8.clock
-                    local clock_3 = tbl_upv_9.clock
-                    local v42
-                    if typeof(clock_1) ~= "Color3" then
-                        local _ = clock_1 + (clock_2 - clock_1) * a1
-                        v42 = clock_1 + (clock_2 - clock_1) * a1 + (clock_3 - (clock_1 + (clock_2 - clock_1) * a1)) * a2
-                    else
-                        v42 = clock_1:Lerp(clock_2, a1):Lerp(clock_3, a2)
-                    end
-                    Lighting_upv_1.ClockTime = v42
-                    local shiftTop_1 = tbl_upv_7.shiftTop
-                    local shiftTop_2 = tbl_upv_8.shiftTop
-                    local shiftTop_3 = tbl_upv_9.shiftTop
-                    if typeof(shiftTop_1) ~= "Color3" then
-                        local _ = shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1
-                        v42 = shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1 + (shiftTop_3 - (shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1)) * a2
-                    else
-                        v42 = shiftTop_1:Lerp(shiftTop_2, a1):Lerp(shiftTop_3, a2)
-                    end
-                    Lighting_upv_1.ColorShift_Top = v42
-                    local brightness_1 = tbl_upv_7.brightness
-                    local bright_1 = tbl_upv_8.bright
-                    local bright_2 = tbl_upv_9.bright
-                    if typeof(brightness_1) ~= "Color3" then
-                        local _ = brightness_1 + (bright_1 - brightness_1) * a1
-                        v42 = brightness_1 + (bright_1 - brightness_1) * a1 + (bright_2 - (brightness_1 + (bright_1 - brightness_1) * a1)) * a2
-                    else
-                        v42 = brightness_1:Lerp(bright_1, a1):Lerp(bright_2, a2)
-                    end
-                    Lighting_upv_1.Brightness = v42
-                    local v44 = tbl_upv_7.outdoor
-                    local outdoor_1 = tbl_upv_8.outdoor
-                    local outdoor_2 = tbl_upv_9.outdoor
-                    if typeof(v44) ~= "Color3" then
-                        local _ = v44 + (outdoor_1 - v44) * a1
-                        v42 = v44 + (outdoor_1 - v44) * a1 + (outdoor_2 - (v44 + (outdoor_1 - v44) * a1)) * a2
-                    else
-                        v42 = v44:Lerp(outdoor_1, a1):Lerp(outdoor_2, a2)
-                    end
-                    Lighting_upv_1.OutdoorAmbient = v42
-                    local v45 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                    local v46 = nil
-                    if v45 then
-                        v46 = tbl_upv_7.rays
-                        local rays_1 = tbl_upv_8.rays
-                        local rays_2 = tbl_upv_9.rays
-                        if typeof(v46) ~= "Color3" then
-                            local _ = v46 + (rays_1 - v46) * a1
-                            v42 = v46 + (rays_1 - v46) * a1 + (rays_2 - (v46 + (rays_1 - v46) * a1)) * a2
-                        else
-                            v42 = v46:Lerp(rays_1, a1):Lerp(rays_2, a2)
-                        end
-                        v45.Intensity = v42
-                    end
-                    local v47 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                    local v48, v49, v50, v51, v52 = nil, nil, nil, nil, nil
-                    if v47 then
-                        v48 = tbl_upv_7.atmColor
-                        local atmColor_1 = tbl_upv_8.atmColor
-                        local atmColor_2 = tbl_upv_9.atmColor
-                        if typeof(v48) ~= "Color3" then
-                            local _ = v48 + (atmColor_1 - v48) * a1
-                            v42 = v48 + (atmColor_1 - v48) * a1 + (atmColor_2 - (v48 + (atmColor_1 - v48) * a1)) * a2
-                        else
-                            v42 = v48:Lerp(atmColor_1, a1):Lerp(atmColor_2, a2)
-                        end
-                        v47.Color = v42
-                        v49 = tbl_upv_7.atmDecay
-                        local atmDecay_1 = tbl_upv_8.atmDecay
-                        local atmDecay_2 = tbl_upv_9.atmDecay
-                        if typeof(v49) ~= "Color3" then
-                            local _ = v49 + (atmDecay_1 - v49) * a1
-                            v42 = v49 + (atmDecay_1 - v49) * a1 + (atmDecay_2 - (v49 + (atmDecay_1 - v49) * a1)) * a2
-                        else
-                            v42 = v49:Lerp(atmDecay_1, a1):Lerp(atmDecay_2, a2)
-                        end
-                        v47.Decay = v42
-                        v50 = tbl_upv_7.atmHaze
-                        local haze_1 = tbl_upv_8.haze
-                        local haze_2 = tbl_upv_9.haze
-                        if typeof(v50) ~= "Color3" then
-                            local _ = v50 + (haze_1 - v50) * a1
-                            v42 = v50 + (haze_1 - v50) * a1 + (haze_2 - (v50 + (haze_1 - v50) * a1)) * a2
-                        else
-                            v42 = v50:Lerp(haze_1, a1):Lerp(haze_2, a2)
-                        end
-                        v47.Haze = v42
-                        v51 = tbl_upv_7.atmDensity
-                        local density_1 = tbl_upv_8.density
-                        local density_2 = tbl_upv_9.density
-                        if typeof(v51) ~= "Color3" then
-                            local _ = v51 + (density_1 - v51) * a1
-                            v42 = v51 + (density_1 - v51) * a1 + (density_2 - (v51 + (density_1 - v51) * a1)) * a2
-                        else
-                            v42 = v51:Lerp(density_1, a1):Lerp(density_2, a2)
-                        end
-                        v47.Density = v42
-                        v52 = tbl_upv_7.atmGlare
-                        local glare_1 = tbl_upv_8.glare
-                        local glare_2 = tbl_upv_9.glare
-                        if typeof(v52) ~= "Color3" then
-                            local _ = v52 + (glare_1 - v52) * a1
-                            v42 = v52 + (glare_1 - v52) * a1 + (glare_2 - (v52 + (glare_1 - v52) * a1)) * a2
-                        else
-                            v42 = v52:Lerp(glare_1, a1):Lerp(glare_2, a2)
-                        end
-                        v47.Glare = v42
-                    end
-                    u34.Enabled = true
-                    local White_1 = Colors_upv_1.White
-                    local v53 = fromRGB_upv_1(255, 238, 222)
-                    local v54 = fromRGB_upv_1(255, 228, 226)
-                    if typeof(White_1) ~= "Color3" then
-                        local _ = White_1 + (v53 - White_1) * a1
-                        v44 = White_1 + (v53 - White_1) * a1 + (v54 - (White_1 + (v53 - White_1) * a1)) * a2
-                    else
-                        v44 = White_1:Lerp(v53, a1):Lerp(v54, a2)
-                    end
-                    u34.TintColor = v44
-                    u34.Saturation = a1 * 0.12
-                    u34.Contrast = a1 * 0.05
-                    u34.Brightness = a1 * 0.03
-                    return
-                end
-            end
-            u34.Enabled = false
-            u35 = false
-        end
-        local function localTime(a1)
-            --[[
-              name: localTime
-              line: 644
-            ]]
-            local success_3, v55 = pcall(function() end)
-            if success_3 then
-                return string.upper(v55) .. " YOUR TIME"
-            end
-            return ""
-        end
-        local at_upv_1 = UPDATE_COUNTDOWN_upv_1.at
-        local success_4, v56 = pcall(
-            function()
-                --[[
-                  line: 645
-                  upvalues:
-                    at_upv_1 (copy, index: 1)
-                ]]
-                return DateTime.fromUnixTimestamp(at_upv_1):FormatLocalTime("dddd h:mm A", "en-us")
-            end
-        )
-        local u36 = (success_4 and (string.upper(v56) .. " YOUR TIME")) or ""
-        local tbl_upv_11 = {}
-        local function set(a1, a2)
-            --[[
-              name: set
-              line: 653
-              upvalues:
-                tbl_upv_11 (copy, index: 1)
-            ]]
-            if tbl_upv_11[a1] == a2 then
-                return
-            end
-            tbl_upv_11[a1] = a2
-            a1.label.Text = a2
-            a1.shadow.Text = a2
-        end
-        local function paintSlot(a1, a2)
-            --[[
-              name: paintSlot
-              line: 668
-              upvalues:
-                tbl_upv_3 (copy, index: 1)
-                Colors_upv_1 (copy, index: 3)
-                u3 (copy, index: 4)
-            ]]
-            local v57 = tbl_upv_3[a1]
-            v57.out = a2
-            if a2 then
-                v57.img.ImageColor3 = Colors_upv_1.White
-                v57.img.ImageTransparency = 0
-            else
-                v57.img.ImageColor3 = u3
-                v57.img.ImageTransparency = 0.15
-            end
-        end
-        local u37 = false
-        local u38 = 0
-        local function fadeText(a1, a2)
-            --[[
-              name: fadeText
-              line: 661
-              upvalues:
-                tbl_upv_2 (copy, index: 1)
-                TweenService_upv_1 (copy, index: 2)
-            ]]
-            for _, value_3 in tbl_upv_2 do
-                local tbl_12 = {}
-                tbl_12.TextTransparency = a1
-                TweenService_upv_1:Create(value_3.label, TweenInfo.new(a2), tbl_12):Play()
-                local v58 = TweenInfo.new(a2)
-                local tbl_13 = {}
-                tbl_13.TextTransparency = math.max(a1, 0.45)
-                TweenService_upv_1:Create(value_3.shadow, v58, tbl_13):Play()
-            end
-        end
-        local function volley(a1, a2, a3, a4)
-            --[[
-              name: volley
-              line: 507
-              upvalues:
-                u29 (copy, index: 1)
-                LocalPlayer_upv_1 (copy, index: 2)
-                rocket (copy, index: 3)
-                RightVector_upv_1 (copy, index: 4)
-                UpVector_upv_1 (copy, index: 5)
-                u30 (copy, index: 6)
-                tbl_upv_6 (copy, index: 7)
-            ]]
-            for n_upv_1 = 1, a1 do
-                task.delay(
-                    (((n_upv_1 - 1) / math.max(1, a1 - 1)) * a2) + u29:NextNumber(0, 0.15),
-                    function()
-                        --[[
-                          line: 509
-                          upvalues:
-                            LocalPlayer_upv_1 (copy, index: 1)
-                            n_upv_1 (copy, index: 2)
-                            u29 (copy, index: 3)
-                            rocket (copy, index: 4)
-                            RightVector_upv_1 (copy, index: 5)
-                            UpVector_upv_1 (copy, index: 6)
-                            u30 (copy, index: 7)
-                            a3 (copy, index: 8)
-                            tbl_upv_6 (copy, index: 9)
-                            a4 (copy, index: 10)
-                        ]]
-                        local v59 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                        if not v59 then
-                            return
-                        end
-                        local v60 = (((n_upv_1 % 2 ~= 0) and -1) or 1) * u29:NextNumber(150, 260)
-                        v59 = u29:NextNumber(10, 80)
-                        if n_upv_1 % 3 == 0 then
-                            v60, v59 = u29:NextNumber(-140, 140), u29:NextNumber(70, 110)
-                        end
-                        local v61 = a3 or (tbl_upv_6[u29:NextInteger(1, #tbl_upv_6)])
-                        rocket(((Vector3.new(0, 66, -135) + (RightVector_upv_1 * v60)) + (UpVector_upv_1 * v59)) + (u30 * 30), v61, a4)
-                    end
-                )
-            end
-        end
-        local function reveal(a1)
-            --[[
-              name: reveal
-              line: 685
-              upvalues:
-                UPDATE_COUNTDOWN_upv_1 (copy, index: 1)
-                Gold_upv_1 (copy, index: 2)
-                u37 (ref,  index: 3)
-                u38 (ref,  index: 4)
-                tbl_upv_3 (copy, index: 5)
-                u3 (copy, index: 6)
-                u18 (copy, index: 7)
-                UIAssets_upv_1 (copy, index: 8)
-                u20 (copy, index: 9)
-                tbl_upv_11 (copy, index: 10)
-                Colors_upv_1 (copy, index: 11)
-                u19 (copy, index: 12)
-                u14 (copy, index: 13)
-                u15 (copy, index: 14)
-                fadeText (copy, index: 15)
-                TweenService_upv_1 (copy, index: 16)
-                u16 (copy, index: 17)
-                u17 (copy, index: 18)
-                Sfx_upv_1 (ref,  index: 19)
-                volley (copy, index: 20)
-                showBanner (copy, index: 21)
-                u21 (copy, index: 22)
-            ]]
-            local u39 = UPDATE_COUNTDOWN_upv_1.ranks[a1]
-            local v62 = u39.color or Gold_upv_1
-            local v63 = a1 == #UPDATE_COUNTDOWN_upv_1.ranks
-            u37 = true
-            u38 = a1
-            local v64 = tbl_upv_3[a1]
-            v64.out = false
-            v64.img.ImageColor3 = u3
-            v64.img.ImageTransparency = 0.15
-            local Ranks_4 = UIAssets_upv_1.Ranks
-            u18.Image = Ranks_4 and Ranks_4[string.lower(u39.name)] or u39.img or ""
-            u18.ImageTransparency = 0
-            local name_1 = u39.name
-            if tbl_upv_11[u20] ~= name_1 then
-                tbl_upv_11[u20] = name_1
-                u20.label.Text = name_1
-                u20.shadow.Text = name_1
-            end
-            u20.label.TextColor3 = v62:Lerp(Colors_upv_1.White, 0.35)
-            for _, value_4 in {u20, u19} do
-                value_4.label.TextTransparency = 0
-                value_4.shadow.TextTransparency = 0.45
-            end
-            u14.Position = UDim2.fromOffset(640, 120)
-            u14.Visible = true
-            u15.Scale = 0.3
-            fadeText(1, 0.2)
-            local tbl_14 = {Scale = 1}
-            TweenService_upv_1:Create(u15, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_14):Play()
-            u16.ImageColor3 = v62
-            u16.ImageTransparency = 0
-            u17.Scale = 0.4
-            local tbl_15 = {ImageTransparency = 0.55}
-            TweenService_upv_1:Create(u16, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_15):Play()
-            local tbl_16 = {Scale = 1.3}
-            TweenService_upv_1:Create(u17, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_16):Play()
-            if Sfx_upv_1 then
-                pcall(Sfx_upv_1.PlayUI, "UI/Unlock")
-            end
-            if v63 then
-                task.delay(
-                    0.15,
-                    function()
-                        --[[
-                          line: 712
-                          upvalues:
-                            Sfx_upv_1 (ref, index: 1)
-                        ]]
-                        if not Sfx_upv_1 then
-                            return
-                        end
-                        pcall(Sfx_upv_1.PlayUI, "UI/NewItem_Fanfare")
-                    end
-                )
-            end
-            volley((v63 and 14) or 8, 2.4, v62, (v63 and 1.35) or 1.1)
-            showBanner(u39)
+            instance.Transparency = 1
+            burst(a142, startValue, a144)
+            fwSound("Firework/Explode", 0.25, 0.15, 1)
+            fwSound("Firework/Crackle", 0.6, 0.45, 1)
             task.delay(
-                3.4,
+                0.6,
                 function()
                     --[[
-                      line: 718
+                      line: 497
                       upvalues:
-                        tbl_upv_3 (copy, index: 1)
-                        a1 (copy, index: 2)
-                        u21 (copy, index: 3)
-                        u39 (copy, index: 4)
-                        UIAssets_upv_1 (copy, index: 5)
-                        u14 (copy, index: 6)
-                        u16 (copy, index: 7)
-                        TweenService_upv_1 (copy, index: 8)
-                        Colors_upv_1 (copy, index: 10)
-                        Sfx_upv_1 (ref,  index: 11)
-                        fadeText (copy, index: 12)
-                        u37 (ref,  index: 13)
-                        u38 (ref,  index: 14)
+                        instance (copy, index: 1)
                     ]]
-                    local v66 = tbl_upv_3[a1]
-                    local v67 = Vector2.new(430, 120)
-                    local Ranks_5 = UIAssets_upv_1.Ranks
-                    u21.Image = Ranks_5 and Ranks_5[string.lower(u39.name)] or u39.img or ""
-                    u21.Position = UDim2.fromOffset(v67.X, v67.Y)
-                    u21.Size = UDim2.fromOffset(180, 180)
-                    u21.Visible = true
-                    u14.Visible = false
-                    u16.ImageTransparency = 1
-                    local v69 = TweenInfo.new(0.55, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-                    local tbl_17 = {}
-                    tbl_17.Position = v66.cell.Position
-                    tbl_17.Size = UDim2.fromOffset(62, 62)
-                    TweenService_upv_1:Create(u21, v69, tbl_17):Play()
-                    task.wait(0.55)
-                    u21.Visible = false
-                    local v70 = tbl_upv_3[a1]
-                    v70.out = true
-                    v70.img.ImageColor3 = Colors_upv_1.White
-                    v70.img.ImageTransparency = 0
-                    v66.scale.Scale = 1.6
-                    local tbl_18 = {Scale = 1}
-                    TweenService_upv_1:Create(v66.scale, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_18):Play()
-                    if Sfx_upv_1 then
-                        pcall(Sfx_upv_1.PlayUI, "UI/Card_Reveal")
-                    end
-                    fadeText(0, 0.35)
-                    u37 = false
-                    u38 = 0
+                    instance:Destroy()
                 end
             )
-        end
-        local u40 = -1
-        local u41 = ""
-        local u42 = false
-        local u43 = os.clock()
-        local u44 = nil
-        local u45 = 0
-        local tbl_upv_19 = {}
-        Workspace_upv_1:GetAttributeChangedSignal("CountdownPreviewAt"):Connect(
-            function()
-                --[[
-                  line: 754
-                  upvalues:
-                    u42 (ref,  index: 1)
-                    u41 (ref,  index: 2)
-                    u44 (ref,  index: 3)
-                    tbl_upv_19 (copy, index: 4)
-                ]]
-                u42 = false
-                u41 = ""
-                u44 = nil
-                table.clear(tbl_upv_19)
-            end
-        )
-        local function clock_4(a1)
-            --[[
-              name: clock
-              line: 633
-            ]]
-            local v71 = a1 // 86400
-            local v72 = a1 // 3600 % 24
-            local v73 = a1 // 60 % 60
-            local v74 = a1 % 60
-            if v71 > 0 then
-                return string.format("%dD %02d:%02d:%02d", v71, v72, v73, v74)
-            elseif v72 > 0 then
-                return string.format("%d:%02d:%02d", v72, v73, v74)
-            else
-                return string.format("%d:%02d", v73, v74)
-            end
-        end
-        local function step(a1)
-            --[[
-              name: step
-              line: 761
-              upvalues:
-                Workspace_upv_1 (copy, index: 1)
-                UPDATE_COUNTDOWN_upv_1 (copy, index: 2)
-                LocalPlayer_upv_1 (copy, index: 3)
-                u5 (copy, index: 4)
-                u12 (copy, index: 5)
-                u22 (copy, index: 6)
-                tbl_upv_3 (copy, index: 7)
-                u42 (ref,  index: 8)
-                Colors_upv_1 (copy, index: 9)
-                u3 (copy, index: 10)
-                tbl_upv_19 (copy, index: 11)
-                u38 (ref,  index: 12)
-                u43 (copy, index: 13)
-                u37 (ref,  index: 14)
-                reveal (copy, index: 15)
-                u1 (copy, index: 16)
-                u2 (copy, index: 17)
-                ReplicatedStorage_upv_1 (copy, index: 18)
-                tbl_upv_10 (copy, index: 19)
-                paintSky (copy, index: 20)
-                u8 (copy, index: 21)
-                Gold_upv_1 (copy, index: 22)
-                u9 (copy, index: 23)
-                u10 (copy, index: 24)
-                tbl_upv_11 (copy, index: 25)
-                u13 (copy, index: 26)
-                u40 (ref,  index: 27)
-                TweenService_upv_1 (copy, index: 28)
-                Sfx_upv_1 (ref,  index: 29)
-                u36 (copy, index: 30)
-                clock_4 (copy, index: 31)
-                u41 (ref,  index: 32)
-                u44 (ref,  index: 33)
-                volley (copy, index: 34)
-                u45 (ref,  index: 35)
-                u29 (copy, index: 36)
-            ]]
-            local v75 = Workspace_upv_1:GetServerTimeNow()
-            local v76 = Workspace_upv_1:GetAttribute("CountdownPreview")
-            local v77 = Workspace_upv_1:GetAttribute("CountdownPreviewAt")
-            local v78
-            if type(v76) == "number" and type(v77) == "number" then
-                v78 = UPDATE_COUNTDOWN_upv_1.at - v76 + (v75 - v77)
-            else
-                v78 = v75
-            end
-            local v79 = UPDATE_COUNTDOWN_upv_1.at - v78
-            local v80 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-            u5.Enabled = v80
-            u12.Enabled = v80
-            u22.Enabled = v80
-            for key_2, value_5 in UPDATE_COUNTDOWN_upv_1.ranks do
-                local v81 = UPDATE_COUNTDOWN_upv_1.at - value_5.hours * 3600
-                local v82 = v81 <= v78
-                local v83 = tbl_upv_3[key_2]
-                if v83.out == nil or not (u42) then
-                    local v84 = tbl_upv_3[key_2]
-                    v84.out = v82
-                    if v82 then
-                        v84.img.ImageColor3 = Colors_upv_1.White
-                        v84.img.ImageTransparency = 0
-                    else
-                        v84.img.ImageColor3 = u3
-                        v84.img.ImageTransparency = 0.15
-                    end
-                    continue
-                end
-                if v82 then
-                    if v83.out or table.find(tbl_upv_19, key_2) or u38 == key_2 then
-                        if v82 then
-                            continue
-                        end
-                        if v83.out then
-                            local v85 = tbl_upv_3[key_2]
-                            v85.out = false
-                            v85.img.ImageColor3 = u3
-                            v85.img.ImageTransparency = 0.15
-                        end
-                    else
-                        if not (v78 - v81 < 4) then
-                            local v86 = tbl_upv_3[key_2]
-                            v86.out = true
-                            v86.img.ImageColor3 = Colors_upv_1.White
-                            v86.img.ImageTransparency = 0
-                            continue
-                        end
-                        if os.clock() - u43 > 6 then
-                            table.insert(tbl_upv_19, key_2)
-                        else
-                            local v86 = tbl_upv_3[key_2]
-                            v86.out = true
-                            v86.img.ImageColor3 = Colors_upv_1.White
-                            v86.img.ImageTransparency = 0
-                        end
-                    end
-                else
-                    if v82 then
-                        continue
-                    end
-                    if v83.out then
-                        local v85 = tbl_upv_3[key_2]
-                        v85.out = false
-                        v85.img.ImageColor3 = u3
-                        v85.img.ImageTransparency = 0.15
-                    end
-                end
-            end
-            u42 = true
-            if not (u37) and #tbl_upv_19 > 0 then
-                local v87 = table.remove(tbl_upv_19, 1)
-                if v80 then
-                    reveal(v87)
-                else
-                    local v88 = tbl_upv_3[v87]
-                    v88.out = true
-                    v88.img.ImageColor3 = Colors_upv_1.White
-                    v88.img.ImageTransparency = 0
-                end
-            end
-            local v89 = 0
-            local v90 = 0
-            if (v79 > 0) and (v79 <= u1) then
-                if u2 < v79 then
-                    local _ = (u1 - v79) / (u1 - u2)
-                    v89 = 0.6 * ((u1 - v79) / (u1 - u2)) * ((u1 - v79) / (u1 - u2)) * (3 - 2 * ((u1 - v79) / (u1 - u2)))
-                else
-                    v89 = 0.6 + 0.4 * (1 - (math.max(0, v79 - 60) / (u2 - 60)))
-                end
-                v90 = ((v79 <= 60) and (1 - v79 / 60)) or 0
-            elseif v79 <= 0 then
-                local v91 = ((Workspace_upv_1:GetAttribute("CountdownPreviewShipped") == true) and true) or ((UPDATE_COUNTDOWN_upv_1.shipped ~= nil) and (ReplicatedStorage_upv_1.Shared:FindFirstChild(UPDATE_COUNTDOWN_upv_1.shipped) ~= nil))
-                if not v91 then
-                    v89, v90 = 1, 1
-                end
-            end
-            local v92 = ((os.clock() - u43 < 0.4) and 1) or (math.min(1, a1 * 0.6))
-            tbl_upv_10.w = tbl_upv_10.w + ((v89 - tbl_upv_10.w) * v92)
-            tbl_upv_10.d = tbl_upv_10.d + ((v90 - tbl_upv_10.d) * v92)
-            paintSky(tbl_upv_10.w, tbl_upv_10.d)
-            local v93 = nil
-            if v79 > 0 then
-                local v94 = math.ceil(v79)
-                v90 = ((v79 <= 60) and "final") or (((v79 <= u2) and "close") or "far")
-                for _, value_6 in tbl_upv_3 do
-                    value_6.cell.Visible = true
-                end
-                v89 = v90 ~= "far"
-                local label_1 = u8.label
-                local v95
-                if v89 then
-                    v95 = Gold_upv_1
-                else
-                    v95 = Colors_upv_1.White
-                end
-                label_1.TextColor3 = v95
-                local label_2 = u9.label
-                local v96
-                if v89 then
-                    v96 = Gold_upv_1
-                else
-                    v96 = Colors_upv_1.White
-                end
-                label_2.TextColor3 = v96
-                local v97, v98, v99 = nil, nil, nil
-                if v90 ~= "final" then
-                    v97 = u36
-                    if tbl_upv_11[u10] ~= v97 then
-                        tbl_upv_11[u10] = v97
-                        u10.label.Text = v97
-                        u10.shadow.Text = v97
-                    end
-                    u10.label.TextColor3 = Colors_upv_1.White
-                    u8.holder.Visible = true
-                    u9.holder.Visible = true
-                    u13.holder.Visible = false
-                    v98 = clock_4(v94)
-                    if tbl_upv_11[u9] ~= v98 then
-                        tbl_upv_11[u9] = v98
-                        u9.label.Text = v98
-                        u9.shadow.Text = v98
-                    end
-                else
-                    v99 = string.upper(UPDATE_COUNTDOWN_upv_1.title) .. " IN"
-                    if tbl_upv_11[u10] ~= v99 then
-                        tbl_upv_11[u10] = v99
-                        u10.label.Text = v99
-                        u10.shadow.Text = v99
-                    end
-                    u10.label.TextColor3 = Gold_upv_1
-                    u8.holder.Visible = false
-                    u9.holder.Visible = false
-                    u13.holder.Visible = not u37
-                    local label_3 = u13.label
-                    local v100
-                    if v94 <= 10 then
-                        v100 = Colors_upv_1.White
-                    else
-                        v100 = Gold_upv_1
-                    end
-                    label_3.TextColor3 = v100
-                    local v101 = nil
-                    if v94 ~= u40 then
-                        v101 = tostring(v94)
-                        if tbl_upv_11[u13] ~= v101 then
-                            tbl_upv_11[u13] = v101
-                            u13.label.Text = v101
-                            u13.shadow.Text = v101
-                        end
-                        u13.scale.Scale = ((v94 <= 10) and 1.2) or 1.12
-                        local tbl_20 = {Scale = 1}
-                        TweenService_upv_1:Create(u13.scale, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), tbl_20):Play()
-                        if v80 then
-                            local v102 = ((v94 <= 3) and "Match/Countdown_1") or "Match/Countdown_Tick"
-                            if Sfx_upv_1 then
-                                pcall(Sfx_upv_1.PlayUI, v102)
-                            end
-                        end
-                    end
-                end
-                u40 = v94
-                u41 = v90
-            else
-                if u41 == "final" or u41 == "close" then
-                    u44 = os.clock()
-                    if v80 then
-                        if Sfx_upv_1 then
-                            pcall(Sfx_upv_1.PlayUI, "Match/Victory")
-                        end
-                        volley(16, 7, nil, 1.5)
-                        task.delay(
-                            7.5,
-                            function()
-                                --[[
-                                  line: 863
-                                  upvalues:
-                                    volley (copy, index: 1)
-                                ]]
-                                volley(10, 3, nil, 1.8)
-                            end
-                        )
-                    end
-                end
-                if u41 ~= "done" then
-                    u13.scale.Scale = 0.4
-                    local tbl_21 = {Scale = 1}
-                    TweenService_upv_1:Create(u13.scale, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_21):Play()
-                end
-                u41 = "done"
-                for _, value_7 in tbl_upv_3 do
-                    value_7.cell.Visible = false
-                end
-                u8.holder.Visible = false
-                u9.holder.Visible = false
-                u10.holder.Visible = true
-                u13.holder.Visible = true
-                u10.label.TextColor3 = Gold_upv_1
-                v93 = string.upper(UPDATE_COUNTDOWN_upv_1.title)
-                if tbl_upv_11[u10] ~= v93 then
-                    tbl_upv_11[u10] = v93
-                    u10.label.Text = v93
-                    u10.shadow.Text = v93
-                end
-                local v103 = ((Workspace_upv_1:GetAttribute("CountdownPreviewShipped") == true) and true) or ((UPDATE_COUNTDOWN_upv_1.shipped ~= nil) and (ReplicatedStorage_upv_1.Shared:FindFirstChild(UPDATE_COUNTDOWN_upv_1.shipped) ~= nil))
-                if v103 then
-                    if UPDATE_COUNTDOWN_upv_1.OUT_FOR < -v79 then
-                        return false
-                    end
-                    if tbl_upv_11[u13] ~= "OUT NOW!" then
-                        tbl_upv_11[u13] = "OUT NOW!"
-                        u13.label.Text = "OUT NOW!"
-                        u13.shadow.Text = "OUT NOW!"
-                    end
-                    u13.label.TextColor3 = Gold_upv_1
-                    if v80 then
-                        local v104 = os.clock()
-                        if u45 <= v104 and -v79 < 7200 then
-                            u45 = os.clock() + u29:NextNumber(25, 40)
-                            if u44 == nil or os.clock() - u44 > 15 then
-                                volley(5, 2.5, nil, 1.1)
-                            end
-                        end
-                    end
-                else
-                    if tbl_upv_11[u13] ~= "SERVERS RESTARTING..." then
-                        tbl_upv_11[u13] = "SERVERS RESTARTING..."
-                        u13.label.Text = "SERVERS RESTARTING..."
-                        u13.shadow.Text = "SERVERS RESTARTING..."
-                    end
-                    u13.label.TextColor3 = Colors_upv_1.White
-                end
-            end
-            return true
-        end
-        local u46 = nil
-        local u47 = 0
-        local v105 = RunService_1.Heartbeat:Connect(
-            function(a1)
-                --[[
-                  line: 904
-                  upvalues:
-                    u47 (ref,  index: 1)
-                    step (copy, index: 2)
-                    u46 (ref,  index: 3)
-                    LocalPlayer_upv_1 (copy, index: 4)
-                    LightingController_upv_1 (ref,  index: 5)
-                    u34 (copy, index: 6)
-                    u35 (ref,  index: 7)
-                    Lighting_upv_1 (copy, index: 8)
-                    tbl_upv_7 (copy, index: 9)
-                    u5 (copy, index: 10)
-                    u12 (copy, index: 11)
-                    u22 (copy, index: 12)
-                    u4 (copy, index: 13)
-                    u11 (copy, index: 14)
-                    u28 (copy, index: 15)
-                ]]
-                u47 = u47 + a1
-                if u47 < 0.05 then
-                    return
-                end
-                local success_5, v106 = pcall(step, u47)
-                u47 = 0
-                if success_5 and v106 == false then
-                    if u46 then
-                        u46:Disconnect()
-                    end
-                    local v107 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                    if v107 then
-                        if LightingController_upv_1 then
-                            local success_6, v108 = pcall(LightingController_upv_1.Current)
-                            v107 = success_6 and (v108 == "Lobby")
-                        else
-                            v107 = true
-                        end
-                        if v107 then
-                            if u35 then
-                                Lighting_upv_1.ClockTime = tbl_upv_7.clock
-                                Lighting_upv_1.ColorShift_Top = tbl_upv_7.shiftTop
-                                Lighting_upv_1.Brightness = tbl_upv_7.brightness
-                                Lighting_upv_1.OutdoorAmbient = tbl_upv_7.outdoor
-                                v107 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                                if v107 then
-                                    v107.Color = tbl_upv_7.atmColor
-                                    v107.Decay = tbl_upv_7.atmDecay
-                                    v107.Haze = tbl_upv_7.atmHaze
-                                    v107.Density = tbl_upv_7.atmDensity
-                                    v107.Glare = tbl_upv_7.atmGlare
-                                end
-                                v107 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                                if v107 then
-                                    v107.Intensity = tbl_upv_7.rays
-                                end
-                                u35 = false
-                            end
-                            u34.Enabled = false
-                        else
-                            u34.Enabled = false
-                            u35 = false
-                        end
-                    else
-                        u34.Enabled = false
-                        u35 = false
-                    end
-                    u5:Destroy()
-                    u12:Destroy()
-                    u22:Destroy()
-                    u4:Destroy()
-                    u11:Destroy()
-                    u28:Destroy()
-                    u34:Destroy()
-                    return
-                end
-                if (success_5) then
-                    return
-                end
-                warn("[UpdateCountdown] " .. tostring(v106))
-            end
-        )
-        u46 = v105
-    end
-else
-    local function inLobby()
-        --[[
-          name: inLobby
-          line: 100
-          upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-        ]]
-        local v6 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-        return v6
-    end
-    local function now()
-        --[[
-          name: now
-          line: 105
-          upvalues:
-            Workspace_upv_1 (copy, index: 1)
-            UPDATE_COUNTDOWN_upv_1 (copy, index: 2)
-        ]]
-        local v7 = Workspace_upv_1:GetServerTimeNow()
-        local v8 = Workspace_upv_1:GetAttribute("CountdownPreview")
-        local v9 = Workspace_upv_1:GetAttribute("CountdownPreviewAt")
-        if type(v8) == "number" and type(v9) == "number" then
-            return (UPDATE_COUNTDOWN_upv_1.at - v8) + (v7 - v9)
-        end
-        return v7
-    end
-    local function play(a1)
-        --[[
-          name: play
-          line: 114
-          upvalues:
-            Sfx_upv_1 (ref, index: 1)
-        ]]
-        if not Sfx_upv_1 then
-            return
-        end
-        pcall(Sfx_upv_1.PlayUI, a1)
-    end
-    local u4 = Instance.new("Part")
-    u4.Name = "UpdateCountdownSky"
-    u4.Anchored = true
-    u4.CanCollide = false
-    u4.CanQuery = false
-    u4.CanTouch = false
-    u4.CastShadow = false
-    u4.Transparency = 1
-    u4.Size = Vector3.new(357, 64, 0.20000000298023224)
-    u4.CFrame = CFrame.lookAt(Vector3.new(0, 66, -135), Vector3.new(0, 9, 120))
-    u4.Parent = Workspace_upv_1
-    local u5 = Instance.new("SurfaceGui")
-    u5.Name = "UpdateCountdown"
-    u5.Adornee = u4
-    u5.Face = Enum.NormalId.Front
-    u5.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
-    u5.PixelsPerStud = 3.361344537815126
-    u5.LightInfluence = 0
-    u5.Brightness = 1.25
-    u5.MaxDistance = 2000
-    u5.ResetOnSpawn = false
-    u5.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    local u6 = Instance.new("Frame")
-    u6.Name = "Root"
-    u6.BackgroundTransparency = 1
-    u6.Size = UDim2.fromScale(1, 1)
-    u6.Parent = u5
-    local v10 = Instance.new("ImageLabel")
-    v10.Name = "Plate"
-    v10.BackgroundTransparency = 1
-    v10.Image = "rbxassetid://90962482350826"
-    v10.ImageColor3 = u3
-    v10.ImageTransparency = 0.3
-    v10.ScaleType = Enum.ScaleType.Stretch
-    v10.AnchorPoint = Vector2.new(0.5, 0.5)
-    v10.Position = UDim2.fromOffset(600, 112)
-    v10.Size = UDim2.fromOffset(1240, 300)
-    v10.Parent = u6
-    local function text(a1, a2, a3, a4, a5, a6, a7, a8)
-        --[[
-          name: text
-          line: 155
-          upvalues:
-            u6 (copy, index: 1)
-            u3 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-        ]]
-        local u7 = Instance.new("Frame")
-        u7.Name = a1
-        u7.BackgroundTransparency = 1
-        u7.AnchorPoint = Vector2.new(0.5, 0.5)
-        u7.Position = UDim2.fromOffset(a2, a3)
-        u7.Size = UDim2.fromOffset(a4, a5)
-        u7.Parent = a8 or u6
-        local v12 = Instance.new("UIScale")
-        v12.Parent = u7
-        local function mk_1(a9, a10, a11, a12, a13)
-            --[[
-              name: mk
-              line: 165
-              upvalues:
-                a6 (copy, index: 1)
-                u7 (copy, index: 2)
-            ]]
-            local v13 = Instance.new("TextLabel")
-            v13.Name = a9
-            v13.BackgroundTransparency = 1
-            v13.TextScaled = true
-            v13.FontFace = a6
-            v13.TextColor3 = a11
-            v13.TextTransparency = a12
-            v13.Position = UDim2.fromOffset(0, a10)
-            v13.Size = UDim2.fromScale(1, 1)
-            v13.Text = ""
-            v13.ZIndex = a13
-            v13.Parent = u7
-            return v13
-        end
-        local v14 = mk_1("Shadow", a7, u3, 0.45, 1)
-        local tbl_1 = {}
-        tbl_1.label = mk_1("Text", 0, Colors_upv_1.White, 0, 2)
-        tbl_1.shadow = v14
-        tbl_1.holder = u7
-        tbl_1.scale = v12
-        return tbl_1
-    end
-    local u8 = text("Title", 600, 82, 1000, 84, v2, 4)
-    u8.label.Text = UPDATE_COUNTDOWN_upv_1.title
-    u8.shadow.Text = UPDATE_COUNTDOWN_upv_1.title
-    local u9 = text("Timer", 600, 168, 480, 74, v2, 4)
-    local u10 = text("When", 600, 22, 600, 24, v3, 2)
-    local u11 = u4:Clone()
-    u11.Name = "UpdateCountdownSkyBig"
-    u11.CFrame = u4.CFrame * CFrame.new(0, 0, -0.3)
-    u11.Parent = Workspace_upv_1
-    local u12 = u5:Clone()
-    u12.Name = "UpdateCountdownBig"
-    u12.Adornee = u11
-    u12.PixelsPerStud = 1.680672268907563
-    u12:ClearAllChildren()
-    local v15 = Instance.new("Frame")
-    v15.Name = "Root"
-    v15.BackgroundTransparency = 1
-    v15.Size = UDim2.fromScale(1, 1)
-    v15.Parent = u12
-    local u13 = text("Big", 300, 62, 560, 84, v2, 4, v15)
-    u13.holder.Visible = false
-    local tbl_upv_2 = {u8, u9, u10}
-    local tbl_upv_3 = {}
-    local v16 = math.ceil(#UPDATE_COUNTDOWN_upv_1.ranks / 2)
-    for key_1, value_1 in UPDATE_COUNTDOWN_upv_1.ranks do
-        local v17 = ((key_1 <= v16) and (310 - (v16 - key_1) * 74)) or (890 + ((key_1 - v16) - 1) * 74)
-        local v18 = Instance.new("Frame")
-        v18.Name = value_1.name
-        v18.BackgroundTransparency = 1
-        v18.AnchorPoint = Vector2.new(0.5, 0.5)
-        v18.Position = UDim2.fromOffset(v17, 168)
-        v18.Size = UDim2.fromOffset(62, 62)
-        v18.Parent = u6
-        local v19 = Instance.new("ImageLabel")
-        v19.Name = "Emblem"
-        v19.BackgroundTransparency = 1
-        local Ranks_2 = UIAssets_upv_1.Ranks
-        local v20 = (Ranks_2 and (Ranks_2[string.lower(value_1.name)])) or (value_1.img or "")
-        v19.Image = v20
-        v19.ScaleType = Enum.ScaleType.Fit
-        v19.Size = UDim2.fromScale(1, 1)
-        v19.Parent = v18
-        local v21 = Instance.new("UIScale")
-        v21.Parent = v18
-        table.insert(tbl_upv_3, {cell = v18, img = v19, scale = v21})
-    end
-    local u14 = Instance.new("Frame")
-    u14.Name = "Hero"
-    u14.BackgroundTransparency = 1
-    u14.AnchorPoint = Vector2.new(0.5, 0.5)
-    u14.Position = UDim2.fromOffset(640, 120)
-    u14.Size = UDim2.fromOffset(620, 210)
-    u14.Visible = false
-    u14.ZIndex = 3
-    u14.Parent = u6
-    local u15 = Instance.new("UIScale")
-    u15.Parent = u14
-    local u16 = Instance.new("ImageLabel")
-    u16.Name = "Glow"
-    u16.BackgroundTransparency = 1
-    u16.Image = "rbxassetid://90962482350826"
-    u16.ImageTransparency = 1
-    u16.ScaleType = Enum.ScaleType.Stretch
-    u16.AnchorPoint = Vector2.new(0.5, 0.5)
-    u16.Position = UDim2.fromOffset(100, 105)
-    u16.Size = UDim2.fromOffset(300, 300)
-    u16.Parent = u14
-    local u17 = Instance.new("UIScale")
-    u17.Parent = u16
-    local u18 = Instance.new("ImageLabel")
-    u18.Name = "Emblem"
-    u18.BackgroundTransparency = 1
-    u18.ScaleType = Enum.ScaleType.Fit
-    u18.AnchorPoint = Vector2.new(0.5, 0.5)
-    u18.Position = UDim2.fromOffset(100, 105)
-    u18.Size = UDim2.fromOffset(180, 180)
-    u18.ZIndex = 4
-    u18.Parent = u14
-    local u19 = text("Kicker", 370, 66, 320, 30, v3, 2, u14)
-    local u20 = text("HeroName", 370, 124, 320, 80, v2, 4, u14)
-    for _, value_2 in {u19, u20} do
-        value_2.label.TextXAlignment = Enum.TextXAlignment.Left
-        value_2.shadow.TextXAlignment = Enum.TextXAlignment.Left
-        value_2.label.ZIndex = 5
-        value_2.shadow.ZIndex = 4
-    end
-    u19.label.Text = "NEW RANK REVEALED"
-    u19.shadow.Text = "NEW RANK REVEALED"
-    u19.label.TextColor3 = Gold_upv_1
-    local u21 = Instance.new("ImageLabel")
-    u21.Name = "Flyer"
-    u21.BackgroundTransparency = 1
-    u21.ScaleType = Enum.ScaleType.Fit
-    u21.AnchorPoint = Vector2.new(0.5, 0.5)
-    u21.Visible = false
-    u21.ZIndex = 6
-    u21.Parent = u6
-    u5.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-    u12.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-    local u22 = Instance.new("ScreenGui")
-    u22.Name = "UpdateCountdownBanner"
-    u22.ResetOnSpawn = false
-    u22.DisplayOrder = 30
-    u22.IgnoreGuiInset = false
-    u22.Parent = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-    local u23 = Instance.new("Frame")
-    u23.Name = "Banner"
-    u23.AnchorPoint = Vector2.new(0.5, 1)
-    u23.Position = UDim2.new(0.5, 0, 0, -10)
-    u23.Size = UDim2.fromOffset(420, 92)
-    u23.BackgroundColor3 = fromRGB_upv_1(14, 17, 24)
-    u23.BackgroundTransparency = 0.08
-    u23.Visible = false
-    u23.Parent = u22
-    local u24 = Instance.new("UICorner")
-    u24.CornerRadius = UDim.new(0, 14)
-    u24.Parent = u23
-    u24 = Instance.new("UIStroke")
-    u24.Thickness = 2
-    u24.Color = Gold_upv_1
-    u24.Transparency = 0.25
-    u24.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    u24.Parent = u23
-    u24 = Instance.new("ImageLabel")
-    u24.BackgroundTransparency = 1
-    u24.ScaleType = Enum.ScaleType.Fit
-    u24.Position = UDim2.fromOffset(12, 10)
-    u24.Size = UDim2.fromOffset(72, 72)
-    u24.Parent = u23
-    local v22 = Instance.new("TextLabel")
-    v22.BackgroundTransparency = 1
-    v22.Position = UDim2.fromOffset(98, 14)
-    v22.Size = UDim2.new(1, -110, 0, 22)
-    v22.FontFace = v3
-    v22.TextSize = 17
-    v22.TextColor3 = Gold_upv_1
-    v22.TextXAlignment = Enum.TextXAlignment.Left
-    v22.Text = "NEW RANK REVEALED"
-    v22.Parent = u23
-    local u25 = Instance.new("TextLabel")
-    u25.BackgroundTransparency = 1
-    u25.Position = UDim2.fromOffset(98, 38)
-    u25.Size = UDim2.new(1, -110, 0, 40)
-    u25.FontFace = v2
-    u25.TextScaled = true
-    u25.TextColor3 = Colors_upv_1.White
-    u25.TextXAlignment = Enum.TextXAlignment.Left
-    u25.Parent = u23
-    local u26 = 0
-    local function showBanner(a1)
-        --[[
-          name: showBanner
-          line: 368
-          upvalues:
-            u26 (ref,  index: 1)
-            u24 (copy, index: 2)
-            UIAssets_upv_1 (copy, index: 3)
-            u25 (copy, index: 4)
-            u23 (copy, index: 5)
-            TweenService_upv_1 (copy, index: 6)
-        ]]
-        u26 = u26 + 1
-        local u27 = u26
-        local Ranks_3 = UIAssets_upv_1.Ranks
-        u24.Image = Ranks_3 and Ranks_3[string.lower(a1.name)] or a1.img or ""
-        u25.Text = a1.name
-        u23.Position = UDim2.new(0.5, 0, 0, -10)
-        u23.Visible = true
-        local v24 = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-        local tbl_4 = {}
-        tbl_4.Position = UDim2.new(0.5, 0, 0, 110)
-        TweenService_upv_1:Create(u23, v24, tbl_4):Play()
-        task.delay(
-            4.2,
-            function()
-                --[[
-                  line: 376
-                  upvalues:
-                    u26 (ref,  index: 1)
-                    u27 (copy, index: 2)
-                    TweenService_upv_1 (copy, index: 3)
-                    u23 (copy, index: 4)
-                ]]
-                if u26 == u27 then
-                    local v25 = TweenService_upv_1:Create(u23, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Position = UDim2.new(0.5, 0, 0, -10)})
-                    v25.Completed:Once(
-                        function()
-                            --[[
-                              line: 379
-                              upvalues:
-                                u26 (ref,  index: 1)
-                                u27 (copy, index: 2)
-                                u23 (copy, index: 3)
-                            ]]
-                            if u26 ~= u27 then
-                                return
-                            end
-                            u23.Visible = false
-                        end
-                    )
-                    v25:Play()
-                end
-            end
-        )
-    end
-    local u28 = Instance.new("Folder")
-    u28.Name = "UpdateCountdownFx"
-    u28.Parent = Workspace_upv_1
-    local u29 = Random.new()
-    local RightVector_upv_1 = u4.CFrame.RightVector
-    local UpVector_upv_1 = u4.CFrame.UpVector
-    local u30 = -u4.CFrame.LookVector
-    local function around(a1, a2, a3)
-        --[[
-          name: around
-          line: 401
-          upvalues:
-            RightVector_upv_1 (copy, index: 1)
-            UpVector_upv_1 (copy, index: 2)
-            u30 (copy, index: 3)
-        ]]
-        return ((Vector3.new(0, 66, -135) + (RightVector_upv_1 * a1)) + (UpVector_upv_1 * a2)) + (u30 * (a3 or 30))
-    end
-    local tbl_upv_5 = {}
-    local function fwSound(a1, a2, a3, a4)
-        --[[
-          name: fwSound
-          line: 410
-          upvalues:
-            Sfx_upv_1 (ref,  index: 1)
-            tbl_upv_5 (copy, index: 2)
-            u29 (copy, index: 3)
-        ]]
-        if not Sfx_upv_1 or (os.clock() - (tbl_upv_5[a1] or 0) < a2) then
-            return
-        end
-        tbl_upv_5[a1] = os.clock()
-        task.delay(
-            a3,
-            function()
-                --[[
-                  line: 415
-                  upvalues:
-                    Sfx_upv_1 (ref,  index: 1)
-                    a1 (copy, index: 2)
-                    a4 (copy, index: 3)
-                    u29 (copy, index: 4)
-                ]]
-                pcall(Sfx_upv_1.Play, a1, nil, {volume = a4, pitch = u29:NextNumber(0.94, 1.06)})
-            end
-        )
-    end
-    local function boom(a1)
-        --[[
-          name: boom
-          line: 419
-          upvalues:
-            fwSound (copy, index: 1)
-        ]]
-        fwSound("Firework/Explode", 0.25, 0.15, 1)
-        fwSound("Firework/Crackle", 0.6, 0.45, 1)
-    end
-    local function burst(a1, a2, a3)
-        --[[
-          name: burst
-          line: 424
-          upvalues:
-            u28 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
-        ]]
-        local u31 = Instance.new("Part")
-        u31.Anchored = true
-        u31.CanCollide = false
-        u31.CanQuery = false
-        u31.CanTouch = false
-        u31.Transparency = 1
-        u31.Size = Vector3.new(1, 1, 1)
-        u31.CFrame = CFrame.new(a1)
-        u31.Parent = u28
-        local function emitter_1(a4, a5, a6, a7, a8, a9)
-            --[[
-              name: emitter
-              line: 434
-              upvalues:
-                a2 (copy, index: 1)
-                u31 (copy, index: 2)
-            ]]
-            local v26 = Instance.new("ParticleEmitter")
-            v26.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-            v26.LightEmission = 1
-            v26.LightInfluence = 0
-            v26.Brightness = a9
-            v26.Color = ColorSequence.new(a8, a2)
-            v26.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, a5), NumberSequenceKeypoint.new(0.7, a5 * 0.6), NumberSequenceKeypoint.new(1, 0)})
-            v26.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.75, 0.15), NumberSequenceKeypoint.new(1, 1)})
-            v26.Lifetime = NumberRange.new(a7 * 0.75, a7)
-            v26.Speed = NumberRange.new(a6 * 0.8, a6)
-            v26.SpreadAngle = Vector2.new(180, 180)
-            v26.Acceleration = Vector3.new(0, -22, 0)
-            v26.Drag = 1.6
-            v26.Rate = 0
-            v26.RotSpeed = NumberRange.new(-180, 180)
-            v26.Parent = u31
-            v26:Emit(a4)
-        end
-        emitter_1(math.floor(a3 * 120), a3 * 8, a3 * 72, 2, a2:Lerp(Colors_upv_1.White, 0.1), 3)
-        emitter_1(math.floor(a3 * 26), a3 * 4, a3 * 36, 2.6, a2:Lerp(Colors_upv_1.White, 0.6), 2)
-        task.delay(
-            4,
-            function()
-                --[[
-                  line: 456
-                  upvalues:
-                    u31 (copy, index: 1)
-                ]]
-                u31:Destroy()
-            end
-        )
-    end
-    local tbl_upv_6 = {fromRGB_upv_1(255, 204, 64), fromRGB_upv_1(255, 92, 92), fromRGB_upv_1(86, 202, 255), fromRGB_upv_1(186, 116, 255), fromRGB_upv_1(120, 236, 150), fromRGB_upv_1(255, 150, 80)}
-    local function rocket(a1, a2, a3)
-        --[[
-          name: rocket
-          line: 462
-          upvalues:
-            u29 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
-            u28 (copy, index: 3)
-            TweenService_upv_1 (copy, index: 4)
-            burst (copy, index: 5)
-            fwSound (copy, index: 6)
-        ]]
-        local v27 = Vector3.new(a1.X + u29:NextNumber(-20, 20), 30, a1.Z + u29:NextNumber(-10, 10))
-        local u32 = Instance.new("Part")
-        u32.Anchored = true
-        u32.CanCollide = false
-        u32.CanQuery = false
-        u32.CanTouch = false
-        u32.CastShadow = false
-        u32.Material = Enum.Material.Neon
-        u32.Color = a2:Lerp(Colors_upv_1.White, 0.5)
-        u32.Size = Vector3.new(1.600000023841858, 1.600000023841858, 1.600000023841858)
-        u32.Shape = Enum.PartType.Ball
-        u32.CFrame = CFrame.new(v27)
-        v27 = Instance.new("Attachment")
-        v27.Position = Vector3.new(0, 0.800000011920929, 0)
-        v27.Parent = u32
-        local v28 = Instance.new("Attachment")
-        v28.Position = Vector3.new(0, -0.800000011920929, 0)
-        v28.Parent = u32
-        local v29 = Instance.new("Trail")
-        v29.Attachment0 = v27
-        v29.Attachment1 = v28
-        v29.Lifetime = 0.45
-        v29.LightEmission = 1
-        v29.FaceCamera = true
-        v29.Color = ColorSequence.new(a2:Lerp(Colors_upv_1.White, 0.6), a2)
-        v29.Transparency = NumberSequence.new(0, 1)
-        v29.WidthScale = NumberSequence.new(1, 0)
-        v29.Parent = u32
-        u32.Parent = u28
-        local v30 = TweenService_upv_1:Create(u32, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {CFrame = CFrame.new(a1)})
-        v30.Completed:Once(
-            function()
-                --[[
-                  line: 493
-                  upvalues:
-                    u32 (copy, index: 1)
-                    burst (copy, index: 2)
-                    a1 (copy, index: 3)
-                    a2 (copy, index: 4)
-                    a3 (copy, index: 5)
-                    fwSound (copy, index: 6)
-                ]]
-                u32.Transparency = 1
-                burst(a1, a2, a3)
-                fwSound("Firework/Explode", 0.25, 0.15, 1)
-                fwSound("Firework/Crackle", 0.6, 0.45, 1)
-                task.delay(
-                    0.6,
-                    function()
-                        --[[
-                          line: 497
-                          upvalues:
-                            u32 (copy, index: 1)
-                        ]]
-                        u32:Destroy()
-                    end
-                )
-            end
-        )
-        v30:Play()
-    end
-    local Lighting_2 = ReplicatedStorage_upv_1:FindFirstChild("Lighting")
-    local u33 = Lighting_2 and (Lighting_2:FindFirstChild("Lobby"))
-    local function base(a1, a2)
-        --[[
-          name: base
-          line: 529
-          upvalues:
-            u33 (copy, index: 1)
-        ]]
-        local v31
-        if u33 then
-            v31 = u33:GetAttribute(a1)
-        else
-            v31 = u33
-        end
-        if v31 == nil then
-            return a2
-        end
-        return v31
-    end
-    local v32 = u33 and (u33:FindFirstChildOfClass("Atmosphere"))
-    local tbl_upv_7 = {atmColor = 0, atmGlare = 0, atmHaze = 0, rays = 0, atmDensity = 0, outdoor = 0, clock = 0, brightness = 0, atmDecay = 0, shiftTop = 0}
-    local v33 = u33 and (u33:GetAttribute("ClockTime"))
-    local u34
-    if v33 == nil then
-        u34 = 16.3
-    else
-        u34 = v33
-    end
-    tbl_upv_7.clock = u34
-    local v34 = fromRGB_upv_1(214, 184, 140)
-    local v35 = u33 and (u33:GetAttribute("ColorShift_Top"))
-    if v35 == nil then
-        u34 = v34
-    else
-        u34 = v35
-    end
-    tbl_upv_7.shiftTop = u34
-    local v36 = u33 and (u33:GetAttribute("Brightness"))
-    if v36 == nil then
-        u34 = 2.5
-    else
-        u34 = v36
-    end
-    tbl_upv_7.brightness = u34
-    local v37 = fromRGB_upv_1(136, 128, 126)
-    local v38 = u33 and (u33:GetAttribute("OutdoorAmbient"))
-    if v38 == nil then
-        u34 = v37
-    else
-        u34 = v38
-    end
-    tbl_upv_7.outdoor = u34
-    if v32 then
-        u34 = v32.Color
-    else
-        u34 = fromRGB_upv_1(224, 210, 190)
-    end
-    tbl_upv_7.atmColor = u34
-    if v32 then
-        u34 = v32.Decay
-    else
-        u34 = fromRGB_upv_1(170, 160, 178)
-    end
-    tbl_upv_7.atmDecay = u34
-    tbl_upv_7.atmHaze = ((not v32) and 1.2) or (v32.Haze)
-    tbl_upv_7.atmDensity = ((not v32) and 0.24) or (v32.Density)
-    tbl_upv_7.atmGlare = ((not v32) and 0.08) or (v32.Glare)
-    local v39 = u33 and (u33:FindFirstChildOfClass("SunRaysEffect"))
-    if v39 then
-        u34 = v39.Intensity
-    else
-        u34 = 0.035
-    end
-    tbl_upv_7.rays = u34
-    local tbl_upv_8 = {bright = 2.9, density = 0.27, rays = 0.14, clock = 17.35, glare = 2.2, haze = 1.6}
-    tbl_upv_8.shiftTop = fromRGB_upv_1(255, 176, 110)
-    tbl_upv_8.atmColor = fromRGB_upv_1(255, 178, 130)
-    tbl_upv_8.atmDecay = fromRGB_upv_1(232, 128, 140)
-    tbl_upv_8.outdoor = fromRGB_upv_1(170, 132, 118)
-    local tbl_upv_9 = {bright = 2.6, density = 0.29, rays = 0.2, clock = 17.62, glare = 3, haze = 1.9}
-    tbl_upv_9.shiftTop = fromRGB_upv_1(255, 140, 100)
-    tbl_upv_9.atmColor = fromRGB_upv_1(255, 150, 120)
-    tbl_upv_9.atmDecay = fromRGB_upv_1(196, 98, 150)
-    tbl_upv_9.outdoor = fromRGB_upv_1(156, 112, 128)
-    u34 = Instance.new("ColorCorrectionEffect")
-    u34.Name = "UpdateCountdownGrade"
-    u34.Enabled = false
-    u34.Parent = CurrentCamera_1
-    local LightingController_upv_1 = nil
-    pcall(
-        function()
-            --[[
-              line: 560
-              upvalues:
-                LightingController_upv_1 (ref, index: 1)
-            ]]
-            LightingController_upv_1 = require(script.Parent.Parent.Core.LightingController)
         end
     )
-    local function lobbyLit()
-        --[[
-          name: lobbyLit
-          line: 563
-          upvalues:
-            LightingController_upv_1 (ref, index: 1)
-        ]]
-        if not LightingController_upv_1 then
-            return true
-        end
-        local success_1, v40 = pcall(LightingController_upv_1.Current)
-        return success_1 and (v40 == "Lobby")
-    end
-    local tbl_upv_10 = {w = 0, d = 0}
-    local u35 = false
-    local function paintSky(a1, a2)
-        --[[
-          name: paintSky
-          line: 573
-          upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            LightingController_upv_1 (ref,  index: 2)
-            u34 (copy, index: 3)
-            u35 (ref,  index: 4)
-            Lighting_upv_1 (copy, index: 5)
-            tbl_upv_7 (copy, index: 6)
-            tbl_upv_8 (copy, index: 7)
-            tbl_upv_9 (copy, index: 8)
-            Colors_upv_1 (copy, index: 9)
-            fromRGB_upv_1 (copy, index: 10)
-        ]]
-        local v41 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-        if v41 then
-            if LightingController_upv_1 then
-                local success_2, v42 = pcall(LightingController_upv_1.Current)
-                v41 = success_2 and (v42 == "Lobby")
-            else
-                v41 = true
-            end
-            if v41 then
-                if a1 <= 0.001 and a2 <= 0.001 then
-                    if u35 then
-                        Lighting_upv_1.ClockTime = tbl_upv_7.clock
-                        Lighting_upv_1.ColorShift_Top = tbl_upv_7.shiftTop
-                        Lighting_upv_1.Brightness = tbl_upv_7.brightness
-                        Lighting_upv_1.OutdoorAmbient = tbl_upv_7.outdoor
-                        v41 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                        if v41 then
-                            v41.Color = tbl_upv_7.atmColor
-                            v41.Decay = tbl_upv_7.atmDecay
-                            v41.Haze = tbl_upv_7.atmHaze
-                            v41.Density = tbl_upv_7.atmDensity
-                            v41.Glare = tbl_upv_7.atmGlare
-                        end
-                        v41 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                        if v41 then
-                            v41.Intensity = tbl_upv_7.rays
-                        end
-                        u35 = false
-                    end
-                    u34.Enabled = false
-                    return
-                end
-                u35 = true
-                local function mix_1(a3, a4, a5)
-                    --[[
-                      name: mix
-                      line: 600
-                      upvalues:
-                        a1 (copy, index: 1)
-                        a2 (copy, index: 2)
-                    ]]
-                    if typeof(a3) == "Color3" then
-                        return a3:Lerp(a4, a1):Lerp(a5, a2)
-                    end
-                    local v43 = a3 + (a4 - a3) * a1
-                    return v43 + ((a5 - v43) * a2)
-                end
-                local clock_1 = tbl_upv_7.clock
-                local clock_2 = tbl_upv_8.clock
-                local clock_3 = tbl_upv_9.clock
-                local v42
-                if typeof(clock_1) ~= "Color3" then
-                    local _ = clock_1 + (clock_2 - clock_1) * a1
-                    v42 = clock_1 + (clock_2 - clock_1) * a1 + (clock_3 - (clock_1 + (clock_2 - clock_1) * a1)) * a2
-                else
-                    v42 = clock_1:Lerp(clock_2, a1):Lerp(clock_3, a2)
-                end
-                Lighting_upv_1.ClockTime = v42
-                local shiftTop_1 = tbl_upv_7.shiftTop
-                local shiftTop_2 = tbl_upv_8.shiftTop
-                local shiftTop_3 = tbl_upv_9.shiftTop
-                if typeof(shiftTop_1) ~= "Color3" then
-                    local _ = shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1
-                    v42 = shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1 + (shiftTop_3 - (shiftTop_1 + (shiftTop_2 - shiftTop_1) * a1)) * a2
-                else
-                    v42 = shiftTop_1:Lerp(shiftTop_2, a1):Lerp(shiftTop_3, a2)
-                end
-                Lighting_upv_1.ColorShift_Top = v42
-                local brightness_1 = tbl_upv_7.brightness
-                local bright_1 = tbl_upv_8.bright
-                local bright_2 = tbl_upv_9.bright
-                if typeof(brightness_1) ~= "Color3" then
-                    local _ = brightness_1 + (bright_1 - brightness_1) * a1
-                    v42 = brightness_1 + (bright_1 - brightness_1) * a1 + (bright_2 - (brightness_1 + (bright_1 - brightness_1) * a1)) * a2
-                else
-                    v42 = brightness_1:Lerp(bright_1, a1):Lerp(bright_2, a2)
-                end
-                Lighting_upv_1.Brightness = v42
-                local v44 = tbl_upv_7.outdoor
-                local outdoor_1 = tbl_upv_8.outdoor
-                local outdoor_2 = tbl_upv_9.outdoor
-                if typeof(v44) ~= "Color3" then
-                    local _ = v44 + (outdoor_1 - v44) * a1
-                    v42 = v44 + (outdoor_1 - v44) * a1 + (outdoor_2 - (v44 + (outdoor_1 - v44) * a1)) * a2
-                else
-                    v42 = v44:Lerp(outdoor_1, a1):Lerp(outdoor_2, a2)
-                end
-                Lighting_upv_1.OutdoorAmbient = v42
-                local v45 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                local v46 = nil
-                if v45 then
-                    v46 = tbl_upv_7.rays
-                    local rays_1 = tbl_upv_8.rays
-                    local rays_2 = tbl_upv_9.rays
-                    if typeof(v46) ~= "Color3" then
-                        local _ = v46 + (rays_1 - v46) * a1
-                        v42 = v46 + (rays_1 - v46) * a1 + (rays_2 - (v46 + (rays_1 - v46) * a1)) * a2
-                    else
-                        v42 = v46:Lerp(rays_1, a1):Lerp(rays_2, a2)
-                    end
-                    v45.Intensity = v42
-                end
-                local v47 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                local v48, v49, v50, v51, v52 = nil, nil, nil, nil, nil
-                if v47 then
-                    v48 = tbl_upv_7.atmColor
-                    local atmColor_1 = tbl_upv_8.atmColor
-                    local atmColor_2 = tbl_upv_9.atmColor
-                    if typeof(v48) ~= "Color3" then
-                        local _ = v48 + (atmColor_1 - v48) * a1
-                        v42 = v48 + (atmColor_1 - v48) * a1 + (atmColor_2 - (v48 + (atmColor_1 - v48) * a1)) * a2
-                    else
-                        v42 = v48:Lerp(atmColor_1, a1):Lerp(atmColor_2, a2)
-                    end
-                    v47.Color = v42
-                    v49 = tbl_upv_7.atmDecay
-                    local atmDecay_1 = tbl_upv_8.atmDecay
-                    local atmDecay_2 = tbl_upv_9.atmDecay
-                    if typeof(v49) ~= "Color3" then
-                        local _ = v49 + (atmDecay_1 - v49) * a1
-                        v42 = v49 + (atmDecay_1 - v49) * a1 + (atmDecay_2 - (v49 + (atmDecay_1 - v49) * a1)) * a2
-                    else
-                        v42 = v49:Lerp(atmDecay_1, a1):Lerp(atmDecay_2, a2)
-                    end
-                    v47.Decay = v42
-                    v50 = tbl_upv_7.atmHaze
-                    local haze_1 = tbl_upv_8.haze
-                    local haze_2 = tbl_upv_9.haze
-                    if typeof(v50) ~= "Color3" then
-                        local _ = v50 + (haze_1 - v50) * a1
-                        v42 = v50 + (haze_1 - v50) * a1 + (haze_2 - (v50 + (haze_1 - v50) * a1)) * a2
-                    else
-                        v42 = v50:Lerp(haze_1, a1):Lerp(haze_2, a2)
-                    end
-                    v47.Haze = v42
-                    v51 = tbl_upv_7.atmDensity
-                    local density_1 = tbl_upv_8.density
-                    local density_2 = tbl_upv_9.density
-                    if typeof(v51) ~= "Color3" then
-                        local _ = v51 + (density_1 - v51) * a1
-                        v42 = v51 + (density_1 - v51) * a1 + (density_2 - (v51 + (density_1 - v51) * a1)) * a2
-                    else
-                        v42 = v51:Lerp(density_1, a1):Lerp(density_2, a2)
-                    end
-                    v47.Density = v42
-                    v52 = tbl_upv_7.atmGlare
-                    local glare_1 = tbl_upv_8.glare
-                    local glare_2 = tbl_upv_9.glare
-                    if typeof(v52) ~= "Color3" then
-                        local _ = v52 + (glare_1 - v52) * a1
-                        v42 = v52 + (glare_1 - v52) * a1 + (glare_2 - (v52 + (glare_1 - v52) * a1)) * a2
-                    else
-                        v42 = v52:Lerp(glare_1, a1):Lerp(glare_2, a2)
-                    end
-                    v47.Glare = v42
-                end
-                u34.Enabled = true
-                local White_1 = Colors_upv_1.White
-                local v53 = fromRGB_upv_1(255, 238, 222)
-                local v54 = fromRGB_upv_1(255, 228, 226)
-                if typeof(White_1) ~= "Color3" then
-                    local _ = White_1 + (v53 - White_1) * a1
-                    v44 = White_1 + (v53 - White_1) * a1 + (v54 - (White_1 + (v53 - White_1) * a1)) * a2
-                else
-                    v44 = White_1:Lerp(v53, a1):Lerp(v54, a2)
-                end
-                u34.TintColor = v44
-                u34.Saturation = a1 * 0.12
-                u34.Contrast = a1 * 0.05
-                u34.Brightness = a1 * 0.03
-                return
-            end
-        end
-        u34.Enabled = false
-        u35 = false
-    end
-    local function localTime(a1)
-        --[[
-          name: localTime
-          line: 644
-        ]]
-        local success_3, v55 = pcall(function() end)
-        if success_3 then
-            return string.upper(v55) .. " YOUR TIME"
-        end
-        return ""
-    end
-    local at_upv_1 = UPDATE_COUNTDOWN_upv_1.at
-    local success_4, v56 = pcall(
-        function()
-            --[[
-              line: 645
-              upvalues:
-                at_upv_1 (copy, index: 1)
-            ]]
-            return DateTime.fromUnixTimestamp(at_upv_1):FormatLocalTime("dddd h:mm A", "en-us")
-        end
-    )
-    local u36 = (success_4 and (string.upper(v56) .. " YOUR TIME")) or ""
-    local tbl_upv_11 = {}
-    local function set(a1, a2)
-        --[[
-          name: set
-          line: 653
-          upvalues:
-            tbl_upv_11 (copy, index: 1)
-        ]]
-        if tbl_upv_11[a1] == a2 then
-            return
-        end
-        tbl_upv_11[a1] = a2
-        a1.label.Text = a2
-        a1.shadow.Text = a2
-    end
-    local function paintSlot(a1, a2)
-        --[[
-          name: paintSlot
-          line: 668
-          upvalues:
-            tbl_upv_3 (copy, index: 1)
-            Colors_upv_1 (copy, index: 3)
-            u3 (copy, index: 4)
-        ]]
-        local v57 = tbl_upv_3[a1]
-        v57.out = a2
-        if a2 then
-            v57.img.ImageColor3 = Colors_upv_1.White
-            v57.img.ImageTransparency = 0
-        else
-            v57.img.ImageColor3 = u3
-            v57.img.ImageTransparency = 0.15
-        end
-    end
-    local u37 = false
-    local u38 = 0
-    local function fadeText(a1, a2)
-        --[[
-          name: fadeText
-          line: 661
-          upvalues:
-            tbl_upv_2 (copy, index: 1)
-            TweenService_upv_1 (copy, index: 2)
-        ]]
-        for _, value_3 in tbl_upv_2 do
-            local tbl_12 = {}
-            tbl_12.TextTransparency = a1
-            TweenService_upv_1:Create(value_3.label, TweenInfo.new(a2), tbl_12):Play()
-            local v58 = TweenInfo.new(a2)
-            local tbl_13 = {}
-            tbl_13.TextTransparency = math.max(a1, 0.45)
-            TweenService_upv_1:Create(value_3.shadow, v58, tbl_13):Play()
-        end
-    end
-    local function volley(a1, a2, a3, a4)
-        --[[
-          name: volley
-          line: 507
-          upvalues:
-            u29 (copy, index: 1)
-            LocalPlayer_upv_1 (copy, index: 2)
-            rocket (copy, index: 3)
-            RightVector_upv_1 (copy, index: 4)
-            UpVector_upv_1 (copy, index: 5)
-            u30 (copy, index: 6)
-            tbl_upv_6 (copy, index: 7)
-        ]]
-        for n_upv_1 = 1, a1 do
-            task.delay(
-                (((n_upv_1 - 1) / math.max(1, a1 - 1)) * a2) + u29:NextNumber(0, 0.15),
-                function()
-                    --[[
-                      line: 509
-                      upvalues:
-                        LocalPlayer_upv_1 (copy, index: 1)
-                        n_upv_1 (copy, index: 2)
-                        u29 (copy, index: 3)
-                        rocket (copy, index: 4)
-                        RightVector_upv_1 (copy, index: 5)
-                        UpVector_upv_1 (copy, index: 6)
-                        u30 (copy, index: 7)
-                        a3 (copy, index: 8)
-                        tbl_upv_6 (copy, index: 9)
-                        a4 (copy, index: 10)
-                    ]]
-                    local v59 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                    if not v59 then
-                        return
-                    end
-                    local v60 = (((n_upv_1 % 2 ~= 0) and -1) or 1) * u29:NextNumber(150, 260)
-                    v59 = u29:NextNumber(10, 80)
-                    if n_upv_1 % 3 == 0 then
-                        v60, v59 = u29:NextNumber(-140, 140), u29:NextNumber(70, 110)
-                    end
-                    local v61 = a3 or (tbl_upv_6[u29:NextInteger(1, #tbl_upv_6)])
-                    rocket(((Vector3.new(0, 66, -135) + (RightVector_upv_1 * v60)) + (UpVector_upv_1 * v59)) + (u30 * 30), v61, a4)
-                end
-            )
-        end
-    end
-    local function reveal(a1)
-        --[[
-          name: reveal
-          line: 685
-          upvalues:
-            UPDATE_COUNTDOWN_upv_1 (copy, index: 1)
-            Gold_upv_1 (copy, index: 2)
-            u37 (ref,  index: 3)
-            u38 (ref,  index: 4)
-            tbl_upv_3 (copy, index: 5)
-            u3 (copy, index: 6)
-            u18 (copy, index: 7)
-            UIAssets_upv_1 (copy, index: 8)
-            u20 (copy, index: 9)
-            tbl_upv_11 (copy, index: 10)
-            Colors_upv_1 (copy, index: 11)
-            u19 (copy, index: 12)
-            u14 (copy, index: 13)
-            u15 (copy, index: 14)
-            fadeText (copy, index: 15)
-            TweenService_upv_1 (copy, index: 16)
-            u16 (copy, index: 17)
-            u17 (copy, index: 18)
-            Sfx_upv_1 (ref,  index: 19)
-            volley (copy, index: 20)
-            showBanner (copy, index: 21)
-            u21 (copy, index: 22)
-        ]]
-        local u39 = UPDATE_COUNTDOWN_upv_1.ranks[a1]
-        local v62 = u39.color or Gold_upv_1
-        local v63 = a1 == #UPDATE_COUNTDOWN_upv_1.ranks
-        u37 = true
-        u38 = a1
-        local v64 = tbl_upv_3[a1]
-        v64.out = false
-        v64.img.ImageColor3 = u3
-        v64.img.ImageTransparency = 0.15
-        local Ranks_4 = UIAssets_upv_1.Ranks
-        u18.Image = Ranks_4 and Ranks_4[string.lower(u39.name)] or u39.img or ""
-        u18.ImageTransparency = 0
-        local name_1 = u39.name
-        if tbl_upv_11[u20] ~= name_1 then
-            tbl_upv_11[u20] = name_1
-            u20.label.Text = name_1
-            u20.shadow.Text = name_1
-        end
-        u20.label.TextColor3 = v62:Lerp(Colors_upv_1.White, 0.35)
-        for _, value_4 in {u20, u19} do
-            value_4.label.TextTransparency = 0
-            value_4.shadow.TextTransparency = 0.45
-        end
-        u14.Position = UDim2.fromOffset(640, 120)
-        u14.Visible = true
-        u15.Scale = 0.3
-        fadeText(1, 0.2)
-        local tbl_14 = {Scale = 1}
-        TweenService_upv_1:Create(u15, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_14):Play()
-        u16.ImageColor3 = v62
-        u16.ImageTransparency = 0
-        u17.Scale = 0.4
-        local tbl_15 = {ImageTransparency = 0.55}
-        TweenService_upv_1:Create(u16, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_15):Play()
-        local tbl_16 = {Scale = 1.3}
-        TweenService_upv_1:Create(u17, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_16):Play()
-        if Sfx_upv_1 then
-            pcall(Sfx_upv_1.PlayUI, "UI/Unlock")
-        end
-        if v63 then
-            task.delay(
-                0.15,
-                function()
-                    --[[
-                      line: 712
-                      upvalues:
-                        Sfx_upv_1 (ref, index: 1)
-                    ]]
-                    if not Sfx_upv_1 then
-                        return
-                    end
-                    pcall(Sfx_upv_1.PlayUI, "UI/NewItem_Fanfare")
-                end
-            )
-        end
-        volley((v63 and 14) or 8, 2.4, v62, (v63 and 1.35) or 1.1)
-        showBanner(u39)
+
+    tween:Play()
+end
+
+local v151 = {color3FromRGB(255, 204, 64), color3FromRGB(255, 92, 92), color3FromRGB(86, 202, 255), color3FromRGB(186, 116, 255), color3FromRGB(120, 236, 150), color3FromRGB(255, 150, 80)}
+
+local function volley(a153, a154: number, a155, a156)
+    --[[
+      name: volley
+      line: 507
+      upvalues:
+        random (copy, index: 1)
+        localPlayer (copy, index: 2)
+        rocket (copy, index: 3)
+        rightVector (copy, index: 4)
+        upVector (copy, index: 5)
+        vector3 (copy, index: 6)
+        v151 (copy, index: 7)
+    ]]
+    for index = 1, a153 do
         task.delay(
-            3.4,
+            (((index - 1) / math.max(1, a153 - 1)) * a154) + random:NextNumber(0, 0.15),
             function()
                 --[[
-                  line: 718
+                  line: 509
                   upvalues:
-                    tbl_upv_3 (copy, index: 1)
-                    a1 (copy, index: 2)
-                    u21 (copy, index: 3)
-                    u39 (copy, index: 4)
-                    UIAssets_upv_1 (copy, index: 5)
-                    u14 (copy, index: 6)
-                    u16 (copy, index: 7)
-                    TweenService_upv_1 (copy, index: 8)
-                    Colors_upv_1 (copy, index: 10)
-                    Sfx_upv_1 (ref,  index: 11)
-                    fadeText (copy, index: 12)
-                    u37 (ref,  index: 13)
-                    u38 (ref,  index: 14)
+                    localPlayer (copy, index: 1)
+                    index (copy, index: 2)
+                    random (copy, index: 3)
+                    rocket (copy, index: 4)
+                    rightVector (copy, index: 5)
+                    upVector (copy, index: 6)
+                    vector3 (copy, index: 7)
+                    a155 (copy, index: 8)
+                    v151 (copy, index: 9)
+                    a156 (copy, index: 10)
                 ]]
-                local v66 = tbl_upv_3[a1]
-                local v67 = Vector2.new(430, 120)
-                local Ranks_5 = UIAssets_upv_1.Ranks
-                u21.Image = Ranks_5 and Ranks_5[string.lower(u39.name)] or u39.img or ""
-                u21.Position = UDim2.fromOffset(v67.X, v67.Y)
-                u21.Size = UDim2.fromOffset(180, 180)
-                u21.Visible = true
-                u14.Visible = false
-                u16.ImageTransparency = 1
-                local v69 = TweenInfo.new(0.55, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
-                local tbl_17 = {}
-                tbl_17.Position = v66.cell.Position
-                tbl_17.Size = UDim2.fromOffset(62, 62)
-                TweenService_upv_1:Create(u21, v69, tbl_17):Play()
-                task.wait(0.55)
-                u21.Visible = false
-                local v70 = tbl_upv_3[a1]
-                v70.out = true
-                v70.img.ImageColor3 = Colors_upv_1.White
-                v70.img.ImageTransparency = 0
-                v66.scale.Scale = 1.6
-                local tbl_18 = {Scale = 1}
-                TweenService_upv_1:Create(v66.scale, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_18):Play()
-                if Sfx_upv_1 then
-                    pcall(Sfx_upv_1.PlayUI, "UI/Card_Reveal")
+                if localPlayer:GetAttribute("State") == "Match" then
+                    return
                 end
-                fadeText(0, 0.35)
-                u37 = false
-                u38 = 0
+
+                local v158 = index % 2 ~= 0 and -1 or 1
+                local v159 = v158 * random:NextNumber(150, 260)
+                local v160 = random:NextNumber(10, 80)
+
+                if index % 3 == 0 then
+                    v159 = random:NextNumber(-140, 140)
+                    v160 = random:NextNumber(70, 110)
+                end
+
+                rocket(((Vector3.new(0, 66, -135) + (rightVector * v159)) + (upVector * v160)) + (vector3 * 30), (a155
+                    or v151[random:NextInteger(1, #v151)]), a156)
             end
         )
     end
-    local u40 = -1
-    local u41 = ""
-    local u42 = false
-    local u43 = os.clock()
-    local u44 = nil
-    local u45 = 0
-    local tbl_upv_19 = {}
-    Workspace_upv_1:GetAttributeChangedSignal("CountdownPreviewAt"):Connect(
-        function()
-            --[[
-              line: 754
-              upvalues:
-                u42 (ref,  index: 1)
-                u41 (ref,  index: 2)
-                u44 (ref,  index: 3)
-                tbl_upv_19 (copy, index: 4)
-            ]]
-            u42 = false
-            u41 = ""
-            u44 = nil
-            table.clear(tbl_upv_19)
-        end
-    )
-    local function clock_4(a1)
-        --[[
-          name: clock
-          line: 633
-        ]]
-        local v71 = a1 // 86400
-        local v72 = a1 // 3600 % 24
-        local v73 = a1 // 60 % 60
-        local v74 = a1 % 60
-        if v71 > 0 then
-            return string.format("%dD %02d:%02d:%02d", v71, v72, v73, v74)
-        elseif v72 > 0 then
-            return string.format("%d:%02d:%02d", v72, v73, v74)
-        else
-            return string.format("%d:%02d", v73, v74)
-        end
+end
+
+local lighting2 = replicatedStorage:FindFirstChild("Lighting")
+local lobby = lighting2 and lighting2:FindFirstChild("Lobby")
+
+local function base(attributeName: string, a165)
+    --[[
+      name: base
+      line: 529
+      upvalues:
+        lobby (copy, index: 1)
+    ]]
+    local v166 = lobby and lobby:GetAttribute(attributeName)
+    if v166 ~= nil then
+        return v166
     end
-    local function step(a1)
+
+    return a165
+end
+
+local atmosphere = lobby and lobby:FindFirstChildOfClass("Atmosphere")
+local v168 = {}
+local clockTime = lobby and lobby:GetAttribute("ClockTime")
+v168.clock = clockTime == nil and 16.3 or clockTime
+local color3 = color3FromRGB(214, 184, 140)
+local colorShiftTop = lobby and lobby:GetAttribute("ColorShift_Top")
+v168.shiftTop = if colorShiftTop ~= nil then colorShiftTop else color3
+local brightness = lobby and lobby:GetAttribute("Brightness")
+v168.brightness = brightness == nil and 2.5 or brightness
+local color32 = color3FromRGB(136, 128, 126)
+local outdoorAmbient = lobby and lobby:GetAttribute("OutdoorAmbient")
+v168.outdoor = if outdoorAmbient ~= nil then outdoorAmbient else color32
+v168.atmColor = if atmosphere then atmosphere.Color else color3FromRGB(224, 210, 190)
+v168.atmDecay = if atmosphere then atmosphere.Decay else color3FromRGB(170, 160, 178)
+v168.atmHaze = not atmosphere and 1.2 or atmosphere.Haze
+v168.atmDensity = not atmosphere and 0.24 or atmosphere.Density
+v168.atmGlare = not atmosphere and 0.08 or atmosphere.Glare
+local sunRaysEffect = lobby and lobby:FindFirstChildOfClass("SunRaysEffect")
+v168.rays = not sunRaysEffect and 0.035 or sunRaysEffect.Intensity
+local v176 = {clock = 17.35, haze = 1.6, density = 0.27, glare = 2.2, bright = 2.9, rays = 0.14, shiftTop = color3FromRGB(255, 176, 110), atmColor = color3FromRGB(255, 178, 130), atmDecay = color3FromRGB(232, 128, 140), outdoor = color3FromRGB(170, 132, 118)}
+local v177 = {clock = 17.62, haze = 1.9, density = 0.29, glare = 3, bright = 2.6, rays = 0.2, shiftTop = color3FromRGB(255, 140, 100), atmColor = color3FromRGB(255, 150, 120), atmDecay = color3FromRGB(196, 98, 150), outdoor = color3FromRGB(156, 112, 128)}
+local updateCountdownGrade = Instance.new("ColorCorrectionEffect")
+updateCountdownGrade.Name = "UpdateCountdownGrade"
+updateCountdownGrade.Enabled = false
+updateCountdownGrade.Parent = camera
+local LightingController = nil
+pcall(
+    function()
         --[[
-          name: step
-          line: 761
+          line: 560
           upvalues:
-            Workspace_upv_1 (copy, index: 1)
-            UPDATE_COUNTDOWN_upv_1 (copy, index: 2)
-            LocalPlayer_upv_1 (copy, index: 3)
-            u5 (copy, index: 4)
-            u12 (copy, index: 5)
-            u22 (copy, index: 6)
-            tbl_upv_3 (copy, index: 7)
-            u42 (ref,  index: 8)
-            Colors_upv_1 (copy, index: 9)
-            u3 (copy, index: 10)
-            tbl_upv_19 (copy, index: 11)
-            u38 (ref,  index: 12)
-            u43 (copy, index: 13)
-            u37 (ref,  index: 14)
-            reveal (copy, index: 15)
-            u1 (copy, index: 16)
-            u2 (copy, index: 17)
-            ReplicatedStorage_upv_1 (copy, index: 18)
-            tbl_upv_10 (copy, index: 19)
-            paintSky (copy, index: 20)
-            u8 (copy, index: 21)
-            Gold_upv_1 (copy, index: 22)
-            u9 (copy, index: 23)
-            u10 (copy, index: 24)
-            tbl_upv_11 (copy, index: 25)
-            u13 (copy, index: 26)
-            u40 (ref,  index: 27)
-            TweenService_upv_1 (copy, index: 28)
-            Sfx_upv_1 (ref,  index: 29)
-            u36 (copy, index: 30)
-            clock_4 (copy, index: 31)
-            u41 (ref,  index: 32)
-            u44 (ref,  index: 33)
-            volley (copy, index: 34)
-            u45 (ref,  index: 35)
-            u29 (copy, index: 36)
+            LightingController (ref, index: 1)
         ]]
-        local v75 = Workspace_upv_1:GetServerTimeNow()
-        local v76 = Workspace_upv_1:GetAttribute("CountdownPreview")
-        local v77 = Workspace_upv_1:GetAttribute("CountdownPreviewAt")
-        local v78
-        if type(v76) == "number" and type(v77) == "number" then
-            v78 = UPDATE_COUNTDOWN_upv_1.at - v76 + (v75 - v77)
-        else
-            v78 = v75
-        end
-        local v79 = UPDATE_COUNTDOWN_upv_1.at - v78
-        local v80 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-        u5.Enabled = v80
-        u12.Enabled = v80
-        u22.Enabled = v80
-        for key_2, value_5 in UPDATE_COUNTDOWN_upv_1.ranks do
-            local v81 = UPDATE_COUNTDOWN_upv_1.at - value_5.hours * 3600
-            local v82 = v81 <= v78
-            local v83 = tbl_upv_3[key_2]
-            if v83.out == nil or not (u42) then
-                local v84 = tbl_upv_3[key_2]
-                v84.out = v82
-                if v82 then
-                    v84.img.ImageColor3 = Colors_upv_1.White
-                    v84.img.ImageTransparency = 0
-                else
-                    v84.img.ImageColor3 = u3
-                    v84.img.ImageTransparency = 0.15
-                end
-                continue
-            end
-            if v82 then
-                if v83.out or table.find(tbl_upv_19, key_2) or u38 == key_2 then
-                    if v82 then
-                        continue
-                    end
-                    if v83.out then
-                        local v85 = tbl_upv_3[key_2]
-                        v85.out = false
-                        v85.img.ImageColor3 = u3
-                        v85.img.ImageTransparency = 0.15
-                    end
-                else
-                    if not (v78 - v81 < 4) then
-                        local v86 = tbl_upv_3[key_2]
-                        v86.out = true
-                        v86.img.ImageColor3 = Colors_upv_1.White
-                        v86.img.ImageTransparency = 0
-                        continue
-                    end
-                    if os.clock() - u43 > 6 then
-                        table.insert(tbl_upv_19, key_2)
-                    else
-                        local v86 = tbl_upv_3[key_2]
-                        v86.out = true
-                        v86.img.ImageColor3 = Colors_upv_1.White
-                        v86.img.ImageTransparency = 0
-                    end
-                end
-            else
-                if v82 then
-                    continue
-                end
-                if v83.out then
-                    local v85 = tbl_upv_3[key_2]
-                    v85.out = false
-                    v85.img.ImageColor3 = u3
-                    v85.img.ImageTransparency = 0.15
-                end
-            end
-        end
-        u42 = true
-        if not (u37) and #tbl_upv_19 > 0 then
-            local v87 = table.remove(tbl_upv_19, 1)
-            if v80 then
-                reveal(v87)
-            else
-                local v88 = tbl_upv_3[v87]
-                v88.out = true
-                v88.img.ImageColor3 = Colors_upv_1.White
-                v88.img.ImageTransparency = 0
-            end
-        end
-        local v89 = 0
-        local v90 = 0
-        if (v79 > 0) and (v79 <= u1) then
-            if u2 < v79 then
-                local _ = (u1 - v79) / (u1 - u2)
-                v89 = 0.6 * ((u1 - v79) / (u1 - u2)) * ((u1 - v79) / (u1 - u2)) * (3 - 2 * ((u1 - v79) / (u1 - u2)))
-            else
-                v89 = 0.6 + 0.4 * (1 - (math.max(0, v79 - 60) / (u2 - 60)))
-            end
-            v90 = ((v79 <= 60) and (1 - v79 / 60)) or 0
-        elseif v79 <= 0 then
-            local v91 = ((Workspace_upv_1:GetAttribute("CountdownPreviewShipped") == true) and true) or ((UPDATE_COUNTDOWN_upv_1.shipped ~= nil) and (ReplicatedStorage_upv_1.Shared:FindFirstChild(UPDATE_COUNTDOWN_upv_1.shipped) ~= nil))
-            if not v91 then
-                v89, v90 = 1, 1
-            end
-        end
-        local v92 = ((os.clock() - u43 < 0.4) and 1) or (math.min(1, a1 * 0.6))
-        tbl_upv_10.w = tbl_upv_10.w + ((v89 - tbl_upv_10.w) * v92)
-        tbl_upv_10.d = tbl_upv_10.d + ((v90 - tbl_upv_10.d) * v92)
-        paintSky(tbl_upv_10.w, tbl_upv_10.d)
-        local v93 = nil
-        if v79 > 0 then
-            local v94 = math.ceil(v79)
-            v90 = ((v79 <= 60) and "final") or (((v79 <= u2) and "close") or "far")
-            for _, value_6 in tbl_upv_3 do
-                value_6.cell.Visible = true
-            end
-            v89 = v90 ~= "far"
-            local label_1 = u8.label
-            local v95
-            if v89 then
-                v95 = Gold_upv_1
-            else
-                v95 = Colors_upv_1.White
-            end
-            label_1.TextColor3 = v95
-            local label_2 = u9.label
-            local v96
-            if v89 then
-                v96 = Gold_upv_1
-            else
-                v96 = Colors_upv_1.White
-            end
-            label_2.TextColor3 = v96
-            local v97, v98, v99 = nil, nil, nil
-            if v90 ~= "final" then
-                v97 = u36
-                if tbl_upv_11[u10] ~= v97 then
-                    tbl_upv_11[u10] = v97
-                    u10.label.Text = v97
-                    u10.shadow.Text = v97
-                end
-                u10.label.TextColor3 = Colors_upv_1.White
-                u8.holder.Visible = true
-                u9.holder.Visible = true
-                u13.holder.Visible = false
-                v98 = clock_4(v94)
-                if tbl_upv_11[u9] ~= v98 then
-                    tbl_upv_11[u9] = v98
-                    u9.label.Text = v98
-                    u9.shadow.Text = v98
-                end
-            else
-                v99 = string.upper(UPDATE_COUNTDOWN_upv_1.title) .. " IN"
-                if tbl_upv_11[u10] ~= v99 then
-                    tbl_upv_11[u10] = v99
-                    u10.label.Text = v99
-                    u10.shadow.Text = v99
-                end
-                u10.label.TextColor3 = Gold_upv_1
-                u8.holder.Visible = false
-                u9.holder.Visible = false
-                u13.holder.Visible = not u37
-                local label_3 = u13.label
-                local v100
-                if v94 <= 10 then
-                    v100 = Colors_upv_1.White
-                else
-                    v100 = Gold_upv_1
-                end
-                label_3.TextColor3 = v100
-                local v101 = nil
-                if v94 ~= u40 then
-                    v101 = tostring(v94)
-                    if tbl_upv_11[u13] ~= v101 then
-                        tbl_upv_11[u13] = v101
-                        u13.label.Text = v101
-                        u13.shadow.Text = v101
-                    end
-                    u13.scale.Scale = ((v94 <= 10) and 1.2) or 1.12
-                    local tbl_20 = {Scale = 1}
-                    TweenService_upv_1:Create(u13.scale, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), tbl_20):Play()
-                    if v80 then
-                        local v102 = ((v94 <= 3) and "Match/Countdown_1") or "Match/Countdown_Tick"
-                        if Sfx_upv_1 then
-                            pcall(Sfx_upv_1.PlayUI, v102)
-                        end
-                    end
-                end
-            end
-            u40 = v94
-            u41 = v90
-        else
-            if u41 == "final" or u41 == "close" then
-                u44 = os.clock()
-                if v80 then
-                    if Sfx_upv_1 then
-                        pcall(Sfx_upv_1.PlayUI, "Match/Victory")
-                    end
-                    volley(16, 7, nil, 1.5)
-                    task.delay(
-                        7.5,
-                        function()
-                            --[[
-                              line: 863
-                              upvalues:
-                                volley (copy, index: 1)
-                            ]]
-                            volley(10, 3, nil, 1.8)
-                        end
-                    )
-                end
-            end
-            if u41 ~= "done" then
-                u13.scale.Scale = 0.4
-                local tbl_21 = {Scale = 1}
-                TweenService_upv_1:Create(u13.scale, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_21):Play()
-            end
-            u41 = "done"
-            for _, value_7 in tbl_upv_3 do
-                value_7.cell.Visible = false
-            end
-            u8.holder.Visible = false
-            u9.holder.Visible = false
-            u10.holder.Visible = true
-            u13.holder.Visible = true
-            u10.label.TextColor3 = Gold_upv_1
-            v93 = string.upper(UPDATE_COUNTDOWN_upv_1.title)
-            if tbl_upv_11[u10] ~= v93 then
-                tbl_upv_11[u10] = v93
-                u10.label.Text = v93
-                u10.shadow.Text = v93
-            end
-            local v103 = ((Workspace_upv_1:GetAttribute("CountdownPreviewShipped") == true) and true) or ((UPDATE_COUNTDOWN_upv_1.shipped ~= nil) and (ReplicatedStorage_upv_1.Shared:FindFirstChild(UPDATE_COUNTDOWN_upv_1.shipped) ~= nil))
-            if v103 then
-                if UPDATE_COUNTDOWN_upv_1.OUT_FOR < -v79 then
-                    return false
-                end
-                if tbl_upv_11[u13] ~= "OUT NOW!" then
-                    tbl_upv_11[u13] = "OUT NOW!"
-                    u13.label.Text = "OUT NOW!"
-                    u13.shadow.Text = "OUT NOW!"
-                end
-                u13.label.TextColor3 = Gold_upv_1
-                if v80 then
-                    local v104 = os.clock()
-                    if u45 <= v104 and -v79 < 7200 then
-                        u45 = os.clock() + u29:NextNumber(25, 40)
-                        if u44 == nil or os.clock() - u44 > 15 then
-                            volley(5, 2.5, nil, 1.1)
-                        end
-                    end
-                end
-            else
-                if tbl_upv_11[u13] ~= "SERVERS RESTARTING..." then
-                    tbl_upv_11[u13] = "SERVERS RESTARTING..."
-                    u13.label.Text = "SERVERS RESTARTING..."
-                    u13.shadow.Text = "SERVERS RESTARTING..."
-                end
-                u13.label.TextColor3 = Colors_upv_1.White
-            end
-        end
+        LightingController = require(script.Parent.Parent.Core.LightingController)
+    end
+)
+
+local function lobbyLit()
+    --[[
+      name: lobbyLit
+      line: 563
+      upvalues:
+        LightingController (ref, index: 1)
+    ]]
+    if not LightingController then
         return true
     end
-    local u46 = nil
-    local u47 = 0
-    local v105 = RunService_1.Heartbeat:Connect(
-        function(a1)
-            --[[
-              line: 904
-              upvalues:
-                u47 (ref,  index: 1)
-                step (copy, index: 2)
-                u46 (ref,  index: 3)
-                LocalPlayer_upv_1 (copy, index: 4)
-                LightingController_upv_1 (ref,  index: 5)
-                u34 (copy, index: 6)
-                u35 (ref,  index: 7)
-                Lighting_upv_1 (copy, index: 8)
-                tbl_upv_7 (copy, index: 9)
-                u5 (copy, index: 10)
-                u12 (copy, index: 11)
-                u22 (copy, index: 12)
-                u4 (copy, index: 13)
-                u11 (copy, index: 14)
-                u28 (copy, index: 15)
-            ]]
-            u47 = u47 + a1
-            if u47 < 0.05 then
-                return
-            end
-            local success_5, v106 = pcall(step, u47)
-            u47 = 0
-            if success_5 and v106 == false then
-                if u46 then
-                    u46:Disconnect()
-                end
-                local v107 = LocalPlayer_upv_1:GetAttribute("State") ~= "Match"
-                if v107 then
-                    if LightingController_upv_1 then
-                        local success_6, v108 = pcall(LightingController_upv_1.Current)
-                        v107 = success_6 and (v108 == "Lobby")
-                    else
-                        v107 = true
-                    end
-                    if v107 then
-                        if u35 then
-                            Lighting_upv_1.ClockTime = tbl_upv_7.clock
-                            Lighting_upv_1.ColorShift_Top = tbl_upv_7.shiftTop
-                            Lighting_upv_1.Brightness = tbl_upv_7.brightness
-                            Lighting_upv_1.OutdoorAmbient = tbl_upv_7.outdoor
-                            v107 = Lighting_upv_1:FindFirstChildOfClass("Atmosphere")
-                            if v107 then
-                                v107.Color = tbl_upv_7.atmColor
-                                v107.Decay = tbl_upv_7.atmDecay
-                                v107.Haze = tbl_upv_7.atmHaze
-                                v107.Density = tbl_upv_7.atmDensity
-                                v107.Glare = tbl_upv_7.atmGlare
-                            end
-                            v107 = Lighting_upv_1:FindFirstChildOfClass("SunRaysEffect")
-                            if v107 then
-                                v107.Intensity = tbl_upv_7.rays
-                            end
-                            u35 = false
+
+    local success, result = pcall(LightingController.Current)
+
+    return success and (result == "Lobby")
+end
+
+local v183 = {w = 0, d = 0}
+local v184 = false
+
+local function paintSky(alpha, alpha2)
+    --[[
+      name: paintSky
+      line: 573
+      upvalues:
+        localPlayer (copy, index: 1)
+        LightingController (ref,  index: 2)
+        updateCountdownGrade (copy, index: 3)
+        v184 (ref,  index: 4)
+        lighting (copy, index: 5)
+        v168 (copy, index: 6)
+        v176 (copy, index: 7)
+        v177 (copy, index: 8)
+        colors (copy, index: 9)
+        color3FromRGB (copy, index: 10)
+    ]]
+    if localPlayer:GetAttribute("State") ~= "Match" then
+        local v188
+
+        if LightingController then
+            local success, result = pcall(LightingController.Current)
+            v188 = success
+            v188 = v188 and result == "Lobby"
+        else
+            v188 = true
+        end
+
+        if v188 then
+            local clockTime
+            local colorShiftTop
+            local brightness2
+            local v194
+            local tintColor
+
+            if alpha <= 0.001 then
+                if alpha2 <= 0.001 then
+                    if v184 then
+                        lighting.ClockTime = v168.clock
+                        lighting.ColorShift_Top = v168.shiftTop
+                        lighting.Brightness = v168.brightness
+                        lighting.OutdoorAmbient = v168.outdoor
+
+                        if const atmosphere = lighting:FindFirstChildOfClass("Atmosphere") then
+                            atmosphere.Color, atmosphere.Decay, atmosphere.Haze, atmosphere.Density, atmosphere.Glare = v168.atmColor, v168.atmDecay, v168.atmHaze, v168.atmDensity, v168.atmGlare
                         end
-                        u34.Enabled = false
-                    else
-                        u34.Enabled = false
-                        u35 = false
+
+                        if const sunRaysEffect = lighting:FindFirstChildOfClass("SunRaysEffect") then
+                            sunRaysEffect.Intensity = v168.rays
+                        end
+
+                        v184 = false
                     end
-                else
-                    u34.Enabled = false
-                    u35 = false
+
+                    updateCountdownGrade.Enabled = false
+
+                    return
                 end
-                u5:Destroy()
-                u12:Destroy()
-                u22:Destroy()
-                u4:Destroy()
-                u11:Destroy()
-                u28:Destroy()
-                u34:Destroy()
-                return
             end
-            if (success_5) then
-                return
+
+            v184 = true
+
+            local function mix(startValue, targetValue, targetValue2)
+                --[[
+                  name: mix
+                  line: 600
+                  upvalues:
+                    alpha (copy, index: 1)
+                    alpha2 (copy, index: 2)
+                ]]
+                if typeof(startValue) ~= "Color3" then
+                    local v202 = startValue + (targetValue - startValue) * alpha
+                    return v202 + ((targetValue2 - v202) * alpha2)
+                end
+
+                local startValue2 = startValue:Lerp(targetValue, alpha)
+
+                return startValue2:Lerp(targetValue2, alpha2)
             end
-            warn("[UpdateCountdown] " .. tostring(v106))
+
+            local clock = v168.clock
+            local clock2 = v176.clock
+            local clock3 = v177.clock
+
+            if typeof(clock) ~= "Color3" then
+                local v207 = clock + (clock2 - clock) * alpha
+                clockTime = v207 + (clock3 - v207) * alpha2
+            else
+                clockTime = clock:Lerp(clock2, alpha):Lerp(clock3, alpha2)
+            end
+
+            lighting.ClockTime = clockTime
+            local shiftTop = v168.shiftTop
+            local shiftTop2 = v176.shiftTop
+            local shiftTop3 = v177.shiftTop
+
+            if typeof(shiftTop) ~= "Color3" then
+                local v211 = shiftTop + (shiftTop2 - shiftTop) * alpha
+                colorShiftTop = v211 + (shiftTop3 - v211) * alpha2
+                colorShiftTop = v168
+            else
+                colorShiftTop = shiftTop:Lerp(shiftTop2, alpha):Lerp(shiftTop3, alpha2)
+                colorShiftTop = v168
+            end
+
+            lighting.ColorShift_Top = colorShiftTop
+            local brightness = colorShiftTop.brightness
+            local bright = v176.bright
+            local bright2 = v177.bright
+
+            if typeof(brightness) ~= "Color3" then
+                local v215 = brightness + (bright - brightness) * alpha
+                brightness2 = v215 + (bright2 - v215) * alpha2
+            else
+                brightness2 = brightness:Lerp(bright, alpha):Lerp(bright2, alpha2)
+            end
+
+            lighting.Brightness = brightness2
+            local outdoor = colorShiftTop.outdoor
+            local outdoor2 = v176.outdoor
+            local outdoor3 = v177.outdoor
+
+            if typeof(outdoor) ~= "Color3" then
+                local v219 = outdoor + (outdoor2 - outdoor) * alpha
+                v194 = v219 + (outdoor3 - v219) * alpha2
+                v194 = lighting
+            else
+                v194 = outdoor:Lerp(outdoor2, alpha):Lerp(outdoor3, alpha2)
+                v194 = lighting
+            end
+
+            lighting.OutdoorAmbient = v194
+
+            if const sunRaysEffect = v194:FindFirstChildOfClass("SunRaysEffect") then
+                local intensity
+                local rays = colorShiftTop.rays
+                local rays2 = v176.rays
+                local rays3 = v177.rays
+
+                if typeof(rays) ~= "Color3" then
+                    local v225 = rays + (rays2 - rays) * alpha
+                    intensity = v225 + (rays3 - v225) * alpha2
+                else
+                    intensity = rays:Lerp(rays2, alpha):Lerp(rays3, alpha2)
+                end
+
+                sunRaysEffect.Intensity = intensity
+            end
+
+            if const atmosphere = lighting:FindFirstChildOfClass("Atmosphere") then
+                local color
+                local decay
+                local haze3
+                local density3
+                local glare3
+                local atmColor = colorShiftTop.atmColor
+                local atmColor2 = v176.atmColor
+                local atmColor3 = v177.atmColor
+
+                if typeof(atmColor) ~= "Color3" then
+                    local v235 = atmColor + (atmColor2 - atmColor) * alpha
+                    color = v235 + (atmColor3 - v235) * alpha2
+                else
+                    color = atmColor:Lerp(atmColor2, alpha):Lerp(atmColor3, alpha2)
+                end
+
+                atmosphere.Color = color
+                local atmDecay = colorShiftTop.atmDecay
+                local atmDecay2 = v176.atmDecay
+                local atmDecay3 = v177.atmDecay
+
+                if typeof(atmDecay) ~= "Color3" then
+                    local v239 = atmDecay + (atmDecay2 - atmDecay) * alpha
+                    decay = v239 + (atmDecay3 - v239) * alpha2
+                    decay = v168
+                else
+                    decay = atmDecay:Lerp(atmDecay2, alpha):Lerp(atmDecay3, alpha2)
+                    decay = v168
+                end
+
+                atmosphere.Decay = decay
+                local atmHaze = decay.atmHaze
+                local haze = v176.haze
+                local haze2 = v177.haze
+
+                if typeof(atmHaze) ~= "Color3" then
+                    local v243 = atmHaze + (haze - atmHaze) * alpha
+                    haze3 = v243 + (haze2 - v243) * alpha2
+                else
+                    haze3 = atmHaze:Lerp(haze, alpha):Lerp(haze2, alpha2)
+                end
+
+                atmosphere.Haze = haze3
+                local atmDensity = decay.atmDensity
+                local density = v176.density
+                local density2 = v177.density
+
+                if typeof(atmDensity) ~= "Color3" then
+                    local v247 = atmDensity + (density - atmDensity) * alpha
+                    density3 = v247 + (density2 - v247) * alpha2
+                    density3 = v168
+                else
+                    density3 = atmDensity:Lerp(density, alpha):Lerp(density2, alpha2)
+                    density3 = v168
+                end
+
+                atmosphere.Density = density3
+                local atmGlare = density3.atmGlare
+                local glare = v176.glare
+                local glare2 = v177.glare
+
+                if typeof(atmGlare) ~= "Color3" then
+                    local v251 = atmGlare + (glare - atmGlare) * alpha
+                    glare3 = v251 + (glare2 - v251) * alpha2
+                else
+                    glare3 = atmGlare:Lerp(glare, alpha):Lerp(glare2, alpha2)
+                end
+
+                atmosphere.Glare = glare3
+            end
+
+            updateCountdownGrade.Enabled = true
+            local white = colors.White
+            local targetValue = color3FromRGB(255, 238, 222)
+            local targetValue2 = color3FromRGB(255, 228, 226)
+
+            if typeof(white) ~= "Color3" then
+                local v255 = white + (targetValue - white) * alpha
+                tintColor = v255 + (targetValue2 - v255) * alpha2
+            else
+                tintColor = white:Lerp(targetValue, alpha):Lerp(targetValue2, alpha2)
+            end
+
+            updateCountdownGrade.TintColor = tintColor
+            updateCountdownGrade.Saturation = alpha * 0.12
+            updateCountdownGrade.Contrast = alpha * 0.05
+            updateCountdownGrade.Brightness = alpha * 0.03
+
+            return
+        end
+    end
+
+    updateCountdownGrade.Enabled = false
+    v184 = false
+end
+
+local function clock(ceilingValue: number)
+    --[[
+      name: clock
+      line: 633
+    ]]
+    local v258 = ceilingValue // 86400
+    local v259 = ceilingValue // 3600 % 24
+    local v260 = ceilingValue // 60 % 60
+    local v261 = ceilingValue % 60
+
+    if 0 < v258 then
+        return string.format("%dD %02d:%02d:%02d", v258, v259, v260, v261)
+    end
+    if 0 < v259 then
+        return string.format("%d:%02d:%02d", v259, v260, v261)
+    end
+
+    return string.format("%d:%02d", v260, v261)
+end
+
+local at = updateCountdown2.at
+local success, result = pcall(
+    function()
+        --[[
+          line: 645
+          upvalues:
+            at (copy, index: 1)
+        ]]
+        return DateTime.fromUnixTimestamp(at):FormatLocalTime("dddd h:mm A", "en-us")
+    end
+)
+
+if success then
+    v2 = string.upper(result) .. " YOUR TIME"
+else
+    v2 = ""
+end
+
+local v265 = {}
+
+local function set(key, text)
+    --[[
+      name: set
+      line: 653
+      upvalues:
+        v265 (copy, index: 1)
+    ]]
+    if v265[key] ~= text then
+        v265[key] = text
+        key.label.Text = text
+        key.shadow.Text = text
+    end
+end
+
+local function fadeText(textTransparency: number, a271: number)
+    --[[
+      name: fadeText
+      line: 661
+      upvalues:
+        v71 (copy, index: 1)
+        tweenService (copy, index: 2)
+    ]]
+    for _, v273 in v71 do
+        local propertyTable = {TextTransparency = textTransparency}
+        tweenService:Create(v273.label, TweenInfo.new(a271), propertyTable):Play()
+        local shadow = v273.shadow
+        local tweenInfo = TweenInfo.new(a271)
+        local propertyTable2 = {TextTransparency = math.max(textTransparency, 0.45)}
+        tweenService:Create(shadow, tweenInfo, propertyTable2):Play()
+    end
+end
+
+local function paintSlot(rankKey, out)
+    --[[
+      name: paintSlot
+      line: 668
+      upvalues:
+        v72 (copy, index: 1)
+        updateCountdown2 (copy, index: 2)
+        colors (copy, index: 3)
+        imageColor3 (copy, index: 4)
+    ]]
+    local v281 = v72[rankKey]
+    local _ = updateCountdown2.ranks[rankKey]
+    v281.out = out
+
+    if out then
+        v281.img.ImageColor3 = colors.White
+        v281.img.ImageTransparency = 0
+
+        return
+    end
+
+    v281.img.ImageColor3 = imageColor3
+    v281.img.ImageTransparency = 0.15
+end
+
+local v283 = false
+local removedValue = 0
+
+local function reveal(rankKey)
+    --[[
+      name: reveal
+      line: 685
+      upvalues:
+        updateCountdown2 (copy, index: 1)
+        gold (copy, index: 2)
+        v283 (ref,  index: 3)
+        removedValue (ref,  index: 4)
+        v72 (copy, index: 5)
+        imageColor3 (copy, index: 6)
+        emblem3 (copy, index: 7)
+        UIAssets (copy, index: 8)
+        v91 (copy, index: 9)
+        v265 (copy, index: 10)
+        colors (copy, index: 11)
+        v90 (copy, index: 12)
+        hero (copy, index: 13)
+        instance (copy, index: 14)
+        fadeText (copy, index: 15)
+        tweenService (copy, index: 16)
+        glow (copy, index: 17)
+        instance2 (copy, index: 18)
+        Sfx (ref,  index: 19)
+        volley (copy, index: 20)
+        showBanner (copy, index: 21)
+        flyer (copy, index: 22)
+    ]]
+    local rank = updateCountdown2.ranks[rankKey]
+    local v288 = rank.color or gold
+    local v289 = rankKey == #updateCountdown2.ranks
+    v283 = true
+    removedValue = rankKey
+    local v290 = v72[rankKey]
+    local _ = updateCountdown2.ranks[rankKey]
+    v290.out = false
+    v290.img.ImageColor3 = imageColor3
+    v290.img.ImageTransparency = 0.15
+    local ranks = UIAssets.Ranks
+    emblem3.Image = ranks and ranks[string.lower(rank.name)] or rank.img or ""
+    emblem3.ImageTransparency = 0
+    local name = rank.name
+
+    if v265[v91] ~= name then
+        v265[v91] = name
+        v91.label.Text = name
+        v91.shadow.Text = name
+    end
+
+    v91.label.TextColor3 = v288:Lerp(colors.White, 0.35)
+
+    for _, v295 in {v91, v90} do
+        v295.label.TextTransparency = 0
+        v295.shadow.TextTransparency = 0.45
+    end
+
+    hero.Position = UDim2.fromOffset(640, 120)
+    hero.Visible = true
+    instance.Scale = 0.3
+    fadeText(1, 0.2)
+    local propertyTable = {Scale = 1}
+    tweenService:Create(instance, TweenInfo.new(0.55, Enum.EasingStyle.Back, Enum.EasingDirection.Out), propertyTable):Play()
+    glow.ImageColor3 = v288
+    glow.ImageTransparency = 0
+    instance2.Scale = 0.4
+    local propertyTable2 = {ImageTransparency = 0.55}
+    tweenService:Create(glow, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable2):Play()
+    local propertyTable3 = {Scale = 1.3}
+    tweenService:Create(instance2, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), propertyTable3):Play()
+
+    if Sfx then
+        pcall(Sfx.PlayUI, "UI/Unlock")
+    end
+
+    if v289 then
+        task.delay(
+            0.15,
+            function()
+                --[[
+                  line: 712
+                  upvalues:
+                    Sfx (ref, index: 1)
+                ]]
+                if Sfx then
+                    pcall(Sfx.PlayUI, "UI/NewItem_Fanfare")
+                end
+            end
+        )
+    end
+
+    local v299 = v289 and 14 or 8
+    local v300 = v289 and 1.35 or 1.1
+    volley(v299, 2.4, v288, v300)
+    showBanner(rank)
+
+    task.delay(
+        3.4,
+        function()
+            --[[
+              line: 718
+              upvalues:
+                v72 (copy, index: 1)
+                rankKey (copy, index: 2)
+                flyer (copy, index: 3)
+                rank (copy, index: 4)
+                UIAssets (copy, index: 5)
+                hero (copy, index: 6)
+                glow (copy, index: 7)
+                tweenService (copy, index: 8)
+                updateCountdown2 (copy, index: 9)
+                colors (copy, index: 10)
+                Sfx (ref,  index: 11)
+                fadeText (copy, index: 12)
+                v283 (ref,  index: 13)
+                removedValue (ref,  index: 14)
+            ]]
+            local v301
+            local v302 = false
+            local v303 = v72[rankKey]
+            local vector2 = Vector2.new(430, 120)
+            local rank2 = rank
+
+            if const ranks = UIAssets.Ranks then
+                v301 = ranks[string.lower(rank2.name)]
+
+                if v301 then
+                    v301 = flyer
+                else
+                    v302 = true
+                end
+            else
+                v302 = true
+            end
+
+            if v302 then
+                v301 = rank2.img
+
+                if v301 then
+                    v301 = flyer
+                else
+                    v301 = ""
+                    v301 = flyer
+                end
+            end
+
+            flyer.Image = v301
+            v301.Position = UDim2.fromOffset(vector2.X, vector2.Y)
+            v301.Size = UDim2.fromOffset(180, 180)
+            v301.Visible = true
+            hero.Visible = false
+            glow.ImageTransparency = 1
+            local position = v303.cell.Position
+            local tweenInfo = TweenInfo.new(0.55, Enum.EasingStyle.Quint, Enum.EasingDirection.In)
+            local propertyTable = {Position = position, Size = UDim2.fromOffset(62, 62)}
+            tweenService:Create(v301, tweenInfo, propertyTable):Play()
+            task.wait(0.55)
+            v301.Visible = false
+            local v310 = v72[rankKey]
+            local _ = updateCountdown2.ranks[rankKey]
+            v310.out = true
+            v310.img.ImageColor3 = colors.White
+            v310.img.ImageTransparency = 0
+            v303.scale.Scale = 1.6
+            local propertyTable2 = {Scale = 1}
+            tweenService:Create(v303.scale, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), propertyTable2):Play()
+
+            if Sfx then
+                pcall(Sfx.PlayUI, "UI/Card_Reveal")
+            end
+
+            fadeText(0, 0.35)
+            v283 = false
+            removedValue = 0
         end
     )
-    u46 = v105
 end
+
+local ceilingValue2 = -1
+local v314 = ""
+local v315 = false
+local timestamp2 = os.clock()
+local timestamp3 = nil
+local v318 = 0
+local v319 = {}
+
+workspace:GetAttributeChangedSignal("CountdownPreviewAt"):Connect(
+    function()
+        --[[
+          line: 754
+          upvalues:
+            v315 (ref,  index: 1)
+            v314 (ref,  index: 2)
+            timestamp3 (ref,  index: 3)
+            v319 (copy, index: 4)
+        ]]
+        v315 = false
+        v314 = ""
+        timestamp3 = nil
+        table.clear(v319)
+    end
+)
+
+step = function(a320)
+    --[[
+      name: step
+      line: 761
+      upvalues:
+        workspace (copy, index: 1)
+        updateCountdown2 (copy, index: 2)
+        localPlayer (copy, index: 3)
+        updateCountdown (copy, index: 4)
+        updateCountdownBig (copy, index: 5)
+        updateCountdownBanner (copy, index: 6)
+        v72 (copy, index: 7)
+        v315 (ref,  index: 8)
+        colors (copy, index: 9)
+        imageColor3 (copy, index: 10)
+        v319 (copy, index: 11)
+        removedValue (ref,  index: 12)
+        timestamp2 (copy, index: 13)
+        v283 (ref,  index: 14)
+        reveal (copy, index: 15)
+        v23 (copy, index: 16)
+        v24 (copy, index: 17)
+        replicatedStorage (copy, index: 18)
+        v183 (copy, index: 19)
+        paintSky (copy, index: 20)
+        v64 (copy, index: 21)
+        gold (copy, index: 22)
+        v65 (copy, index: 23)
+        v66 (copy, index: 24)
+        v265 (copy, index: 25)
+        v70 (copy, index: 26)
+        ceilingValue2 (ref,  index: 27)
+        tweenService (copy, index: 28)
+        Sfx (ref,  index: 29)
+        v2 (copy, index: 30)
+        clock (copy, index: 31)
+        v314 (ref,  index: 32)
+        timestamp3 (ref,  index: 33)
+        volley (copy, index: 34)
+        v318 (ref,  index: 35)
+        random (copy, index: 36)
+    ]]
+    local v321
+    local serverTimeNow = workspace:GetServerTimeNow()
+    local countdownPreview = workspace:GetAttribute("CountdownPreview")
+    local countdownPreviewAt = workspace:GetAttribute("CountdownPreviewAt")
+
+    if type(countdownPreview) == "number" and type(countdownPreviewAt) == "number" then
+        v321 = updateCountdown2.at - countdownPreview + (serverTimeNow - countdownPreviewAt)
+    else
+        v321 = serverTimeNow
+    end
+
+    local v325 = updateCountdown2.at - v321
+    local enabled = localPlayer:GetAttribute("State") ~= "Match"
+    updateCountdown.Enabled = enabled
+    updateCountdownBig.Enabled = enabled
+    updateCountdownBanner.Enabled = enabled
+
+    for rankKey, rank in updateCountdown2.ranks do
+        local v329 = updateCountdown2.at - rank.hours * 3600
+        local out = v329 <= v321
+        local v331 = v72[rankKey]
+
+        if v331.out == nil or not v315 then
+            local v332 = v72[rankKey]
+            local _ = updateCountdown2.ranks[rankKey]
+            v332.out = out
+
+            if out then
+                v332.img.ImageColor3 = colors.White
+                v332.img.ImageTransparency = 0
+            else
+                v332.img.ImageColor3 = imageColor3
+                v332.img.ImageTransparency = 0.15
+            end
+        elseif out and not v331.out and not table.find(v319, rankKey) and removedValue ~= rankKey then
+            if not (v321 - v329 < 4) or not (6 < os.clock() - timestamp2) then
+                local v334 = v72[rankKey]
+                local _ = updateCountdown2.ranks[rankKey]
+                v334.out = true
+                v334.img.ImageColor3 = colors.White
+                v334.img.ImageTransparency = 0
+            else
+                table.insert(v319, rankKey)
+            end
+        elseif not out and v331.out then
+            local v336 = v72[rankKey]
+            local _ = updateCountdown2.ranks[rankKey]
+            v336.out = false
+            v336.img.ImageColor3 = imageColor3
+            v336.img.ImageTransparency = 0.15
+        end
+    end
+
+    v315 = true
+
+    if not v283 and 0 < #v319 then
+        local rankKey = table.remove(v319, 1)
+
+        if enabled then
+            reveal(rankKey)
+        else
+            local v339 = v72[rankKey]
+            local _ = updateCountdown2.ranks[rankKey]
+            v339.out = true
+            v339.img.ImageColor3 = colors.White
+            v339.img.ImageTransparency = 0
+        end
+    end
+
+    local v341 = 0
+    local v342 = 0
+
+    if 0 < v325 and v325 <= v23 then
+        if v24 < v325 then
+            local v343 = (v23 - v325) / (v23 - v24)
+            v341 = (0.6 * v343) * v343 * (3 - (2 * v343))
+        else
+            v341 = 0.6 + 0.4 * (1 - (math.max(0, v325 - 60) / (v24 - 60)))
+        end
+
+        v342 = not (v325 <= 60) and 0 or 1 - v325 / 60
+    elseif v325 <= 0
+        and workspace:GetAttribute("CountdownPreviewShipped") ~= true
+        and (updateCountdown2.shipped == nil
+            or replicatedStorage.Shared:FindFirstChild(updateCountdown2.shipped) == nil)
+    then
+        v341 = 1
+        v342 = 1
+    end
+
+    local v344 = os.clock() - timestamp2 < 0.4 and 1 or math.min(1, a320 * 0.6)
+    v183.w += ((v341 - v183.w) * v344)
+    v183.d += ((v342 - v183.d) * v344)
+    paintSky(v183.w, v183.d)
+
+    if not (0 < v325) then
+        if v314 == "final" or v314 == "close" then
+            timestamp3 = os.clock()
+
+            if enabled then
+                if Sfx then
+                    pcall(Sfx.PlayUI, "Match/Victory")
+                end
+
+                volley(16, 7, nil, 1.5)
+                task.delay(
+                    7.5,
+                    function()
+                        --[[
+                          line: 863
+                          upvalues:
+                            volley (copy, index: 1)
+                        ]]
+                        volley(10, 3, nil, 1.8)
+                    end
+                )
+            end
+        end
+
+        if v314 ~= "done" then
+            v70.scale.Scale = 0.4
+            local propertyTable = {Scale = 1}
+            tweenService:Create(v70.scale, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), propertyTable):Play()
+        end
+
+        v314 = "done"
+
+        for _, v347 in v72 do
+            v347.cell.Visible = false
+        end
+
+        v64.holder.Visible = false
+        v65.holder.Visible = false
+        v66.holder.Visible = true
+        v70.holder.Visible = true
+        v66.label.TextColor3 = gold
+        local text = string.upper(updateCountdown2.title)
+
+        if v265[v66] ~= text then
+            v265[v66] = text
+            v66.label.Text = text
+            v66.shadow.Text = text
+        end
+
+        if workspace:GetAttribute("CountdownPreviewShipped") == true
+            or updateCountdown2.shipped ~= nil
+                and replicatedStorage.Shared:FindFirstChild(updateCountdown2.shipped) ~= nil
+        then
+            local v349 = -v325
+
+            if updateCountdown2.OUT_FOR < v349 then
+                return false
+            end
+
+            if v265[v70] ~= "OUT NOW!" then
+                v265[v70] = "OUT NOW!"
+                v70.label.Text = "OUT NOW!"
+                v70.shadow.Text = "OUT NOW!"
+            end
+
+            v70.label.TextColor3 = gold
+
+            if enabled then
+                local timestamp = os.clock()
+
+                if v318 <= timestamp and -v325 < 7200 then
+                    v318 = os.clock() + random:NextNumber(25, 40)
+
+                    if timestamp3 == nil or 15 < os.clock() - timestamp3 then
+                        volley(5, 2.5, nil, 1.1)
+                    end
+                end
+            end
+        else
+            if v265[v70] ~= "SERVERS RESTARTING..." then
+                v265[v70] = "SERVERS RESTARTING..."
+                v70.label.Text = "SERVERS RESTARTING..."
+                v70.shadow.Text = "SERVERS RESTARTING..."
+            end
+
+            v70.label.TextColor3 = colors.White
+        end
+
+        return true
+    end
+
+    local ceilingValue = math.ceil(v325)
+    local v352 = v325 <= 60 and "final" or v325 <= v24 and "close" or "far"
+
+    for _, v354 in v72 do
+        v354.cell.Visible = true
+    end
+
+    local v355 = v352 ~= "far"
+    v64.label.TextColor3 = if v355 then gold else colors.White
+    v65.label.TextColor3 = if v355 then gold else colors.White
+
+    if v352 ~= "final" then
+        local text = v2
+
+        if v265[v66] ~= text then
+            v265[v66] = text
+            v66.label.Text = text
+            v66.shadow.Text = text
+        end
+
+        v66.label.TextColor3 = colors.White
+        v64.holder.Visible = true
+        v65.holder.Visible = true
+        v70.holder.Visible = false
+        local v357 = v65
+        local text2 = clock(ceilingValue)
+
+        if v265[v357] ~= text2 then
+            v265[v357] = text2
+            v357.label.Text = text2
+            v357.shadow.Text = text2
+        end
+    else
+        local text3 = string.upper(updateCountdown2.title) .. " IN"
+
+        if v265[v66] ~= text3 then
+            v265[v66] = text3
+            v66.label.Text = text3
+            v66.shadow.Text = text3
+        end
+
+        v66.label.TextColor3 = gold
+        v64.holder.Visible = false
+        v65.holder.Visible = false
+        v70.holder.Visible = not v283
+        v70.label.TextColor3 = if ceilingValue <= 10 then colors.White else gold
+
+        if ceilingValue ~= ceilingValue2 then
+            local text = tostring(ceilingValue)
+
+            if v265[v70] ~= text then
+                v265[v70] = text
+                v70.label.Text = text
+                v70.shadow.Text = text
+            end
+
+            v70.scale.Scale = not (ceilingValue <= 10) and 1.12 or 1.2
+            local propertyTable = {Scale = 1}
+            tweenService:Create(v70.scale, TweenInfo.new(0.35, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), propertyTable):Play()
+
+            if enabled then
+                local v362 = ceilingValue <= 3 and "Match/Countdown_1" or "Match/Countdown_Tick"
+
+                if Sfx then
+                    pcall(Sfx.PlayUI, v362)
+                end
+            end
+        end
+    end
+
+    ceilingValue2 = ceilingValue
+    v314 = v352
+
+    return true
+end
+
+local heartbeatConnection = nil
+local v364 = 0
+
+heartbeatConnection = runService.Heartbeat:Connect(
+    function(deltaTime: number)
+        --[[
+          line: 904
+          upvalues:
+            v364 (ref,  index: 1)
+            step (copy, index: 2)
+            heartbeatConnection (ref,  index: 3)
+            localPlayer (copy, index: 4)
+            LightingController (ref,  index: 5)
+            updateCountdownGrade (copy, index: 6)
+            v184 (ref,  index: 7)
+            lighting (copy, index: 8)
+            v168 (copy, index: 9)
+            updateCountdown (copy, index: 10)
+            updateCountdownBig (copy, index: 11)
+            updateCountdownBanner (copy, index: 12)
+            updateCountdownSky (copy, index: 13)
+            updateCountdownSkyBig (copy, index: 14)
+            updateCountdownFx (copy, index: 15)
+        ]]
+        v364 += deltaTime
+
+        if v364 < 0.05 then
+            return
+        end
+
+        local success, result = pcall(step, v364)
+        v364 = 0
+
+        if not success or result ~= false then
+            if not success then
+                warn("[UpdateCountdown] " .. tostring(result))
+            end
+
+            return
+        end
+
+        local v368
+        local v369, v370, v371, v372 = false, false, false, false
+
+        if heartbeatConnection then
+            heartbeatConnection:Disconnect()
+        end
+
+        if localPlayer:GetAttribute("State") ~= "Match" then
+            if LightingController then
+                local success2, result2 = pcall(LightingController.Current)
+                v368 = success2
+                v368 = v368 and result2 == "Lobby"
+            else
+                v368 = true
+            end
+
+            v369 = true
+        else
+            v370 = true
+        end
+
+        if v369 then
+            if v368 then
+                if v184 then
+                    lighting.ClockTime = v168.clock
+                    lighting.ColorShift_Top = v168.shiftTop
+                    lighting.Brightness = v168.brightness
+                    lighting.OutdoorAmbient = v168.outdoor
+
+                    if const atmosphere = lighting:FindFirstChildOfClass("Atmosphere") then
+                        atmosphere.Color, atmosphere.Decay, atmosphere.Haze, atmosphere.Density, atmosphere.Glare = v168.atmColor, v168.atmDecay, v168.atmHaze, v168.atmDensity, v168.atmGlare
+                    end
+
+                    v371 = true
+                else
+                    v372 = true
+                end
+            else
+                v370 = true
+            end
+        end
+
+        if v370 then
+            updateCountdownGrade.Enabled = false
+            v184 = false
+        end
+
+        if v371 then
+            if const sunRaysEffect = lighting:FindFirstChildOfClass("SunRaysEffect") then
+                sunRaysEffect.Intensity = v168.rays
+            end
+
+            v184 = false
+            v372 = true
+        end
+
+        if v372 then
+            updateCountdownGrade.Enabled = false
+        end
+
+        updateCountdown:Destroy()
+        updateCountdownBig:Destroy()
+        updateCountdownBanner:Destroy()
+        updateCountdownSky:Destroy()
+        updateCountdownSkyBig:Destroy()
+        updateCountdownFx:Destroy()
+        updateCountdownGrade:Destroy()
+    end
+)

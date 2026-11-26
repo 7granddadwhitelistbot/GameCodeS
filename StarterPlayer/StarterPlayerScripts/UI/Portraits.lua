@@ -1,432 +1,606 @@
 local _ = game:GetService("Players")
-local ContentProvider_upv_1 = game:GetService("ContentProvider")
-local tbl_upv_1 = {}
-local u1 = nil
-local u2 = nil
-local tbl_upv_2 = {}
-local u3 = setmetatable({}, {__mode = "k"})
-local u4 = setmetatable({}, {__mode = "k"})
-local tbl_upv_3 = {UpperTorso = true, Torso = true, Head = true}
-local function cloneOf(a1)
+local contentProvider = game:GetService("ContentProvider")
+local v3 = {}
+local v4 = nil
+local v5 = nil
+local v6 = {}
+local v7 = setmetatable({}, {__mode = "k"})
+local texts = setmetatable({}, {__mode = "k"})
+local v9 = {Head = true, UpperTorso = true, Torso = true}
+
+local function cloneOf(a11)
     --[[
       name: cloneOf
       line: 36
     ]]
-    local success_1, v1 = pcall(function() end)
-    if success_1 then
-        return v1
+    local success, result = pcall(
+        function()
+            --[[
+              line: 37
+              upvalues:
+                a11 (copy, index: 1)
+            ]]
+            local archivable = a11.Archivable
+            a11.Archivable = true
+            local v15 = a11:Clone()
+            a11.Archivable = archivable
+
+            return v15
+        end
+    )
+
+    if success then
+        return result
     end
+
     return nil
 end
-local rerender = nil
-local prepare = nil
-local function stripPart(a1)
+
+local function stripPart(a17)
     --[[
       name: stripPart
       line: 47
     ]]
-    a1.LocalTransparencyModifier = 0
-    for _, value_1 in a1:GetDescendants() do
-        if value_1:IsA("BasePart") or value_1:IsA("Decal") then
-            value_1.LocalTransparencyModifier = 0
+    a17.LocalTransparencyModifier = 0
+
+    for _, descendant in a17:GetDescendants() do
+        if descendant:IsA("BasePart") then
+            descendant.LocalTransparencyModifier = 0
+        elseif descendant:IsA("Decal") then
+            descendant.LocalTransparencyModifier = 0
         end
     end
-    for _, value_2 in a1:GetDescendants() do
-        if value_2:IsA("JointInstance") or value_2:IsA("Constraint") or value_2:IsA("LuaSourceContainer") or value_2:IsA("Sound") or value_2:IsA("ParticleEmitter") or value_2:IsA("Light") or value_2:IsA("Trail") or value_2:IsA("Beam") or value_2:IsA("BillboardGui") or value_2:IsA("ProximityPrompt") or value_2:IsA("Highlight") then
-            value_2:Destroy()
+
+    for _, descendant in a17:GetDescendants() do
+        if descendant:IsA("JointInstance")
+            or descendant:IsA("Constraint")
+            or descendant:IsA("LuaSourceContainer")
+            or descendant:IsA("Sound")
+            or descendant:IsA("ParticleEmitter")
+            or descendant:IsA("Light")
+            or descendant:IsA("Trail")
+            or descendant:IsA("Beam")
+            or descendant:IsA("BillboardGui")
+            or descendant:IsA("ProximityPrompt")
+            or descendant:IsA("Highlight")
+        then
+            descendant:Destroy()
         end
     end
-    a1.Anchored = true
-    a1.CanCollide = false
-    a1.CanQuery = false
-    a1.CanTouch = false
+
+    a17.Anchored = true
+    a17.CanCollide = false
+    a17.CanQuery = false
+    a17.CanTouch = false
 end
-local function capture(a1, a2)
+
+local rerender = nil
+local prepare = nil
+local capture = nil
+
+capture = function(key, rig)
     --[[
       name: capture
       line: 78
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v9 (copy, index: 1)
         stripPart (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
+        v6 (copy, index: 3)
         prepare (ref,  index: 4)
         rerender (ref,  index: 5)
-        u2 (ref,  index: 6)
+        v5 (ref,  index: 6)
         capture (ref,  index: 7)
     ]]
-    local Head_1 = a2:FindFirstChild("Head")
-    local v2 = a2:FindFirstChild("UpperTorso") or (a2:FindFirstChild("Torso"))
-    if not Head_1 or not Head_1:IsA("BasePart") or not v2 or not v2:IsA("BasePart") or Head_1.Transparency >= 0.9 or v2.Transparency >= 0.9 then
+    local head = rig:FindFirstChild("Head")
+    local v28 = rig:FindFirstChild("UpperTorso") or rig:FindFirstChild("Torso")
+
+    if not head or not head:IsA("BasePart") or not v28 or not v28:IsA("BasePart") then
         return nil
     end
-    local v3 = Instance.new("Model")
-    v3.Name = "Portrait"
-    local v4 = v2.CFrame.LookVector
-    local v5 = Vector3.new(v4.X, 0, v4.Z)
-    local v6 = CFrame.lookAt(Head_1.Position, Head_1.Position + (((not (v5.Magnitude > 0.01)) and Vector3.new(0, 0, -1)) or (v5.Unit)))
-    local v7 = nil
-    for _, value_upv_3 in a2:GetChildren() do
-        if not (value_upv_3:IsA("BasePart")) or not (tbl_upv_3[value_upv_3.Name]) then
-            if value_upv_3:IsA("Accessory") or value_upv_3:IsA("Accoutrement") then
-                local Handle_1 = value_upv_3:FindFirstChild("Handle")
-                if not (Handle_1) or not (Handle_1:IsA("BasePart")) or not ((Handle_1.Position - v6.Position).Magnitude < 3.2) then
+    if 0.9 <= head.Transparency or 0.9 <= v28.Transparency then
+        return nil
+    end
+
+    local vector3
+    local portrait = Instance.new("Model")
+    portrait.Name = "Portrait"
+    local lookVector = v28.CFrame.LookVector
+    local vector32 = Vector3.new(lookVector.X, 0, lookVector.Z)
+
+    if not (0.01 < vector32.Magnitude) then
+        vector3 = Vector3.new(0, 0, -1)
+    else
+        vector3 = vector32.Unit
+    end
+
+    local head2 = CFrame.lookAt(head.Position, head.Position + vector3)
+
+    for _, child in rig:GetChildren() do
+        if child:IsA("BasePart") and v9[child.Name] then
+            local result
+
+            local success, result2 = pcall(
+                function()
+                    --[[
+                      line: 37
+                      upvalues:
+                        child (copy, index: 1)
+                    ]]
+                    local archivable = child.Archivable
+                    child.Archivable = true
+                    local v40 = child:Clone()
+                    child.Archivable = archivable
+
+                    return v40
+                end
+            )
+
+            if success then
+                result = result2
+            else
+                result = nil
+            end
+
+            if result then
+                stripPart(result)
+                result.CFrame = child.CFrame
+                result.Parent = portrait
+            end
+        elseif child:IsA("Accessory") or child:IsA("Accoutrement") then
+            if const handle = child:FindFirstChild("Handle") then
+                local result
+
+                if not handle:IsA("BasePart") then
                     continue
                 end
-                local success_2, v8 = pcall(
+                if not ((handle.Position - head2.Position).Magnitude < 3.2) then
+                    continue
+                end
+
+                local success, result3 = pcall(
                     function()
                         --[[
                           line: 37
                           upvalues:
-                            value_upv_3 (copy, index: 1)
+                            child (copy, index: 1)
                         ]]
-                        local Archivable_1 = value_upv_3.Archivable
-                        value_upv_3.Archivable = true
-                        local v9 = value_upv_3:Clone()
-                        value_upv_3.Archivable = Archivable_1
-                        return v9
+                        local archivable = child.Archivable
+                        child.Archivable = true
+                        local v46 = child:Clone()
+                        child.Archivable = archivable
+
+                        return v46
                     end
                 )
-                if not (success_2) then
-                    local v14 = nil
-                end
-                if not (v8) then
-                    continue
-                end
-                local Handle_2 = v8:FindFirstChild("Handle")
-                if Handle_2 then
-                    stripPart(Handle_2)
-                    Handle_2.CFrame = Handle_1.CFrame
-                end
-                v8.Parent = v3
-            end
-            if value_upv_3:IsA("Shirt") or value_upv_3:IsA("Pants") or value_upv_3:IsA("ShirtGraphic") or value_upv_3:IsA("BodyColors") or value_upv_3:IsA("CharacterMesh") then
-                local success_3, v10 = pcall(function() end)
-                if success_3 then
-                    v7 = v10
+
+                if success then
+                    result = result3
                 else
-                    v7 = nil
+                    result = nil
                 end
-                if v7 then
-                    v7.Parent = v3
+
+                if not result then
                     continue
                 end
+
+                if const handle2 = result:FindFirstChild("Handle") then
+                    stripPart(handle2)
+                    handle2.CFrame = handle.CFrame
+                end
+
+                result.Parent = portrait
             end
-            continue
-        end
-        local success_4, v11 = pcall(function() end)
-        if success_4 then
-            v4 = v11
-        else
-            v4 = nil
-        end
-        if v4 then
-            stripPart(v4)
-            v4.CFrame = value_upv_3.CFrame
-            v4.Parent = v3
-        end
-    end
-    local v12 = Instance.new("Humanoid")
-    v12.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
-    v12.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
-    v12.Parent = v3
-    local tbl_upv_4 = {readyAt = 0, ready = false}
-    tbl_upv_4.model = v3
-    tbl_upv_4.head = v6
-    tbl_upv_4.at = os.clock()
-    tbl_upv_4.rig = a2
-    local v13 = tbl_upv_2[a1]
-    tbl_upv_2[a1] = tbl_upv_4
-    if v13 then
-        v13.model:Destroy()
-    end
-    prepare(a1, tbl_upv_4)
-    if v13 then
-        rerender(a1)
-    else
-        task.delay(
-            2.5,
-            function()
-                --[[
-                  line: 138
-                  upvalues:
-                    tbl_upv_2 (copy, index: 1)
-                    a1 (copy, index: 2)
-                    tbl_upv_4 (copy, index: 3)
-                    u2 (ref,  index: 4)
-                    a2 (copy, index: 5)
-                    capture (ref,  index: 6)
-                ]]
-                if tbl_upv_2[a1] ~= tbl_upv_4 then
-                    return
+        elseif child:IsA("Shirt")
+            or child:IsA("Pants")
+            or child:IsA("ShirtGraphic")
+            or child:IsA("BodyColors")
+            or child:IsA("CharacterMesh")
+        then
+            local result
+
+            local success, result4 = pcall(
+                function()
+                    --[[
+                      line: 37
+                      upvalues:
+                        child (copy, index: 1)
+                    ]]
+                    local archivable = child.Archivable
+                    child.Archivable = true
+                    local v52 = child:Clone()
+                    child.Archivable = archivable
+
+                    return v52
                 end
-                local v14 = u2.Find(a1) or a2
-                if not v14 then
-                    return
-                end
-                if v14.Parent then
-                    capture(a1, v14)
-                end
+            )
+
+            if success then
+                result = result4
+            else
+                result = nil
             end
-        )
+
+            if result then
+                result.Parent = portrait
+            end
+        end
     end
-    return tbl_upv_4
+
+    local humanoid = Instance.new("Humanoid")
+    humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+    humanoid.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
+    humanoid.Parent = portrait
+    local v54 = {ready = false, readyAt = 0, model = portrait, head = head2, at = os.clock(), rig = rig}
+    local v55 = v6[key]
+    v6[key] = v54
+
+    if v55 then
+        v55.model:Destroy()
+    end
+
+    prepare(key, v54)
+
+    if v55 then
+        rerender(key)
+        return v54
+    end
+
+    task.delay(
+        2.5,
+        function()
+            --[[
+              line: 138
+              upvalues:
+                v6 (copy, index: 1)
+                key (copy, index: 2)
+                v54 (copy, index: 3)
+                v5 (ref,  index: 4)
+                rig (copy, index: 5)
+                capture (ref,  index: 6)
+            ]]
+            if v6[key] ~= v54 then
+                return
+            end
+
+            local v56 = v5.Find(key) or rig
+
+            if v56 and v56.Parent then
+                capture(key, v56)
+            end
+        end
+    )
+
+    return v54
 end
-local function clearRender(a1)
+
+local function clearRender(a58)
     --[[
       name: clearRender
       line: 151
     ]]
-    for _, value_4 in {"RigHead", "RigBack"} do
-        local v15 = a1:FindFirstChild(value_4)
-        if v15 then
-            v15:Destroy()
+    for _, v60 in {"RigHead", "RigBack"} do
+        if const v61 = a58:FindFirstChild(v60) then
+            v61:Destroy()
         end
     end
 end
-local function silhouette(a1, a2)
+
+local function silhouette(parent, a64: boolean?)
     --[[
       name: silhouette
       line: 160
       upvalues:
         clearRender (copy, index: 1)
-        u1 (ref,  index: 2)
+        v4 (ref,  index: 2)
     ]]
-    if not (a2) then
-        clearRender(a1)
+    local name
+
+    if not a64 then
+        clearRender(parent)
     end
-    local new_1 = u1.new
-    local tbl_5 = {Name = 0, BackgroundTransparency = 0.2, Parent = 0, ZIndex = 0, BackgroundColor3 = 0, Size = 0}
-    tbl_5.Name = (a2 and "RigBack") or "RigHead"
-    tbl_5.Size = UDim2.fromScale(1, 1)
-    tbl_5.BackgroundColor3 = Color3.fromRGB(44, 48, 60)
-    tbl_5.ZIndex = a1.ZIndex
-    tbl_5.Parent = a1
-    local v16 = new_1("Frame", tbl_5)
-    local v17 = a1:FindFirstChildOfClass("UICorner")
-    if v17 then
-        v17:Clone().Parent = v16
+
+    local new = v4.new
+    local v67 = {BackgroundTransparency = 0.2}
+
+    if a64 then
+        name = "RigBack"
+    else
+        name = "RigHead"
     end
-    local v18 = u1.Icon("person", 0, Color3.fromRGB(110, 118, 136), {AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1), ZIndex = a1.ZIndex, Parent = v16})
-    v18.Size = UDim2.fromScale(0.72, 0.8)
+
+    v67.Name = name
+    v67.Size = UDim2.fromScale(1, 1)
+    v67.BackgroundColor3 = Color3.fromRGB(44, 48, 60)
+    v67.ZIndex = parent.ZIndex
+    v67.Parent = parent
+    local parent2 = new("Frame", v67)
+
+    if const uiCorner = parent:FindFirstChildOfClass("UICorner") then
+        uiCorner:Clone().Parent = parent2
+    end
+
+    local icon = v4.Icon
+    local color3 = Color3.fromRGB(110, 118, 136)
+    local v72 = {AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1), ZIndex = parent.ZIndex, Parent = parent2}
+    icon("person", 0, color3, v72).Size = UDim2.fromScale(0.72, 0.8)
 end
-local function watchCard(a1, a2, a3, a4)
+
+local function watchCard(a74, a75, a76, a77)
     --[[
       name: watchCard
       line: 191
     ]]
-    local _ = a3.CFrame
-    task.spawn(function() end)
+    local cFrame = a76.CFrame
+
+    task.spawn(
+        function()
+            --[[
+              line: 193
+              upvalues:
+                a75 (copy, index: 1)
+                a74 (copy, index: 2)
+                a76 (copy, index: 3)
+                cFrame (copy, index: 4)
+                a77 (copy, index: 5)
+            ]]
+            local rigBack
+            local timestamp = os.clock()
+            local count = 0
+
+            while a75.Parent == a74 and a76.Parent == a75 do
+                count += 1
+                local newCFrame = CFrame.new
+                local z = count % 2 ~= 0 and 4e-04 or 0
+                a76.CFrame = cFrame * newCFrame(0, 0, z)
+
+                if a77.ready and 0.5 < os.clock() - a77.readyAt and 0.5 < os.clock() - timestamp then
+                    rigBack = a74:FindFirstChild("RigBack")
+
+                    if rigBack then
+                        rigBack:Destroy()
+                    end
+
+                    for index = 1, 4 do
+                        task.wait(0.5)
+
+                        if a75.Parent == a74 then
+                            local newCFrame2 = CFrame.new
+                            local z2 = index % 2 ~= 0 and 4e-04 or 0
+                            a76.CFrame = cFrame * newCFrame2(0, 0, z2)
+                        end
+                    end
+
+                    return
+                end
+
+                if 15 < os.clock() - timestamp then
+                    return
+                end
+
+                task.wait(0.2)
+            end
+        end
+    )
 end
-local function renderTemplate(a1, a2)
+
+local function renderTemplate(parent, a89)
     --[[
       name: renderTemplate
       line: 221
       upvalues:
         clearRender (copy, index: 1)
         silhouette (copy, index: 2)
-        u1 (ref,  index: 3)
+        v4 (ref,  index: 3)
     ]]
-    clearRender(a1)
-    silhouette(a1, true)
-    local new_2 = u1.new
-    local tbl_6 = {ImageColor3 = 0, Name = "RigHead", ImageTransparency = 0, Parent = 0}
-    tbl_6.Size = UDim2.fromScale(1, 1)
-    tbl_6.Ambient = Color3.fromRGB(150, 150, 150)
-    tbl_6.LightColor = Color3.fromRGB(235, 232, 226)
-    tbl_6.ZIndex = a1.ZIndex
-    tbl_6.ImageColor3 = a1:GetAttribute("PortraitTint") or Color3.new(1, 1, 1)
-    tbl_6.ImageTransparency = a1:GetAttribute("PortraitFade") or 0
-    tbl_6.Parent = a1
-    local u5 = new_2("ViewportFrame", tbl_6)
-    local v20 = a1:FindFirstChildOfClass("UICorner")
-    if v20 then
-        v20:Clone().Parent = u5
+    clearRender(parent)
+    silhouette(parent, true)
+    local new = v4.new
+    local v91 = {Name = "RigHead", Size = UDim2.fromScale(1, 1), Ambient = Color3.fromRGB(150, 150, 150), LightColor = Color3.fromRGB(235, 232, 226), ZIndex = parent.ZIndex}
+    local v92 = parent:GetAttribute("PortraitTint") or Color3.new(1, 1, 1)
+    v91.ImageColor3 = v92
+    v91.ImageTransparency = parent:GetAttribute("PortraitFade") or 0
+    v91.Parent = parent
+    local parent2 = new("ViewportFrame", v91)
+
+    if const uiCorner = parent:FindFirstChildOfClass("UICorner") then
+        uiCorner:Clone().Parent = parent2
     end
-    a2.model:Clone().Parent = u5
-    local head_1 = a2.head
-    local v21 = head_1.Position - head_1.UpVector * 0.15
-    local v22 = (head_1.Position + (head_1.LookVector * 3.9)) + (head_1.RightVector * 0.8) + head_1.UpVector * 0.35
-    local u6 = Instance.new("Camera")
-    u6.FieldOfView = 30
-    u6.CFrame = CFrame.lookAt(v22, v21)
-    u6.Parent = u5
-    u5.CurrentCamera = u6
-    u5.LightDirection = (v21 - v22).Unit + Vector3.new(0, -0.6000000238418579, 0)
-    local CFrame_upv_1 = u6.CFrame
+
+    a89.model:Clone().Parent = parent2
+    local head = a89.head
+    local v96 = head.Position - head.UpVector * 0.15
+    local v97 = (head.Position + (head.LookVector * 3.9)) + (head.RightVector * 0.8) + head.UpVector * 0.35
+    local currentCamera = Instance.new("Camera")
+    currentCamera.FieldOfView = 30
+    currentCamera.CFrame = CFrame.lookAt(v97, v96)
+    currentCamera.Parent = parent2
+    parent2.CurrentCamera = currentCamera
+    parent2.LightDirection = (v96 - v97).Unit + Vector3.new(0, -0.6000000238418579, 0)
+    local cFrame = currentCamera.CFrame
+
     task.spawn(
         function()
             --[[
               line: 193
               upvalues:
-                u5 (copy, index: 1)
-                a1 (copy, index: 2)
-                u6 (copy, index: 3)
-                CFrame_upv_1 (copy, index: 4)
-                a2 (copy, index: 5)
+                parent2 (copy, index: 1)
+                parent (copy, index: 2)
+                currentCamera (copy, index: 3)
+                cFrame (copy, index: 4)
+                a89 (copy, index: 5)
             ]]
-            local v23 = os.clock()
-            local v24 = 0
-            while u5.Parent == a1 and u6.Parent == u5 do
-                v24 = v24 + 1
-                u6.CFrame = CFrame_upv_1 * CFrame.new(0, 0, ((v24 % 2 ~= 0) and 4e-04) or 0)
-                if not (a2.ready) or not (os.clock() - a2.readyAt > 0.5) or not (os.clock() - v23 > 0.5) then
-                    if not (os.clock() - v23 > 15) then
-                        task.wait(0.2)
-                        continue
+            local rigBack
+            local timestamp = os.clock()
+            local count = 0
+
+            while parent2.Parent == parent and currentCamera.Parent == parent2 do
+                count += 1
+                local newCFrame = CFrame.new
+                local z = count % 2 ~= 0 and 4e-04 or 0
+                currentCamera.CFrame = cFrame * newCFrame(0, 0, z)
+
+                if a89.ready and 0.5 < os.clock() - a89.readyAt and 0.5 < os.clock() - timestamp then
+                    rigBack = parent:FindFirstChild("RigBack")
+
+                    if rigBack then
+                        rigBack:Destroy()
                     end
+
+                    for index = 1, 4 do
+                        task.wait(0.5)
+
+                        if parent2.Parent == parent then
+                            local newCFrame2 = CFrame.new
+                            local z2 = index % 2 ~= 0 and 4e-04 or 0
+                            currentCamera.CFrame = cFrame * newCFrame2(0, 0, z2)
+                        end
+                    end
+
                     return
                 end
-                local RigBack_1 = a1:FindFirstChild("RigBack")
-                if RigBack_1 then
-                    RigBack_1:Destroy()
+
+                if 15 < os.clock() - timestamp then
+                    return
                 end
-                for n_1 = 1, 4 do
-                    task.wait(0.5)
-                    if u5.Parent == a1 then
-                        u6.CFrame = CFrame_upv_1 * CFrame.new(0, 0, ((n_1 % 2 ~= 0) and 4e-04) or 0)
-                    end
-                end
-                return
+
+                task.wait(0.2)
             end
         end
     )
 end
-rerender = function(a1)
+
+rerender = function(key)
     --[[
       name: rerender
       line: 255
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        u4 (copy, index: 2)
+        v6 (copy, index: 1)
+        texts (copy, index: 2)
         renderTemplate (ref,  index: 3)
     ]]
-    local v25 = tbl_upv_2[a1]
-    if not v25 then
+    local v109 = v6[key]
+    if not v109 then
         return
     end
-    for key_1, value_5 in u4 do
-        if value_5 ~= "rig:" .. a1 then
-            continue
-        end
-        if key_1.Parent then
-            renderTemplate(key_1, v25)
+
+    local v110 = "rig:" .. key
+
+    for parent, v112 in texts do
+        if v112 == v110 and parent.Parent then
+            renderTemplate(parent, v109)
         end
     end
 end
-local tbl_upv_7 = {}
-tbl_upv_7[Enum.AssetFetchStatus.Success] = true
-tbl_upv_7[Enum.AssetFetchStatus.Failure] = true
-tbl_upv_7[Enum.AssetFetchStatus.TimedOut] = true
-local function contentIds(a1)
+
+local function contentIds(model)
     --[[
       name: contentIds
       line: 268
     ]]
-    local tbl_upv_8 = {}
-    local tbl_upv_9 = {}
-    local function add_1(a2)
+    local v115 = {}
+    local v116 = {}
+
+    local function add(key)
         --[[
           name: add
           line: 271
           upvalues:
-            tbl_upv_8 (copy, index: 1)
-            tbl_upv_9 (copy, index: 2)
+            v115 (copy, index: 1)
+            v116 (copy, index: 2)
         ]]
-        if type(a2) ~= "string" or a2 == "" or (tbl_upv_8[a2]) then
-            return
+        if type(key) == "string" and key ~= "" and not v115[key] then
+            v115[key] = true
+            table.insert(v116, key)
         end
-        tbl_upv_8[a2] = true
-        table.insert(tbl_upv_9, a2)
     end
-    for _, value_upv_6 in a1:GetDescendants() do
+
+    for _, descendant in model:GetDescendants() do
         pcall(
             function()
                 --[[
                   line: 278
                   upvalues:
-                    value_upv_6 (copy, index: 1)
-                    tbl_upv_8 (copy, index: 2)
-                    tbl_upv_9 (copy, index: 3)
+                    descendant (copy, index: 1)
+                    v115 (copy, index: 2)
+                    v116 (copy, index: 3)
                 ]]
-                local v26, v27 = nil, nil
-                if value_upv_6:IsA("MeshPart") then
-                    v26 = value_upv_6.MeshId
-                    if type(v26) == "string" and v26 ~= "" and not (tbl_upv_8[v26]) then
-                        tbl_upv_8[v26] = true
-                        table.insert(tbl_upv_9, v26)
+                if descendant:IsA("MeshPart") then
+                    local meshId = descendant.MeshId
+
+                    if type(meshId) == "string" and meshId ~= "" and not v115[meshId] then
+                        v115[meshId] = true
+                        table.insert(v116, meshId)
                     end
-                    v27 = value_upv_6.TextureID
-                    if type(v27) ~= "string" or v27 == "" or (tbl_upv_8[v27]) then
-                        return
+
+                    local textureId = descendant.TextureID
+
+                    if type(textureId) == "string" and textureId ~= "" and not v115[textureId] then
+                        v115[textureId] = true
+                        table.insert(v116, textureId)
                     end
-                    tbl_upv_8[v27] = true
-                    table.insert(tbl_upv_9, v27)
-                else
-                    local v28, v29 = nil, nil
-                    if value_upv_6:IsA("SpecialMesh") then
-                        v28 = value_upv_6.MeshId
-                        if type(v28) == "string" and v28 ~= "" and not (tbl_upv_8[v28]) then
-                            tbl_upv_8[v28] = true
-                            table.insert(tbl_upv_9, v28)
-                        end
-                        v29 = value_upv_6.TextureId
-                        if type(v29) ~= "string" or v29 == "" or (tbl_upv_8[v29]) then
-                            return
-                        end
-                        tbl_upv_8[v29] = true
-                        table.insert(tbl_upv_9, v29)
-                    else
-                        local v30 = nil
-                        if value_upv_6:IsA("Decal") then
-                            v30 = value_upv_6.Texture
-                            if type(v30) ~= "string" or v30 == "" or (tbl_upv_8[v30]) then
-                                return
-                            end
-                            tbl_upv_8[v30] = true
-                            table.insert(tbl_upv_9, v30)
-                        else
-                            local v31 = nil
-                            if value_upv_6:IsA("Shirt") then
-                                v31 = value_upv_6.ShirtTemplate
-                                if type(v31) ~= "string" or v31 == "" or (tbl_upv_8[v31]) then
-                                    return
-                                end
-                                tbl_upv_8[v31] = true
-                                table.insert(tbl_upv_9, v31)
-                            else
-                                local v32 = nil
-                                if value_upv_6:IsA("Pants") then
-                                    v32 = value_upv_6.PantsTemplate
-                                    if type(v32) ~= "string" or v32 == "" or (tbl_upv_8[v32]) then
-                                        return
-                                    end
-                                    tbl_upv_8[v32] = true
-                                    table.insert(tbl_upv_9, v32)
-                                elseif value_upv_6:IsA("ShirtGraphic") then
-                                    local Graphic_1 = value_upv_6.Graphic
-                                    if type(Graphic_1) ~= "string" or Graphic_1 == "" or (tbl_upv_8[Graphic_1]) then
-                                        return
-                                    end
-                                    tbl_upv_8[Graphic_1] = true
-                                    table.insert(tbl_upv_9, Graphic_1)
-                                end
-                            end
-                        end
+                elseif descendant:IsA("SpecialMesh") then
+                    local meshId = descendant.MeshId
+
+                    if type(meshId) == "string" and meshId ~= "" and not v115[meshId] then
+                        v115[meshId] = true
+                        table.insert(v116, meshId)
+                    end
+
+                    local textureId = descendant.TextureId
+
+                    if type(textureId) == "string" and textureId ~= "" and not v115[textureId] then
+                        v115[textureId] = true
+                        table.insert(v116, textureId)
+                    end
+                elseif descendant:IsA("Decal") then
+                    local texture = descendant.Texture
+
+                    if type(texture) == "string" and texture ~= "" and not v115[texture] then
+                        v115[texture] = true
+                        table.insert(v116, texture)
+                    end
+                elseif descendant:IsA("Shirt") then
+                    local shirtTemplate = descendant.ShirtTemplate
+
+                    if type(shirtTemplate) == "string" and shirtTemplate ~= "" and not v115[shirtTemplate] then
+                        v115[shirtTemplate] = true
+                        table.insert(v116, shirtTemplate)
+                    end
+                elseif descendant:IsA("Pants") then
+                    local pantsTemplate = descendant.PantsTemplate
+
+                    if type(pantsTemplate) == "string" and pantsTemplate ~= "" and not v115[pantsTemplate] then
+                        v115[pantsTemplate] = true
+                        table.insert(v116, pantsTemplate)
+                    end
+                elseif descendant:IsA("ShirtGraphic") then
+                    local graphic = descendant.Graphic
+
+                    if type(graphic) == "string" and graphic ~= "" and not v115[graphic] then
+                        v115[graphic] = true
+                        table.insert(v116, graphic)
                     end
                 end
             end
         )
     end
-    return tbl_upv_9
+
+    return v116
 end
-prepare = function(a1, a2)
+
+local v129 = {}
+v129[Enum.AssetFetchStatus.Success] = true
+v129[Enum.AssetFetchStatus.Failure] = true
+v129[Enum.AssetFetchStatus.TimedOut] = true
+
+prepare = function(a130, a131)
     --[[
       name: prepare
       line: 302
       upvalues:
         contentIds (copy, index: 1)
-        ContentProvider_upv_1 (copy, index: 2)
-        tbl_upv_7 (copy, index: 3)
+        contentProvider (copy, index: 2)
+        v129 (copy, index: 3)
     ]]
     task.spawn(
         function()
@@ -434,312 +608,344 @@ prepare = function(a1, a2)
               line: 303
               upvalues:
                 contentIds (copy, index: 1)
-                a2 (copy, index: 2)
-                ContentProvider_upv_1 (copy, index: 3)
-                tbl_upv_7 (copy, index: 4)
+                a131 (copy, index: 2)
+                contentProvider (copy, index: 3)
+                v129 (copy, index: 4)
             ]]
-            local u7 = contentIds(a2.model)
-            if #u7 > 0 then
+            local contentIdList = contentIds(a131.model)
+
+            if 0 < #contentIdList then
                 task.spawn(
                     function()
                         --[[
                           line: 306
                           upvalues:
-                            ContentProvider_upv_1 (copy, index: 1)
-                            u7 (copy, index: 2)
+                            contentProvider (copy, index: 1)
+                            contentIdList (copy, index: 2)
                         ]]
                         pcall(
                             function()
                                 --[[
                                   line: 307
                                   upvalues:
-                                    ContentProvider_upv_1 (copy, index: 1)
-                                    u7 (copy, index: 2)
+                                    contentProvider (copy, index: 1)
+                                    contentIdList (copy, index: 2)
                                 ]]
-                                ContentProvider_upv_1:PreloadAsync(u7)
+                                contentProvider:PreloadAsync(contentIdList)
                             end
                         )
                     end
                 )
-                local v33 = os.clock()
-                local v34 = nil
-                while os.clock() - v33 < 8 do
-                    v34 = true
-                    for _, value_upv_7 in u7 do
-                        local success_5, v35 = pcall(
+                local timestamp = os.clock()
+
+                while os.clock() - timestamp < 8 do
+                    local v134 = true
+
+                    for _, contentId in contentIdList do
+                        local success, assetFetchStatus = pcall(
                             function()
                                 --[[
                                   line: 315
                                   upvalues:
-                                    ContentProvider_upv_1 (copy, index: 1)
-                                    value_upv_7 (copy, index: 2)
+                                    contentProvider (copy, index: 1)
+                                    contentId (copy, index: 2)
                                 ]]
-                                return ContentProvider_upv_1:GetAssetFetchStatus(value_upv_7)
+                                return contentProvider:GetAssetFetchStatus(contentId)
                             end
                         )
-                        if not (success_5) then
-                            continue
-                        end
-                        if not (tbl_upv_7[v35]) then
-                            v34 = false
+
+                        if success and not v129[assetFetchStatus] then
+                            v134 = false
                             break
                         end
                     end
-                    if v34 then
+
+                    if v134 then
                         break
-                    else
-                        task.wait(0.15)
                     end
+
+                    task.wait(0.15)
                 end
             end
-            a2.ready = true
-            a2.readyAt = os.clock()
+
+            a131.ready = true
+            a131.readyAt = os.clock()
         end
     )
 end
-function tbl_upv_1.SetTint(a1, a2, a3)
+
+function v3.SetTint(tint, imageColor3, imageTransparency)
     --[[
       name: SetTint
       line: 335
     ]]
-    a1:SetAttribute("PortraitTint", a2)
-    a1:SetAttribute("PortraitFade", a3)
-    a1.ImageColor3 = a2
-    a1.ImageTransparency = a3
-    local RigHead_1 = a1:FindFirstChild("RigHead")
-    if not RigHead_1 or not RigHead_1:IsA("ViewportFrame") then
-        return
+    tint:SetAttribute("PortraitTint", imageColor3)
+    tint:SetAttribute("PortraitFade", imageTransparency)
+    tint.ImageColor3 = imageColor3
+    tint.ImageTransparency = imageTransparency
+    local rigHead = tint:FindFirstChild("RigHead")
+
+    if rigHead and rigHead:IsA("ViewportFrame") then
+        rigHead.ImageColor3 = imageColor3
+        rigHead.ImageTransparency = imageTransparency
     end
-    RigHead_1.ImageColor3 = a2
-    RigHead_1.ImageTransparency = a3
 end
-function tbl_upv_1.ThumbFor(a1, a2)
+
+function v3.ThumbFor(a143, a144)
     --[[
       name: ThumbFor
       line: 348
       upvalues:
-        u2 (ref, index: 1)
+        v5 (ref, index: 1)
     ]]
-    local v36
-    if type(a1) ~= "table" then
-        v36 = a1
+    local v145
+
+    if type(a143) ~= "table" then
+        v145 = a143
     else
-        v36 = a1.userId
+        v145 = a143.userId
     end
-    if u2.IsRealUserId(v36) or u2.TrustAllUserIds and type(v36) == "number" and v36 > 0 then
-        local v37 = a2 or 150
-        local v38 = ((v37 <= 48) and 48) or (((v37 <= 60) and 60) or (((v37 <= 150) and 150) or 420))
-        return string.format("rbxthumb://type=AvatarHeadShot&id=%d&w=%d&h=%d", v36, v38, v38)
+
+    if not v5.IsRealUserId(v145) and (not v5.TrustAllUserIds or type(v145) ~= "number" or not (0 < v145)) then
+        return ""
     end
-    return ""
+
+    local v146 = a144 or 150
+    local v147 = v146 <= 48 and 48 or v146 <= 60 and 60 or v146 <= 150 and 150 or 420
+
+    return string.format("rbxthumb://type=AvatarHeadShot&id=%d&w=%d&h=%d", v145, v147, v147)
 end
-function tbl_upv_1.ImageFor(a1, a2)
+
+function v3.ImageFor(a148, a149)
     --[[
       name: ImageFor
       line: 359
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v3 (copy, index: 1)
     ]]
-    return tbl_upv_1.ThumbFor(a1, a2)
+    return v3.ThumbFor(a148, a149)
 end
-function tbl_upv_1.Apply(a1, a2, a3)
+
+function v3.Apply(key, value, a152)
     --[[
       name: Apply
       line: 364
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u4 (copy, index: 2)
-        u3 (copy, index: 3)
+        v3 (copy, index: 1)
+        texts (copy, index: 2)
+        v7 (copy, index: 3)
         clearRender (copy, index: 4)
         silhouette (copy, index: 5)
-        tbl_upv_2 (copy, index: 6)
-        u2 (ref,  index: 7)
+        v6 (copy, index: 6)
+        v5 (ref,  index: 7)
         capture (ref,  index: 8)
         renderTemplate (ref,  index: 9)
     ]]
-    local v39 = tbl_upv_1.ThumbFor(a2, a3)
-    local v40 = ((type(a2) == "table") and (a2.id)) or nil
-    local v41
-    if v39 == "" then
-        v41 = "rig:" .. tostring(v40)
-    else
-        v41 = v39
-    end
-    if u4[a1] == v41 then
-        if v39 ~= "" then
+    local image = v3.ThumbFor(value, a152)
+    local id = type(value) == "table" and value.id or nil
+    local v155 = if image ~= "" then image else "rig:" .. tostring(id)
+
+    if texts[key] == v155 then
+        if image ~= "" then
             return
         end
-        local RigHead_2 = a1:FindFirstChild("RigHead")
-        if RigHead_2 and not (u3[a1]) then
-            return
+
+        if key:FindFirstChild("RigHead") then
+            if not v7[key] then
+                return
+            end
         end
     end
-    u4[a1] = v41
-    u3[a1] = nil
-    a1.ScaleType = Enum.ScaleType.Crop
-    if v39 == "" then
-        a1.Image = ""
-        if type(v40) == "string" then
-            v41 = tbl_upv_2[v40]
-            local v42 = nil
-            if not v41 then
-                v42 = u2.Find(v40)
-                v41 = v42 and capture(v40, v42)
-            end
-            if v41 then
-                renderTemplate(a1, v41)
-            else
-                silhouette(a1)
-                u3[a1] = a2
-            end
-        else
-            silhouette(a1)
-        end
-    else
-        clearRender(a1)
-        a1.Image = v39
+
+    texts[key] = v155
+    v7[key] = nil
+    key.ScaleType = Enum.ScaleType.Crop
+
+    if image ~= "" then
+        clearRender(key)
+        key.Image = image
+
+        return
     end
+
+    key.Image = ""
+
+    if type(id) ~= "string" then
+        silhouette(key)
+        return
+    end
+
+    local v156 = v6[id]
+    if not v156 then
+        if const v157 = v5.Find(id) then
+            v156 = capture(id, v157)
+        end
+    end
+
+    if v156 then
+        renderTemplate(key, v156)
+        return
+    end
+
+    silhouette(key)
+    v7[key] = value
 end
-function tbl_upv_1.Reset()
+
+function v3.Reset()
     --[[
       name: Reset
       line: 406
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        u4 (copy, index: 2)
+        v6 (copy, index: 1)
+        texts (copy, index: 2)
     ]]
-    for _, value_8 in tbl_upv_2 do
-        value_8.model:Destroy()
+    for _, v159 in v6 do
+        v159.model:Destroy()
     end
-    table.clear(tbl_upv_2)
-    local tbl_10 = {}
-    for key_2, value_9 in u4 do
-        if string.sub(value_9, 1, 4) == "rig:" then
-            table.insert(tbl_10, key_2)
+
+    table.clear(v6)
+    local v160 = {}
+
+    for v161, text in texts do
+        if string.sub(text, 1, 4) == "rig:" then
+            table.insert(v160, v161)
         end
     end
-    for _, value_10 in tbl_10 do
-        u4[value_10] = nil
+
+    for _, v164 in v160 do
+        texts[v164] = nil
     end
 end
-function tbl_upv_1.Init(a1, a2)
+
+function v3.Init(a165, a166)
     --[[
       name: Init
       line: 423
       upvalues:
-        u1 (ref,  index: 1)
-        u2 (ref,  index: 2)
-        u3 (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
-        tbl_upv_2 (copy, index: 5)
+        v4 (ref,  index: 1)
+        v5 (ref,  index: 2)
+        v7 (copy, index: 3)
+        v3 (copy, index: 4)
+        v6 (copy, index: 5)
         capture (ref,  index: 6)
-        u4 (copy, index: 7)
+        texts (copy, index: 7)
     ]]
-    u1 = a1
-    u2 = a2
+    v4 = a165
+    v5 = a166
+
     task.spawn(
         function()
             --[[
               line: 427
               upvalues:
-                u3 (copy, index: 1)
-                tbl_upv_1 (copy, index: 2)
+                v7 (copy, index: 1)
+                v3 (copy, index: 2)
             ]]
-            repeat
+            while true do
                 task.wait(1)
-            until next(u3)
-            local tbl_11 = {}
-            for key_3, value_11 in u3 do
-                table.insert(tbl_11, {key_3, value_11})
-            end
-            for _, value_12 in tbl_11 do
-                if value_12[1].Parent then
-                    tbl_upv_1.Apply(value_12[1], value_12[2])
-                else
-                    u3[value_12[1]] = nil
+
+                if next(v7) then
+                    local v167 = {}
+
+                    for v168, v169 in v7 do
+                        table.insert(v167, {v168, v169})
+                    end
+
+                    for _, v171 in v167 do
+                        if v171[1].Parent then
+                            v3.Apply(v171[1], v171[2])
+                        else
+                            v7[v171[1]] = nil
+                        end
+                    end
                 end
             end
         end
     )
-    u2.Added:Connect(
-        function(a3, a4)
+
+    v5.Added:Connect(
+        function(key, a173)
             --[[
               line: 446
               upvalues:
-                tbl_upv_2 (copy, index: 1)
+                v6 (copy, index: 1)
                 capture (ref,  index: 2)
-                u3 (copy, index: 3)
-                u4 (copy, index: 4)
-                tbl_upv_1 (copy, index: 5)
+                v7 (copy, index: 3)
+                texts (copy, index: 4)
+                v3 (copy, index: 5)
             ]]
-            local u8 = tbl_upv_2[a3]
-            if u8 and u8.rig ~= a4 then
+            local v174 = v6[key]
+
+            if v174 and v174.rig ~= a173 then
                 task.delay(
                     0.6,
                     function()
                         --[[
                           line: 450
                           upvalues:
-                            tbl_upv_2 (copy, index: 1)
-                            a3 (copy, index: 2)
-                            u8 (copy, index: 3)
-                            a4 (copy, index: 4)
+                            v6 (copy, index: 1)
+                            key (copy, index: 2)
+                            v174 (copy, index: 3)
+                            a173 (copy, index: 4)
                             capture (ref,  index: 5)
                         ]]
-                        if tbl_upv_2[a3] ~= u8 or not a4.Parent then
-                            return
+                        if v6[key] == v174 and a173.Parent then
+                            capture(key, a173)
                         end
-                        capture(a3, a4)
                     end
                 )
             end
-            local v43 = false
-            for _, value_13 in u3 do
-                if type(value_13) ~= "table" then
-                    continue
-                end
-                if value_13.id == a3 then
-                    v43 = true
+
+            local v175 = false
+
+            for _, v177 in v7 do
+                if type(v177) == "table" and v177.id == key then
+                    v175 = true
                     break
                 end
             end
-            if not v43 then
+
+            if not v175 then
                 return
             end
+
             task.delay(
                 0.4,
                 function()
                     --[[
                       line: 467
                       upvalues:
-                        tbl_upv_2 (copy, index: 1)
-                        a3 (copy, index: 2)
-                        a4 (copy, index: 3)
+                        v6 (copy, index: 1)
+                        key (copy, index: 2)
+                        a173 (copy, index: 3)
                         capture (ref,  index: 4)
-                        u3 (copy, index: 5)
-                        u4 (copy, index: 6)
-                        tbl_upv_1 (copy, index: 7)
+                        v7 (copy, index: 5)
+                        texts (copy, index: 6)
+                        v3 (copy, index: 7)
                     ]]
-                    if not (tbl_upv_2[a3]) and a4.Parent then
-                        capture(a3, a4)
+                    if not v6[key] and a173.Parent then
+                        capture(key, a173)
                     end
-                    local tbl_12 = {}
-                    for key_4, value_14 in u3 do
-                        if type(value_14) ~= "table" or value_14.id ~= a3 then
-                            continue
-                        end
-                        if key_4.Parent then
-                            table.insert(tbl_12, {key_4, value_14})
+
+                    local v178 = {}
+
+                    for v179, v180 in v7 do
+                        if type(v180) == "table" then
+                            if v180.id == key and v179.Parent then
+                                table.insert(v178, {v179, v180})
+                            end
                         end
                     end
-                    for _, value_15 in tbl_12 do
-                        u3[value_15[1]] = nil
-                        u4[value_15[1]] = nil
-                        tbl_upv_1.Apply(value_15[1], value_15[2])
+
+                    for _, v182 in v178 do
+                        v7[v182[1]] = nil
+                        texts[v182[1]] = nil
+                        v3.Apply(v182[1], v182[2])
                     end
                 end
             )
         end
     )
 end
-return tbl_upv_1
+
+return v3

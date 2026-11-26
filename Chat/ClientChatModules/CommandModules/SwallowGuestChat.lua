@@ -1,47 +1,52 @@
-local Util_upv_1 = require(script.Parent:WaitForChild("Util"))
-local RunService_upv_1 = game:GetService("RunService")
-local u1 = nil
+local Util = require(script.Parent:WaitForChild("Util"))
+local runService = game:GetService("RunService")
+local v3 = nil
 pcall(
     function()
         --[[
           line: 12
           upvalues:
-            u1 (ref, index: 1)
+            v3 (ref, index: 1)
         ]]
-        u1 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
+        v3 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
     end
 )
-if u1 == nil then
-    u1 = {}
-    function u1.Get(a1, a2, a3)
+
+if v3 == nil then
+    v3 = {}
+
+    function v3.Get(a4, a5, a6)
         --[[
           name: Get
           line: 13
         ]]
-        return a3
+        return a6
     end
 end
-function ProcessMessage(a1, a2, a3)
+
+function ProcessMessage(a7, a8, a9)
     --[[
       name: ProcessMessage
       line: 15
       upvalues:
-        RunService_upv_1 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
-        u1 (ref,  index: 3)
+        runService (copy, index: 1)
+        Util (copy, index: 2)
+        v3 (ref,  index: 3)
     ]]
-    local LocalPlayer_1 = game:GetService("Players").LocalPlayer
-    if LocalPlayer_1 and LocalPlayer_1.UserId < 0 and not (RunService_upv_1:IsStudio()) then
-        local v1 = a2:GetCurrentChannel()
-        if v1 then
-            local tbl_1 = {}
-            Util_upv_1:SendSystemMessageToSelf(u1:Get("GameChat_SwallowGuestChat_Message", "Create a free account to get access to chat permissions!"), v1, tbl_1)
-        end
-        return true
+    local localPlayer = game:GetService("Players").LocalPlayer
+
+    if not localPlayer or not (localPlayer.UserId < 0) or runService:IsStudio() then
+        return false
+    elseif const currentChannel = a8:GetCurrentChannel() then
+        local v12 = {}
+        Util:SendSystemMessageToSelf(v3:Get("GameChat_SwallowGuestChat_Message", "Create a free account to get access to chat permissions!"), currentChannel, v12)
     end
-    return false
+
+    return true
 end
-local tbl_2 = {}
-tbl_2[Util_upv_1.KEY_COMMAND_PROCESSOR_TYPE] = Util_upv_1.COMPLETED_MESSAGE_PROCESSOR
-tbl_2[Util_upv_1.KEY_PROCESSOR_FUNCTION] = ProcessMessage
-return tbl_2
+
+local v13 = {}
+v13[Util.KEY_COMMAND_PROCESSOR_TYPE] = Util.COMPLETED_MESSAGE_PROCESSOR
+v13[Util.KEY_PROCESSOR_FUNCTION] = ProcessMessage
+
+return v13

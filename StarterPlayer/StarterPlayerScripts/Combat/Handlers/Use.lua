@@ -1,451 +1,599 @@
-local Parent_1 = script.Parent.Parent
-local Util_upv_1 = require(Parent_1.Util)
-local Hud_upv_1 = require(Parent_1.Hud)
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-local tbl_upv_2 = {FullHealth = "ALREADY AT FULL HEALTH", NoCharges = "NONE LEFT THIS ROUND", BadWallSpot = "CAN'T BUILD THERE", BadSpot = "CAN'T SET A TRAP THERE"}
-tbl_upv_1.DENY_TEXT = tbl_upv_2
-function tbl_upv_1.new(a1)
+local parent = script.Parent.Parent
+local Util = require(parent.Util)
+local Hud = require(parent.Hud)
+local Class = {}
+Class.__index = Class
+local denyText = {FullHealth = "ALREADY AT FULL HEALTH", NoCharges = "NONE LEFT THIS ROUND", BadSpot = "CAN'T SET A TRAP THERE", BadWallSpot = "CAN'T BUILD THERE"}
+Class.DENY_TEXT = denyText
+
+function Class.new(ctx)
     --[[
       name: new
       line: 21
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    local v1 = setmetatable({}, tbl_upv_1)
-    v1.ctx = a1
-    v1.tuning = a1.tuning
-    v1.preset = a1.preset
-    v1.kind = a1.kind
-    v1.using = false
-    v1.token = 0
-    v1.lastUse = -math.huge
-    v1.charges = 0
-    v1.conns = {}
-    v1.ghost = nil
-    v1.spot = nil
-    return v1
+    local v7 = setmetatable({}, Class)
+    v7.ctx = ctx
+    v7.tuning = ctx.tuning
+    v7.preset = ctx.preset
+    v7.kind = ctx.kind
+    v7.using = false
+    v7.token = 0
+    v7.lastUse = -math.huge
+    v7.charges = 0
+    v7.conns = {}
+    v7.ghost = nil
+    v7.spot = nil
+    return v7
 end
-function tbl_upv_1.Sync(a1)
+
+function Class.Sync(self)
     --[[
       name: Sync
       line: 37
       upvalues:
-        Hud_upv_1 (copy, index: 1)
+        Hud (copy, index: 1)
     ]]
-    local v2 = a1.ctx.tool:GetAttribute("Charges")
-    if type(v2) == "number" then
-        a1.charges = v2
+    local charges = self.ctx.tool:GetAttribute("Charges")
+
+    if type(charges) == "number" then
+        self.charges = charges
     end
-    Hud_upv_1.SetPips(a1.charges, a1.tuning.charges or 0, a1.preset.color)
+
+    Hud.SetPips(self.charges, (self.tuning.charges or 0), self.preset.color)
 end
-function tbl_upv_1.Equip(a1)
+
+function Class.Equip(self)
     --[[
       name: Equip
       line: 45
       upvalues:
-        Hud_upv_1 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
+        Hud (copy, index: 1)
+        Util (copy, index: 2)
     ]]
-    local ctx_1 = a1.ctx
-    Hud_upv_1.SetStyle("Use")
-    a1:Sync()
-    Util_upv_1.PlayAnim(ctx_1.animator, a1.preset.hold, 1, 0.2)
-    Util_upv_1.Sound(a1.preset.equip or "Equip_Item", ctx_1.root)
+    local ctx = self.ctx
+    Hud.SetStyle("Use")
+    self:Sync()
+    Util.PlayAnim(ctx.animator, self.preset.hold, 1, 0.2)
+    Util.Sound((self.preset.equip or "Equip_Item"), ctx.root)
     table.insert(
-        a1.conns,
-        ctx_1.tool:GetAttributeChangedSignal("Charges"):Connect(
+        self.conns,
+        ctx.tool:GetAttributeChangedSignal("Charges"):Connect(
             function()
                 --[[
                   line: 51
                   upvalues:
-                    a1 (copy, index: 1)
+                    self (copy, index: 1)
                 ]]
-                a1:Sync()
+                self:Sync()
             end
         )
     )
-    if a1.kind == "Trap" then
-        local wall_1 = a1.tuning.wall
-        local v3 = Instance.new("Part")
-        v3.Name = "TrapGhost"
-        if type(wall_1) ~= "table" then
-            v3.Shape = Enum.PartType.Cylinder
-            v3.Size = Vector3.new(0.1, (a1.tuning.triggerRadius or 3) * 2, (a1.tuning.triggerRadius or 3) * 2)
+
+    if self.kind == "Trap" then
+        local wall = self.tuning.wall
+        local trapGhost = Instance.new("Part")
+        trapGhost.Name = "TrapGhost"
+
+        if type(wall) ~= "table" then
+            trapGhost.Shape = Enum.PartType.Cylinder
+            trapGhost.Size = Vector3.new(0.1, (self.tuning.triggerRadius or 3) * 2, (self.tuning.triggerRadius
+                or 3) * 2)
         else
-            v3.Size = Vector3.new(wall_1.width or 6, wall_1.height or 5, 0.9)
+            trapGhost.Size = Vector3.new((wall.width or 6), (wall.height or 5), 0.9)
         end
-        v3.Material = Enum.Material.SmoothPlastic
-        v3.Anchored = true
-        v3.CanCollide = false
-        v3.CanQuery = false
-        v3.CanTouch = false
-        v3.CastShadow = false
-        v3.Transparency = 1
-        v3.Parent = workspace:FindFirstChild("FX") or workspace
-        a1.ghost = v3
+
+        trapGhost.Material = Enum.Material.SmoothPlastic
+        trapGhost.Anchored = true
+        trapGhost.CanCollide = false
+        trapGhost.CanQuery = false
+        trapGhost.CanTouch = false
+        trapGhost.CastShadow = false
+        trapGhost.Transparency = 1
+        local instance = workspace:FindFirstChild("FX") or workspace
+        trapGhost.Parent = instance
+        self.ghost = trapGhost
     end
 end
-function tbl_upv_1.Unequip(a1)
+
+function Class.Unequip(self)
     --[[
       name: Unequip
       line: 77
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Hud_upv_1 (copy, index: 2)
+        Util (copy, index: 1)
+        Hud (copy, index: 2)
     ]]
-    for _, value_1 in a1.conns do
-        value_1:Disconnect()
+    for _, conn in self.conns do
+        conn:Disconnect()
     end
-    table.clear(a1.conns)
-    if a1.using then
-        a1:Cancel()
+
+    table.clear(self.conns)
+
+    if self.using then
+        self:Cancel()
     end
-    if a1.ghost then
-        a1.ghost:Destroy()
-        a1.ghost = nil
+
+    if self.ghost then
+        self.ghost:Destroy()
+        self.ghost = nil
     end
-    Util_upv_1.StopAnim(a1.ctx.animator, a1.preset.hold, 0.15)
-    Hud_upv_1.SetPips(0, 0)
+
+    Util.StopAnim(self.ctx.animator, self.preset.hold, 0.15)
+    Hud.SetPips(0, 0)
 end
-function tbl_upv_1.Cancel(a1)
+
+function Class.Cancel(self)
     --[[
       name: Cancel
       line: 93
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Hud_upv_1 (copy, index: 2)
+        Util (copy, index: 1)
+        Hud (copy, index: 2)
     ]]
-    local ctx_2 = a1.ctx
-    a1.using = false
-    a1.token = a1.token + 1
-    ctx_2.send("Use", {on = false, tool = ctx_2.tool})
-    ctx_2.emit("Use", {on = false})
-    Util_upv_1.StopAnim(ctx_2.animator, a1.preset.use, 0.1)
-    ctx_2.setSpeed("Use", nil)
-    Hud_upv_1.StopChannel()
+    local ctx = self.ctx
+    self.using = false
+    self.token += 1
+    ctx.send("Use", {on = false, tool = ctx.tool})
+    ctx.emit("Use", {on = false})
+    Util.StopAnim(ctx.animator, self.preset.use, 0.1)
+    ctx.setSpeed("Use", nil)
+    Hud.StopChannel()
 end
-function tbl_upv_1.TrapSpot(a1)
+
+function Class.TrapSpot(self)
     --[[
       name: TrapSpot
       line: 105
       upvalues:
-        Util_upv_1 (copy, index: 1)
+        Util (copy, index: 1)
     ]]
-    local root_1 = a1.ctx.root
-    local v5 = a1.tuning.placeRange or 7
-    local v6 = Util_upv_1.AimPoint(60)
-    local v7 = Vector3.new(v6.X - root_1.Position.X, 0, v6.Z - root_1.Position.Z)
-    local v8 = ((v5 < v7.Magnitude) and (v7.Unit * v5)) or (((v7.Magnitude < 2.5) and (Vector3.new(root_1.CFrame.LookVector.X, 0, root_1.CFrame.LookVector.Z).Unit * 3.5)) or v7)
-    local v9 = workspace:Raycast((root_1.Position + v8) + Vector3.new(0, 3, 0), Vector3.new(0, -12, 0), Util_upv_1.WorldParams(Util_upv_1.Targets()))
-    if v9 and not (v9.Normal.Y < (((a1.tuning.wall) and 0.75) or 0.6)) then
-        if workspace:Raycast(root_1.Position, (v9.Position + Vector3.new(0, 0.5, 0)) - root_1.Position, Util_upv_1.WorldParams(Util_upv_1.Targets())) then
+    local root = self.ctx.root
+    local placeRange = self.tuning.placeRange or 7
+    local v23 = Util.AimPoint(60)
+    local v24 = Vector3.new(v23.X - root.Position.X, 0, v23.Z - root.Position.Z)
+
+    if placeRange < v24.Magnitude then
+        v24 = v24.Unit * placeRange
+    elseif v24.Magnitude < 2.5 then
+        v24 = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z).Unit * 3.5
+    end
+
+    local raycastResult = workspace:Raycast((root.Position + v24) + Vector3.new(0, 3, 0), Vector3.new(0, -12, 0), Util.WorldParams(Util.Targets()))
+
+    if raycastResult and not (raycastResult.Normal.Y < ((self.tuning.wall and 0.75) or 0.6)) then
+        if workspace:Raycast(root.Position, (raycastResult.Position + Vector3.new(0, 0.5, 0)) - root.Position, Util.WorldParams(Util.Targets())) then
             return nil
         end
-        return v9.Position
+
+        return raycastResult.Position
     end
+
     return nil
 end
-function tbl_upv_1.Activate(a1)
+
+function Class.Activate(self)
     --[[
       name: Activate
       line: 127
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Hud_upv_1 (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
+        Util (copy, index: 1)
+        Hud (copy, index: 2)
+        denyText (copy, index: 3)
     ]]
-    local ctx_upv_3 = a1.ctx
-    local v10 = os.clock()
-    if (a1.using) or (v10 - a1.lastUse < (a1.tuning.useTime or 0.5) + 0.1) or not Util_upv_1.CanAct() then
+    local ctx = self.ctx
+    local timestamp = os.clock()
+
+    if self.using or timestamp - self.lastUse < (self.tuning.useTime or 0.5) + 0.1 or not Util.CanAct() then
         return
     end
-    if a1.charges < 1 then
-        Util_upv_1.Sound("Denied", ctx_upv_3.root)
-        Hud_upv_1.Toast(tbl_upv_2.NoCharges, Color3.fromRGB(255, 120, 90))
-    else
-        if a1.kind ~= "Herbs" and a1.kind ~= "Horn" then
-            if a1.kind == "Trap" then
-                local v11 = a1:TrapSpot()
-                if v11 then
-                    a1.lastUse = v10
-                    local u1 = Util_upv_1.PlayAnim(ctx_upv_3.animator, a1.preset.use, 1.6, 0.05)
-                    Util_upv_1.Sound(a1.preset.useSound or "Trap_Set", v11)
-                    ctx_upv_3.send("Use", {on = true, tool = ctx_upv_3.tool, position = v11})
-                    ctx_upv_3.emit("Place", nil)
-                    local v12, v13 = nil, nil
-                    if Util_upv_1.InFirstPerson() then
-                        local char_1 = ctx_upv_3.char
-                        local u2 = char_1 and (char_1:GetAttribute("CombatantId"))
-                        if type(u2) ~= "string" or u2 == "" then
-                            local UserId_1 = game:GetService("Players").LocalPlayer.UserId
-                            u2 = "p" .. UserId_1
-                        end
-                        local u3 = v10 + 0.22
-                        local tbl_upv_3 = {}
-                        local function watch(a2)
-                            --[[
-                              name: watch
-                              line: 199
-                              upvalues:
-                                tbl_upv_3 (copy, index: 1)
-                            ]]
-                            if not a2 then
-                                return
-                            end
-                            table.insert(tbl_upv_3, a2.DescendantAdded:Connect(function() end))
-                        end
-                        v12 = workspace:FindFirstChild("FX")
-                        if v12 then
-                            table.insert(tbl_upv_3, v12.DescendantAdded:Connect(function() end))
-                        end
-                        v13 = workspace:FindFirstChild("Walls")
-                        if v13 then
-                            table.insert(
-                                tbl_upv_3,
-                                v13.DescendantAdded:Connect(
-                                    function(a3)
-                                        --[[
-                                          line: 204
-                                          upvalues:
-                                            u2 (ref,  index: 1)
-                                            u3 (copy, index: 2)
-                                            tbl_upv_3 (copy, index: 3)
-                                        ]]
-                                        if not a3:IsA("Model") or a3:GetAttribute("OwnerId") ~= u2 or u3 <= os.clock() then
-                                            return
-                                        end
-                                        local function hide(a4)
-                                            --[[
-                                              name: hide
-                                              line: 208
-                                              upvalues:
-                                                u3 (copy, index: 1)
-                                            ]]
-                                            if not a4:IsA("BasePart") then
-                                                return
-                                            end
-                                            a4.LocalTransparencyModifier = 1
-                                            task.delay(
-                                                math.max(0, u3 - os.clock()),
-                                                function()
-                                                    --[[
-                                                      line: 211
-                                                      upvalues:
-                                                        a4 (copy, index: 1)
-                                                    ]]
-                                                    a4.LocalTransparencyModifier = 0
-                                                end
-                                            )
-                                        end
-                                        for _, value_2 in a3:GetDescendants() do
-                                            hide(value_2)
-                                        end
-                                        table.insert(tbl_upv_3, a3.DescendantAdded:Connect(hide))
-                                    end
-                                )
-                            )
-                        end
-                        task.delay(
-                            0.6,
-                            function()
+
+    if self.charges < 1 then
+        Util.Sound("Denied", ctx.root)
+        Hud.Toast(denyText.NoCharges, Color3.fromRGB(255, 120, 90))
+
+        return
+    end
+
+    if self.kind ~= "Herbs" and self.kind ~= "Horn" then
+        if self.kind == "Trap" then
+            local position = self:TrapSpot()
+            if not position then
+                Util.Sound("Denied", ctx.root)
+                local toast = Hud.Toast
+                local v31 = if self.tuning.wall then denyText.BadWallSpot else denyText.BadSpot
+                toast(v31, Color3.fromRGB(255, 120, 90))
+
+                return
+            end
+
+            self.lastUse = timestamp
+            local v32 = Util.PlayAnim(ctx.animator, self.preset.use, 1.6, 0.05)
+            Util.Sound((self.preset.useSound or "Trap_Set"), position)
+            ctx.send("Use", {on = true, tool = ctx.tool, position = position})
+            ctx.emit("Place", nil)
+
+            if Util.InFirstPerson() then
+                local v33
+                local char = ctx.char
+                local combatantId = char and char:GetAttribute("CombatantId")
+
+                if type(combatantId) ~= "string" or combatantId == "" then
+                    v33 = "p" .. game:GetService("Players").LocalPlayer.UserId
+                else
+                    v33 = combatantId
+                end
+
+                local v36 = timestamp + 0.22
+                local v37 = {}
+
+                local function watch(a39)
+                    --[[
+                      name: watch
+                      line: 199
+                      upvalues:
+                        v37 (copy, index: 1)
+                        v33 (ref,  index: 2)
+                        v36 (copy, index: 3)
+                    ]]
+                    if not a39 then
+                        return
+                    end
+
+                    table.insert(
+                        v37,
+                        a39.DescendantAdded:Connect(
+                            function(a40)
                                 --[[
-                                  line: 224
+                                  line: 204
                                   upvalues:
-                                    tbl_upv_3 (copy, index: 1)
+                                    v33 (ref,  index: 1)
+                                    v36 (copy, index: 2)
+                                    v37 (copy, index: 3)
                                 ]]
-                                for _, value_3 in tbl_upv_3 do
-                                    value_3:Disconnect()
+                                if not a40:IsA("Model") or a40:GetAttribute("OwnerId") ~= v33 or v36 <= os.clock() then
+                                    return
                                 end
+
+                                local function hide(a42)
+                                    --[[
+                                      name: hide
+                                      line: 208
+                                      upvalues:
+                                        v36 (copy, index: 1)
+                                    ]]
+                                    if a42:IsA("BasePart") then
+                                        a42.LocalTransparencyModifier = 1
+                                        task.delay(
+                                            math.max(0, v36 - os.clock()),
+                                            function()
+                                                --[[
+                                                  line: 211
+                                                  upvalues:
+                                                    a42 (copy, index: 1)
+                                                ]]
+                                                a42.LocalTransparencyModifier = 0
+                                            end
+                                        )
+                                    end
+                                end
+
+                                for _, descendant in a40:GetDescendants() do
+                                    hide(descendant)
+                                end
+
+                                table.insert(v37, a40.DescendantAdded:Connect(hide))
                             end
                         )
-                        if a1.tuning.wall then
-                            task.delay(0.2, Util_upv_1.Recoil, -5.5, 0)
-                        end
-                    end
-                    task.delay(
-                        0.45,
-                        function()
-                            --[[
-                              line: 234
-                              upvalues:
-                                u1 (copy, index: 1)
-                            ]]
-                            if not u1 then
-                                return
-                            end
-                            u1:Stop(0.15)
-                        end
                     )
-                else
-                    Util_upv_1.Sound("Denied", ctx_upv_3.root)
-                    local Toast_1 = Hud_upv_1.Toast
-                    local v14
-                    if a1.tuning.wall then
-                        v14 = tbl_upv_2.BadWallSpot
-                    else
-                        v14 = tbl_upv_2.BadSpot
-                    end
-                    Toast_1(v14, Color3.fromRGB(255, 120, 90))
-                    return
                 end
-            end
-            return
-        end
-        local u4 = a1.kind == "Horn"
-        local hum_1 = ctx_upv_3.hum
-        if not (u4) and hum_1.MaxHealth - 0.5 <= hum_1.Health then
-            Util_upv_1.Sound("Denied", ctx_upv_3.root)
-            Hud_upv_1.Toast(tbl_upv_2.FullHealth, Color3.fromRGB(255, 120, 90))
-            return
-        end
-        a1.lastUse = v10
-        a1.using = true
-        a1.token = a1.token + 1
-        local token_upv_1 = a1.token
-        local v15 = a1.tuning.useTime or 0.6
-        ctx_upv_3.send("Use", {on = true, tool = ctx_upv_3.tool})
-        ctx_upv_3.emit("Use", {on = true, time = v15})
-        Util_upv_1.PlayAnim(ctx_upv_3.animator, a1.preset.use, 1, 0.1)
-        Util_upv_1.Sound(a1.preset.useSound or "Bandage_Wrap", ctx_upv_3.root)
-        local v16 = a1.tuning.useSpeedMult or 0.6
-        local v17 = Util_upv_1.ProbeValues()
-        local v18 = ctx_upv_3.setSpeed("Use", v16)
-        if v18 ~= (v17 and (v17.k * (v16 or 1))) then
-            Util_upv_1.Hooked()
-        end
-        Hud_upv_1.StartChannel(a1.preset.label or "USING", v15, a1.preset.color)
-        task.delay(
-            v15,
-            function()
-                --[[
-                  line: 160
-                  upvalues:
-                    a1 (copy, index: 1)
-                    token_upv_1 (copy, index: 2)
-                    ctx_upv_3 (copy, index: 3)
-                    Util_upv_1 (copy, index: 4)
-                    Hud_upv_1 (copy, index: 5)
-                    u4 (copy, index: 6)
-                ]]
-                if a1.token ~= token_upv_1 or not a1.using then
-                    return
+
+                if const fx = workspace:FindFirstChild("FX") then
+                    table.insert(
+                        v37,
+                        fx.DescendantAdded:Connect(
+                            function(descendant: Instance)
+                                --[[
+                                  line: 204
+                                  upvalues:
+                                    v33 (ref,  index: 1)
+                                    v36 (copy, index: 2)
+                                    v37 (copy, index: 3)
+                                ]]
+                                if not descendant:IsA("Model")
+                                    or descendant:GetAttribute("OwnerId") ~= v33
+                                    or v36 <= os.clock()
+                                then
+                                    return
+                                end
+
+                                local function hide(descendant: Instance)
+                                    --[[
+                                      name: hide
+                                      line: 208
+                                      upvalues:
+                                        v36 (copy, index: 1)
+                                    ]]
+                                    if descendant:IsA("BasePart") then
+                                        descendant.LocalTransparencyModifier = 1
+                                        task.delay(
+                                            math.max(0, v36 - os.clock()),
+                                            function()
+                                                --[[
+                                                  line: 211
+                                                  upvalues:
+                                                    descendant (copy, index: 1)
+                                                ]]
+                                                descendant.LocalTransparencyModifier = 0
+                                            end
+                                        )
+                                    end
+                                end
+
+                                for _, descendant2 in descendant:GetDescendants() do
+                                    hide(descendant2)
+                                end
+
+                                table.insert(v37, descendant.DescendantAdded:Connect(hide))
+                            end
+                        )
+                    )
                 end
-                a1.using = false
-                ctx_upv_3.emit("Use", {on = false, done = true})
-                Util_upv_1.StopAnim(ctx_upv_3.animator, a1.preset.use, 0.15)
-                ctx_upv_3.setSpeed("Use", nil)
-                Hud_upv_1.StopChannel()
-                if u4 then
-                    return
+
+                if const walls = workspace:FindFirstChild("Walls") then
+                    table.insert(
+                        v37,
+                        walls.DescendantAdded:Connect(
+                            function(descendant: Instance)
+                                --[[
+                                  line: 204
+                                  upvalues:
+                                    v33 (ref,  index: 1)
+                                    v36 (copy, index: 2)
+                                    v37 (copy, index: 3)
+                                ]]
+                                if not descendant:IsA("Model")
+                                    or descendant:GetAttribute("OwnerId") ~= v33
+                                    or v36 <= os.clock()
+                                then
+                                    return
+                                end
+
+                                local function hide(descendant: Instance)
+                                    --[[
+                                      name: hide
+                                      line: 208
+                                      upvalues:
+                                        v36 (copy, index: 1)
+                                    ]]
+                                    if descendant:IsA("BasePart") then
+                                        descendant.LocalTransparencyModifier = 1
+                                        task.delay(
+                                            math.max(0, v36 - os.clock()),
+                                            function()
+                                                --[[
+                                                  line: 211
+                                                  upvalues:
+                                                    descendant (copy, index: 1)
+                                                ]]
+                                                descendant.LocalTransparencyModifier = 0
+                                            end
+                                        )
+                                    end
+                                end
+
+                                for _, descendant2 in descendant:GetDescendants() do
+                                    hide(descendant2)
+                                end
+
+                                table.insert(v37, descendant.DescendantAdded:Connect(hide))
+                            end
+                        )
+                    )
                 end
-                Hud_upv_1.Flash(Color3.fromRGB(110, 220, 110), 0.35, 0.4)
+
                 task.delay(
-                    a1.tuning.healTime or 3,
+                    0.6,
                     function()
                         --[[
-                          line: 173
+                          line: 224
                           upvalues:
-                            ctx_upv_3 (copy, index: 1)
-                            Util_upv_1 (copy, index: 2)
-                            a1 (copy, index: 3)
+                            v37 (copy, index: 1)
                         ]]
-                        if not ctx_upv_3.alive() then
-                            return
+                        for _, v58 in v37 do
+                            v58:Disconnect()
                         end
-                        Util_upv_1.Sound(a1.preset.doneSound or "Heal_Done", ctx_upv_3.root)
                     end
                 )
+
+                if self.tuning.wall then
+                    task.delay(0.2, Util.Recoil, -5.5, 0)
+                end
             end
-        )
+
+            task.delay(
+                0.45,
+                function()
+                    --[[
+                      line: 234
+                      upvalues:
+                        v32 (copy, index: 1)
+                    ]]
+                    if v32 then
+                        v32:Stop(0.15)
+                    end
+                end
+            )
+        end
+
+        return
     end
+
+    local v59 = self.kind == "Horn"
+    local hum = ctx.hum
+
+    if not v59 then
+        local health = hum.Health
+
+        if hum.MaxHealth - 0.5 <= health then
+            Util.Sound("Denied", ctx.root)
+            Hud.Toast(denyText.FullHealth, Color3.fromRGB(255, 120, 90))
+
+            return
+        end
+    end
+
+    self.lastUse = timestamp
+    self.using = true
+    self.token += 1
+    local token = self.token
+    local useTime = self.tuning.useTime or 0.6
+    ctx.send("Use", {on = true, tool = ctx.tool})
+    ctx.emit("Use", {on = true, time = useTime})
+    Util.PlayAnim(ctx.animator, self.preset.use, 1, 0.1)
+    Util.Sound((self.preset.useSound or "Bandage_Wrap"), ctx.root)
+    local useSpeedMult = self.tuning.useSpeedMult or 0.6
+    local v65 = Util.ProbeValues()
+    local v66 = ctx.setSpeed("Use", useSpeedMult)
+    local v67 = v65 and v65.k * (useSpeedMult or 1)
+
+    if v66 ~= v67 then
+        Util.Hooked()
+    end
+
+    Hud.StartChannel((self.preset.label or "USING"), useTime, self.preset.color)
+
+    task.delay(
+        useTime,
+        function()
+            --[[
+              line: 160
+              upvalues:
+                self (copy, index: 1)
+                token (copy, index: 2)
+                ctx (copy, index: 3)
+                Util (copy, index: 4)
+                Hud (copy, index: 5)
+                v59 (copy, index: 6)
+            ]]
+            if self.token ~= token or not self.using then
+                return
+            end
+
+            self.using = false
+            ctx.emit("Use", {on = false, done = true})
+            Util.StopAnim(ctx.animator, self.preset.use, 0.15)
+            ctx.setSpeed("Use", nil)
+            Hud.StopChannel()
+
+            if v59 then
+                return
+            end
+
+            Hud.Flash(Color3.fromRGB(110, 220, 110), 0.35, 0.4)
+
+            task.delay(
+                (self.tuning.healTime or 3),
+                function()
+                    --[[
+                      line: 173
+                      upvalues:
+                        ctx (copy, index: 1)
+                        Util (copy, index: 2)
+                        self (copy, index: 3)
+                    ]]
+                    if ctx.alive() then
+                        Util.Sound((self.preset.doneSound or "Heal_Done"), ctx.root)
+                    end
+                end
+            )
+        end
+    )
 end
-function tbl_upv_1.Input(a1, a2, a3)
+
+function Class.Input(self, a69, a70)
     --[[
       name: Input
       line: 242
     ]]
-    if a2 ~= "Primary" or not a3 then
-        return
+    if a69 == "Primary" and a70 then
+        self:Activate()
     end
-    a1:Activate()
 end
-function tbl_upv_1.Update(a1, a2)
+
+function Class.Update(self, a72)
     --[[
       name: Update
       line: 248
     ]]
-    local ghost_1 = a1.ghost
-    if ghost_1 then
-        local v19
-        if a1.charges >= 1 then
-            v19 = a1:TrapSpot()
-        else
-            v19 = nil
-        end
-        local wall_2 = a1.tuning.wall
-        if v19 then
-            local v20 = nil
-            if type(wall_2) == "table" then
-                local root_2 = a1.ctx.root
-                v20 = Vector3.new(v19.X - root_2.Position.X, 0, v19.Z - root_2.Position.Z)
-                local v21
-                if v20.Magnitude > 0.1 then
-                    v21 = v20.Unit
-                else
-                    v21 = Vector3.new(root_2.CFrame.LookVector.X, 0, root_2.CFrame.LookVector.Z).Unit
-                end
-                ghost_1.CFrame = CFrame.lookAt(v19, v19 + v21) * CFrame.new(0, (wall_2.height or 5) / 2, 0)
-                ghost_1.Color = Color3.fromRGB(214, 180, 130)
-                ghost_1.Transparency = 0.7
-                return
+    if const ghost = self.ghost then
+        local v74 = if 1 <= self.charges then self:TrapSpot() else nil
+        local wall = self.tuning.wall
+
+        if v74 and type(wall) == "table" then
+            local unit
+            local root = self.ctx.root
+            local vector3 = Vector3.new(v74.X - root.Position.X, 0, v74.Z - root.Position.Z)
+
+            if not (0.1 < vector3.Magnitude) then
+                unit = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z).Unit
+            else
+                unit = vector3.Unit
             end
+
+            ghost.CFrame = CFrame.lookAt(v74, v74 + unit) * CFrame.new(0, (wall.height or 5) / 2, 0)
+            ghost.Color = Color3.fromRGB(214, 180, 130)
+            ghost.Transparency = 0.7
+
+            return
         end
-        if v19 then
-            ghost_1.CFrame = CFrame.new(v19 + Vector3.new(0, 0.05999999865889549, 0)) * CFrame.Angles(0, 0, 1.5707963267948966)
-            ghost_1.Color = Color3.fromRGB(228, 232, 240)
-            ghost_1.Transparency = 0.55
-        else
-            ghost_1.Transparency = 1
+
+        if v74 then
+            ghost.CFrame = CFrame.new(v74 + Vector3.new(0, 0.05999999865889549, 0)) * CFrame.Angles(0, 0, 1.5707963267948966)
+            ghost.Color = Color3.fromRGB(228, 232, 240)
+            ghost.Transparency = 0.55
+
+            return
         end
+
+        ghost.Transparency = 1
     end
 end
-function tbl_upv_1.OnDenied(a1, a2)
+
+function Class.OnDenied(self, key)
     --[[
       name: OnDenied
       line: 272
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Hud_upv_1 (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
+        Util (copy, index: 1)
+        Hud (copy, index: 2)
+        denyText (copy, index: 3)
     ]]
-    if a1.using then
-        a1.using = false
-        a1.token = a1.token + 1
-        a1.ctx.emit("Use", {on = false})
-        Util_upv_1.StopAnim(a1.ctx.animator, a1.preset.use, 0.1)
-        a1.ctx.setSpeed("Use", nil)
-        Hud_upv_1.StopChannel()
+    if self.using then
+        self.using = false
+        self.token += 1
+        self.ctx.emit("Use", {on = false})
+        Util.StopAnim(self.ctx.animator, self.preset.use, 0.1)
+        self.ctx.setSpeed("Use", nil)
+        Hud.StopChannel()
     end
-    local v22
-    if a2 == "BadSpot" and (a1.tuning.wall) then
-        v22 = tbl_upv_2.BadWallSpot
-    else
-        v22 = tbl_upv_2[a2]
+
+    if const v81 = if key == "BadSpot" and self.tuning.wall then denyText.BadWallSpot else denyText[key] then
+        Hud.Toast(v81, Color3.fromRGB(255, 120, 90))
     end
-    if v22 then
-        Hud_upv_1.Toast(v22, Color3.fromRGB(255, 120, 90))
-    end
-    a1:Sync()
+
+    self:Sync()
 end
-function tbl_upv_1.Interrupt(a1)
+
+function Class.Interrupt(self)
     --[[
       name: Interrupt
       line: 288
     ]]
-    if not a1.using then
-        return
+    if self.using then
+        self:Cancel()
     end
-    a1:Cancel()
 end
-return tbl_upv_1
+
+return Class

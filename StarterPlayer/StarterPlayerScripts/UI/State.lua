@@ -1,1086 +1,1236 @@
-local Players_1 = game:GetService("Players")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local Workspace_upv_1 = game:GetService("Workspace")
-local Signal_1 = require(ReplicatedStorage_upv_1:WaitForChild("Shared"):WaitForChild("Signal"))
-local Remotes_upv_1 = require(script.Parent.Remotes)
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local tbl_upv_1 = {}
-tbl_upv_1.ProfileChanged = Signal_1.new()
-tbl_upv_1.MatchChanged = Signal_1.new()
-tbl_upv_1.MatchEvent = Signal_1.new()
-tbl_upv_1.PlayerStateChanged = Signal_1.new()
-tbl_upv_1.WatchChanged = Signal_1.new()
-tbl_upv_1.AttrChanged = Signal_1.new()
-tbl_upv_1.LeaderboardsChanged = Signal_1.new()
-tbl_upv_1.Notify = Signal_1.new()
-local tbl_upv_2 = {armor = "hide_armor"}
-tbl_upv_2.items = {"bronze_sword", "short_bow", "bandage"}
-tbl_upv_2.ammo = {arrows = 3}
-tbl_upv_1.STARTER_LOADOUT = tbl_upv_2
-local function cloneLoadout(a1)
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local workspace = game:GetService("Workspace")
+local Signal = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Signal"))
+local Remotes = require(script.Parent.Remotes)
+local localPlayer = players.LocalPlayer
+local v7 = {ProfileChanged = Signal.new(), MatchChanged = Signal.new(), MatchEvent = Signal.new(), PlayerStateChanged = Signal.new(), WatchChanged = Signal.new(), AttrChanged = Signal.new(), LeaderboardsChanged = Signal.new(), Notify = Signal.new()}
+local starterLoadout = {armor = "hide_armor", items = {"bronze_sword", "short_bow", "bandage"}, ammo = {arrows = 3}}
+v7.STARTER_LOADOUT = starterLoadout
+
+local function cloneLoadout(a10)
     --[[
       name: cloneLoadout
       line: 29
     ]]
-    local tbl_3 = {}
-    tbl_3.items = table.clone(a1.items)
-    tbl_3.armor = a1.armor
-    return tbl_3
+    return {items = table.clone(a10.items), armor = a10.armor}
 end
+
 local function defaultProfile()
     --[[
       name: defaultProfile
       line: 33
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        starterLoadout (copy, index: 1)
     ]]
-    local tbl_4 = {level = 1, xp = 0, xpToNext = 100}
-    tbl_4.owned = {}
-    tbl_4.loadout = {items = table.clone(tbl_upv_2.items), armor = tbl_upv_2.armor}
-    tbl_4.stats = {streak = 0, kills = 0, wins = 0, bestStreak = 0, deaths = 0, matches = 0, losses = 0, roundsWon = 0}
-    return tbl_4
+    local v12 = {level = 1, xp = 0, xpToNext = 100, owned = {}}
+    v12.loadout = {items = table.clone(starterLoadout.items), armor = starterLoadout.armor}
+    v12.stats = {matches = 0, wins = 0, losses = 0, kills = 0, deaths = 0, streak = 0, bestStreak = 0, roundsWon = 0}
+    return v12
 end
-tbl_upv_1.Profile = defaultProfile()
-tbl_upv_1.HasProfile = false
-tbl_upv_1.Match = nil
-tbl_upv_1.Leaderboards = nil
-tbl_upv_1.Mock = nil
-tbl_upv_1.DEFAULT_ROUNDS_TO_WIN = 3
-tbl_upv_1.DEFAULT_ROUND_TIME = 60
-local Config_1 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Config")
-if Config_1 then
-    local v1, v2 = nil, nil
-    if Config_1:IsA("ModuleScript") then
-        v1, v2 = pcall(require, Config_1)
-        if v1 and type(v2) == "table" and type(v2.ROUNDS_TO_WIN) == "number" then
-            tbl_upv_1.DEFAULT_ROUNDS_TO_WIN = v2.ROUNDS_TO_WIN
-        end
-        if v1 and type(v2) == "table" and type(v2.ROUND_TIME) == "number" then
-            tbl_upv_1.DEFAULT_ROUND_TIME = v2.ROUND_TIME
-        end
+
+v7.Profile = defaultProfile()
+v7.HasProfile = false
+v7.Match = nil
+v7.Leaderboards = nil
+v7.Mock = nil
+v7.DEFAULT_ROUNDS_TO_WIN = 3
+v7.DEFAULT_ROUND_TIME = 60
+local config = replicatedStorage.Shared:FindFirstChild("Config")
+
+if config and config:IsA("ModuleScript") then
+    local success, result = pcall(require, config)
+
+    if success and type(result) == "table" and type(result.ROUNDS_TO_WIN) == "number" then
+        v7.DEFAULT_ROUNDS_TO_WIN = result.ROUNDS_TO_WIN
+    end
+
+    if success and type(result) == "table" and type(result.ROUND_TIME) == "number" then
+        v7.DEFAULT_ROUND_TIME = result.ROUND_TIME
     end
 end
-local u1 = nil
-function tbl_upv_1.RoundTime()
+
+local flooredValue = nil
+
+function v7.RoundTime()
     --[[
       name: RoundTime
       line: 69
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
+        v7 (copy, index: 1)
+        flooredValue (ref,  index: 2)
     ]]
-    local Match_1 = tbl_upv_1.Match
-    if Match_1 and type(Match_1.roundTime) == "number" then
-        return Match_1.roundTime
+    local match = v7.Match
+
+    if match and type(match.roundTime) == "number" then
+        return match.roundTime
     end
-    local v3 = u1 or (tbl_upv_1.DEFAULT_ROUND_TIME)
-    return v3
+
+    return flooredValue or v7.DEFAULT_ROUND_TIME
 end
-local u2 = nil
-tbl_upv_1.MatchChanged:Connect(
-    function(a1)
+
+local phase = nil
+
+v7.MatchChanged:Connect(
+    function(a19)
         --[[
           line: 78
           upvalues:
-            u2 (ref,  index: 1)
-            tbl_upv_1 (copy, index: 2)
-            u1 (ref,  index: 3)
+            phase (ref,  index: 1)
+            v7 (copy, index: 2)
+            flooredValue (ref,  index: 3)
         ]]
-        if (a1 and (a1.phase)) == "Live" and u2 ~= "Live" and type(a1.phaseEndsAt) == "number" then
-            local v4 = math.floor((a1.phaseEndsAt - tbl_upv_1.Now()) + 0.5)
-            if v4 >= 10 and v4 <= 900 then
-                u1 = v4
+        local phase2 = a19 and a19.phase
+
+        if phase2 == "Live" and phase ~= "Live" and type(a19.phaseEndsAt) == "number" then
+            local flooredValue2 = math.floor((a19.phaseEndsAt - v7.Now()) + 0.5)
+
+            if 10 <= flooredValue2 and flooredValue2 <= 900 then
+                flooredValue = flooredValue2
             end
         end
-        u2 = a1
+
+        phase = phase2
     end
 )
-function tbl_upv_1.RoundsToWin()
+
+function v7.RoundsToWin()
     --[[
       name: RoundsToWin
       line: 89
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local Match_2 = tbl_upv_1.Match
-    if Match_2 and type(Match_2.roundsToWin) == "number" then
-        return Match_2.roundsToWin
+    local match = v7.Match
+
+    if match and type(match.roundsToWin) == "number" then
+        return match.roundsToWin
     end
-    return tbl_upv_1.DEFAULT_ROUNDS_TO_WIN
+
+    return v7.DEFAULT_ROUNDS_TO_WIN
 end
-function tbl_upv_1.Now()
+
+function v7.Now()
     --[[
       name: Now
       line: 95
       upvalues:
-        Workspace_upv_1 (copy, index: 1)
+        workspace (copy, index: 1)
     ]]
-    return Workspace_upv_1:GetServerTimeNow()
+    return workspace:GetServerTimeNow()
 end
-local tbl_upv_5 = {}
-local tbl_6 = {"State", "MatchId", "Team", "Alive", "Frozen", "Level", "XP", "Streak", "CombatMode", "Trophies", "RankBest", "Queued", "QueuedAt", "QueueFound", "QueueFilled", "Duel", "QueueMode", "Spectating"}
-function tbl_upv_1.Get(a1)
+
+local v23 = {}
+local attributeNames = {"State", "MatchId", "Team", "Alive", "Frozen", "Level", "XP", "Streak", "CombatMode", "Trophies", "RankBest", "Queued", "QueuedAt", "QueueFound", "QueueFilled", "Duel", "QueueMode", "Spectating"}
+
+function v7.Get(attributeName: string)
     --[[
       name: Get
       line: 114
       upvalues:
-        tbl_upv_5 (copy, index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
+        v23 (copy, index: 1)
+        localPlayer (copy, index: 2)
     ]]
-    local v5 = tbl_upv_5[a1]
-    if v5 == nil then
-        return LocalPlayer_upv_1:GetAttribute(a1)
+    local v26 = v23[attributeName]
+    if v26 ~= nil then
+        return v26
     end
-    return v5
+
+    return localPlayer:GetAttribute(attributeName)
 end
-function tbl_upv_1.SetMockAttr(a1, a2)
+
+function v7.SetMockAttr(key, value)
     --[[
       name: SetMockAttr
       line: 122
       upvalues:
-        tbl_upv_5 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v23 (copy, index: 1)
+        v7 (copy, index: 2)
     ]]
-    tbl_upv_5[a1] = a2
-    tbl_upv_1.AttrChanged:Fire(a1, tbl_upv_1.Get(a1))
-    if a1 == "Spectating" then
-        tbl_upv_1.WatchChanged:Fire(tbl_upv_1.Watching())
+    v23[key] = value
+    v7.AttrChanged:Fire(key, v7.Get(key))
+
+    if key == "Spectating" then
+        v7.WatchChanged:Fire(v7.Watching())
     end
-    if a1 ~= "State" then
-        return
+
+    if key == "State" then
+        v7.PlayerStateChanged:Fire(v7.GetPlayerState())
     end
-    tbl_upv_1.PlayerStateChanged:Fire(tbl_upv_1.GetPlayerState())
 end
-function tbl_upv_1.ClearMockAttrs()
+
+function v7.ClearMockAttrs()
     --[[
       name: ClearMockAttrs
       line: 133
       upvalues:
-        tbl_upv_5 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v23 (copy, index: 1)
+        v7 (copy, index: 2)
     ]]
-    local tbl_7 = {}
-    for key_1 in tbl_upv_5 do
-        table.insert(tbl_7, key_1)
+    local v29 = {}
+
+    for v30 in v23 do
+        table.insert(v29, v30)
     end
-    table.clear(tbl_upv_5)
-    for _, value_1 in tbl_7 do
-        tbl_upv_1.AttrChanged:Fire(value_1, tbl_upv_1.Get(value_1))
+
+    table.clear(v23)
+
+    for _, v32 in v29 do
+        v7.AttrChanged:Fire(v32, v7.Get(v32))
     end
-    tbl_upv_1.PlayerStateChanged:Fire(tbl_upv_1.GetPlayerState())
+
+    v7.PlayerStateChanged:Fire(v7.GetPlayerState())
 end
-for _, value_upv_2 in tbl_6 do
-    LocalPlayer_upv_1:GetAttributeChangedSignal(value_upv_2):Connect(
+
+for _, attributeName in attributeNames do
+    local attributeName2 = attributeName
+
+    localPlayer:GetAttributeChangedSignal(attributeName2):Connect(
         function()
             --[[
               line: 146
               upvalues:
-                tbl_upv_5 (copy, index: 1)
-                value_upv_2 (copy, index: 2)
-                tbl_upv_1 (copy, index: 3)
-                LocalPlayer_upv_1 (copy, index: 4)
+                v23 (copy, index: 1)
+                attributeName (copy, index: 2)
+                v7 (copy, index: 3)
+                localPlayer (copy, index: 4)
             ]]
-            if tbl_upv_5[value_upv_2] ~= nil then
+            if v23[attributeName] ~= nil then
                 return
             end
-            tbl_upv_1.AttrChanged:Fire(value_upv_2, LocalPlayer_upv_1:GetAttribute(value_upv_2))
-            if value_upv_2 == "Spectating" then
-                tbl_upv_1.WatchChanged:Fire(tbl_upv_1.Watching())
+
+            v7.AttrChanged:Fire(attributeName, localPlayer:GetAttribute(attributeName))
+
+            if attributeName == "Spectating" then
+                v7.WatchChanged:Fire(v7.Watching())
             end
-            if value_upv_2 == "State" then
-                tbl_upv_1.PlayerStateChanged:Fire(tbl_upv_1.GetPlayerState())
+
+            if attributeName == "State" then
+                v7.PlayerStateChanged:Fire(v7.GetPlayerState())
             end
         end
     )
 end
-function tbl_upv_1.GetPlayerState()
+
+function v7.GetPlayerState()
     --[[
       name: GetPlayerState
       line: 160
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v6 = tbl_upv_1.Get("State")
-    if type(v6) == "string" and v6 ~= "" then
-        return v6
+    local v36 = v7.Get("State")
+
+    if type(v36) == "string" and v36 ~= "" then
+        return v36
     end
+
     return "Lobby"
 end
-function tbl_upv_1.InMatch()
+
+function v7.InMatch()
     --[[
       name: InMatch
       line: 165
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v7 = tbl_upv_1.GetPlayerState() == "Match"
-    return v7
+    return v7.GetPlayerState() == "Match"
 end
-function tbl_upv_1.Watching()
+
+function v7.Watching()
     --[[
       name: Watching
       line: 171
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v8 = tbl_upv_1.Get("Spectating")
-    local v9 = (type(v8) == "string") and ((v8 ~= "") and (not tbl_upv_1.InMatch()))
-    return v9
+    local v37 = v7.Get("Spectating")
+    return type(v37) == "string" and v37 ~= "" and not v7.InMatch()
 end
-function tbl_upv_1.SeesMatch()
+
+function v7.SeesMatch()
     --[[
       name: SeesMatch
       line: 177
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v10 = tbl_upv_1.InMatch() or (tbl_upv_1.Watching())
-    return v10
+    return v7.InMatch() or v7.Watching()
 end
-function tbl_upv_1.SeenMatchId()
+
+function v7.SeenMatchId()
     --[[
       name: SeenMatchId
       line: 182
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v11
-    if tbl_upv_1.InMatch() then
-        v11 = tbl_upv_1.Get("MatchId")
-    else
-        v11 = tbl_upv_1.Get("Spectating")
-    end
-    if type(v11) ~= "string" then
+    local v38 = if v7.InMatch() then v7.Get("MatchId") else v7.Get("Spectating")
+
+    if type(v38) ~= "string" then
         return ""
     end
-    return v11
+
+    return v38
 end
-function tbl_upv_1.MyId()
+
+function v7.MyId()
     --[[
       name: MyId
       line: 187
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
     ]]
-    return "p" .. tostring(LocalPlayer_upv_1.UserId)
+    return "p" .. tostring(localPlayer.UserId)
 end
-function tbl_upv_1.MyTeam()
+
+function v7.MyTeam()
     --[[
       name: MyTeam
       line: 192
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v12 = tbl_upv_1.Get("Team")
-    if type(v12) == "number" and (v12 == 1 or v12 == 2) then
-        return v12
-    end
-    local Match_3 = tbl_upv_1.Match
-    if not Match_3 or not Match_3.teams then
-        return 1
-    end
-    local v13 = tbl_upv_1.MyId()
-    for n_1 = 1, 2 do
-        local v14 = Match_3.teams[n_1]
-        for _, value_3 in (v14 and (v14.members)) or {} do
-            if value_3.id ~= v13 then
-                continue
-            end
-            return n_1
+    local v39 = v7.Get("Team")
+
+    if type(v39) == "number" then
+        if v39 == 1 then
+            return v39
+        elseif v39 == 2 then
+            return v39
         end
     end
+
+    local match = v7.Match
+
+    if match and match.teams then
+        local v41 = v7.MyId()
+
+        for teamKey = 1, 2 do
+            local team = match.teams[teamKey]
+            local v44 = team and team.members or {}
+
+            for _, v46 in v44 do
+                if v46.id == v41 then
+                    return teamKey
+                end
+            end
+        end
+    end
+
     return 1
 end
-function tbl_upv_1.IsAlive()
+
+function v7.IsAlive()
     --[[
       name: IsAlive
       line: 212
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
+        v7 (copy, index: 1)
+        localPlayer (copy, index: 2)
     ]]
-    local v15 = nil
-    if tbl_upv_1.InMatch() then
-        v15 = tbl_upv_1.Get("Alive")
-        if v15 ~= nil then
-            return v15 == true
+    if v7.InMatch() then
+        local v47 = v7.Get("Alive")
+        if v47 ~= nil then
+            return v47 == true
         end
     end
-    local Character_1 = LocalPlayer_upv_1.Character
-    local v16 = Character_1 and (Character_1:FindFirstChildOfClass("Humanoid"))
-    local v17 = false
-    if v16 ~= nil then
-        v17 = v16.Health > 0
-    end
-    return v17
+
+    local character = localPlayer.Character
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+    return humanoid ~= nil and 0 < humanoid.Health
 end
-local function num(a1, a2)
+
+local function num(a51, a52)
     --[[
       name: num
       line: 226
     ]]
-    if type(a1) ~= "number" then
-        return a2
+    if type(a51) ~= "number" then
+        return a52
     end
-    return a1
+
+    return a51
 end
-function tbl_upv_1.Level()
+
+function v7.Level()
     --[[
       name: Level
       line: 231
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v18 = tbl_upv_1.Get("Level")
-    local level_1 = tbl_upv_1.Profile.level
-    local v19
-    if type(level_1) ~= "number" then
-        v19 = 1
+    local level
+    local v54 = v7.Get("Level")
+    local level2 = v7.Profile.level
+
+    if type(level2) ~= "number" then
+        level = 1
     else
-        v19 = level_1
+        level = level2
     end
-    if type(v18) ~= "number" then
-        return v19
+
+    if type(v54) ~= "number" then
+        return level
     end
-    return v18
+
+    return v54
 end
-function tbl_upv_1.Xp()
+
+function v7.Xp()
     --[[
       name: Xp
       line: 234
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v20 = tbl_upv_1.Get("XP")
-    local xp_1 = tbl_upv_1.Profile.xp
-    local v21
-    if type(xp_1) ~= "number" then
-        v21 = 0
+    local xp
+    local v57 = v7.Get("XP")
+    local xp2 = v7.Profile.xp
+
+    if type(xp2) ~= "number" then
+        xp = 0
     else
-        v21 = xp_1
+        xp = xp2
     end
-    if type(v20) ~= "number" then
-        return v21
+
+    if type(v57) ~= "number" then
+        return xp
     end
-    return v20
+
+    return v57
 end
-local u3 = false
-function tbl_upv_1.XpToNext(a1)
+
+local result = false
+
+function v7.XpToNext(a60)
     --[[
       name: XpToNext
       line: 241
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u3 (ref,  index: 2)
-        ReplicatedStorage_upv_1 (copy, index: 3)
+        v7 (copy, index: 1)
+        result (ref,  index: 2)
+        replicatedStorage (copy, index: 3)
     ]]
-    local v22 = a1 or (tbl_upv_1.Level())
-    if a1 == nil and type(tbl_upv_1.Profile.xpToNext) == "number" and tbl_upv_1.Profile.xpToNext > 0 then
-        return tbl_upv_1.Profile.xpToNext
+    local v61 = a60 or v7.Level()
+
+    if a60 == nil and type(v7.Profile.xpToNext) == "number" and 0 < v7.Profile.xpToNext then
+        return v7.Profile.xpToNext
     end
-    local v23 = nil
-    if u3 == false then
-        u3 = nil
-        v23 = ReplicatedStorage_upv_1.Shared:FindFirstChild("Progression")
-        if v23 and v23:IsA("ModuleScript") then
-            local success_1, v24 = pcall(require, v23)
-            if success_1 and type(v24) == "table" then
-                u3 = v24
+
+    if result == false then
+        result = nil
+        local progression = replicatedStorage.Shared:FindFirstChild("Progression")
+
+        if progression and progression:IsA("ModuleScript") then
+            local success, result2 = pcall(require, progression)
+
+            if success and type(result2) == "table" then
+                result = result2
             end
         end
     end
-    if u3 then
-        local v25 = nil
-        for _, value_4 in {"XpToNext", "XpForLevel", "XPToNext", "XpRequired"} do
-            local v26 = u3[value_4]
-            if type(v26) ~= "function" then
-                continue
+
+    if result then
+        local result3
+
+        for _, v67 in {"XpToNext", "XpForLevel", "XPToNext", "XpRequired"} do
+            local v68 = result[v67]
+
+            if type(v68) == "function" then
+                local success
+                success, result3 = pcall(v68, v61)
+
+                if not success or type(result3) ~= "number" or not (0 < result3) then
+                    continue
+                end
+
+                return result3
             end
-            local success_2, v25 = pcall(v26, v22)
-            if not (success_2) or type(v25) ~= "number" or not (v25 > 0) then
-                continue
-            end
-            return v25
         end
     end
-    return 100 + ((v22 - 1) * 50)
+
+    return 100 + ((v61 - 1) * 50)
 end
-function tbl_upv_1.Owns(a1)
+
+function v7.Owns(key)
     --[[
       name: Owns
       line: 270
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local owned_1 = tbl_upv_1.Profile.owned
-    local v27 = (type(owned_1) == "table") and (owned_1[a1] == true)
-    return v27
+    local owned = v7.Profile.owned
+    return type(owned) == "table" and owned[key] == true
 end
-function tbl_upv_1.LoadoutSlotCount()
+
+function v7.LoadoutSlotCount()
     --[[
       name: LoadoutSlotCount
       line: 278
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local loadouts_1 = tbl_upv_1.Profile.loadouts
-    if type(loadouts_1) == "table" and #loadouts_1 >= 1 then
-        return (math.min(#loadouts_1, 5))
+    local loadouts = v7.Profile.loadouts
+
+    if type(loadouts) == "table" and 1 <= #loadouts then
+        return (math.min(#loadouts, 5))
     end
+
     return 1
 end
-function tbl_upv_1.ActiveLoadout()
+
+function v7.ActiveLoadout()
     --[[
       name: ActiveLoadout
       line: 282
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local activeLoadout_1 = tbl_upv_1.Profile.activeLoadout
-    local v28 = tbl_upv_1.LoadoutSlotCount()
-    if type(activeLoadout_1) == "number" and activeLoadout_1 >= 1 and activeLoadout_1 <= v28 then
-        return (math.floor(activeLoadout_1))
+    local activeLoadout = v7.Profile.activeLoadout
+    local v74 = v7.LoadoutSlotCount()
+
+    if type(activeLoadout) == "number" and 1 <= activeLoadout and activeLoadout <= v74 then
+        return (math.floor(activeLoadout))
     end
+
     return 1
 end
-function tbl_upv_1.HasLoadoutSlots()
+
+function v7.HasLoadoutSlots()
     --[[
       name: HasLoadoutSlots
       line: 287
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v29 = (type(tbl_upv_1.Profile.loadouts) == "table") and (#tbl_upv_1.Profile.loadouts >= 1)
-    return v29
+    return type(v7.Profile.loadouts) == "table" and 1 <= #v7.Profile.loadouts
 end
-function tbl_upv_1.LoadoutName(a1)
+
+function v7.LoadoutName(loadoutNameKey)
     --[[
       name: LoadoutName
       line: 290
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local loadoutNames_1 = tbl_upv_1.Profile.loadoutNames
-    local v30 = (type(loadoutNames_1) == "table") and (loadoutNames_1[a1])
-    if type(v30) == "string" and v30 ~= "" then
-        return v30
+    local loadoutNames = v7.Profile.loadoutNames
+    local loadoutName = type(loadoutNames) == "table" and loadoutNames[loadoutNameKey]
+
+    if type(loadoutName) == "string" and loadoutName ~= "" then
+        return loadoutName
     end
-    return "LOADOUT " .. a1
+
+    return "LOADOUT " .. loadoutNameKey
 end
-function tbl_upv_1.LoadoutCustomName(a1)
+
+function v7.LoadoutCustomName(loadoutNameKey)
     --[[
       name: LoadoutCustomName
       line: 295
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local loadoutNames_2 = tbl_upv_1.Profile.loadoutNames
-    local v31 = (type(loadoutNames_2) == "table") and (loadoutNames_2[a1])
-    if type(v31) ~= "string" then
+    local loadoutNames = v7.Profile.loadoutNames
+    local loadoutName = type(loadoutNames) == "table" and loadoutNames[loadoutNameKey]
+
+    if type(loadoutName) ~= "string" then
         return ""
     end
-    return v31
+
+    return loadoutName
 end
-function tbl_upv_1.LoadoutSlot(a1)
+
+function v7.LoadoutSlot(loadoutKey)
     --[[
       name: LoadoutSlot
       line: 300
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local loadouts_2 = tbl_upv_1.Profile.loadouts
-    if type(loadouts_2) == "table" and type(loadouts_2[a1]) == "table" then
-        return tbl_upv_1.NormalizeLoadout(loadouts_2[a1])
+    local loadouts = v7.Profile.loadouts
+
+    if type(loadouts) == "table" and type(loadouts[loadoutKey]) == "table" then
+        return v7.NormalizeLoadout(loadouts[loadoutKey])
     end
-    return tbl_upv_1.Loadout()
+
+    return v7.Loadout()
 end
-function tbl_upv_1.Loadout()
+
+function v7.Loadout()
     --[[
       name: Loadout
       line: 309
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    return tbl_upv_1.NormalizeLoadout(tbl_upv_1.Profile.loadout)
+    return v7.NormalizeLoadout(v7.Profile.loadout)
 end
-function tbl_upv_1.NormalizeLoadout(a1)
+
+function v7.NormalizeLoadout(a83)
     --[[
       name: NormalizeLoadout
       line: 312
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        starterLoadout (copy, index: 1)
     ]]
-    if type(a1) == "table" then
-        if type(a1.items) ~= "table" then
-            local tbl_8 = {}
-            for _, value_5 in {"primary", "secondary", "melee", "utility"} do
-                if type(a1[value_5]) == "string" then
-                    table.insert(tbl_8, a1[value_5])
-                end
-            end
-            local tbl_9 = {armor = false}
-            tbl_9.items = tbl_8
-            return tbl_9
-        else
-            local tbl_10 = {ammo = 0, armor = 0}
-            tbl_10.items = a1.items
-            local v32
-            if type(a1.armor) ~= "string" or a1.armor == "" then
-                v32 = false
-            else
-                v32 = a1.armor
-            end
-            tbl_10.armor = v32
-            if type(a1.ammo) ~= "table" then
-                v32 = nil
-            else
-                v32 = a1.ammo
-            end
-            tbl_10.ammo = v32
-            return tbl_10
-        end
-    else
-        local tbl_11 = {}
-        tbl_11.items = table.clone(tbl_upv_2.items)
-        tbl_11.armor = tbl_upv_2.armor
-        return tbl_11
+    if type(a83) ~= "table" then
+        return {items = table.clone(starterLoadout.items), armor = starterLoadout.armor}
     end
+
+    if type(a83.items) ~= "table" then
+        local items = {}
+
+        for _, v86 in {"primary", "secondary", "melee", "utility"} do
+            if type(a83[v86]) == "string" then
+                table.insert(items, a83[v86])
+            end
+        end
+
+        return {armor = false, items = items}
+    end
+
+    local armor
+    local ammo
+    local v89 = {items = a83.items}
+
+    if type(a83.armor) ~= "string" or a83.armor == "" then
+        armor = false
+    else
+        armor = a83.armor
+    end
+
+    v89.armor = armor
+
+    if type(a83.ammo) ~= "table" then
+        ammo = nil
+    else
+        ammo = a83.ammo
+    end
+
+    v89.ammo = ammo
+
+    return v89
 end
-function tbl_upv_1.SetProfile(a1, a2)
+
+function v7.SetProfile(a90, a91)
     --[[
       name: SetProfile
       line: 333
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
         defaultProfile (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
+        starterLoadout (copy, index: 3)
     ]]
-    if type(a1) == "table" then
-        local v33
-        if a2 then
-            v33 = tbl_upv_1.Profile
-        else
-            v33 = defaultProfile()
-        end
-        for key_2, value_6 in a1 do
-            v33[key_2] = value_6
-        end
-        if type(v33.owned) ~= "table" then
-            v33.owned = {}
-        end
-        if type(v33.loadout) ~= "table" then
-            local v34 = tbl_upv_2
-            v33.loadout = {items = table.clone(v34.items), armor = v34.armor}
-        end
-        if type(v33.stats) ~= "table" then
-            v33.stats = defaultProfile().stats
-        end
-        tbl_upv_1.Profile = v33
-        tbl_upv_1.HasProfile = true
-        tbl_upv_1.ProfileChanged:Fire(v33)
+    if type(a90) ~= "table" then
+        return
     end
+
+    local v92 = if a91 then v7.Profile else defaultProfile()
+
+    for v93, v94 in a90 do
+        v92[v93] = v94
+    end
+
+    if type(v92.owned) ~= "table" then
+        v92.owned = {}
+    end
+
+    if type(v92.loadout) ~= "table" then
+        local starterLoadout2 = starterLoadout
+        v92.loadout = {items = table.clone(starterLoadout2.items), armor = starterLoadout2.armor}
+    end
+
+    if type(v92.stats) ~= "table" then
+        v92.stats = defaultProfile().stats
+    end
+
+    v7.Profile = v92
+    v7.HasProfile = true
+    v7.ProfileChanged:Fire(v92)
 end
-function tbl_upv_1.Refresh()
+
+function v7.Refresh()
     --[[
       name: Refresh
       line: 355
       upvalues:
-        Remotes_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        Remotes (copy, index: 1)
+        v7 (copy, index: 2)
     ]]
     task.spawn(
         function()
             --[[
               line: 356
               upvalues:
-                Remotes_upv_1 (copy, index: 1)
-                tbl_upv_1 (copy, index: 2)
+                Remotes (copy, index: 1)
+                v7 (copy, index: 2)
             ]]
-            local v35, v36 = Remotes_upv_1.Invoke("GetProfile")
-            if not v35 or type(v36) ~= "table" or (tbl_upv_1.Mock) then
-                return
+            local v96, v97 = Remotes.Invoke("GetProfile")
+
+            if v96 and type(v97) == "table" and not v7.Mock then
+                v7.SetProfile(v97)
             end
-            tbl_upv_1.SetProfile(v36)
         end
     )
 end
-Remotes_upv_1.On(
+
+Remotes.On(
     "ProfileChanged",
-    function(a1)
+    function(a98)
         --[[
           line: 364
           upvalues:
-            tbl_upv_1 (copy, index: 1)
+            v7 (copy, index: 1)
         ]]
-        if type(a1) ~= "table" or (tbl_upv_1.Mock) then
-            return
+        if type(a98) == "table" and not v7.Mock then
+            v7.SetProfile(a98)
         end
-        tbl_upv_1.SetProfile(a1)
     end
 )
-local function normalizeSnapshot(a1)
+
+local function normalizeSnapshot(a100)
     --[[
       name: normalizeSnapshot
       line: 371
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    if type(a1) ~= "table" then
+    if type(a100) ~= "table" then
         return nil
     end
-    a1.teams = type(a1.teams) ~= "table" and {} or a1.teams
-    local v38, v39, v39, v39 = nil, nil, nil, nil
-    for n_2 = 1, 2 do
-        v38 = a1.teams[n_2]
-        if type(v38) ~= "table" then
-            v39 = {members = 0, name = 0, score = 0}
-            v39.name = ((n_2 ~= 1) and "Raven") or "Wolf"
-            v39.members = {}
-            a1.teams[n_2] = v39
-            v38 = v39
-        end
-        if type(v38.members) ~= "table" then
-            v39 = {}
-        else
-            v39 = v38.members
-        end
-        v38.members = v39
-        local score_1 = v38.score
-        if type(score_1) ~= "number" then
-            v39 = 0
-        else
-            v39 = score_1
-        end
-        v38.score = v39
-        if type(v38.name) ~= "string" then
-            v39 = "Tribe " .. n_2
-        else
-            v39 = v38.name
-        end
-        v38.name = v39
-    end
-    local roundsToWin_1 = a1.roundsToWin
-    local DEFAULT_ROUNDS_TO_WIN_1 = tbl_upv_1.DEFAULT_ROUNDS_TO_WIN
-    local v40
-    if type(roundsToWin_1) ~= "number" then
-        v40 = DEFAULT_ROUNDS_TO_WIN_1
+
+    local v101
+    local v102
+    local round
+    local phaseEndsAt
+
+    if type(a100.teams) ~= "table" then
+        v101 = {}
     else
-        v40 = roundsToWin_1
+        v101 = a100.teams
     end
-    a1.roundsToWin = v40
-    local round_1 = a1.round
-    if type(round_1) ~= "number" then
-        v40 = 1
+
+    a100.teams = v101
+
+    for teamKey = 1, 2 do
+        local v106
+        local v107
+        local score
+        local v109
+        local team = a100.teams[teamKey]
+
+        if type(team) == "table" then
+            v106 = team
+        else
+            local name
+            local v112 = {score = 0}
+
+            if teamKey == 1 then
+                name = "Wolf"
+            else
+                name = "Raven"
+            end
+
+            v112.name = name
+            v112.members = {}
+            v106 = v112
+            a100.teams[teamKey] = v106
+        end
+
+        if type(v106.members) == "table" then
+            v107 = v106.members
+        else
+            v107 = {}
+        end
+
+        v106.members = v107
+
+        if type(v106.score) == "number" then
+            score = v106.score
+        else
+            score = 0
+        end
+
+        v106.score = score
+
+        if type(v106.name) == "string" then
+            v109 = v106.name
+        else
+            v109 = "Tribe " .. teamKey
+        end
+
+        v106.name = v109
+    end
+
+    local roundsToWin = a100.roundsToWin
+    local defaultRoundsToWin = v7.DEFAULT_ROUNDS_TO_WIN
+
+    if type(roundsToWin) ~= "number" then
+        v102 = defaultRoundsToWin
     else
-        v40 = round_1
+        v102 = roundsToWin
     end
-    a1.round = v40
-    local phaseEndsAt_1 = a1.phaseEndsAt
-    if type(phaseEndsAt_1) ~= "number" then
-        v40 = 0
+
+    a100.roundsToWin = v102
+    local round2 = a100.round
+
+    if type(round2) ~= "number" then
+        round = 1
     else
-        v40 = phaseEndsAt_1
+        round = round2
     end
-    a1.phaseEndsAt = v40
-    return a1
+
+    a100.round = round
+    local phaseEndsAt2 = a100.phaseEndsAt
+
+    if type(phaseEndsAt2) ~= "number" then
+        phaseEndsAt = 0
+    else
+        phaseEndsAt = phaseEndsAt2
+    end
+
+    a100.phaseEndsAt = phaseEndsAt
+
+    return a100
 end
-function tbl_upv_1.InjectSnapshot(a1)
+
+function v7.InjectSnapshot(a117)
     --[[
       name: InjectSnapshot
       line: 392
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
         normalizeSnapshot (copy, index: 2)
     ]]
-    tbl_upv_1.Match = normalizeSnapshot(a1)
-    tbl_upv_1.MatchChanged:Fire(tbl_upv_1.Match)
+    v7.Match = normalizeSnapshot(a117)
+    v7.MatchChanged:Fire(v7.Match)
 end
-function tbl_upv_1.FindMember(a1)
+
+function v7.FindMember(a118)
     --[[
       name: FindMember
       line: 398
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local Match_4 = tbl_upv_1.Match
-    if Match_4 and type(a1) == "string" then
-        for n_3 = 1, 2 do
-            for _, value_7 in Match_4.teams[n_3].members do
-                if value_7.id ~= a1 then
-                    continue
-                end
-                return value_7, n_3
+    local match = v7.Match
+
+    if not match or type(a118) ~= "string" then
+        return nil, nil
+    end
+
+    for teamKey = 1, 2 do
+        for _, member in match.teams[teamKey].members do
+            if member.id == a118 then
+                return member, teamKey
             end
         end
     end
+
     return nil, nil
 end
-function tbl_upv_1.IsAllyTeam(a1)
+
+function v7.IsAllyTeam(a123)
     --[[
       name: IsAllyTeam
       line: 414
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v41 = a1 == tbl_upv_1.MyTeam()
-    return v41
+    return a123 == v7.MyTeam()
 end
-local mode_upv_1 = nil
-function tbl_upv_1.InjectEvent(a1, a2)
+
+local mode = nil
+
+function v7.InjectEvent(a125, a126)
     --[[
       name: InjectEvent
       line: 419
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        mode_upv_1 (ref,  index: 2)
+        v7 (copy, index: 1)
+        mode (ref,  index: 2)
     ]]
-    if type(a1) ~= "string" then
+    if type(a125) ~= "string" then
         return
     end
-    if type(a2) ~= "table" then
-        local tbl_12 = {}
-        a2 = tbl_12
+
+    local v127
+
+    if type(a126) ~= "table" then
+        v127 = {}
+    else
+        v127 = a126
     end
-    local Match_5 = tbl_upv_1.Match
-    if a1 == "Elimination" then
-        local v42 = nil
-        if Match_5 then
-            v42 = tbl_upv_1.FindMember(a2.victimId)
-            if v42 and v42.alive ~= false then
-                v42.alive = false
-                tbl_upv_1.MatchChanged:Fire(Match_5)
-            end
-        elseif a1 == "RoundStart" and Match_5 then
-            for _, value_8 in Match_5.teams[1].members do
-                value_8.alive = true
-            end
-            for _, value_9 in Match_5.teams[2].members do
-                value_9.alive = true
-            end
-            tbl_upv_1.MatchChanged:Fire(Match_5)
+
+    local match = v7.Match
+
+    if a125 == "Elimination" and match then
+        local member = v7.FindMember(v127.victimId)
+
+        if member and member.alive ~= false then
+            member.alive = false
+            v7.MatchChanged:Fire(match)
         end
-    elseif a1 == "RoundStart" and Match_5 then
-        for _, value_8 in Match_5.teams[1].members do
-            value_8.alive = true
+    elseif a125 == "RoundStart" and match then
+        for _, member in match.teams[1].members do
+            member.alive = true
         end
-        for _, value_9 in Match_5.teams[2].members do
-            value_9.alive = true
+
+        for _, member in match.teams[2].members do
+            member.alive = true
         end
-        tbl_upv_1.MatchChanged:Fire(Match_5)
+
+        v7.MatchChanged:Fire(match)
     end
-    if a1 == "MatchStart" then
-        local v42
-        if type(a2.mode) ~= "string" then
-            v42 = nil
+
+    if a125 == "MatchStart" then
+        if type(v127.mode) ~= "string" then
+            mode = nil
         else
-            v42 = a2.mode
+            mode = v127.mode
         end
-        mode_upv_1 = v42
-    elseif a1 == "MatchEnd" and type(a2.mode) == "string" then
-        mode_upv_1 = a2.mode
+    elseif a125 == "MatchEnd" and type(v127.mode) == "string" then
+        mode = v127.mode
     end
-    tbl_upv_1.MatchEvent:Fire(a1, a2)
+
+    v7.MatchEvent:Fire(a125, v127)
 end
-Remotes_upv_1.On(
+
+Remotes.On(
     "MatchState",
-    function(a1)
+    function(a134)
         --[[
           line: 450
           upvalues:
-            tbl_upv_1 (copy, index: 1)
+            v7 (copy, index: 1)
         ]]
-        if tbl_upv_1.Mock then
+        if v7.Mock then
             return
         end
-        tbl_upv_1.InjectSnapshot(a1)
+
+        v7.InjectSnapshot(a134)
     end
 )
-Remotes_upv_1.On(
+
+Remotes.On(
     "MatchEvent",
-    function(a1, a2)
+    function(a135, a136)
         --[[
           line: 456
           upvalues:
-            tbl_upv_1 (copy, index: 1)
+            v7 (copy, index: 1)
         ]]
-        if tbl_upv_1.Mock then
+        if v7.Mock then
             return
         end
-        tbl_upv_1.InjectEvent(a1, a2)
+
+        v7.InjectEvent(a135, a136)
     end
 )
-function tbl_upv_1.FetchMatch()
+
+function v7.FetchMatch()
     --[[
       name: FetchMatch
       line: 463
       upvalues:
-        Remotes_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        Remotes (copy, index: 1)
+        v7 (copy, index: 2)
     ]]
     task.spawn(
         function()
             --[[
               line: 464
               upvalues:
-                Remotes_upv_1 (copy, index: 1)
-                tbl_upv_1 (copy, index: 2)
+                Remotes (copy, index: 1)
+                v7 (copy, index: 2)
             ]]
-            local v43, v44 = Remotes_upv_1.Invoke("GetMatchState")
-            if not v43 or type(v44) ~= "table" or (tbl_upv_1.Mock) then
-                return
+            local v137, v138 = Remotes.Invoke("GetMatchState")
+
+            if v137 and type(v138) == "table" and not v7.Mock then
+                v7.InjectSnapshot(v138)
             end
-            tbl_upv_1.InjectSnapshot(v44)
         end
     )
 end
-function tbl_upv_1.PhaseTimeLeft()
+
+function v7.PhaseTimeLeft()
     --[[
       name: PhaseTimeLeft
       line: 473
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        Workspace_upv_1 (copy, index: 2)
+        v7 (copy, index: 1)
+        workspace (copy, index: 2)
     ]]
-    local Match_6 = tbl_upv_1.Match
-    local v45 = (Match_6 and (Match_6.phaseEndsAt)) or 0
-    if v45 and not (v45 <= 0) or not (Match_6) or not (Match_6.matchId) then
-        return (math.max(0, (v45 or 0) - tbl_upv_1.Now()))
+    local match = v7.Match
+    local phaseEndsAt = match and match.phaseEndsAt or 0
+
+    if (not phaseEndsAt or phaseEndsAt <= 0) and match and match.matchId then
+        local arenas = workspace:FindFirstChild("Arenas")
+        local child = arenas and arenas:FindFirstChild((tostring(match.matchId)))
+        local phaseEndsAt2 = child and child:GetAttribute("PhaseEndsAt")
+
+        if type(phaseEndsAt2) ~= "number" then
+            phaseEndsAt = 0
+        else
+            phaseEndsAt = phaseEndsAt2
+        end
     end
-    local Arenas_1 = Workspace_upv_1:FindFirstChild("Arenas")
-    local v46 = Arenas_1 and (Arenas_1:FindFirstChild(tostring(Match_6.matchId)))
-    local v47 = v46 and (v46:GetAttribute("PhaseEndsAt"))
-    if type(v47) ~= "number" then
-        v45 = 0
-    else
-        v45 = v47
-    end
-    return (math.max(0, (v45 or 0) - tbl_upv_1.Now()))
+
+    return (math.max(0, (phaseEndsAt or 0) - v7.Now()))
 end
-function tbl_upv_1.Phase()
+
+function v7.Phase()
     --[[
       name: Phase
       line: 485
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local Match_7 = tbl_upv_1.Match
-    return (Match_7 and (Match_7.phase)) or nil
+    local match = v7.Match
+    return match and match.phase or nil
 end
-local u4 = nil
-local u5 = nil
-function tbl_upv_1.PhaseClock()
+
+local child = nil
+local v146 = nil
+
+function v7.PhaseClock()
     --[[
       name: PhaseClock
       line: 496
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u5 (ref,  index: 2)
-        u4 (ref,  index: 3)
-        Workspace_upv_1 (copy, index: 4)
+        v7 (copy, index: 1)
+        v146 (ref,  index: 2)
+        child (ref,  index: 3)
+        workspace (copy, index: 4)
     ]]
-    local Match_8 = tbl_upv_1.Match
-    local v48 = nil
-    if not (tbl_upv_1.Mock) then
-        v48 = tbl_upv_1.Get("MatchId")
-        if type(v48) == "string" and v48 ~= "" then
-            local v50 = nil
-            if u5 ~= v48 or not (u4) or u4.Parent == nil then
-                local Arenas_2 = Workspace_upv_1:FindFirstChild("Arenas")
-                v50 = Arenas_2 and (Arenas_2:FindFirstChild(v48))
-                u4 = v50
-                if u4 then
-                    v50 = v48
-                else
-                    v50 = nil
-                end
-                u5 = v50
+    local match = v7.Match
+
+    if not v7.Mock then
+        local childName = v7.Get("MatchId")
+
+        if type(childName) == "string" and childName ~= "" then
+            if v146 ~= childName or not child or child.Parent == nil then
+                local arenas = workspace:FindFirstChild("Arenas")
+                child = arenas and arenas:FindFirstChild(childName)
+                v146 = if child then childName else nil
             end
-            if u4 then
-                v50 = u4:GetAttribute("Phase")
-                local v51 = nil
-                if type(v50) == "string" then
-                    v51 = u4:GetAttribute("PhaseEndsAt")
-                    local v52 = u4:GetAttribute("Round")
-                    local v53
-                    if type(v51) ~= "number" then
-                        v53 = 0
+
+            if const child2 = child then
+                local phase = child2:GetAttribute("Phase")
+
+                if type(phase) == "string" then
+                    local phaseEndsAt
+                    local phaseEndsAt2 = child2:GetAttribute("PhaseEndsAt")
+                    local round = child2:GetAttribute("Round")
+
+                    if type(phaseEndsAt2) ~= "number" then
+                        phaseEndsAt = 0
                     else
-                        v53 = v51
+                        phaseEndsAt = phaseEndsAt2
                     end
-                    if type(v52) ~= "number" then
-                        return v50, v53, (Match_8 and (Match_8.round)) or 1
+
+                    if type(round) == "number" then
+                        return phase, phaseEndsAt, round
                     end
-                    return v50, v53, v52
+
+                    local round2 = match and match.round or 1
+
+                    return phase, phaseEndsAt, round2
                 end
             end
         end
     end
-    if Match_8 then
-        return Match_8.phase, Match_8.phaseEndsAt or 0, Match_8.round or 1
+
+    if match then
+        return match.phase, match.phaseEndsAt or 0, match.round or 1
     end
+
     return nil, 0, 1
 end
-function tbl_upv_1.MatchMode()
+
+function v7.MatchMode()
     --[[
       name: MatchMode
       line: 526
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        Workspace_upv_1 (copy, index: 2)
-        mode_upv_1 (ref,  index: 3)
+        v7 (copy, index: 1)
+        workspace (copy, index: 2)
+        mode (ref,  index: 3)
     ]]
-    local v54 = tbl_upv_1.Get("MatchId")
-    if not (tbl_upv_1.Mock) and type(v54) == "string" then
-        local v55 = nil
-        if v54 ~= "" then
-            local Arenas_3 = Workspace_upv_1:FindFirstChild("Arenas")
-            local v56 = Arenas_3 and (Arenas_3:FindFirstChild(v54))
-            local v57 = v56
-            v55 = v57 and (v56:GetAttribute("Mode"))
-            if v55 ~= "1v1" and v55 ~= "3v3" then
-                if mode_upv_1 ~= "1v1" then
-                    return "3v3"
-                end
-                return "1v1"
-            end
-            return v57
+    local childName = v7.Get("MatchId")
+
+    if not v7.Mock and type(childName) == "string" and childName ~= "" then
+        local arenas = workspace:FindFirstChild("Arenas")
+        local child = arenas and arenas:FindFirstChild(childName)
+        local mode2 = child and child:GetAttribute("Mode")
+
+        if mode2 == "1v1" then
+            return mode2
+        end
+        if mode2 == "3v3" then
+            return mode2
         end
     end
-    if mode_upv_1 ~= "1v1" then
-        return "3v3"
+
+    if mode == "1v1" then
+        return "1v1"
     end
-    return "1v1"
+
+    return "3v3"
 end
-function tbl_upv_1.IsDuel()
+
+function v7.IsDuel()
     --[[
       name: IsDuel
       line: 538
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v58 = tbl_upv_1.MatchMode() == "1v1"
-    return v58
+    return v7.MatchMode() == "1v1"
 end
-function tbl_upv_1.TeamSize(a1)
+
+function v7.TeamSize(a160)
     --[[
       name: TeamSize
       line: 542
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v59 = a1 or (tbl_upv_1.Match and (tbl_upv_1.Match.teams))
-    local v60 = 0
-    if type(v59) == "table" then
-        for n_4 = 1, 2 do
-            local v61 = v59[n_4]
-            if type(v61) == "table" and type(v61.members) == "table" then
-                v60 = math.max(v60, #v61.members)
+    local v161 = a160 or v7.Match and v7.Match.teams
+    local v162 = 0
+
+    if type(v161) == "table" then
+        for index = 1, 2 do
+            local v164 = v161[index]
+
+            if type(v164) == "table" and type(v164.members) == "table" then
+                v162 = math.max(v162, #v164.members)
             end
         end
     end
-    if v60 > 0 then
-        return v60
+
+    if 0 < v162 then
+        return v162
     end
+
     return 3
 end
-Remotes_upv_1.On(
+
+Remotes.On(
     "Leaderboards",
-    function(a1)
+    function(leaderboards)
         --[[
           line: 557
           upvalues:
-            tbl_upv_1 (copy, index: 1)
+            v7 (copy, index: 1)
         ]]
-        if type(a1) ~= "table" or (tbl_upv_1.Mock) then
-            return
+        if type(leaderboards) == "table" and not v7.Mock then
+            v7.Leaderboards = leaderboards
+            v7.LeaderboardsChanged:Fire(leaderboards)
         end
-        tbl_upv_1.Leaderboards = a1
-        tbl_upv_1.LeaderboardsChanged:Fire(a1)
     end
 )
-function tbl_upv_1.InjectLeaderboards(a1)
+
+function v7.InjectLeaderboards(leaderboards)
     --[[
       name: InjectLeaderboards
       line: 564
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    tbl_upv_1.Leaderboards = a1
-    tbl_upv_1.LeaderboardsChanged:Fire(a1)
+    v7.Leaderboards = leaderboards
+    v7.LeaderboardsChanged:Fire(leaderboards)
 end
-Remotes_upv_1.On(
+
+Remotes.On(
     "Notify",
-    function(a1, a2)
+    function(a167, a168)
         --[[
           line: 569
           upvalues:
-            tbl_upv_1 (copy, index: 1)
+            v7 (copy, index: 1)
         ]]
-        tbl_upv_1.Notify:Fire(a1, a2)
+        v7.Notify:Fire(a167, a168)
     end
 )
-function tbl_upv_1.Start()
+
+function v7.Start()
     --[[
       name: Start
       line: 574
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    tbl_upv_1.Refresh()
+    v7.Refresh()
+
     task.spawn(
         function()
             --[[
               line: 577
               upvalues:
-                tbl_upv_1 (copy, index: 1)
+                v7 (copy, index: 1)
             ]]
             for _ = 1, 6 do
                 task.wait(2.5)
-                if tbl_upv_1.HasProfile then
+
+                if v7.HasProfile then
                     break
-                else
-                    tbl_upv_1.Refresh()
                 end
+
+                v7.Refresh()
             end
         end
     )
-    if tbl_upv_1.InMatch() then
-        tbl_upv_1.FetchMatch()
+
+    if v7.InMatch() then
+        v7.FetchMatch()
     end
-    tbl_upv_1.PlayerStateChanged:Connect(
-        function(a1)
+
+    v7.PlayerStateChanged:Connect(
+        function(a170)
             --[[
               line: 589
               upvalues:
-                tbl_upv_1 (copy, index: 1)
+                v7 (copy, index: 1)
             ]]
-            if a1 == "Match" then
-                tbl_upv_1.FetchMatch()
-            elseif a1 == "Lobby" and not (tbl_upv_1.Mock) and not (tbl_upv_1.Watching()) then
-                tbl_upv_1.Match = nil
-                tbl_upv_1.MatchChanged:Fire(nil)
-                tbl_upv_1.Refresh()
+            if a170 == "Match" then
+                v7.FetchMatch()
+                return
+            end
+
+            if a170 == "Lobby" and not v7.Mock and not v7.Watching() then
+                v7.Match = nil
+                v7.MatchChanged:Fire(nil)
+                v7.Refresh()
             end
         end
     )
-    tbl_upv_1.WatchChanged:Connect(
-        function(a2)
+
+    v7.WatchChanged:Connect(
+        function(a171)
             --[[
               line: 598
               upvalues:
-                tbl_upv_1 (copy, index: 1)
+                v7 (copy, index: 1)
             ]]
-            if a2 then
-                tbl_upv_1.FetchMatch()
-            elseif not (tbl_upv_1.InMatch()) and not (tbl_upv_1.Mock) then
-                tbl_upv_1.Match = nil
-                tbl_upv_1.MatchChanged:Fire(nil)
+            if a171 then
+                v7.FetchMatch()
+                return
+            end
+
+            if not v7.InMatch() and not v7.Mock then
+                v7.Match = nil
+                v7.MatchChanged:Fire(nil)
             end
         end
     )
-    if not tbl_upv_1.Watching() then
-        return
+
+    if v7.Watching() then
+        v7.FetchMatch()
     end
-    tbl_upv_1.FetchMatch()
 end
-return tbl_upv_1
+
+return v7

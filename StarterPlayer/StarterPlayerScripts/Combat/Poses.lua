@@ -1,275 +1,373 @@
-local CollectionService_upv_1 = game:GetService("CollectionService")
-local Players_upv_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local tbl_upv_1 = {}
-local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-tbl_upv_1.POSES = {}
-local tbl_upv_2 = {}
-local tbl_upv_3 = {}
+local collectionService = game:GetService("CollectionService")
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local v4 = {}
+local localPlayer = players.LocalPlayer
+v4.POSES = {}
+local v6 = {}
+local v7 = {}
+
 local function rebuild()
     --[[
       name: rebuild
       line: 37
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
+        v4 (copy, index: 1)
+        v7 (copy, index: 2)
     ]]
-    for key_1, value_1 in tbl_upv_1.POSES do
-        local tbl_4 = {}
-        for key_2, value_2 in value_1 do
-            tbl_4[key_2] = CFrame.Angles(math.rad(value_2.X), math.rad(value_2.Y), math.rad(value_2.Z))
+    for v9, pose in v4.POSES do
+        local v11 = {}
+
+        for v12, v13 in pose do
+            v11[v12] = CFrame.Angles(math.rad(v13.X), math.rad(v13.Y), (math.rad(v13.Z)))
         end
-        tbl_upv_3[key_1] = tbl_4
+
+        v7[v9] = v11
     end
 end
+
 rebuild()
-tbl_upv_1.Rebuild = rebuild
-local tbl_upv_5 = {"RightShoulder", "RightElbow", "RightWrist", "LeftShoulder", "LeftElbow"}
-local function findMotors(a1)
+v4.Rebuild = rebuild
+local v14 = {"RightShoulder", "RightElbow", "RightWrist", "LeftShoulder", "LeftElbow"}
+
+local function findMotors(model)
     --[[
       name: findMotors
       line: 50
       upvalues:
-        tbl_upv_5 (copy, index: 1)
+        v14 (copy, index: 1)
     ]]
-    local tbl_6 = {}
-    for _, value_3 in tbl_upv_5 do
-        local v1 = a1:FindFirstChild(value_3, true)
-        if v1 and (v1:IsA("Motor6D") or v1:IsA("AnimationConstraint")) then
-            tbl_6[value_3] = v1
+    local v17 = {}
+
+    for _, v19 in v14 do
+        if const v20 = model:FindFirstChild(v19, true) then
+            if v20:IsA("Motor6D") or v20:IsA("AnimationConstraint") then
+                v17[v19] = v20
+            end
         end
     end
-    return tbl_6
+
+    return v17
 end
-local function stateOf(a1)
+
+local function stateOf(model)
     --[[
       name: stateOf
       line: 61
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v6 (copy, index: 1)
         findMotors (copy, index: 2)
     ]]
-    local v2 = tbl_upv_2[a1]
-    if not (v2) then
-        v2 = {kick = 0, alpha = 0, model = a1, motors = findMotors(a1)}
-        tbl_upv_2[a1] = v2
+    local v23 = v6[model]
+    if not v23 then
+        v23 = {pose = nil, alpha = 0, kick = 0, model = model, motors = findMotors(model)}
+        v6[model] = v23
     end
-    return v2
+
+    return v23
 end
-function tbl_upv_1.Kick(a1, a2)
-    --[[
-      name: Kick
-      line: 85
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-        findMotors (copy, index: 2)
-    ]]
-    if not a1 then
-        return
-    end
-    local v3 = tbl_upv_2[a1]
-    if not (v3) then
-        v3 = {kick = 0, alpha = 0, model = a1, motors = findMotors(a1)}
-        tbl_upv_2[a1] = v3
-    end
-    if not (next(v3.motors)) then
-        v3.motors = findMotors(a1)
-    end
-    v3.kick = math.max(v3.kick, math.min(a2, 45))
-end
-local tbl_upv_7 = {}
-local function refresh(a1)
+
+local function refresh(model)
     --[[
       name: refresh
       line: 70
       upvalues:
-        tbl_upv_3 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
+        v7 (copy, index: 1)
+        v6 (copy, index: 2)
         findMotors (copy, index: 3)
     ]]
-    local v4 = a1:FindFirstChildOfClass("Tool")
-    local v5 = v4 and (v4:GetAttribute("Kind"))
-    v4 = type(v5) ~= "string" or not (tbl_upv_3[v5]) or v5
-    local v6 = nil
-    if v4 then
-        v6 = tbl_upv_2[a1]
-        if not (v6) then
-            v6 = {kick = 0, alpha = 0, model = a1, motors = findMotors(a1)}
-            tbl_upv_2[a1] = v6
+    local kind
+    local tool = model:FindFirstChildOfClass("Tool")
+    local kind2 = tool and tool:GetAttribute("Kind")
+
+    if type(kind2) ~= "string" or not v7[kind2] then
+        kind = nil
+    else
+        kind = kind2
+    end
+
+    if kind then
+        local v29 = v6[model]
+        if not v29 then
+            v29 = {pose = nil, alpha = 0, kick = 0, model = model, motors = findMotors(model)}
+            v6[model] = v29
         end
-        v6.pose = v4
-        v6.motors = findMotors(a1)
-    elseif tbl_upv_2[a1] then
-        tbl_upv_2[a1].pose = nil
+
+        v29.pose = kind
+        v29.motors = findMotors(model)
+    elseif v6[model] then
+        v6[model].pose = nil
     end
 end
-local function watch(a1)
+
+function v4.Kick(model, a31: number)
+    --[[
+      name: Kick
+      line: 85
+      upvalues:
+        v6 (copy, index: 1)
+        findMotors (copy, index: 2)
+    ]]
+    if not model then
+        return
+    end
+
+    local v32 = v6[model]
+    if not v32 then
+        v32 = {pose = nil, alpha = 0, kick = 0, model = model, motors = findMotors(model)}
+        v6[model] = v32
+    end
+
+    if not next(v32.motors) then
+        v32.motors = findMotors(model)
+    end
+
+    v32.kick = math.max(v32.kick, (math.min(a31, 45)))
+end
+
+local v33 = {}
+
+local function watch(key)
     --[[
       name: watch
       line: 97
       upvalues:
-        tbl_upv_7 (copy, index: 1)
+        v33 (copy, index: 1)
         refresh (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
+        v6 (copy, index: 3)
     ]]
-    if tbl_upv_7[a1] then
+    if v33[key] then
         return
     end
-    tbl_upv_7[a1] = true
-    a1.ChildAdded:Connect(
-        function(a2)
+
+    v33[key] = true
+
+    key.ChildAdded:Connect(
+        function(a36)
             --[[
               line: 102
               upvalues:
                 refresh (copy, index: 1)
-                a1 (copy, index: 2)
+                key (copy, index: 2)
             ]]
-            if not a2:IsA("Tool") then
-                return
+            if a36:IsA("Tool") then
+                task.defer(refresh, key)
             end
-            task.defer(refresh, a1)
         end
     )
-    a1.ChildRemoved:Connect(
-        function(a3)
+
+    key.ChildRemoved:Connect(
+        function(a37)
             --[[
               line: 107
               upvalues:
                 refresh (copy, index: 1)
-                a1 (copy, index: 2)
+                key (copy, index: 2)
             ]]
-            if not a3:IsA("Tool") then
-                return
+            if a37:IsA("Tool") then
+                task.defer(refresh, key)
             end
-            task.defer(refresh, a1)
         end
     )
-    a1.Destroying:Once(
+
+    key.Destroying:Once(
         function()
             --[[
               line: 112
               upvalues:
-                tbl_upv_7 (copy, index: 1)
-                a1 (copy, index: 2)
-                tbl_upv_2 (copy, index: 3)
+                v33 (copy, index: 1)
+                key (copy, index: 2)
+                v6 (copy, index: 3)
             ]]
-            tbl_upv_7[a1] = nil
-            tbl_upv_2[a1] = nil
+            v33[key] = nil
+            v6[key] = nil
         end
     )
-    refresh(a1)
+
+    refresh(key)
 end
-tbl_upv_1.Watch = watch
-local u1 = false
-local function step(a1)
+
+v4.Watch = watch
+
+local function step(deltaTimeSim: number)
     --[[
       name: step
       line: 121
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
-        tbl_upv_3 (copy, index: 3)
+        localPlayer (copy, index: 1)
+        v6 (copy, index: 2)
+        v7 (copy, index: 3)
     ]]
-    local Character_1 = LocalPlayer_upv_1.Character
-    local v7, v8 = nil, nil
-    for key_3, value_4 in tbl_upv_2 do
-        if not (key_3:IsDescendantOf(workspace)) then
-            tbl_upv_2[key_3] = nil
-            continue
-        end
-        if value_4.alpha < (((value_4.pose) and 1) or 0) then
-            value_4.alpha = math.min(1, value_4.alpha + (a1 / 0.1))
-        else
-            value_4.alpha = math.max(0, value_4.alpha - (a1 / 0.14))
-        end
-        value_4.kick = math.max(0, (value_4.kick - ((a1 * value_4.kick) * 14)) - (a1 * 20))
-        if value_4.alpha <= 0 and value_4.kick <= 0 then
-            if not (value_4.pose) then
-                tbl_upv_2[key_3] = nil
+    local character = localPlayer.Character
+    local v41
+
+    for v42, v41 in v6 do
+        if v42:IsDescendantOf(workspace) then
+            local v43 = v41.pose and 1 or 0
+
+            if v41.alpha < v43 then
+                v41.alpha = math.min(1, v41.alpha + (deltaTimeSim / 0.1))
+            else
+                v41.alpha = math.max(0, v41.alpha - (deltaTimeSim / 0.14))
             end
-        else
-            local pose_1 = value_4.pose
-            local v9 = pose_1 and (tbl_upv_3[value_4.pose])
-            v7 = 0
-            if key_3 == Character_1 and value_4.pose then
-                v7 = math.asin(math.clamp(workspace.CurrentCamera.CFrame.LookVector.Y, -1, 1))
-            end
-            for key_4, value_5 in value_4.motors do
-                if not (value_5.Parent) then
-                    continue
+
+            v41.kick = math.max(0, (v41.kick - ((deltaTimeSim * v41.kick) * 14)) - (deltaTimeSim * 20))
+
+            if v41.alpha <= 0 and v41.kick <= 0 then
+                if not v41.pose then
+                    v6[v42] = nil
                 end
-                local Transform_1 = value_5.Transform
-                if v9 and v9[key_4] then
-                    v8 = v9[key_4]
-                    if key_4 == "RightShoulder" and v7 ~= 0 then
-                        v8 = CFrame.Angles(v7, 0, 0) * v8
+            else
+                local alpha = v41.alpha * v41.alpha * (3 - (v41.alpha * 2))
+                local v45 = v41.pose and v7[v41.pose]
+                local rotationX = 0
+
+                if v42 == character and v41.pose then
+                    local camera = workspace.CurrentCamera
+                    rotationX = math.asin((math.clamp(camera.CFrame.LookVector.Y, -1, 1)))
+                end
+
+                for v48, motor in v41.motors do
+                    local transform, v51, cframeAngles, kick
+                    local targetValue
+                    local v55
+                    local v56, v57, v58, v59 = false, false, false, false
+
+                    if motor.Parent then
+                        transform = motor.Transform
+
+                        if v45 then
+                            if v45[v48] then
+                                v51 = v45[v48]
+
+                                if v48 ~= "RightShoulder" then
+                                    targetValue = v51
+                                elseif rotationX == 0 then
+                                    targetValue = v51
+                                else
+                                    targetValue = CFrame.Angles(rotationX, 0, 0) * v51
+                                end
+
+                                v56 = true
+                            else
+                                v55 = transform
+                                v57 = true
+                            end
+                        else
+                            v55 = transform
+                            v57 = true
+                        end
                     end
-                    local _ = Transform_1:Lerp(v8, (value_4.alpha * value_4.alpha) * (3 - (value_4.alpha * 2)))
+
+                    if v56 then
+                        local startValue
+                        v55 = startValue:Lerp(targetValue, alpha)
+                        v57 = true
+                    end
+
+                    if v57 then
+                        if not (0 < v41.kick) then
+                            v59 = true
+                        elseif v48 == "RightShoulder" then
+                            v58 = true
+                        elseif v48 ~= "RightElbow" then
+                            v59 = true
+                        else
+                            v58 = true
+                        end
+                    end
+
+                    if v58 then
+                        local v61
+                        cframeAngles = CFrame.Angles
+                        kick = v41.kick
+
+                        if v48 ~= "RightElbow" then
+                            v61 = 1
+                        else
+                            v61 = 0.6
+                        end
+
+                        v55 = cframeAngles(math.rad(kick * v61), 0, 0) * v55
+                        v59 = true
+                    end
+
+                    if v59 then
+                        motor.Transform = v55
+                    end
                 end
-                if value_4.kick > 0 and (key_4 == "RightShoulder" or key_4 == "RightElbow") then
-                    Transform_1 = CFrame.Angles(math.rad(value_4.kick * (((key_4 ~= "RightElbow") and 1) or 0.6)), 0, 0) * Transform_1
-                end
-                value_5.Transform = Transform_1
             end
+        else
+            v6[v42] = nil
         end
     end
 end
-function tbl_upv_1.Init()
+
+local hasRun = false
+
+function v4.Init()
     --[[
       name: Init
       line: 169
       upvalues:
-        u1 (ref,  index: 1)
-        RunService_upv_1 (copy, index: 2)
+        hasRun (ref,  index: 1)
+        runService (copy, index: 2)
         step (copy, index: 3)
         watch (copy, index: 4)
-        Players_upv_1 (copy, index: 5)
-        CollectionService_upv_1 (copy, index: 6)
+        players (copy, index: 5)
+        collectionService (copy, index: 6)
     ]]
-    if u1 then
+    if hasRun then
         return
     end
-    u1 = true
-    RunService_upv_1.PreSimulation:Connect(step)
-    for _, value_6 in Players_upv_1:GetPlayers() do
-        value_6.CharacterAdded:Connect(watch)
-        if value_6.Character then
-            watch(value_6.Character)
+
+    hasRun = true
+    runService.PreSimulation:Connect(step)
+
+    for _, player in players:GetPlayers() do
+        player.CharacterAdded:Connect(watch)
+
+        if player.Character then
+            watch(player.Character)
         end
     end
-    local function onPlayer(a1)
-        --[[
-          name: onPlayer
-          line: 175
-          upvalues:
-            watch (copy, index: 1)
-        ]]
-        a1.CharacterAdded:Connect(watch)
-        if not a1.Character then
-            return
+
+    players.PlayerAdded:Connect(
+        function(player: Player)
+            --[[
+              name: onPlayer
+              line: 175
+              upvalues:
+                watch (copy, index: 1)
+            ]]
+            player.CharacterAdded:Connect(watch)
+
+            if player.Character then
+                watch(player.Character)
+            end
         end
-        watch(a1.Character)
-    end
-    Players_upv_1.PlayerAdded:Connect(onPlayer)
-    for _, value_7 in {"Combatant", "Bot"} do
-        CollectionService_upv_1:GetInstanceAddedSignal(value_7):Connect(
-            function(a2)
+    )
+
+    for _, tag in {"Combatant", "Bot"} do
+        collectionService:GetInstanceAddedSignal(tag):Connect(
+            function(instance: Instance)
                 --[[
                   line: 186
                   upvalues:
                     watch (copy, index: 1)
                 ]]
-                if not a2:IsA("Model") then
-                    return
+                if instance:IsA("Model") then
+                    watch(instance)
                 end
-                watch(a2)
             end
         )
-        for v1, value_8 in CollectionService_upv_1:GetTagged(value_7) do
-            if value_8:IsA("Model") then
-                watch(value_8)
+
+        for _, instance in collectionService:GetTagged(tag) do
+            if instance:IsA("Model") then
+                watch(instance)
             end
         end
     end
 end
-return tbl_upv_1
+
+return v4

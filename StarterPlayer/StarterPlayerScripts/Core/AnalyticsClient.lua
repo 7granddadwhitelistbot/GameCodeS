@@ -1,99 +1,109 @@
-local GuiService_upv_1 = game:GetService("GuiService")
-local Players_upv_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local tbl_1 = {}
+local guiService = game:GetService("GuiService")
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local userInputService = game:GetService("UserInputService")
+local workspace = game:GetService("Workspace")
+local v7 = {}
+
 local function platform()
     --[[
       name: platform
       line: 20
       upvalues:
-        GuiService_upv_1 (copy, index: 1)
-        UserInputService_upv_1 (copy, index: 2)
-        Workspace_upv_1 (copy, index: 3)
+        guiService (copy, index: 1)
+        userInputService (copy, index: 2)
+        workspace (copy, index: 3)
     ]]
-    if GuiService_upv_1:IsTenFootInterface() then
+    if guiService:IsTenFootInterface() then
         return "Console"
     end
-    if not UserInputService_upv_1.TouchEnabled or UserInputService_upv_1.MouseEnabled then
+    if not userInputService.TouchEnabled or userInputService.MouseEnabled then
         return "Desktop"
     end
-    local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
-    local v1 = os.clock()
-    while true do
-        if CurrentCamera_1 and not (CurrentCamera_1.ViewportSize.X <= 1) or not (os.clock() - v1 < 5) then
-            break
-        end
+
+    local camera = workspace.CurrentCamera
+    local timestamp = os.clock()
+
+    while (not camera or camera.ViewportSize.X <= 1) and os.clock() - timestamp < 5 do
         task.wait(0.1)
-        CurrentCamera_1 = Workspace_upv_1.CurrentCamera
+        camera = workspace.CurrentCamera
     end
-    if CurrentCamera_1 then
-        v1 = CurrentCamera_1.ViewportSize
-    else
-        v1 = Vector2.zero
+
+    local vector2 = if camera then camera.ViewportSize else Vector2.zero
+
+    if not (600 <= math.min(vector2.X, vector2.Y)) then
+        return "Phone"
     end
-    if math.min(v1.X, v1.Y) >= 600 then
-        return "Tablet"
-    end
-    return "Phone"
+
+    return "Tablet"
 end
-function tbl_1.Start()
+
+function v7.Start()
     --[[
       name: Start
       line: 39
       upvalues:
-        ReplicatedStorage_upv_1 (copy, index: 1)
+        replicatedStorage (copy, index: 1)
         platform (copy, index: 2)
-        Players_upv_1 (copy, index: 3)
-        RunService_upv_1 (copy, index: 4)
+        players (copy, index: 3)
+        runService (copy, index: 4)
     ]]
-    local Net_1 = require(ReplicatedStorage_upv_1:WaitForChild("Shared"):WaitForChild("Net"))
-    local InputStats_upv_1 = require(script.Parent:WaitForChild("InputStats"))
-    InputStats_upv_1.Start()
-    local u1 = Net_1.Event("AnalyticsReport")
-    u1:FireServer("Platform", (platform()))
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local u2 = 0
-    local u3 = 0
-    RunService_upv_1.RenderStepped:Connect(
-        function(a1)
+    local Net = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Net"))
+    local InputStats = require(script.Parent:WaitForChild("InputStats"))
+    InputStats.Start()
+    local v14 = Net.Event("AnalyticsReport")
+    v14:FireServer("Platform", (platform()))
+    local localPlayer = players.LocalPlayer
+    local v16 = 0
+    local v17 = 0
+
+    runService.RenderStepped:Connect(
+        function(deltaTime: number)
             --[[
               line: 49
               upvalues:
-                LocalPlayer_upv_1 (copy, index: 1)
-                u2 (ref,  index: 2)
-                u3 (ref,  index: 3)
+                localPlayer (copy, index: 1)
+                v16 (ref,  index: 2)
+                v17 (ref,  index: 3)
             ]]
-            if LocalPlayer_upv_1:GetAttribute("State") ~= "Match" or LocalPlayer_upv_1:GetAttribute("Alive") ~= true or LocalPlayer_upv_1:GetAttribute("ReplayPlaying") == true then
-                return
+            if localPlayer:GetAttribute("State") == "Match"
+                and localPlayer:GetAttribute("Alive") == true
+                and localPlayer:GetAttribute("ReplayPlaying") ~= true
+            then
+                v16 += 1
+                v17 += deltaTime
             end
-            u2 = u2 + 1
-            u3 = u3 + a1
         end
     )
-    Net_1.Event("MatchEvent").OnClientEvent:Connect(
-        function(a2)
+
+    Net.Event("MatchEvent").OnClientEvent:Connect(
+        function(a19)
             --[[
               line: 55
               upvalues:
-                u2 (ref,  index: 1)
-                u3 (ref,  index: 2)
-                u1 (copy, index: 3)
-                InputStats_upv_1 (copy, index: 4)
+                v16 (ref,  index: 1)
+                v17 (ref,  index: 2)
+                v14 (copy, index: 3)
+                InputStats (copy, index: 4)
             ]]
-            if a2 == "RoundStart" then
-                u2 = 0
-                u3 = 0
-            elseif a2 == "RoundEnd" then
-                if u3 >= 10 then
-                    u1:FireServer("Fps", math.floor(((u2 / u3) * 10) + 0.5) / 10, InputStats_upv_1.Take())
+            if a19 == "RoundStart" then
+                v16 = 0
+                v17 = 0
+
+                return
+            end
+
+            if a19 == "RoundEnd" then
+                if 10 <= v17 then
+                    v14:FireServer("Fps", math.floor(((v16 / v17) * 10) + 0.5) / 10, InputStats.Take())
                 end
-                u2 = 0
-                u3 = 0
+
+                v16 = 0
+                v17 = 0
             end
         end
     )
 end
-return tbl_1
+
+return v7

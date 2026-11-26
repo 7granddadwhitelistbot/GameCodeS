@@ -1,144 +1,150 @@
-local Players_upv_1 = game:GetService("Players")
-local TextChatService_upv_1 = game:GetService("TextChatService")
-local Tribes_upv_1 = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Tribes"))
-local tbl_1 = {}
-local function levelOf(a1)
+local players = game:GetService("Players")
+local textChatService = game:GetService("TextChatService")
+local Tribes = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Tribes"))
+local v4 = {}
+
+local function levelOf(a6)
     --[[
       name: levelOf
       line: 23
     ]]
-    local Character_1 = a1.Character
-    local v1 = Character_1 and (Character_1:GetAttribute("Level"))
-    if type(v1) ~= "number" then
-        v1 = a1:GetAttribute("Level")
+    local v7 = a6.Character
+    v7 = v7
+    v7 = v7 and v7:GetAttribute("Level")
+
+    if type(v7) ~= "number" then
+        v7 = a6:GetAttribute("Level")
     end
-    if type(v1) == "number" and v1 >= 1 then
-        return (math.floor(v1))
+
+    if type(v7) == "number" and 1 <= v7 then
+        return (math.floor(v7))
     end
+
     return nil
 end
-function tbl_1.Init(a1)
+
+function v4.Init(a8)
     --[[
       name: Init
       line: 32
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        TextChatService_upv_1 (copy, index: 3)
+        players (copy, index: 1)
+        Tribes (copy, index: 2)
+        textChatService (copy, index: 3)
     ]]
-    local tbl_upv_2 = {count = 0}
-    local function decorate(a2)
+    local v9 = {count = 0}
+
+    local function decorate(a11)
         --[[
           name: decorate
           line: 36
           upvalues:
-            Players_upv_1 (copy, index: 1)
+            players (copy, index: 1)
+            Tribes (copy, index: 2)
         ]]
-        local v2 = a2.TextSource
-        local v3 = v2 and (Players_upv_1:GetPlayerByUserId(v2.UserId))
-        v2 = v3
-        if v2 then
-            local Character_2 = v3.Character
-            local v4 = Character_2 and (Character_2:GetAttribute("Level"))
-            if type(v4) ~= "number" then
-                v4 = v2:GetAttribute("Level")
+        local v12 = a11.TextSource
+        v12 = v12 and players:GetPlayerByUserId(v12.UserId)
+        local v13 = v12
+        if v13 then
+            local character = v12.Character
+            local level = character and character:GetAttribute("Level")
+
+            if type(level) ~= "number" then
+                level = v12:GetAttribute("Level")
             end
-            if type(v4) == "number" and (v4 >= 1) then
-                v2 = math.floor(v4)
+
+            if type(level) ~= "number" or not (1 <= level) then
+                v13 = nil
             else
-                v2 = nil
+                v13 = math.floor(level)
             end
         end
-        if not v2 then
+
+        if not v13 then
             return nil
         end
-        local v5 = Instance.new("TextChatMessageProperties")
-        local v6 = v2:GetAttribute("TribeTag")
-        local v7 = ""
-        if type(v6) == "string" and v6 ~= "" then
-            v7 = string.format("<font color=\"#%s\">[%s]</font> ", Tribes_upv_1.TextColor(v2:GetAttribute("TribeColor1")):ToHex(), v6)
+
+        local textChatMessageProperties = Instance.new("TextChatMessageProperties")
+        local tribeTag = v12:GetAttribute("TribeTag")
+        local formattedText = ""
+
+        if type(tribeTag) == "string" and tribeTag ~= "" then
+            formattedText = string.format("<font color=\"#%s\">[%s]</font> ", Tribes.TextColor(v12:GetAttribute("TribeColor1")):ToHex(), tribeTag)
         end
-        v5.PrefixText = string.format("<font color=\"%s\">[%d]</font> ", "#AEB5C2", v2) .. v7 .. a2.PrefixText
-        return v5
+
+        textChatMessageProperties.PrefixText = string.format("<font color=\"%s\">[%d]</font> ", "#AEB5C2", v13) .. formattedText .. a11.PrefixText
+
+        return textChatMessageProperties
     end
-    local success_upv_1, v8 = pcall(
+
+    local success, result = pcall(
         function()
             --[[
               line: 54
               upvalues:
-                TextChatService_upv_1 (copy, index: 1)
+                textChatService (copy, index: 1)
                 decorate (copy, index: 2)
-                tbl_upv_2 (copy, index: 3)
+                v9 (copy, index: 3)
             ]]
-            TextChatService_upv_1.OnIncomingMessage = function(a3)
+            textChatService.OnIncomingMessage = function(message: TextChatMessage)
                 --[[
                   line: 55
                   upvalues:
                     decorate (copy, index: 1)
-                    tbl_upv_2 (copy, index: 2)
+                    v9 (copy, index: 2)
                 ]]
-                local v9 = decorate(a3)
-                tbl_upv_2.count = tbl_upv_2.count + 1
-                tbl_upv_2.original = a3.PrefixText
-                local v10
-                if v9 then
-                    v10 = v9.PrefixText
-                else
-                    v10 = a3.PrefixText
-                end
-                tbl_upv_2.prefix = v10
-                return v9
+                local textChatMessageProperties = decorate(message)
+                v9.count += 1
+                v9.original = message.PrefixText
+                v9.prefix = if textChatMessageProperties then textChatMessageProperties.PrefixText else message.PrefixText
+
+                return textChatMessageProperties
             end
         end
     )
-    if not (success_upv_1) then
-        warn("[UI] chat tags: " .. tostring(v8))
+    if not success then
+        warn("[UI] chat tags: " .. tostring(result))
     end
-    a1.Debug.chatTags = function(a4, a5, a6)
+
+    a8.Debug.chatTags = function(a23, a24, a25)
         --[[
           line: 67
           upvalues:
-            Players_upv_1 (copy, index: 1)
+            players (copy, index: 1)
             decorate (copy, index: 2)
-            success_upv_1 (copy, index: 3)
-            tbl_upv_2 (copy, index: 4)
+            success (copy, index: 3)
+            v9 (copy, index: 4)
         ]]
-        if a4 ~= "test" then
-            local tbl_3 = {}
-            tbl_3.hooked = success_upv_1
-            tbl_3.count = tbl_upv_2.count
-            tbl_3.prefix = tbl_upv_2.prefix or false
-            tbl_3.original = tbl_upv_2.original or false
-            return tbl_3
-        else
-            local tbl_4 = {TextSource = 0, PrefixText = 0}
-            local tbl_5 = {UserId = 0}
-            local v11
-            if type(a5) ~= "number" then
-                v11 = Players_upv_1.LocalPlayer.UserId
-            else
-                v11 = a5
-            end
-            tbl_5.UserId = v11
-            tbl_4.TextSource = tbl_5
-            local v12
-            if type(a6) ~= "string" then
-                v12 = Players_upv_1.LocalPlayer.DisplayName
-            else
-                v12 = a6
-            end
-            tbl_4.PrefixText = v12
-            local v13 = decorate(tbl_4)
-            local tbl_6 = {prefix = 0, changed = 0}
-            tbl_6.changed = v13 ~= nil
-            local v14
-            if v13 then
-                v14 = v13.PrefixText
-            else
-                v14 = tbl_4.PrefixText
-            end
-            tbl_6.prefix = v14
-            return tbl_6
+        local v26
+        local v27
+
+        if a23 ~= "test" then
+            return {hooked = success, count = v9.count, prefix = v9.prefix or false, original = v9.original or false}
         end
+
+        local v28 = {}
+        local textSource = {}
+
+        if type(a24) ~= "number" then
+            v26 = players.LocalPlayer.UserId
+        else
+            v26 = a24
+        end
+
+        textSource.UserId = v26
+        v28.TextSource = textSource
+
+        if type(a25) ~= "string" then
+            v27 = players.LocalPlayer.DisplayName
+        else
+            v27 = a25
+        end
+
+        v28.PrefixText = v27
+        local textChatMessageProperties = decorate(v28)
+        local v31 = {changed = textChatMessageProperties ~= nil, prefix = if textChatMessageProperties then textChatMessageProperties.PrefixText else v28.PrefixText}
+        return v31
     end
 end
-return tbl_1
+
+return v4

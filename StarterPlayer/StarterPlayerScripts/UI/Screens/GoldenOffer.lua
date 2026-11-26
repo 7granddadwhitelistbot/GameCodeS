@@ -1,656 +1,819 @@
-local Players_upv_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local Unlocks_upv_1 = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Unlocks"))
-local tbl_1 = {}
-local fromRGB_upv_1 = Color3.fromRGB
-local u1 = fromRGB_upv_1(255, 196, 60)
-local u2 = fromRGB_upv_1(255, 226, 150)
-local u3 = fromRGB_upv_1(92, 50, 4)
-local u4 = fromRGB_upv_1(245, 52, 64)
-function tbl_1.Init(a1)
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local Unlocks = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Unlocks"))
+local v5 = {}
+local color3FromRGB = Color3.fromRGB
+local textColor3 = color3FromRGB(255, 196, 60)
+local color3 = color3FromRGB(255, 226, 150)
+local color32 = color3FromRGB(92, 50, 4)
+local backgroundColor3 = color3FromRGB(245, 52, 64)
+
+function v5.Init(a11)
     --[[
       name: Init
       line: 29
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        Unlocks_upv_1 (copy, index: 2)
-        fromRGB_upv_1 (copy, index: 3)
-        u1 (copy, index: 4)
-        u3 (copy, index: 5)
-        u2 (copy, index: 6)
-        u4 (copy, index: 7)
-        RunService_upv_1 (copy, index: 8)
+        players (copy, index: 1)
+        Unlocks (copy, index: 2)
+        color3FromRGB (copy, index: 3)
+        textColor3 (copy, index: 4)
+        color32 (copy, index: 5)
+        color3 (copy, index: 6)
+        backgroundColor3 (copy, index: 7)
+        runService (copy, index: 8)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local Colors_upv_1 = Theme_1.Colors
-    local Fonts_upv_1 = Theme_1.Fonts
-    local MenuManager_upv_1 = a1.MenuManager
-    local Economy_upv_1 = a1.Economy
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local fromOffset_upv_1 = UDim2.fromOffset
-    local key_upv_1 = Unlocks_upv_1.FIRST_DROP.key
-    local u5 = nil
-    local DropModels_upv_1 = script.Parent.Parent:FindFirstChild("DropModels")
-    local success_1, v1 = pcall(
+    local buildChest
+    local v13
+    local ui = a11.UI
+    local theme = a11.Theme
+    local state = a11.State
+    local colors = theme.Colors
+    local fonts = theme.Fonts
+    local menuManager = a11.MenuManager
+    local economy = a11.Economy
+    local localPlayer = players.LocalPlayer
+    local udim2FromOffset = UDim2.fromOffset
+    local key = Unlocks.FIRST_DROP.key
+    local v24 = nil
+    local dropModels = script.Parent.Parent:FindFirstChild("DropModels")
+
+    local success, DropModels = pcall(
         function()
             --[[
               line: 41
               upvalues:
-                DropModels_upv_1 (copy, index: 1)
+                dropModels (copy, index: 1)
             ]]
-            return require(DropModels_upv_1)
+            local dropModels2 = dropModels
+            return require(dropModels2)
         end
     )
-    if success_1 and type(v1) == "table" then
-        u5 = v1
-    end
-    local u6 = nil
-    local tbl_upv_2 = {}
-    local u7 = 0
-    local u8 = false
-    local tbl_upv_3 = {}
-    local u9 = nil
-    local function buildChest(a2)
-        --[[
-          name: buildChest
-          line: 60
-          upvalues:
-            u5 (ref,  index: 1)
-            fromRGB_upv_1 (copy, index: 2)
-            tbl_upv_3 (copy, index: 3)
-        ]]
-        local v2 = u5 and (u5.Golden)
-        if not v2 then
-            return
+
+    if success then
+        if type(DropModels) ~= "table" then
+            v13 = v24
+        else
+            v13 = DropModels
         end
-        for _, value_upv_1 in v2.parts do
-            local u10 = Instance.new("Part")
-            u10.Anchored = true
-            u10.CanCollide = false
-            u10.CanQuery = false
-            u10.CanTouch = false
-            u10.CastShadow = false
-            u10.Size = Vector3.new(value_upv_1.size[1], value_upv_1.size[2], value_upv_1.size[3])
-            u10.Color = fromRGB_upv_1(value_upv_1.color[1], value_upv_1.color[2], value_upv_1.color[3])
-            pcall(
-                function()
-                    --[[
-                      line: 74
-                      upvalues:
-                        u10 (copy, index: 1)
-                        value_upv_1 (copy, index: 2)
-                    ]]
-                    u10.Material = Enum.Material[value_upv_1.material]
-                end
-            )
-            if value_upv_1.mesh ~= "" then
-                local v3 = Instance.new("SpecialMesh")
-                v3.MeshType = Enum.MeshType.FileMesh
-                v3.MeshId = value_upv_1.mesh
-                v3.TextureId = value_upv_1.tex
-                v3.Scale = Vector3.new(value_upv_1.scale[1], value_upv_1.scale[2], value_upv_1.scale[3])
-                v3.Parent = u10
-            end
-            u10.Parent = a2
-            table.insert(tbl_upv_3, {part = u10, cf = CFrame.new(table.unpack(value_upv_1.cf))})
-        end
+    else
+        v13 = v24
     end
+
+    local v29 = nil
+    local v30 = {}
+    local timestamp = 0
+    local shownThisSession = false
+    local v33 = {}
+    local renderSteppedConnection = nil
+
     local function close()
         --[[
           name: close
           line: 56
           upvalues:
-            MenuManager_upv_1 (copy, index: 1)
+            menuManager (copy, index: 1)
         ]]
-        MenuManager_upv_1.Close("GoldenOffer")
+        menuManager.Close("GoldenOffer")
     end
+
+    buildChest = function(parent)
+        --[[
+          name: buildChest
+          line: 60
+          upvalues:
+            v13 (ref,  index: 1)
+            color3FromRGB (copy, index: 2)
+            v33 (copy, index: 3)
+        ]]
+        local golden = v13 and v13.Golden
+        if not golden then
+            return
+        end
+
+        for _, part in golden.parts do
+            local part2 = Instance.new("Part")
+            part2.Anchored = true
+            part2.CanCollide = false
+            part2.CanQuery = false
+            part2.CanTouch = false
+            part2.CastShadow = false
+            part2.Size = Vector3.new(part.size[1], part.size[2], part.size[3])
+            part2.Color = color3FromRGB(part.color[1], part.color[2], part.color[3])
+            pcall(
+                function()
+                    --[[
+                      line: 74
+                      upvalues:
+                        part2 (copy, index: 1)
+                        part (copy, index: 2)
+                    ]]
+                    part2.Material = Enum.Material[part.material]
+                end
+            )
+
+            if part.mesh ~= "" then
+                local specialMesh = Instance.new("SpecialMesh")
+                specialMesh.MeshType = Enum.MeshType.FileMesh
+                specialMesh.MeshId = part.mesh
+                specialMesh.TextureId = part.tex
+                specialMesh.Scale = Vector3.new(part.scale[1], part.scale[2], part.scale[3])
+                specialMesh.Parent = part2
+            end
+
+            part2.Parent = parent
+            table.insert(v33, {part = part2, cf = CFrame.new(table.unpack(part.cf))})
+        end
+    end
+
     local function build()
         --[[
           name: build
           line: 90
           upvalues:
-            u6 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            fromOffset_upv_1 (copy, index: 3)
-            a1 (copy, index: 4)
+            v29 (ref,  index: 1)
+            ui (copy, index: 2)
+            udim2FromOffset (copy, index: 3)
+            a11 (copy, index: 4)
             close (copy, index: 5)
-            u1 (copy, index: 6)
-            fromRGB_upv_1 (copy, index: 7)
-            u3 (copy, index: 8)
-            tbl_upv_2 (copy, index: 9)
-            u2 (copy, index: 10)
+            textColor3 (copy, index: 6)
+            color3FromRGB (copy, index: 7)
+            color32 (copy, index: 8)
+            v30 (copy, index: 9)
+            color3 (copy, index: 10)
             buildChest (copy, index: 11)
-            Fonts_upv_1 (copy, index: 12)
-            u4 (copy, index: 13)
-            Colors_upv_1 (copy, index: 14)
-            u7 (ref,  index: 15)
-            Economy_upv_1 (copy, index: 16)
-            key_upv_1 (copy, index: 17)
-            MenuManager_upv_1 (copy, index: 18)
+            fonts (copy, index: 12)
+            backgroundColor3 (copy, index: 13)
+            colors (copy, index: 14)
+            timestamp (ref,  index: 15)
+            economy (copy, index: 16)
+            key (copy, index: 17)
+            menuManager (copy, index: 18)
         ]]
-        local v4 = UI_upv_1.Window({HeaderHeight = 80, Subtitle = "Only once, only for your first purchase", Name = "GoldenOffer", Title = "LIMITED-TIME OFFER", Size = fromOffset_upv_1(780, 520), Parent = a1.Canvas.Menus, OnCloseRequested = close})
-        u6 = v4
-        u6.Title.TextColor3 = u1
-        UI_upv_1.SelectionRing(u6.Root)
-        local Content_1 = u6.Content
-        local v5 = {}
-        v5.Name = "Hero"
-        v5.Size = UDim2.new(0, 330, 1, 0)
-        v5.BackgroundColor3 = Color3.new(1, 1, 1)
-        v5.ClipsDescendants = true
-        v5[1], v5[2], v5[3] = UI_upv_1.Corner(14), UI_upv_1.Gradient(fromRGB_upv_1(150, 88, 10), u3, 90), UI_upv_1.Stroke(u1, 2, 0.35)
-        v5.Parent = Content_1
-        local v6 = UI_upv_1.new("Frame", v5)
-        tbl_upv_2.hero = v6
-        tbl_upv_2.rays = UI_upv_1.Image(UI_upv_1.Assets.Fx.Rays, {Name = "Rays", ImageTransparency = 0.62, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.48), Size = UDim2.fromScale(1.9, 1.9), SizeConstraint = Enum.SizeConstraint.RelativeXX, ImageColor3 = u2, Parent = v6})
-        UI_upv_1.Image(UI_upv_1.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 0.35, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromScale(1.1, 0.8), ImageColor3 = fromRGB_upv_1(255, 214, 120), Parent = v6})
-        local v7 = UI_upv_1.new("ViewportFrame", {LightDirection = Vector3.new(0.44999998807907104, -1, 0.550000011920929), Name = "Chest", BackgroundTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromScale(1, 1), SizeConstraint = Enum.SizeConstraint.RelativeXX, Ambient = fromRGB_upv_1(160, 150, 140), LightColor = fromRGB_upv_1(255, 244, 228), Parent = v6})
-        v5 = Instance.new("Camera")
-        v5.FieldOfView = 28
-        v5.CFrame = CFrame.lookAt(Vector3.new(0, 4.599999904632568, -15.5), Vector3.new(0, 2.200000047683716, 0))
-        v5.Parent = v7
-        v7.CurrentCamera = v5
-        buildChest(v7)
-        UI_upv_1.new("TextLabel", {Name = "Caption", Text = "1 \195\151 GOLDEN DROP", FontFace = Fonts_upv_1.Heavy, TextSize = 18, TextColor3 = u2, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16), Size = UDim2.new(1, -20, 0, 22), [1] = UI_upv_1.TextStroke(u3, 2, 0.2), Parent = v6})
-        v5 = UI_upv_1.new("Frame", {Name = "Burst", ZIndex = 5, Rotation = -12, AnchorPoint = Vector2.new(0.5, 0.5), Position = fromOffset_upv_1(70, 70), Size = fromOffset_upv_1(112, 112), Parent = v6})
-        for n_1 = 0, 1 do
-            local tbl_4 = {}
-            tbl_4.Name = "Star" .. n_1
-            tbl_4.AnchorPoint = Vector2.new(0.5, 0.5)
-            tbl_4.Position = UDim2.fromScale(0.5, 0.5)
-            tbl_4.Size = UDim2.fromScale(0.74, 0.74)
-            tbl_4.Rotation = n_1 * 45
-            tbl_4.BackgroundColor3 = u4
-            tbl_4.ZIndex = 5
-            tbl_4[1], tbl_4[2] = UI_upv_1.Corner(8), UI_upv_1.Stroke(fromRGB_upv_1(255, 170, 176), 2, 0.25)
-            tbl_4.Parent = v5
-            UI_upv_1.new("Frame", tbl_4)
+        v29 = ui.Window({Name = "GoldenOffer", Title = "LIMITED-TIME OFFER", Subtitle = "Only once, only for your first purchase", HeaderHeight = 80, Size = udim2FromOffset(780, 520), Parent = a11.Canvas.Menus, OnCloseRequested = close})
+        v29.Title.TextColor3 = textColor3
+        ui.SelectionRing(v29.Root)
+        local content = v29.Content
+        local ui2 = ui.new("Frame", {Name = "Hero", Size = UDim2.new(0, 330, 1, 0), BackgroundColor3 = Color3.new(1, 1, 1), ClipsDescendants = true, ui.Corner(14), ui.Gradient(color3FromRGB(150, 88, 10), color32, 90), (ui.Stroke(textColor3, 2, 0.35)), Parent = content})
+        v30.hero = ui2
+        v30.rays = ui.Image(ui.Assets.Fx.Rays, {Name = "Rays", ImageTransparency = 0.62, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.48), Size = UDim2.fromScale(1.9, 1.9), SizeConstraint = Enum.SizeConstraint.RelativeXX, ImageColor3 = color3, Parent = ui2})
+        ui.Image(ui.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 0.35, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromScale(1.1, 0.8), ImageColor3 = color3FromRGB(255, 214, 120), Parent = ui2})
+        local parent = ui.new("ViewportFrame", {Name = "Chest", BackgroundTransparency = 1, LightDirection = Vector3.new(0.44999998807907104, -1, 0.550000011920929), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromScale(1, 1), SizeConstraint = Enum.SizeConstraint.RelativeXX, Ambient = color3FromRGB(160, 150, 140), LightColor = color3FromRGB(255, 244, 228), Parent = ui2})
+        local currentCamera = Instance.new("Camera")
+        currentCamera.FieldOfView = 28
+        currentCamera.CFrame = CFrame.lookAt(Vector3.new(0, 4.599999904632568, -15.5), Vector3.new(0, 2.200000047683716, 0))
+        currentCamera.Parent = parent
+        parent.CurrentCamera = currentCamera
+        buildChest(parent)
+        ui.new("TextLabel", {Name = "Caption", Text = "1 × GOLDEN DROP", FontFace = fonts.Heavy, TextSize = 18, TextColor3 = color3, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -16), Size = UDim2.new(1, -20, 0, 22), (ui.TextStroke(color32, 2, 0.2)), Parent = ui2})
+        local parent2 = ui.new("Frame", {Name = "Burst", Rotation = -12, ZIndex = 5, AnchorPoint = Vector2.new(0.5, 0.5), Position = udim2FromOffset(70, 70), Size = udim2FromOffset(112, 112), Parent = ui2})
+
+        for index = 0, 1 do
+            ui.new("Frame", {Name = "Star" .. index, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.74, 0.74), Rotation = index * 45, BackgroundColor3 = backgroundColor3, ZIndex = 5, ui.Corner(8), (ui.Stroke(color3FromRGB(255, 170, 176), 2, 0.25)), Parent = parent2})
         end
-        tbl_upv_2.burstScale = UI_upv_1.new("UIScale", {Parent = v5})
-        tbl_upv_2.burstPct = UI_upv_1.new("TextLabel", {Name = "Pct", Text = "SALE", FontFace = Fonts_upv_1.Display, TextSize = 30, TextColor3 = Colors_upv_1.Text, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, -6), Size = UDim2.fromScale(1, 0.4), ZIndex = 6, [1] = UI_upv_1.TextStroke(fromRGB_upv_1(120, 10, 20), 2, 0.2), Parent = v5})
-        tbl_upv_2.burstOff = UI_upv_1.new("TextLabel", {Text = "OFF", Name = "Off", ZIndex = 6, TextSize = 15, FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.Text, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 18), Size = UDim2.fromScale(1, 0.2), Parent = v5})
-        local v8 = UI_upv_1.new("Frame", {Name = "Offer", Position = fromOffset_upv_1(352, 0), Size = UDim2.new(1, -352, 1, 0), Parent = Content_1})
-        tbl_upv_2.col = v8
-        local v9 = UI_upv_1.List(Enum.FillDirection.Vertical, 10)
-        v9.Parent = v8
-        tbl_upv_2.list = v9
-        tbl_upv_2.tag = UI_upv_1.Pill("ONE-TIME OFFER", u4, {LayoutOrder = 1, Transparency = 0, Name = "Tag", Height = 28, TextSize = 14, Parent = v8})
-        tbl_upv_2.title = UI_upv_1.DisplayText({StrokeThickness = 0, Text = "GOLDEN DROP", Name = "Name", LayoutOrder = 2, TextSize = 42, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.new(1, 0, 0, 44), Parent = v8})
-        tbl_upv_2.line = UI_upv_1.new("TextLabel", {LayoutOrder = 3, Text = "", Name = "Line", TextWrapped = true, TextSize = 16, FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Size = UDim2.new(1, 0, 0, 42), Parent = v8})
-        local v10 = UI_upv_1.new("Frame", {LayoutOrder = 4, Name = "Prices", Size = UDim2.new(1, 0, 0, 56), Parent = v8})
-        tbl_upv_2.prices = v10
-        tbl_upv_2.was = UI_upv_1.new("TextLabel", {RichText = true, Text = "", Name = "Was", TextSize = 28, FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, AutomaticSize = Enum.AutomaticSize.X, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 0, 0.5, 2), Size = UDim2.new(0, 0, 0, 30), Parent = v10})
-        tbl_upv_2.slash = UI_upv_1.new("Frame", {Name = "Slash", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1, 8, 0, 3), Rotation = -14, BackgroundColor3 = u4, ZIndex = 3, [1] = UI_upv_1.Corner(2), Parent = tbl_upv_2.was})
-        tbl_upv_2.now = UI_upv_1.DisplayText({StrokeThickness = 0, Text = "", Name = "Now", TextSize = 50, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 110, 0.5, 0), Size = UDim2.new(0, 160, 0, 54), Parent = v10})
-        local tbl_5 = {}
-        tbl_5.Name = "Timer"
-        tbl_5.Size = UDim2.new(1, 0, 0, 64)
-        tbl_5.BackgroundColor3 = u4
-        tbl_5.BackgroundTransparency = 0.86
-        tbl_5.LayoutOrder = 5
-        tbl_5[1], tbl_5[2] = UI_upv_1.Corner(12), UI_upv_1.Stroke(u4, 1.5, 0.55)
-        tbl_5.Parent = v8
-        local v11 = UI_upv_1.new("Frame", tbl_5)
-        tbl_upv_2.timer = v11
-        UI_upv_1.Glyph("clock", 26, fromRGB_upv_1(255, 140, 146), {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.5, 0), Parent = v11})
-        UI_upv_1.new("TextLabel", {Text = "ENDS IN", Name = "Ends", TextSize = 14, FontFace = Fonts_upv_1.Heavy, TextColor3 = fromRGB_upv_1(255, 160, 166), TextXAlignment = Enum.TextXAlignment.Left, Position = fromOffset_upv_1(50, 10), Size = fromOffset_upv_1(80, 18), Parent = v11})
-        tbl_upv_2.left = UI_upv_1.new("TextLabel", {Text = "", Name = "Left", TextSize = 28, FontFace = Fonts_upv_1.Display, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, Position = fromOffset_upv_1(50, 28), Size = fromOffset_upv_1(150, 30), Parent = v11})
-        UI_upv_1.new("TextLabel", {Text = "Then this price is gone for good.", Name = "Gone", TextWrapped = true, TextSize = 13, FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0), Size = UDim2.new(1, -220, 1, -12), Parent = v11})
-        tbl_upv_2.buy = UI_upv_1.Button({LayoutOrder = 6, Name = "Buy", Style = "Success", Text = "", TextSize = 22, Size = UDim2.new(1, 0, 0, 60), Parent = v8})
-        tbl_upv_2.buy.Label.RichText = true
-        tbl_upv_2.buy.Activated:Connect(
+
+        v30.burstScale = ui.new("UIScale", {Parent = parent2})
+        v30.burstPct = ui.new("TextLabel", {Name = "Pct", Text = "SALE", FontFace = fonts.Display, TextSize = 30, TextColor3 = colors.Text, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, -6), Size = UDim2.fromScale(1, 0.4), ZIndex = 6, (ui.TextStroke(color3FromRGB(120, 10, 20), 2, 0.2)), Parent = parent2})
+        v30.burstOff = ui.new("TextLabel", {Name = "Off", Text = "OFF", TextSize = 15, ZIndex = 6, FontFace = fonts.Heavy, TextColor3 = colors.Text, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 18), Size = UDim2.fromScale(1, 0.2), Parent = parent2})
+        local ui3 = ui.new("Frame", {Name = "Offer", Position = udim2FromOffset(352, 0), Size = UDim2.new(1, -352, 1, 0), Parent = content})
+        v30.col = ui3
+        local list = ui.List(Enum.FillDirection.Vertical, 10)
+        list.Parent = ui3
+        v30.list = list
+        v30.tag = ui.Pill("ONE-TIME OFFER", backgroundColor3, {Name = "Tag", Height = 28, TextSize = 14, Transparency = 0, LayoutOrder = 1, Parent = ui3})
+        v30.title = ui.DisplayText({Name = "Name", Text = "GOLDEN DROP", TextSize = 42, StrokeThickness = 0, LayoutOrder = 2, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Left, Size = UDim2.new(1, 0, 0, 44), Parent = ui3})
+        v30.line = ui.new("TextLabel", {Name = "Line", Text = "", TextSize = 16, TextWrapped = true, LayoutOrder = 3, FontFace = fonts.SemiBold, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Size = UDim2.new(1, 0, 0, 42), Parent = ui3})
+        local ui4 = ui.new("Frame", {Name = "Prices", LayoutOrder = 4, Size = UDim2.new(1, 0, 0, 56), Parent = ui3})
+        v30.prices = ui4
+        v30.was = ui.new("TextLabel", {Name = "Was", Text = "", RichText = true, TextSize = 28, FontFace = fonts.Heavy, TextColor3 = colors.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, AutomaticSize = Enum.AutomaticSize.X, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 0, 0.5, 2), Size = UDim2.new(0, 0, 0, 30), Parent = ui4})
+        v30.slash = ui.new("Frame", {Name = "Slash", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1, 8, 0, 3), Rotation = -14, BackgroundColor3 = backgroundColor3, ZIndex = 3, (ui.Corner(2)), Parent = v30.was})
+        v30.now = ui.DisplayText({Name = "Now", Text = "", TextSize = 50, StrokeThickness = 0, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Left, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 110, 0.5, 0), Size = UDim2.new(0, 160, 0, 54), Parent = ui4})
+        local ui5 = ui.new("Frame", {Name = "Timer", Size = UDim2.new(1, 0, 0, 64), BackgroundColor3 = backgroundColor3, BackgroundTransparency = 0.86, LayoutOrder = 5, ui.Corner(12), (ui.Stroke(backgroundColor3, 1.5, 0.55)), Parent = ui3})
+        v30.timer = ui5
+        ui.Glyph("clock", 26, color3FromRGB(255, 140, 146), {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.5, 0), Parent = ui5})
+        ui.new("TextLabel", {Name = "Ends", Text = "ENDS IN", TextSize = 14, FontFace = fonts.Heavy, TextColor3 = color3FromRGB(255, 160, 166), TextXAlignment = Enum.TextXAlignment.Left, Position = udim2FromOffset(50, 10), Size = udim2FromOffset(80, 18), Parent = ui5})
+        v30.left = ui.new("TextLabel", {Name = "Left", Text = "", TextSize = 28, FontFace = fonts.Display, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Left, Position = udim2FromOffset(50, 28), Size = udim2FromOffset(150, 30), Parent = ui5})
+        ui.new("TextLabel", {Name = "Gone", Text = "Then this price is gone for good.", TextSize = 13, TextWrapped = true, FontFace = fonts.SemiBold, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0), Size = UDim2.new(1, -220, 1, -12), Parent = ui5})
+        v30.buy = ui.Button({Name = "Buy", Text = "", TextSize = 22, Style = "Success", LayoutOrder = 6, Size = UDim2.new(1, 0, 0, 60), Parent = ui3})
+        v30.buy.Label.RichText = true
+
+        v30.buy.Activated:Connect(
             function()
                 --[[
                   line: 321
                   upvalues:
-                    u7 (ref,  index: 1)
-                    Economy_upv_1 (copy, index: 2)
-                    key_upv_1 (copy, index: 3)
+                    timestamp (ref,  index: 1)
+                    economy (copy, index: 2)
+                    key (copy, index: 3)
                 ]]
-                if not (os.clock() - u7 > 0.4) then
-                    return
+                if 0.4 < os.clock() - timestamp then
+                    economy.Buy(key)
                 end
-                Economy_upv_1.Buy(key_upv_1)
             end
         )
-        local v12 = UI_upv_1.new("Frame", {Name = "Row", Size = UDim2.new(1, 0, 0, 46), LayoutOrder = 7, [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 10), Parent = v8})
-        tbl_upv_2.row = v12
-        tbl_upv_2.odds = UI_upv_1.Button({LayoutOrder = 1, Name = "Odds", Style = "Dark", Text = "VIEW ODDS", TextSize = 16, Size = UDim2.new(0.5, -5, 1, 0), Parent = v12})
-        tbl_upv_2.odds.Activated:Connect(
+
+        local ui6 = ui.new("Frame", {Name = "Row", Size = UDim2.new(1, 0, 0, 46), LayoutOrder = 7, (ui.List(Enum.FillDirection.Horizontal, 10)), Parent = ui3})
+        v30.row = ui6
+        v30.odds = ui.Button({Name = "Odds", Text = "VIEW ODDS", TextSize = 16, Style = "Dark", LayoutOrder = 1, Size = UDim2.new(0.5, -5, 1, 0), Parent = ui6})
+
+        v30.odds.Activated:Connect(
             function()
                 --[[
                   line: 329
                   upvalues:
-                    u7 (ref,  index: 1)
-                    MenuManager_upv_1 (copy, index: 2)
+                    timestamp (ref,  index: 1)
+                    menuManager (copy, index: 2)
                 ]]
-                if not (os.clock() - u7 > 0.4) then
-                    return
+                if 0.4 < os.clock() - timestamp then
+                    menuManager.Close("GoldenOffer")
+                    task.defer(
+                        function()
+                            --[[
+                              line: 332
+                              upvalues:
+                                menuManager (copy, index: 1)
+                            ]]
+                            menuManager.Open("Collection", {odds = true})
+                        end
+                    )
                 end
-                MenuManager_upv_1.Close("GoldenOffer")
-                task.defer(
-                    function()
-                        --[[
-                          line: 332
-                          upvalues:
-                            MenuManager_upv_1 (copy, index: 1)
-                        ]]
-                        MenuManager_upv_1.Open("Collection", {odds = true})
-                    end
-                )
             end
         )
-        tbl_upv_2.later = UI_upv_1.Button({LayoutOrder = 2, Name = "Later", Style = "Dark", Text = "NOT NOW", TextSize = 16, Size = UDim2.new(0.5, -5, 1, 0), Parent = v12})
-        tbl_upv_2.later.Activated:Connect(
+
+        v30.later = ui.Button({Name = "Later", Text = "NOT NOW", TextSize = 16, Style = "Dark", LayoutOrder = 2, Size = UDim2.new(0.5, -5, 1, 0), Parent = ui6})
+
+        v30.later.Activated:Connect(
             function()
                 --[[
                   line: 338
                   upvalues:
-                    u7 (ref,  index: 1)
-                    MenuManager_upv_1 (copy, index: 2)
+                    timestamp (ref,  index: 1)
+                    menuManager (copy, index: 2)
                 ]]
-                if not (os.clock() - u7 > 0.4) then
-                    return
+                if 0.4 < os.clock() - timestamp then
+                    menuManager.Close("GoldenOffer")
                 end
-                MenuManager_upv_1.Close("GoldenOffer")
             end
         )
     end
+
     local function paint()
         --[[
           name: paint
           line: 345
           upvalues:
-            u6 (ref,  index: 1)
-            Economy_upv_1 (copy, index: 2)
-            tbl_upv_2 (copy, index: 3)
-            key_upv_1 (copy, index: 4)
-            Unlocks_upv_1 (copy, index: 5)
+            v29 (ref,  index: 1)
+            economy (copy, index: 2)
+            v30 (copy, index: 3)
+            key (copy, index: 4)
+            Unlocks (copy, index: 5)
         ]]
-        if not u6 then
+        local flooredValue
+        local v56
+        local text
+
+        if not v29 then
             return
         end
-        local v13 = Economy_upv_1.DropInfo("golden")
-        local v14 = tonumber(v13.stacks) or 4
-        local num_1 = tonumber(v13.min)
-        local num_2 = tonumber(v13.max)
-        if (num_1) and (num_2) then
-            v13 = math.floor(((v14 * (num_1 + num_2)) / 2) + 0.5)
+
+        local v58 = economy.DropInfo("golden")
+        local number = tonumber(v58.stacks) or 4
+        local number2 = tonumber(v58.min)
+        local number3 = tonumber(v58.max)
+
+        if number2 and number3 then
+            flooredValue = math.floor(((number * (number2 + number3)) / 2) + 0.5)
         else
-            v13 = 60
+            flooredValue = 60
         end
-        tbl_upv_2.line.Text = string.format("About %d item shards in %d big stacks. One is always an item you don't own yet.", v13, v14)
-        local v15 = Economy_upv_1.OfferDiscount()
-        local burstPct_1 = tbl_upv_2.burstPct
-        burstPct_1.Text = not v15 and "SALE" or string.format("-%d%%", v15)
-        tbl_upv_2.burstOff.Visible = v15 ~= nil
-        local v17 = Economy_upv_1.Price("drop_golden")
-        local v18 = Economy_upv_1.Price(key_upv_1)
-        local was_1 = tbl_upv_2.was
-        was_1.Text = not v17 and "" or string.format("%s %d", Economy_upv_1.ROBUX, v17)
-        tbl_upv_2.slash.Visible = v17 ~= nil
-        local now_1 = tbl_upv_2.now
-        now_1.Text = not v18 and Economy_upv_1.ROBUX .. " \226\128\166" or string.format("%s %d", Economy_upv_1.ROBUX, v18)
-        local now_2 = tbl_upv_2.now
-        local v21 = (v17 and (math.max(tbl_upv_2.was.TextBounds.X, 60) + 22)) or 0
-        now_2.Position = UDim2.new(0, v21, 0.5, 0)
-        local v22 = Economy_upv_1.Pending(key_upv_1)
-        local buy_1 = tbl_upv_2.buy
-        local v23 = (v22 and "\226\128\166") or (string.format("BUY NOW  <font color=\"#FFFFFF\">%s</font> %s", Economy_upv_1.ROBUX, Economy_upv_1.PriceAmount(key_upv_1)))
-        buy_1:SetText(v23)
-        tbl_upv_2.buy:SetEnabled(not v22)
-        local v24 = Economy_upv_1.OfferLeft() or (Unlocks_upv_1.FIRST_DROP.duration)
-        tbl_upv_2.left.Text = Economy_upv_1.FormatLeft(v24)
+
+        v30.line.Text = string.format("About %d item shards in %d big stacks. One is always an item you don't own yet.", flooredValue, number)
+        local v62 = economy.OfferDiscount()
+        v30.burstPct.Text = not v62 and "SALE" or string.format("-%d%%", v62)
+        v30.burstOff.Visible = v62 ~= nil
+        local v63 = economy.Price("drop_golden")
+        local v64 = economy.Price(key)
+        v30.was.Text = not v63 and "" or string.format("%s %d", economy.ROBUX, v63)
+        v30.slash.Visible = v63 ~= nil
+        v30.now.Text = if v64 then string.format("%s %d", economy.ROBUX, v64) else economy.ROBUX .. " …"
+        local now = v30.now
+        local newUDim2 = UDim2.new
+
+        if v63 then
+            v56 = math.max(v30.was.TextBounds.X, 60) + 22
+            v56 = key
+        else
+            v56 = 0
+            v56 = key
+        end
+
+        now.Position = newUDim2(0, v56, 0.5, 0)
+        local v67 = economy.Pending(v56)
+        local buy = v30.buy
+
+        if v67 then
+            text = "…"
+        else
+            text = string.format("BUY NOW  <font color=\"#FFFFFF\">%s</font> %s", economy.ROBUX, economy.PriceAmount(v56))
+        end
+
+        buy:SetText(text)
+        v30.buy:SetEnabled(not v67)
+        local v69 = economy.OfferLeft() or Unlocks.FIRST_DROP.duration
+        v30.left.Text = economy.FormatLeft(v69)
     end
+
     local function layout()
         --[[
           name: layout
           line: 369
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            u6 (ref,  index: 2)
-            fromOffset_upv_1 (copy, index: 3)
-            tbl_upv_2 (copy, index: 4)
+            ui (copy, index: 1)
+            v29 (ref,  index: 2)
+            udim2FromOffset (copy, index: 3)
+            v30 (copy, index: 4)
             paint (copy, index: 5)
         ]]
-        local v25 = UI_upv_1.CanvasSize()
-        local v26 = UI_upv_1.TopInset()
-        local v27 = UI_upv_1.Compact or (v25.Y - v26 < 600)
-        local v28 = math.floor(math.clamp(v25.X - 24, 360, 780))
-        local v29 = v25.Y - v26 - 12
-        local v30
-        if v27 then
-            v30 = 440
+        local maxValue
+        local v72
+        local v73
+        local v74
+        local v75 = ui.CanvasSize()
+        local v76 = ui.TopInset()
+        local v77 = ui.Compact or v75.Y - v76 < 600
+        local flooredValue = math.floor((math.clamp(v75.X - 24, 360, 780)))
+        local v79 = v75.Y - v76 - 12
+
+        if v77 then
+            maxValue = 440
         else
-            v30 = 520
+            maxValue = 520
         end
-        local v31 = math.floor(math.clamp(v29, 320, v30))
-        local Holder_1 = u6.Holder
-        Holder_1.Size = fromOffset_upv_1(v28, v31)
-        local v32 = (v27 and 270) or 330
-        tbl_upv_2.hero.Size = UDim2.new(0, v32, 1, 0)
-        tbl_upv_2.col.Position = fromOffset_upv_1(v32 + 22, 0)
-        tbl_upv_2.col.Size = UDim2.new(1, -(v32 + 22), 1, 0)
-        local list_1 = tbl_upv_2.list
-        list_1.Padding = UDim.new(0, (v27 and 6) or 10)
-        tbl_upv_2.title.TextSize = (v27 and 34) or 42
-        local title_1 = tbl_upv_2.title
-        title_1.Size = UDim2.new(1, 0, 0, (v27 and 36) or 44)
-        tbl_upv_2.line.TextSize = (v27 and 14) or 16
-        local line_1 = tbl_upv_2.line
-        line_1.Size = UDim2.new(1, 0, 0, (v27 and 36) or 42)
-        local prices_1 = tbl_upv_2.prices
-        prices_1.Size = UDim2.new(1, 0, 0, (v27 and 46) or 56)
-        tbl_upv_2.now.TextSize = (v27 and 40) or 50
-        local timer_1 = tbl_upv_2.timer
-        timer_1.Size = UDim2.new(1, 0, 0, (v27 and 56) or 64)
-        local Instance_1 = tbl_upv_2.buy.Instance
-        Instance_1.Size = UDim2.new(1, 0, 0, (v27 and 52) or 60)
-        local row_1 = tbl_upv_2.row
-        row_1.Size = UDim2.new(1, 0, 0, (v27 and 40) or 46)
-        u6.Refit()
+
+        local flooredValue2 = math.floor((math.clamp(v79, 320, maxValue)))
+        v29.Holder.Size = udim2FromOffset(flooredValue, flooredValue2)
+
+        if v77 then
+            v72 = 270
+        else
+            v72 = 330
+        end
+
+        v30.hero.Size = UDim2.new(0, v72, 1, 0)
+        v30.col.Position = udim2FromOffset(v72 + 22, 0)
+        v30.col.Size = UDim2.new(1, -(v72 + 22), 1, 0)
+        local list = v30.list
+        v79 = UDim.new
+        local v82 = v77 and 6 or 10
+        list.Padding = v79(0, v82)
+        v30.title.TextSize = v77 and 34 or 42
+        local title = v30.title
+        local newUDim2 = UDim2.new
+        local v85 = v77 and 36 or 44
+        title.Size = newUDim2(1, 0, 0, v85)
+        v30.line.TextSize = v77 and 14 or 16
+        local line = v30.line
+        local newUDim22 = UDim2.new
+        local v88 = v77 and 36 or 42
+        line.Size = newUDim22(1, 0, 0, v88)
+        local prices = v30.prices
+        newUDim22 = UDim2.new
+
+        if v77 then
+            v73 = 46
+            v73 = v30
+        else
+            v73 = 56
+            v73 = v30
+        end
+
+        prices.Size = newUDim22(1, 0, 0, v73)
+        v73.now.TextSize = v77 and 40 or 50
+        local timer = v73.timer
+        local newUDim23 = UDim2.new
+
+        if v77 then
+            v74 = 56
+            v74 = v30
+        else
+            v74 = 64
+            v74 = v30
+        end
+
+        timer.Size = newUDim23(1, 0, 0, v74)
+        local instance = v74.buy.Instance
+        newUDim23 = UDim2.new
+        local v93 = v77 and 52 or 60
+        instance.Size = newUDim23(1, 0, 0, v93)
+        local row = v74.row
+        newUDim23 = UDim2.new
+        local v95 = v77 and 40 or 46
+        row.Size = newUDim23(1, 0, 0, v95)
+        v29.Refit()
         paint()
     end
+
     local function startSpin()
         --[[
           name: startSpin
           line: 395
           upvalues:
-            u9 (ref,  index: 1)
-            RunService_upv_1 (copy, index: 2)
+            renderSteppedConnection (ref,  index: 1)
+            runService (copy, index: 2)
+            v33 (copy, index: 3)
+            v30 (copy, index: 4)
         ]]
-        if u9 then
+        if renderSteppedConnection then
             return
         end
-        local _ = os.clock()
-        local v33 = RunService_upv_1.RenderStepped:Connect(function() end)
-        u9 = v33
+
+        local timestamp = os.clock()
+
+        renderSteppedConnection = runService.RenderStepped:Connect(
+            function()
+                --[[
+                  line: 400
+                  upvalues:
+                    timestamp (copy, index: 1)
+                    v33 (copy, index: 2)
+                    v30 (copy, index: 3)
+                ]]
+                local elapsedTime = os.clock() - timestamp
+                local rotationY = math.sin(elapsedTime * 0.9) * 0.4886921905584123 + 0.4188790204786391
+                local y = math.sin(elapsedTime * 1.7) * 0.12
+                local cframe = CFrame.new(0, y, 0) * CFrame.Angles(0, rotationY, 0)
+
+                for _, v103 in v33 do
+                    v103.part.CFrame = cframe * v103.cf
+                end
+
+                v30.rays.Rotation = (elapsedTime * 10) % 360
+                v30.burstScale.Scale = (((function(...) return (...) ^ 3 end)((math.max(0, (math.sin(elapsedTime * 5)))))) * 0.06) + 1
+            end
+        )
     end
+
     local function stopSpin()
         --[[
           name: stopSpin
           line: 413
           upvalues:
-            u9 (ref, index: 1)
+            renderSteppedConnection (ref, index: 1)
         ]]
-        if not u9 then
-            return
+        if renderSteppedConnection then
+            renderSteppedConnection:Disconnect()
+            renderSteppedConnection = nil
         end
-        u9:Disconnect()
-        u9 = nil
     end
-    local tbl_6 = {}
-    function tbl_6.open()
-        --[[
-          name: open
-          line: 421
-          upvalues:
-            u6 (ref,  index: 1)
-            build (copy, index: 2)
-            u7 (ref,  index: 3)
-            u8 (ref,  index: 4)
-            a1 (copy, index: 5)
-            layout (copy, index: 6)
-            u9 (ref,  index: 7)
-            RunService_upv_1 (copy, index: 8)
-            tbl_upv_3 (copy, index: 9)
-            tbl_upv_2 (copy, index: 10)
-            Economy_upv_1 (copy, index: 11)
-            UI_upv_1 (copy, index: 12)
-        ]]
-        if not (u6) then
-            build()
-        end
-        u7 = os.clock()
-        u8 = true
-        a1.SetHudHidden("GoldenOffer", true)
-        layout()
-        u6:Open()
-        if not (u9) then
-            local u11 = os.clock()
-            local v34 = RunService_upv_1.RenderStepped:Connect(
-                function()
-                    --[[
-                      line: 400
-                      upvalues:
-                        u11 (copy, index: 1)
-                        tbl_upv_3 (copy, index: 2)
-                        tbl_upv_2 (copy, index: 3)
-                    ]]
-                    local v35 = os.clock() - u11
-                    local v36 = math.sin(v35 * 0.9) * 0.4886921905584123 + 0.4188790204786391
-                    local v37 = CFrame.new(0, math.sin(v35 * 1.7) * 0.12, 0) * CFrame.Angles(0, v36, 0)
-                    for _, value_2 in tbl_upv_3 do
-                        value_2.part.CFrame = v37 * value_2.cf
-                    end
-                    tbl_upv_2.rays.Rotation = (v35 * 10) % 360
-                    tbl_upv_2.burstScale.Scale = ((math.max(0, math.sin(v35 * 5)) ^ 3) * 0.06) + 1
-                end
-            )
-            u9 = v34
-        end
-        Economy_upv_1.OfferSeen()
-        a1.Sounds.Play("Open")
-        task.delay(
-            0.2,
-            function()
+
+    menuManager.Register(
+        "GoldenOffer",
+        {
+            open = (function()
                 --[[
-                  line: 433
+                  name: open
+                  line: 421
                   upvalues:
-                    u6 (ref,  index: 1)
-                    UI_upv_1 (copy, index: 2)
-                    tbl_upv_2 (copy, index: 3)
+                    v29 (ref,  index: 1)
+                    build (copy, index: 2)
+                    timestamp (ref,  index: 3)
+                    shownThisSession (ref,  index: 4)
+                    a11 (copy, index: 5)
+                    layout (copy, index: 6)
+                    renderSteppedConnection (ref,  index: 7)
+                    runService (copy, index: 8)
+                    v33 (copy, index: 9)
+                    v30 (copy, index: 10)
+                    economy (copy, index: 11)
+                    ui (copy, index: 12)
                 ]]
-                if not u6.IsOpen then
-                    return
+                if not v29 then
+                    build()
                 end
-                UI_upv_1.Pop(tbl_upv_2.burstScale.Parent, 0.7)
-            end
-        )
-    end
-    function tbl_6.close(a3)
-        --[[
-          name: close
-          line: 439
-          upvalues:
-            a1 (copy, index: 1)
-            u9 (ref,  index: 2)
-            u6 (ref,  index: 3)
-        ]]
-        a1.SetHudHidden("GoldenOffer", false)
-        if u9 then
-            u9:Disconnect()
-            u9 = nil
-        end
-        u6:Close(a3)
-    end
-    function tbl_6.select()
-        --[[
-          name: select
-          line: 444
-          upvalues:
-            tbl_upv_2 (copy, index: 1)
-        ]]
-        if tbl_upv_2.buy then
-            return tbl_upv_2.buy.Instance
-        end
-        return nil
-    end
-    MenuManager_upv_1.Register("GoldenOffer", tbl_6)
+
+                timestamp = os.clock()
+                shownThisSession = true
+                a11.SetHudHidden("GoldenOffer", true)
+                layout()
+                v29:Open()
+
+                if not renderSteppedConnection then
+                    local timestamp2 = os.clock()
+
+                    renderSteppedConnection = runService.RenderStepped:Connect(
+                        function()
+                            --[[
+                              line: 400
+                              upvalues:
+                                timestamp2 (copy, index: 1)
+                                v33 (copy, index: 2)
+                                v30 (copy, index: 3)
+                            ]]
+                            local elapsedTime = os.clock() - timestamp2
+                            local rotationY = math.sin(elapsedTime * 0.9) * 0.4886921905584123 + 0.4188790204786391
+                            local y = math.sin(elapsedTime * 1.7) * 0.12
+                            local cframe = CFrame.new(0, y, 0) * CFrame.Angles(0, rotationY, 0)
+
+                            for _, v111 in v33 do
+                                v111.part.CFrame = cframe * v111.cf
+                            end
+
+                            v30.rays.Rotation = (elapsedTime * 10) % 360
+                            v30.burstScale.Scale = (((function(...) return (...) ^ 3 end)((math.max(0, (math.sin(elapsedTime * 5)))))) * 0.06) + 1
+                        end
+                    )
+                end
+
+                economy.OfferSeen()
+                a11.Sounds.Play("Open")
+
+                task.delay(
+                    0.2,
+                    function()
+                        --[[
+                          line: 433
+                          upvalues:
+                            v29 (ref,  index: 1)
+                            ui (copy, index: 2)
+                            v30 (copy, index: 3)
+                        ]]
+                        if v29.IsOpen then
+                            ui.Pop(v30.burstScale.Parent, 0.7)
+                        end
+                    end
+                )
+            end),
+            close = (function(a112)
+                --[[
+                  name: close
+                  line: 439
+                  upvalues:
+                    a11 (copy, index: 1)
+                    renderSteppedConnection (ref,  index: 2)
+                    v29 (ref,  index: 3)
+                ]]
+                a11.SetHudHidden("GoldenOffer", false)
+
+                if renderSteppedConnection then
+                    renderSteppedConnection:Disconnect()
+                    renderSteppedConnection = nil
+                end
+
+                v29:Close(a112)
+            end),
+            select = (function()
+                --[[
+                  name: select
+                  line: 444
+                  upvalues:
+                    v30 (copy, index: 1)
+                ]]
+                if v30.buy then
+                    return v30.buy.Instance
+                end
+
+                return nil
+            end)
+        }
+    )
+
     local function relayout()
         --[[
           name: relayout
           line: 448
           upvalues:
-            u6 (ref,  index: 1)
+            v29 (ref,  index: 1)
             layout (copy, index: 2)
         ]]
-        if not u6 or not u6.IsOpen then
-            return
+        if v29 and v29.IsOpen then
+            layout()
         end
-        layout()
     end
-    UI_upv_1.LayoutChanged:Connect(relayout)
-    UI_upv_1.OnResize(relayout)
-    Economy_upv_1.Changed:Connect(
+
+    ui.LayoutChanged:Connect(relayout)
+    ui.OnResize(relayout)
+
+    economy.Changed:Connect(
         function()
             --[[
               line: 456
               upvalues:
-                u6 (ref,  index: 1)
-                Economy_upv_1 (copy, index: 2)
-                MenuManager_upv_1 (copy, index: 3)
+                v29 (ref,  index: 1)
+                economy (copy, index: 2)
+                menuManager (copy, index: 3)
                 paint (copy, index: 4)
             ]]
-            if not u6 or not u6.IsOpen then
-                return
-            end
-            if Economy_upv_1.GoldenOffer() then
-                paint()
-            else
-                MenuManager_upv_1.Close("GoldenOffer")
+            if v29 and v29.IsOpen then
+                if economy.GoldenOffer() then
+                    paint()
+                else
+                    menuManager.Close("GoldenOffer")
+                end
             end
         end
     )
+
     task.spawn(
         function()
             --[[
               line: 465
               upvalues:
-                u6 (ref,  index: 1)
-                Economy_upv_1 (copy, index: 2)
-                MenuManager_upv_1 (copy, index: 3)
+                v29 (ref,  index: 1)
+                economy (copy, index: 2)
+                menuManager (copy, index: 3)
                 paint (copy, index: 4)
             ]]
-            repeat
+            while true do
                 task.wait(1)
-            until u6
-            if not u6.IsOpen then
-                return
-            end
-            if Economy_upv_1.GoldenOffer() then
-                paint()
-            else
-                MenuManager_upv_1.Close("GoldenOffer")
+
+                if v29 then
+                    if not v29.IsOpen then
+                        continue
+                    end
+
+                    if economy.GoldenOffer() then
+                        paint()
+                    else
+                        menuManager.Close("GoldenOffer")
+                    end
+                end
             end
         end
     )
-    local function wanted()
-        --[[
-          name: wanted
-          line: 488
-          upvalues:
-            Economy_upv_1 (copy, index: 1)
-            u8 (ref,  index: 2)
-            key_upv_1 (copy, index: 3)
-        ]]
-        local v38 = (Economy_upv_1.GoldenOffer() ~= false) and (not u8 and (Economy_upv_1.CanBuy(key_upv_1)))
-        return v38
-    end
-    local u12 = false
-    local function maybeShow()
-        --[[
-          name: maybeShow
-          line: 493
-          upvalues:
-            u12 (ref,  index: 1)
-            Economy_upv_1 (copy, index: 2)
-            u8 (ref,  index: 3)
-            key_upv_1 (copy, index: 4)
-        ]]
-        if not (u12) then
-            local v39 = (Economy_upv_1.GoldenOffer() ~= false) and (not u8 and (Economy_upv_1.CanBuy(key_upv_1)))
-            if not v39 then
-                return
-            end
-            u12 = true
-            task.spawn(function() end)
-        end
-    end
-    Economy_upv_1.Changed:Connect(maybeShow)
-    State_upv_1.PlayerStateChanged:Connect(maybeShow)
+
     local function lobbyQuiet()
         --[[
           name: lobbyQuiet
           line: 479
           upvalues:
-            State_upv_1 (copy, index: 1)
-            MenuManager_upv_1 (copy, index: 2)
-            a1 (copy, index: 3)
-            LocalPlayer_upv_1 (copy, index: 4)
+            state (copy, index: 1)
+            menuManager (copy, index: 2)
+            a11 (copy, index: 3)
+            localPlayer (copy, index: 4)
         ]]
-        local v40 = not State_upv_1.InMatch() and (not MenuManager_upv_1.IsOpen() and (not a1.IsHudHiddenFor("Reveal") and ((LocalPlayer_upv_1:GetAttribute("WelcomeCard") ~= true) and ((LocalPlayer_upv_1:GetAttribute("Teleporting") ~= true) and ((LocalPlayer_upv_1:GetAttribute("Queued") ~= true) and (LocalPlayer_upv_1.Character ~= nil))))))
-        return v40
+        return not state.InMatch()
+            and not menuManager.IsOpen()
+            and not a11.IsHudHiddenFor("Reveal")
+            and localPlayer:GetAttribute("WelcomeCard") ~= true
+            and localPlayer:GetAttribute("Teleporting") ~= true
+            and localPlayer:GetAttribute("Queued") ~= true
+            and localPlayer.Character ~= nil
     end
-    if not (u12) then
-        local v41 = (Economy_upv_1.GoldenOffer() ~= false) and (not u8 and (Economy_upv_1.CanBuy(key_upv_1)))
-        if v41 then
-            u12 = true
-            task.spawn(
-                function()
-                    --[[
-                      line: 498
-                      upvalues:
-                        Economy_upv_1 (copy, index: 1)
-                        u8 (ref,  index: 2)
-                        key_upv_1 (copy, index: 3)
-                        lobbyQuiet (copy, index: 4)
-                        MenuManager_upv_1 (copy, index: 5)
-                        u12 (ref,  index: 6)
-                    ]]
-                    local v42 = nil
-                    local v43 = os.clock()
-                    local v44 = nil
-                    while true do
-                        v44 = false
-                        if Economy_upv_1.GoldenOffer() ~= false then
-                            v44 = not u8 and (Economy_upv_1.CanBuy(key_upv_1))
-                        end
-                        if v44 and os.clock() - v43 < 600 then
-                            if not (lobbyQuiet()) then
-                                v42 = nil
-                                task.wait(0.25)
-                                continue
-                            end
-                            v44 = v42 or (os.clock())
-                            v42 = v44
-                            if os.clock() - v42 >= 1.5 then
-                                break
-                            else
-                                task.wait(0.25)
-                                continue
-                            end
-                        end
-                        u12 = false
-                        return
-                    end
-                    MenuManager_upv_1.Open("GoldenOffer")
-                end
-            )
+
+    local function wanted()
+        --[[
+          name: wanted
+          line: 488
+          upvalues:
+            economy (copy, index: 1)
+            shownThisSession (ref,  index: 2)
+            key (copy, index: 3)
+        ]]
+        return economy.GoldenOffer() ~= false and not shownThisSession and economy.CanBuy(key)
+    end
+
+    local waiting = false
+
+    local function maybeShow()
+        --[[
+          name: maybeShow
+          line: 493
+          upvalues:
+            waiting (ref,  index: 1)
+            economy (copy, index: 2)
+            shownThisSession (ref,  index: 3)
+            key (copy, index: 4)
+            lobbyQuiet (copy, index: 5)
+            menuManager (copy, index: 6)
+        ]]
+        if waiting or economy.GoldenOffer() == false or shownThisSession or not economy.CanBuy(key) then
+            return
         end
+
+        waiting = true
+
+        task.spawn(
+            function()
+                --[[
+                  line: 498
+                  upvalues:
+                    economy (copy, index: 1)
+                    shownThisSession (ref,  index: 2)
+                    key (copy, index: 3)
+                    lobbyQuiet (copy, index: 4)
+                    menuManager (copy, index: 5)
+                    waiting (ref,  index: 6)
+                ]]
+                local timestamp
+                local canBuy, key2, economy2
+                local timestamp2 = os.clock()
+                key2, timestamp = key, nil
+
+                while true do
+                    local timestamp3
+                    canBuy = economy.GoldenOffer() ~= false and not shownThisSession and economy2.CanBuy(key2)
+
+                    if not canBuy then
+                        break
+                    end
+                    if not (os.clock() - timestamp2 < 600) then
+                        break
+                    end
+
+                    if lobbyQuiet() then
+                        timestamp3 = timestamp or os.clock()
+
+                        if 1.5 <= os.clock() - timestamp3 then
+                            menuManager.Open("GoldenOffer")
+                            break
+                        end
+
+                        economy2, key2 = economy, key
+                    else
+                        economy2, key2, timestamp3 = economy, key, nil
+                    end
+
+                    task.wait(0.25)
+                    key2, timestamp = key, timestamp3
+                end
+
+                waiting = false
+            end
+        )
     end
-    a1.Debug.goldenOffer = function(a4)
+
+    economy.Changed:Connect(maybeShow)
+    state.PlayerStateChanged:Connect(maybeShow)
+
+    if not waiting and economy.GoldenOffer() ~= false and not shownThisSession and economy.CanBuy(key) then
+        waiting = true
+
+        task.spawn(
+            function()
+                --[[
+                  line: 498
+                  upvalues:
+                    economy (copy, index: 1)
+                    shownThisSession (ref,  index: 2)
+                    key (copy, index: 3)
+                    lobbyQuiet (copy, index: 4)
+                    menuManager (copy, index: 5)
+                    waiting (ref,  index: 6)
+                ]]
+                local timestamp
+                local canBuy, key2, economy2
+                local timestamp2 = os.clock()
+                key2, timestamp = key, nil
+
+                while true do
+                    local timestamp3
+                    canBuy = economy.GoldenOffer() ~= false and not shownThisSession and economy2.CanBuy(key2)
+
+                    if not canBuy then
+                        break
+                    end
+                    if not (os.clock() - timestamp2 < 600) then
+                        break
+                    end
+
+                    if lobbyQuiet() then
+                        timestamp3 = timestamp or os.clock()
+
+                        if 1.5 <= os.clock() - timestamp3 then
+                            menuManager.Open("GoldenOffer")
+                            break
+                        end
+
+                        economy2, key2 = economy, key
+                    else
+                        economy2, key2, timestamp3 = economy, key, nil
+                    end
+
+                    task.wait(0.25)
+                    key2, timestamp = key, timestamp3
+                end
+
+                waiting = false
+            end
+        )
+    end
+
+    a11.Debug.goldenOffer = function(a130)
         --[[
           line: 520
           upvalues:
-            MenuManager_upv_1 (copy, index: 1)
-            Economy_upv_1 (copy, index: 2)
-            u8 (ref,  index: 3)
-            u12 (ref,  index: 4)
+            menuManager (copy, index: 1)
+            economy (copy, index: 2)
+            shownThisSession (ref,  index: 3)
+            waiting (ref,  index: 4)
         ]]
-        if a4 == "open" then
-            MenuManager_upv_1.Open("GoldenOffer")
+        if a130 == "open" then
+            menuManager.Open("GoldenOffer")
         end
-        local tbl_7 = {}
-        tbl_7.offer = Economy_upv_1.GoldenOffer()
-        tbl_7.left = Economy_upv_1.OfferLeft() or false
-        tbl_7.discount = Economy_upv_1.OfferDiscount() or false
-        tbl_7.open = MenuManager_upv_1.IsOpen("GoldenOffer")
-        tbl_7.shownThisSession = u8
-        tbl_7.waiting = u12
-        return tbl_7
+
+        return {offer = economy.GoldenOffer(), left = economy.OfferLeft() or false, discount = economy.OfferDiscount()
+            or false, open = menuManager.IsOpen("GoldenOffer"), shownThisSession = shownThisSession, waiting = waiting}
     end
 end
-return tbl_1
+
+return v5

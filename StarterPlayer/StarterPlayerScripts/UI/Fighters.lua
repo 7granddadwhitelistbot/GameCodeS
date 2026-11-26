@@ -1,188 +1,206 @@
-local Players_upv_1 = game:GetService("Players")
-local CollectionService_1 = game:GetService("CollectionService")
-local tbl_upv_1 = {}
-tbl_upv_1.Added = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Signal")).new()
-tbl_upv_1.TAGS = {"Combatant", "Bot"}
-local tbl_upv_2 = {}
-local tbl_upv_3 = {}
-local tbl_upv_4 = {}
-local function idOf(a1)
+local players = game:GetService("Players")
+local collectionService = game:GetService("CollectionService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local Signal = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Signal"))
+local v5 = {Added = Signal.new(), TAGS = {"Combatant", "Bot"}}
+local v6 = {}
+local v7 = {}
+local v8 = {}
+
+local function idOf(character: Model)
     --[[
       name: idOf
       line: 23
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    local v1 = a1:GetAttribute("CombatantId")
-    if type(v1) == "string" and v1 ~= "" then
-        return v1
-    end
-    local v2 = Players_upv_1:GetPlayerFromCharacter(a1)
-    if v2 then
-        return "p" .. v2.UserId
-    end
-    return nil
+    local combatantId = character:GetAttribute("CombatantId")
+
+    return if type(combatantId) == "string" and combatantId ~= "" then combatantId elseif const player = players:GetPlayerFromCharacter(character) then "p" .. player.UserId else nil
 end
-local function index(a1)
+
+local function index(character: Model)
     --[[
       name: index
       line: 32
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        players (copy, index: 1)
+        v6 (copy, index: 2)
+        v5 (copy, index: 3)
     ]]
-    local v3 = a1:GetAttribute("CombatantId")
-    local v4
-    if type(v3) ~= "string" or v3 == "" then
-        local v5 = Players_upv_1:GetPlayerFromCharacter(a1)
-        v4 = (v5 and ("p" .. v5.UserId)) or nil
+    local v15
+    local combatantId = character:GetAttribute("CombatantId")
+
+    if type(combatantId) == "string" and combatantId ~= "" then
+        v15 = combatantId
     else
-        v4 = v3
+        v15 = if const player = players:GetPlayerFromCharacter(character) then "p" .. player.UserId else nil
     end
-    if not v4 then
-        return
-    end
-    tbl_upv_2[v4] = a1
-    tbl_upv_1.Added:Fire(v4, a1)
-end
-local function remove(a1)
-    --[[
-      name: remove
-      line: 50
-      upvalues:
-        tbl_upv_4 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
-    ]]
-    local v6 = tbl_upv_4[a1]
-    if v6 then
-        v6:Disconnect()
-        tbl_upv_4[a1] = nil
-    end
-    for key_1, value_1 in tbl_upv_2 do
-        if value_1 == a1 then
-            tbl_upv_2[key_1] = nil
-        end
+
+    if v15 then
+        v6[v15] = character
+        v5.Added:Fire(v15, character)
     end
 end
-local function add(a1)
+
+local function add(a19)
     --[[
       name: add
       line: 40
       upvalues:
-        tbl_upv_4 (copy, index: 1)
-        Players_upv_1 (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
+        v8 (copy, index: 1)
+        players (copy, index: 2)
+        v6 (copy, index: 3)
+        v5 (copy, index: 4)
     ]]
-    if not a1:IsA("Model") then
+    if not a19:IsA("Model") or v8[a19] then
         return
     end
-    if not (tbl_upv_4[a1]) then
-        tbl_upv_4[a1] = a1:GetAttributeChangedSignal("CombatantId"):Connect(
-            function()
-                --[[
-                  line: 44
-                  upvalues:
-                    a1 (copy, index: 1)
-                    Players_upv_1 (copy, index: 2)
-                    tbl_upv_2 (copy, index: 3)
-                    tbl_upv_1 (copy, index: 4)
-                ]]
-                local v7 = a1:GetAttribute("CombatantId")
-                local v8
-                if type(v7) ~= "string" or v7 == "" then
-                    local v9 = Players_upv_1:GetPlayerFromCharacter(a1)
-                    v8 = (v9 and ("p" .. v9.UserId)) or nil
-                else
-                    v8 = v7
-                end
-                if not v8 then
-                    return
-                end
-                tbl_upv_2[v8] = a1
-                tbl_upv_1.Added:Fire(v8, a1)
+
+    local v20
+
+    v8[a19] = a19:GetAttributeChangedSignal("CombatantId"):Connect(
+        function()
+            --[[
+              line: 44
+              upvalues:
+                a19 (copy, index: 1)
+                players (copy, index: 2)
+                v6 (copy, index: 3)
+                v5 (copy, index: 4)
+            ]]
+            local v21
+            local v22 = a19
+            local combatantId = v22:GetAttribute("CombatantId")
+
+            if type(combatantId) == "string" and combatantId ~= "" then
+                v21 = combatantId
+            else
+                v21 = if const player = players:GetPlayerFromCharacter(v22) then "p" .. player.UserId else nil
             end
-        )
-        local v10 = a1:GetAttribute("CombatantId")
-        local v11
-        if type(v10) ~= "string" or v10 == "" then
-            local v12 = Players_upv_1:GetPlayerFromCharacter(a1)
-            v11 = (v12 and ("p" .. v12.UserId)) or nil
-        else
-            v11 = v10
+
+            if v21 then
+                v6[v21] = v22
+                v5.Added:Fire(v21, v22)
+            end
         end
-        if v11 then
-            tbl_upv_2[v11] = a1
-            tbl_upv_1.Added:Fire(v11, a1)
-        end
+    )
+
+    local combatantId = a19:GetAttribute("CombatantId")
+
+    if type(combatantId) == "string" and combatantId ~= "" then
+        v20 = combatantId
+    else
+        v20 = if const player = players:GetPlayerFromCharacter(a19) then "p" .. player.UserId else nil
+    end
+
+    if v20 then
+        v6[v20] = a19
+        v5.Added:Fire(v20, a19)
     end
 end
-for _, value_2 in tbl_upv_1.TAGS do
-    for v1, value_3 in CollectionService_1:GetTagged(value_2) do
-        add(value_3)
-    end
-    CollectionService_1:GetInstanceAddedSignal(value_2):Connect(add)
-    CollectionService_1:GetInstanceRemovedSignal(value_2):Connect(remove)
-end
-for _, value_4 in Players_upv_1:GetPlayers() do
-    tbl_upv_3[value_4.UserId] = true
-    if value_4.Character then
-        add(value_4.Character)
-    end
-    value_4.CharacterAdded:Connect(add)
-    value_4.CharacterRemoving:Connect(remove)
-end
-local function watchPlayer(a1)
+
+local function remove(instance: Instance)
     --[[
-      name: watchPlayer
-      line: 71
+      name: remove
+      line: 50
       upvalues:
-        tbl_upv_3 (copy, index: 1)
-        add (copy, index: 2)
-        remove (copy, index: 3)
+        v8 (copy, index: 1)
+        v6 (copy, index: 2)
     ]]
-    tbl_upv_3[a1.UserId] = true
-    if a1.Character then
-        add(a1.Character)
+    if const v29 = v8[instance] then
+        v29:Disconnect()
+        v8[instance] = nil
     end
-    a1.CharacterAdded:Connect(add)
-    a1.CharacterRemoving:Connect(remove)
+
+    for v30, v31 in v6 do
+        if v31 == instance then
+            v6[v30] = nil
+        end
+    end
 end
-Players_upv_1.PlayerAdded:Connect(watchPlayer)
-function tbl_upv_1.Find(a1)
+
+for _, tag in v5.TAGS do
+    for _, instance in collectionService:GetTagged(tag) do
+        add(instance)
+    end
+
+    collectionService:GetInstanceAddedSignal(tag):Connect(add)
+    collectionService:GetInstanceRemovedSignal(tag):Connect(remove)
+end
+
+for _, player in players:GetPlayers() do
+    v7[player.UserId] = true
+
+    if player.Character then
+        add(player.Character)
+    end
+
+    player.CharacterAdded:Connect(add)
+    player.CharacterRemoving:Connect(remove)
+end
+
+players.PlayerAdded:Connect(
+    function(player: Player)
+        --[[
+          name: watchPlayer
+          line: 71
+          upvalues:
+            v7 (copy, index: 1)
+            add (copy, index: 2)
+            remove (copy, index: 3)
+        ]]
+        v7[player.UserId] = true
+
+        if player.Character then
+            add(player.Character)
+        end
+
+        player.CharacterAdded:Connect(add)
+        player.CharacterRemoving:Connect(remove)
+    end
+)
+
+function v5.Find(text: string)
     --[[
       name: Find
       line: 85
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        Players_upv_1 (copy, index: 2)
+        v6 (copy, index: 1)
+        players (copy, index: 2)
     ]]
-    if type(a1) ~= "string" then
+    if type(text) ~= "string" then
         return nil
     end
-    local v13 = tbl_upv_2[a1]
-    if v13 and v13.Parent then
-        return v13
+
+    local v40 = v6[text]
+
+    if v40 and v40.Parent then
+        return v40
     end
-    if string.sub(a1, 1, 1) == "p" then
-        local num_1 = tonumber(string.sub(a1, 2))
-        local v14 = num_1 and (Players_upv_1:GetPlayerByUserId(num_1))
-        if v14 and v14.Character then
-            return v14.Character
+
+    if string.sub(text, 1, 1) == "p" then
+        local v41 = tonumber((string.sub(text, 2)))
+        local player = v41 and players:GetPlayerByUserId(v41)
+
+        if player and player.Character then
+            return player.Character
         end
     end
+
     return nil
 end
-function tbl_upv_1.IsRealUserId(a1)
+
+function v5.IsRealUserId(key)
     --[[
       name: IsRealUserId
       line: 105
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v7 (copy, index: 1)
     ]]
-    local v15 = (type(a1) == "number") and ((a1 > 0) and (tbl_upv_3[a1] == true))
-    return v15
+    return type(key) == "number" and 0 < key and v7[key] == true
 end
-tbl_upv_1.TrustAllUserIds = false
-return tbl_upv_1
+
+v5.TrustAllUserIds = false
+
+return v5

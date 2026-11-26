@@ -1,677 +1,777 @@
-local tbl_upv_1 = {0.05, 0.1, 0.2}
-local tbl_2 = {}
-local RunService_upv_1 = game:GetService("RunService")
-local Chat_upv_1 = game:GetService("Chat")
-local _ = Chat_upv_1:WaitForChild("ClientChatModules")
-local Parent_1 = script.Parent
-local ClientChatModules_1 = Chat_upv_1:WaitForChild("ClientChatModules")
-local v1 = require(ClientChatModules_1:WaitForChild("ChatSettings")).ErrorMessageTextColor or (Color3.fromRGB(245, 50, 50))
-local tbl_upv_3 = {}
-tbl_upv_3.ChatColor = v1
-local ChatConstants_upv_1 = require(ClientChatModules_1:WaitForChild("ChatConstants"))
-local ChatChannel_upv_1 = require(Parent_1:WaitForChild("ChatChannel"))
-local Speaker_upv_1 = require(Parent_1:WaitForChild("Speaker"))
-local Util_upv_1 = require(Parent_1:WaitForChild("Util"))
-local u1 = nil
+local function UnregisterProcessCommandsFunction(self, a3)
+    --[[
+      name: UnregisterProcessCommandsFunction
+      line: 253
+    ]]
+    if not self.ProcessCommandsFunctions:HasFunction(a3) then
+        error(string.format("ProcessCommandsFunction '%s' does not exist", a3))
+    end
+
+    self.ProcessCommandsFunctions:RemoveFunction(a3)
+end
+
+local function ProcessCommandsFunctionExists(self, a6)
+    --[[
+      name: ProcessCommandsFunctionExists
+      line: 249
+    ]]
+    return self.ProcessCommandsFunctions:HasFunction(a6)
+end
+
+local function RegisterProcessCommandsFunction(self, a9, a10, a11)
+    --[[
+      name: RegisterProcessCommandsFunction
+      line: 242
+    ]]
+    if self.ProcessCommandsFunctions:HasFunction(a9) then
+        error(string.format("ProcessCommandsFunction '%s' already exists", a9))
+    end
+
+    self.ProcessCommandsFunctions:AddFunction(a9, a10, a11)
+end
+
+local function UnregisterFilterMessageFunction(self, a14)
+    --[[
+      name: UnregisterFilterMessageFunction
+      line: 235
+    ]]
+    if not self.FilterMessageFunctions:HasFunction(a14) then
+        error(string.format("FilterMessageFunction '%s' does not exists", a14))
+    end
+
+    self.FilterMessageFunctions:RemoveFunction(a14)
+end
+
+local function FilterMessageFunctionExists(self, a17)
+    --[[
+      name: FilterMessageFunctionExists
+      line: 231
+    ]]
+    return self.FilterMessageFunctions:HasFunction(a17)
+end
+
+local function RegisterFilterMessageFunction(self, a20, a21, a22)
+    --[[
+      name: RegisterFilterMessageFunction
+      line: 224
+    ]]
+    if self.FilterMessageFunctions:HasFunction(a20) then
+        error(string.format("FilterMessageFunction '%s' already exists", a20))
+    end
+
+    self.FilterMessageFunctions:AddFunction(a20, a21, a22)
+end
+
+local function SendGlobalSystemMessage(self, a25)
+    --[[
+      name: SendGlobalSystemMessage
+      line: 218
+    ]]
+    for _, speaker in pairs(self.Speakers) do
+        speaker:SendSystemMessage(a25, nil)
+    end
+end
+
+local function GetSpeakerList(self)
+    --[[
+      name: GetSpeakerList
+      line: 210
+    ]]
+    local v30 = {}
+
+    for _, speaker in pairs(self.Speakers) do
+        table.insert(v30, speaker.Name)
+    end
+
+    return v30
+end
+
+local function GetAutoJoinChannelList(self)
+    --[[
+      name: GetAutoJoinChannelList
+      line: 200
+    ]]
+    local v35 = {}
+
+    for _, chatChannel in pairs(self.ChatChannels) do
+        if chatChannel.AutoJoin then
+            table.insert(v35, chatChannel)
+        end
+    end
+
+    return v35
+end
+
+local function GetChannelList(self)
+    --[[
+      name: GetChannelList
+      line: 190
+    ]]
+    local v40 = {}
+
+    for _, chatChannel in pairs(self.ChatChannels) do
+        if not chatChannel.Private then
+            table.insert(v40, chatChannel.Name)
+        end
+    end
+
+    return v40
+end
+
+local function GetSpeakerByUserOrDisplayName(self, a45)
+    --[[
+      name: GetSpeakerByUserOrDisplayName
+      line: 174
+    ]]
+    if const speaker = self.Speakers[a45:lower()] then
+        return speaker
+    end
+
+    for _, speaker2 in pairs(self.Speakers) do
+        local player = speaker2:GetPlayer()
+
+        if player and player.DisplayName:lower() == a45:lower() then
+            return speaker2
+        end
+    end
+end
+
+local function GetSpeaker(self, a52)
+    --[[
+      name: GetSpeaker
+      line: 170
+    ]]
+    return self.Speakers[a52:lower()]
+end
+
+local function RemoveSpeaker(self, a55)
+    --[[
+      name: RemoveSpeaker
+      line: 151
+    ]]
+    if self.Speakers[a55:lower()] then
+        local name = self.Speakers[a55:lower()].Name
+        self:InternalUnmuteSpeaker(name)
+        self.Speakers[a55:lower()]:InternalDestroy()
+        self.Speakers[a55:lower()] = nil
+        local success, result = pcall(
+            function()
+                --[[
+                  line: 160
+                  upvalues:
+                    self (copy, index: 1)
+                    name (copy, index: 2)
+                ]]
+                self.eSpeakerRemoved:Fire(name)
+            end
+        )
+
+        if not success and result then
+            print("Error removing speaker: " .. result)
+        end
+    else
+        warn("Speaker \"" .. a55 .. "\" does not exist!")
+    end
+end
+
+local function InternalUnmuteSpeaker(self, a61)
+    --[[
+      name: InternalUnmuteSpeaker
+      line: 143
+    ]]
+    for _, chatChannel in pairs(self.ChatChannels) do
+        if chatChannel:IsSpeakerMuted(a61) then
+            chatChannel:UnmuteSpeaker(a61)
+        end
+    end
+end
+
+local function GetChannel(self, a66)
+    --[[
+      name: GetChannel
+      line: 122
+    ]]
+    return self.ChatChannels[a66:lower()]
+end
+
+local function RemoveChannel(self, a69)
+    --[[
+      name: RemoveChannel
+      line: 106
+    ]]
+    if self.ChatChannels[a69:lower()] then
+        local name = self.ChatChannels[a69:lower()].Name
+        self.ChatChannels[a69:lower()]:InternalDestroy()
+        self.ChatChannels[a69:lower()] = nil
+        local success, result = pcall(
+            function()
+                --[[
+                  line: 113
+                  upvalues:
+                    self (copy, index: 1)
+                    name (copy, index: 2)
+                ]]
+                self.eChannelRemoved:Fire(name)
+            end
+        )
+
+        if not success and result then
+            print("Error removing channel: " .. result)
+        end
+    else
+        warn(string.format("Channel %q does not exist.", a69))
+    end
+end
+
+local function FormatMessageToSend(a74, a75, a76)
+    --[[
+      name: FormatMessageToSend
+      line: 42
+    ]]
+    return a76
+end
+
+local v77 = {0.05, 0.1, 0.2}
+local v78 = {}
+local runService = game:GetService("RunService")
+local chat = game:GetService("Chat")
+chat:WaitForChild("ClientChatModules")
+local parent = script.Parent
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local v83 = require(clientChatModules:WaitForChild("ChatSettings")).ErrorMessageTextColor
+    or Color3.fromRGB(245, 50, 50)
+local v84 = {ChatColor = v83}
+local childName = "ChatConstants"
+local child = require(clientChatModules:WaitForChild(childName))
+local ChatChannel = require(parent:WaitForChild("ChatChannel"))
+local Speaker = require(parent:WaitForChild("Speaker"))
+local childName2 = "Util"
+local child2 = require(parent:WaitForChild(childName2))
+local v91 = nil
 pcall(
     function()
         --[[
           line: 38
           upvalues:
-            u1 (ref, index: 1)
+            v91 (ref, index: 1)
         ]]
-        u1 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
+        v91 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
     end
 )
-local v2 = u1 or {}
-u1 = v2
-if not (u1.FormatMessageToSend) or not (u1.LocalizeFormattedMessage) then
-    function u1.FormatMessageToSend(a1, a2, a3)
-        --[[
-          name: FormatMessageToSend
-          line: 42
-        ]]
-        return a3
-    end
+v91 = v91 or {}
+
+if not v91.FormatMessageToSend or not v91.LocalizeFormattedMessage then
+    v91.FormatMessageToSend = FormatMessageToSend
 end
-local function allSpaces(a1)
+
+local function allSpaces(text: string)
     --[[
       name: allSpaces
       line: 45
     ]]
-    local v3 = string.len(string.gsub(a1, " ", "")) == 0
-    return v3
+    return string.len((string.gsub(text, " ", ""))) == 0
 end
-local tbl_upv_4 = {}
-tbl_upv_4.__index = tbl_upv_4
-function tbl_upv_4.AddChannel(a1, a2, a3)
+
+local Class = {}
+Class.__index = Class
+
+function Class.AddChannel(self, a96, autoJoin)
     --[[
       name: AddChannel
       line: 55
       upvalues:
-        u1 (ref,  index: 1)
-        ChatChannel_upv_1 (copy, index: 2)
-        ChatConstants_upv_1 (copy, index: 3)
+        v91 (ref,  index: 1)
+        ChatChannel (copy, index: 2)
+        child (copy, index: 3)
     ]]
-    if a1.ChatChannels[a2:lower()] then
-        error(string.format("Channel %q alrady exists.", a2))
+    if self.ChatChannels[a96:lower()] then
+        error(string.format("Channel %q alrady exists.", a96))
     end
-    local function DefaultChannelCommands(a4, a5)
+
+    local function DefaultChannelCommands(a99, a100)
         --[[
           name: DefaultChannelCommands
           line: 60
           upvalues:
-            a1 (copy, index: 1)
-            a2 (copy, index: 2)
-            u1 (ref,  index: 3)
+            self (copy, index: 1)
+            a96 (copy, index: 2)
+            v91 (ref,  index: 3)
         ]]
-        if a5:lower() ~= "/leave" then
+        if a100:lower() ~= "/leave" then
             return false
         end
-        local v4 = a1:GetChannel(a2)
-        local v5 = a1:GetSpeaker(a4)
-        if v4 and v5 then
-            if v4.Leavable then
-                v5:LeaveChannel(a2)
-                v5:SendSystemMessage(u1:FormatMessageToSend("GameChat_ChatService_YouHaveLeftChannel", string.format("You have left channel '%s'", a2), "RBX_NAME", a2), "System")
+
+        local channel = self:GetChannel(a96)
+        local speaker = self:GetSpeaker(a99)
+
+        if channel and speaker then
+            if channel.Leavable then
+                speaker:LeaveChannel(a96)
+                speaker:SendSystemMessage(v91:FormatMessageToSend("GameChat_ChatService_YouHaveLeftChannel", string.format("You have left channel '%s'", a96), "RBX_NAME", a96), "System")
             else
-                v5:SendSystemMessage(u1:FormatMessageToSend("GameChat_ChatService_CannotLeaveChannel", "You cannot leave this channel."), a2)
+                speaker:SendSystemMessage(v91:FormatMessageToSend("GameChat_ChatService_CannotLeaveChannel", "You cannot leave this channel."), a96)
             end
         end
+
         return true
     end
-    local v6 = ChatChannel_upv_1.new(a1, a2)
-    a1.ChatChannels[a2:lower()] = v6
-    v6:RegisterProcessCommandsFunction("default_commands", DefaultChannelCommands, ChatConstants_upv_1.HighPriority)
-    local success_1, v7 = pcall(
+
+    local chatChannel = ChatChannel.new(self, a96)
+    self.ChatChannels[a96:lower()] = chatChannel
+    chatChannel:RegisterProcessCommandsFunction("default_commands", DefaultChannelCommands, child.HighPriority)
+    local success, result = pcall(
         function()
             --[[
               line: 89
               upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
+                self (copy, index: 1)
+                a96 (copy, index: 2)
             ]]
-            a1.eChannelAdded:Fire(a2)
+            self.eChannelAdded:Fire(a96)
         end
     )
-    if not (success_1) and v7 then
-        print("Error addding channel: " .. v7)
+
+    if not success and result then
+        print("Error addding channel: " .. result)
     end
-    if a3 ~= nil then
-        v6.AutoJoin = a3
-        if a3 then
-            for _, value_1 in pairs(a1.Speakers) do
-                value_1:JoinChannel(a2)
+
+    if autoJoin ~= nil then
+        chatChannel.AutoJoin = autoJoin
+
+        if autoJoin then
+            for _, speaker in pairs(self.Speakers) do
+                speaker:JoinChannel(a96)
             end
         end
     end
-    return v6
+
+    return chatChannel
 end
-function tbl_upv_4.RemoveChannel(a1, a2)
-    --[[
-      name: RemoveChannel
-      line: 106
-    ]]
-    local v8 = nil
-    if a1.ChatChannels[a2:lower()] then
-        local Name_upv_1 = a1.ChatChannels[a2:lower()].Name
-        a1.ChatChannels[a2:lower()]:InternalDestroy()
-        a1.ChatChannels[a2:lower()] = nil
-        local success_2, v8 = pcall(
-            function()
-                --[[
-                  line: 113
-                  upvalues:
-                    a1 (copy, index: 1)
-                    Name_upv_1 (copy, index: 2)
-                ]]
-                a1.eChannelRemoved:Fire(Name_upv_1)
-            end
-        )
-        if (success_2) or not v8 then
-            return
-        end
-        print("Error removing channel: " .. v8)
-    else
-        warn(string.format("Channel %q does not exist.", a2))
-    end
-end
-function tbl_upv_4.GetChannel(a1, a2)
-    --[[
-      name: GetChannel
-      line: 122
-    ]]
-    return a1.ChatChannels[a2:lower()]
-end
-function tbl_upv_4.AddSpeaker(a1, a2)
+
+Class.RemoveChannel = RemoveChannel
+Class.GetChannel = GetChannel
+
+function Class.AddSpeaker(self, a109)
     --[[
       name: AddSpeaker
       line: 127
       upvalues:
-        Speaker_upv_1 (copy, index: 1)
+        Speaker (copy, index: 1)
     ]]
-    if a1.Speakers[a2:lower()] then
-        error("Speaker \"" .. a2 .. "\" already exists!")
+    if self.Speakers[a109:lower()] then
+        error("Speaker \"" .. a109 .. "\" already exists!")
     end
-    local v9 = Speaker_upv_1.new(a1, a2)
-    a1.Speakers[a2:lower()] = v9
-    local success_3, v10 = pcall(
+
+    local speaker = Speaker.new(self, a109)
+    self.Speakers[a109:lower()] = speaker
+    local success, result = pcall(
         function()
             --[[
               line: 135
               upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
+                self (copy, index: 1)
+                a109 (copy, index: 2)
             ]]
-            a1.eSpeakerAdded:Fire(a2)
+            self.eSpeakerAdded:Fire(a109)
         end
     )
-    if not (success_3) and v10 then
-        print("Error adding speaker: " .. v10)
+
+    if not success and result then
+        print("Error adding speaker: " .. result)
     end
-    return v9
+
+    return speaker
 end
-function tbl_upv_4.InternalUnmuteSpeaker(a1, a2)
-    --[[
-      name: InternalUnmuteSpeaker
-      line: 143
-    ]]
-    for _, value_2 in pairs(a1.ChatChannels) do
-        if value_2:IsSpeakerMuted(a2) then
-            value_2:UnmuteSpeaker(a2)
-        end
-    end
-end
-function tbl_upv_4.RemoveSpeaker(a1, a2)
-    --[[
-      name: RemoveSpeaker
-      line: 151
-    ]]
-    local v11 = nil
-    if a1.Speakers[a2:lower()] then
-        local Name_upv_2 = a1.Speakers[a2:lower()].Name
-        a1:InternalUnmuteSpeaker(Name_upv_2)
-        a1.Speakers[a2:lower()]:InternalDestroy()
-        a1.Speakers[a2:lower()] = nil
-        local success_4, v11 = pcall(
-            function()
-                --[[
-                  line: 160
-                  upvalues:
-                    a1 (copy, index: 1)
-                    Name_upv_2 (copy, index: 2)
-                ]]
-                a1.eSpeakerRemoved:Fire(Name_upv_2)
-            end
-        )
-        if (success_4) or not v11 then
-            return
-        end
-        print("Error removing speaker: " .. v11)
-    else
-        warn("Speaker \"" .. a2 .. "\" does not exist!")
-    end
-end
-function tbl_upv_4.GetSpeaker(a1, a2)
-    --[[
-      name: GetSpeaker
-      line: 170
-    ]]
-    return a1.Speakers[a2:lower()]
-end
-function tbl_upv_4.GetSpeakerByUserOrDisplayName(a1, a2)
-    --[[
-      name: GetSpeakerByUserOrDisplayName
-      line: 174
-    ]]
-    local v12 = a1.Speakers[a2:lower()]
-    if v12 then
-        return v12
-    end
-    for _, value_3 in pairs(a1.Speakers) do
-        local v13 = value_3:GetPlayer()
-        if not (v13) or v13.DisplayName:lower() ~= a2:lower() then
-            continue
-        end
-        return value_3
-    end
-end
-function tbl_upv_4.GetChannelList(a1)
-    --[[
-      name: GetChannelList
-      line: 190
-    ]]
-    local tbl_5 = {}
-    for _, value_4 in pairs(a1.ChatChannels) do
-        if not (value_4.Private) then
-            table.insert(tbl_5, value_4.Name)
-        end
-    end
-    return tbl_5
-end
-function tbl_upv_4.GetAutoJoinChannelList(a1)
-    --[[
-      name: GetAutoJoinChannelList
-      line: 200
-    ]]
-    local tbl_6 = {}
-    for _, value_5 in pairs(a1.ChatChannels) do
-        if value_5.AutoJoin then
-            table.insert(tbl_6, value_5)
-        end
-    end
-    return tbl_6
-end
-function tbl_upv_4.GetSpeakerList(a1)
-    --[[
-      name: GetSpeakerList
-      line: 210
-    ]]
-    local tbl_7 = {}
-    for _, value_6 in pairs(a1.Speakers) do
-        table.insert(tbl_7, value_6.Name)
-    end
-    return tbl_7
-end
-function tbl_upv_4.SendGlobalSystemMessage(a1, a2)
-    --[[
-      name: SendGlobalSystemMessage
-      line: 218
-    ]]
-    for _, value_7 in pairs(a1.Speakers) do
-        value_7:SendSystemMessage(a2, nil)
-    end
-end
-function tbl_upv_4.RegisterFilterMessageFunction(a1, a2, a3, a4)
-    --[[
-      name: RegisterFilterMessageFunction
-      line: 224
-    ]]
-    if a1.FilterMessageFunctions:HasFunction(a2) then
-        error(string.format("FilterMessageFunction '%s' already exists", a2))
-    end
-    a1.FilterMessageFunctions:AddFunction(a2, a3, a4)
-end
-function tbl_upv_4.FilterMessageFunctionExists(a1, a2)
-    --[[
-      name: FilterMessageFunctionExists
-      line: 231
-    ]]
-    return a1.FilterMessageFunctions:HasFunction(a2)
-end
-function tbl_upv_4.UnregisterFilterMessageFunction(a1, a2)
-    --[[
-      name: UnregisterFilterMessageFunction
-      line: 235
-    ]]
-    if not (a1.FilterMessageFunctions:HasFunction(a2)) then
-        error(string.format("FilterMessageFunction '%s' does not exists", a2))
-    end
-    a1.FilterMessageFunctions:RemoveFunction(a2)
-end
-function tbl_upv_4.RegisterProcessCommandsFunction(a1, a2, a3, a4)
-    --[[
-      name: RegisterProcessCommandsFunction
-      line: 242
-    ]]
-    if a1.ProcessCommandsFunctions:HasFunction(a2) then
-        error(string.format("ProcessCommandsFunction '%s' already exists", a2))
-    end
-    a1.ProcessCommandsFunctions:AddFunction(a2, a3, a4)
-end
-function tbl_upv_4.ProcessCommandsFunctionExists(a1, a2)
-    --[[
-      name: ProcessCommandsFunctionExists
-      line: 249
-    ]]
-    return a1.ProcessCommandsFunctions:HasFunction(a2)
-end
-function tbl_upv_4.UnregisterProcessCommandsFunction(a1, a2)
-    --[[
-      name: UnregisterProcessCommandsFunction
-      line: 253
-    ]]
-    if not (a1.ProcessCommandsFunctions:HasFunction(a2)) then
-        error(string.format("ProcessCommandsFunction '%s' does not exist", a2))
-    end
-    a1.ProcessCommandsFunctions:RemoveFunction(a2)
-end
-local u2 = 0
-local u3 = 0
-local u4 = 0
-function tbl_upv_4.InternalNotifyFilterIssue(a1)
+
+Class.InternalUnmuteSpeaker = InternalUnmuteSpeaker
+Class.RemoveSpeaker = RemoveSpeaker
+Class.GetSpeaker = GetSpeaker
+Class.GetSpeakerByUserOrDisplayName = GetSpeakerByUserOrDisplayName
+Class.GetChannelList = GetChannelList
+Class.GetAutoJoinChannelList = GetAutoJoinChannelList
+Class.GetSpeakerList = GetSpeakerList
+Class.SendGlobalSystemMessage = SendGlobalSystemMessage
+Class.RegisterFilterMessageFunction = RegisterFilterMessageFunction
+Class.FilterMessageFunctionExists = FilterMessageFunctionExists
+Class.UnregisterFilterMessageFunction = UnregisterFilterMessageFunction
+Class.RegisterProcessCommandsFunction = RegisterProcessCommandsFunction
+Class.ProcessCommandsFunctionExists = ProcessCommandsFunctionExists
+Class.UnregisterProcessCommandsFunction = UnregisterProcessCommandsFunction
+local time = 0
+local time2 = 0
+local v115 = 0
+
+function Class.InternalNotifyFilterIssue(self)
     --[[
       name: InternalNotifyFilterIssue
       line: 263
       upvalues:
-        u3 (ref,  index: 1)
-        u4 (ref,  index: 2)
-        u2 (ref,  index: 3)
-        u1 (ref,  index: 4)
-        tbl_upv_3 (copy, index: 5)
+        time2 (ref,  index: 1)
+        v115 (ref,  index: 2)
+        time (ref,  index: 3)
+        v91 (ref,  index: 4)
+        v84 (copy, index: 5)
     ]]
-    if tick() - u3 > 60 then
-        u4 = 0
+    if 60 < tick() - time2 then
+        v115 = 0
     end
-    u4 = u4 + 1
-    u3 = tick()
-    if not (u4 >= 3) then
-        return
-    end
-    if tick() - u2 > 60 then
-        u2 = tick()
-        local v14 = a1:GetChannel("System")
-        if not v14 then
-            return
+
+    v115 += 1
+    time2 = tick()
+
+    if 3 <= v115 and 60 < tick() - time then
+        time = tick()
+
+        if const channel = self:GetChannel("System") then
+            channel:SendSystemMessage(v91:FormatMessageToSend("GameChat_ChatService_ChatFilterIssues", "The chat filter is currently experiencing issues and messages may be slow to appear."), v84)
         end
-        v14:SendSystemMessage(u1:FormatMessageToSend("GameChat_ChatService_ChatFilterIssues", "The chat filter is currently experiencing issues and messages may be slow to appear."), tbl_upv_3)
     end
 end
-local tbl_upv_8 = {}
-function tbl_upv_4.InternalApplyRobloxFilter(a1, a2, a3, a4)
+
+local v118 = {}
+
+function Class.InternalApplyRobloxFilter(self, a120, stringToFilter: string, a122)
     --[[
       name: InternalApplyRobloxFilter
       line: 292
       upvalues:
-        RunService_upv_1 (copy, index: 1)
-        Chat_upv_1 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
-        tbl_upv_8 (copy, index: 4)
+        runService (copy, index: 1)
+        chat (copy, index: 2)
+        v77 (copy, index: 3)
+        v118 (copy, index: 4)
     ]]
-    if RunService_upv_1:IsServer() then
-        if RunService_upv_1:IsStudio() then
-            if not (tbl_upv_8[a3]) then
-                tbl_upv_8[a3] = true
-                wait()
+    if runService:IsServer() and not runService:IsStudio() then
+        local v123 = self:GetSpeaker(a120)
+        local speaker = a122 and self:GetSpeaker(a122)
+
+        if v123 == nil then
+            return nil
+        end
+
+        local playerFrom = v123:GetPlayer()
+        v123 = speaker and speaker:GetPlayer()
+
+        if playerFrom == nil then
+            return stringToFilter
+        end
+        if string.len((string.gsub(stringToFilter, " ", ""))) == 0 then
+            return stringToFilter
+        end
+
+        local result
+        local time = tick()
+        local count = 0
+
+        while true do
+            local success
+
+            success, result = pcall(
+                function()
+                    --[[
+                      line: 315
+                      upvalues:
+                        v123 (copy, index: 1)
+                        chat (copy, index: 2)
+                        stringToFilter (copy, index: 3)
+                        playerFrom (copy, index: 4)
+                    ]]
+                    if v123 then
+                        return chat:FilterStringAsync(stringToFilter, playerFrom, v123)
+                    end
+
+                    return chat:FilterStringForBroadcast(stringToFilter, playerFrom)
+                end
+            )
+
+            if success then
+                break
             end
-            return a3
-        else
-            local v15 = a1:GetSpeaker(a2)
-            local v16 = a4 and (a1:GetSpeaker(a4))
-            if v15 == nil then
+
+            warn("Error filtering message:", result)
+            count += 1
+
+            if 3 < count or 60 < tick() - time then
+                self:InternalNotifyFilterIssue()
                 return nil
             end
-            local u5 = v15:GetPlayer()
-            local u6 = v16 and (v16:GetPlayer())
-            if u5 == nil then
-                return a3
-            end
-            local v17 = string.len(string.gsub(a3, " ", "")) == 0
-            if v17 then
-                return a3
-            end
-            local time_1 = tick()
-            local v18 = 0
-            local v19 = nil
-            while true do
-                local success_5, v19 = pcall(
-                    function()
-                        --[[
-                          line: 315
-                          upvalues:
-                            u6 (copy, index: 1)
-                            Chat_upv_1 (copy, index: 2)
-                            a3 (copy, index: 3)
-                            u5 (copy, index: 4)
-                        ]]
-                        if u6 then
-                            return Chat_upv_1:FilterStringAsync(a3, u5, u6)
-                        end
-                        return Chat_upv_1:FilterStringForBroadcast(a3, u5)
-                    end
-                )
-                if success_5 then
-                    break
-                end
-                warn("Error filtering message:", v19)
-                v18 = v18 + 1
-                if v18 > 3 or tick() - time_1 > 60 then
-                    a1:InternalNotifyFilterIssue()
-                    return nil
-                end
-                local v20 = tbl_upv_1[math.min(#tbl_upv_1, v18)]
-                wait(v20 + (((math.random() * 2) - 1) * v20))
-            end
-            return v19
+
+            local v130 = v77[math.min(#v77, count)]
+            wait(v130 + (((math.random() * 2) - 1) * v130))
         end
-    else
-        if not (tbl_upv_8[a3]) then
-            tbl_upv_8[a3] = true
-            wait()
-        end
-        return a3
+
+        return result
     end
+
+    if not v118[stringToFilter] then
+        v118[stringToFilter] = true
+        wait()
+    end
+
+    return stringToFilter
 end
-function tbl_upv_4.InternalApplyRobloxFilterAndTranslate(a1, a2, a3, a4, a5)
+
+function Class.InternalApplyRobloxFilterAndTranslate(self, a132, targetLocales, stringToFilter: string, textContext: Enum.TextFilterContext?)
     --[[
       name: InternalApplyRobloxFilterAndTranslate
       line: 351
       upvalues:
-        RunService_upv_1 (copy, index: 1)
+        runService (copy, index: 1)
     ]]
-    local v21 = RunService_upv_1:IsServer() and (not RunService_upv_1:IsStudio())
-    if v21 then
-        local v22 = a1:GetSpeaker(a2)
-        if v22 == nil then
-            return false, nil, nil
-        end
-        local u7 = v22:GetPlayer()
-        if u7 == nil then
-            return true, false, a4
-        end
-        local v23 = string.len(string.gsub(a4, " ", "")) == 0
-        if v23 then
-            return true, false, a4
-        end
-        local success_6, v24 = pcall(
-            function()
-                --[[
-                  line: 369
-                  upvalues:
-                    a4 (copy, index: 1)
-                    u7 (copy, index: 2)
-                    a3 (copy, index: 3)
-                    a5 (copy, index: 4)
-                ]]
-                return (game:GetService("TextService"):FilterAndTranslateStringAsync(a4, u7.UserId, a3, a5))
-            end
-        )
-        if success_6 then
-            return true, true, v24
-        end
-        warn("Error filtering and translating message", a4, v24)
-        a1:InternalNotifyFilterIssue()
+    local v136 = runService:IsServer() and not runService:IsStudio()
+    if not v136 then
+        wait()
+        return true, false, stringToFilter
+    end
+
+    local speaker = self:GetSpeaker(a132)
+    if speaker == nil then
         return false, nil, nil
     end
-    wait()
-    return true, false, a4
+
+    local player = speaker:GetPlayer()
+    if player == nil then
+        return true, false, stringToFilter
+    end
+    if string.len((string.gsub(stringToFilter, " ", ""))) == 0 then
+        return true, false, stringToFilter
+    end
+
+    local success, result = pcall(
+        function()
+            --[[
+              line: 369
+              upvalues:
+                stringToFilter (copy, index: 1)
+                player (copy, index: 2)
+                targetLocales (copy, index: 3)
+                textContext (copy, index: 4)
+            ]]
+            local textService = game:GetService("TextService")
+            return (textService:FilterAndTranslateStringAsync(stringToFilter, player.UserId, targetLocales, textContext))
+        end
+    )
+
+    if success then
+        return true, true, result
+    end
+
+    warn("Error filtering and translating message", stringToFilter, result)
+    self:InternalNotifyFilterIssue()
+
+    return false, nil, nil
 end
-function tbl_upv_4.InternalApplyRobloxFilterNewAPI(a1, a2, a3, a4)
+
+function Class.InternalApplyRobloxFilterNewAPI(self, a143, stringToFilter: string, textContext: Enum.TextFilterContext?)
     --[[
       name: InternalApplyRobloxFilterNewAPI
       line: 388
       upvalues:
-        RunService_upv_1 (copy, index: 1)
+        runService (copy, index: 1)
     ]]
-    local v25 = RunService_upv_1:IsServer() and (not RunService_upv_1:IsStudio())
-    if v25 then
-        local v26 = a1:GetSpeaker(a2)
-        if v26 == nil then
-            return false, nil, nil
-        end
-        local u8 = v26:GetPlayer()
-        if u8 == nil then
-            return true, false, a3
-        end
-        local v27 = string.len(string.gsub(a3, " ", "")) == 0
-        if v27 then
-            return true, false, a3
-        end
-        local success_7, v28 = pcall(
-            function()
-                --[[
-                  line: 407
-                  upvalues:
-                    a3 (copy, index: 1)
-                    u8 (copy, index: 2)
-                    a4 (copy, index: 3)
-                ]]
-                return (game:GetService("TextService"):FilterStringAsync(a3, u8.UserId, a4))
-            end
-        )
-        if success_7 then
-            return true, true, v28
-        end
-        warn("Error filtering message:", a3, v28)
-        a1:InternalNotifyFilterIssue()
+    local v146 = runService:IsServer() and not runService:IsStudio()
+    if not v146 then
+        wait()
+        return true, false, stringToFilter
+    end
+
+    local speaker = self:GetSpeaker(a143)
+    if speaker == nil then
         return false, nil, nil
     end
-    wait()
-    return true, false, a3
+
+    local player = speaker:GetPlayer()
+    if player == nil then
+        return true, false, stringToFilter
+    end
+    if string.len((string.gsub(stringToFilter, " ", ""))) == 0 then
+        return true, false, stringToFilter
+    end
+
+    local success, result = pcall(
+        function()
+            --[[
+              line: 407
+              upvalues:
+                stringToFilter (copy, index: 1)
+                player (copy, index: 2)
+                textContext (copy, index: 3)
+            ]]
+            local textService = game:GetService("TextService")
+            return (textService:FilterStringAsync(stringToFilter, player.UserId, textContext))
+        end
+    )
+
+    if success then
+        return true, true, result
+    end
+
+    warn("Error filtering message:", stringToFilter, result)
+    self:InternalNotifyFilterIssue()
+
+    return false, nil, nil
 end
-function tbl_upv_4.InternalDoMessageFilter(a1, a2, a3, a4)
+
+function Class.InternalDoMessageFilter(self, a153, a154, a155)
     --[[
       name: InternalDoMessageFilter
       line: 426
     ]]
-    for key_1, value_upv_8, _ in a1.FilterMessageFunctions:GetIterator() do
-        local success_8, v29 = pcall(
+    local iterator = self.FilterMessageFunctions:GetIterator()
+
+    for v157, v158, _ in iterator do
+        local success, result = pcall(
             function()
                 --[[
                   line: 430
                   upvalues:
-                    value_upv_8 (copy, index: 1)
-                    a2 (copy, index: 2)
-                    a3 (copy, index: 3)
-                    a4 (copy, index: 4)
+                    v158 (copy, index: 1)
+                    a153 (copy, index: 2)
+                    a154 (copy, index: 3)
+                    a155 (copy, index: 4)
                 ]]
-                value_upv_8(a2, a3, a4)
+                v158(a153, a154, a155)
             end
         )
-        if not (success_8) then
-            warn(string.format("DoMessageFilter Function '%s' failed for reason: %s", key_1, v29))
+        if not success then
+            warn(string.format("DoMessageFilter Function '%s' failed for reason: %s", v157, result))
         end
     end
 end
-function tbl_upv_4.InternalDoProcessCommands(a1, a2, a3, a4)
+
+function Class.InternalDoProcessCommands(self, a163, a164, a165)
     --[[
       name: InternalDoProcessCommands
       line: 440
     ]]
-    for key_2, value_upv_9, _ in a1.ProcessCommandsFunctions:GetIterator() do
-        local success_9, v30 = pcall(
+    local iterator = self.ProcessCommandsFunctions:GetIterator()
+
+    for v167, v168, _ in iterator do
+        local success, result = pcall(
             function()
                 --[[
                   line: 444
                   upvalues:
-                    value_upv_9 (copy, index: 1)
-                    a2 (copy, index: 2)
-                    a3 (copy, index: 3)
-                    a4 (copy, index: 4)
+                    v168 (copy, index: 1)
+                    a163 (copy, index: 2)
+                    a164 (copy, index: 3)
+                    a165 (copy, index: 4)
                 ]]
-                local v31 = value_upv_9(a2, a3, a4)
-                if type(v31) ~= "boolean" then
+                local v172 = v168(a163, a164, a165)
+
+                if type(v172) ~= "boolean" then
                     error("Process command functions must return a bool")
                 end
-                return v31
+
+                return v172
             end
         )
-        if not (success_9) then
-            warn(string.format("DoProcessCommands Function '%s' failed for reason: %s", key_2, v30))
-            continue
-        elseif not (v30) then
-            continue
+
+        if success then
+            if result then
+                return true
+            end
         else
-            return true
+            warn(string.format("DoProcessCommands Function '%s' failed for reason: %s", v167, result))
         end
     end
+
     return false
 end
-function tbl_upv_4.InternalGetUniqueMessageId(a1)
+
+function Class.InternalGetUniqueMessageId(self)
     --[[
       name: InternalGetUniqueMessageId
       line: 462
     ]]
-    local MessageIdCounter_1 = a1.MessageIdCounter
-    a1.MessageIdCounter = MessageIdCounter_1 + 1
-    return MessageIdCounter_1
+    local messageIdCounter = self.MessageIdCounter
+    self.MessageIdCounter = messageIdCounter + 1
+
+    return messageIdCounter
 end
-function tbl_upv_4.InternalAddSpeakerWithPlayerObject(a1, a2, a3, a4)
+
+function Class.InternalAddSpeakerWithPlayerObject(self, a176, a177, a178)
     --[[
       name: InternalAddSpeakerWithPlayerObject
       line: 468
       upvalues:
-        Speaker_upv_1 (copy, index: 1)
+        Speaker (copy, index: 1)
     ]]
-    if a1.Speakers[a2:lower()] then
-        error("Speaker \"" .. a2 .. "\" already exists!")
+    if self.Speakers[a176:lower()] then
+        error("Speaker \"" .. a176 .. "\" already exists!")
     end
-    local v32 = Speaker_upv_1.new(a1, a2)
-    v32:InternalAssignPlayerObject(a3)
-    a1.Speakers[a2:lower()] = v32
-    if a4 then
-        local success_10, v33 = pcall(
+
+    local speaker = Speaker.new(self, a176)
+    speaker:InternalAssignPlayerObject(a177)
+    self.Speakers[a176:lower()] = speaker
+
+    if a178 then
+        local success, result = pcall(
             function()
                 --[[
                   line: 478
                   upvalues:
-                    a1 (copy, index: 1)
-                    a2 (copy, index: 2)
+                    self (copy, index: 1)
+                    a176 (copy, index: 2)
                 ]]
-                a1.eSpeakerAdded:Fire(a2)
+                self.eSpeakerAdded:Fire(a176)
             end
         )
-        if not (success_10) and v33 then
-            print("Error adding speaker: " .. v33)
+
+        if not success and result then
+            print("Error adding speaker: " .. result)
         end
     end
-    return v32
+
+    return speaker
 end
-function tbl_upv_4.InternalFireSpeakerAdded(a1, a2)
+
+function Class.InternalFireSpeakerAdded(self, a183)
     --[[
       name: InternalFireSpeakerAdded
       line: 487
     ]]
-    local success_11, v34 = pcall(
+    local success, result = pcall(
         function()
             --[[
               line: 488
               upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
+                self (copy, index: 1)
+                a183 (copy, index: 2)
             ]]
-            a1.eSpeakerAdded:Fire(a2)
+            self.eSpeakerAdded:Fire(a183)
         end
     )
-    if (success_11) or not v34 then
-        return
+
+    if not success and result then
+        print("Error firing speaker added: " .. result)
     end
-    print("Error firing speaker added: " .. v34)
 end
-function tbl_2.new()
+
+function v78.new()
     --[[
       name: new
       line: 497
       upvalues:
-        tbl_upv_4 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
+        Class (copy, index: 1)
+        child2 (copy, index: 2)
     ]]
-    local v35 = setmetatable({}, tbl_upv_4)
-    v35.MessageIdCounter = 0
-    v35.ChatChannels = {}
-    v35.Speakers = {}
-    v35.FilterMessageFunctions = Util_upv_1:NewSortedFunctionContainer()
-    v35.ProcessCommandsFunctions = Util_upv_1:NewSortedFunctionContainer()
-    v35.eChannelAdded = Instance.new("BindableEvent")
-    v35.eChannelRemoved = Instance.new("BindableEvent")
-    v35.eSpeakerAdded = Instance.new("BindableEvent")
-    v35.eSpeakerRemoved = Instance.new("BindableEvent")
-    v35.ChannelAdded = v35.eChannelAdded.Event
-    v35.ChannelRemoved = v35.eChannelRemoved.Event
-    v35.SpeakerAdded = v35.eSpeakerAdded.Event
-    v35.SpeakerRemoved = v35.eSpeakerRemoved.Event
-    v35.ChatServiceMajorVersion = 0
-    v35.ChatServiceMinorVersion = 5
-    return v35
+    local v186 = setmetatable({}, Class)
+    v186.MessageIdCounter = 0
+    v186.ChatChannels = {}
+    v186.Speakers = {}
+    v186.FilterMessageFunctions = child2:NewSortedFunctionContainer()
+    v186.ProcessCommandsFunctions = child2:NewSortedFunctionContainer()
+    v186.eChannelAdded = Instance.new("BindableEvent")
+    v186.eChannelRemoved = Instance.new("BindableEvent")
+    v186.eSpeakerAdded = Instance.new("BindableEvent")
+    v186.eSpeakerRemoved = Instance.new("BindableEvent")
+    v186.ChannelAdded = v186.eChannelAdded.Event
+    v186.ChannelRemoved = v186.eChannelRemoved.Event
+    v186.SpeakerAdded = v186.eSpeakerAdded.Event
+    v186.SpeakerRemoved = v186.eSpeakerRemoved.Event
+    v186.ChatServiceMajorVersion = 0
+    v186.ChatServiceMinorVersion = 5
+    return v186
 end
-return tbl_2.new()
+
+return v78.new()

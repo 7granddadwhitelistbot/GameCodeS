@@ -1,4 +1,4 @@
-local success_1, v1 = pcall(
+local success, isUserFeatureEnabled = pcall(
     function()
         --[[
           line: 8
@@ -6,361 +6,426 @@ local success_1, v1 = pcall(
         return UserSettings():IsUserFeatureEnabled("UserIsChatTranslationEnabled2")
     end
 )
-local u1 = success_1 and v1
-local Players_upv_1 = game:GetService("Players")
-local Parent_1 = script.Parent.Parent
-local ChatSettings_upv_1 = require(Parent_1:WaitForChild("ChatSettings"))
-local ChatConstants_1 = require(Parent_1:WaitForChild("ChatConstants"))
-local Util_upv_1 = require(script.Parent:WaitForChild("Util"))
-local u2 = utf8.char(57344)
-function IsPlayerVerified(a1)
+local isUserFeatureEnabled2 = success and isUserFeatureEnabled
+local players = game:GetService("Players")
+local parent = script.Parent.Parent
+local ChatSettings = require(parent:WaitForChild("ChatSettings"))
+local ChatConstants = require(parent:WaitForChild("ChatConstants"))
+local Util = require(script.Parent:WaitForChild("Util"))
+local text = utf8.char(57344)
+
+function IsPlayerVerified(userId)
     --[[
       name: IsPlayerVerified
       line: 23
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    local u3 = Players_upv_1:GetPlayerByUserId(a1)
-    if not u3 then
+    local player = players:GetPlayerByUserId(userId)
+    if not player then
         return false
     end
-    local success_2, v2 = pcall(
+
+    local success, hasVerifiedBadge = pcall(
         function()
             --[[
               line: 30
               upvalues:
-                u3 (copy, index: 1)
+                player (copy, index: 1)
             ]]
-            return u3.HasVerifiedBadge
+            return player.HasVerifiedBadge
         end
     )
-    if success_2 then
-        return v2
+    if success then
+        return hasVerifiedBadge
     end
+
     return false
 end
-function AppendVerifiedBadge(a1)
+
+function AppendVerifiedBadge(a14)
     --[[
       name: AppendVerifiedBadge
       line: 37
       upvalues:
-        u2 (copy, index: 1)
+        text (copy, index: 1)
     ]]
-    return a1 .. u2
+    return a14 .. text
 end
-function CreateMessageLabel(a1, a2, a3)
+
+function CreateMessageLabel(a15, a16, callback)
     --[[
       name: CreateMessageLabel
       line: 41
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
-        u1 (ref,  index: 3)
+        ChatSettings (copy, index: 1)
+        Util (copy, index: 2)
+        isUserFeatureEnabled2 (ref,  index: 3)
     ]]
-    local FromSpeaker_1 = a1.FromSpeaker
-    local v3
-    if (ChatSettings_upv_1.PlayerDisplayNamesEnabled) and (a1.SpeakerDisplayName) then
-        v3 = a1.SpeakerDisplayName
+    local v18
+    local position, v20
+    local v21
+    local fromSpeaker = a15.FromSpeaker
+    local v23 = if ChatSettings.PlayerDisplayNamesEnabled and a15.SpeakerDisplayName then a15.SpeakerDisplayName else fromSpeaker
+
+    if IsPlayerVerified(a15.SpeakerUserId) then
+        v23 = AppendVerifiedBadge(v23)
+    end
+
+    local _ = a15.Message
+    local v25 = a15.ExtraData or {}
+    local v26 = v25.Font or ChatSettings.DefaultFont
+    local v27 = v25.TextSize or ChatSettings.ChatWindowTextSize
+    local v28 = v25.NameColor or ChatSettings.DefaultNameColor
+    local v29 = v25.ChatColor or ChatSettings.DefaultMessageColor
+    local v30 = v25.ChannelColor or v29
+    local v31 = v25.Tags or {}
+    local formattedText = string.format("[%s]:", v23)
+    Util:GetStringTextBounds(formattedText, v26, v27)
+    local v33 = Util:GetNumberOfSpaces(formattedText, v26, v27) + 1
+    local baseMessage, v35 = Util:CreateBaseMessage("", v26, v27, v29)
+    local v36 = Util:AddNameButtonToBaseMessage(v35, v28, formattedText, fromSpeaker)
+    local udim2 = UDim2.new(0, 0, 0, 0)
+
+    if a16 == a15.OriginalChannel then
+        v18 = nil
     else
-        v3 = FromSpeaker_1
+        local formattedText2 = string.format("{%s}", a15.OriginalChannel)
+        v18 = Util:AddChannelButtonToBaseMessage(v35, v30, formattedText2, a15.OriginalChannel)
+        udim2 = UDim2.new(0, v18.Size.X.Offset + Util:GetStringTextBounds(" ", v26, v27).X, 0, 0)
+        v33 = v33 + Util:GetNumberOfSpaces(formattedText2, v26, v27) + 1
     end
-    local v4 = IsPlayerVerified(a1.SpeakerUserId)
-    v3 = v4 and AppendVerifiedBadge(v3)
-    local v5 = a1.ExtraData or {}
-    local v6 = v5.Font or (ChatSettings_upv_1.DefaultFont)
-    local v7 = v5.TextSize or (ChatSettings_upv_1.ChatWindowTextSize)
-    local v8 = v5.NameColor or (ChatSettings_upv_1.DefaultNameColor)
-    local u4 = v5.ChatColor or (ChatSettings_upv_1.DefaultMessageColor)
-    local v9 = string.format("[%s]:", v3)
-    local _ = Util_upv_1:GetStringTextBounds(v9, v6, v7)
-    local u5 = Util_upv_1:GetNumberOfSpaces(v9, v6, v7) + 1
-    local u6, u7 = Util_upv_1:CreateBaseMessage("", v6, v7, u4)
-    u4 = Util_upv_1:AddNameButtonToBaseMessage(u7, v8, v9, FromSpeaker_1)
-    v8 = nil
-    local u8 = UDim2.new(0, 0, 0, 0)
-    if a2 ~= a1.OriginalChannel then
-        local v10 = string.format("{%s}", a1.OriginalChannel)
-        v8 = Util_upv_1:AddChannelButtonToBaseMessage(u7, v5.ChannelColor or u4, v10, a1.OriginalChannel)
-        local v11 = UDim2.new(0, v8.Size.X.Offset + Util_upv_1:GetStringTextBounds(" ", v6, v7).X, 0, 0)
-        u5 = u5 + Util_upv_1:GetNumberOfSpaces(v10, v6, v7) + 1
-        u8 = v11
+
+    local v39 = {}
+    position, v20 = udim2, v33
+
+    for _, v41 in pairs(v31) do
+        local v42 = v41.TagColor or Color3.fromRGB(255, 0, 255)
+        local tagText = v41.TagText or "???"
+        local formattedText3 = string.format("[%s] ", tagText)
+        local v45 = Util:AddTagLabelToBaseMessage(v35, v42, formattedText3)
+        v45.Position = position
+        local numberOfSpaces = Util:GetNumberOfSpaces(formattedText3, v26, v27)
+        v20 += numberOfSpaces
+        local udim22 = UDim2.new(0, v45.Size.X.Offset, 0, 0)
+        position += udim22
+        table.insert(v39, v45)
     end
-    local tbl_1 = {}
-    for v22, value_1 in pairs(v5.Tags or {}) do
-        v3 = value_1.TagColor or (Color3.fromRGB(255, 0, 255))
-        local v12 = string.format("[%s] ", value_1.TagText or "???")
-        local v13 = Util_upv_1:AddTagLabelToBaseMessage(u7, v3, v12)
-        v13.Position = u8
-        local v14 = Util_upv_1:GetNumberOfSpaces(v12, v6, v7)
-        u5 = u5 + v14
-        local v15 = UDim2.new(0, v13.Size.X.Offset, 0, 0)
-        u8 = u8 + v15
-        table.insert(tbl_1, v13)
-    end
-    u4.Position = u8
-    local u9 = false
-    local u10 = nil
-    if u1 then
+
+    v36.Position = position
+    local v48 = false
+    local v49 = nil
+
+    if isUserFeatureEnabled2 then
         pcall(
             function()
                 --[[
                   line: 105
                   upvalues:
-                    u10 (ref,  index: 1)
-                    Util_upv_1 (copy, index: 2)
-                    u7 (copy, index: 3)
-                    u8 (ref,  index: 4)
-                    u4 (copy, index: 5)
+                    v49 (ref,  index: 1)
+                    Util (copy, index: 2)
+                    v35 (copy, index: 3)
+                    position (ref,  index: 4)
+                    v36 (copy, index: 5)
                 ]]
-                u10 = Util_upv_1:AddTranslationButtonToBaseMessage(u7)
-                u8 = u8 + UDim2.new(0, u4.Size.X.Offset + 2, 0, 0)
-                u10.Position = u8
+                v49 = Util:AddTranslationButtonToBaseMessage(v35)
+                position += UDim2.new(0, v36.Size.X.Offset + 2, 0, 0)
+                v49.Position = position
             end
         )
     end
-    local function useOriginalText(a4)
+
+    local function useOriginalText(a51)
         --[[
           name: useOriginalText
           line: 112
           upvalues:
-            u9 (ref,  index: 1)
-            a1 (copy, index: 2)
-            u7 (copy, index: 3)
-            Util_upv_1 (copy, index: 4)
-            u5 (ref,  index: 5)
+            v48 (ref,  index: 1)
+            a15 (copy, index: 2)
+            v35 (copy, index: 3)
+            Util (copy, index: 4)
+            v20 (ref,  index: 5)
         ]]
-        u9 = false
-        if a1.IsFiltered then
-            u7.Text = Util_upv_1:CreateLeadingSpaces(u5) .. Util_upv_1:SanitizeForRichText(a4.Message)
-        else
-            u7.Text = Util_upv_1:CreateLeadingSpaces(u5) .. string.rep("_", a4.MessageLengthUtf8 or (a4.MessageLength))
+        v48 = false
+
+        if a15.IsFiltered then
+            v35.Text = Util:CreateLeadingSpaces(v20) .. Util:SanitizeForRichText(a51.Message)
+            return
         end
+
+        local v52 = a51.MessageLengthUtf8 or a51.MessageLength
+        v35.Text = Util:CreateLeadingSpaces(v20) .. string.rep("_", v52)
     end
-    local function useTranslatedText(a5)
+
+    local function useTranslatedText(a54)
         --[[
           name: useTranslatedText
           line: 122
           upvalues:
-            u10 (ref,  index: 1)
-            u5 (ref,  index: 2)
-            u9 (ref,  index: 3)
+            v49 (ref,  index: 1)
+            v20 (ref,  index: 2)
+            v48 (ref,  index: 3)
             useOriginalText (copy, index: 4)
-            u7 (copy, index: 5)
-            Util_upv_1 (copy, index: 6)
+            v35 (copy, index: 5)
+            Util (copy, index: 6)
         ]]
-        if u10 == nil then
+        if v49 == nil then
             return
         end
-        if u10.Visible == false then
-            u5 = u5 + 6
+
+        if v49.Visible == false then
+            v20 += 6
         end
-        u10.Visible = true
-        u9 = true
-        if a5.TranslatedMessage ~= "" then
-            u7.Text = Util_upv_1:CreateLeadingSpaces(u5) .. Util_upv_1:SanitizeForRichText(a5.TranslatedMessage)
-        else
-            useOriginalText(a5)
+
+        v49.Visible = true
+        v48 = true
+
+        if a54.TranslatedMessage == "" then
+            useOriginalText(a54)
+            return
         end
+
+        v35.Text = Util:CreateLeadingSpaces(v20) .. Util:SanitizeForRichText(a54.TranslatedMessage)
     end
-    local function UpdateTextFunction_Chat(a6)
+
+    local function UpdateTextFunction_Chat(a56)
         --[[
           name: UpdateTextFunction_Chat
           line: 142
           upvalues:
-            a1 (copy, index: 1)
-            u10 (ref,  index: 2)
-            u5 (ref,  index: 3)
-            u9 (ref,  index: 4)
+            a15 (copy, index: 1)
+            v49 (ref,  index: 2)
+            v20 (ref,  index: 3)
+            v48 (ref,  index: 4)
             useOriginalText (copy, index: 5)
-            u7 (copy, index: 6)
-            Util_upv_1 (copy, index: 7)
+            v35 (copy, index: 6)
+            Util (copy, index: 7)
         ]]
-        a1.TranslatedMessage = a6.TranslatedMessage
-        if a6.TranslatedMessage then
-            if u10 == nil then
-                return
-            end
-            if u10.Visible == false then
-                u5 = u5 + 6
-            end
-            u10.Visible = true
-            u9 = true
-            if a6.TranslatedMessage ~= "" then
-                u7.Text = Util_upv_1:CreateLeadingSpaces(u5) .. Util_upv_1:SanitizeForRichText(a6.TranslatedMessage)
-            else
-                useOriginalText(a6)
-            end
-        else
-            useOriginalText(a6)
+        a15.TranslatedMessage = a56.TranslatedMessage
+
+        if not a56.TranslatedMessage then
+            useOriginalText(a56)
+            return
         end
+
+        if v49 == nil then
+            return
+        end
+
+        if v49.Visible == false then
+            v20 += 6
+        end
+
+        v49.Visible = true
+        v48 = true
+
+        if a56.TranslatedMessage == "" then
+            useOriginalText(a56)
+            return
+        end
+
+        v35.Text = Util:CreateLeadingSpaces(v20) .. Util:SanitizeForRichText(a56.TranslatedMessage)
     end
-    local function UpdateTextFunction(a7)
+
+    local function UpdateTextFunction(a58)
         --[[
           name: UpdateTextFunction
           line: 151
           upvalues:
-            u1 (ref,  index: 1)
-            a1 (copy, index: 2)
-            u10 (ref,  index: 3)
-            u5 (ref,  index: 4)
-            u9 (ref,  index: 5)
+            isUserFeatureEnabled2 (ref,  index: 1)
+            a15 (copy, index: 2)
+            v49 (ref,  index: 3)
+            v20 (ref,  index: 4)
+            v48 (ref,  index: 5)
             useOriginalText (copy, index: 6)
-            u7 (copy, index: 7)
-            Util_upv_1 (copy, index: 8)
+            v35 (copy, index: 7)
+            Util (copy, index: 8)
         ]]
-        if u1 then
-            a1.TranslatedMessage = a7.TranslatedMessage
-            if a7.TranslatedMessage then
-                if u10 == nil then
-                    return
-                end
-                if u10.Visible == false then
-                    u5 = u5 + 6
-                end
-                u10.Visible = true
-                u9 = true
-                if a7.TranslatedMessage ~= "" then
-                    u7.Text = Util_upv_1:CreateLeadingSpaces(u5) .. Util_upv_1:SanitizeForRichText(a7.TranslatedMessage)
-                else
-                    useOriginalText(a7)
-                end
-            else
-                useOriginalText(a7)
+        if not isUserFeatureEnabled2 then
+            if a15.IsFiltered then
+                v35.Text = Util:CreateLeadingSpaces(v20) .. Util:SanitizeForRichText(a58.Message)
+                return
             end
-        elseif a1.IsFiltered then
-            u7.Text = Util_upv_1:CreateLeadingSpaces(u5) .. Util_upv_1:SanitizeForRichText(a7.Message)
-        else
-            u7.Text = Util_upv_1:CreateLeadingSpaces(u5) .. string.rep("_", a7.MessageLengthUtf8 or (a7.MessageLength))
+
+            local v59 = a58.MessageLengthUtf8 or a58.MessageLength
+            v35.Text = Util:CreateLeadingSpaces(v20) .. string.rep("_", v59)
+
+            return
         end
+
+        a15.TranslatedMessage = a58.TranslatedMessage
+
+        if not a58.TranslatedMessage then
+            useOriginalText(a58)
+            return
+        end
+
+        if v49 == nil then
+            return
+        end
+
+        if v49.Visible == false then
+            v20 += 6
+        end
+
+        v49.Visible = true
+        v48 = true
+
+        if a58.TranslatedMessage == "" then
+            useOriginalText(a58)
+            return
+        end
+
+        v35.Text = Util:CreateLeadingSpaces(v20) .. Util:SanitizeForRichText(a58.TranslatedMessage)
     end
-    local function v22()
+
+    local function toggleTranslation()
         --[[
           name: toggleTranslation
           line: 164
           upvalues:
-            u9 (ref,  index: 1)
-            a1 (copy, index: 2)
-            u10 (ref,  index: 3)
-            u5 (ref,  index: 4)
+            v48 (ref,  index: 1)
+            a15 (copy, index: 2)
+            v49 (ref,  index: 3)
+            v20 (ref,  index: 4)
             useOriginalText (copy, index: 5)
-            u7 (copy, index: 6)
-            Util_upv_1 (copy, index: 7)
-            a3 (copy, index: 8)
+            v35 (copy, index: 6)
+            Util (copy, index: 7)
+            callback (copy, index: 8)
         ]]
-        if u9 or not (a1.TranslatedMessage) then
-            useOriginalText(a1)
+        if v48 or not a15.TranslatedMessage then
+            useOriginalText(a15)
         else
-            local v16 = a1
-            if u10 ~= nil then
-                if u10.Visible == false then
-                    u5 = u5 + 6
+            local v61 = a15
+
+            if v49 ~= nil then
+                if v49.Visible == false then
+                    v20 += 6
                 end
-                u10.Visible = true
-                u9 = true
-                if v16.TranslatedMessage ~= "" then
-                    u7.Text = Util_upv_1:CreateLeadingSpaces(u5) .. Util_upv_1:SanitizeForRichText(v16.TranslatedMessage)
+
+                v49.Visible = true
+                v48 = true
+
+                if v61.TranslatedMessage ~= "" then
+                    v35.Text = Util:CreateLeadingSpaces(v20) .. Util:SanitizeForRichText(v61.TranslatedMessage)
                 else
-                    useOriginalText(v16)
+                    useOriginalText(v61)
                 end
             end
         end
-        if not a3 then
-            return
+
+        if callback then
+            callback()
         end
-        a3()
     end
-    if u1 and u10 ~= nil then
-        local u11 = u10.MouseButton1Click:connect(
+
+    if isUserFeatureEnabled2 and v49 ~= nil then
+        local v62 = v49.MouseButton1Click:connect(
             function()
                 --[[
                   line: 176
                   upvalues:
-                    u9 (ref,  index: 1)
-                    a1 (copy, index: 2)
-                    u10 (ref,  index: 3)
-                    u5 (ref,  index: 4)
+                    v48 (ref,  index: 1)
+                    a15 (copy, index: 2)
+                    v49 (ref,  index: 3)
+                    v20 (ref,  index: 4)
                     useOriginalText (copy, index: 5)
-                    u7 (copy, index: 6)
-                    Util_upv_1 (copy, index: 7)
-                    a3 (copy, index: 8)
+                    v35 (copy, index: 6)
+                    Util (copy, index: 7)
+                    callback (copy, index: 8)
                 ]]
-                if u9 or not (a1.TranslatedMessage) then
-                    useOriginalText(a1)
+                if v48 or not a15.TranslatedMessage then
+                    useOriginalText(a15)
                 else
-                    local v17 = a1
-                    if u10 ~= nil then
-                        if u10.Visible == false then
-                            u5 = u5 + 6
+                    local v63 = a15
+
+                    if v49 ~= nil then
+                        if v49.Visible == false then
+                            v20 += 6
                         end
-                        u10.Visible = true
-                        u9 = true
-                        if v17.TranslatedMessage ~= "" then
-                            u7.Text = Util_upv_1:CreateLeadingSpaces(u5) .. Util_upv_1:SanitizeForRichText(v17.TranslatedMessage)
+
+                        v49.Visible = true
+                        v48 = true
+
+                        if v63.TranslatedMessage ~= "" then
+                            v35.Text = Util:CreateLeadingSpaces(v20) .. Util:SanitizeForRichText(v63.TranslatedMessage)
                         else
-                            useOriginalText(v17)
+                            useOriginalText(v63)
                         end
                     end
                 end
-                if not a3 then
-                    return
+
+                if callback then
+                    callback()
                 end
-                a3()
             end
         )
-        local u12 = nil
-        local v18 = u10.Changed:connect(
-            function(a8)
+
+        local v64 = nil
+
+        v64 = v49.Changed:connect(
+            function(a65)
                 --[[
                   line: 181
                   upvalues:
-                    u11 (copy, index: 1)
-                    u12 (ref,  index: 2)
+                    v62 (copy, index: 1)
+                    v64 (ref,  index: 2)
                 ]]
-                if a8 ~= "Parent" then
-                    return
+                if a65 == "Parent" then
+                    v62:Disconnect()
+                    v64:Disconnect()
                 end
-                u11:Disconnect()
-                u12:Disconnect()
             end
         )
-        u12 = v18
     end
-    UpdateTextFunction(a1)
-    local tbl_2 = {}
-    tbl_2[u4] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
-    if u1 and u10 ~= nil then
-        tbl_2[u10] = {ImageTransparency = {FadedOut = 1, FadedIn = 0}}
+
+    UpdateTextFunction(a15)
+    local v66 = {}
+    v66[v36] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
+
+    if isUserFeatureEnabled2 and v49 ~= nil then
+        v66[v49] = {ImageTransparency = {FadedIn = 0, FadedOut = 1}}
     end
-    tbl_2[u7] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
-    for key_1, value_2 in pairs(tbl_1) do
-        local v23 = string.format("Tag%d", key_1)
-        tbl_2[value_2] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
+
+    v66[v35] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
+
+    for key, v68 in pairs(v39) do
+        string.format("Tag%d", key)
+        v66[v68] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
     end
-    if v8 then
-        tbl_2[v8] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
+
+    if v18 then
+        v66[v18] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
     end
-    local v19, v20, v21 = Util_upv_1:CreateFadeFunctions(tbl_2)
-    local tbl_3 = {}
-    tbl_3[Util_upv_1.KEY_BASE_FRAME] = u6
-    tbl_3[Util_upv_1.KEY_BASE_MESSAGE] = u7
-    tbl_3[Util_upv_1.KEY_UPDATE_TEXT_FUNC] = UpdateTextFunction
-    tbl_3[Util_upv_1.KEY_GET_HEIGHT] = function(a9)
+
+    local fadeFunctions, v70
+    fadeFunctions, v70, v21 = Util:CreateFadeFunctions(v66)
+    local v71 = {}
+    v71[Util.KEY_BASE_FRAME] = baseMessage
+    v71[Util.KEY_BASE_MESSAGE] = v35
+    v71[Util.KEY_UPDATE_TEXT_FUNC] = UpdateTextFunction
+
+    v71[Util.KEY_GET_HEIGHT] = function(a72)
         --[[
           name: GetHeightFunction
           line: 191
           upvalues:
-            Util_upv_1 (copy, index: 1)
-            u7 (copy, index: 2)
-            u6 (copy, index: 3)
+            Util (copy, index: 1)
+            v35 (copy, index: 2)
+            baseMessage (copy, index: 3)
         ]]
-        return Util_upv_1:GetMessageHeight(u7, u6, a9)
+        return Util:GetMessageHeight(v35, baseMessage, a72)
     end
-    tbl_3[Util_upv_1.KEY_FADE_IN] = v19
-    tbl_3[Util_upv_1.KEY_FADE_OUT] = v20
-    tbl_3[Util_upv_1.KEY_UPDATE_ANIMATION] = v21
-    return tbl_3
+
+    v71[Util.KEY_FADE_IN] = fadeFunctions
+    v71[Util.KEY_FADE_OUT] = v70
+    v71[Util.KEY_UPDATE_ANIMATION] = v21
+
+    return v71
 end
-local tbl_4 = {}
-tbl_4[Util_upv_1.KEY_MESSAGE_TYPE] = ChatConstants_1.MessageTypeDefault
-tbl_4[Util_upv_1.KEY_CREATOR_FUNCTION] = CreateMessageLabel
-return tbl_4
+
+local v73 = {}
+v73[Util.KEY_MESSAGE_TYPE] = ChatConstants.MessageTypeDefault
+v73[Util.KEY_CREATOR_FUNCTION] = CreateMessageLabel
+
+return v73

@@ -1,32 +1,32 @@
-local ClientChatModules_1 = game:GetService("Chat"):WaitForChild("ClientChatModules")
-local ChatConstants_upv_1 = require(ClientChatModules_1:WaitForChild("ChatConstants"))
-local ChatSettings_upv_1 = require(ClientChatModules_1:WaitForChild("ChatSettings"))
-local function Run(a1)
+local chat = game:GetService("Chat")
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local ChatConstants = require(clientChatModules:WaitForChild("ChatConstants"))
+local ChatSettings = require(clientChatModules:WaitForChild("ChatSettings"))
+
+return function(a5)
     --[[
       name: Run
       line: 10
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
-        ChatConstants_upv_1 (copy, index: 2)
+        ChatSettings (copy, index: 1)
+        ChatConstants (copy, index: 2)
     ]]
-    if not ChatSettings_upv_1 then
-        return
-    end
-    if ChatSettings_upv_1.AllowMeCommand then
-        local function MeCommandFilterFunction_1(a2, a3, a4)
-            --[[
-              name: MeCommandFilterFunction
-              line: 13
-              upvalues:
-                ChatConstants_upv_1 (copy, index: 1)
-            ]]
-            local Message_1 = a3.Message
-            if not Message_1 or string.sub(Message_1, 1, 4):lower() ~= "/me " then
-                return
+    if ChatSettings and ChatSettings.AllowMeCommand then
+        a5:RegisterFilterMessageFunction(
+            "me_command",
+            function(a6, a7, a8)
+                --[[
+                  name: MeCommandFilterFunction
+                  line: 13
+                  upvalues:
+                    ChatConstants (copy, index: 1)
+                ]]
+                local message = a7.Message
+
+                if message and string.sub(message, 1, 4):lower() == "/me " then
+                    a7.MessageType = ChatConstants.MessageTypeMeCommand
+                end
             end
-            a3.MessageType = ChatConstants_upv_1.MessageTypeMeCommand
-        end
-        a1:RegisterFilterMessageFunction("me_command", MeCommandFilterFunction_1)
+        )
     end
 end
-return Run

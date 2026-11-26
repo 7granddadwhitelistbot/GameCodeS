@@ -1,829 +1,1063 @@
-local Players_upv_1 = game:GetService("Players")
-local TextChatService_upv_1 = game:GetService("TextChatService")
-local tbl_1 = {}
-function tbl_1.Init(a1)
-    --[[
-      name: Init
-      line: 24
-      upvalues:
-        Players_upv_1 (copy, index: 1)
-        TextChatService_upv_1 (copy, index: 2)
-    ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local u1 = Theme_upv_1.Lighten(Colors_upv_1.Ally, 0.25)
-    local u2 = u1:ToHex()
-    local u3 = "all"
-    local function folder()
+local players = game:GetService("Players")
+local textChatService = game:GetService("TextChatService")
+
+return {
+    Init = (function(a3)
         --[[
-          name: folder
-          line: 44
+          name: Init
+          line: 24
           upvalues:
-            TextChatService_upv_1 (copy, index: 1)
+            players (copy, index: 1)
+            textChatService (copy, index: 2)
         ]]
-        return TextChatService_upv_1:FindFirstChild("TribesTeamChat")
-    end
-    local function teamChannel()
-        --[[
-          name: teamChannel
-          line: 47
-          upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            TextChatService_upv_1 (copy, index: 2)
-        ]]
-        local v1 = LocalPlayer_upv_1:GetAttribute("TeamChannel")
-        local TribesTeamChat_1 = TextChatService_upv_1:FindFirstChild("TribesTeamChat")
-        local v2 = TribesTeamChat_1 and ((type(v1) == "string") and (TribesTeamChat_1:FindFirstChild(v1)))
-        if v2 and v2:IsA("TextChannel") then
-            return v2
-        end
-        return nil
-    end
-    local function general()
-        --[[
-          name: general
-          line: 53
-          upvalues:
-            TextChatService_upv_1 (copy, index: 1)
-        ]]
-        local TextChannels_1 = TextChatService_upv_1:FindFirstChild("TextChannels")
-        local v3 = TextChannels_1 and (TextChannels_1:FindFirstChild("RBXGeneral"))
-        if v3 and v3:IsA("TextChannel") then
-            return v3
-        end
-        return nil
-    end
-    local function inputBar()
-        --[[
-          name: inputBar
-          line: 58
-          upvalues:
-            TextChatService_upv_1 (copy, index: 1)
-        ]]
-        return TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-    end
-    local tbl_upv_2 = {}
-    local function enabled()
-        --[[
-          name: enabled
-          line: 34
-          upvalues:
-            TextChatService_upv_1 (copy, index: 1)
-        ]]
-        local success_1, v4 = pcall(
-            function()
-                --[[
-                  line: 35
-                  upvalues:
-                    TextChatService_upv_1 (copy, index: 1)
-                ]]
-                return TextChatService_upv_1.ChatVersion
-            end
-        )
-        if success_1 and v4 == Enum.ChatVersion.TextChatService then
-            return true
-        end
-        local TextChannels_2 = TextChatService_upv_1:FindFirstChild("TextChannels")
-        local v5 = (TextChannels_2 ~= nil) and (TextChannels_2:FindFirstChild("RBXGeneral") ~= nil)
-        return v5
-    end
-    local function hook(a2)
-        --[[
-          name: hook
-          line: 64
-          upvalues:
-            tbl_upv_2 (copy, index: 1)
-            u2 (copy, index: 2)
-            TextChatService_upv_1 (copy, index: 3)
-        ]]
-        if tbl_upv_2[a2] then
-            return
-        end
-        tbl_upv_2[a2] = true
-        a2.OnIncomingMessage = function(a3)
+        local ui = a3.UI
+        local theme = a3.Theme
+        local state = a3.State
+        local colors = theme.Colors
+        local fonts = theme.Fonts
+        local localPlayer = players.LocalPlayer
+        local textColor3 = theme.Lighten(colors.Ally, 0.25)
+        local v11 = textColor3:ToHex()
+        local mode = "all"
+
+        local function enabled()
             --[[
-              line: 69
+              name: enabled
+              line: 34
               upvalues:
-                u2 (copy, index: 1)
+                textChatService (copy, index: 1)
             ]]
-            local v6 = Instance.new("TextChatMessageProperties")
-            v6.PrefixText = string.format("<font color=\"#%s\">[TEAM] %s</font>", u2, a3.PrefixText)
-            return v6
-        end
-        a2.AncestryChanged:Connect(
-            function()
-                --[[
-                  line: 74
-                  upvalues:
-                    a2 (copy, index: 1)
-                    TextChatService_upv_1 (copy, index: 2)
-                    tbl_upv_2 (copy, index: 3)
-                ]]
-                if (a2:IsDescendantOf(TextChatService_upv_1)) then
-                    return
+            local success, chatVersion = pcall(
+                function()
+                    --[[
+                      line: 35
+                      upvalues:
+                        textChatService (copy, index: 1)
+                    ]]
+                    return textChatService.ChatVersion
                 end
-                tbl_upv_2[a2] = nil
+            )
+
+            if success and chatVersion == Enum.ChatVersion.TextChatService then
+                return true
             end
-        )
-    end
-    local function apply()
-        --[[
-          name: apply
-          line: 82
-          upvalues:
-            enabled (copy, index: 1)
-            TextChatService_upv_1 (copy, index: 2)
-            LocalPlayer_upv_1 (copy, index: 3)
-            hook (copy, index: 4)
-            State_upv_1 (copy, index: 5)
-            u3 (ref,  index: 6)
-        ]]
-        if not enabled() then
-            return
+
+            local textChannels = textChatService:FindFirstChild("TextChannels")
+
+            return textChannels ~= nil and textChannels:FindFirstChild("RBXGeneral") ~= nil
         end
-        local v7 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-        if not v7 then
-            return
+
+        local function folder()
+            --[[
+              name: folder
+              line: 44
+              upvalues:
+                textChatService (copy, index: 1)
+            ]]
+            return textChatService:FindFirstChild("TribesTeamChat")
         end
-        local v8 = LocalPlayer_upv_1:GetAttribute("TeamChannel")
-        local TribesTeamChat_2 = TextChatService_upv_1:FindFirstChild("TribesTeamChat")
-        local v9 = TribesTeamChat_2 and ((type(v8) == "string") and (TribesTeamChat_2:FindFirstChild(v8)))
-        local v10 = not (v9) or not (v9:IsA("TextChannel")) or v9
-        if v10 then
-            hook(v10)
-        end
-        local TargetTextChannel_1 = v7.TargetTextChannel
-        local TribesTeamChat_3 = TextChatService_upv_1:FindFirstChild("TribesTeamChat")
-        local v11 = true
-        local v12
-        if TargetTextChannel_1 == nil then
-            v12 = v11
-        else
-            v12 = true
-            local TextChannels_3 = TextChatService_upv_1:FindFirstChild("TextChannels")
-            local v13 = TextChannels_3 and (TextChannels_3:FindFirstChild("RBXGeneral"))
-            local v14 = not (v13) or not (v13:IsA("TextChannel")) or v13
-            if TargetTextChannel_1 ~= v14 then
-                v12 = (TribesTeamChat_3 ~= nil) and (TargetTextChannel_1:IsDescendantOf(TribesTeamChat_3))
+
+        local function teamChannel()
+            --[[
+              name: teamChannel
+              line: 47
+              upvalues:
+                localPlayer (copy, index: 1)
+                textChatService (copy, index: 2)
+            ]]
+            local v19 = localPlayer:GetAttribute("TeamChannel")
+            local tribesTeamChat = textChatService:FindFirstChild("TribesTeamChat")
+            local child = tribesTeamChat and type(v19) == "string" and tribesTeamChat:FindFirstChild(v19)
+
+            if child and child:IsA("TextChannel") then
+                return child
             end
+
+            return nil
         end
-        if not v12 then
-            return
+
+        local function general()
+            --[[
+              name: general
+              line: 53
+              upvalues:
+                textChatService (copy, index: 1)
+            ]]
+            local textChannels = textChatService:FindFirstChild("TextChannels")
+            local rbxGeneral = textChannels and textChannels:FindFirstChild("RBXGeneral")
+
+            if rbxGeneral and rbxGeneral:IsA("TextChannel") then
+                return rbxGeneral
+            end
+
+            return nil
         end
-        if State_upv_1.InMatch() and v10 then
-            if u3 ~= "team" then
-                local TextChannels_4 = TextChatService_upv_1:FindFirstChild("TextChannels")
-                local v15 = TextChannels_4 and (TextChannels_4:FindFirstChild("RBXGeneral"))
-                v9 = not (v15) or not (v15:IsA("TextChannel")) or v15
+
+        local function inputBar()
+            --[[
+              name: inputBar
+              line: 58
+              upvalues:
+                textChatService (copy, index: 1)
+            ]]
+            return textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+        end
+
+        local v26 = {}
+
+        local function hook(a28)
+            --[[
+              name: hook
+              line: 64
+              upvalues:
+                v26 (copy, index: 1)
+                v11 (copy, index: 2)
+                textChatService (copy, index: 3)
+            ]]
+            if v26[a28] then
+                return
+            end
+
+            v26[a28] = true
+
+            a28.OnIncomingMessage = function(a29)
+                --[[
+                  line: 69
+                  upvalues:
+                    v11 (copy, index: 1)
+                ]]
+                local textChatMessageProperties = Instance.new("TextChatMessageProperties")
+                textChatMessageProperties.PrefixText = string.format("<font color=\"#%s\">[TEAM] %s</font>", v11, a29.PrefixText)
+                return textChatMessageProperties
+            end
+
+            a28.AncestryChanged:Connect(
+                function()
+                    --[[
+                      line: 74
+                      upvalues:
+                        a28 (copy, index: 1)
+                        textChatService (copy, index: 2)
+                        v26 (copy, index: 3)
+                    ]]
+                    if not a28:IsDescendantOf(textChatService) then
+                        v26[a28] = nil
+                    end
+                end
+            )
+        end
+
+        local function apply()
+            --[[
+              name: apply
+              line: 82
+              upvalues:
+                enabled (copy, index: 1)
+                textChatService (copy, index: 2)
+                localPlayer (copy, index: 3)
+                hook (copy, index: 4)
+                state (copy, index: 5)
+                mode (ref,  index: 6)
+            ]]
+            local v32
+
+            if not enabled() then
+                return
+            end
+
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+            if not chatInputBarConfiguration then
+                return
+            end
+
+            local v34 = localPlayer:GetAttribute("TeamChannel")
+            local tribesTeamChat = textChatService:FindFirstChild("TribesTeamChat")
+            local child = tribesTeamChat and type(v34) == "string" and tribesTeamChat:FindFirstChild(v34)
+            local v37 = if child and child:IsA("TextChannel") then child else nil
+            if v37 then
+                hook(v37)
+            end
+
+            local targetTextChannel = chatInputBarConfiguration.TargetTextChannel
+            local tribesTeamChat2 = textChatService:FindFirstChild("TribesTeamChat")
+            local isDescendantOf = true
+
+            if targetTextChannel ~= nil then
+                isDescendantOf = true
+                local textChannels = textChatService:FindFirstChild("TextChannels")
+                local rbxGeneral = textChannels and textChannels:FindFirstChild("RBXGeneral")
+                local instance = if rbxGeneral and rbxGeneral:IsA("TextChannel") then rbxGeneral else nil
+
+                if targetTextChannel ~= instance then
+                    isDescendantOf = tribesTeamChat2 ~= nil and targetTextChannel:IsDescendantOf(tribesTeamChat2)
+                end
+            end
+
+            if not isDescendantOf then
+                return
+            end
+
+            if state.InMatch() and v37 and mode == "team" then
+                v32 = v37
             else
-                v9 = v10
+                local instance = textChatService:FindFirstChild("TextChannels")
+                instance = instance and instance:FindFirstChild("RBXGeneral")
+                v32 = if instance and instance:IsA("TextChannel") then instance else nil
             end
-        else
-            local TextChannels_4 = TextChatService_upv_1:FindFirstChild("TextChannels")
-            local v15 = TextChannels_4 and (TextChannels_4:FindFirstChild("RBXGeneral"))
-            v9 = not (v15) or not (v15:IsA("TextChannel")) or v15
+
+            if v32 and chatInputBarConfiguration.TargetTextChannel ~= v32 then
+                chatInputBarConfiguration.TargetTextChannel = v32
+            end
         end
-        if v9 and v7.TargetTextChannel ~= v9 then
-            v7.TargetTextChannel = v9
+
+        local parent = ui.new("Frame", {Name = "TeamChat", Size = UDim2.fromScale(1, 1), Parent = a3.Canvas.HUD})
+        local parent2 = ui.new("TextButton", {Name = "Pill", Text = "", AutoButtonColor = false, AnchorPoint = Vector2.new(0, 0.5), Size = UDim2.fromOffset(122, 30), BackgroundColor3 = colors.Panel, BackgroundTransparency = 0.15, Visible = false, (ui.Corner(theme.Radius.Pill)), Parent = parent})
+        local v47 = ui.Stroke(textColor3, 1.5, 0.35)
+        v47.Parent = parent2
+        local v48 = ui.Glyph("three-people", 16, textColor3, {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Parent = parent2})
+        local ui2 = ui.new("TextLabel", {Name = "Text", Text = "TEAM CHAT", TextSize = 13, FontFace = fonts.Heavy, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Left, Position = UDim2.fromOffset(32, 0), Size = UDim2.new(1, -38, 1, 0), Parent = parent2})
+
+        local function paintPill()
+            --[[
+              name: paintPill
+              line: 135
+              upvalues:
+                mode (ref,  index: 1)
+                textColor3 (copy, index: 2)
+                colors (copy, index: 3)
+                ui2 (copy, index: 4)
+                v48 (copy, index: 5)
+                v47 (copy, index: 6)
+            ]]
+            local v51 = mode == "team"
+            local v52 = if v51 then textColor3 else colors.TextDim
+            ui2.Text = v51 and "TEAM CHAT" or "ALL CHAT"
+            ui2.TextColor3 = v52
+            v48.Text = v51 and "three-people" or "globe-simplified"
+            v48.TextColor3 = v52
+            v47.Color = v52
         end
-    end
-    local u4 = UI_upv_1.new("Frame", {Name = "TeamChat", Size = UDim2.fromScale(1, 1), Parent = a1.Canvas.HUD})
-    local u5 = UI_upv_1.new("TextButton", {Name = "Pill", Text = "", AutoButtonColor = false, AnchorPoint = Vector2.new(0, 0.5), Size = UDim2.fromOffset(122, 30), BackgroundColor3 = Colors_upv_1.Panel, BackgroundTransparency = 0.15, Visible = false, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u4})
-    Theme_upv_1 = UI_upv_1.Stroke(u1, 1.5, 0.35)
-    Theme_upv_1.Parent = u5
-    local u6 = UI_upv_1.Glyph("three-people", 16, u1, {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Parent = u5})
-    local u7 = UI_upv_1.new("TextLabel", {Text = "TEAM CHAT", Name = "Text", TextSize = 13, FontFace = Theme_upv_1.Fonts.Heavy, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Left, Position = UDim2.fromOffset(32, 0), Size = UDim2.new(1, -38, 1, 0), Parent = u5})
-    local function paintPill()
-        --[[
-          name: paintPill
-          line: 135
-          upvalues:
-            u3 (ref,  index: 1)
-            u1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-            u7 (copy, index: 4)
-            u6 (copy, index: 5)
-            Theme_upv_1 (copy, index: 6)
-        ]]
-        local v16 = u3 == "team"
-        local v17
-        if v16 then
-            v17 = u1
-        else
-            v17 = Colors_upv_1.TextDim
+
+        local v53 = 0
+
+        local function typing()
+            --[[
+              name: typing
+              line: 147
+              upvalues:
+                textChatService (copy, index: 1)
+            ]]
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+            local success, isFocused = pcall(
+                function()
+                    --[[
+                      line: 149
+                      upvalues:
+                        chatInputBarConfiguration (copy, index: 1)
+                    ]]
+                    return chatInputBarConfiguration.IsFocused
+                end
+            )
+
+            return success and (isFocused == true)
         end
-        u7.Text = (v16 and "TEAM CHAT") or "ALL CHAT"
-        u7.TextColor3 = v17
-        u6.Text = (v16 and "three-people") or "globe-simplified"
-        u6.TextColor3 = v17
-        Theme_upv_1.Color = v17
-    end
-    local u8 = 0
-    local function typing()
-        --[[
-          name: typing
-          line: 147
-          upvalues:
-            TextChatService_upv_1 (copy, index: 1)
-        ]]
-        local _ = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-        local success_2, v18 = pcall(function() end)
-        return success_2 and (v18 == true)
-    end
-    local function placePill()
-        --[[
-          name: placePill
-          line: 154
-          upvalues:
-            enabled (copy, index: 1)
-            State_upv_1 (copy, index: 2)
-            LocalPlayer_upv_1 (copy, index: 3)
-            TextChatService_upv_1 (copy, index: 4)
-            a1 (copy, index: 5)
-            u8 (ref,  index: 6)
-            UI_upv_1 (copy, index: 7)
-            u4 (copy, index: 8)
-            u5 (copy, index: 9)
-        ]]
-        local v19 = enabled()
-        local v23 = nil
-        local v24 = nil
-        if v19 then
-            v19 = State_upv_1.InMatch()
-            if v19 then
-                v19 = false
-                v24 = LocalPlayer_upv_1:GetAttribute("TeamChannel")
-                local TribesTeamChat_4 = TextChatService_upv_1:FindFirstChild("TribesTeamChat")
-                local v21 = TribesTeamChat_4 and ((type(v24) == "string") and (TribesTeamChat_4:FindFirstChild(v24)))
-                v23 = not (v21) or not (v21:IsA("TextChannel")) or v21
-                if v23 ~= nil then
-                    v19 = not a1.HudHidden
-                    if v19 then
-                        v23 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                        v24, TribesTeamChat_4 = pcall(function() end)
-                        v19 = v24 and (TribesTeamChat_4 == true) or os.clock() < u8
+
+        local function placePill()
+            --[[
+              name: placePill
+              line: 154
+              upvalues:
+                enabled (copy, index: 1)
+                state (copy, index: 2)
+                localPlayer (copy, index: 3)
+                textChatService (copy, index: 4)
+                a3 (copy, index: 5)
+                v53 (ref,  index: 6)
+                ui (copy, index: 7)
+                parent (copy, index: 8)
+                parent2 (copy, index: 9)
+            ]]
+            local v59 = enabled()
+            if v59 then
+                v59 = state.InMatch()
+
+                if v59 then
+                    v59 = false
+                    local v60 = localPlayer:GetAttribute("TeamChannel")
+                    local tribesTeamChat = textChatService:FindFirstChild("TribesTeamChat")
+                    local child = tribesTeamChat and type(v60) == "string" and tribesTeamChat:FindFirstChild(v60)
+                    local v63 = if child and child:IsA("TextChannel") then child else nil
+                    if v63 ~= nil then
+                        v59 = not a3.HudHidden
+
+                        if v59 then
+                            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+                            local success, isFocused = pcall(
+                                function()
+                                    --[[
+                                      line: 149
+                                      upvalues:
+                                        chatInputBarConfiguration (copy, index: 1)
+                                    ]]
+                                    return chatInputBarConfiguration.IsFocused
+                                end
+                            )
+                            v59 = success
+                            v59 = v59 and isFocused == true
+                            v59 = v59 or os.clock() < v53
+                        end
                     end
                 end
             end
-        end
-        if v19 then
-            v23 = UI_upv_1.ChatRectIn(u4)
-        else
-            v23 = nil
-        end
-        if v19 then
-            v24 = UI_upv_1.ChatRect()
-        else
-            v24 = nil
-        end
-        if v23 and v24 then
-            v19 = v23.Max.Y - 20
-            local v25 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-            local v26 = v24.Max.Y - v24.Min.Y
-            if v25 then
-                v19 = ((v26 > 1) and (v23.Min.Y + (((v25.AbsolutePosition.Y + (v25.AbsoluteSize.Y / 2)) - v24.Min.Y) * (v23.Max.Y - v23.Min.Y)) / v26)) or v19
+
+            local v67 = if v59 then ui.ChatRectIn(parent) else nil
+            local v68 = if v59 then ui.ChatRect() else nil
+
+            if not v67 or not v68 then
+                parent2.Visible = false
+                return
             end
-            u5.Position = UDim2.fromOffset(v23.Max.X + 8, v19)
-            u5.Visible = true
-            return
+
+            local v69 = v67.Max.Y - 20
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+            local v71 = v68.Max.Y - v68.Min.Y
+
+            if chatInputBarConfiguration and 1 < v71 then
+                local v72 = chatInputBarConfiguration.AbsolutePosition.Y + chatInputBarConfiguration.AbsoluteSize.Y / 2
+                v69 = v67.Min.Y + ((v72 - v68.Min.Y) * (v67.Max.Y - v67.Min.Y)) / v71
+            end
+
+            parent2.Position = UDim2.fromOffset(v67.Max.X + 8, v69)
+            parent2.Visible = true
         end
-        u5.Visible = false
-    end
-    local function setMode(a4, a5)
-        --[[
-          name: setMode
-          line: 176
-          upvalues:
-            u3 (ref,  index: 1)
-            apply (copy, index: 2)
-            u1 (copy, index: 3)
-            Colors_upv_1 (copy, index: 4)
-            u7 (copy, index: 5)
-            u6 (copy, index: 6)
-            Theme_upv_1 (copy, index: 7)
-            a1 (copy, index: 8)
-        ]]
-        u3 = a4
-        apply()
-        local v27 = u3 == "team"
-        local v28
-        if v27 then
-            v28 = u1
-        else
-            v28 = Colors_upv_1.TextDim
-        end
-        u7.Text = (v27 and "TEAM CHAT") or "ALL CHAT"
-        u7.TextColor3 = v28
-        u6.Text = (v27 and "three-people") or "globe-simplified"
-        u6.TextColor3 = v28
-        Theme_upv_1.Color = v28
-        if not a5 then
-            return
-        end
-        a1.Toast(((a4 ~= "team") and "Chat: everyone") or "Chat: your team", "info")
-    end
-    u5.Activated:Connect(
-        function()
+
+        local function setMode(a74, a75)
             --[[
-              line: 184
+              name: setMode
+              line: 176
               upvalues:
-                a1 (copy, index: 1)
-                u3 (ref,  index: 2)
-                apply (copy, index: 3)
-                u1 (copy, index: 4)
-                Colors_upv_1 (copy, index: 5)
-                u7 (copy, index: 6)
-                u6 (copy, index: 7)
-                Theme_upv_1 (copy, index: 8)
+                mode (ref,  index: 1)
+                apply (copy, index: 2)
+                textColor3 (copy, index: 3)
+                colors (copy, index: 4)
+                ui2 (copy, index: 5)
+                v48 (copy, index: 6)
+                v47 (copy, index: 7)
+                a3 (copy, index: 8)
             ]]
-            a1.Sounds.Play("Click")
-            local v29 = ((u3 ~= "team") and "team") or "all"
-            u3 = v29
+            mode = a74
             apply()
-            local v30 = u3 == "team"
-            local v31
-            if v30 then
-                v31 = u1
-            else
-                v31 = Colors_upv_1.TextDim
+            local v76 = mode == "team"
+            local v77 = if v76 then textColor3 else colors.TextDim
+            ui2.Text = v76 and "TEAM CHAT" or "ALL CHAT"
+            ui2.TextColor3 = v77
+            v48.Text = v76 and "three-people" or "globe-simplified"
+            v48.TextColor3 = v77
+            v47.Color = v77
+
+            if a75 then
+                local toast = a3.Toast
+                local v79 = a74 ~= "team" and "Chat: everyone" or "Chat: your team"
+                toast(v79, "info")
             end
-            u7.Text = (v30 and "TEAM CHAT") or "ALL CHAT"
-            u7.TextColor3 = v31
-            u6.Text = (v30 and "three-people") or "globe-simplified"
-            u6.TextColor3 = v31
-            Theme_upv_1.Color = v31
-            a1.Toast(((v29 ~= "team") and "Chat: everyone") or "Chat: your team", "info")
         end
-    )
-    local function onCommand(a6, a7)
-        --[[
-          name: onCommand
-          line: 191
-          upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            TextChatService_upv_1 (copy, index: 2)
-            State_upv_1 (copy, index: 3)
-            a1 (copy, index: 4)
-            u3 (ref,  index: 5)
-            apply (copy, index: 6)
-            u1 (copy, index: 7)
-            Colors_upv_1 (copy, index: 8)
-            u7 (copy, index: 9)
-            u6 (copy, index: 10)
-            Theme_upv_1 (copy, index: 11)
-        ]]
-        local v32 = LocalPlayer_upv_1:GetAttribute("TeamChannel")
-        local u9 = TextChatService_upv_1:FindFirstChild("TribesTeamChat")
-        local v33 = u9 and ((type(v32) == "string") and (u9:FindFirstChild(v32)))
-        local v34 = not (v33) or not (v33:IsA("TextChannel")) or v33
-        if State_upv_1.InMatch() then
-            local u10
-            if v34 then
-                u10 = string.match(a7, "^%S+%s+(.-)%s*$")
-                if u10 and u10 ~= "" then
-                    if a6 ~= "team" then
-                        local TextChannels_5 = TextChatService_upv_1:FindFirstChild("TextChannels")
-                        local v35 = TextChannels_5 and (TextChannels_5:FindFirstChild("RBXGeneral"))
-                        u9 = not (v35) or not (v35:IsA("TextChannel")) or v35
+
+        parent2.Activated:Connect(
+            function()
+                --[[
+                  line: 184
+                  upvalues:
+                    a3 (copy, index: 1)
+                    mode (ref,  index: 2)
+                    apply (copy, index: 3)
+                    textColor3 (copy, index: 4)
+                    colors (copy, index: 5)
+                    ui2 (copy, index: 6)
+                    v48 (copy, index: 7)
+                    v47 (copy, index: 8)
+                ]]
+                local text
+                a3.Sounds.Play("Click")
+                local v81 = mode ~= "team" and "team" or "all"
+                mode = v81
+                apply()
+                local v82 = mode == "team"
+                local v83 = if v82 then textColor3 else colors.TextDim
+                ui2.Text = v82 and "TEAM CHAT" or "ALL CHAT"
+                ui2.TextColor3 = v83
+
+                if v82 then
+                    text = "three-people"
+                    text = a3
+                else
+                    text = "globe-simplified"
+                    text = a3
+                end
+
+                v48.Text = text
+                v48.TextColor3 = v83
+                v47.Color = v83
+                local toast = text.Toast
+                local v85 = v81 ~= "team" and "Chat: everyone" or "Chat: your team"
+                toast(v85, "info")
+            end
+        )
+
+        local function onCommand(a87, text: string)
+            --[[
+              name: onCommand
+              line: 191
+              upvalues:
+                localPlayer (copy, index: 1)
+                textChatService (copy, index: 2)
+                state (copy, index: 3)
+                a3 (copy, index: 4)
+                mode (ref,  index: 5)
+                apply (copy, index: 6)
+                textColor3 (copy, index: 7)
+                colors (copy, index: 8)
+                ui2 (copy, index: 9)
+                v48 (copy, index: 10)
+                v47 (copy, index: 11)
+            ]]
+            local v89 = localPlayer:GetAttribute("TeamChannel")
+            local tribesTeamChat = textChatService:FindFirstChild("TribesTeamChat")
+            local child = tribesTeamChat and type(v89) == "string" and tribesTeamChat:FindFirstChild(v89)
+            local v92 = if child and child:IsA("TextChannel") then child else nil
+
+            if state.InMatch() and v92 then
+                local v93 = string.match(text, "^%S+%s+(.-)%s*$")
+
+                if v93 and v93 ~= "" then
+                    local v94
+
+                    if a87 ~= "team" then
+                        local textChannels = textChatService:FindFirstChild("TextChannels")
+                        local rbxGeneral = textChannels and textChannels:FindFirstChild("RBXGeneral")
+                        v94 = if rbxGeneral and rbxGeneral:IsA("TextChannel") then rbxGeneral else nil
                     else
-                        u9 = v34
+                        v94 = v92
                     end
-                    if u9 then
+
+                    if v94 then
                         task.spawn(
                             function()
                                 --[[
                                   line: 201
                                   upvalues:
-                                    u9 (copy, index: 1)
-                                    u10 (copy, index: 2)
+                                    tribesTeamChat (copy, index: 1)
+                                    v93 (copy, index: 2)
                                 ]]
                                 pcall(
                                     function()
                                         --[[
                                           line: 202
                                           upvalues:
-                                            u9 (copy, index: 1)
-                                            u10 (copy, index: 2)
+                                            tribesTeamChat (copy, index: 1)
+                                            v93 (copy, index: 2)
                                         ]]
-                                        u9:SendAsync(u10)
+                                        tribesTeamChat:SendAsync(v93)
                                     end
                                 )
                             end
                         )
                     end
-                    return "sent to " .. a6
+
+                    return "sent to " .. a87
                 end
-                u3 = a6
+
+                mode = a87
                 apply()
-                v34 = u3 == "team"
-                local v36
-                if v34 then
-                    v36 = u1
-                else
-                    v36 = Colors_upv_1.TextDim
-                end
-                u7.Text = (v34 and "TEAM CHAT") or "ALL CHAT"
-                u7.TextColor3 = v36
-                u6.Text = (v34 and "three-people") or "globe-simplified"
-                u6.TextColor3 = v36
-                Theme_upv_1.Color = v36
-                a1.Toast(((a6 ~= "team") and "Chat: everyone") or "Chat: your team", "info")
-                return "switched to " .. a6
+                local v97 = mode == "team"
+                local v98 = if v97 then textColor3 else colors.TextDim
+                ui2.Text = v97 and "TEAM CHAT" or "ALL CHAT"
+                ui2.TextColor3 = v98
+                v48.Text = v97 and "three-people" or "globe-simplified"
+                v48.TextColor3 = v98
+                v47.Color = v98
+                local toast = a3.Toast
+                local v100 = a87 ~= "team" and "Chat: everyone" or "Chat: your team"
+                toast(v100, "info")
+
+                return "switched to " .. a87
             end
+
+            local toast = a3.Toast
+            local v102 = a87 ~= "team" and "You're talking to everyone" or "Team chat works in matches"
+            toast(v102, "info")
+
+            return "not in a match"
         end
-        a1.Toast(((a6 ~= "team") and "You're talking to everyone") or "Team chat works in matches", "info")
-        return "not in a match"
-    end
-    local u11 = false
-    local function command(a8, a9, a10, a11)
-        --[[
-          name: command
-          line: 212
-          upvalues:
-            TextChatService_upv_1 (copy, index: 1)
-            onCommand (copy, index: 2)
-        ]]
-        if TextChatService_upv_1:FindFirstChild(a8) then
-            return
-        end
-        local v37 = Instance.new("TextChatCommand")
-        v37.Name = a8
-        v37.PrimaryAlias = a9
-        v37.SecondaryAlias = a10
-        v37.Triggered:Connect(
-            function(a12, a13)
-                --[[
-                  line: 220
-                  upvalues:
-                    onCommand (copy, index: 1)
-                    a11 (copy, index: 2)
-                ]]
-                onCommand(a11, a13)
-            end
-        )
-        v37.Parent = TextChatService_upv_1
-    end
-    local function start()
-        --[[
-          name: start
-          line: 227
-          upvalues:
-            u11 (ref,  index: 1)
-            enabled (copy, index: 2)
-            command (copy, index: 3)
-        ]]
-        if (u11) or not enabled() then
-            return
-        end
-        u11 = true
-        command("TribesTeamChat_Team", "/t", "/team", "team")
-        command("TribesTeamChat_All", "/a", "/all", "all")
-    end
-    local u12 = nil
-    local function watchBar()
-        --[[
-          name: watchBar
-          line: 237
-          upvalues:
-            TextChatService_upv_1 (copy, index: 1)
-            u12 (ref,  index: 2)
-        ]]
-        local v38 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-        if not v38 or v38 == u12 then
-            return
-        end
-        u12 = v38
-        pcall(function() end)
-    end
-    local Enabled_upv_1 = nil
-    local function bubbles()
-        --[[
-          name: bubbles
-          line: 256
-          upvalues:
-            TextChatService_upv_1 (copy, index: 1)
-            Enabled_upv_1 (ref,  index: 2)
-            State_upv_1 (copy, index: 3)
-        ]]
-        local v39 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
-        if not v39 then
-            return
-        end
-        if Enabled_upv_1 == nil then
-            Enabled_upv_1 = v39.Enabled
-        end
-        local v40 = (Enabled_upv_1 == true) and (not State_upv_1.SeesMatch())
-        if v39.Enabled == v40 then
-            return
-        end
-        v39.Enabled = v40
-    end
-    task.spawn(
-        function()
+
+        local function command(name: string, primaryAlias: string, secondaryAlias: string, a107: string)
             --[[
-              line: 269
+              name: command
+              line: 212
               upvalues:
-                TextChatService_upv_1 (copy, index: 1)
-                Enabled_upv_1 (ref,  index: 2)
-                State_upv_1 (copy, index: 3)
+                textChatService (copy, index: 1)
+                onCommand (copy, index: 2)
             ]]
-            if TextChatService_upv_1:WaitForChild("BubbleChatConfiguration", 30) then
-                local v41 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
-                if not v41 then
-                    return
-                end
-                if Enabled_upv_1 == nil then
-                    Enabled_upv_1 = v41.Enabled
-                end
-                local v42 = (Enabled_upv_1 == true) and (not State_upv_1.SeesMatch())
-                if v41.Enabled == v42 then
-                    return
-                end
-                v41.Enabled = v42
+            if textChatService:FindFirstChild(name) then
+                return
             end
+
+            local textChatCommand = Instance.new("TextChatCommand")
+            textChatCommand.Name = name
+            textChatCommand.PrimaryAlias = primaryAlias
+            textChatCommand.SecondaryAlias = secondaryAlias
+            textChatCommand.Triggered:Connect(
+                function(originTextSource: TextSource, unfilteredText: string)
+                    --[[
+                      line: 220
+                      upvalues:
+                        onCommand (copy, index: 1)
+                        a107 (copy, index: 2)
+                    ]]
+                    onCommand(a107, unfilteredText)
+                end
+            )
+            textChatCommand.Parent = textChatService
         end
-    )
-    local function refresh()
-        --[[
-          name: refresh
-          line: 276
-          upvalues:
-            TextChatService_upv_1 (copy, index: 1)
-            Enabled_upv_1 (ref,  index: 2)
-            State_upv_1 (copy, index: 3)
-            u12 (ref,  index: 4)
-            placePill (copy, index: 6)
-            u11 (ref,  index: 7)
-            enabled (copy, index: 8)
-            command (copy, index: 9)
-            apply (copy, index: 10)
-            u3 (ref,  index: 11)
-            u1 (copy, index: 12)
-            Colors_upv_1 (copy, index: 13)
-            u7 (copy, index: 14)
-            u6 (copy, index: 15)
-            Theme_upv_1 (copy, index: 16)
-        ]]
-        local v43 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
-        if v43 then
-            if Enabled_upv_1 == nil then
-                Enabled_upv_1 = v43.Enabled
+
+        local v111 = false
+
+        local function start()
+            --[[
+              name: start
+              line: 227
+              upvalues:
+                v111 (ref,  index: 1)
+                enabled (copy, index: 2)
+                command (copy, index: 3)
+            ]]
+            if v111 or not enabled() then
+                return
             end
-            local v44 = (Enabled_upv_1 == true) and (not State_upv_1.SeesMatch())
-            if v43.Enabled ~= v44 then
-                v43.Enabled = v44
-            end
-        end
-        local v45 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-        if v45 and v45 ~= u12 then
-            u12 = v45
-            pcall(function() end)
-        end
-        if not (u11) and enabled() then
-            u11 = true
+
+            v111 = true
             command("TribesTeamChat_Team", "/t", "/team", "team")
             command("TribesTeamChat_All", "/a", "/all", "all")
         end
-        apply()
-        local v46 = u3 == "team"
-        local v47
-        if v46 then
-            v47 = u1
-        else
-            v47 = Colors_upv_1.TextDim
-        end
-        u7.Text = (v46 and "TEAM CHAT") or "ALL CHAT"
-        u7.TextColor3 = v47
-        u6.Text = (v46 and "three-people") or "globe-simplified"
-        u6.TextColor3 = v47
-        Theme_upv_1.Color = v47
-        placePill()
-    end
-    State_upv_1.PlayerStateChanged:Connect(refresh)
-    State_upv_1.AttrChanged:Connect(
-        function(a14)
+
+        local chatInputBarConfiguration = nil
+
+        local function watchBar()
             --[[
-              line: 285
+              name: watchBar
+              line: 237
               upvalues:
-                TextChatService_upv_1 (copy, index: 1)
-                Enabled_upv_1 (ref,  index: 2)
-                State_upv_1 (copy, index: 3)
-                u12 (ref,  index: 4)
+                textChatService (copy, index: 1)
+                chatInputBarConfiguration (ref,  index: 2)
+                v53 (ref,  index: 3)
+                placePill (copy, index: 4)
+            ]]
+            local chatInputBarConfiguration2 = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+            if not chatInputBarConfiguration2 or chatInputBarConfiguration2 == chatInputBarConfiguration then
+                return
+            end
+
+            chatInputBarConfiguration = chatInputBarConfiguration2
+            pcall(
+                function()
+                    --[[
+                      line: 243
+                      upvalues:
+                        chatInputBarConfiguration2 (copy, index: 1)
+                        textChatService (copy, index: 2)
+                        v53 (ref,  index: 3)
+                        placePill (copy, index: 4)
+                    ]]
+                    chatInputBarConfiguration2:GetPropertyChangedSignal("IsFocused"):Connect(
+                        function()
+                            --[[
+                              line: 244
+                              upvalues:
+                                textChatService (copy, index: 1)
+                                v53 (ref,  index: 2)
+                                placePill (copy, index: 3)
+                            ]]
+                            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+                            local v117, isFocused = pcall(
+                                function()
+                                    --[[
+                                      line: 149
+                                      upvalues:
+                                        chatInputBarConfiguration (copy, index: 1)
+                                    ]]
+                                    return chatInputBarConfiguration.IsFocused
+                                end
+                            )
+                            v117 = v117 and isFocused == true
+
+                            if not v117 then
+                                v53 = os.clock() + 2.5
+                                task.delay(2.55, placePill)
+                            end
+
+                            placePill()
+                        end
+                    )
+                end
+            )
+        end
+
+        local enabled2 = nil
+
+        local function bubbles()
+            --[[
+              name: bubbles
+              line: 256
+              upvalues:
+                textChatService (copy, index: 1)
+                enabled2 (ref,  index: 2)
+                state (copy, index: 3)
+            ]]
+            local bubbleChatConfiguration = textChatService:FindFirstChildOfClass("BubbleChatConfiguration")
+            if not bubbleChatConfiguration then
+                return
+            end
+
+            if enabled2 == nil then
+                enabled2 = bubbleChatConfiguration.Enabled
+            end
+
+            local enabled = enabled2 == true and not state.SeesMatch()
+
+            if bubbleChatConfiguration.Enabled ~= enabled then
+                bubbleChatConfiguration.Enabled = enabled
+            end
+        end
+
+        task.spawn(
+            function()
+                --[[
+                  line: 269
+                  upvalues:
+                    textChatService (copy, index: 1)
+                    enabled2 (ref,  index: 2)
+                    state (copy, index: 3)
+                ]]
+                if textChatService:WaitForChild("BubbleChatConfiguration", 30) then
+                    local bubbleChatConfiguration = textChatService:FindFirstChildOfClass("BubbleChatConfiguration")
+                    if not bubbleChatConfiguration then
+                        return
+                    end
+
+                    if enabled2 == nil then
+                        enabled2 = bubbleChatConfiguration.Enabled
+                    end
+
+                    local enabled = enabled2 == true and not state.SeesMatch()
+
+                    if bubbleChatConfiguration.Enabled ~= enabled then
+                        bubbleChatConfiguration.Enabled = enabled
+                    end
+                end
+            end
+        )
+
+        local function refresh()
+            --[[
+              name: refresh
+              line: 276
+              upvalues:
+                textChatService (copy, index: 1)
+                enabled2 (ref,  index: 2)
+                state (copy, index: 3)
+                chatInputBarConfiguration (ref,  index: 4)
+                v53 (ref,  index: 5)
                 placePill (copy, index: 6)
-                u11 (ref,  index: 7)
+                v111 (ref,  index: 7)
                 enabled (copy, index: 8)
                 command (copy, index: 9)
                 apply (copy, index: 10)
-                u3 (ref,  index: 11)
-                u1 (copy, index: 12)
-                Colors_upv_1 (copy, index: 13)
-                u7 (copy, index: 14)
-                u6 (copy, index: 15)
-                Theme_upv_1 (copy, index: 16)
+                mode (ref,  index: 11)
+                textColor3 (copy, index: 12)
+                colors (copy, index: 13)
+                ui2 (copy, index: 14)
+                v48 (copy, index: 15)
+                v47 (copy, index: 16)
             ]]
-            if a14 == "Team" or a14 == "MatchId" then
-                local v48 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
-                if v48 then
-                    if Enabled_upv_1 == nil then
-                        Enabled_upv_1 = v48.Enabled
-                    end
-                    local v49 = (Enabled_upv_1 == true) and (not State_upv_1.SeesMatch())
-                    if v48.Enabled ~= v49 then
-                        v48.Enabled = v49
-                    end
+            if const bubbleChatConfiguration = textChatService:FindFirstChildOfClass("BubbleChatConfiguration") then
+                if enabled2 == nil then
+                    enabled2 = bubbleChatConfiguration.Enabled
                 end
-                local v50 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                if v50 and v50 ~= u12 then
-                    u12 = v50
-                    pcall(function() end)
+
+                local enabled3 = enabled2 == true and not state.SeesMatch()
+
+                if bubbleChatConfiguration.Enabled ~= enabled3 then
+                    bubbleChatConfiguration.Enabled = enabled3
                 end
-                if not (u11) and enabled() then
-                    u11 = true
-                    command("TribesTeamChat_Team", "/t", "/team", "team")
-                    command("TribesTeamChat_All", "/a", "/all", "all")
-                end
-                apply()
-                local v51 = u3 == "team"
-                local v52
-                if v51 then
-                    v52 = u1
-                else
-                    v52 = Colors_upv_1.TextDim
-                end
-                u7.Text = (v51 and "TEAM CHAT") or "ALL CHAT"
-                u7.TextColor3 = v52
-                u6.Text = (v51 and "three-people") or "globe-simplified"
-                u6.TextColor3 = v52
-                Theme_upv_1.Color = v52
-                placePill()
             end
-        end
-    )
-    LocalPlayer_upv_1:GetAttributeChangedSignal("TeamChannel"):Connect(refresh)
-    a1.HudHiddenChanged:Connect(placePill)
-    UI_upv_1.ChatChanged:Connect(
-        function()
-            --[[
-              line: 292
-              upvalues:
-                TextChatService_upv_1 (copy, index: 1)
-                u12 (ref,  index: 2)
-                placePill (copy, index: 4)
-            ]]
-            local v53 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-            if v53 and v53 ~= u12 then
-                u12 = v53
-                pcall(function() end)
-            end
-            placePill()
-        end
-    )
-    UI_upv_1.LayoutChanged:Connect(placePill)
-    local v54 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
-    if v54 then
-        if Enabled_upv_1 == nil then
-            Enabled_upv_1 = v54.Enabled
-        end
-        local v55 = (Enabled_upv_1 == true) and (not State_upv_1.SeesMatch())
-        if v54.Enabled ~= v55 then
-            v54.Enabled = v55
-        end
-    end
-    local u13 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-    if u13 and u13 ~= u12 then
-        u12 = u13
-        pcall(
-            function()
-                --[[
-                  line: 243
-                  upvalues:
-                    u13 (copy, index: 1)
-                    TextChatService_upv_1 (copy, index: 2)
-                    u8 (ref,  index: 3)
-                    placePill (copy, index: 4)
-                ]]
-                u13:GetPropertyChangedSignal("IsFocused"):Connect(
+
+            local chatInputBarConfiguration2 = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+            if chatInputBarConfiguration2 and chatInputBarConfiguration2 ~= chatInputBarConfiguration then
+                chatInputBarConfiguration = chatInputBarConfiguration2
+                pcall(
                     function()
                         --[[
-                          line: 244
+                          line: 243
                           upvalues:
-                            TextChatService_upv_1 (copy, index: 1)
-                            u8 (ref,  index: 2)
-                            placePill (copy, index: 3)
+                            chatInputBarConfiguration2 (copy, index: 1)
+                            textChatService (copy, index: 2)
+                            v53 (ref,  index: 3)
+                            placePill (copy, index: 4)
                         ]]
-                        local u14 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                        local success_4, v56 = pcall(
+                        chatInputBarConfiguration2:GetPropertyChangedSignal("IsFocused"):Connect(
                             function()
                                 --[[
-                                  line: 149
+                                  line: 244
                                   upvalues:
-                                    u14 (copy, index: 1)
+                                    textChatService (copy, index: 1)
+                                    v53 (ref,  index: 2)
+                                    placePill (copy, index: 3)
                                 ]]
-                                return u14.IsFocused
+                                local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+                                local v130, isFocused = pcall(
+                                    function()
+                                        --[[
+                                          line: 149
+                                          upvalues:
+                                            chatInputBarConfiguration (copy, index: 1)
+                                        ]]
+                                        return chatInputBarConfiguration.IsFocused
+                                    end
+                                )
+                                v130 = v130 and isFocused == true
+
+                                if not v130 then
+                                    v53 = os.clock() + 2.5
+                                    task.delay(2.55, placePill)
+                                end
+
+                                placePill()
                             end
                         )
-                        if not success_4 or v56 ~= true then
-                            u8 = os.clock() + 2.5
-                            task.delay(2.55, placePill)
-                        end
-                        placePill()
                     end
                 )
             end
-        )
-    end
-    if not (u11) and enabled() then
-        u11 = true
-        command("TribesTeamChat_Team", "/t", "/team", "team")
-        command("TribesTeamChat_All", "/a", "/all", "all")
-    end
-    apply()
-    local v57 = u3 == "team"
-    local v55
-    if v57 then
-        v55 = u1
-    else
-        v55 = Colors_upv_1.TextDim
-    end
-    u7.Text = (v57 and "TEAM CHAT") or "ALL CHAT"
-    u7.TextColor3 = v55
-    u6.Text = (v57 and "three-people") or "globe-simplified"
-    u6.TextColor3 = v55
-    Theme_upv_1.Color = v55
-    placePill()
-    a1.Debug.teamChat = function(a15, a16)
-        --[[
-          line: 299
-          upvalues:
-            u3 (ref,  index: 1)
-            apply (copy, index: 2)
-            u1 (copy, index: 3)
-            Colors_upv_1 (copy, index: 4)
-            u7 (copy, index: 5)
-            u6 (copy, index: 6)
-            Theme_upv_1 (copy, index: 7)
-            onCommand (copy, index: 8)
-            TextChatService_upv_1 (copy, index: 9)
-            enabled (copy, index: 10)
-            LocalPlayer_upv_1 (copy, index: 11)
-            u5 (copy, index: 12)
-        ]]
-        local v58 = nil
-        if a15 == "team" or a15 == "all" then
-            u3 = a15
+
+            if not v111 and enabled() then
+                v111 = true
+                command("TribesTeamChat_Team", "/t", "/team", "team")
+                command("TribesTeamChat_All", "/a", "/all", "all")
+            end
+
             apply()
-            local v59 = u3 == "team"
-            local v60
-            if v59 then
-                v60 = u1
-            else
-                v60 = Colors_upv_1.TextDim
-            end
-            u7.Text = (v59 and "TEAM CHAT") or "ALL CHAT"
-            u7.TextColor3 = v60
-            u6.Text = (v59 and "three-people") or "globe-simplified"
-            u6.TextColor3 = v60
-            Theme_upv_1.Color = v60
-        elseif a15 == "cmd" then
-            local v61 = nil
-            if type(a16) == "string" then
-                v61 = string.match(a16, "^(%S+)")
-                local v62
-                if v61 == "/a" or v61 == "/all" then
-                    v62 = "all"
-                else
-                    v62 = "team"
+            local v132 = mode == "team"
+            local v133 = if v132 then textColor3 else colors.TextDim
+            ui2.Text = v132 and "TEAM CHAT" or "ALL CHAT"
+            ui2.TextColor3 = v133
+            v48.Text = v132 and "three-people" or "globe-simplified"
+            v48.TextColor3 = v133
+            v47.Color = v133
+            placePill()
+        end
+
+        state.PlayerStateChanged:Connect(refresh)
+
+        state.AttrChanged:Connect(
+            function(a134)
+                --[[
+                  line: 285
+                  upvalues:
+                    textChatService (copy, index: 1)
+                    enabled2 (ref,  index: 2)
+                    state (copy, index: 3)
+                    chatInputBarConfiguration (ref,  index: 4)
+                    v53 (ref,  index: 5)
+                    placePill (copy, index: 6)
+                    v111 (ref,  index: 7)
+                    enabled (copy, index: 8)
+                    command (copy, index: 9)
+                    apply (copy, index: 10)
+                    mode (ref,  index: 11)
+                    textColor3 (copy, index: 12)
+                    colors (copy, index: 13)
+                    ui2 (copy, index: 14)
+                    v48 (copy, index: 15)
+                    v47 (copy, index: 16)
+                ]]
+                if a134 == "Team" or a134 == "MatchId" then
+                    if const bubbleChatConfiguration = textChatService:FindFirstChildOfClass("BubbleChatConfiguration") then
+                        if enabled2 == nil then
+                            enabled2 = bubbleChatConfiguration.Enabled
+                        end
+
+                        local enabled3 = enabled2 == true and not state.SeesMatch()
+
+                        if bubbleChatConfiguration.Enabled ~= enabled3 then
+                            bubbleChatConfiguration.Enabled = enabled3
+                        end
+                    end
+
+                    local chatInputBarConfiguration2 = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                    if chatInputBarConfiguration2 and chatInputBarConfiguration2 ~= chatInputBarConfiguration then
+                        chatInputBarConfiguration = chatInputBarConfiguration2
+                        pcall(
+                            function()
+                                --[[
+                                  line: 243
+                                  upvalues:
+                                    chatInputBarConfiguration2 (copy, index: 1)
+                                    textChatService (copy, index: 2)
+                                    v53 (ref,  index: 3)
+                                    placePill (copy, index: 4)
+                                ]]
+                                chatInputBarConfiguration2:GetPropertyChangedSignal("IsFocused"):Connect(
+                                    function()
+                                        --[[
+                                          line: 244
+                                          upvalues:
+                                            textChatService (copy, index: 1)
+                                            v53 (ref,  index: 2)
+                                            placePill (copy, index: 3)
+                                        ]]
+                                        local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+                                        local v139, isFocused = pcall(
+                                            function()
+                                                --[[
+                                                  line: 149
+                                                  upvalues:
+                                                    chatInputBarConfiguration (copy, index: 1)
+                                                ]]
+                                                return chatInputBarConfiguration.IsFocused
+                                            end
+                                        )
+                                        v139 = v139 and isFocused == true
+
+                                        if not v139 then
+                                            v53 = os.clock() + 2.5
+                                            task.delay(2.55, placePill)
+                                        end
+
+                                        placePill()
+                                    end
+                                )
+                            end
+                        )
+                    end
+
+                    if not v111 and enabled() then
+                        v111 = true
+                        command("TribesTeamChat_Team", "/t", "/team", "team")
+                        command("TribesTeamChat_All", "/a", "/all", "all")
+                    end
+
+                    apply()
+                    local v141 = mode == "team"
+                    local v142 = if v141 then textColor3 else colors.TextDim
+                    ui2.Text = v141 and "TEAM CHAT" or "ALL CHAT"
+                    ui2.TextColor3 = v142
+                    v48.Text = v141 and "three-people" or "globe-simplified"
+                    v48.TextColor3 = v142
+                    v47.Color = v142
+                    placePill()
                 end
-                v58 = onCommand(v62, a16)
+            end
+        )
+
+        localPlayer:GetAttributeChangedSignal("TeamChannel"):Connect(refresh)
+        a3.HudHiddenChanged:Connect(placePill)
+
+        ui.ChatChanged:Connect(
+            function()
+                --[[
+                  line: 292
+                  upvalues:
+                    textChatService (copy, index: 1)
+                    chatInputBarConfiguration (ref,  index: 2)
+                    v53 (ref,  index: 3)
+                    placePill (copy, index: 4)
+                ]]
+                local chatInputBarConfiguration2 = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                if chatInputBarConfiguration2 and chatInputBarConfiguration2 ~= chatInputBarConfiguration then
+                    chatInputBarConfiguration = chatInputBarConfiguration2
+                    pcall(
+                        function()
+                            --[[
+                              line: 243
+                              upvalues:
+                                chatInputBarConfiguration2 (copy, index: 1)
+                                textChatService (copy, index: 2)
+                                v53 (ref,  index: 3)
+                                placePill (copy, index: 4)
+                            ]]
+                            chatInputBarConfiguration2:GetPropertyChangedSignal("IsFocused"):Connect(
+                                function()
+                                    --[[
+                                      line: 244
+                                      upvalues:
+                                        textChatService (copy, index: 1)
+                                        v53 (ref,  index: 2)
+                                        placePill (copy, index: 3)
+                                    ]]
+                                    local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+                                    local v145, isFocused = pcall(
+                                        function()
+                                            --[[
+                                              line: 149
+                                              upvalues:
+                                                chatInputBarConfiguration (copy, index: 1)
+                                            ]]
+                                            return chatInputBarConfiguration.IsFocused
+                                        end
+                                    )
+                                    v145 = v145 and isFocused == true
+
+                                    if not v145 then
+                                        v53 = os.clock() + 2.5
+                                        task.delay(2.55, placePill)
+                                    end
+
+                                    placePill()
+                                end
+                            )
+                        end
+                    )
+                end
+
+                placePill()
+            end
+        )
+
+        ui.LayoutChanged:Connect(placePill)
+
+        if const bubbleChatConfiguration = textChatService:FindFirstChildOfClass("BubbleChatConfiguration") then
+            if enabled2 == nil then
+                enabled2 = bubbleChatConfiguration.Enabled
+            end
+
+            local enabled3 = enabled2 == true and not state.SeesMatch()
+
+            if bubbleChatConfiguration.Enabled ~= enabled3 then
+                bubbleChatConfiguration.Enabled = enabled3
             end
         end
-        local v63 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-        local v64 = v63 and (v63.TargetTextChannel)
-        local tbl_3 = {bubbles = 0, target = 0, did = 0, pill = 0}
-        tbl_3.enabled = enabled()
-        tbl_3.mode = u3
-        tbl_3.channel = LocalPlayer_upv_1:GetAttribute("TeamChannel") or false
-        local v65
-        if v64 then
-            v65 = v64:GetFullName()
-        else
-            v65 = false
+
+        local chatInputBarConfiguration2 = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+        if chatInputBarConfiguration2 and chatInputBarConfiguration2 ~= chatInputBarConfiguration then
+            chatInputBarConfiguration = chatInputBarConfiguration2
+            pcall(
+                function()
+                    --[[
+                      line: 243
+                      upvalues:
+                        chatInputBarConfiguration2 (copy, index: 1)
+                        textChatService (copy, index: 2)
+                        v53 (ref,  index: 3)
+                        placePill (copy, index: 4)
+                    ]]
+                    chatInputBarConfiguration2:GetPropertyChangedSignal("IsFocused"):Connect(
+                        function()
+                            --[[
+                              line: 244
+                              upvalues:
+                                textChatService (copy, index: 1)
+                                v53 (ref,  index: 2)
+                                placePill (copy, index: 3)
+                            ]]
+                            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+                            local v151, isFocused = pcall(
+                                function()
+                                    --[[
+                                      line: 149
+                                      upvalues:
+                                        chatInputBarConfiguration (copy, index: 1)
+                                    ]]
+                                    return chatInputBarConfiguration.IsFocused
+                                end
+                            )
+                            v151 = v151 and isFocused == true
+
+                            if not v151 then
+                                v53 = os.clock() + 2.5
+                                task.delay(2.55, placePill)
+                            end
+
+                            placePill()
+                        end
+                    )
+                end
+            )
         end
-        tbl_3.target = v65
-        tbl_3.pill = u5.Visible
-        local v66 = TextChatService_upv_1:FindFirstChildOfClass("BubbleChatConfiguration")
-        local v67
-        if v66 then
-            v67 = v66.Enabled
-        else
-            v67 = false
+
+        if not v111 and enabled() then
+            v111 = true
+            command("TribesTeamChat_Team", "/t", "/team", "team")
+            command("TribesTeamChat_All", "/a", "/all", "all")
         end
-        tbl_3.bubbles = v67
-        tbl_3.did = v58 or false
-        return tbl_3
-    end
-end
-return tbl_1
+
+        apply()
+        local v153 = mode == "team"
+        local v154 = if v153 then textColor3 else colors.TextDim
+        ui2.Text = v153 and "TEAM CHAT" or "ALL CHAT"
+        ui2.TextColor3 = v154
+        v48.Text = v153 and "three-people" or "globe-simplified"
+        v48.TextColor3 = v154
+        v47.Color = v154
+        placePill()
+
+        a3.Debug.teamChat = function(a155, text: string)
+            --[[
+              line: 299
+              upvalues:
+                mode (ref,  index: 1)
+                apply (copy, index: 2)
+                textColor3 (copy, index: 3)
+                colors (copy, index: 4)
+                ui2 (copy, index: 5)
+                v48 (copy, index: 6)
+                v47 (copy, index: 7)
+                onCommand (copy, index: 8)
+                textChatService (copy, index: 9)
+                enabled (copy, index: 10)
+                localPlayer (copy, index: 11)
+                parent2 (copy, index: 12)
+            ]]
+            local v157
+            local v158 = nil
+
+            if a155 == "team" or a155 == "all" then
+                mode = a155
+                apply()
+                local v159 = mode == "team"
+                local v160 = if v159 then textColor3 else colors.TextDim
+                ui2.Text = v159 and "TEAM CHAT" or "ALL CHAT"
+                ui2.TextColor3 = v160
+                v48.Text = v159 and "three-people" or "globe-simplified"
+                v48.TextColor3 = v160
+                v47.Color = v160
+            elseif a155 == "cmd" and type(text) == "string" then
+                local v161 = string.match(text, "^(%S+)")
+                local v162 = v161 ~= "/a" and v161 ~= "/all" and "team" or "all"
+                v158 = onCommand(v162, text)
+            end
+
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+            local targetTextChannel = chatInputBarConfiguration and chatInputBarConfiguration.TargetTextChannel
+            local v165 = {enabled = enabled(), mode = mode, channel = localPlayer:GetAttribute("TeamChannel") or false}
+
+            if targetTextChannel then
+                v157 = targetTextChannel:GetFullName()
+                v157 = textChatService
+            else
+                v157 = false
+                v157 = textChatService
+            end
+
+            v165.target = v157
+            v165.pill = parent2.Visible
+            local bubbleChatConfiguration = v157:FindFirstChildOfClass("BubbleChatConfiguration")
+            v165.bubbles = if bubbleChatConfiguration then bubbleChatConfiguration.Enabled else false
+            v165.did = v158 or false
+
+            return v165
+        end
+    end)
+}

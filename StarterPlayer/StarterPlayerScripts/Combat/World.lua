@@ -1,244 +1,265 @@
-local CollectionService_upv_1 = game:GetService("CollectionService")
-local Players_1 = game:GetService("Players")
-local TweenService_upv_1 = game:GetService("TweenService")
-local tbl_1 = {}
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local tbl_upv_2 = {}
-local function close(a1)
+local collectionService = game:GetService("CollectionService")
+local players = game:GetService("Players")
+local tweenService = game:GetService("TweenService")
+local v4 = {}
+local localPlayer = players.LocalPlayer
+local v6 = {}
+
+local function isAlly(a8)
+    --[[
+      name: isAlly
+      line: 17
+      upvalues:
+        localPlayer (copy, index: 1)
+    ]]
+    local character = localPlayer.Character
+    local ownerUserId = a8:GetAttribute("OwnerUserId")
+
+    if ownerUserId == localPlayer.UserId then
+        return true
+    end
+    if not character then
+        return false
+    end
+
+    local matchId = character:GetAttribute("MatchId")
+
+    if type(matchId) == "string" and matchId ~= "" then
+        return a8:GetAttribute("MatchId") == matchId and a8:GetAttribute("Team") == character:GetAttribute("Team")
+    end
+
+    return false
+end
+
+local function close(a13)
     --[[
       name: close
       line: 33
       upvalues:
-        TweenService_upv_1 (copy, index: 1)
+        tweenService (copy, index: 1)
     ]]
-    if a1.closed then
+    if a13.closed then
         return
     end
-    a1.closed = true
-    local _ = a1.model:GetPivot()
-    for key_1, value_1 in {"JawA", "JawB"} do
-        local u1 = a1.model:FindFirstChild(value_1)
-        if not (u1) then
-            continue
-        end
-        if u1:IsA("Model") then
-            local v1 = u1:GetPivot()
-            local v2 = v1 * CFrame.Angles((((key_1 ~= 1) and -1) or 1) * 1.4311699866353502, 0, 0)
-            local u2 = Instance.new("CFrameValue")
-            u2.Value = v1
-            u2.Changed:Connect(
-                function(a2)
+
+    a13.closed = true
+    a13.model:GetPivot()
+
+    for v14, v15 in {"JawA", "JawB"} do
+        if const v16 = a13.model:FindFirstChild(v15) then
+            if not v16:IsA("Model") then
+                continue
+            end
+
+            local pivot = v16:GetPivot()
+            local v18 = v14 ~= 1 and -1 or 1
+            local value = pivot * CFrame.Angles(v18 * 1.4311699866353502, 0, 0)
+            local instance = Instance.new("CFrameValue")
+            instance.Value = pivot
+
+            instance.Changed:Connect(
+                function(value: CFrame)
                     --[[
                       line: 47
                       upvalues:
-                        u1 (copy, index: 1)
+                        v16 (copy, index: 1)
                     ]]
-                    if not u1.Parent then
-                        return
+                    if v16.Parent then
+                        v16:PivotTo(value)
                     end
-                    u1:PivotTo(a2)
                 end
             )
-            local tbl_3 = {}
-            tbl_3.Value = v2
-            TweenService_upv_1:Create(u2, TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.In), tbl_3):Play()
+
+            local propertyTable = {Value = value}
+            tweenService:Create(instance, TweenInfo.new(0.07, Enum.EasingStyle.Quad, Enum.EasingDirection.In), propertyTable):Play()
             task.delay(
                 0.2,
                 function()
                     --[[
                       line: 53
                       upvalues:
-                        u2 (copy, index: 1)
+                        instance (copy, index: 1)
                     ]]
-                    u2:Destroy()
+                    instance:Destroy()
                 end
             )
         end
     end
 end
-local function isAlly(a1)
-    --[[
-      name: isAlly
-      line: 17
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-    ]]
-    local Character_1 = LocalPlayer_upv_1.Character
-    if a1:GetAttribute("OwnerUserId") == LocalPlayer_upv_1.UserId then
-        return true
-    end
-    if not Character_1 then
-        return false
-    end
-    local v3 = Character_1:GetAttribute("MatchId")
-    if type(v3) == "string" and v3 ~= "" then
-        local v4 = (a1:GetAttribute("MatchId") == v3) and (a1:GetAttribute("Team") == Character_1:GetAttribute("Team"))
-        return v4
-    end
-    return false
-end
-local function unregister(a1)
-    --[[
-      name: unregister
-      line: 108
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-    ]]
-    if not a1:IsA("Model") then
-        return
-    end
-    tbl_upv_2[a1] = nil
-end
-local function register(a1)
+
+local function register(bearTrap: Instance)
     --[[
       name: register
       line: 61
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v6 (copy, index: 1)
         isAlly (copy, index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
+        localPlayer (copy, index: 3)
         close (copy, index: 4)
     ]]
-    if not a1:IsA("Model") or tbl_upv_2[a1] then
+    if not bearTrap:IsA("Model") or v6[bearTrap] then
         return
     end
-    local tbl_4 = {}
-    for _, value_2 in a1:GetDescendants() do
-        if value_2:IsA("BasePart") then
-            table.insert(tbl_4, value_2)
+
+    local parts = {}
+
+    for _, descendant in bearTrap:GetDescendants() do
+        if descendant:IsA("BasePart") then
+            table.insert(parts, descendant)
         end
     end
-    local tbl_upv_5 = {closed = false, lastAlpha = -1}
-    tbl_upv_5.model = a1
-    tbl_upv_5.parts = tbl_4
-    tbl_upv_2[a1] = tbl_upv_5
-    if isAlly(a1) then
-        local v5 = Instance.new("Part")
-        v5.Name = "AllyRing"
-        v5.Shape = Enum.PartType.Cylinder
-        v5.Size = Vector3.new(0.05000000074505806, 6.400000095367432, 6.400000095367432)
-        v5.Material = Enum.Material.SmoothPlastic
-        v5.Color = Color3.fromRGB(90, 170, 240)
-        v5.Transparency = 0.8
-        v5.Anchored = true
-        v5.CanCollide = false
-        v5.CanQuery = false
-        v5.CanTouch = false
-        v5.CastShadow = false
-        v5.CFrame = CFrame.new(a1:GetPivot().Position + Vector3.new(0, 0.05000000074505806, 0)) * CFrame.Angles(0, 0, 1.5707963267948966)
-        v5.Parent = a1
-        tbl_upv_5.ring = v5
+
+    local v28 = {ring = nil, closed = false, lastAlpha = -1, model = bearTrap, parts = parts}
+    v6[bearTrap] = v28
+
+    if isAlly(bearTrap) then
+        local allyRing = Instance.new("Part")
+        allyRing.Name = "AllyRing"
+        allyRing.Shape = Enum.PartType.Cylinder
+        allyRing.Size = Vector3.new(0.05000000074505806, 6.400000095367432, 6.400000095367432)
+        allyRing.Material = Enum.Material.SmoothPlastic
+        allyRing.Color = Color3.fromRGB(90, 170, 240)
+        allyRing.Transparency = 0.8
+        allyRing.Anchored = true
+        allyRing.CanCollide = false
+        allyRing.CanQuery = false
+        allyRing.CanTouch = false
+        allyRing.CastShadow = false
+        allyRing.CFrame = CFrame.new(bearTrap:GetPivot().Position + Vector3.new(0, 0.05000000074505806, 0)) * CFrame.Angles(0, 0, 1.5707963267948966)
+        allyRing.Parent = bearTrap
+        v28.ring = allyRing
     end
-    if a1:GetAttribute("OwnerUserId") == LocalPlayer_upv_1.UserId then
-        a1:GetAttributeChangedSignal("Armed"):Connect(
+
+    local ownerUserId = bearTrap:GetAttribute("OwnerUserId")
+
+    if ownerUserId == localPlayer.UserId then
+        bearTrap:GetAttributeChangedSignal("Armed"):Connect(
             function()
                 --[[
                   line: 91
                   upvalues:
-                    a1 (copy, index: 1)
+                    bearTrap (copy, index: 1)
                 ]]
-                if a1:GetAttribute("Armed") ~= true or a1:GetAttribute("Sprung") == true then
-                    return
+                if bearTrap:GetAttribute("Armed") == true and bearTrap:GetAttribute("Sprung") ~= true then
+                    require(script.Parent.Util).Sound("Trap_Armed", bearTrap:GetPivot().Position)
                 end
-                require(script.Parent.Util).Sound("Trap_Armed", a1:GetPivot().Position)
             end
         )
     end
-    a1:GetAttributeChangedSignal("Sprung"):Connect(
+
+    bearTrap:GetAttributeChangedSignal("Sprung"):Connect(
         function()
             --[[
               line: 98
               upvalues:
-                a1 (copy, index: 1)
+                bearTrap (copy, index: 1)
                 close (copy, index: 2)
-                tbl_upv_5 (copy, index: 3)
+                v28 (copy, index: 3)
             ]]
-            if a1:GetAttribute("Sprung") ~= true then
-                return
+            if bearTrap:GetAttribute("Sprung") == true then
+                close(v28)
             end
-            close(tbl_upv_5)
         end
     )
-    if a1:GetAttribute("Sprung") ~= true then
-        return
+
+    if bearTrap:GetAttribute("Sprung") == true then
+        close(v28)
     end
-    close(tbl_upv_5)
 end
+
+local function unregister(bearTrap: Instance)
+    --[[
+      name: unregister
+      line: 108
+      upvalues:
+        v6 (copy, index: 1)
+    ]]
+    if bearTrap:IsA("Model") then
+        v6[bearTrap] = nil
+    end
+end
+
 local function update()
     --[[
       name: update
       line: 114
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
+        localPlayer (copy, index: 1)
+        v6 (copy, index: 2)
         isAlly (copy, index: 3)
     ]]
-    local v6 = LocalPlayer_upv_1.Character
-    local v7 = v6 and (v6:FindFirstChild("HumanoidRootPart"))
-    if v7 then
-        v6 = v7.Position
-    else
-        v6 = workspace.CurrentCamera.CFrame.Position
-    end
-    local v8 = nil
-    for key_2, value_3 in tbl_upv_2 do
-        if not (key_2.Parent) then
-            tbl_upv_2[key_2] = nil
-            continue
-        end
-        v7 = 0
-        local v9 = isAlly(key_2)
-        if not v9 and key_2:GetAttribute("Sprung") ~= true then
-            local v10 = key_2:GetAttribute("HiddenBeyond")
-            if type(v10) ~= "number" then
-                v8 = 25
-            else
-                v8 = v10
+    local camera = workspace.CurrentCamera
+    local instance = localPlayer.Character
+    instance = instance and instance:FindFirstChild("HumanoidRootPart")
+    local position = if instance then instance.Position else camera.CFrame.Position
+
+    for v37, v38 in v6 do
+        if v37.Parent then
+            local clampedValue = 0
+
+            if not isAlly(v37) and v37:GetAttribute("Sprung") ~= true then
+                local hiddenBeyond = v37:GetAttribute("HiddenBeyond")
+
+                if type(hiddenBeyond) ~= "number" then
+                    hiddenBeyond = 25
+                end
+
+                clampedValue = math.clamp(((v37:GetPivot().Position - position).Magnitude - (hiddenBeyond * 0.7)) / (hiddenBeyond * 0.3), 0, 1)
             end
-            v7 = math.clamp(((key_2:GetPivot().Position - v6).Magnitude - (v8 * 0.7)) / (v8 * 0.3), 0, 1)
-        end
-        if not (math.abs(v7 - value_3.lastAlpha) > 0.02) then
-            continue
-        end
-        value_3.lastAlpha = v7
-        for _, value_4 in value_3.parts do
-            value_4.LocalTransparencyModifier = v7
+
+            if 0.02 < math.abs(clampedValue - v38.lastAlpha) then
+                v38.lastAlpha = clampedValue
+
+                for _, part in v38.parts do
+                    part.LocalTransparencyModifier = clampedValue
+                end
+            end
+        else
+            v6[v37] = nil
         end
     end
 end
-function tbl_1.Init()
+
+function v4.Init()
     --[[
       name: Init
       line: 141
       upvalues:
-        CollectionService_upv_1 (copy, index: 1)
+        collectionService (copy, index: 1)
         register (copy, index: 2)
         unregister (copy, index: 3)
-        tbl_upv_2 (copy, index: 4)
+        v6 (copy, index: 4)
         update (copy, index: 5)
     ]]
-    CollectionService_upv_1:GetInstanceAddedSignal("BearTrap"):Connect(register)
-    CollectionService_upv_1:GetInstanceRemovedSignal("BearTrap"):Connect(unregister)
-    for _, value_5 in CollectionService_upv_1:GetTagged("BearTrap") do
-        register(value_5)
+    collectionService:GetInstanceAddedSignal("BearTrap"):Connect(register)
+    collectionService:GetInstanceRemovedSignal("BearTrap"):Connect(unregister)
+
+    for _, bearTrap in collectionService:GetTagged("BearTrap") do
+        register(bearTrap)
     end
+
     task.spawn(
         function()
             --[[
               line: 147
               upvalues:
-                tbl_upv_2 (copy, index: 1)
+                v6 (copy, index: 1)
                 update (copy, index: 2)
             ]]
-            repeat
+            while true do
                 task.wait(0.1)
-            until next(tbl_upv_2)
-            local success_1, v11 = pcall(update)
-            if success_1 then
-                return
+
+                if next(v6) then
+                    local success, result = pcall(update)
+                    if success then
+                        continue
+                    end
+
+                    warn("[Combat] trap visuals:", result)
+                end
             end
-            warn("[Combat] trap visuals:", v11)
         end
     )
 end
-return tbl_1
+
+return v4

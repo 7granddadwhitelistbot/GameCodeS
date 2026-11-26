@@ -1,27 +1,30 @@
-local tbl_upv_1 = {}
-tbl_upv_1._mocks = {}
-function tbl_upv_1.mock(a1, a2)
+local v1 = {_mocks = {}}
+
+function v1.mock(mockKey, value)
     --[[
       name: mock
       line: 16
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    tbl_upv_1._mocks[a1] = a2
+    v1._mocks[mockKey] = value
 end
-function tbl_upv_1.get(a1)
+
+function v1.get(childName: string)
     --[[
       name: get
       line: 20
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    if tbl_upv_1._mocks[a1] then
-        return require(tbl_upv_1._mocks[a1])
+    if v1._mocks[childName] then
+        return require(v1._mocks[childName])
     end
-    if script:FindFirstChild(a1) then
-        return require(script:FindFirstChild(a1))
+    if script:FindFirstChild(childName) then
+        return require(script:FindFirstChild(childName))
     end
-    assert(false, "Util does not exist: " .. a1)
+
+    assert(false, "Util does not exist: " .. childName)
 end
-return tbl_upv_1
+
+return v1

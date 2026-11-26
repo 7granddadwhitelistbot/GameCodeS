@@ -1,1345 +1,1582 @@
-local Players_upv_1 = game:GetService("Players")
-local GuiService_upv_1 = game:GetService("GuiService")
-local HttpService_upv_1 = game:GetService("HttpService")
-local v1 = game:GetService("ReplicatedStorage"):WaitForChild("Shared")
-local Tribes_upv_1 = require(v1:WaitForChild("Tribes"))
-local TribeArt_upv_1 = require(v1:WaitForChild("TribeArt"))
-local TribeMapGrid_upv_1 = require(v1:WaitForChild("TribeMapGrid"))
-v1 = {}
-local _ = {sub = 14, text = 18, left = 360, swatch = 34, hero = 214, tab = 40, cell = 58, row = 64, gap = 20}
-local tbl_upv_1 = {sub = 13, text = 17, left = 320, swatch = 30, hero = 132, tab = 40, cell = 50, row = 60, gap = 14}
-local u1 = Color3.fromRGB(142, 149, 166)
-local u2 = Color3.fromRGB(10, 11, 15)
-local u3 = Color3.fromRGB(255, 186, 46)
-local v2 = Color3.fromRGB(150, 98, 10)
-local tbl_upv_2 = {}
-tbl_upv_2.chief = {text = "CHIEF", color = Color3.fromRGB(196, 136, 20)}
-tbl_upv_2.elder = {text = "ELDER", color = Color3.fromRGB(28, 110, 220)}
-local tbl_upv_3 = {request = "REQUEST", open = "OPEN", invite = "INVITE ONLY"}
-local tbl_upv_4 = {request = "Players ask, Elders accept", open = "Anyone can join", invite = "Only players you invite"}
-local tbl_upv_5 = {0, 5, 10, 20, 30, 50}
-local function untilText(a1)
-    --[[
-      name: untilText
-      line: 67
-    ]]
-    if type(a1) ~= "number" then
-        return ""
-    end
-    local v2 = math.max(0, a1 - os.time())
-    if v2 >= 86400 then
-        return (("%*d %*h"):format(v2 // 86400, (v2 % 86400) // 3600))
-    elseif v2 >= 3600 then
-        return (("%*h %*m"):format(v2 // 3600, (v2 % 3600) // 60))
-    else
-        return (("%*m"):format(math.max(1, v2 // 60)))
-    end
-end
-local function ago(a1)
+local players = game:GetService("Players")
+local guiService = game:GetService("GuiService")
+local httpService = game:GetService("HttpService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local shared = replicatedStorage:WaitForChild("Shared")
+local childName = "Tribes"
+local child = require(shared:WaitForChild(childName))
+local TribeArt = require(shared:WaitForChild("TribeArt"))
+local TribeMapGrid = require(shared:WaitForChild("TribeMapGrid"))
+local v10 = {}
+local v11 = {left = 360, gap = 20, row = 64, text = 18, sub = 14, tab = 40, cell = 58, swatch = 34, hero = 214}
+local v12 = {left = 320, gap = 14, row = 60, text = 17, sub = 13, tab = 40, cell = 50, swatch = 30, hero = 132}
+local textColor3 = Color3.fromRGB(142, 149, 166)
+local backgroundColor3 = Color3.fromRGB(10, 11, 15)
+local textColor32 = Color3.fromRGB(255, 186, 46)
+Color3.fromRGB(150, 98, 10)
+local v16 = {chief = {text = "CHIEF", color = Color3.fromRGB(196, 136, 20)}, elder = {text = "ELDER", color = Color3.fromRGB(28, 110, 220)}}
+local v17 = {open = "OPEN", request = "REQUEST", invite = "INVITE ONLY"}
+local v18 = {open = "Anyone can join", request = "Players ask, Elders accept", invite = "Only players you invite"}
+local v19 = {0, 5, 10, 20, 30, 50}
+
+local function ago(a21)
     --[[
       name: ago
       line: 52
     ]]
-    if type(a1) == "number" and not (a1 <= 0) then
-        local v3 = math.max(0, os.time() - a1)
-        if v3 < 60 then
-            return "just now"
-        end
-        if v3 < 3600 then
-            return (("%*m ago"):format(v3 // 60))
-        elseif v3 < 86400 then
-            return (("%*h ago"):format(v3 // 3600))
-        else
-            return (("%*d ago"):format(v3 // 86400))
-        end
+    if type(a21) ~= "number" or a21 <= 0 then
+        return ""
     end
-    return ""
+
+    local v22 = math.max(0, os.time() - a21)
+
+    if v22 < 60 then
+        return "just now"
+    end
+    if v22 < 3600 then
+        return (`{v22 // 60}m ago`)
+    end
+    if v22 < 86400 then
+        return (`{v22 // 3600}h ago`)
+    end
+
+    return (`{v22 // 86400}d ago`)
 end
-function v1.Init(a1)
+
+local function untilText(a24)
+    --[[
+      name: untilText
+      line: 67
+    ]]
+    if type(a24) ~= "number" then
+        return ""
+    end
+
+    local v25 = math.max(0, a24 - os.time())
+
+    if 86400 <= v25 then
+        return (`{v25 // 86400}d {(v25 % 86400) // 3600}h`)
+    end
+    if 3600 <= v25 then
+        return (`{v25 // 3600}h {(v25 % 3600) // 60}m`)
+    end
+
+    return (`{(math.max(1, v25 // 60))}m`)
+end
+
+function v10.Init(a26)
     --[[
       name: Init
       line: 80
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-        u1 (copy, index: 4)
-        HttpService_upv_1 (copy, index: 5)
-        GuiService_upv_1 (copy, index: 6)
-        u2 (copy, index: 7)
-        Tribes_upv_1 (copy, index: 8)
-        u3 (copy, index: 9)
+        players (copy, index: 1)
+        v12 (copy, index: 2)
+        v11 (copy, index: 3)
+        textColor3 (copy, index: 4)
+        httpService (copy, index: 5)
+        guiService (copy, index: 6)
+        backgroundColor3 (copy, index: 7)
+        child (copy, index: 8)
+        textColor32 (copy, index: 9)
         untilText (copy, index: 10)
-        tbl_upv_2 (copy, index: 11)
-        tbl_upv_3 (copy, index: 12)
+        v16 (copy, index: 11)
+        v17 (copy, index: 12)
         ago (copy, index: 13)
-        TribeMapGrid_upv_1 (copy, index: 14)
-        TribeArt_upv_1 (copy, index: 15)
-        tbl_upv_4 (copy, index: 16)
-        tbl_upv_5 (copy, index: 17)
+        TribeMapGrid (copy, index: 14)
+        TribeArt (copy, index: 15)
+        v18 (copy, index: 16)
+        v19 (copy, index: 17)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_1 = a1.State
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local Tribes_upv_2 = a1.Tribes
-    local MenuManager_upv_1 = a1.MenuManager
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local fromOffset_upv_1 = UDim2.fromOffset
-    local TribeEmblem_upv_1 = require(script.Parent.Parent:WaitForChild("TribeEmblem"))
-    TribeEmblem_upv_1.Init(UI_upv_1)
-    local Glow_upv_1 = UI_upv_1.Assets.Icons.Glow
-    local function OnCloseRequested()
-        --[[
-          name: OnCloseRequested
-          line: 99
-          upvalues:
-            MenuManager_upv_1 (copy, index: 1)
-        ]]
-        MenuManager_upv_1.Close("Tribe")
+    local v27
+    local ui = a26.UI
+    local theme = a26.Theme
+    local state = a26.State
+    local colors = theme.Colors
+    local fonts = theme.Fonts
+    local tribes = a26.Tribes
+    local menuManager = a26.MenuManager
+    local localPlayer = players.LocalPlayer
+    local udim2FromOffset = UDim2.fromOffset
+
+    if ui.Compact then
+        v27 = v12
+    else
+        v27 = v11
     end
-    local u4 = UI_upv_1.Window({HeaderHeight = 80, Subtitle = "Play together, earn Glory, hold the maps", Name = "Tribe", Title = "TRIBES", Size = fromOffset_upv_1(1180, 700), Parent = a1.Canvas.Menus, OnCloseRequested = OnCloseRequested})
-    local Content_1 = u4.Content
-    UI_upv_1.SelectionRing(u4.Root)
-    local u5 = UI_upv_1.new("TextLabel", {RichText = true, Text = "", Name = "HeadInfo", TextSize = 15, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -96, 0, 34), Size = fromOffset_upv_1(320, 22), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = u4.Header})
-    local u6 = nil
-    local u7 = false
-    local u8 = nil
-    local u9 = nil
-    local function roleIn(a2)
+
+    local TribeEmblem = require(script.Parent.Parent:WaitForChild("TribeEmblem"))
+    TribeEmblem.Init(ui)
+    local glow = ui.Assets.Icons.Glow
+    local v39 = ui.Window(
+        {
+            Name = "Tribe",
+            Title = "TRIBES",
+            Subtitle = "Play together, earn Glory, hold the maps",
+            HeaderHeight = 80,
+            Size = udim2FromOffset(1180, 700),
+            Parent = a26.Canvas.Menus,
+            OnCloseRequested = (function()
+                --[[
+                  name: OnCloseRequested
+                  line: 99
+                  upvalues:
+                    menuManager (copy, index: 1)
+                ]]
+                menuManager.Close("Tribe")
+            end)
+        }
+    )
+    local content = v39.Content
+    ui.SelectionRing(v39.Root)
+    local ui2 = ui.new("TextLabel", {Name = "HeadInfo", Text = "", RichText = true, TextSize = 15, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -96, 0, 34), Size = udim2FromOffset(320, 22), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = v39.Header})
+    local v42 = nil
+    local v43 = false
+    local v44 = nil
+    local v45 = nil
+
+    local function roleIn(a47)
         --[[
           name: roleIn
           line: 127
           upvalues:
-            LocalPlayer_upv_1 (copy, index: 1)
-            Tribes_upv_2 (copy, index: 2)
+            localPlayer (copy, index: 1)
+            tribes (copy, index: 2)
         ]]
-        local v4
-        if type(a2) == "table" and type(a2.membersList) == "table" then
-            v4 = a2.membersList
+        local v48
+
+        if type(a47) ~= "table" or type(a47.membersList) ~= "table" then
+            v48 = {}
         else
-            v4 = {}
+            v48 = a47.membersList
         end
-        for _, value_1 in v4 do
-            if value_1.userId ~= LocalPlayer_upv_1.UserId then
-                continue
+
+        for _, v50 in v48 do
+            if v50.userId == localPlayer.UserId then
+                return (tostring(v50.role))
             end
-            return (tostring(value_1.role))
         end
-        local v5 = Tribes_upv_2.Mine()
-        if v5 then
-            return v5.role
+
+        return if const v51 = tribes.Mine() then v51.role else "member"
+    end
+
+    do
+        local function myTribe()
+            --[[
+              name: myTribe
+              line: 136
+              upvalues:
+                v42 (ref,  index: 1)
+                roleIn (copy, index: 2)
+                tribes (copy, index: 3)
+            ]]
+            local tribe = v42 and v42.tribe
+
+            if type(tribe) ~= "table" then
+                return tribes.Mine()
+            end
+
+            return {id = tribe.id, role = roleIn(tribe)}
         end
-        return "member"
     end
-    local function myTribe()
-        --[[
-          name: myTribe
-          line: 136
-          upvalues:
-            u6 (ref,  index: 1)
-            roleIn (copy, index: 2)
-            Tribes_upv_2 (copy, index: 3)
-        ]]
-        local v6 = u6 and (u6.tribe)
-        if type(v6) ~= "table" then
-            return Tribes_upv_2.Mine()
+
+    local timestamp = -math.huge
+
+    do
+        local function settled()
+            --[[
+              name: settled
+              line: 144
+              upvalues:
+                timestamp (ref, index: 1)
+            ]]
+            return 0.5 <= os.clock() - timestamp
         end
-        local tbl_6 = {}
-        tbl_6.id = v6.id
-        tbl_6.role = roleIn(v6)
-        return tbl_6
     end
-    local u10 = -math.huge
-    local function settled()
-        --[[
-          name: settled
-          line: 144
-          upvalues:
-            u10 (ref, index: 1)
-        ]]
-        local v7 = os.clock() - u10 >= 0.5
-        return v7
-    end
-    local function label(a3)
+
+    local function label(a57)
         --[[
           name: label
           line: 149
           upvalues:
-            Fonts_upv_1 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
-            UI_upv_1 (copy, index: 3)
+            fonts (copy, index: 1)
+            colors (copy, index: 2)
+            ui (copy, index: 3)
         ]]
-        local v8 = table.clone(a3)
-        if v8.Name ~= "Name" and v8.Name ~= "Tag" or v8.AutoLocalize ~= nil then
-            v8.FontFace = v8.FontFace or (Fonts_upv_1.Bold)
-            local v9
-            v9.TextColor3 = v8.TextColor3 or (Colors_upv_1.Text)
-            v9.TextXAlignment = v9.TextXAlignment or (Enum.TextXAlignment.Left)
-            v9.TextTruncate = v9.TextTruncate or (Enum.TextTruncate.AtEnd)
-            return UI_upv_1.new("TextLabel", v9)
+        local values
+        local values2 = table.clone(a57)
+
+        if (values2.Name == "Name" or values2.Name == "Tag") and values2.AutoLocalize == nil then
+            values2.AutoLocalize = false
         end
-        v8.AutoLocalize = false
-        v8.FontFace = v8.FontFace or (Fonts_upv_1.Bold)
-        local v9
-        v9.TextColor3 = v8.TextColor3 or (Colors_upv_1.Text)
-        v9.TextXAlignment = v9.TextXAlignment or (Enum.TextXAlignment.Left)
-        v9.TextTruncate = v9.TextTruncate or (Enum.TextTruncate.AtEnd)
-        return UI_upv_1.new("TextLabel", v9)
+
+        values2.FontFace = values2.FontFace or fonts.Bold
+        values = values2
+        values.TextColor3 = values.TextColor3 or colors.Text
+        values.TextXAlignment = values.TextXAlignment or Enum.TextXAlignment.Left
+        values.TextTruncate = values.TextTruncate or Enum.TextTruncate.AtEnd
+
+        return ui.new("TextLabel", values)
     end
-    local function section(a4, a5, a6, a7, a8, a9)
-        --[[
-          name: section
-          line: 182
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            fromOffset_upv_1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-            u1 (copy, index: 4)
-            label (copy, index: 5)
-            Fonts_upv_1 (copy, index: 6)
-        ]]
-        local v10 = UI_upv_1.new("Frame", {Name = "Section_" .. a4, Size = UDim2.new(1, -6, 0, 22), LayoutOrder = a7, Parent = a8})
-        local new_1 = UI_upv_1.new
-        local tbl_7 = {}
-        tbl_7.Name = "Bar"
-        tbl_7.Size = fromOffset_upv_1(4, 16)
-        tbl_7.Position = fromOffset_upv_1(0, 3)
-        tbl_7.BackgroundColor3 = a9 or (Colors_upv_1.Accent)
-        tbl_7[1] = UI_upv_1.Corner(2)
-        tbl_7.Parent = v10
-        new_1("Frame", tbl_7)
-        new_1 = string.format("<font color=\"#%s\">%s</font>", Colors_upv_1.TextDim:ToHex(), string.upper(a4))
-        if a5 ~= nil then
-            new_1 = new_1 .. string.format("  <font color=\"#%s\">\194\183  %s</font>", Colors_upv_1.TextMuted:ToHex(), tostring(a5))
-        end
-        if a6 and a6 ~= "" then
-            new_1 = new_1 .. string.format("    <font color=\"#%s\" weight=\"600\">%s</font>", u1:ToHex(), a6)
-        end
-        label({RichText = true, Name = "Text", TextSize = 15, Text = new_1, FontFace = Fonts_upv_1.Heavy, Position = fromOffset_upv_1(12, 0), Size = UDim2.new(1, -12, 1, 0), Parent = v10})
-        return v10
-    end
-    local function pad(a10, a11)
-        --[[
-          name: pad
-          line: 211
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-        ]]
-        UI_upv_1.Padding(a11, a11, a11, a11).Parent = a10
-    end
-    local function clear(a12)
-        --[[
-          name: clear
-          line: 228
-        ]]
-        for _, value_2 in a12:GetChildren() do
-            if value_2:IsA("GuiObject") then
-                value_2:Destroy()
-            end
-        end
-    end
-    local function sigOf(a13)
-        --[[
-          name: sigOf
-          line: 236
-          upvalues:
-            HttpService_upv_1 (copy, index: 1)
-        ]]
-        local success_1, v11 = pcall(HttpService_upv_1.JSONEncode, HttpService_upv_1, a13)
-        if success_1 then
-            return v11
-        end
-        return (tostring(os.clock()))
-    end
-    local function smallButton(a14, a15, a16, a17, a18)
-        --[[
-          name: smallButton
-          line: 241
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            fromOffset_upv_1 (copy, index: 2)
-            u10 (ref,  index: 3)
-        ]]
-        local v12 = a18 or {}
-        local Button_1 = UI_upv_1.Button
-        local tbl_8 = {LayoutOrder = 0, Radius = 10, Parent = 0, AnchorPoint = 0, Position = 0, Size = 0}
-        tbl_8.Name = v12.Name or a14
-        tbl_8.Text = a14
-        tbl_8.Style = a15
-        tbl_8.TextSize = v12.TextSize or 16
-        tbl_8.Icon = v12.Icon
-        tbl_8.Size = v12.Size or fromOffset_upv_1(v12.Width or 104, v12.Height or 40)
-        tbl_8.LayoutOrder = v12.LayoutOrder or 0
-        tbl_8.AnchorPoint = v12.AnchorPoint
-        tbl_8.Position = v12.Position
-        tbl_8.Parent = a16
-        local v14 = Button_1(tbl_8)
-        v14.Activated:Connect(
-            function()
-                --[[
-                  line: 256
-                  upvalues:
-                    u10 (ref,  index: 1)
-                    a17 (copy, index: 2)
-                ]]
-                local v15 = os.clock() - u10 >= 0.5
-                if not v15 then
-                    return
-                end
-                a17()
-            end
-        )
-        if v12.Enabled == false then
-            v14:SetEnabled(false)
-        end
-        return v14
-    end
-    local function tagText(a19)
-        --[[
-          name: tagText
-          line: 267
-          upvalues:
-            TribeEmblem_upv_1 (copy, index: 1)
-        ]]
-        local Tag_1 = TribeEmblem_upv_1.Tag
-        local v16
-        if type(a19) ~= "table" then
-            v16 = a19
-        else
-            v16 = a19.tag
-        end
-        return Tag_1(v16)
-    end
-    local function tribeLine(a20)
-        --[[
-          name: tribeLine
-          line: 272
-          upvalues:
-            TribeEmblem_upv_1 (copy, index: 1)
-        ]]
-        local format_1 = string.format
-        local v17 = TribeEmblem_upv_1.TagColor(a20.color1):ToHex()
-        local Tag_2 = TribeEmblem_upv_1.Tag
-        local v18
-        if type(a20) ~= "table" then
-            v18 = a20
-        else
-            v18 = a20.tag
-        end
-        return format_1("<font color=\"#%s\">%s</font>  %s", v17, Tag_2(v18), tostring(a20.name or ""))
-    end
-    local function caps(a21, a22)
+
+    local function caps(text, options)
         --[[
           name: caps
           line: 163
           upvalues:
             label (copy, index: 1)
-            Fonts_upv_1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
+            fonts (copy, index: 2)
+            colors (copy, index: 3)
         ]]
-        local v19 = a22 or {}
-        local tbl_9 = {LayoutOrder = 0, TextColor3 = 0, Parent = 0, AnchorPoint = 0, TextXAlignment = 0, Position = 0, ZIndex = 0, Size = 0}
-        tbl_9.Name = v19.Name or "Caption"
-        tbl_9.Text = a21
-        tbl_9.FontFace = Fonts_upv_1.Heavy
-        tbl_9.TextSize = v19.TextSize or 12
-        tbl_9.TextColor3 = v19.TextColor3 or (Colors_upv_1.TextMuted)
-        tbl_9.TextXAlignment = v19.TextXAlignment or (Enum.TextXAlignment.Left)
-        tbl_9.Size = v19.Size or UDim2.new(1, 0, 0, 14)
-        tbl_9.Position = v19.Position
-        tbl_9.AnchorPoint = v19.AnchorPoint
-        tbl_9.LayoutOrder = v19.LayoutOrder or 0
-        tbl_9.ZIndex = v19.ZIndex
-        tbl_9.Parent = v19.Parent
-        return label(tbl_9)
+        local v63 = options or {}
+        local v64 = {Name = v63.Name or "Caption", Text = text, FontFace = fonts.Heavy, TextSize = v63.TextSize or 12, TextColor3 = v63.TextColor3
+            or colors.TextMuted, TextXAlignment = v63.TextXAlignment or Enum.TextXAlignment.Left}
+        local v65 = v63.Size or UDim2.new(1, 0, 0, 14)
+        v64.Size = v65
+        v64.Position = v63.Position
+        v64.AnchorPoint = v63.AnchorPoint
+        v64.LayoutOrder = v63.LayoutOrder or 0
+        v64.ZIndex = v63.ZIndex
+        v64.Parent = v63.Parent
+
+        return label(v64)
     end
-    local u11 = UI_upv_1.new("Frame", {Name = "Tabs", Size = UDim2.new(1, 0, 0, tbl_upv_1.tab), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center), Parent = Content_1})
-    local u12 = UI_upv_1.new("Frame", {Name = "Pages", Position = fromOffset_upv_1(0, tbl_upv_1.tab + 14), Size = UDim2.new(1, 0, 1, -(tbl_upv_1.tab + 14)), Parent = Content_1})
-    local tbl_upv_10 = {}
-    local u13 = {}
-    local u14 = nil
-    local tbl_upv_11 = {}
-    local function makeTab(a23, a24, a25)
+
+    local function section(text: string, a68, a69, layoutOrder, parent, a72)
+        --[[
+          name: section
+          line: 182
+          upvalues:
+            ui (copy, index: 1)
+            udim2FromOffset (copy, index: 2)
+            colors (copy, index: 3)
+            textColor3 (copy, index: 4)
+            label (copy, index: 5)
+            fonts (copy, index: 6)
+        ]]
+        local parent2 = ui.new("Frame", {Name = "Section_" .. text, Size = UDim2.new(1, -6, 0, 22), LayoutOrder = layoutOrder, Parent = parent})
+        local newUi = ui.new
+        local v75 = {Name = "Bar", Size = udim2FromOffset(4, 16), Position = udim2FromOffset(0, 3), BackgroundColor3 = a72
+            or colors.Accent, [1] = (ui.Corner(2)), Parent = parent2}
+        newUi("Frame", v75)
+        local text2 = string.format("<font color=\"#%s\">%s</font>", colors.TextDim:ToHex(), string.upper(text))
+
+        if a68 ~= nil then
+            text2 ..= string.format("  <font color=\"#%s\">·  %s</font>", colors.TextMuted:ToHex(), (tostring(a68)))
+        end
+
+        if a69 and a69 ~= "" then
+            text2 ..= string.format("    <font color=\"#%s\" weight=\"600\">%s</font>", textColor3:ToHex(), a69)
+        end
+
+        label({Name = "Text", RichText = true, TextSize = 15, Text = text2, FontFace = fonts.Heavy, Position = udim2FromOffset(12, 0), Size = UDim2.new(1, -12, 1, 0), Parent = parent2})
+
+        return parent2
+    end
+
+    local function card(name, parent, options)
+        --[[
+          name: card
+          line: 196
+          upvalues:
+            ui (copy, index: 1)
+            colors (copy, index: 2)
+        ]]
+        local v81 = options or {}
+        local newUi = ui.new
+        local v83 = {Name = name, BackgroundColor3 = v81.Color or colors.PanelHi, BackgroundTransparency = v81.Transparency
+            or 0.35}
+        local udim2 = v81.Size or UDim2.new(1, -6, 0, 0)
+        v83.Size = udim2
+        v83.AutomaticSize = v81.AutomaticSize or Enum.AutomaticSize.Y
+        v83.LayoutOrder = v81.LayoutOrder or 0
+        v83[1], v83[2] = ui.Corner(12), (ui.Stroke(colors.Stroke, 1, 0.92))
+        v83.Parent = parent
+
+        return newUi("Frame", v83)
+    end
+
+    local function column(name: string, parent, a88: number)
+        --[[
+          name: column
+          line: 215
+          upvalues:
+            ui (copy, index: 1)
+        ]]
+        return ui.new("ScrollingFrame", {Name = name, ScrollBarThickness = 3, Selectable = false, ui.List(Enum.FillDirection.Vertical, a88
+            or 10), (ui.Padding(4, 8, 10, 4)), Parent = parent})
+    end
+
+    local function clear(a90)
+        --[[
+          name: clear
+          line: 228
+        ]]
+        for _, child in a90:GetChildren() do
+            if child:IsA("GuiObject") then
+                child:Destroy()
+            end
+        end
+    end
+
+    do
+        local function sigOf(a94)
+            --[[
+              name: sigOf
+              line: 236
+              upvalues:
+                httpService (copy, index: 1)
+            ]]
+            local success, result = pcall(httpService.JSONEncode, httpService, a94)
+            if success then
+                return result
+            end
+
+            return (tostring(os.clock()))
+        end
+    end
+
+    local function smallButton(text, style: string, parent, callback, options)
+        --[[
+          name: smallButton
+          line: 241
+          upvalues:
+            ui (copy, index: 1)
+            udim2FromOffset (copy, index: 2)
+            timestamp (ref,  index: 3)
+        ]]
+        local v103 = options or {}
+        local button = ui.Button
+        local v105 = {Radius = 10, Name = v103.Name or text, Text = text, Style = style, TextSize = v103.TextSize
+            or 16, Icon = v103.Icon}
+        local v106 = v103.Size or udim2FromOffset((v103.Width or 104), (v103.Height or 40))
+        v105.Size = v106
+        v105.LayoutOrder = v103.LayoutOrder or 0
+        v105.AnchorPoint = v103.AnchorPoint
+        v105.Position = v103.Position
+        v105.Parent = parent
+        local v107 = button(v105)
+
+        v107.Activated:Connect(
+            function()
+                --[[
+                  line: 256
+                  upvalues:
+                    timestamp (ref,  index: 1)
+                    callback (copy, index: 2)
+                ]]
+                if 0.5 <= os.clock() - timestamp then
+                    callback()
+                end
+            end
+        )
+
+        if v103.Enabled == false then
+            v107:SetEnabled(false)
+        end
+
+        return v107
+    end
+
+    do
+        local function tagText(a109)
+            --[[
+              name: tagText
+              line: 267
+              upvalues:
+                TribeEmblem (copy, index: 1)
+            ]]
+            local v110
+            local tag = TribeEmblem.Tag
+
+            if type(a109) ~= "table" then
+                v110 = a109
+            else
+                v110 = a109.tag
+            end
+
+            return tag(v110)
+        end
+    end
+
+    do
+        local function tribeLine(a113)
+            --[[
+              name: tribeLine
+              line: 272
+              upvalues:
+                TribeEmblem (copy, index: 1)
+            ]]
+            local v114
+            local stringFormat = string.format
+            local v116 = TribeEmblem.TagColor(a113.color1):ToHex()
+            local tag = TribeEmblem.Tag
+
+            if type(a113) ~= "table" then
+                v114 = a113
+            else
+                v114 = a113.tag
+            end
+
+            return stringFormat("<font color=\"#%s\">%s</font>  %s", v116, tag(v114), (tostring(a113.name or "")))
+        end
+    end
+
+    local function heroTile(parent, a120, layoutOrder: number)
+        --[[
+          name: heroTile
+          line: 277
+          upvalues:
+            ui (copy, index: 1)
+            colors (copy, index: 2)
+            glow (copy, index: 3)
+        ]]
+        local parent2 = ui.new("Frame", {Name = "Hero", Size = UDim2.new(1, 0, 0, a120), BackgroundColor3 = Color3.new(1, 1, 1), ClipsDescendants = true, LayoutOrder = layoutOrder, (ui.Corner(12)), Parent = parent})
+        local v123 = ui.Gradient(colors.Accent, colors.Panel, 115)
+        v123.Parent = parent2
+        local v124 = ui.Image(glow, {Name = "Glow", ImageTransparency = 0.55, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.46), Size = UDim2.fromScale(1.15, 1.35), Parent = parent2})
+        local accent = colors.Accent
+        v123.Color = ColorSequence.new(accent:Lerp(colors.Panel, 0.45), colors.Panel:Lerp(colors.PanelLo, 0.5))
+        v124.ImageColor3 = accent
+
+        return parent2,
+            function(imageColor3)
+                --[[
+                  name: tint
+                  line: 290
+                  upvalues:
+                    v123 (copy, index: 1)
+                    colors (copy, index: 2)
+                    v124 (copy, index: 3)
+                ]]
+                v123.Color = ColorSequence.new(imageColor3:Lerp(colors.Panel, 0.45), colors.Panel:Lerp(colors.PanelLo, 0.5))
+                v124.ImageColor3 = imageColor3
+            end
+    end
+
+    local function statTile(parent, text: string, layoutOrder: number)
+        --[[
+          name: statTile
+          line: 299
+          upvalues:
+            ui (copy, index: 1)
+            colors (copy, index: 2)
+            label (copy, index: 3)
+            fonts (copy, index: 4)
+            udim2FromOffset (copy, index: 5)
+            caps (copy, index: 6)
+        ]]
+        local textSize
+        local parent2 = ui.new("Frame", {Name = "Stat_" .. text, Size = UDim2.new(0.3333333333333333, -6, 1, 0), LayoutOrder = layoutOrder, BackgroundColor3 = colors.Inset, BackgroundTransparency = 0.35, (ui.Corner(10)), Parent = parent})
+        local v133 = {Name = "Value", Text = "-", FontFace = fonts.Display}
+
+        if ui.Compact then
+            textSize = 20
+        else
+            textSize = 24
+        end
+
+        v133.TextSize = textSize
+        v133.TextXAlignment = Enum.TextXAlignment.Center
+        local v134 = ui.Compact and 5 or 8
+        v133.Position = udim2FromOffset(0, v134)
+        v133.Size = UDim2.new(1, 0, 0, 26)
+        v133.Parent = parent2
+        local v135 = label(v133)
+        caps(text, {TextXAlignment = Enum.TextXAlignment.Center, Position = UDim2.new(0, 0, 1, -22), Size = UDim2.new(1, 0, 0, 14), Parent = parent2})
+
+        return v135
+    end
+
+    local parent = ui.new("Frame", {Name = "Tabs", Size = UDim2.new(1, 0, 0, v27.tab), (ui.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)), Parent = content})
+    local parent2 = ui.new("Frame", {Name = "Pages", Position = udim2FromOffset(0, v27.tab + 14), Size = UDim2.new(1, 0, 1, -(v27.tab + 14)), Parent = content})
+    local v138 = {}
+    local v139 = {}
+    local target = nil
+    local v141 = {}
+
+    local function makeTab(name: string, text: string, a145: string)
         --[[
           name: makeTab
           line: 333
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            fromOffset_upv_1 (copy, index: 2)
-            tbl_upv_1 (ref,  index: 3)
-            Colors_upv_1 (copy, index: 4)
-            Theme_upv_1 (copy, index: 5)
-            u11 (copy, index: 6)
-            Fonts_upv_1 (copy, index: 7)
-            u12 (copy, index: 8)
-            tbl_upv_10 (copy, index: 9)
+            ui (copy, index: 1)
+            udim2FromOffset (copy, index: 2)
+            v27 (ref,  index: 3)
+            colors (copy, index: 4)
+            theme (copy, index: 5)
+            parent (copy, index: 6)
+            fonts (copy, index: 7)
+            parent2 (copy, index: 8)
+            v138 (copy, index: 9)
         ]]
-        local tbl_12 = {}
-        tbl_12.Name = a23
-        tbl_12.Text = ""
-        tbl_12.AutoButtonColor = false
-        tbl_12.AutomaticSize = Enum.AutomaticSize.X
-        tbl_12.Size = fromOffset_upv_1(0, tbl_upv_1.tab)
-        tbl_12.BackgroundColor3 = Colors_upv_1.Raised
-        tbl_12.BackgroundTransparency = 0.4
-        tbl_12[1], tbl_12[2], tbl_12[3] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Padding(0, 18, 0, 14), UI_upv_1.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)
-        tbl_12.Parent = u11
-        local v21 = UI_upv_1.new("TextButton", tbl_12)
-        local v22 = UI_upv_1.Glyph(a25, 20, Colors_upv_1.TextDim, {LayoutOrder = 1, Parent = v21})
-        local tbl_13 = {}
-        tbl_13.button = v21
-        tbl_13.text = UI_upv_1.new("TextLabel", {LayoutOrder = 2, Name = "Text", TextSize = 16, Text = a24, FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromScale(0, 1), Parent = v21})
-        tbl_13.icon = v22
-        tbl_13.page = UI_upv_1.new("Frame", {Visible = false, Name = a23, Size = UDim2.fromScale(1, 1), Parent = u12})
-        tbl_upv_10[a23] = tbl_13
-        return tbl_13
+        local ui2 = ui.new("TextButton", {Name = name, Text = "", AutoButtonColor = false, AutomaticSize = Enum.AutomaticSize.X, Size = udim2FromOffset(0, v27.tab), BackgroundColor3 = colors.Raised, BackgroundTransparency = 0.4, ui.Corner(theme.Radius.Pill), ui.Padding(0, 18, 0, 14), (ui.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)), Parent = parent})
+        local icon = ui.Glyph(a145, 20, colors.TextDim, {LayoutOrder = 1, Parent = ui2})
+        local text2 = ui.new("TextLabel", {Name = "Text", TextSize = 16, LayoutOrder = 2, Text = text, FontFace = fonts.Heavy, TextColor3 = colors.TextDim, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromScale(0, 1), Parent = ui2})
+        local page = ui.new("Frame", {Visible = false, Name = name, Size = UDim2.fromScale(1, 1), Parent = parent2})
+        local v150 = {button = ui2, text = text2, icon = icon, page = page}
+        v138[name] = v150
+
+        return v150
     end
+
     local function paintTabs()
         --[[
           name: paintTabs
           line: 365
           upvalues:
-            tbl_upv_10 (copy, index: 1)
-            u14 (ref,  index: 2)
-            Colors_upv_1 (copy, index: 3)
+            v138 (copy, index: 1)
+            target (ref,  index: 2)
+            colors (copy, index: 3)
         ]]
-        local v23 = nil
-        local _ = nil
-        local v25 = nil
-        for key_1, value_3 in tbl_upv_10 do
-            local v24 = key_1 == u14
-            local button_1 = value_3.button
-            if v24 then
-                v23 = Colors_upv_1.Accent
-            else
-                v23 = Colors_upv_1.Raised
-            end
-            button_1.BackgroundColor3 = v23
-            value_3.button.BackgroundTransparency = (v24 and 0) or 0.4
-            local text_1 = value_3.text
-            if v24 then
-                v23 = Colors_upv_1.Text
-            else
-                v23 = Colors_upv_1.TextDim
-            end
-            text_1.TextColor3 = v23
-            local icon_1 = value_3.icon
-            if v24 then
-                v23 = Colors_upv_1.Text
-            else
-                v23 = Colors_upv_1.TextDim
-            end
-            icon_1.TextColor3 = v23
+        for v152, v153 in v138 do
+            local v154 = v152 == target
+            v153.button.BackgroundColor3 = if v154 then colors.Accent else colors.Raised
+            v153.button.BackgroundTransparency = v154 and 0 or 0.4
+            v153.text.TextColor3 = if v154 then colors.Text else colors.TextDim
+            v153.icon.TextColor3 = if v154 then colors.Text else colors.TextDim
         end
     end
-    local function showTab(a26)
+
+    local function showTab(a156)
         --[[
           name: showTab
           line: 375
           upvalues:
-            tbl_upv_10 (copy, index: 1)
-            u14 (ref,  index: 2)
+            v138 (copy, index: 1)
+            target (ref,  index: 2)
             paintTabs (copy, index: 3)
-            UI_upv_1 (copy, index: 4)
-            tbl_upv_11 (copy, index: 5)
+            ui (copy, index: 4)
+            v141 (copy, index: 5)
         ]]
-        if not tbl_upv_10[a26] then
+        if not v138[a156] then
             return
         end
-        u14 = a26
-        for key_2, value_4 in tbl_upv_10 do
-            value_4.page.Visible = key_2 == a26
+
+        local v157 = target
+        target = a156
+
+        for v158, v159 in v138 do
+            v159.page.Visible = v158 == a156
         end
+
         paintTabs()
-        if u14 ~= a26 then
-            UI_upv_1.SlideIn(tbl_upv_10[a26].page, Vector2.new(0, 12), TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), UDim2.new())
+
+        if v157 ~= a156 then
+            ui.SlideIn(v138[a156].page, Vector2.new(0, 12), TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), UDim2.new())
         end
-        if tbl_upv_11[a26] then
-            task.spawn(tbl_upv_11[a26])
+
+        if v141[a156] then
+            task.spawn(v141[a156])
         end
     end
-    local function setTabs(a27)
+
+    local function setTabs(tabs)
         --[[
           name: setTabs
           line: 393
           upvalues:
-            u13 (ref,  index: 1)
-            tbl_upv_10 (copy, index: 2)
-            u14 (ref,  index: 3)
+            v139 (ref,  index: 1)
+            v138 (copy, index: 2)
+            target (ref,  index: 3)
             showTab (copy, index: 4)
         ]]
-        u13 = a27
-        for key_3, value_5 in tbl_upv_10 do
-            local v25 = table.find(a27, key_3)
-            value_5.button.Visible = v25 ~= nil
-            value_5.button.LayoutOrder = v25 or 99
+        v139 = tabs
+
+        for target2, v163 in v138 do
+            local index = table.find(tabs, target2)
+            v163.button.Visible = index ~= nil
+            v163.button.LayoutOrder = index or 99
         end
-        if (not u14 or not table.find(a27, u14)) and u14 ~= "Form" and u14 ~= "View" then
-            showTab(a27[1])
+
+        if (not target or not table.find(tabs, target)) and target ~= "Form" and target ~= "View" then
+            showTab(tabs[1])
         end
     end
-    local u15 = makeTab("Find", "FIND A TRIBE", "magnifying-glass")
-    local v26 = makeTab("Overview", "MY TRIBE", "shield-check")
-    local v27 = makeTab("Members", "MEMBERS", "three-people")
-    local v28 = makeTab("Leaderboard", "LEADERBOARD", "trophy")
-    local v29 = makeTab("Territories", "TERRITORIES", "location-pin-map")
-    local v30 = makeTab("Form", "", "pencil")
-    v30.button.Visible = false
-    local v31 = makeTab("View", "", "eye")
-    v31.button.Visible = false
-    for key_upv_4, value_upv_6 in tbl_upv_10 do
-        value_upv_6.button.Activated:Connect(
+
+    local tab = makeTab("Find", "FIND A TRIBE", "magnifying-glass")
+    local tab2 = makeTab("Overview", "MY TRIBE", "shield-check")
+    local tab3 = makeTab("Members", "MEMBERS", "three-people")
+    local tab4 = makeTab("Leaderboard", "LEADERBOARD", "trophy")
+    local tab5 = makeTab("Territories", "TERRITORIES", "location-pin-map")
+    local tab6 = makeTab("Form", "", "pencil")
+    tab6.button.Visible = false
+    local tab7 = makeTab("View", "", "eye")
+    tab7.button.Visible = false
+
+    for v172, v173 in v138 do
+        v173.button.Activated:Connect(
             function()
                 --[[
                   line: 417
                   upvalues:
-                    u14 (ref,  index: 1)
-                    key_upv_4 (copy, index: 2)
-                    u10 (ref,  index: 3)
-                    a1 (copy, index: 4)
+                    target (ref,  index: 1)
+                    v172 (copy, index: 2)
+                    timestamp (ref,  index: 3)
+                    a26 (copy, index: 4)
                     showTab (copy, index: 5)
                 ]]
-                if u14 ~= key_upv_4 then
-                    local v32 = os.clock() - u10 >= 0.5
-                    if not v32 then
-                        return
-                    end
-                    a1.Sounds.Play("Click")
-                    showTab(key_upv_4)
+                if target ~= v172 and 0.5 <= os.clock() - timestamp then
+                    a26.Sounds.Play("Click")
+                    showTab(v172)
                 end
             end
         )
-        value_upv_6.button.MouseEnter:Connect(
+
+        v173.button.MouseEnter:Connect(
             function()
                 --[[
                   line: 423
                   upvalues:
-                    u14 (ref,  index: 1)
-                    key_upv_4 (copy, index: 2)
-                    UI_upv_1 (copy, index: 3)
-                    value_upv_6 (copy, index: 4)
-                    Theme_upv_1 (copy, index: 5)
+                    target (ref,  index: 1)
+                    v172 (copy, index: 2)
+                    ui (copy, index: 3)
+                    v173 (copy, index: 4)
+                    theme (copy, index: 5)
                 ]]
-                if u14 == key_upv_4 or (UI_upv_1.Touch) then
-                    return
+                if target ~= v172 and not ui.Touch then
+                    ui.Tween(v173.button, theme.Tween.Fast, {BackgroundTransparency = 0.15})
                 end
-                UI_upv_1.Tween(value_upv_6.button, Theme_upv_1.Tween.Fast, {BackgroundTransparency = 0.15})
             end
         )
-        value_upv_6.button.MouseLeave:Connect(
+
+        v173.button.MouseLeave:Connect(
             function()
                 --[[
                   line: 428
                   upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    value_upv_6 (copy, index: 2)
-                    Theme_upv_1 (copy, index: 3)
-                    u14 (ref,  index: 4)
-                    key_upv_4 (copy, index: 5)
+                    ui (copy, index: 1)
+                    v173 (copy, index: 2)
+                    theme (copy, index: 3)
+                    target (ref,  index: 4)
+                    v172 (copy, index: 5)
                 ]]
-                local Tween_1 = UI_upv_1.Tween
-                local button_2 = value_upv_6.button
-                local Fast_1 = Theme_upv_1.Tween.Fast
-                local tbl_14 = {BackgroundTransparency = 0}
-                tbl_14.BackgroundTransparency = ((u14 ~= key_upv_4) and 0.4) or 0
-                Tween_1(button_2, Fast_1, tbl_14)
+                local backgroundTransparency
+                local tween = ui.Tween
+                local button = v173.button
+                local fast = theme.Tween.Fast
+                local v178 = {}
+
+                if target ~= v172 then
+                    backgroundTransparency = 0.4
+                else
+                    backgroundTransparency = 0
+                end
+
+                v178.BackgroundTransparency = backgroundTransparency
+                tween(button, fast, v178)
             end
         )
     end
-    local u16 = UI_upv_1.new("TextButton", {Name = "DialogDim", Text = "", AutoButtonColor = false, Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Void, BackgroundTransparency = 0.3, Visible = false, ZIndex = 20, Selectable = false, [1] = UI_upv_1.Corner(16), Parent = u4.Body})
-    local tbl_15 = {}
-    tbl_15.Name = "Dialog"
-    tbl_15.AnchorPoint = Vector2.new(0.5, 0.5)
-    tbl_15.Position = UDim2.fromScale(0.5, 0.5)
-    tbl_15.Size = fromOffset_upv_1(460, 0)
-    tbl_15.AutomaticSize = Enum.AutomaticSize.Y
-    tbl_15.BackgroundColor3 = Colors_upv_1.Panel
-    tbl_15.ZIndex = 21
-    tbl_15[1], tbl_15[2], tbl_15[3], tbl_15[4] = UI_upv_1.Corner(16), UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.85), UI_upv_1.Padding(22, 22, 22, 22), UI_upv_1.List(Enum.FillDirection.Vertical, 12)
-    tbl_15.Parent = u16
-    local u17 = UI_upv_1.new("Frame", tbl_15)
-    local u18 = false
-    local u19 = 0
-    local function closeDialog()
-        --[[
-          name: closeDialog
-          line: 463
-          upvalues:
-            u18 (ref,  index: 1)
-            u16 (copy, index: 2)
-            clear (copy, index: 3)
-            u17 (copy, index: 4)
-            UI_upv_1 (copy, index: 5)
-            MenuManager_upv_1 (copy, index: 6)
-        ]]
-        u18 = false
-        u16.Visible = false
-        clear(u17)
-        if not UI_upv_1.Gamepad then
-            return
+
+    local parent3 = ui.new("TextButton", {Name = "DialogDim", Text = "", AutoButtonColor = false, Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.3, Visible = false, ZIndex = 20, Selectable = false, (ui.Corner(16)), Parent = v39.Body})
+    local parent4 = ui.new("Frame", {Name = "Dialog", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = udim2FromOffset(460, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = colors.Panel, ZIndex = 21, ui.Corner(16), ui.Stroke(colors.Stroke, 1, 0.85), ui.Padding(22, 22, 22, 22), (ui.List(Enum.FillDirection.Vertical, 12)), Parent = parent3})
+    local dialog = false
+    local timestamp2 = 0
+
+    do
+        local function closeDialog()
+            --[[
+              name: closeDialog
+              line: 463
+              upvalues:
+                dialog (ref,  index: 1)
+                parent3 (copy, index: 2)
+                clear (copy, index: 3)
+                parent4 (copy, index: 4)
+                ui (copy, index: 5)
+                menuManager (copy, index: 6)
+            ]]
+            dialog = false
+            parent3.Visible = false
+            clear(parent4)
+
+            if ui.Gamepad then
+                menuManager.Reselect()
+            end
         end
-        MenuManager_upv_1.Reselect()
     end
-    u16.Activated:Connect(
+
+    parent3.Activated:Connect(
         function()
             --[[
               line: 471
               upvalues:
-                u19 (ref,  index: 1)
-                u18 (ref,  index: 2)
-                u16 (copy, index: 3)
+                timestamp2 (ref,  index: 1)
+                dialog (ref,  index: 2)
+                parent3 (copy, index: 3)
                 clear (copy, index: 4)
-                u17 (copy, index: 5)
-                UI_upv_1 (copy, index: 6)
-                MenuManager_upv_1 (copy, index: 7)
+                parent4 (copy, index: 5)
+                ui (copy, index: 6)
+                menuManager (copy, index: 7)
             ]]
-            if not (os.clock() - u19 > 0.3) then
-                return
+            if 0.3 < os.clock() - timestamp2 then
+                dialog = false
+                parent3.Visible = false
+                clear(parent4)
+
+                if ui.Gamepad then
+                    menuManager.Reselect()
+                end
             end
-            u18 = false
-            u16.Visible = false
-            clear(u17)
-            if not UI_upv_1.Gamepad then
-                return
-            end
-            MenuManager_upv_1.Reselect()
         end
     )
-    local function openDialog(a28, a29, a30, a31)
+
+    local function openDialog(text: string, text2, a187, callback)
         --[[
           name: openDialog
           line: 477
           upvalues:
             clear (copy, index: 1)
-            u17 (copy, index: 2)
-            u18 (ref,  index: 3)
-            u19 (ref,  index: 4)
-            u16 (copy, index: 5)
+            parent4 (copy, index: 2)
+            dialog (ref,  index: 3)
+            timestamp2 (ref,  index: 4)
+            parent3 (copy, index: 5)
             label (copy, index: 6)
-            Fonts_upv_1 (copy, index: 7)
-            Colors_upv_1 (copy, index: 8)
-            UI_upv_1 (copy, index: 9)
-            MenuManager_upv_1 (copy, index: 10)
-            GuiService_upv_1 (copy, index: 11)
+            fonts (copy, index: 7)
+            colors (copy, index: 8)
+            ui (copy, index: 9)
+            menuManager (copy, index: 10)
+            guiService (copy, index: 11)
         ]]
-        clear(u17)
-        u18 = true
-        u19 = os.clock()
-        u16.Visible = true
-        label({LayoutOrder = 1, Name = "Title", ZIndex = 22, TextSize = 26, Text = a28, FontFace = Fonts_upv_1.Display, Size = UDim2.new(1, 0, 0, 30), Parent = u17})
-        if a29 and a29 ~= "" then
-            label({LayoutOrder = 2, Name = "Text", TextWrapped = true, ZIndex = 22, TextSize = 17, Text = a29, FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextDim, TextTruncate = Enum.TextTruncate.None, AutomaticSize = Enum.AutomaticSize.Y, Size = UDim2.new(1, 0, 0, 0), Parent = u17})
+        local instance
+        clear(parent4)
+        dialog = true
+        timestamp2 = os.clock()
+        parent3.Visible = true
+        label({Name = "Title", TextSize = 26, ZIndex = 22, LayoutOrder = 1, Text = text, FontFace = fonts.Display, Size = UDim2.new(1, 0, 0, 30), Parent = parent4})
+
+        if text2 and text2 ~= "" then
+            label({Name = "Text", TextSize = 17, TextWrapped = true, ZIndex = 22, LayoutOrder = 2, Text = text2, FontFace = fonts.SemiBold, TextColor3 = colors.TextDim, TextTruncate = Enum.TextTruncate.None, AutomaticSize = Enum.AutomaticSize.Y, Size = UDim2.new(1, 0, 0, 0), Parent = parent4})
         end
-        if a31 then
-            a31((UI_upv_1.new("Frame", {LayoutOrder = 3, Name = "Extra", ZIndex = 22, Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Parent = u17})))
+
+        if callback then
+            local ui2 = ui.new("Frame", {Name = "Extra", LayoutOrder = 3, ZIndex = 22, Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Parent = parent4})
+            callback(ui2)
         end
-        local v33 = UI_upv_1.new("Frame", {Name = "Buttons", Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = 4, [1] = UI_upv_1.List(Enum.FillDirection.Vertical, 8), Parent = u17})
-        local v34 = nil
-        for key_5, value_upv_7 in a30 do
-            local v35 = UI_upv_1.Button({ZIndex = 23, TextSize = 18, Name = "B" .. key_5, Text = value_upv_7.text, Style = value_upv_7.style or "Dark", Size = UDim2.new(1, 0, 0, 48), LayoutOrder = key_5, Parent = v33})
-            v35.Activated:Connect(
+
+        local parent = ui.new("Frame", {Name = "Buttons", Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = 4, (ui.List(Enum.FillDirection.Vertical, 8)), Parent = parent4})
+        instance = nil
+
+        for layoutOrder, v193 in a187 do
+            local v194 = ui.Button({TextSize = 18, ZIndex = 23, Name = "B" .. layoutOrder, Text = v193.text, Style = v193.style
+                or "Dark", Size = UDim2.new(1, 0, 0, 48), LayoutOrder = layoutOrder, Parent = parent})
+
+            v194.Activated:Connect(
                 function()
                     --[[
                       line: 514
                       upvalues:
-                        u19 (ref,  index: 1)
-                        u18 (ref,  index: 2)
-                        u16 (copy, index: 3)
+                        timestamp2 (ref,  index: 1)
+                        dialog (ref,  index: 2)
+                        parent3 (copy, index: 3)
                         clear (copy, index: 4)
-                        u17 (copy, index: 5)
-                        UI_upv_1 (copy, index: 6)
-                        MenuManager_upv_1 (copy, index: 7)
-                        value_upv_7 (copy, index: 8)
+                        parent4 (copy, index: 5)
+                        ui (copy, index: 6)
+                        menuManager (copy, index: 7)
+                        v193 (copy, index: 8)
                     ]]
-                    if (os.clock() - u19 < 0.25) then
+                    if os.clock() - timestamp2 < 0.25 then
                         return
                     end
-                    u18 = false
-                    u16.Visible = false
-                    clear(u17)
-                    if UI_upv_1.Gamepad then
-                        MenuManager_upv_1.Reselect()
+
+                    dialog = false
+                    parent3.Visible = false
+                    clear(parent4)
+
+                    if ui.Gamepad then
+                        menuManager.Reselect()
                     end
-                    if value_upv_7.fn then
-                        task.spawn(value_upv_7.fn)
+
+                    if v193.fn then
+                        task.spawn(v193.fn)
                     end
                 end
             )
-            if value_upv_7.enabled == false then
-                v35:SetEnabled(false)
+
+            if v193.enabled == false then
+                v194:SetEnabled(false)
             end
-            v34 = v34 or v35.Instance
+
+            local instance2 = instance or v194.Instance
+            instance = instance2
         end
-        UI_upv_1.Pop(u17, 0.92)
-        if not UI_upv_1.Gamepad or not v34 then
-            return
+
+        ui.Pop(parent4, 0.92)
+
+        if ui.Gamepad and instance then
+            guiService.SelectedObject = instance
         end
-        GuiService_upv_1.SelectedObject = v34
     end
-    local function act(a32, ...)
+
+    local function act(a197: string, ...)
         --[[
           name: act
           line: 535
           upvalues:
-            u7 (ref,  index: 1)
-            Tribes_upv_2 (copy, index: 2)
-            a1 (copy, index: 3)
+            v43 (ref,  index: 1)
+            tribes (copy, index: 2)
+            a26 (copy, index: 3)
         ]]
-        if u7 then
+        if v43 then
             return false, nil
         end
-        u7 = true
-        local v37, v38 = Tribes_upv_2.Action(a32, ...)
-        u7 = false
-        if not (v37) then
-            a1.Toast(tostring(v38), "error")
+
+        v43 = true
+        local v198, v199 = tribes.Action(a197, ...)
+        v43 = false
+
+        if not v198 then
+            a26.Toast(tostring(v199), "error")
         end
-        task.spawn(Tribes_upv_2.Home, true)
-        return v37, v38
+
+        task.spawn(tribes.Home, true)
+
+        return v198, v199
     end
-    local function column(a33, a34, a35)
-        --[[
-          name: column
-          line: 215
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-        ]]
-        local tbl_16 = {}
-        tbl_16.Name = a33
-        tbl_16.ScrollBarThickness = 3
-        tbl_16.Selectable = false
-        tbl_16[1], tbl_16[2] = UI_upv_1.List(Enum.FillDirection.Vertical, a35 or 10), UI_upv_1.Padding(4, 8, 10, 4)
-        tbl_16.Parent = a34
-        return UI_upv_1.new("ScrollingFrame", tbl_16)
+
+    local parent5 = column("Left", tab.page, 12)
+    local parent6 = ui.new("Frame", {Name = "Right", Parent = tab.page})
+    local parent7 = ui.new("Frame", {Name = "SearchRow", Size = UDim2.new(1, 0, 0, 46), Parent = parent6})
+    local parent8 = ui.new("Frame", {Name = "SearchField", Size = UDim2.new(1, -262, 1, 0), BackgroundColor3 = backgroundColor3, BackgroundTransparency = 0.25, ui.Corner(theme.Radius.Pill), (ui.Stroke(colors.Stroke, 1, 0.88)), Parent = parent7})
+    ui.Glyph("magnifying-glass", 20, colors.TextMuted, {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 16, 0.5, 0), Parent = parent8})
+    local ui3 = ui.new("TextBox", {Name = "Search", Text = "", PlaceholderText = "Search a tag or name", ClearTextOnFocus = false, TextSize = 17, BackgroundTransparency = 1, PlaceholderColor3 = colors.TextMuted, FontFace = fonts.Bold, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Left, Position = udim2FromOffset(46, 0), Size = UDim2.new(1, -60, 1, 0), Parent = parent8})
+    local parent9 = ui.new("Frame", {Name = "Sort", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -4, 0, 0), Size = udim2FromOffset(250, 46), BackgroundColor3 = backgroundColor3, BackgroundTransparency = 0.25, ui.Corner(theme.Radius.Pill), ui.Padding(4, 4, 4, 4), (ui.List(Enum.FillDirection.Horizontal, 4)), Parent = parent7})
+    local v206 = "top"
+    local v207 = {}
+
+    for layoutOrder, v209 in {{"top", "TOP"}, {"recruiting", "RECRUITING"}} do
+        v207[v209[1]] = ui.new("TextButton", {Name = v209[1], Text = v209[2], AutoButtonColor = false, FontFace = fonts.Heavy, TextSize = 14, TextColor3 = colors.TextDim, Size = UDim2.new(0.5, -2, 1, 0), LayoutOrder = layoutOrder, BackgroundColor3 = colors.Accent, BackgroundTransparency = 1, (ui.Corner(theme.Radius.Pill)), Parent = parent9})
     end
-    local u20 = column("Left", u15.page, 12)
-    local u21 = UI_upv_1.new("Frame", {Name = "Right", Parent = u15.page})
-    local v39 = UI_upv_1.new("Frame", {Name = "SearchRow", Size = UDim2.new(1, 0, 0, 46), Parent = u21})
-    local tbl_17 = {}
-    tbl_17.Name = "SearchField"
-    tbl_17.Size = UDim2.new(1, -262, 1, 0)
-    tbl_17.BackgroundColor3 = u2
-    tbl_17.BackgroundTransparency = 0.25
-    tbl_17[1], tbl_17[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.88)
-    tbl_17.Parent = v39
-    local v40 = UI_upv_1.new("Frame", tbl_17)
-    UI_upv_1.Glyph("magnifying-glass", 20, Colors_upv_1.TextMuted, {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 16, 0.5, 0), Parent = v40})
-    local u22 = UI_upv_1.new("TextBox", {Text = "", ClearTextOnFocus = false, BackgroundTransparency = 1, Name = "Search", PlaceholderText = "Search a tag or name", TextSize = 17, PlaceholderColor3 = Colors_upv_1.TextMuted, FontFace = Fonts_upv_1.Bold, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, Position = fromOffset_upv_1(46, 0), Size = UDim2.new(1, -60, 1, 0), Parent = v40})
-    local tbl_18 = {}
-    tbl_18.Name = "Sort"
-    tbl_18.AnchorPoint = Vector2.new(1, 0)
-    tbl_18.Position = UDim2.new(1, -4, 0, 0)
-    tbl_18.Size = fromOffset_upv_1(250, 46)
-    tbl_18.BackgroundColor3 = u2
-    tbl_18.BackgroundTransparency = 0.25
-    tbl_18[1], tbl_18[2], tbl_18[3] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Padding(4, 4, 4, 4), UI_upv_1.List(Enum.FillDirection.Horizontal, 4)
-    tbl_18.Parent = v39
-    local v41 = UI_upv_1.new("Frame", tbl_18)
-    local u23 = "top"
-    local tbl_upv_19 = {}
-    for key_6, value_8 in {{"top", "TOP"}, {"recruiting", "RECRUITING"}} do
-        tbl_upv_19[value_8[1]] = UI_upv_1.new("TextButton", {Name = value_8[1], Text = value_8[2], AutoButtonColor = false, FontFace = Fonts_upv_1.Heavy, TextSize = 14, TextColor3 = Colors_upv_1.TextDim, Size = UDim2.new(0.5, -2, 1, 0), LayoutOrder = key_6, BackgroundColor3 = Colors_upv_1.Accent, BackgroundTransparency = 1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v41})
-    end
-    local tbl_20 = {}
-    tbl_20.Name = "List"
-    tbl_20.Position = fromOffset_upv_1(0, 58)
-    tbl_20.Size = UDim2.new(1, 0, 1, -58)
-    tbl_20.ScrollBarThickness = 3
-    tbl_20.Selectable = false
-    tbl_20[1], tbl_20[2] = UI_upv_1.List(Enum.FillDirection.Vertical, 8), UI_upv_1.Padding(4, 10, 10, 4)
-    tbl_20.Parent = u21
-    local u24 = UI_upv_1.new("ScrollingFrame", tbl_20)
-    local u25 = UI_upv_1.new("Frame", {Visible = false, Name = "Empty", Position = fromOffset_upv_1(0, 120), Size = UDim2.new(1, 0, 0, 120), Parent = u21})
-    UI_upv_1.Glyph("three-people", 48, Colors_upv_1.TextMuted, {AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Parent = u25})
-    local u26 = label({Text = "", Name = "Text", TextSize = 17, FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Center, Position = fromOffset_upv_1(0, 60), Size = UDim2.new(1, 0, 0, 24), Parent = u25})
-    local function openable(a36, a37, a38)
-        --[[
-          name: openable
-          line: 630
-          upvalues:
-            u10 (ref,  index: 1)
-            a1 (copy, index: 2)
-            u9 (ref,  index: 3)
-            UI_upv_1 (copy, index: 4)
-            Theme_upv_1 (copy, index: 5)
-        ]]
-        a36.Activated:Connect(
-            function()
-                --[[
-                  line: 631
-                  upvalues:
-                    u10 (ref,  index: 1)
-                    a1 (copy, index: 2)
-                    u9 (ref,  index: 3)
-                    a38 (copy, index: 4)
-                ]]
-                local v42 = os.clock() - u10 >= 0.5
-                if not v42 then
-                    return
-                end
-                a1.Sounds.Play("Click")
-                u9(a38.id, a38)
-            end
-        )
-        local Transparency_upv_1 = a37.Transparency
-        a36.MouseEnter:Connect(
-            function()
-                --[[
-                  line: 638
-                  upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    a37 (copy, index: 2)
-                    Theme_upv_1 (copy, index: 3)
-                    Transparency_upv_1 (copy, index: 4)
-                ]]
-                if (UI_upv_1.Touch) then
-                    return
-                end
-                UI_upv_1.Tween(a37, Theme_upv_1.Tween.Fast, {Transparency = math.min(Transparency_upv_1, 0.55)})
-            end
-        )
-        a36.MouseLeave:Connect(
-            function()
-                --[[
-                  line: 643
-                  upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    a37 (copy, index: 2)
-                    Theme_upv_1 (copy, index: 3)
-                    Transparency_upv_1 (copy, index: 4)
-                ]]
-                UI_upv_1.Tween(a37, Theme_upv_1.Tween.Fast, {Transparency = Transparency_upv_1})
-            end
-        )
-    end
-    local function rowStat(a39, a40, a41, a42, a43)
+
+    local parent10 = ui.new("ScrollingFrame", {Name = "List", Position = udim2FromOffset(0, 58), Size = UDim2.new(1, 0, 1, -58), ScrollBarThickness = 3, Selectable = false, ui.List(Enum.FillDirection.Vertical, 8), (ui.Padding(4, 10, 10, 4)), Parent = parent6})
+    local parent11 = ui.new("Frame", {Name = "Empty", Visible = false, Position = udim2FromOffset(0, 120), Size = UDim2.new(1, 0, 0, 120), Parent = parent6})
+    ui.Glyph("three-people", 48, colors.TextMuted, {AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Parent = parent11})
+    local v212 = label({Name = "Text", Text = "", TextSize = 17, FontFace = fonts.SemiBold, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Center, Position = udim2FromOffset(0, 60), Size = UDim2.new(1, 0, 0, 24), Parent = parent11})
+
+    local function rowStat(parent, text, text2: string, layoutOrder: number, a218)
         --[[
           name: rowStat
           line: 623
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            fromOffset_upv_1 (copy, index: 2)
+            ui (copy, index: 1)
+            udim2FromOffset (copy, index: 2)
             label (copy, index: 3)
-            Fonts_upv_1 (copy, index: 4)
-            Colors_upv_1 (copy, index: 5)
+            fonts (copy, index: 4)
+            colors (copy, index: 5)
             caps (copy, index: 6)
         ]]
-        local v43 = UI_upv_1.new("Frame", {Name = "S_" .. a41, Size = fromOffset_upv_1(78, 40), LayoutOrder = a42, Parent = a39})
-        local tbl_21 = {TextXAlignment = 0, Name = "Value", TextColor3 = 0, Parent = 0, TextSize = 18, Size = 0}
-        tbl_21.Text = a40
-        tbl_21.FontFace = Fonts_upv_1.Display
-        tbl_21.TextColor3 = a43 or (Colors_upv_1.Text)
-        tbl_21.TextXAlignment = Enum.TextXAlignment.Center
-        tbl_21.Size = UDim2.new(1, 0, 0, 22)
-        tbl_21.Parent = v43
-        label(tbl_21)
-        caps(a41, {TextSize = 11, TextXAlignment = Enum.TextXAlignment.Center, Position = fromOffset_upv_1(0, 23), Size = UDim2.new(1, 0, 0, 13), Parent = v43})
+        local parent2 = ui.new("Frame", {Name = "S_" .. text2, Size = udim2FromOffset(78, 40), LayoutOrder = layoutOrder, Parent = parent})
+        local v220 = {Name = "Value", TextSize = 18, Text = text, FontFace = fonts.Display, TextColor3 = a218
+            or colors.Text, TextXAlignment = Enum.TextXAlignment.Center, Size = UDim2.new(1, 0, 0, 22), Parent = parent2}
+        label(v220)
+        caps(text2, {TextSize = 11, TextXAlignment = Enum.TextXAlignment.Center, Position = udim2FromOffset(0, 23), Size = UDim2.new(1, 0, 0, 13), Parent = parent2})
     end
-    local function tribeRow(a44, a45, a46, a47)
+
+    local function openable(ui2, a223, a224)
+        --[[
+          name: openable
+          line: 630
+          upvalues:
+            timestamp (ref,  index: 1)
+            a26 (copy, index: 2)
+            v45 (ref,  index: 3)
+            ui (copy, index: 4)
+            theme (copy, index: 5)
+        ]]
+        ui2.Activated:Connect(
+            function()
+                --[[
+                  line: 631
+                  upvalues:
+                    timestamp (ref,  index: 1)
+                    a26 (copy, index: 2)
+                    v45 (ref,  index: 3)
+                    a224 (copy, index: 4)
+                ]]
+                if 0.5 <= os.clock() - timestamp then
+                    a26.Sounds.Play("Click")
+                    v45(a224.id, a224)
+                end
+            end
+        )
+
+        local transparency = a223.Transparency
+
+        ui2.MouseEnter:Connect(
+            function()
+                --[[
+                  line: 638
+                  upvalues:
+                    ui (copy, index: 1)
+                    a223 (copy, index: 2)
+                    theme (copy, index: 3)
+                    transparency (copy, index: 4)
+                ]]
+                if not ui.Touch then
+                    ui.Tween(a223, theme.Tween.Fast, {Transparency = math.min(transparency, 0.55)})
+                end
+            end
+        )
+
+        ui2.MouseLeave:Connect(
+            function()
+                --[[
+                  line: 643
+                  upvalues:
+                    ui (copy, index: 1)
+                    a223 (copy, index: 2)
+                    theme (copy, index: 3)
+                    transparency (copy, index: 4)
+                ]]
+                ui.Tween(a223, theme.Tween.Fast, {Transparency = transparency})
+            end
+        )
+    end
+
+    local function tribeRow(a227, parent, layoutOrder, callback)
         --[[
           name: tribeRow
           line: 648
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            tbl_upv_1 (ref,  index: 2)
-            Colors_upv_1 (copy, index: 3)
+            ui (copy, index: 1)
+            v27 (ref,  index: 2)
+            colors (copy, index: 3)
             openable (copy, index: 4)
-            Tribes_upv_1 (copy, index: 5)
-            TribeEmblem_upv_1 (copy, index: 6)
+            child (copy, index: 5)
+            TribeEmblem (copy, index: 6)
             label (copy, index: 7)
-            Fonts_upv_1 (copy, index: 8)
-            fromOffset_upv_1 (copy, index: 9)
-            u1 (copy, index: 10)
+            fonts (copy, index: 8)
+            udim2FromOffset (copy, index: 9)
+            textColor3 (copy, index: 10)
             rowStat (copy, index: 11)
-            u3 (copy, index: 12)
+            textColor32 (copy, index: 12)
         ]]
-        local v44 = UI_upv_1.new("TextButton", {Name = "T" .. tostring(a44.id), Text = "", AutoButtonColor = false, Size = UDim2.new(1, -4, 0, tbl_upv_1.row + 8), LayoutOrder = a46, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.1, ClipsDescendants = true, [1] = UI_upv_1.Corner(12), Parent = a45})
-        local v45 = UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.92)
-        v45.Parent = v44
-        openable(v44, v45, a44)
-        UI_upv_1.Gradient(Tribes_upv_1.Color(a44.color1):Lerp(Colors_upv_1.Panel, 0.8), Colors_upv_1.PanelHi:Lerp(Colors_upv_1.Panel, 0.55), 0).Parent = v44
-        local v46 = tbl_upv_1.row - 2
-        local tbl_22 = {}
-        tbl_22.AnchorPoint = Vector2.new(0, 0.5)
-        tbl_22.Position = UDim2.new(0, 10, 0.5, 0)
-        tbl_22.Parent = v44
-        TribeEmblem_upv_1.new(v46, tbl_22):Set(a44.icon, a44.color1, a44.color2, a44.tag)
-        local v47 = tbl_upv_1.row + 20
-        local tbl_23 = {FontFace = 0, RichText = true, Name = "Name", Position = 0, Parent = 0, Text = 0, TextSize = 0, Size = 0}
-        local format_2 = string.format
-        local v48 = TribeEmblem_upv_1.TagColor(a44.color1):ToHex()
-        local Tag_3 = TribeEmblem_upv_1.Tag
-        local v49
-        if type(a44) ~= "table" then
-            v49 = a44
+        local v231
+        local v232
+        local parent2 = ui.new("TextButton", {Name = "T" .. tostring(a227.id), Text = "", AutoButtonColor = false, Size = UDim2.new(1, -4, 0, v27.row + 8), LayoutOrder = layoutOrder, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.1, ClipsDescendants = true, (ui.Corner(12)), Parent = parent})
+        local v234 = ui.Stroke(colors.Stroke, 1, 0.92)
+        v234.Parent = parent2
+        openable(parent2, v234, a227)
+        ui.Gradient(child.Color(a227.color1):Lerp(colors.Panel, 0.8), colors.PanelHi:Lerp(colors.Panel, 0.55), 0).Parent = parent2
+        local newTribeEmblem = TribeEmblem.new
+        local v236 = v27.row - 2
+        local v237 = {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Parent = parent2}
+        newTribeEmblem(v236, v237):Set(a227.icon, a227.color1, a227.color2, a227.tag)
+        local v238 = v27.row + 20
+        local v239 = {Name = "Name", RichText = true}
+        local stringFormat = string.format
+        local v241 = TribeEmblem.TagColor(a227.color1):ToHex()
+        local tag = TribeEmblem.Tag
+
+        if type(a227) ~= "table" then
+            v231 = a227
         else
-            v49 = a44.tag
+            v231 = a227.tag
         end
-        tbl_23.Text = format_2("<font color=\"#%s\">%s</font>  %s", v48, Tag_3(v49), tostring(a44.name or ""))
-        tbl_23.FontFace = Fonts_upv_1.Heavy
-        tbl_23.TextSize = tbl_upv_1.text
-        tbl_23.Position = fromOffset_upv_1(v47, (math.floor((tbl_upv_1.row + 8) / 2) - tbl_upv_1.text) - 2)
-        tbl_23.Size = UDim2.new(1, -(v47 + 400), 0, tbl_upv_1.text + 2)
-        tbl_23.Parent = v44
-        label(tbl_23).Name = "Name"
-        local v50 = ((a44.joinMode == "invite") and "Invite only") or (((a44.joinMode ~= "request") and "Open to everyone") or "Ask to join")
-        local v51 = (((tonumber(a44.minLevel) or 0) > 0) and (v50 .. ("  \194\183  level %*+"):format(a44.minLevel))) or v50
-        label({Name = "Sub", Text = v51, FontFace = Fonts_upv_1.SemiBold, TextSize = tbl_upv_1.sub, TextColor3 = u1, Position = fromOffset_upv_1(v47, math.floor((tbl_upv_1.row + 8) / 2) + 3), Size = UDim2.new(1, -(v47 + 400), 0, tbl_upv_1.sub + 2), Parent = v44})
-        local v52 = UI_upv_1.new("Frame", {Name = "Stats", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -160, 0.5, 0), Size = fromOffset_upv_1(250, 40), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 4, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center), Parent = v44})
-        rowStat(v52, ("%*/%*"):format(tonumber(a44.members) or 0, Tribes_upv_1.MAX_MEMBERS), "MEMBERS", 1)
-        rowStat(v52, UI_upv_1.FormatCompact(tonumber(a44.weekRenown) or 0), "GLORY", 2, u3)
-        local str_1 = tostring(tonumber(a44.online) or 0)
-        local v53
-        if (tonumber(a44.online) or 0) > 0 then
-            v53 = Colors_upv_1.Success
+
+        v239.Text = stringFormat("<font color=\"#%s\">%s</font>  %s", v241, tag(v231), (tostring(a227.name or "")))
+        v239.FontFace = fonts.Heavy
+        v239.TextSize = v27.text
+        v239.Position = udim2FromOffset(v238, (math.floor((v27.row + 8) / 2) - v27.text) - 2)
+        v239.Size = UDim2.new(1, -(v238 + 400), 0, v27.text + 2)
+        v239.Parent = parent2
+        label(v239).Name = "Name"
+        local text2 = a227.joinMode ~= "invite"
+            and (a227.joinMode ~= "request" and "Open to everyone" or "Ask to join")
+            or "Invite only"
+
+        if 0 < (tonumber(a227.minLevel) or 0) then
+            text2 ..= `  ·  level {a227.minLevel}+`
+        end
+
+        label({Name = "Sub", Text = text2, FontFace = fonts.SemiBold, TextSize = v27.sub, TextColor3 = textColor3, Position = udim2FromOffset(v238, math.floor((v27.row + 8) / 2) + 3), Size = UDim2.new(1, -(v238 + 400), 0, v27.sub + 2), Parent = parent2})
+        local ui2 = ui.new("Frame", {Name = "Stats", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -160, 0.5, 0), Size = udim2FromOffset(250, 40), (ui.List(Enum.FillDirection.Horizontal, 4, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center)), Parent = parent2})
+        rowStat(ui2, `{tonumber(a227.members) or 0}/{child.MAX_MEMBERS}`, "MEMBERS", 1)
+        rowStat(ui2, ui.FormatCompact((tonumber(a227.weekRenown) or 0)), "GLORY", 2, textColor32)
+        local text = tostring((tonumber(a227.online) or 0))
+
+        if not (0 < (tonumber(a227.online) or 0)) then
+            v232 = colors.TextDim
         else
-            v53 = Colors_upv_1.TextDim
+            v232 = colors.Success
         end
-        rowStat(v52, str_1, "ONLINE", 3, v53)
-        a47((UI_upv_1.new("Frame", {Name = "Action", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -12, 0.5, 0), Size = fromOffset_upv_1(136, 42), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center), Parent = v44})))
-        return v44
+
+        rowStat(ui2, text, "ONLINE", 3, v232)
+        callback((ui.new("Frame", {Name = "Action", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -12, 0.5, 0), Size = udim2FromOffset(136, 42), (ui.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center)), Parent = parent2})))
+
+        return parent2
     end
-    local function joinButton(a48, a49, a50)
+
+    local function joinButton(a247, a248, size: UDim2?)
         --[[
           name: joinButton
           line: 698
           upvalues:
-            u6 (ref,  index: 1)
-            LocalPlayer_upv_1 (copy, index: 2)
+            v42 (ref,  index: 1)
+            localPlayer (copy, index: 2)
             smallButton (copy, index: 3)
             openDialog (copy, index: 4)
-            TribeEmblem_upv_1 (copy, index: 5)
+            TribeEmblem (copy, index: 5)
             act (copy, index: 6)
-            Tribes_upv_1 (copy, index: 7)
-            a1 (copy, index: 8)
+            child (copy, index: 7)
+            a26 (copy, index: 8)
         ]]
-        local v54 = u6 or {}
-        local v55 = false
-        if type(v54.requested) == "table" then
-            v55 = table.find(v54.requested, a48.id) ~= nil
-        end
-        local v56 = LocalPlayer_upv_1:GetAttribute("Level") or 1
-        local u27 = (type(v54.cooldownUntil) == "number") and (os.time() < v54.cooldownUntil)
-        local function sized_1(a51)
+        local function sized(a251)
             --[[
               name: sized
               line: 699
               upvalues:
-                a50 (copy, index: 1)
+                size (copy, index: 1)
             ]]
-            if a50 then
-                a51.Size = a50
+            if size then
+                a251.Size = size
             end
-            return a51
+
+            return a251
         end
-        if v55 then
-            local tbl_24 = {TextSize = 15, Width = 130}
-            if a50 then
-                tbl_24.Size = a50
+
+        local v252 = v42 or {}
+        local v253 = type(v252.requested) == "table" and table.find(v252.requested, a247.id) ~= nil
+        local level = localPlayer:GetAttribute("Level") or 1
+        local v255 = type(v252.cooldownUntil) == "number" and os.time() < v252.cooldownUntil
+
+        if v253 then
+            local options = {Width = 130, TextSize = 15}
+
+            if size then
+                options.Size = size
             end
-            local v57 = function()
-                --[[
-                  line: 710
-                  upvalues:
-                    openDialog (copy, index: 1)
-                    a48 (copy, index: 2)
-                    TribeEmblem_upv_1 (copy, index: 3)
-                    act (copy, index: 4)
-                ]]
-                local v58 = "You asked to join %* %*."
-                local Tag_4 = TribeEmblem_upv_1.Tag
-                local v59
-                if type(a48) ~= "table" then
-                    v59 = a48
-                else
-                    v59 = a48.tag
-                end
-                local v60 = v58:format(Tag_4(v59), tostring(a48.name))
-                local tbl_25 = {text = "CANCEL REQUEST", style = "Danger"}
-                function tbl_25.fn()
+
+            smallButton(
+                "REQUESTED",
+                "Dark",
+                a248,
+                function()
                     --[[
-                      name: fn
-                      line: 712
+                      line: 710
                       upvalues:
-                        act (copy, index: 1)
-                        a48 (copy, index: 2)
+                        openDialog (copy, index: 1)
+                        a247 (copy, index: 2)
+                        TribeEmblem (copy, index: 3)
+                        act (copy, index: 4)
                     ]]
-                    act("Cancel", a48.id)
-                end
-                openDialog("Cancel your request?", v60, {tbl_25, {text = "KEEP IT"}})
-            end
-            smallButton("REQUESTED", "Dark", a49, v57, tbl_24)
-        elseif Tribes_upv_1.MAX_MEMBERS <= (tonumber(a48.members) or 0) then
-            local tbl_26 = {Enabled = false, Width = 130}
-            if a50 then
-                tbl_26.Size = a50
-            end
-            local v61 = function()
+                    local v257
+                    local tag = TribeEmblem.Tag
+
+                    if type(a247) ~= "table" then
+                        v257 = a247
+                    else
+                        v257 = a247.tag
+                    end
+
+                    openDialog(
+                        "Cancel your request?",
+                        `You asked to join {tag(v257)} {(tostring(a247.name))}.`,
+                        {
+                            {
+                                text = "CANCEL REQUEST",
+                                style = "Danger",
+                                fn = (function()
+                                    --[[
+                                      name: fn
+                                      line: 712
+                                      upvalues:
+                                        act (copy, index: 1)
+                                        a247 (copy, index: 2)
+                                    ]]
+                                    act("Cancel", a247.id)
+                                end)
+                            },
+                            {text = "KEEP IT"}
+                        }
+                    )
+                end,
+                options
+            )
+
+            return
+        end
+
+        local number = tonumber(a247.members) or 0
+
+        if child.MAX_MEMBERS <= number then
+            local callback = function()
                 --[[
                   line: 719
                 ]]
             end
-            smallButton("FULL", "Dark", a49, v61, tbl_26)
-        elseif a48.joinMode == "invite" then
-            local tbl_27 = {Enabled = false, TextSize = 14, Width = 130}
-            if a50 then
-                tbl_27.Size = a50
+
+            local options = {Width = 130, Enabled = false}
+
+            if size then
+                options.Size = size
             end
-            local v62 = function()
+
+            smallButton("FULL", "Dark", a248, callback, options)
+
+            return
+        end
+
+        if a247.joinMode == "invite" then
+            local callback = function()
                 --[[
                   line: 721
                 ]]
             end
-            smallButton("INVITE ONLY", "Dark", a49, v62, tbl_27)
-        elseif v56 < (tonumber(a48.minLevel) or 0) then
-            local v63 = ("LV %*+"):format(a48.minLevel)
-            local tbl_28 = {Enabled = false, Width = 130}
-            if a50 then
-                tbl_28.Size = a50
+
+            local options = {Width = 130, Enabled = false, TextSize = 14}
+
+            if size then
+                options.Size = size
             end
-            local v64 = function()
+
+            smallButton("INVITE ONLY", "Dark", a248, callback, options)
+
+            return
+        end
+
+        if level < (tonumber(a247.minLevel) or 0) then
+            local formattedText = `LV {a247.minLevel}+`
+
+            local callback = function()
                 --[[
                   line: 723
                 ]]
             end
-            smallButton(v63, "Dark", a49, v64, tbl_28)
-        else
-            local v65 = ((a48.joinMode ~= "request") and "JOIN") or "ASK TO JOIN"
-            local tbl_29 = {Enabled = 0, TextSize = 0, Width = 130}
-            tbl_29.TextSize = ((a48.joinMode ~= "request") and 16) or 15
-            tbl_29.Enabled = not u27
-            if a50 then
-                tbl_29.Size = a50
+
+            local options = {Width = 130, Enabled = false}
+
+            if size then
+                options.Size = size
             end
-            local v66 = function()
+
+            smallButton(formattedText, "Dark", a248, callback, options)
+
+            return
+        end
+
+        local textSize
+        local text = a247.joinMode ~= "request" and "JOIN" or "ASK TO JOIN"
+        local options = {Width = 130}
+
+        if a247.joinMode ~= "request" then
+            textSize = 16
+        else
+            textSize = 15
+        end
+
+        options.TextSize = textSize
+        options.Enabled = not v255
+
+        if size then
+            options.Size = size
+        end
+
+        smallButton(
+            text,
+            "Dark",
+            a248,
+            function()
                 --[[
                   line: 727
                   upvalues:
-                    u27 (copy, index: 1)
-                    a1 (copy, index: 2)
-                    Tribes_upv_1 (copy, index: 3)
+                    v255 (copy, index: 1)
+                    a26 (copy, index: 2)
+                    child (copy, index: 3)
                     act (copy, index: 4)
-                    a48 (copy, index: 5)
-                    TribeEmblem_upv_1 (copy, index: 6)
+                    a247 (copy, index: 5)
+                    TribeEmblem (copy, index: 6)
                 ]]
-                if u27 then
-                    a1.Toast(Tribes_upv_1.Message("cooldown"), "error")
-                else
-                    local v67, v68 = act("Join", a48.id)
-                    if v67 and type(v68) == "table" then
-                        if v68.joined then
-                            a1.Sounds.Play("Queue_Join")
-                            local Toast_1 = a1.Toast
-                            local Tag_5 = TribeEmblem_upv_1.Tag
-                            local v69
-                            if type(a48) ~= "table" then
-                                v69 = a48
-                            else
-                                v69 = a48.tag
-                            end
-                            Toast_1(("Welcome to %* %*!"):format(Tag_5(v69), tostring(a48.name)), "success")
-                            return
+                if v255 then
+                    a26.Toast(child.Message("cooldown"), "error")
+                    return
+                end
+
+                local v270, v271 = act("Join", a247.id)
+
+                if v270 and type(v271) == "table" then
+                    if v271.joined then
+                        local v272
+                        a26.Sounds.Play("Queue_Join")
+                        local toast = a26.Toast
+                        local tag = TribeEmblem.Tag
+
+                        if type(a247) ~= "table" then
+                            v272 = a247
+                        else
+                            v272 = a247.tag
                         end
-                        if v68.requested then
-                            local Toast_2 = a1.Toast
-                            local Tag_6 = TribeEmblem_upv_1.Tag
-                            local v69
-                            if type(a48) ~= "table" then
-                                v69 = a48
-                            else
-                                v69 = a48.tag
-                            end
-                            Toast_2(("Request sent to %*"):format(Tag_6(v69)), "info")
+
+                        toast(`Welcome to {tag(v272)} {(tostring(a247.name))}!`, "success")
+
+                        return
+                    end
+
+                    if v271.requested then
+                        local v275
+                        local toast = a26.Toast
+                        local tag = TribeEmblem.Tag
+
+                        if type(a247) ~= "table" then
+                            v275 = a247
+                        else
+                            v275 = a247.tag
                         end
+
+                        toast(`Request sent to {(tag(v275))}`, "info")
                     end
                 end
-            end
-            smallButton(v65, "Dark", a49, v66, tbl_29)
-        end
+            end,
+            options
+        )
     end
-    local u28 = 0
-    local u29 = nil
-    local u30 = nil
-    local u31 = nil
-    local u32 = ""
+
+    local count = 0
+    local v279 = nil
+    local v280 = nil
+    local v281 = nil
+    local v282 = ""
+
     local function rowsSig()
         --[[
           name: rowsSig
           line: 755
           upvalues:
-            u6 (ref,  index: 1)
+            v42 (ref,  index: 1)
             roleIn (copy, index: 2)
-            Tribes_upv_2 (copy, index: 3)
-            LocalPlayer_upv_1 (copy, index: 4)
+            tribes (copy, index: 3)
+            localPlayer (copy, index: 4)
         ]]
-        local v70 = u6 or {}
-        local v71 = u6 and (u6.tribe)
-        local v72
-        if type(v71) ~= "table" then
-            v72 = Tribes_upv_2.Mine()
+        local v284
+        local v285
+        local cooldownUntil
+        local v287 = v42 or {}
+        local tribe = v42 and v42.tribe
+
+        if type(tribe) ~= "table" then
+            v284 = tribes.Mine()
         else
-            v72 = {}
-            v72.id = v71.id
-            v72.role = roleIn(v71)
+            v284 = {id = tribe.id, role = roleIn(tribe)}
         end
-        local tbl_30 = {}
-        local v73 = ((type(v70.requested) ~= "table") and {}) or (v70.requested)
-        for _, value_9 in v73 do
-            table.insert(tbl_30, (tostring(value_9)))
+
+        local parts = {}
+
+        if type(v287.requested) ~= "table" then
+            v285 = {}
+        else
+            v285 = v287.requested
         end
-        local v74 = (type(v70.cooldownUntil) == "number") and (os.time() < v70.cooldownUntil)
-        return (("%*|%*|%*|%*"):format(((not v72) and 0) or (v72.id), table.concat(tbl_30, ","), v74, LocalPlayer_upv_1:GetAttribute("Level") or 1))
+
+        for _, v291 in v285 do
+            table.insert(parts, (tostring(v291)))
+        end
+
+        local v292 = false
+
+        if type(v287.cooldownUntil) == "number" then
+            cooldownUntil = v287.cooldownUntil
+            v292 = os.time() < cooldownUntil
+        end
+
+        local v293 = not v284 and 0 or v284.id
+
+        return (`{v293}|{table.concat(parts, ",")}|{v292}|{localPlayer:GetAttribute("Level") or 1}`)
     end
-    local function drawRows(a52, a53)
+
+    local function drawRows(a295, a296: boolean)
         --[[
           name: drawRows
           line: 765
           upvalues:
-            u32 (ref,  index: 1)
+            v282 (ref,  index: 1)
             rowsSig (copy, index: 2)
             clear (copy, index: 3)
-            u24 (copy, index: 4)
-            u25 (copy, index: 5)
-            u26 (copy, index: 6)
-            u22 (copy, index: 7)
+            parent10 (copy, index: 4)
+            parent11 (copy, index: 5)
+            v212 (copy, index: 6)
+            ui3 (copy, index: 7)
             tribeRow (copy, index: 8)
-            u6 (ref,  index: 9)
+            v42 (ref,  index: 9)
             roleIn (copy, index: 10)
-            Tribes_upv_2 (copy, index: 11)
-            UI_upv_1 (copy, index: 12)
-            Colors_upv_1 (copy, index: 13)
+            tribes (copy, index: 11)
+            ui (copy, index: 12)
+            colors (copy, index: 13)
             smallButton (copy, index: 14)
-            u9 (ref,  index: 15)
+            v45 (ref,  index: 15)
             joinButton (copy, index: 16)
         ]]
-        u32 = rowsSig()
-        clear(u24)
-        u25.Visible = #a52 == 0
-        u26.Text = ((u22.Text == "") and "No tribes yet. Found the first one!") or "No tribe matches that."
-        for key_7, value_upv_10 in a52 do
-            if type(value_upv_10) ~= "table" then
-                continue
-            end
-            local v75 = tribeRow(
-                value_upv_10,
-                u24,
-                key_7,
-                function(a54)
-                    --[[
-                      line: 772
-                      upvalues:
-                        u6 (ref,  index: 1)
-                        roleIn (copy, index: 2)
-                        Tribes_upv_2 (copy, index: 3)
-                        value_upv_10 (copy, index: 4)
-                        UI_upv_1 (copy, index: 5)
-                        Colors_upv_1 (copy, index: 6)
-                        smallButton (copy, index: 7)
-                        u9 (ref,  index: 8)
-                        joinButton (copy, index: 9)
-                    ]]
-                    local v76 = u6 and (u6.tribe)
-                    local v77
-                    if type(v76) ~= "table" then
-                        v77 = Tribes_upv_2.Mine()
-                    else
-                        v77 = {}
-                        v77.id = v76.id
-                        v77.role = roleIn(v76)
-                    end
-                    if not v77 or v77.id ~= value_upv_10.id then
-                        if v77 then
+        v282 = rowsSig()
+        clear(parent10)
+        parent11.Visible = #a295 == 0
+        v212.Text = ui3.Text == "" and "No tribes yet. Found the first one!" or "No tribe matches that."
+
+        for layoutOrder, v298 in a295 do
+            if type(v298) == "table" then
+                local v299 = tribeRow(
+                    v298,
+                    parent10,
+                    layoutOrder,
+                    function(parent)
+                        --[[
+                          line: 772
+                          upvalues:
+                            v42 (ref,  index: 1)
+                            roleIn (copy, index: 2)
+                            tribes (copy, index: 3)
+                            v298 (copy, index: 4)
+                            ui (copy, index: 5)
+                            colors (copy, index: 6)
+                            smallButton (copy, index: 7)
+                            v45 (ref,  index: 8)
+                            joinButton (copy, index: 9)
+                        ]]
+                        local v301
+                        local tribe = v42 and v42.tribe
+
+                        if type(tribe) ~= "table" then
+                            v301 = tribes.Mine()
+                        else
+                            v301 = {id = tribe.id, role = roleIn(tribe)}
+                        end
+
+                        if v301 and v301.id == v298.id then
+                            ui.Pill("YOUR TRIBE", colors.Accent, {Height = 26, TextSize = 12, Parent = parent})
+                            return
+                        end
+
+                        if v301 then
                             smallButton(
                                 "VIEW",
                                 "Dark",
-                                a54,
+                                parent,
                                 function()
                                     --[[
                                       line: 778
                                       upvalues:
-                                        u9 (ref,  index: 1)
-                                        value_upv_10 (copy, index: 2)
+                                        v45 (ref,  index: 1)
+                                        v298 (copy, index: 2)
                                     ]]
-                                    u9(value_upv_10.id, value_upv_10)
+                                    v45(v298.id, v298)
                                 end,
                                 {Width = 130}
                             )
-                        else
-                            joinButton(value_upv_10, a54)
+                            return
                         end
+
+                        joinButton(v298, parent)
                     end
-                    UI_upv_1.Pill("YOUR TRIBE", Colors_upv_1.Accent, {Height = 26, TextSize = 12, Parent = a54})
+                )
+
+                if not a296 then
+                    continue
                 end
-            )
-            if a53 then
-                UI_upv_1.Enter(v75, Vector2.new(0, 10), math.min(key_7 * 0.03, 0.25), UDim2.new())
+
+                ui.Enter(v299, Vector2.new(0, 10), math.min(layoutOrder * 0.03, 0.25), UDim2.new())
             end
         end
     end
+
     local function runSearch()
         --[[
           name: runSearch
           line: 791
           upvalues:
-            u22 (copy, index: 1)
-            u23 (ref,  index: 2)
-            u31 (ref,  index: 3)
-            u28 (ref,  index: 4)
-            u29 (ref,  index: 5)
-            Tribes_upv_2 (copy, index: 6)
-            u30 (ref,  index: 7)
+            ui3 (copy, index: 1)
+            v206 (ref,  index: 2)
+            v281 (ref,  index: 3)
+            count (ref,  index: 4)
+            v279 (ref,  index: 5)
+            tribes (copy, index: 6)
+            v280 (ref,  index: 7)
             drawRows (copy, index: 8)
             clear (copy, index: 9)
-            u24 (copy, index: 10)
-            UI_upv_1 (copy, index: 11)
-            tbl_upv_1 (ref,  index: 12)
-            Colors_upv_1 (copy, index: 13)
-            u25 (copy, index: 14)
-            u26 (copy, index: 15)
-            Tribes_upv_1 (copy, index: 16)
-            HttpService_upv_1 (copy, index: 17)
+            parent10 (copy, index: 10)
+            ui (copy, index: 11)
+            v27 (ref,  index: 12)
+            colors (copy, index: 13)
+            parent11 (copy, index: 14)
+            v212 (copy, index: 15)
+            child (copy, index: 16)
+            httpService (copy, index: 17)
             rowsSig (copy, index: 18)
-            u32 (ref,  index: 19)
+            v282 (ref,  index: 19)
         ]]
-        local Text_1 = u22.Text .. "\n" .. u23
-        if u31 == Text_1 then
+        local v304
+        local v305, v306
+        local v307 = ui3.Text .. "\n" .. v206
+
+        if v281 == v307 then
             return
         end
-        u28 = u28 + 1
-        u31 = Text_1
-        local v78 = u29 ~= Text_1
-        local Text_2 = u22.Text
-        local v79
-        if Text_2 ~= "" then
-            v79 = nil
+
+        count += 1
+        local v308 = count
+        v281 = v307
+        local v309 = v279 ~= v307
+        local text = ui3.Text
+
+        if text ~= "" then
+            v304 = nil
         else
-            v79 = Tribes_upv_2.CachedBoard(u23)
+            v304 = tribes.CachedBoard(v206)
         end
-        if v78 and type(v79) == "table" then
-            u29 = Text_1
-            u30 = v79
-            drawRows(v79, true)
-            v78 = false
+
+        if v309 and type(v304) == "table" then
+            v279 = v307
+            v280 = v304
+            drawRows(v304, true)
+            v309 = false
         end
-        if v78 then
-            clear(u24)
-            for n_1 = 1, 4 do
-                local tbl_31 = {BackgroundTransparency = 0.78}
-                UI_upv_1.Tween(UI_upv_1.new("Frame", {Name = "Skeleton", Size = UDim2.new(1, -4, 0, tbl_upv_1.row + 8), LayoutOrder = n_1, BackgroundColor3 = Colors_upv_1.PanelHi, BackgroundTransparency = 0.5, [1] = UI_upv_1.Corner(12), Parent = u24}), TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true, n_1 * 0.12), tbl_31)
+
+        if v309 then
+            clear(parent10)
+
+            for layoutOrder = 1, 4 do
+                local ui2 = ui.new("Frame", {Name = "Skeleton", Size = UDim2.new(1, -4, 0, v27.row + 8), LayoutOrder = layoutOrder, BackgroundColor3 = colors.PanelHi, BackgroundTransparency = 0.5, (ui.Corner(12)), Parent = parent10})
+                local v313 = {BackgroundTransparency = 0.78}
+                ui.Tween(ui2, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true, layoutOrder * 0.12), v313)
             end
-            u25.Visible = false
+
+            parent11.Visible = false
         end
-        local v80, v81
-        if Text_2 ~= "" then
-            local v82, v83 = Tribes_upv_2.Action("Search", Text_2, u23)
-            v80, v81 = v82, v83
+
+        if text ~= "" then
+            v305, v306 = tribes.Action("Search", text, v206)
         else
-            local v84, v85 = Tribes_upv_2.Board(u23)
-            v80, v81 = v84, v85
+            v305, v306 = tribes.Board(v206)
         end
-        if u28 ~= u28 then
+
+        if v308 ~= count then
             return
         end
-        u31 = nil
-        if v80 and type(v81) == "table" then
-            if not (v78) and u30 then
-                local success_2, v86 = pcall(HttpService_upv_1.JSONEncode, HttpService_upv_1, v81)
-                local v87
-                if success_2 then
-                    v87 = v86
-                else
-                    v87 = tostring(os.clock())
+
+        local success, result, success2, result2
+        local v318
+        local v319, v320, v321, v322 = false, false, false, false
+        v281 = nil
+
+        if v305 then
+            if type(v306) == "table" then
+                if not v309 and v280 then
+                    success, result = pcall(httpService.JSONEncode, httpService, v306)
+
+                    if success then
+                        v318 = result
+                    else
+                        v318 = tostring(os.clock())
+                    end
+
+                    v322 = true
                 end
-                local success_3, v88 = pcall(HttpService_upv_1.JSONEncode, HttpService_upv_1, u30)
-                local v85
-                if success_3 then
-                    v85 = v88
-                else
-                    v85 = tostring(os.clock())
-                end
-                if v87 == v85 and rowsSig() == u32 then
-                    return
-                end
+            else
+                v319 = true
             end
-            u29 = Text_1
-            u30 = v81
-            drawRows(v81, v78)
+        else
+            v319 = true
+        end
+
+        if v319 then
+            if v309 then
+                v320 = true
+            elseif v280 then
+                v321 = true
+            else
+                v320 = true
+            end
+        end
+
+        if v320 then
+            v279 = nil
+            v280 = nil
+            clear(parent10)
+            parent11.Visible = true
+            v212.Text = tostring((v306 or child.Message("unavailable")))
+            v321 = true
+        end
+
+        if v321 then
             return
         end
-        if v78 or not (u30) then
-            u29 = nil
-            u30 = nil
-            clear(u24)
-            u25.Visible = true
-            local v89 = v81 or (Tribes_upv_1.Message("unavailable"))
-            u26.Text = tostring(v89)
+
+        if v322 then
+            local v323
+            local v324 = v280
+            success2, result2 = pcall(httpService.JSONEncode, httpService, v324)
+
+            if success2 then
+                v323 = result2
+            else
+                v323 = tostring(os.clock())
+            end
+
+            if v318 == v323 and rowsSig() == v282 then
+                return
+            end
+        end
+
+        v279 = v307
+        v280 = v306
+        drawRows(v306, v309)
+    end
+
+    do
+        local function redrawRows()
+            --[[
+              name: redrawRows
+              line: 842
+              upvalues:
+                v280 (ref,  index: 1)
+                v281 (ref,  index: 2)
+                target (ref,  index: 3)
+                rowsSig (copy, index: 4)
+                v282 (ref,  index: 5)
+                drawRows (copy, index: 6)
+            ]]
+            if v280 and not v281 and target == "Find" and rowsSig() ~= v282 then
+                drawRows(v280, false)
+            end
         end
     end
-    local function redrawRows()
-        --[[
-          name: redrawRows
-          line: 842
-          upvalues:
-            u30 (ref,  index: 1)
-            u31 (ref,  index: 2)
-            u14 (ref,  index: 3)
-            rowsSig (copy, index: 4)
-            u32 (ref,  index: 5)
-            drawRows (copy, index: 6)
-        ]]
-        if not u30 or (u31) or u14 ~= "Find" or rowsSig() == u32 then
-            return
-        end
-        drawRows(u30, false)
-    end
+
     local function paintSort()
         --[[
           name: paintSort
           line: 847
           upvalues:
-            tbl_upv_19 (copy, index: 1)
-            u23 (ref,  index: 2)
-            Colors_upv_1 (copy, index: 3)
+            v207 (copy, index: 1)
+            v206 (ref,  index: 2)
+            colors (copy, index: 3)
         ]]
-        local v90 = nil
-        for key_8, value_11 in tbl_upv_19 do
-            value_11.BackgroundTransparency = ((key_8 ~= u23) and 1) or 0
-            if key_8 ~= u23 then
-                v90 = Colors_upv_1.TextDim
-            else
-                v90 = Colors_upv_1.Text
-            end
-            value_11.TextColor3 = v90
+        for v327, v328 in v207 do
+            v328.BackgroundTransparency = v327 ~= v206 and 1 or 0
+            v328.TextColor3 = if v327 == v206 then colors.Text else colors.TextDim
         end
     end
-    for key_upv_9, value_12 in tbl_upv_19 do
-        value_12.Activated:Connect(
+
+    for v329, v330 in v207 do
+        v330.Activated:Connect(
             function()
                 --[[
                   line: 854
                   upvalues:
-                    u23 (ref,  index: 1)
-                    key_upv_9 (copy, index: 2)
-                    u10 (ref,  index: 3)
-                    a1 (copy, index: 4)
+                    v206 (ref,  index: 1)
+                    v329 (copy, index: 2)
+                    timestamp (ref,  index: 3)
+                    a26 (copy, index: 4)
                     paintSort (copy, index: 5)
                     runSearch (copy, index: 6)
                 ]]
-                if u23 ~= key_upv_9 then
-                    local v91 = os.clock() - u10 >= 0.5
-                    if not v91 then
-                        return
-                    end
-                    u23 = key_upv_9
-                    a1.Sounds.Play("Click")
+                if v206 ~= v329 and 0.5 <= os.clock() - timestamp then
+                    v206 = v329
+                    a26.Sounds.Play("Click")
                     paintSort()
                     runSearch()
                 end
             end
         )
     end
-    u22.FocusLost:Connect(
+
+    ui3.FocusLost:Connect(
         function()
             --[[
               line: 863
@@ -1349,335 +1586,317 @@ function v1.Init(a1)
             runSearch()
         end
     )
-    local tbl_upv_32 = {{"three-people", "Play together", "Up to 2x Glory with tribemates"}, {"location-pin-map", "Hold the maps", "Most Glory on a map holds it"}, {"trophy", "Weekly Tribe Chest", "Item shards every Monday"}}
-    local u33 = 0
-    local u34 = -math.huge
-    local function heroTile(a55, a56, a57)
-        --[[
-          name: heroTile
-          line: 277
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
-            Glow_upv_1 (copy, index: 3)
-        ]]
-        local u35 = {}
-        u35.Name = "Hero"
-        u35.Size = UDim2.new(1, 0, 0, a56)
-        u35.BackgroundColor3 = Color3.new(1, 1, 1)
-        u35.ClipsDescendants = true
-        u35.LayoutOrder = a57
-        u35[1] = UI_upv_1.Corner(12)
-        u35.Parent = a55
-        local v92 = UI_upv_1.new("Frame", u35)
-        local u36 = UI_upv_1.Gradient(Colors_upv_1.Accent, Colors_upv_1.Panel, 115)
-        u36.Parent = v92
-        u35 = UI_upv_1.Image(Glow_upv_1, {Name = "Glow", ImageTransparency = 0.55, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.46), Size = UDim2.fromScale(1.15, 1.35), Parent = v92})
-        local Accent_1 = Colors_upv_1.Accent
-        u36.Color = ColorSequence.new(Accent_1:Lerp(Colors_upv_1.Panel, 0.45), Colors_upv_1.Panel:Lerp(Colors_upv_1.PanelLo, 0.5))
-        u35.ImageColor3 = Accent_1
-        local function tint_1(a58)
-            --[[
-              name: tint
-              line: 290
-              upvalues:
-                u36 (copy, index: 1)
-                Colors_upv_1 (copy, index: 2)
-                u35 (copy, index: 3)
-            ]]
-            u36.Color = ColorSequence.new(a58:Lerp(Colors_upv_1.Panel, 0.45), Colors_upv_1.Panel:Lerp(Colors_upv_1.PanelLo, 0.5))
-            u35.ImageColor3 = a58
-        end
-        return v92, tint_1
-    end
-    local function card(a59, a60, a61)
-        --[[
-          name: card
-          line: 196
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
-        ]]
-        local v93 = a61 or {}
-        local new_2 = UI_upv_1.new
-        local tbl_33 = {}
-        tbl_33.Name = a59
-        tbl_33.BackgroundColor3 = v93.Color or (Colors_upv_1.PanelHi)
-        tbl_33.BackgroundTransparency = v93.Transparency or 0.35
-        tbl_33.Size = v93.Size or UDim2.new(1, -6, 0, 0)
-        tbl_33.AutomaticSize = v93.AutomaticSize or (Enum.AutomaticSize.Y)
-        tbl_33.LayoutOrder = v93.LayoutOrder or 0
-        tbl_33[1], tbl_33[2] = UI_upv_1.Corner(12), UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.92)
-        tbl_33.Parent = a60
-        return new_2("Frame", tbl_33)
-    end
-    local function renderFindLeft(a62)
+    local v331 = {{"three-people", "Play together", "Up to 2x Glory with tribemates"}, {"location-pin-map", "Hold the maps", "Most Glory on a map holds it"}, {"trophy", "Weekly Tribe Chest", "Item shards every Monday"}}
+    local count2 = 0
+    local timestamp3 = -math.huge
+
+    local function renderFindLeft(a335)
         --[[
           name: renderFindLeft
           line: 874
           upvalues:
             clear (copy, index: 1)
-            u20 (copy, index: 2)
-            u33 (ref,  index: 3)
-            LocalPlayer_upv_1 (copy, index: 4)
-            Tribes_upv_1 (copy, index: 5)
-            UI_upv_1 (copy, index: 6)
+            parent5 (copy, index: 2)
+            count2 (ref,  index: 3)
+            localPlayer (copy, index: 4)
+            child (copy, index: 5)
+            ui (copy, index: 6)
             heroTile (copy, index: 7)
-            tbl_upv_1 (ref,  index: 8)
-            TribeEmblem_upv_1 (copy, index: 9)
+            v27 (ref,  index: 8)
+            TribeEmblem (copy, index: 9)
             label (copy, index: 10)
-            Fonts_upv_1 (copy, index: 11)
-            tbl_upv_32 (copy, index: 12)
-            fromOffset_upv_1 (copy, index: 13)
-            Colors_upv_1 (copy, index: 14)
-            Theme_upv_1 (copy, index: 15)
-            u1 (copy, index: 16)
-            u10 (ref,  index: 17)
-            a1 (copy, index: 18)
+            fonts (copy, index: 11)
+            v331 (copy, index: 12)
+            udim2FromOffset (copy, index: 13)
+            colors (copy, index: 14)
+            theme (copy, index: 15)
+            textColor3 (copy, index: 16)
+            timestamp (ref,  index: 17)
+            a26 (copy, index: 18)
             caps (copy, index: 19)
-            u2 (copy, index: 20)
-            u34 (ref,  index: 21)
+            backgroundColor3 (copy, index: 20)
+            timestamp3 (ref,  index: 21)
             untilText (copy, index: 22)
             section (copy, index: 23)
             card (copy, index: 24)
             smallButton (copy, index: 25)
             act (copy, index: 26)
         ]]
-        clear(u20)
-        u33 = u33 + 1
-        local v95 = LocalPlayer_upv_1:GetAttribute("Level") or 1
-        local u37 = (type(a62.cooldownUntil) == "number") and (os.time() < a62.cooldownUntil)
-        local v96
-        if type(a62.foundLevel) ~= "number" then
-            v96 = Tribes_upv_1.FOUND_LEVEL
+        local foundLevel
+        local v337
+        clear(parent5)
+        count2 += 1
+        local level = localPlayer:GetAttribute("Level") or 1
+        local v339 = type(a335.cooldownUntil) == "number" and os.time() < a335.cooldownUntil
+
+        if type(a335.foundLevel) ~= "number" then
+            foundLevel = child.FOUND_LEVEL
         else
-            v96 = a62.foundLevel
+            foundLevel = a335.foundLevel
         end
-        local v97 = UI_upv_1.Panel({LayoutOrder = 1, Name = "FoundPanel", BackgroundTransparency = 0.06, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Radius = UDim.new(0, 14), Parent = u20})
-        UI_upv_1.Padding(12, 12, 12, 12).Parent = v97
-        UI_upv_1.List(Enum.FillDirection.Vertical, 10).Parent = v97
-        local u38, u39 = heroTile(v97, tbl_upv_1.hero - 30, 1)
-        local u40 = TribeEmblem_upv_1.new(96, {ZIndex = 2, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = u38})
-        local u41 = u33
+
+        local parent = ui.Panel({Name = "FoundPanel", BackgroundTransparency = 0.06, LayoutOrder = 1, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Radius = UDim.new(0, 14), Parent = parent5})
+        ui.Padding(12, 12, 12, 12).Parent = parent
+        ui.List(Enum.FillDirection.Vertical, 10).Parent = parent
+        local parent2, v342 = heroTile(parent, v27.hero - 30, 1)
+        local tribeEmblem = TribeEmblem.new(96, {ZIndex = 2, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent2})
+        local v344 = count2
+
         task.spawn(
             function()
                 --[[
                   line: 888
                   upvalues:
-                    u41 (copy, index: 1)
-                    u33 (ref,  index: 2)
-                    u38 (copy, index: 3)
-                    u40 (copy, index: 4)
-                    Tribes_upv_1 (copy, index: 5)
-                    u39 (copy, index: 6)
-                    UI_upv_1 (copy, index: 7)
+                    v344 (copy, index: 1)
+                    count2 (ref,  index: 2)
+                    parent2 (copy, index: 3)
+                    tribeEmblem (copy, index: 4)
+                    child (copy, index: 5)
+                    v342 (copy, index: 6)
+                    ui (copy, index: 7)
                 ]]
-                local v98 = Random.new()
-                while u41 == u33 do
-                    if u38.Parent then
-                        local v99 = v98:NextInteger(1, 14)
-                        u40:Set(v98:NextInteger(1, #Tribes_upv_1.ICONS), v99, ({Tribes_upv_1.WHITE, Tribes_upv_1.WHITE, 6, 20})[v98:NextInteger(1, 4)], nil)
-                        u39(Tribes_upv_1.Color(v99))
-                        UI_upv_1.Pop(u40.Instance, 0.9)
-                        task.wait(2.2)
-                        continue
-                    else
-                        break
-                    end
+                local random = Random.new()
+
+                while v344 == count2 and parent2.Parent do
+                    local v346 = random:NextInteger(1, 14)
+                    tribeEmblem:Set(random:NextInteger(1, #child.ICONS), v346, ({child.WHITE, child.WHITE, 6, 20})[random:NextInteger(1, 4)], nil)
+                    v342(child.Color(v346))
+                    ui.Pop(tribeEmblem.Instance, 0.9)
+                    task.wait(2.2)
                 end
             end
         )
-        label({LayoutOrder = 2, Name = "Title", Text = "FOUND A TRIBE", TextSize = 26, FontFace = Fonts_upv_1.Display, Size = UDim2.new(1, 0, 0, 30), Parent = v97})
-        for key_10, value_13 in tbl_upv_32 do
-            local v100 = UI_upv_1.new("Frame", {Name = "Perk" .. key_10, Size = UDim2.new(1, 0, 0, 38), LayoutOrder = 2 + key_10, Parent = v97})
-            local v101 = UI_upv_1.new("Frame", {Name = "Icon", Size = fromOffset_upv_1(32, 32), Position = fromOffset_upv_1(0, 3), BackgroundColor3 = Colors_upv_1.Accent, BackgroundTransparency = 0.8, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v100})
-            UI_upv_1.Glyph(value_13[1], 18, Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.3), {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v101})
-            label({Name = "Title", TextSize = 15, Text = value_13[2], FontFace = Fonts_upv_1.Heavy, Position = fromOffset_upv_1(42, 0), Size = UDim2.new(1, -42, 0, 18), Parent = v100})
-            label({Name = "Text", TextSize = 13, Text = value_13[3], FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, Position = fromOffset_upv_1(42, 19), Size = UDim2.new(1, -42, 0, 16), Parent = v100})
+
+        label({Name = "Title", Text = "FOUND A TRIBE", TextSize = 26, LayoutOrder = 2, FontFace = fonts.Display, Size = UDim2.new(1, 0, 0, 30), Parent = parent})
+
+        for v347, v348 in v331 do
+            local parent3 = ui.new("Frame", {Name = "Perk" .. v347, Size = UDim2.new(1, 0, 0, 38), LayoutOrder = 2 + v347, Parent = parent})
+            local parent4 = ui.new("Frame", {Name = "Icon", Size = udim2FromOffset(32, 32), Position = udim2FromOffset(0, 3), BackgroundColor3 = colors.Accent, BackgroundTransparency = 0.8, (ui.Corner(theme.Radius.Pill)), Parent = parent3})
+            ui.Glyph(v348[1], 18, theme.Lighten(colors.Accent, 0.3), {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent4})
+            label({Name = "Title", TextSize = 15, Text = v348[2], FontFace = fonts.Heavy, Position = udim2FromOffset(42, 0), Size = UDim2.new(1, -42, 0, 18), Parent = parent3})
+            label({Name = "Text", TextSize = 13, Text = v348[3], FontFace = fonts.SemiBold, TextColor3 = textColor3, Position = udim2FromOffset(42, 19), Size = UDim2.new(1, -42, 0, 16), Parent = parent3})
         end
-        local Economy_upv_1
-        if v96 <= v95 then
-            local v102 = UI_upv_1.Button({LayoutOrder = 8, Name = "Found", Text = "FOUND A TRIBE", Style = "Primary", Size = UDim2.new(1, 0, 0, 52), Parent = v97})
-            v102.Activated:Connect(
+
+        if foundLevel <= level then
+            local v351 = ui.Button({Name = "Found", Text = "FOUND A TRIBE", Style = "Primary", LayoutOrder = 8, Size = UDim2.new(1, 0, 0, 52), Parent = parent})
+
+            v351.Activated:Connect(
                 function()
                     --[[
                       line: 908
                       upvalues:
-                        u10 (ref,  index: 1)
-                        u37 (copy, index: 2)
-                        a1 (copy, index: 3)
-                        Tribes_upv_1 (copy, index: 4)
+                        timestamp (ref,  index: 1)
+                        v339 (copy, index: 2)
+                        a26 (copy, index: 3)
+                        child (copy, index: 4)
                     ]]
-                    local v103 = os.clock() - u10 >= 0.5
-                    if not v103 then
+                    if not (0.5 <= os.clock() - timestamp) then
                         return
                     end
-                    if u37 then
-                        a1.Toast(Tribes_upv_1.Message("cooldown"), "error")
-                    else
-                        a1.OpenTribeForm("create")
+
+                    if v339 then
+                        a26.Toast(child.Message("cooldown"), "error")
+                        return
                     end
+
+                    a26.OpenTribeForm("create")
                 end
             )
-            if u37 then
-                v102:SetEnabled(false)
+
+            if v339 then
+                v351:SetEnabled(false)
             end
         else
-            local v104 = UI_upv_1.new("Frame", {Name = "Lock", Size = UDim2.new(1, 0, 0, 54), LayoutOrder = 8, BackgroundColor3 = Colors_upv_1.Inset, BackgroundTransparency = 0.3, [1] = UI_upv_1.Corner(10), Parent = v97})
-            UI_upv_1.Glyph("lock-closed", 18, Colors_upv_1.TextDim, {Position = fromOffset_upv_1(12, 9), Parent = v104})
-            label({Name = "Text", TextSize = 15, Text = ("Reach level %* to found a tribe"):format(v96), FontFace = Fonts_upv_1.Heavy, Position = fromOffset_upv_1(38, 8), Size = UDim2.new(1, -110, 0, 20), Parent = v104})
-            caps(("LV %* / %*"):format(v95, v96), {TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -12, 0, 12), Size = fromOffset_upv_1(80, 14), Parent = v104})
-            local v105 = UI_upv_1.new("Frame", {Name = "Bar", Position = fromOffset_upv_1(12, 36), Size = UDim2.new(1, -24, 0, 8), BackgroundColor3 = u2, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v104})
-            UI_upv_1.new("Frame", {Name = "Fill", Size = UDim2.fromScale(math.clamp(v95 / v96, 0.03, 1), 1), BackgroundColor3 = Colors_upv_1.Accent, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v105})
-            Economy_upv_1 = a1.Economy
-            if (Economy_upv_1) and (Economy_upv_1.CanBuy("tribe_found")) then
-                local u42 = UI_upv_1.Button({LayoutOrder = 9, Name = "FoundNow", Text = "", Style = "Primary", Size = UDim2.new(1, 0, 0, 52), Parent = v97})
-                u42.Label.RichText = true
-                local function paintBuy_upv_1()
+            local parent6 = ui.new("Frame", {Name = "Lock", Size = UDim2.new(1, 0, 0, 54), LayoutOrder = 8, BackgroundColor3 = colors.Inset, BackgroundTransparency = 0.3, (ui.Corner(10)), Parent = parent})
+            ui.Glyph("lock-closed", 18, colors.TextDim, {Position = udim2FromOffset(12, 9), Parent = parent6})
+            label({Name = "Text", TextSize = 15, Text = `Reach level {foundLevel} to found a tribe`, FontFace = fonts.Heavy, Position = udim2FromOffset(38, 8), Size = UDim2.new(1, -110, 0, 20), Parent = parent6})
+            caps(`LV {level} / {foundLevel}`, {TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -12, 0, 12), Size = udim2FromOffset(80, 14), Parent = parent6})
+            local parent7 = ui.new("Frame", {Name = "Bar", Position = udim2FromOffset(12, 36), Size = UDim2.new(1, -24, 0, 8), BackgroundColor3 = backgroundColor3, (ui.Corner(theme.Radius.Pill)), Parent = parent6})
+            ui.new("Frame", {Name = "Fill", Size = UDim2.fromScale(math.clamp(level / foundLevel, 0.03, 1), 1), BackgroundColor3 = colors.Accent, (ui.Corner(theme.Radius.Pill)), Parent = parent7})
+            local economy = a26.Economy
+
+            if economy and economy.CanBuy("tribe_found") then
+                local v355 = ui.Button({Name = "FoundNow", Text = "", Style = "Primary", LayoutOrder = 9, Size = UDim2.new(1, 0, 0, 52), Parent = parent})
+                v355.Label.RichText = true
+
+                local function paintBuy()
                     --[[
                       name: paintBuy
                       line: 934
                       upvalues:
-                        Economy_upv_1 (copy, index: 1)
-                        u42 (copy, index: 2)
-                        u37 (copy, index: 3)
+                        economy (copy, index: 1)
+                        v355 (copy, index: 2)
+                        v339 (copy, index: 3)
                     ]]
-                    local v106 = Economy_upv_1.Pending("tribe_found")
-                    u42:SetEnabled(not v106 and (not u37))
-                    local v107 = (v106 and "FOUNDING\226\128\166") or (string.format("FOUND NOW   <font color=\"#FFFFFF\">%s</font> %s", Economy_upv_1.ROBUX, Economy_upv_1.PriceAmount("tribe_found")))
-                    u42:SetText(v107)
+                    local v357 = economy.Pending("tribe_found")
+                    local enabled = not v357 and not v339
+                    v355:SetEnabled(enabled)
+                    local text = v357 and "FOUNDING…"
+                        or string.format("FOUND NOW   <font color=\"#FFFFFF\">%s</font> %s", economy.ROBUX, economy.PriceAmount("tribe_found"))
+                    v355:SetText(text)
                 end
-                paintBuy_upv_1()
-                local u43 = nil
-                local v108 = Economy_upv_1.Changed:Connect(
+
+                paintBuy()
+                local v360 = nil
+
+                v360 = economy.Changed:Connect(
                     function()
                         --[[
                           line: 941
                           upvalues:
-                            u42 (copy, index: 1)
-                            paintBuy_upv_1 (copy, index: 2)
-                            u43 (ref,  index: 3)
+                            v355 (copy, index: 1)
+                            paintBuy (copy, index: 2)
+                            v360 (ref,  index: 3)
                         ]]
-                        if u42.Instance.Parent then
-                            paintBuy_upv_1()
-                        else
-                            u43:Disconnect()
+                        if v355.Instance.Parent then
+                            paintBuy()
+                            return
                         end
+
+                        v360:Disconnect()
                     end
                 )
-                u43 = v108
-                u42.Activated:Connect(
+
+                v355.Activated:Connect(
                     function()
                         --[[
                           line: 948
                           upvalues:
-                            u10 (ref,  index: 1)
-                            Economy_upv_1 (copy, index: 2)
-                            u37 (copy, index: 3)
-                            a1 (copy, index: 4)
-                            Tribes_upv_1 (copy, index: 5)
-                            u34 (ref,  index: 6)
+                            timestamp (ref,  index: 1)
+                            economy (copy, index: 2)
+                            v339 (copy, index: 3)
+                            a26 (copy, index: 4)
+                            child (copy, index: 5)
+                            timestamp3 (ref,  index: 6)
                         ]]
-                        local v109 = os.clock() - u10 >= 0.5
-                        if not v109 or (Economy_upv_1.Pending("tribe_found")) then
+                        local v361 = 0.5 <= os.clock() - timestamp
+
+                        if not v361 or economy.Pending("tribe_found") then
                             return
                         end
-                        if u37 then
-                            a1.Toast(Tribes_upv_1.Message("cooldown"), "error")
-                        else
-                            u34 = os.clock()
-                            Economy_upv_1.Buy("tribe_found")
+
+                        if v339 then
+                            a26.Toast(child.Message("cooldown"), "error")
+                            return
                         end
+
+                        timestamp3 = os.clock()
+                        economy.Buy("tribe_found")
                     end
                 )
-                caps("OR JOIN A TRIBE AT ANY LEVEL", {LayoutOrder = 10, TextXAlignment = Enum.TextXAlignment.Center, Parent = v97})
+
+                caps("OR JOIN A TRIBE AT ANY LEVEL", {LayoutOrder = 10, TextXAlignment = Enum.TextXAlignment.Center, Parent = parent})
             else
-                caps("YOU CAN JOIN A TRIBE AT ANY LEVEL", {LayoutOrder = 9, TextXAlignment = Enum.TextXAlignment.Center, Parent = v97})
+                caps("YOU CAN JOIN A TRIBE AT ANY LEVEL", {LayoutOrder = 9, TextXAlignment = Enum.TextXAlignment.Center, Parent = parent})
             end
         end
-        if u37 then
-            label({LayoutOrder = 11, Name = "Cooldown", TextWrapped = true, TextSize = 13, Text = ("You left a tribe recently. You can join or found one again in %*."):format(untilText(a62.cooldownUntil)), FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.Warning, TextTruncate = Enum.TextTruncate.None, AutomaticSize = Enum.AutomaticSize.Y, Size = UDim2.new(1, 0, 0, 0), Parent = v97})
+
+        if v339 then
+            label({Name = "Cooldown", TextSize = 13, TextWrapped = true, LayoutOrder = 11, Text = `You left a tribe recently. You can join or found one again in {(untilText(a335.cooldownUntil))}.`, FontFace = fonts.SemiBold, TextColor3 = colors.Warning, TextTruncate = Enum.TextTruncate.None, AutomaticSize = Enum.AutomaticSize.Y, Size = UDim2.new(1, 0, 0, 0), Parent = parent})
         end
-        local v110 = ((type(a62.invites) ~= "table") and {}) or (a62.invites)
-        if #v110 > 0 then
-            section("INVITES", #v110, nil, 2, u20, Colors_upv_1.Warning)
-            local v111 = nil
-            for key_11, value_14 in v110 do
-                local tribe_upv_1 = value_14.tribe
-                if type(tribe_upv_1) ~= "table" then
-                    continue
-                end
-                local v112 = card("Invite" .. key_11, u20, {LayoutOrder = 2 + key_11})
-                UI_upv_1.Padding(12, 12, 12, 12).Parent = v112
-                UI_upv_1.List(Enum.FillDirection.Vertical, 10).Parent = v112
-                local v113 = UI_upv_1.new("Frame", {LayoutOrder = 1, Name = "Top", Size = UDim2.new(1, 0, 0, 54), Parent = v112})
-                local tbl_34 = {}
-                tbl_34.Parent = v113
-                TribeEmblem_upv_1.new(50, tbl_34):Set(tribe_upv_1.icon, tribe_upv_1.color1, tribe_upv_1.color2, tribe_upv_1.tag)
-                local tbl_35 = {FontFace = 0, RichText = true, Name = "Name", Position = 0, Parent = 0, Text = 0, TextSize = 16, Size = 0}
-                local v114 = TribeEmblem_upv_1.TagColor(tribe_upv_1.color1):ToHex()
-                local Tag_7 = TribeEmblem_upv_1.Tag
-                if type(tribe_upv_1) ~= "table" then
-                    v111 = tribe_upv_1
-                else
-                    v111 = tribe_upv_1.tag
-                end
-                tbl_35.Text = string.format("<font color=\"#%s\">%s</font>  %s", v114, Tag_7(v111), tostring(tribe_upv_1.name or ""))
-                tbl_35.FontFace = Fonts_upv_1.Heavy
-                tbl_35.Position = fromOffset_upv_1(62, 7)
-                tbl_35.Size = UDim2.new(1, -62, 0, 20)
-                tbl_35.Parent = v113
-                label(tbl_35)
-                local v115 = nil
-                label({Name = "From", TextSize = 13, Text = ("%* invited you  \194\183  %*/%* members"):format(tostring(v115.from or "?"), tonumber(tribe_upv_1.members) or 0, Tribes_upv_1.MAX_MEMBERS), FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, Position = fromOffset_upv_1(62, 29), Size = UDim2.new(1, -62, 0, 16), Parent = v113})
-                local v116 = UI_upv_1.new("Frame", {Name = "Row", Size = UDim2.new(1, 0, 0, 40), LayoutOrder = 2, [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 8), Parent = v112})
-                smallButton(
-                    "JOIN",
-                    "Primary",
-                    v116,
-                    function()
-                        --[[
-                          line: 982
-                          upvalues:
-                            act (copy, index: 1)
-                            tribe_upv_1 (copy, index: 2)
-                            a1 (copy, index: 3)
-                            TribeEmblem_upv_1 (copy, index: 4)
-                        ]]
-                        if act("Join", tribe_upv_1.id) then
-                            a1.Sounds.Play("Queue_Join")
-                            local Toast_3 = a1.Toast
-                            local Tag_8 = TribeEmblem_upv_1.Tag
-                            local v117
-                            if type(tribe_upv_1) ~= "table" then
-                                v117 = tribe_upv_1
-                            else
-                                v117 = tribe_upv_1.tag
+
+        if type(a335.invites) ~= "table" then
+            v337 = {}
+        else
+            v337 = a335.invites
+        end
+
+        if 0 < #v337 then
+            section("INVITES", #v337, nil, 2, parent5, colors.Warning)
+
+            for v362, v363 in v337 do
+                local tribe = v363.tribe
+
+                if type(tribe) == "table" then
+                    local v365
+                    local parent8 = card("Invite" .. v362, parent5, {LayoutOrder = 2 + v362})
+                    ui.Padding(12, 12, 12, 12).Parent = parent8
+                    ui.List(Enum.FillDirection.Vertical, 10).Parent = parent8
+                    local parent9 = ui.new("Frame", {Name = "Top", LayoutOrder = 1, Size = UDim2.new(1, 0, 0, 54), Parent = parent8})
+                    TribeEmblem.new(50, {Parent = parent9}):Set(tribe.icon, tribe.color1, tribe.color2, tribe.tag)
+                    local v368 = {Name = "Name", RichText = true, TextSize = 16}
+                    local stringFormat = string.format
+                    local v370 = TribeEmblem.TagColor(tribe.color1):ToHex()
+                    local tag = TribeEmblem.Tag
+
+                    if type(tribe) == "table" then
+                        v365 = tribe.tag
+                    else
+                        v365 = tribe
+                    end
+
+                    local v372 = tag(v365)
+                    v368.Text = stringFormat("<font color=\"#%s\">%s</font>  %s", v370, v372, (tostring(tribe.name
+                        or "")))
+                    v368.FontFace = fonts.Heavy
+                    v368.Position = udim2FromOffset(62, 7)
+                    v368.Size = UDim2.new(1, -62, 0, 20)
+                    v368.Parent = parent9
+                    label(v368)
+                    local v373 = {Name = "From", TextSize = 13}
+                    local text = tostring(v363.from or "?")
+                    local number = tonumber(tribe.members) or 0
+                    v373.Text = `{text} invited you  ·  {number}/{child.MAX_MEMBERS} members`
+                    v373.FontFace = fonts.SemiBold
+                    v373.TextColor3 = textColor3
+                    v373.Position = udim2FromOffset(62, 29)
+                    v373.Size = UDim2.new(1, -62, 0, 16)
+                    v373.Parent = parent9
+                    label(v373)
+                    local ui2 = ui.new("Frame", {Name = "Row", Size = UDim2.new(1, 0, 0, 40), LayoutOrder = 2, (ui.List(Enum.FillDirection.Horizontal, 8)), Parent = parent8})
+
+                    smallButton(
+                        "JOIN",
+                        "Primary",
+                        ui2,
+                        function()
+                            --[[
+                              line: 982
+                              upvalues:
+                                act (copy, index: 1)
+                                tribe (copy, index: 2)
+                                a26 (copy, index: 3)
+                                TribeEmblem (copy, index: 4)
+                            ]]
+                            if act("Join", tribe.id) then
+                                local v377
+                                a26.Sounds.Play("Queue_Join")
+                                local toast = a26.Toast
+                                local tag = TribeEmblem.Tag
+
+                                if type(tribe) ~= "table" then
+                                    v377 = tribe
+                                else
+                                    v377 = tribe.tag
+                                end
+
+                                toast(`Welcome to {tag(v377)} {(tostring(tribe.name))}!`, "success")
                             end
-                            Toast_3(("Welcome to %* %*!"):format(Tag_8(v117), tostring(tribe_upv_1.name)), "success")
-                        end
-                    end,
-                    {Size = UDim2.new(0.5, -4, 1, 0)}
-                )
-                smallButton(
-                    "DECLINE",
-                    "Dark",
-                    v116,
-                    function()
-                        --[[
-                          line: 988
-                          upvalues:
-                            act (copy, index: 1)
-                            tribe_upv_1 (copy, index: 2)
-                        ]]
-                        act("Decline", tribe_upv_1.id)
-                    end,
-                    {Size = UDim2.new(0.5, -4, 1, 0)}
-                )
+                        end,
+                        {Size = UDim2.new(0.5, -4, 1, 0)}
+                    )
+
+                    smallButton(
+                        "DECLINE",
+                        "Dark",
+                        ui2,
+                        function()
+                            --[[
+                              line: 988
+                              upvalues:
+                                act (copy, index: 1)
+                                tribe (copy, index: 2)
+                            ]]
+                            act("Decline", tribe.id)
+                        end,
+                        {Size = UDim2.new(0.5, -4, 1, 0)}
+                    )
+                end
             end
         end
     end
-    tbl_upv_11.Find = function()
+
+    v141.Find = function()
         --[[
           line: 996
           upvalues:
@@ -1687,234 +1906,128 @@ function v1.Init(a1)
         paintSort()
         runSearch()
     end
-    local u44 = column("Left", v26.page, 12)
-    local u45 = column("Right", v26.page, 12)
-    local tbl_upv_36 = {kicked = 0, joined = 0, chief = 0, demoted = 0, left = 0, promoted = 0, renamed = 0, lost = 0, founded = 0, took = 0}
-    function tbl_upv_36.founded(a63)
-        --[[
-          name: founded
-          line: 1006
-        ]]
-        return (("%* founded the tribe"):format(a63.name))
-    end
-    function tbl_upv_36.joined(a64)
-        --[[
-          name: joined
-          line: 1009
-        ]]
-        return (("%* joined"):format(a64.name))
-    end
-    function tbl_upv_36.left(a65)
-        --[[
-          name: left
-          line: 1012
-        ]]
-        return (("%* left"):format(a65.name))
-    end
-    function tbl_upv_36.kicked(a66)
-        --[[
-          name: kicked
-          line: 1015
-        ]]
-        return (("%* removed %*"):format(a66.by, a66.name))
-    end
-    function tbl_upv_36.promoted(a67)
-        --[[
-          name: promoted
-          line: 1018
-        ]]
-        return (("%* is now an Elder"):format(a67.name))
-    end
-    function tbl_upv_36.demoted(a68)
-        --[[
-          name: demoted
-          line: 1021
-        ]]
-        return (("%* is now a Member"):format(a68.name))
-    end
-    function tbl_upv_36.chief(a69)
-        --[[
-          name: chief
-          line: 1024
-        ]]
-        return (("%* is now the Chief"):format(a69.name))
-    end
-    function tbl_upv_36.renamed(a70)
-        --[[
-          name: renamed
-          line: 1027
-        ]]
-        return (("The tribe is now called %*"):format(a70.name))
-    end
-    function tbl_upv_36.took(a71)
-        --[[
-          name: took
-          line: 1030
-          upvalues:
-            Tribes_upv_2 (copy, index: 1)
-        ]]
-        if a71.from then
-            return (("Took %* from [%*]"):format(Tribes_upv_2.MapName(a71.mapId), a71.from))
-        end
-        return (("Took %*"):format(Tribes_upv_2.MapName(a71.mapId)))
-    end
-    function tbl_upv_36.lost(a72)
-        --[[
-          name: lost
-          line: 1033
-          upvalues:
-            Tribes_upv_2 (copy, index: 1)
-        ]]
-        return (("[%*] took %*"):format(a72.to, Tribes_upv_2.MapName(a72.mapId)))
-    end
-    local tbl_upv_37 = {}
-    tbl_upv_37.founded = {"flag", Colors_upv_1.Accent}
-    tbl_upv_37.joined = {"person-plus", Colors_upv_1.Success}
-    tbl_upv_37.left = {"door-open-arrow-to-bottom-right", Colors_upv_1.TextMuted}
-    tbl_upv_37.kicked = {"door-open-arrow-to-bottom-right", Colors_upv_1.Danger}
-    tbl_upv_37.promoted = {"crown", u3}
-    tbl_upv_37.demoted = {"person", Colors_upv_1.TextMuted}
-    tbl_upv_37.chief = {"crown", u3}
-    tbl_upv_37.renamed = {"pencil", Colors_upv_1.Accent}
-    tbl_upv_37.took = {"location-pin-map", Colors_upv_1.Success}
-    tbl_upv_37.lost = {"location-pin-map", Colors_upv_1.Danger}
-    local u46 = 0
-    local function heldChips(a73, a74, a75, a76, a77, a78)
+
+    local parent12 = column("Left", tab2.page, 12)
+    local parent13 = column("Right", tab2.page, 12)
+    local v382 = {
+        founded = (function(a383)
+            --[[
+              name: founded
+              line: 1006
+            ]]
+            return (`{a383.name} founded the tribe`)
+        end),
+        joined = (function(a384)
+            --[[
+              name: joined
+              line: 1009
+            ]]
+            return (`{a384.name} joined`)
+        end),
+        left = (function(a385)
+            --[[
+              name: left
+              line: 1012
+            ]]
+            return (`{a385.name} left`)
+        end),
+        kicked = (function(a386)
+            --[[
+              name: kicked
+              line: 1015
+            ]]
+            return (`{a386.by} removed {a386.name}`)
+        end),
+        promoted = (function(a387)
+            --[[
+              name: promoted
+              line: 1018
+            ]]
+            return (`{a387.name} is now an Elder`)
+        end),
+        demoted = (function(a388)
+            --[[
+              name: demoted
+              line: 1021
+            ]]
+            return (`{a388.name} is now a Member`)
+        end),
+        chief = (function(a389)
+            --[[
+              name: chief
+              line: 1024
+            ]]
+            return (`{a389.name} is now the Chief`)
+        end),
+        renamed = (function(a390)
+            --[[
+              name: renamed
+              line: 1027
+            ]]
+            return (`The tribe is now called {a390.name}`)
+        end),
+        took = (function(a391)
+            --[[
+              name: took
+              line: 1030
+              upvalues:
+                tribes (copy, index: 1)
+            ]]
+            if a391.from then
+                return (`Took {tribes.MapName(a391.mapId)} from [{a391.from}]`)
+            end
+
+            return (`Took {(tribes.MapName(a391.mapId))}`)
+        end),
+        lost = (function(a392)
+            --[[
+              name: lost
+              line: 1033
+              upvalues:
+                tribes (copy, index: 1)
+            ]]
+            return (`[{a392.to}] took {(tribes.MapName(a392.mapId))}`)
+        end)
+    }
+    local v393 = {founded = {"flag", colors.Accent}, joined = {"person-plus", colors.Success}, left = {"door-open-arrow-to-bottom-right", colors.TextMuted}, kicked = {"door-open-arrow-to-bottom-right", colors.Danger}, promoted = {"crown", textColor32}, demoted = {"person", colors.TextMuted}, chief = {"crown", textColor32}, renamed = {"pencil", colors.Accent}, took = {"location-pin-map", colors.Success}, lost = {"location-pin-map", colors.Danger}}
+    local count3 = 0
+
+    local function heldChips(a396, parent, layoutOrder: number, backgroundColor3, predicate, text: string)
         --[[
           name: heldChips
           line: 1054
           upvalues:
-            UI_upv_1 (copy, index: 1)
+            ui (copy, index: 1)
             card (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
+            colors (copy, index: 3)
             label (copy, index: 4)
-            Fonts_upv_1 (copy, index: 5)
-            u1 (copy, index: 6)
-            fromOffset_upv_1 (copy, index: 7)
+            fonts (copy, index: 5)
+            textColor3 (copy, index: 6)
+            udim2FromOffset (copy, index: 7)
             smallButton (copy, index: 8)
             showTab (copy, index: 9)
-            Tribes_upv_2 (copy, index: 10)
-            u10 (ref,  index: 11)
-            a1 (copy, index: 12)
+            tribes (copy, index: 10)
+            timestamp (ref,  index: 11)
+            a26 (copy, index: 12)
         ]]
-        local new_3 = UI_upv_1.new
-        local v118 = "Frame"
-        local tbl_38 = {LayoutOrder = 0, Name = "Held", Parent = 0, AutomaticSize = 0, Size = 0}
-        tbl_38.Size = UDim2.new(1, -6, 0, ((#a73 ~= 0) and 0) or 64)
-        local v119
-        if #a73 ~= 0 then
-            v119 = Enum.AutomaticSize.Y
-        else
-            v119 = Enum.AutomaticSize.None
-        end
-        tbl_38.AutomaticSize = v119
-        tbl_38.LayoutOrder = a75
-        tbl_38.Parent = a74
-        local v120 = new_3(v118, tbl_38)
-        if #a73 ~= 0 then
-            UI_upv_1.new("UIGridLayout", {CellSize = fromOffset_upv_1(180, 104), CellPadding = fromOffset_upv_1(10, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = v120})
-            local v121 = Tribes_upv_2.CachedTerritories()
-            local tbl_upv_39 = {}
-            local v122 = nil
-            for key_12, value_upv_15 in a73 do
-                local v123 = v121 and (v121.maps and (v121.maps[value_upv_15]))
-                local v124 = UI_upv_1.new("TextButton", {Name = value_upv_15, Text = "", AutoButtonColor = false, LayoutOrder = key_12, BackgroundColor3 = Colors_upv_1.Raised, ClipsDescendants = true, [1] = UI_upv_1.Corner(12), Parent = v120})
-                local new_4 = UI_upv_1.new
-                local tbl_40 = {Image = 0, Name = "Thumb", Parent = 0, ScaleType = 0, Size = 0}
-                if not (v123) then
-                    v122 = ""
-                    tbl_40.Image = tostring(v122)
-                    tbl_40.Size = UDim2.fromScale(1, 1)
-                    tbl_40.ScaleType = Enum.ScaleType.Crop
-                    tbl_40.Parent = v124
-                    tbl_upv_39[value_upv_15] = new_4("ImageLabel", tbl_40)
-                    UI_upv_1.new("Frame", {Name = "Shade", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), [1] = UI_upv_1.Gradient(Color3.new(0, 0, 0), Color3.new(0, 0, 0), 90, NumberSequence.new(1, 0.15)), Parent = v124})
-                    UI_upv_1.new("Frame", {Name = "Tint", Size = UDim2.new(1, 0, 0, 4), BackgroundColor3 = a76, Parent = v124})
-                    label({Name = "Name", TextSize = 16, Text = Tribes_upv_2.MapName(value_upv_15), FontFace = Fonts_upv_1.Heavy, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 10, 1, -8), Size = UDim2.new(1, -20, 0, 20), Parent = v124})
-                    v124.Activated:Connect(
-                        function()
-                            --[[
-                              line: 1075
-                              upvalues:
-                                u10 (ref,  index: 1)
-                                a1 (copy, index: 2)
-                                value_upv_15 (copy, index: 3)
-                                showTab (copy, index: 4)
-                            ]]
-                            local v125 = os.clock() - u10 >= 0.5
-                            if not v125 then
-                                return
-                            end
-                            a1.Sounds.Play("Click")
-                            a1.TribeMapSelect = value_upv_15
-                            showTab("Territories")
-                        end
-                    )
-                    continue
-                end
-                v122 = v123.thumb or ""
-                tbl_40.Image = tostring(v122)
-                tbl_40.Size = UDim2.fromScale(1, 1)
-                tbl_40.ScaleType = Enum.ScaleType.Crop
-                tbl_40.Parent = v124
-                tbl_upv_39[value_upv_15] = new_4("ImageLabel", tbl_40)
-                UI_upv_1.new("Frame", {Name = "Shade", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), [1] = UI_upv_1.Gradient(Color3.new(0, 0, 0), Color3.new(0, 0, 0), 90, NumberSequence.new(1, 0.15)), Parent = v124})
-                UI_upv_1.new("Frame", {Name = "Tint", Size = UDim2.new(1, 0, 0, 4), BackgroundColor3 = a76, Parent = v124})
-                label({Name = "Name", TextSize = 16, Text = Tribes_upv_2.MapName(value_upv_15), FontFace = Fonts_upv_1.Heavy, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 10, 1, -8), Size = UDim2.new(1, -20, 0, 20), Parent = v124})
-                v124.Activated:Connect(
-                    function()
-                        --[[
-                          line: 1075
-                          upvalues:
-                            u10 (ref,  index: 1)
-                            a1 (copy, index: 2)
-                            value_upv_15 (copy, index: 3)
-                            showTab (copy, index: 4)
-                        ]]
-                        local v125 = os.clock() - u10 >= 0.5
-                        if not v125 then
-                            return
-                        end
-                        a1.Sounds.Play("Click")
-                        a1.TribeMapSelect = value_upv_15
-                        showTab("Territories")
-                    end
-                )
-            end
-            if not (v121) then
-                task.spawn(
-                    function()
-                        --[[
-                          line: 1085
-                          upvalues:
-                            Tribes_upv_2 (copy, index: 1)
-                            a77 (copy, index: 2)
-                            tbl_upv_39 (copy, index: 3)
-                        ]]
-                        local v126 = Tribes_upv_2.Territories(false)
-                        if not a77() or not v126 or type(v126.maps) ~= "table" then
-                            return
-                        end
-                        for key_13, value_16 in tbl_upv_39 do
-                            local v127 = v126.maps[key_13]
-                            if not (value_16.Parent) then
-                                continue
-                            end
-                            if v127 then
-                                value_16.Image = tostring(v127.thumb or "")
-                            end
-                        end
-                    end
-                )
-            end
-        else
-            local v128 = card("Empty", v120, {Transparency = 0.5, Size = UDim2.fromScale(1, 1), AutomaticSize = Enum.AutomaticSize.None})
-            UI_upv_1.Glyph("location-pin-map", 22, Colors_upv_1.TextMuted, {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 16, 0.5, 0), Parent = v128})
-            label({Name = "Text", TextWrapped = true, TextSize = 14, Text = a78, FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, Position = fromOffset_upv_1(48, 0), Size = UDim2.new(1, -170, 1, 0), TextTruncate = Enum.TextTruncate.None, Parent = v128})
+        local newUi = ui.new
+        local v403 = {Name = "Held"}
+        local newUDim2 = UDim2.new
+        local v405 = #a396 ~= 0 and 0 or 64
+        v403.Size = newUDim2(1, -6, 0, v405)
+        v403.AutomaticSize = if #a396 == 0 then Enum.AutomaticSize.None else Enum.AutomaticSize.Y
+        v403.LayoutOrder = layoutOrder
+        v403.Parent = parent
+        local parent2 = newUi("Frame", v403)
+
+        if #a396 == 0 then
+            local parent3 = card("Empty", parent2, {Transparency = 0.5, Size = UDim2.fromScale(1, 1), AutomaticSize = Enum.AutomaticSize.None})
+            ui.Glyph("location-pin-map", 22, colors.TextMuted, {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 16, 0.5, 0), Parent = parent3})
+            label({Name = "Text", TextSize = 14, TextWrapped = true, Text = text, FontFace = fonts.SemiBold, TextColor3 = textColor3, Position = udim2FromOffset(48, 0), Size = UDim2.new(1, -170, 1, 0), TextTruncate = Enum.TextTruncate.None, Parent = parent3})
             smallButton(
                 "SEE THE MAP",
                 "Dark",
-                v128,
+                parent3,
                 function()
                     --[[
                       line: 1060
@@ -1923,476 +2036,550 @@ function v1.Init(a1)
                     ]]
                     showTab("Territories")
                 end,
-                {Height = 38, TextSize = 14, Width = 120, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0)}
+                {Width = 120, TextSize = 14, Height = 38, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0)}
+            )
+
+            return parent2
+        end
+
+        ui.new("UIGridLayout", {CellSize = udim2FromOffset(180, 104), CellPadding = udim2FromOffset(10, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = parent2})
+        local v408 = tribes.CachedTerritories()
+        local v409 = {}
+
+        for layoutOrder2, v411 in a396 do
+            local map = v408 and v408.maps and v408.maps[v411]
+            local parent4 = ui.new("TextButton", {Name = v411, Text = "", AutoButtonColor = false, LayoutOrder = layoutOrder2, BackgroundColor3 = colors.Raised, ClipsDescendants = true, (ui.Corner(12)), Parent = parent2})
+            local newUi2 = ui.new
+            local v415 = {Name = "Thumb"}
+            local thumb = map and map.thumb or ""
+            v415.Image = tostring(thumb)
+            v415.Size = UDim2.fromScale(1, 1)
+            v415.ScaleType = Enum.ScaleType.Crop
+            v415.Parent = parent4
+            v409[v411] = newUi2("ImageLabel", v415)
+            ui.new("Frame", {Name = "Shade", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), (ui.Gradient(Color3.new(0, 0, 0), Color3.new(0, 0, 0), 90, NumberSequence.new(1, 0.15))), Parent = parent4})
+            ui.new("Frame", {Name = "Tint", Size = UDim2.new(1, 0, 0, 4), BackgroundColor3 = backgroundColor3, Parent = parent4})
+            label({Name = "Name", TextSize = 16, Text = tribes.MapName(v411), FontFace = fonts.Heavy, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 10, 1, -8), Size = UDim2.new(1, -20, 0, 20), Parent = parent4})
+
+            parent4.Activated:Connect(
+                function()
+                    --[[
+                      line: 1075
+                      upvalues:
+                        timestamp (ref,  index: 1)
+                        a26 (copy, index: 2)
+                        v411 (copy, index: 3)
+                        showTab (copy, index: 4)
+                    ]]
+                    if 0.5 <= os.clock() - timestamp then
+                        a26.Sounds.Play("Click")
+                        a26.TribeMapSelect = v411
+                        showTab("Territories")
+                    end
+                end
             )
         end
-        return v120
+
+        if not v408 then
+            task.spawn(
+                function()
+                    --[[
+                      line: 1085
+                      upvalues:
+                        tribes (copy, index: 1)
+                        predicate (copy, index: 2)
+                        v409 (copy, index: 3)
+                    ]]
+                    local v417 = tribes.Territories(false)
+
+                    if not predicate() or not v417 or type(v417.maps) ~= "table" then
+                        return
+                    end
+
+                    for mapKey, v419 in v409 do
+                        local map = v417.maps[mapKey]
+
+                        if v419.Parent and map then
+                            v419.Image = tostring((map.thumb or ""))
+                        end
+                    end
+                end
+            )
+        end
+
+        return parent2
     end
-    local function statTile(a79, a80, a81)
-        --[[
-          name: statTile
-          line: 299
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
-            label (copy, index: 3)
-            Fonts_upv_1 (copy, index: 4)
-            fromOffset_upv_1 (copy, index: 5)
-            caps (copy, index: 6)
-        ]]
-        local v129 = UI_upv_1.new("Frame", {Name = "Stat_" .. a80, Size = UDim2.new(0.3333333333333333, -6, 1, 0), LayoutOrder = a81, BackgroundColor3 = Colors_upv_1.Inset, BackgroundTransparency = 0.35, [1] = UI_upv_1.Corner(10), Parent = a79})
-        local tbl_41 = {Position = 0, Name = "Value", TextXAlignment = 0, Parent = 0, Text = "-", TextSize = 0, Size = 0}
-        tbl_41.FontFace = Fonts_upv_1.Display
-        tbl_41.TextSize = ((UI_upv_1.Compact) and 20) or 24
-        tbl_41.TextXAlignment = Enum.TextXAlignment.Center
-        tbl_41.Position = fromOffset_upv_1(0, ((UI_upv_1.Compact) and 5) or 8)
-        tbl_41.Size = UDim2.new(1, 0, 0, 26)
-        tbl_41.Parent = v129
-        local v130 = label(tbl_41)
-        caps(a80, {TextXAlignment = Enum.TextXAlignment.Center, Position = UDim2.new(0, 0, 1, -22), Size = UDim2.new(1, 0, 0, 14), Parent = v129})
-        return v130
-    end
-    local function renderOverview(a82)
+
+    local function renderOverview(tribe)
         --[[
           name: renderOverview
           line: 1101
           upvalues:
-            u46 (ref,  index: 1)
+            count3 (ref,  index: 1)
             clear (copy, index: 2)
-            u44 (copy, index: 3)
-            u45 (copy, index: 4)
+            parent12 (copy, index: 3)
+            parent13 (copy, index: 4)
             roleIn (copy, index: 5)
-            Tribes_upv_1 (copy, index: 6)
-            UI_upv_1 (copy, index: 7)
+            child (copy, index: 6)
+            ui (copy, index: 7)
             heroTile (copy, index: 8)
-            tbl_upv_1 (ref,  index: 9)
-            TribeEmblem_upv_1 (copy, index: 10)
-            Colors_upv_1 (copy, index: 11)
-            tbl_upv_2 (copy, index: 12)
-            fromOffset_upv_1 (copy, index: 13)
+            v27 (ref,  index: 9)
+            TribeEmblem (copy, index: 10)
+            colors (copy, index: 11)
+            v16 (copy, index: 12)
+            udim2FromOffset (copy, index: 13)
             label (copy, index: 14)
-            Fonts_upv_1 (copy, index: 15)
+            fonts (copy, index: 15)
             caps (copy, index: 16)
-            tbl_upv_3 (copy, index: 17)
+            v17 (copy, index: 17)
             statTile (copy, index: 18)
-            u3 (copy, index: 19)
+            textColor32 (copy, index: 19)
             smallButton (copy, index: 20)
-            a1 (copy, index: 21)
+            a26 (copy, index: 21)
             openDialog (copy, index: 22)
             act (copy, index: 23)
             section (copy, index: 24)
             untilText (copy, index: 25)
             card (copy, index: 26)
-            u2 (copy, index: 27)
-            Theme_upv_1 (copy, index: 28)
-            LocalPlayer_upv_1 (copy, index: 29)
-            u1 (copy, index: 30)
+            backgroundColor3 (copy, index: 27)
+            theme (copy, index: 28)
+            localPlayer (copy, index: 29)
+            textColor3 (copy, index: 30)
             heldChips (copy, index: 31)
-            tbl_upv_36 (copy, index: 32)
-            tbl_upv_37 (copy, index: 33)
+            v382 (copy, index: 32)
+            v393 (copy, index: 33)
             ago (copy, index: 34)
         ]]
-        u46 = u46 + 1
-        local u47 = u46
-        clear(u44)
-        clear(u45)
-        local v131 = roleIn(a82)
-        local v132 = Tribes_upv_1.Color(a82.color1)
-        local v133 = UI_upv_1.Panel({LayoutOrder = 1, Name = "Hero", BackgroundTransparency = 0.06, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Radius = UDim.new(0, 14), Parent = u44})
-        UI_upv_1.Padding(12, 12, 12, 12).Parent = v133
-        UI_upv_1.List(Enum.FillDirection.Vertical, 10).Parent = v133
-        local v134, v135 = heroTile(v133, tbl_upv_1.hero, 1)
-        v135(v132)
-        local new_5 = TribeEmblem_upv_1.new
-        local v136 = ((UI_upv_1.Compact) and 78) or 124
-        local tbl_42 = {ZIndex = 2}
-        tbl_42.AnchorPoint = Vector2.new(0.5, 0.5)
-        tbl_42.Position = UDim2.fromScale(0.5, 0.44)
-        tbl_42.Parent = v134
-        new_5(v136, tbl_42):Set(a82.icon, a82.color1, a82.color2, a82.tag)
-        local Pill_1 = UI_upv_1.Pill
-        local Tag_9 = TribeEmblem_upv_1.Tag
-        local v137
-        if type(a82) ~= "table" then
-            v137 = a82
+        local v423
+        local v424
+        local v425
+        local v426
+        local v427
+        local v428
+        local formattedText
+        local v430
+        local v431
+        count3 += 1
+        local v432 = count3
+        clear(parent12)
+        clear(parent13)
+        local v433 = roleIn(tribe)
+        local backgroundColor32 = child.Color(tribe.color1)
+        local parent = ui.Panel({Name = "Hero", BackgroundTransparency = 0.06, LayoutOrder = 1, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Radius = UDim.new(0, 14), Parent = parent12})
+        ui.Padding(12, 12, 12, 12).Parent = parent
+        ui.List(Enum.FillDirection.Vertical, 10).Parent = parent
+        local parent2, v437 = heroTile(parent, v27.hero, 1)
+        v437(backgroundColor32)
+        local newTribeEmblem = TribeEmblem.new
+        local v439 = ui.Compact and 78 or 124
+        local v440 = {ZIndex = 2, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.44), Parent = parent2}
+        newTribeEmblem(v439, v440):Set(tribe.icon, tribe.color1, tribe.color2, tribe.tag)
+        local pill = ui.Pill
+        local tag = TribeEmblem.Tag
+
+        if type(tribe) ~= "table" then
+            v423 = tribe
         else
-            v137 = a82.tag
+            v423 = tribe.tag
         end
-        Pill_1(Tag_9(v137), Colors_upv_1.Void, {AutoLocalize = false, Transparency = 0.3, Height = 26, ZIndex = 3, TextSize = 15, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -10), TextColor = TribeEmblem_upv_1.TagColor(a82.color1), Parent = v134})
-        local v138 = tbl_upv_2[v131]
-        if v138 then
-            UI_upv_1.Pill("YOU: " .. v138.text, v138.color, {Height = 22, ZIndex = 3, TextSize = 12, Position = fromOffset_upv_1(10, 10), Parent = v134})
+
+        pill(tag(v423), colors.Void, {Height = 26, TextSize = 15, Transparency = 0.3, ZIndex = 3, AutoLocalize = false, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -10), TextColor = TribeEmblem.TagColor(tribe.color1), Parent = parent2})
+
+        if const v443 = v16[v433] then
+            ui.Pill("YOU: " .. v443.text, v443.color, {Height = 22, TextSize = 12, ZIndex = 3, Position = udim2FromOffset(10, 10), Parent = parent2})
         end
-        UI_upv_1.new("UITextSizeConstraint", {MaxTextSize = 28, MinTextSize = 16, Parent = label({LayoutOrder = 2, Name = "Name", TextScaled = true, Text = string.upper(tostring(a82.name or "")), FontFace = Fonts_upv_1.Display, Size = UDim2.new(1, 0, 0, 32), Parent = v133})})
-        local v139 = tonumber(a82.members) or 0
-        local v140 = 0
-        local v141 = ((type(a82.membersList) ~= "table") and {}) or (a82.membersList)
-        v134 = v140
-        for _, value_17 in v141 do
-            v134 = (value_17.where and (v134 + 1)) or v134
+
+        local parent3 = label({Name = "Name", TextScaled = true, LayoutOrder = 2, Text = string.upper((tostring(tribe.name
+            or ""))), FontFace = fonts.Display, Size = UDim2.new(1, 0, 0, 32), Parent = parent})
+        ui.new("UITextSizeConstraint", {MaxTextSize = 28, MinTextSize = 16, Parent = parent3})
+        local number = tonumber(tribe.members) or 0
+        local v446 = 0
+
+        if type(tribe.membersList) ~= "table" then
+            v424 = {}
+        else
+            v424 = tribe.membersList
         end
-        caps(("%*/%* MEMBERS  \194\183  %* ONLINE  \194\183  %*"):format(v139, Tribes_upv_1.MAX_MEMBERS, v134, string.upper(tbl_upv_3[a82.joinMode] or "")), {LayoutOrder = 3, Parent = v133})
-        local new_6 = UI_upv_1.new
-        local tbl_43 = {}
-        tbl_43.Name = "Stats"
-        tbl_43.Size = UDim2.new(1, 0, 0, ((UI_upv_1.Compact) and 52) or 62)
-        tbl_43.LayoutOrder = 4
-        tbl_43[1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 8)
-        tbl_43.Parent = v133
-        local v142 = new_6("Frame", tbl_43)
-        local v143 = statTile(v142, "WEEK RANK", 1)
-        local v144 = statTile(v142, "GLORY", 2)
-        local v145 = statTile(v142, "TERRITORIES", 3)
-        local v146 = ((a82.rank) and ("#" .. tostring(a82.rank))) or "-"
-        v143.Text = v146
-        v144.TextColor3 = u3
-        local v147 = ((type(a82.territories) ~= "table") and {}) or (a82.territories)
-        v145.Text = tostring(#v147)
-        v146 = UI_upv_1.CountUp(
-            v144,
-            function(a83)
+
+        v425 = v446
+
+        for _, v448 in v424 do
+            if v448.where then
+                v425 += 1
+            end
+        end
+
+        caps(`{number}/{child.MAX_MEMBERS} MEMBERS  ·  {v425} ONLINE  ·  {(string.upper((v17[tribe.joinMode] or "")))}`, {LayoutOrder = 3, Parent = parent})
+        local newUi = ui.new
+        local v450 = {Name = "Stats"}
+        local newUDim2 = UDim2.new
+        local v452 = ui.Compact and 52 or 62
+        v450.Size = newUDim2(1, 0, 0, v452)
+        v450.LayoutOrder = 4
+        v450[1] = (ui.List(Enum.FillDirection.Horizontal, 8))
+        v450.Parent = parent
+        local ui2 = newUi("Frame", v450)
+        local v454 = statTile(ui2, "WEEK RANK", 1)
+        local v455 = statTile(ui2, "GLORY", 2)
+        local v456 = statTile(ui2, "TERRITORIES", 3)
+        v454.Text = if tribe.rank then "#" .. tostring(tribe.rank) else "-"
+        v455.TextColor3 = textColor32
+
+        if type(tribe.territories) ~= "table" then
+            v426 = {}
+        else
+            v426 = tribe.territories
+        end
+
+        v456.Text = tostring(#v426)
+        local v457 = ui.CountUp(
+            v455,
+            function(a458: number)
                 --[[
                   line: 1140
                   upvalues:
-                    UI_upv_1 (copy, index: 1)
+                    ui (copy, index: 1)
                 ]]
-                return UI_upv_1.FormatCompact(math.floor(a83))
+                return ui.FormatCompact((math.floor(a458)))
             end,
             0.6
         )
-        local v148 = tonumber(a82.weekRenown) or 0
-        local v149 = (tonumber(a82.weekRenown) or 0) == 0
-        v146(v148, v149)
-        tbl_43 = UI_upv_1.new("Frame", {Name = "Buttons", Size = UDim2.new(1, 0, 0, 42), LayoutOrder = 5, [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 8), Parent = v133})
-        if v131 == "chief" then
+        v457((tonumber(tribe.weekRenown) or 0), (tonumber(tribe.weekRenown) or 0) == 0)
+        local ui3 = ui.new("Frame", {Name = "Buttons", Size = UDim2.new(1, 0, 0, 42), LayoutOrder = 5, [1] = (ui.List(Enum.FillDirection.Horizontal, 8)), Parent = parent})
+
+        if v433 == "chief" then
             smallButton(
                 "EDIT TRIBE",
                 "Dark",
-                tbl_43,
+                ui3,
                 function()
                     --[[
                       line: 1146
                       upvalues:
-                        a1 (copy, index: 1)
+                        a26 (copy, index: 1)
                     ]]
-                    a1.OpenTribeForm("settings")
+                    a26.OpenTribeForm("settings")
                 end,
-                {TextSize = 15, Size = UDim2.new(0.5, -4, 1, 0), Icon = UI_upv_1.Glyph("pencil", 18, Colors_upv_1.Text)}
+                {TextSize = 15, Size = UDim2.new(0.5, -4, 1, 0), Icon = ui.Glyph("pencil", 18, colors.Text)}
             )
         end
-        local tbl_44 = {Icon = 0, TextSize = 15, Size = 0}
-        local v150
-        if v131 ~= "chief" then
-            v150 = UDim2.new(1, 0, 1, 0)
-        else
-            v150 = UDim2.new(0.5, -4, 1, 0)
-        end
-        tbl_44.Size = v150
-        tbl_44.Icon = UI_upv_1.Glyph("door-open-arrow-to-bottom-right", 18, Colors_upv_1.Text)
-        local v151 = function()
-            --[[
-              line: 1150
-              upvalues:
-                a82 (copy, index: 1)
-                openDialog (copy, index: 2)
-                Tribes_upv_1 (copy, index: 3)
-                act (copy, index: 4)
-                a1 (copy, index: 5)
-                TribeEmblem_upv_1 (copy, index: 6)
-            ]]
-            local v152 = (tonumber(a82.members) or 0) <= 1
-            local v153
-            if v152 then
-                v153 = "You're the last member: the tribe will be disbanded and its tag freed."
-            else
-                v153 = ("You can join another tribe in %* minutes. If you leave before Monday you lose this week's chest."):format(Tribes_upv_1.LEAVE_COOLDOWN // 60)
-            end
-            local tbl_45 = {text = "LEAVE TRIBE", style = "Danger"}
-            function tbl_45.fn()
+
+        local options = {TextSize = 15, Size = if v433 == "chief" then UDim2.new(0.5, -4, 1, 0) else UDim2.new(1, 0, 1, 0)}
+        options.Icon = ui.Glyph("door-open-arrow-to-bottom-right", 18, colors.Text)
+
+        smallButton(
+            "LEAVE",
+            "Dark",
+            ui3,
+            function()
                 --[[
-                  name: fn
-                  line: 1155
+                  line: 1150
                   upvalues:
-                    act (copy, index: 1)
-                    a1 (copy, index: 2)
-                    a82 (copy, index: 3)
-                    TribeEmblem_upv_1 (copy, index: 4)
+                    tribe (copy, index: 1)
+                    openDialog (copy, index: 2)
+                    child (copy, index: 3)
+                    act (copy, index: 4)
+                    a26 (copy, index: 5)
+                    TribeEmblem (copy, index: 6)
                 ]]
-                if act("Leave") then
-                    local Toast_4 = a1.Toast
-                    local Tag_10 = TribeEmblem_upv_1.Tag
-                    local v154
-                    if type(a82) ~= "table" then
-                        v154 = a82
-                    else
-                        v154 = a82.tag
-                    end
-                    Toast_4(("You left %*"):format(Tag_10(v154)), "info")
-                end
+                local v461 = (tonumber(tribe.members) or 0) <= 1
+                    and "You're the last member: the tribe will be disbanded and its tag freed."
+                    or `You can join another tribe in {child.LEAVE_COOLDOWN // 60} minutes. If you leave before Monday you lose this week's chest.`
+
+                openDialog(
+                    "Leave the tribe?",
+                    v461,
+                    {
+                        {
+                            text = "LEAVE TRIBE",
+                            style = "Danger",
+                            fn = (function()
+                                --[[
+                                  name: fn
+                                  line: 1155
+                                  upvalues:
+                                    act (copy, index: 1)
+                                    a26 (copy, index: 2)
+                                    tribe (copy, index: 3)
+                                    TribeEmblem (copy, index: 4)
+                                ]]
+                                if act("Leave") then
+                                    local v462
+                                    local toast = a26.Toast
+                                    local tag = TribeEmblem.Tag
+
+                                    if type(tribe) ~= "table" then
+                                        v462 = tribe
+                                    else
+                                        v462 = tribe.tag
+                                    end
+
+                                    toast(`You left {(tag(v462))}`, "info")
+                                end
+                            end)
+                        },
+                        {text = "STAY"}
+                    }
+                )
+            end,
+            options
+        )
+
+        local number2 = tonumber(tribe.weekRenown) or 0
+        local v466 = child.ChestTier(number2)
+        local chestTier = child.CHEST_TIERS[v466 + 1]
+        section("TRIBE CHEST", nil, `opens Monday 00:00 UTC, in {(untilText(tribe.weekEndsAt))}`, 1, parent13, textColor32)
+        local parent4 = card("Chest", parent13, {LayoutOrder = 2, Transparency = 0.25})
+        ui.Padding(16, 16, 16, 16).Parent = parent4
+        ui.List(Enum.FillDirection.Vertical, 12).Parent = parent4
+        local parent5 = ui.new("Frame", {Name = "Track", LayoutOrder = 1, Size = UDim2.new(1, 0, 0, 58), Parent = parent4})
+        local parent6 = ui.new("Frame", {Name = "Line", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 18, 0, 18), Size = UDim2.new(1, -36, 0, 8), BackgroundColor3 = backgroundColor3, (ui.Corner(theme.Radius.Pill)), Parent = parent5})
+        local chestTiers = child.CHEST_TIERS
+        local v472 = 0
+        local v473
+
+        for chestTierKey = 1, #chestTiers do
+            v473 = chestTierKey == 1 and 0 or chestTiers[chestTierKey - 1]
+
+            if not (chestTiers[chestTierKey] <= number2) then
+                v472 += math.clamp((number2 - v473) / (chestTiers[chestTierKey] - v473), 0, 1) / #chestTiers
+                break
             end
-            openDialog("Leave the tribe?", v153, {tbl_45, {text = "STAY"}})
+
+            v472 = chestTierKey / #chestTiers
         end
-        smallButton("LEAVE", "Dark", tbl_43, v151, tbl_44)
-        local v155 = tonumber(a82.weekRenown) or 0
-        local v156 = Tribes_upv_1.ChestTier(v155)
-        local v157 = Tribes_upv_1.CHEST_TIERS[v156 + 1]
-        section("TRIBE CHEST", nil, ("opens Monday 00:00 UTC, in %*"):format(untilText(a82.weekEndsAt)), 1, u45, u3)
-        local v158 = card("Chest", u45, {LayoutOrder = 2, Transparency = 0.25})
-        UI_upv_1.Padding(16, 16, 16, 16).Parent = v158
-        UI_upv_1.List(Enum.FillDirection.Vertical, 12).Parent = v158
-        local v159 = UI_upv_1.new("Frame", {LayoutOrder = 1, Name = "Track", Size = UDim2.new(1, 0, 0, 58), Parent = v158})
-        v146 = UI_upv_1.new("Frame", {Name = "Line", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 18, 0, 18), Size = UDim2.new(1, -36, 0, 8), BackgroundColor3 = u2, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v159})
-        local v160 = Tribes_upv_1.CHEST_TIERS
-        local v161 = 0
-        local v162 = nil
-        for n_2 = 1, #v160 do
-            v162 = ((n_2 == 1) and 0) or (v160[n_2 - 1])
-            if v160[n_2] <= v155 then
-                v161 = n_2 / #v160
-                continue
-            end
-            v161 = v161 + math.clamp((v155 - v162) / (v160[n_2] - v162), 0, 1) / #v160
-            break
-        end
-        local v163 = UI_upv_1.new("Frame", {Name = "Fill", Size = UDim2.fromScale(0, 1), BackgroundColor3 = Color3.new(1, 1, 1), [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v146})
-        UI_upv_1.Gradient(Color3.fromRGB(255, 214, 110), u3, 0).Parent = v163
-        UI_upv_1.Tween(v163, TweenInfo.new(0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.fromScale(math.clamp(v161, 0, 1), 1)})
-        local v164 = nil
-        local v165 = nil
-        for key_14, value_18 in v160 do
-            local v166 = value_18 <= v155
-            local v167 = key_14 / #v160
-            local new_7 = UI_upv_1.new
-            local v168 = "Frame"
-            local tbl_46 = {}
-            tbl_46.Name = "Node" .. key_14
-            tbl_46.AnchorPoint = Vector2.new(0.5, 0.5)
-            tbl_46.Position = UDim2.new(v167, ((key_14 ~= #v160) and 0) or -4, 0.5, 0)
-            tbl_46.Size = fromOffset_upv_1(34, 34)
-            if v166 then
-                v164 = u3
+
+        local parent7 = ui.new("Frame", {Name = "Fill", Size = UDim2.fromScale(0, 1), BackgroundColor3 = Color3.new(1, 1, 1), (ui.Corner(theme.Radius.Pill)), Parent = parent6})
+        ui.Gradient(Color3.fromRGB(255, 214, 110), textColor32, 0).Parent = parent7
+        ui.Tween(parent7, TweenInfo.new(0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.fromScale(math.clamp(v472, 0, 1), 1)})
+
+        for v476, chestTier2 in chestTiers do
+            local v478
+            local v479
+            local v480 = chestTier2 <= number2
+            local v481 = v476 / #chestTiers
+            local newUi2 = ui.new
+            local v483 = {Name = "Node" .. v476, AnchorPoint = Vector2.new(0.5, 0.5)}
+            local newUDim22 = UDim2.new
+            local v485 = v476 ~= #chestTiers and 0 or -4
+            v483.Position = newUDim22(v481, v485, 0.5, 0)
+            v483.Size = udim2FromOffset(34, 34)
+            v483.BackgroundColor3 = if v480 then textColor32 else colors.Raised
+            v483.ZIndex = 2
+            local v486 = ui.Corner(theme.Radius.Pill)
+            local v487 = ui.Stroke
+
+            if v480 then
+                v478 = Color3.fromRGB(255, 226, 150)
             else
-                v164 = Colors_upv_1.Raised
+                v478 = if v476 == v466 + 1 then textColor32 else colors.StrokeSoft
             end
-            tbl_46.BackgroundColor3 = v164
-            tbl_46.ZIndex = 2
-            local v169 = UI_upv_1.Corner(Theme_upv_1.Radius.Pill)
-            local Stroke_1 = UI_upv_1.Stroke
-            if v166 then
-                v164 = Color3.fromRGB(255, 226, 150)
-            elseif key_14 ~= v156 + 1 then
-                v164 = Colors_upv_1.StrokeSoft
-            end
-            tbl_46[1], tbl_46[2] = v169, Stroke_1(v164, 2, 0)
-            tbl_46.Parent = v146
-            local v170 = new_7(v168, tbl_46)
-            local tbl_47 = {TextColor3 = 0, Parent = 0, Name = "N", TextXAlignment = 0, ZIndex = 3, TextSize = 17, Size = 0}
-            tbl_47.Text = tostring(key_14)
-            tbl_47.FontFace = Fonts_upv_1.Display
-            if v166 then
-                v165 = Colors_upv_1.TextDark
+
+            v483[1], v483[2] = v486, (v487(v478, 2, 0))
+            v483.Parent = parent6
+            local parent8 = newUi2("Frame", v483)
+            local v489 = {Name = "N", TextSize = 17, ZIndex = 3, Text = tostring(v476), FontFace = fonts.Display}
+
+            if v480 then
+                v479 = colors.TextDark
             else
-                v165 = Colors_upv_1.TextDim
+                v479 = colors.TextDim
             end
-            tbl_47.TextColor3 = v165
-            tbl_47.TextXAlignment = Enum.TextXAlignment.Center
-            tbl_47.Size = UDim2.fromScale(1, 1)
-            tbl_47.Parent = v170
-            label(tbl_47)
-            local v171 = UI_upv_1.FormatCompact(value_18)
-            v165 = {Parent = 0, Position = 0, Size = 0}
-            v165.TextXAlignment = Enum.TextXAlignment.Center
-            v165.AnchorPoint = Vector2.new(0.5, 0)
-            v165.Position = UDim2.new(v167, ((key_14 ~= #v160) and 0) or -4, 0, 40)
-            v165.Size = fromOffset_upv_1(60, 14)
-            v165.Parent = v159
-            caps(v171, v165)
-            if key_14 == v156 then
-                UI_upv_1.Pop(v170, 1.25)
-            end
-        end
-        local v172 = 0
-        local v173 = ((type(a82.membersList) ~= "table") and {}) or (a82.membersList)
-        v160 = v172
-        for v185, value_19 in v173 do
-            if value_19.userId == LocalPlayer_upv_1.UserId then
-                v160 = tonumber(value_19.weekRenown) or 0
+
+            v489.TextColor3 = v479
+            v489.TextXAlignment = Enum.TextXAlignment.Center
+            v489.Size = UDim2.fromScale(1, 1)
+            v489.Parent = parent8
+            label(v489)
+            local text = ui.FormatCompact(chestTier2)
+            local options2 = {TextXAlignment = Enum.TextXAlignment.Center, AnchorPoint = Vector2.new(0.5, 0)}
+            v487 = UDim2.new
+            local v492 = v476 ~= #chestTiers and 0 or -4
+            options2.Position = v487(v481, v492, 0, 40)
+            options2.Size = udim2FromOffset(60, 14)
+            options2.Parent = parent5
+            caps(text, options2)
+
+            if v476 == v466 then
+                ui.Pop(parent8, 1.25)
             end
         end
-        v146 = UI_upv_1.new("Frame", {LayoutOrder = 2, Name = "Info", Size = UDim2.new(1, 0, 0, 40), Parent = v158})
-        local tbl_48 = {FontFace = 0, Name = "Tribe", TextColor3 = 0, Parent = 0, Text = 0, TextSize = 20, Size = 0}
-        tbl_48.Text = not (v156 > 0) and "NO CHEST YET" or ("TIER %*"):format(v156)
-        tbl_48.FontFace = Fonts_upv_1.Display
-        local v175
-        if v156 > 0 then
-            v175 = u3
+
+        local v493 = 0
+
+        if type(tribe.membersList) ~= "table" then
+            v427 = {}
         else
-            v175 = Colors_upv_1.TextDim
+            v427 = tribe.membersList
         end
-        tbl_48.TextColor3 = v175
-        tbl_48.Size = UDim2.new(0.5, 0, 0, 22)
-        tbl_48.Parent = v146
-        label(tbl_48)
-        tbl_48 = {Position = 0, FontFace = 0, Name = "TribeSub", TextColor3 = 0, Parent = 0, Text = 0, TextSize = 13, Size = 0}
-        local v176 = ((not v157) and "Top tier this week") or (("%* more Glory for tier %*"):format(UI_upv_1.FormatNumber(v157 - v155), v156 + 1))
-        tbl_48.Text = v176
-        tbl_48.FontFace = Fonts_upv_1.SemiBold
-        tbl_48.TextColor3 = u1
-        tbl_48.Position = fromOffset_upv_1(0, 23)
-        tbl_48.Size = UDim2.new(0.5, 0, 0, 16)
-        tbl_48.Parent = v146
-        label(tbl_48)
-        tbl_43 = Tribes_upv_1.CHEST_MIN <= v160
-        tbl_48 = {FontFace = 0, TextColor3 = 0, Parent = 0, Text = 0, AnchorPoint = 0, Name = "You", TextXAlignment = 0, Position = 0, TextSize = 20, Size = 0}
-        if tbl_43 then
-            v176 = ("YOU: %* GLORY"):format(v160)
+
+        v428 = v493
+
+        for _, v495 in v427 do
+            if v495.userId == localPlayer.UserId then
+                v428 = tonumber(v495.weekRenown) or 0
+            end
+        end
+
+        local parent9 = ui.new("Frame", {Name = "Info", LayoutOrder = 2, Size = UDim2.new(1, 0, 0, 40), Parent = parent4})
+        local v497 = {Name = "Tribe", TextSize = 20, Text = if 0 < v466 then `TIER {v466}` else "NO CHEST YET"}
+        v497.FontFace = fonts.Display
+        v497.TextColor3 = if 0 < v466 then textColor32 else colors.TextDim
+        v497.Size = UDim2.new(0.5, 0, 0, 22)
+        v497.Parent = parent9
+        label(v497)
+        local v498 = {Name = "TribeSub", TextSize = 13, Text = if chestTier then `{ui.FormatNumber(chestTier - number2)} more Glory for tier {v466 + 1}` else "Top tier this week"}
+        v498.FontFace = fonts.SemiBold
+        v498.TextColor3 = textColor3
+        v498.Position = udim2FromOffset(0, 23)
+        v498.Size = UDim2.new(0.5, 0, 0, 16)
+        v498.Parent = parent9
+        label(v498)
+        local v499 = child.CHEST_MIN <= v428
+        local v500 = {Name = "You", TextSize = 20, Text = if v499 then `YOU: {v428} GLORY` else `YOU: {v428} / {child.CHEST_MIN}`}
+        v500.FontFace = fonts.Display
+        v500.TextColor3 = if v499 then colors.Success else colors.Warning
+        v500.TextXAlignment = Enum.TextXAlignment.Right
+        v500.AnchorPoint = Vector2.new(1, 0)
+        v500.Position = UDim2.new(1, 0, 0, 0)
+        v500.Size = UDim2.new(0.5, 0, 0, 22)
+        v500.Parent = parent9
+        label(v500)
+        local v501 = {Name = "YouSub", TextSize = 13}
+
+        if v499 then
+            formattedText = "You'll get this chest"
         else
-            v176 = ("YOU: %* / %*"):format(v160, Tribes_upv_1.CHEST_MIN)
+            formattedText = `Earn {child.CHEST_MIN - v428} more to get this chest`
         end
-        tbl_48.Text = v176
-        tbl_48.FontFace = Fonts_upv_1.Display
-        local v177
-        if tbl_43 then
-            v177 = Colors_upv_1.Success
-        else
-            v177 = Colors_upv_1.Warning
-        end
-        tbl_48.TextColor3 = v177
-        tbl_48.TextXAlignment = Enum.TextXAlignment.Right
-        tbl_48.AnchorPoint = Vector2.new(1, 0)
-        tbl_48.Position = UDim2.new(1, 0, 0, 0)
-        tbl_48.Size = UDim2.new(0.5, 0, 0, 22)
-        tbl_48.Parent = v146
-        label(tbl_48)
-        tbl_48 = {FontFace = 0, TextColor3 = 0, Parent = 0, Text = 0, AnchorPoint = 0, Name = "YouSub", TextXAlignment = 0, Position = 0, TextSize = 13, Size = 0}
-        v176 = (tbl_43 and "You'll get this chest") or (("Earn %* more to get this chest"):format(Tribes_upv_1.CHEST_MIN - v160))
-        tbl_48.Text = v176
-        tbl_48.FontFace = Fonts_upv_1.SemiBold
-        tbl_48.TextColor3 = u1
-        tbl_48.TextXAlignment = Enum.TextXAlignment.Right
-        tbl_48.AnchorPoint = Vector2.new(1, 0)
-        tbl_48.Position = UDim2.new(1, 0, 0, 23)
-        tbl_48.Size = UDim2.new(0.5, 0, 0, 16)
-        tbl_48.Parent = v146
-        label(tbl_48)
-        section("TERRITORIES", #v147, ((#v147 ~= 0) and "held this week") or "win matches on a map to take it", 3, u45)
+
+        v501.Text = formattedText
+        v501.FontFace = fonts.SemiBold
+        v501.TextColor3 = textColor3
+        v501.TextXAlignment = Enum.TextXAlignment.Right
+        v501.AnchorPoint = Vector2.new(1, 0)
+        v501.Position = UDim2.new(1, 0, 0, 23)
+        v501.Size = UDim2.new(0.5, 0, 0, 16)
+        v501.Parent = parent9
+        label(v501)
+        local length = #v426
+        local v503 = #v426 ~= 0 and "held this week" or "win matches on a map to take it"
+        section("TERRITORIES", length, v503, 3, parent13)
         heldChips(
-            v147,
-            u45,
+            v426,
+            parent13,
             4,
-            v132,
+            backgroundColor32,
             function()
                 --[[
                   line: 1263
                   upvalues:
-                    u47 (copy, index: 1)
-                    u46 (ref,  index: 2)
+                    v432 (copy, index: 1)
+                    count3 (ref,  index: 2)
                 ]]
-                local v178 = u47 == u46
-                return v178
+                return v432 == count3
             end,
             "No territories yet. The tribe with the most Glory on a map this week holds it."
         )
-        local v179 = ((type(a82.feed) ~= "table") and {}) or (a82.feed)
-        section("ACTIVITY", nil, nil, 5, u45)
-        v146 = card("Feed", u45, {LayoutOrder = 6, Transparency = 0.5})
-        UI_upv_1.List(Enum.FillDirection.Vertical, 0).Parent = v146
-        tbl_43 = 0
-        local v180 = nil
-        for key_15, value_20 in v179 do
-            local v181 = tbl_upv_36[tostring(value_20.kind)]
-            if not (v181) or type(value_20.data) ~= "table" or not (tbl_43 < 20) then
-                continue
-            end
-            tbl_43 = tbl_43 + 1
-            local v182 = tbl_upv_37[value_20.kind] or {"flag", Colors_upv_1.Accent}
-            local new_8 = UI_upv_1.new
-            local tbl_49 = {Parent = 0, BackgroundTransparency = 0}
-            tbl_49.Name = "F" .. key_15
-            tbl_49.Size = UDim2.new(1, 0, 0, 44)
-            tbl_49.LayoutOrder = key_15
-            tbl_49.BackgroundColor3 = Colors_upv_1.Void
-            tbl_49.BackgroundTransparency = ((tbl_43 % 2 ~= 0) and 1) or 0.85
-            tbl_49.Parent = v146
-            local v183 = new_8("Frame", tbl_49)
-            v158 = UI_upv_1.new("Frame", {Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, 0), Size = fromOffset_upv_1(28, 28), BackgroundColor3 = v182[2], BackgroundTransparency = 0.8, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v183})
-            UI_upv_1.Glyph(v182[1], 16, v182[2], {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v158})
-            local success_4, v184 = pcall(v181, value_20.data)
-            local tbl_50 = {FontFace = 0, Name = "Text", Position = 0, Parent = 0, Text = 0, TextSize = 15, Size = 0}
-            if success_4 then
-                v180 = v184
-            else
-                v180 = ""
-            end
-            tbl_50.Text = v180
-            tbl_50.FontFace = Fonts_upv_1.Bold
-            tbl_50.Position = fromOffset_upv_1(50, 0)
-            tbl_50.Size = UDim2.new(1, -150, 1, 0)
-            tbl_50.Parent = v183
-            label(tbl_50)
-            caps(string.upper(ago(value_20.at)), {TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0), Size = fromOffset_upv_1(90, 14), Parent = v183})
-        end
-        if tbl_43 ~= 0 then
-            return
-        end
-        label({Name = "NoFeed", Text = "Nothing yet.", TextSize = 14, FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, Size = UDim2.new(1, -24, 0, 40), Position = fromOffset_upv_1(12, 0), Parent = v146})
-    end
-    local canManage = UI_upv_1.new("Frame", {Name = "Head", Size = UDim2.new(1, 0, 0, 40), Parent = v27.page})
-    local u48 = UI_upv_1.new("Frame", {Name = "TitleHolder", Size = UDim2.new(1, -220, 1, 0), Parent = canManage})
-    local u49 = UI_upv_1.new("Frame", {Name = "InviteSlot", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 0), Size = fromOffset_upv_1(200, 40), Parent = canManage})
-    local tbl_51 = {{"PLAYER", 0}, {"GLORY", -300}, {"STATUS", -190}}
-    local v185 = UI_upv_1.new("Frame", {Name = "Cols", Position = fromOffset_upv_1(0, 48), Size = UDim2.new(1, -14, 0, 16), Parent = v27.page})
-    local v186 = nil
-    local v465 = nil
-    for v466, value_21 in tbl_51 do
-        local v187 = value_21[1]
-        local tbl_52 = {Parent = 0, TextXAlignment = 0, Size = 0, Position = 0}
-        if value_21[2] ~= 0 then
-            v186 = UDim2.new(1, value_21[2], 0, 0)
+
+        if type(tribe.feed) ~= "table" then
+            v430 = {}
         else
-            v186 = fromOffset_upv_1(16, 0)
+            v430 = tribe.feed
         end
-        tbl_52.Position = v186
-        tbl_52.Size = fromOffset_upv_1(110, 14)
-        if value_21[2] ~= 0 then
-            v186 = Enum.TextXAlignment.Center
-        else
-            v186 = Enum.TextXAlignment.Left
-        end
-        tbl_52.TextXAlignment = v186
-        tbl_52.Parent = v185
-        caps(v187, tbl_52)
-    end
-    local tbl_53 = {}
-    tbl_53.Name = "List"
-    tbl_53.Position = fromOffset_upv_1(0, 70)
-    tbl_53.Size = UDim2.new(1, 0, 1, -70)
-    tbl_53.ScrollBarThickness = 3
-    tbl_53.Selectable = false
-    tbl_53[1], tbl_53[2] = UI_upv_1.List(Enum.FillDirection.Vertical, 6), UI_upv_1.Padding(4, 10, 10, 4)
-    tbl_53.Parent = v27.page
-    local u50 = UI_upv_1.new("ScrollingFrame", tbl_53)
-    canManage = function(a84, a85)
-        --[[
-          name: canManage
-          line: 1311
-        ]]
-        local v188
-        if a84 ~= "chief" then
-            v188 = (a84 == "elder") and (a85 == "member")
-        else
-            v188 = true
-            if a85 == "chief" then
-                v188 = (a84 == "elder") and (a85 == "member")
+
+        section("ACTIVITY", nil, nil, 5, parent13)
+        local parent10 = card("Feed", parent13, {LayoutOrder = 6, Transparency = 0.5})
+        ui.List(Enum.FillDirection.Vertical, 0).Parent = parent10
+        local v505 = 0
+        v431 = v505
+
+        for layoutOrder, v507 in v430 do
+            if const v508 = v382[tostring(v507.kind)] then
+                local backgroundTransparency
+                local result
+
+                if type(v507.data) ~= "table" then
+                    continue
+                end
+                if not (v431 < 20) then
+                    continue
+                end
+
+                v431 += 1
+                local v511 = v393[v507.kind] or {"flag", colors.Accent}
+                local newUi3 = ui.new
+                local v513 = {Name = "F" .. layoutOrder, Size = UDim2.new(1, 0, 0, 44), LayoutOrder = layoutOrder, BackgroundColor3 = colors.Void}
+
+                if v431 % 2 == 0 then
+                    backgroundTransparency = 0.85
+                else
+                    backgroundTransparency = 1
+                end
+
+                v513.BackgroundTransparency = backgroundTransparency
+                v513.Parent = parent10
+                local parent11 = newUi3("Frame", v513)
+                local parent14 = ui.new("Frame", {Name = "Icon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, 0), Size = udim2FromOffset(28, 28), BackgroundColor3 = v511[2], BackgroundTransparency = 0.8, (ui.Corner(theme.Radius.Pill)), Parent = parent11})
+                ui.Glyph(v511[1], 16, v511[2], {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent14})
+                local success, result2 = pcall(v508, v507.data)
+                local v518 = {Name = "Text", TextSize = 15}
+
+                if success then
+                    result = result2
+                else
+                    result = ""
+                end
+
+                v518.Text = result
+                v518.FontFace = fonts.Bold
+                v518.Position = udim2FromOffset(50, 0)
+                v518.Size = UDim2.new(1, -150, 1, 0)
+                v518.Parent = parent11
+                label(v518)
+                caps(string.upper((ago(v507.at))), {TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0), Size = udim2FromOffset(90, 14), Parent = parent11})
             end
         end
-        return v188
+
+        if v431 == 0 then
+            label({Name = "NoFeed", Text = "Nothing yet.", TextSize = 14, FontFace = fonts.SemiBold, TextColor3 = textColor3, Size = UDim2.new(1, -24, 0, 40), Position = udim2FromOffset(12, 0), Parent = parent10})
+        end
     end
-    local tbl_upv_54 = {}
-    tbl_upv_54.hub = {"IN LOBBY", Colors_upv_1.Success}
-    tbl_upv_54.match = {"IN MATCH", Colors_upv_1.Warning}
-    tbl_upv_54.custom = {"CUSTOM MATCH", Colors_upv_1.Warning}
-    local function manage(a86, a87)
+
+    local parent14 = ui.new("Frame", {Name = "Head", Size = UDim2.new(1, 0, 0, 40), Parent = tab3.page})
+    local ui4 = ui.new("Frame", {Name = "TitleHolder", Size = UDim2.new(1, -220, 1, 0), Parent = parent14})
+    local ui5 = ui.new("Frame", {Name = "InviteSlot", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -10, 0, 0), Size = udim2FromOffset(200, 40), Parent = parent14})
+
+    do
+        local v522 = {{"PLAYER", 0}, {"GLORY", -300}, {"STATUS", -190}}
+        local parent15 = ui.new("Frame", {Name = "Cols", Position = udim2FromOffset(0, 48), Size = UDim2.new(1, -14, 0, 16), Parent = tab3.page})
+
+        for _, v525 in v522 do
+            do
+                local text = v525[1]
+                local options = {}
+                options.Position = if v525[2] == 0 then udim2FromOffset(16, 0) else UDim2.new(1, v525[2], 0, 0)
+                options.Size = udim2FromOffset(110, 14)
+                options.TextXAlignment = if v525[2] == 0 then Enum.TextXAlignment.Left else Enum.TextXAlignment.Center
+                options.Parent = parent15
+                caps(text, options)
+            end
+        end
+    end
+
+    local parent16 = ui.new("ScrollingFrame", {Name = "List", Position = udim2FromOffset(0, 70), Size = UDim2.new(1, 0, 1, -70), ScrollBarThickness = 3, Selectable = false, ui.List(Enum.FillDirection.Vertical, 6), (ui.Padding(4, 10, 10, 4)), Parent = tab3.page})
+
+    do
+        local function canManage(a530, a531)
+            --[[
+              name: canManage
+              line: 1311
+            ]]
+            return not (a530 ~= "chief" or a531 == "chief") or (a530 == "elder" and a531 == "member")
+        end
+    end
+
+    local function manage(value, tribe)
         --[[
           name: manage
           line: 1315
@@ -2400,570 +2587,660 @@ function v1.Init(a1)
             roleIn (copy, index: 1)
             act (copy, index: 2)
             openDialog (copy, index: 3)
-            TribeEmblem_upv_1 (copy, index: 4)
+            TribeEmblem (copy, index: 4)
         ]]
-        local tbl_55 = {}
-        if roleIn(a87) == "chief" then
-            if a86.role == "member" then
-                local tbl_56 = {text = "PROMOTE TO ELDER", style = "Primary"}
-                function tbl_56.fn()
-                    --[[
-                      name: fn
-                      line: 1320
-                      upvalues:
-                        act (copy, index: 1)
-                        a86 (copy, index: 2)
-                    ]]
-                    act("Role", a86.userId, "elder")
-                end
-                table.insert(tbl_55, tbl_56)
-            elseif a86.role == "elder" then
-                local tbl_57 = {text = "DEMOTE TO MEMBER"}
-                function tbl_57.fn()
-                    --[[
-                      name: fn
-                      line: 1324
-                      upvalues:
-                        act (copy, index: 1)
-                        a86 (copy, index: 2)
-                    ]]
-                    act("Role", a86.userId, "member")
-                end
-                table.insert(tbl_55, tbl_57)
+        local v535 = {}
+
+        if roleIn(tribe) == "chief" then
+            if value.role == "member" then
+                table.insert(
+                    v535,
+                    {
+                        text = "PROMOTE TO ELDER",
+                        style = "Primary",
+                        fn = (function()
+                            --[[
+                              name: fn
+                              line: 1320
+                              upvalues:
+                                act (copy, index: 1)
+                                value (copy, index: 2)
+                            ]]
+                            act("Role", value.userId, "elder")
+                        end)
+                    }
+                )
+            elseif value.role == "elder" then
+                table.insert(
+                    v535,
+                    {
+                        text = "DEMOTE TO MEMBER",
+                        fn = (function()
+                            --[[
+                              name: fn
+                              line: 1324
+                              upvalues:
+                                act (copy, index: 1)
+                                value (copy, index: 2)
+                            ]]
+                            act("Role", value.userId, "member")
+                        end)
+                    }
+                )
             end
-            local tbl_58 = {text = "MAKE CHIEF"}
-            function tbl_58.fn()
-                --[[
-                  name: fn
-                  line: 1328
-                  upvalues:
-                    openDialog (copy, index: 1)
-                    a86 (copy, index: 2)
-                    act (copy, index: 3)
-                ]]
-                local v189 = ("Make %* the Chief?"):format(a86.display)
-                local tbl_59 = {text = "MAKE CHIEF", style = "Primary"}
-                function tbl_59.fn()
-                    --[[
-                      name: fn
-                      line: 1330
-                      upvalues:
-                        act (copy, index: 1)
-                        a86 (copy, index: 2)
-                    ]]
-                    act("Role", a86.userId, "chief")
-                end
-                openDialog(v189, "You'll become an Elder. Only the Chief can change ranks and edit the tribe.", {tbl_59, {text = "CANCEL"}})
-            end
-            table.insert(tbl_55, tbl_58)
+
+            table.insert(
+                v535,
+                {
+                    text = "MAKE CHIEF",
+                    fn = (function()
+                        --[[
+                          name: fn
+                          line: 1328
+                          upvalues:
+                            openDialog (copy, index: 1)
+                            value (copy, index: 2)
+                            act (copy, index: 3)
+                        ]]
+                        openDialog(
+                            `Make {value.display} the Chief?`,
+                            "You'll become an Elder. Only the Chief can change ranks and edit the tribe.",
+                            {
+                                {
+                                    text = "MAKE CHIEF",
+                                    style = "Primary",
+                                    fn = (function()
+                                        --[[
+                                          name: fn
+                                          line: 1330
+                                          upvalues:
+                                            act (copy, index: 1)
+                                            value (copy, index: 2)
+                                        ]]
+                                        act("Role", value.userId, "chief")
+                                    end)
+                                },
+                                {text = "CANCEL"}
+                            }
+                        )
+                    end)
+                }
+            )
         end
-        local tbl_60 = {text = "REMOVE FROM TRIBE", style = "Danger"}
-        function tbl_60.fn()
-            --[[
-              name: fn
-              line: 1337
-              upvalues:
-                openDialog (copy, index: 1)
-                a86 (copy, index: 2)
-                a87 (copy, index: 3)
-                TribeEmblem_upv_1 (copy, index: 4)
-                act (copy, index: 5)
-            ]]
-            local v190 = ("Remove %*?"):format(a86.display)
-            local v191 = "They'll leave %*. They can be invited again."
-            local Tag_11 = TribeEmblem_upv_1.Tag
-            local v192
-            if type(a87) ~= "table" then
-                v192 = a87
-            else
-                v192 = a87.tag
-            end
-            local v193 = v191:format(Tag_11(v192))
-            local tbl_61 = {text = "REMOVE", style = "Danger"}
-            function tbl_61.fn()
-                --[[
-                  name: fn
-                  line: 1339
-                  upvalues:
-                    act (copy, index: 1)
-                    a86 (copy, index: 2)
-                ]]
-                act("Kick", a86.userId)
-            end
-            openDialog(v190, v193, {tbl_61, {text = "CANCEL"}})
-        end
-        table.insert(tbl_55, tbl_60)
-        table.insert(tbl_55, {text = "CANCEL"})
-        openDialog(tostring(a86.display), ("@%*  \194\183  Level %*"):format(a86.name, a86.level), tbl_55)
+
+        table.insert(
+            v535,
+            {
+                text = "REMOVE FROM TRIBE",
+                style = "Danger",
+                fn = (function()
+                    --[[
+                      name: fn
+                      line: 1337
+                      upvalues:
+                        openDialog (copy, index: 1)
+                        value (copy, index: 2)
+                        tribe (copy, index: 3)
+                        TribeEmblem (copy, index: 4)
+                        act (copy, index: 5)
+                    ]]
+                    local v536
+                    local formattedText = `Remove {value.display}?`
+                    local tag = TribeEmblem.Tag
+
+                    if type(tribe) ~= "table" then
+                        v536 = tribe
+                    else
+                        v536 = tribe.tag
+                    end
+
+                    openDialog(
+                        formattedText,
+                        `They'll leave {(tag(v536))}. They can be invited again.`,
+                        {
+                            {
+                                text = "REMOVE",
+                                style = "Danger",
+                                fn = (function()
+                                    --[[
+                                      name: fn
+                                      line: 1339
+                                      upvalues:
+                                        act (copy, index: 1)
+                                        value (copy, index: 2)
+                                    ]]
+                                    act("Kick", value.userId)
+                                end)
+                            },
+                            {text = "CANCEL"}
+                        }
+                    )
+                end)
+            }
+        )
+
+        table.insert(v535, {text = "CANCEL"})
+        openDialog(tostring(value.display), `@{value.name}  ·  Level {value.level}`, v535)
     end
-    local function memberRow(a88, a89, a90)
+
+    local v539 = {hub = {"IN LOBBY", colors.Success}, match = {"IN MATCH", colors.Warning}, custom = {"CUSTOM MATCH", colors.Warning}}
+
+    local function memberRow(value, tribe, layoutOrder)
         --[[
           name: memberRow
           line: 1354
           upvalues:
             roleIn (copy, index: 1)
-            LocalPlayer_upv_1 (copy, index: 2)
-            UI_upv_1 (copy, index: 3)
-            tbl_upv_1 (ref,  index: 4)
-            Colors_upv_1 (copy, index: 5)
-            u50 (copy, index: 6)
-            fromOffset_upv_1 (copy, index: 7)
-            Theme_upv_1 (copy, index: 8)
-            tbl_upv_54 (copy, index: 9)
+            localPlayer (copy, index: 2)
+            ui (copy, index: 3)
+            v27 (ref,  index: 4)
+            colors (copy, index: 5)
+            parent16 (copy, index: 6)
+            udim2FromOffset (copy, index: 7)
+            theme (copy, index: 8)
+            v539 (copy, index: 9)
             label (copy, index: 10)
-            a1 (copy, index: 11)
-            Fonts_upv_1 (copy, index: 12)
-            tbl_upv_2 (copy, index: 13)
-            u1 (copy, index: 14)
-            Tribes_upv_1 (copy, index: 15)
-            u3 (copy, index: 16)
+            a26 (copy, index: 11)
+            fonts (copy, index: 12)
+            v16 (copy, index: 13)
+            textColor3 (copy, index: 14)
+            child (copy, index: 15)
+            textColor32 (copy, index: 16)
             ago (copy, index: 17)
-            Players_upv_1 (copy, index: 18)
-            u10 (ref,  index: 19)
+            players (copy, index: 18)
+            timestamp (ref,  index: 19)
             openDialog (copy, index: 20)
             act (copy, index: 21)
-            MenuManager_upv_1 (copy, index: 22)
+            menuManager (copy, index: 22)
             manage (copy, index: 23)
         ]]
-        local v194 = roleIn(a89)
-        local v195 = a88.userId == LocalPlayer_upv_1.UserId
-        local new_9 = UI_upv_1.new
-        local tbl_62 = {}
-        tbl_62.Name = "M" .. tostring(a88.userId)
-        tbl_62.Size = UDim2.new(1, -4, 0, tbl_upv_1.row)
-        tbl_62.LayoutOrder = a90
-        local v196
-        if v195 then
-            v196 = Colors_upv_1.AccentDeep
+        local v544
+        local v545
+        local v546
+        local v547
+        local transparency
+        local v549 = roleIn(tribe)
+        local v550 = value.userId == localPlayer.UserId
+        local newUi = ui.new
+        local v552 = {Name = "M" .. tostring(value.userId), Size = UDim2.new(1, -4, 0, v27.row), LayoutOrder = layoutOrder}
+
+        if v550 then
+            v544 = colors.AccentDeep
         else
-            v196 = Colors_upv_1.PanelHi
+            v544 = colors.PanelHi
         end
-        tbl_62.BackgroundColor3 = v196
-        tbl_62.BackgroundTransparency = (v195 and 0.45) or (((a90 % 2 ~= 0) and 0.35) or 0.55)
-        tbl_62[1] = UI_upv_1.Corner(12)
-        tbl_62.Parent = u50
-        local v197 = new_9("Frame", tbl_62)
-        if v195 then
-            UI_upv_1.Stroke(Colors_upv_1.Accent, 1, 0.45).Parent = v197
+
+        v552.BackgroundColor3 = v544
+        v552.BackgroundTransparency = v550 and 0.45 or layoutOrder % 2 ~= 0 and 0.35 or 0.55
+        v552[1] = (ui.Corner(12))
+        v552.Parent = parent16
+        local parent = newUi("Frame", v552)
+
+        if v550 then
+            ui.Stroke(colors.Accent, 1, 0.45).Parent = parent
         end
-        local v198 = tbl_upv_1.row - 18
-        local v199 = UI_upv_1.new("ImageLabel", {Name = "Head", Image = ("rbxthumb://type=AvatarHeadShot&id=%*&w=150&h=150"):format(a88.userId), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, 0), Size = fromOffset_upv_1(v198, v198), BackgroundColor3 = Colors_upv_1.Raised, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v197})
-        local v200 = (a88.where ~= false) and (a88.where ~= nil)
-        if v200 then
-            local new_10 = UI_upv_1.new
-            local tbl_63 = {}
-            tbl_63.Name = "Dot"
-            tbl_63.AnchorPoint = Vector2.new(1, 1)
-            tbl_63.Position = UDim2.fromScale(1.02, 1.02)
-            tbl_63.Size = fromOffset_upv_1(13, 13)
-            tbl_63.BackgroundColor3 = (tbl_upv_54[a88.where] or (tbl_upv_54.hub))[2]
-            tbl_63[1], tbl_63[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Panel, 2, 0)
-            tbl_63.Parent = v199
-            new_10("Frame", tbl_63)
+
+        local v554 = v27.row - 18
+        local parent2 = ui.new("ImageLabel", {Name = "Head", Image = `rbxthumb://type=AvatarHeadShot&id={value.userId}&w=150&h=150`, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, 0), Size = udim2FromOffset(v554, v554), BackgroundColor3 = colors.Raised, (ui.Corner(theme.Radius.Pill)), Parent = parent})
+        local v556 = value.where ~= false and value.where ~= nil
+
+        if v556 then
+            local newUi2 = ui.new
+            local v558 = {Name = "Dot", AnchorPoint = Vector2.new(1, 1), Position = UDim2.fromScale(1.02, 1.02), Size = udim2FromOffset(13, 13)}
+            local v559 = v539[value.where] or v539.hub
+            v558.BackgroundColor3 = v559[2]
+            v558[1], v558[2] = ui.Corner(theme.Radius.Pill), (ui.Stroke(colors.Panel, 2, 0))
+            v558.Parent = parent2
+            newUi2("Frame", v558)
         else
-            v199.ImageTransparency = 0.35
+            parent2.ImageTransparency = 0.35
         end
-        local v201 = v198 + 26
-        local v202 = UI_upv_1.new("Frame", {Name = "NameRow", Position = fromOffset_upv_1(v201, (math.floor(tbl_upv_1.row / 2) - tbl_upv_1.text) - 2), Size = UDim2.new(1, -(v201 + 420), 0, tbl_upv_1.text + 4), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center), Parent = v197})
-        local tbl_64 = {LayoutOrder = 1, FontFace = 0, Name = "Name", AutomaticSize = 0, Parent = 0, Text = 0, TextSize = 0, Size = 0}
-        local str_2 = tostring(a88.display)
-        local v203 = (v195 and ("  " .. a1.Loc.T("(you)"))) or ""
-        tbl_64.Text = str_2 .. v203
-        tbl_64.FontFace = Fonts_upv_1.Heavy
-        tbl_64.TextSize = tbl_upv_1.text
-        tbl_64.AutomaticSize = Enum.AutomaticSize.X
-        tbl_64.Size = fromOffset_upv_1(0, tbl_upv_1.text + 4)
-        tbl_64.Parent = v202
-        label(tbl_64)
-        local v204 = tbl_upv_2[a88.role]
-        if v204 then
-            UI_upv_1.Pill(v204.text, v204.color, {LayoutOrder = 2, TextSize = 11, Height = 20, Parent = v202})
-        end
-        label({Name = "Sub", Text = ("@%*  \194\183  Lv %*"):format(a88.name, a88.level), FontFace = Fonts_upv_1.SemiBold, TextSize = tbl_upv_1.sub, TextColor3 = u1, Position = fromOffset_upv_1(v201, math.floor(tbl_upv_1.row / 2) + 3), Size = UDim2.new(1, -(v201 + 420), 0, tbl_upv_1.sub + 2), Parent = v197})
-        local v205 = tonumber(a88.weekRenown) or 0
-        local tbl_65 = {TextColor3 = 0, Parent = 0, AnchorPoint = 0, Name = "Renown", TextXAlignment = 0, Position = 0, TextSize = 20, Size = 0}
-        tbl_65.Text = tostring(v205)
-        tbl_65.FontFace = Fonts_upv_1.Display
-        local v206
-        if Tribes_upv_1.CHEST_MIN <= v205 then
-            v206 = u3
+
+        local v560 = v554 + 26
+        local parent3 = ui.new("Frame", {Name = "NameRow", Position = udim2FromOffset(v560, (math.floor(v27.row / 2) - v27.text) - 2), Size = UDim2.new(1, -(v560 + 420), 0, v27.text + 4), (ui.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)), Parent = parent})
+        local v562 = {Name = "Name", LayoutOrder = 1}
+        local text = tostring(value.display)
+
+        if v550 then
+            v545 = "  " .. a26.Loc.T("(you)")
         else
-            v206 = Colors_upv_1.TextDim
+            v545 = ""
         end
-        tbl_65.TextColor3 = v206
-        tbl_65.TextXAlignment = Enum.TextXAlignment.Center
-        tbl_65.AnchorPoint = Vector2.new(0, 0.5)
-        tbl_65.Position = UDim2.new(1, -300, 0.5, 0)
-        tbl_65.Size = fromOffset_upv_1(110, 24)
-        tbl_65.Parent = v197
-        label(tbl_65)
-        if v200 then
-            v205 = tbl_upv_54[a88.where] or (tbl_upv_54.hub)
+
+        v562.Text = text .. v545
+        v562.FontFace = fonts.Heavy
+        v562.TextSize = v27.text
+        v562.AutomaticSize = Enum.AutomaticSize.X
+        v562.Size = udim2FromOffset(0, v27.text + 4)
+        v562.Parent = parent3
+        label(v562)
+
+        if const v564 = v16[value.role] then
+            ui.Pill(v564.text, v564.color, {LayoutOrder = 2, Height = 20, TextSize = 11, Parent = parent3})
+        end
+
+        label({Name = "Sub", Text = `@{value.name}  ·  Lv {value.level}`, FontFace = fonts.SemiBold, TextSize = v27.sub, TextColor3 = textColor3, Position = udim2FromOffset(v560, math.floor(v27.row / 2) + 3), Size = UDim2.new(1, -(v560 + 420), 0, v27.sub + 2), Parent = parent})
+        local number = tonumber(value.weekRenown) or 0
+        local v566 = {Name = "Renown", TextSize = 20, Text = tostring(number), FontFace = fonts.Display}
+
+        if child.CHEST_MIN <= number then
+            v546 = textColor32
         else
-            local tbl_66 = {}
-            local v207 = ((not ((tonumber(a88.lastSeen) or 0) > 0)) and "OFFLINE") or (string.upper(ago(a88.lastSeen)))
-            tbl_66[1], tbl_66[2] = v207, Colors_upv_1.TextMuted
-            v205 = tbl_66
+            v546 = colors.TextDim
         end
-        local Pill_2 = UI_upv_1.Pill
-        local v208 = v205[1]
-        local v209 = v205[2]
-        local tbl_67 = {Transparency = 0, Height = 22, Parent = 0, TextSize = 11, TextColor = 0}
-        tbl_67.AnchorPoint = Vector2.new(0.5, 0.5)
-        tbl_67.Position = UDim2.new(1, -135, 0.5, 0)
-        tbl_67.Transparency = (v200 and 0.15) or 0.75
-        local v210
-        if v200 then
-            v210 = Colors_upv_1.TextDark
+
+        v566.TextColor3 = v546
+        v566.TextXAlignment = Enum.TextXAlignment.Center
+        v566.AnchorPoint = Vector2.new(0, 0.5)
+        v566.Position = UDim2.new(1, -300, 0.5, 0)
+        v566.Size = udim2FromOffset(110, 24)
+        v566.Parent = parent
+        label(v566)
+
+        if v556 then
+            v547 = v539[value.where] or v539.hub
         else
-            v210 = Colors_upv_1.TextDim
+            local uppercaseText
+            local v568 = {}
+
+            if not (0 < (tonumber(value.lastSeen) or 0)) then
+                uppercaseText = "OFFLINE"
+            else
+                uppercaseText = string.upper((ago(value.lastSeen)))
+            end
+
+            v568[1], v568[2] = uppercaseText, colors.TextMuted
+            v547 = v568
         end
-        tbl_67.TextColor = v210
-        tbl_67.Parent = v197
-        Pill_2(v208, v209, tbl_67).Name = "Status"
-        local v211 = UI_upv_1.new("Frame", {Name = "Actions", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = fromOffset_upv_1(78, 40), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center), Parent = v197})
-        if not (v195) then
-            if Players_upv_1:GetPlayerByUserId(a88.userId) then
-                v201 = UI_upv_1.IconButton({LayoutOrder = 1, Name = "Invite", Size = fromOffset_upv_1(38, 38), Color = Colors_upv_1.Accent, Parent = v211})
-                UI_upv_1.Glyph("person-plus", 18, Colors_upv_1.Text, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v201})
-                v201.Activated:Connect(
+
+        local pill = ui.Pill
+        local v570 = v547[1]
+        local v571 = v547[2]
+        local v572 = {Height = 22, TextSize = 11, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(1, -135, 0.5, 0)}
+
+        if v556 then
+            transparency = 0.15
+        else
+            transparency = 0.75
+        end
+
+        v572.Transparency = transparency
+        v572.TextColor = if v556 then colors.TextDark else colors.TextDim
+        v572.Parent = parent
+        pill(v570, v571, v572).Name = "Status"
+        local parent4 = ui.new("Frame", {Name = "Actions", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = udim2FromOffset(78, 40), (ui.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center)), Parent = parent})
+
+        if not v550 then
+            if players:GetPlayerByUserId(value.userId) then
+                local parent5 = ui.IconButton({Name = "Invite", LayoutOrder = 1, Size = udim2FromOffset(38, 38), Color = colors.Accent, Parent = parent4})
+                ui.Glyph("person-plus", 18, colors.Text, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent5})
+
+                parent5.Activated:Connect(
                     function()
                         --[[
                           line: 1418
                           upvalues:
-                            u10 (ref,  index: 1)
-                            a1 (copy, index: 2)
-                            a88 (copy, index: 3)
+                            timestamp (ref,  index: 1)
+                            a26 (copy, index: 2)
+                            value (copy, index: 3)
                         ]]
-                        local v212 = os.clock() - u10 >= 0.5
-                        if not v212 then
+                        if not (0.5 <= os.clock() - timestamp) then
                             return
                         end
-                        local v213, v214, v215 = a1.Remotes.Invoke("PartyAction", "Invite", a88.userId)
-                        if v213 and v214 == true then
-                            a1.Toast(("Party invite sent to %*"):format(a88.display), "success")
+
+                        local v575, v576, v577 = a26.Remotes.Invoke("PartyAction", "Invite", value.userId)
+
+                        if v575 and v576 == true then
+                            a26.Toast(`Party invite sent to {value.display}`, "success")
                             return
                         end
-                        local Toast_5 = a1.Toast
-                        local v216
-                        if v213 then
-                            v216 = v215 or "Couldn't invite them"
-                        else
-                            v216 = v214
-                        end
-                        Toast_5(tostring(v216), "error")
+
+                        local toast = a26.Toast
+                        local v579 = if v575 then v577 or "Couldn't invite them" else v576
+                        toast(tostring(v579), "error")
                     end
                 )
-            elseif a88.where == "hub" and a88.jobId and a88.jobId ~= game.JobId then
-                local v217 = UI_upv_1.IconButton({LayoutOrder = 1, Name = "Join", Size = fromOffset_upv_1(38, 38), Color = Colors_upv_1.Accent, Parent = v211})
-                UI_upv_1.Glyph("person-teleport", 18, Colors_upv_1.Text, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v217})
-                v217.Activated:Connect(
+            elseif value.where == "hub" and value.jobId and value.jobId ~= game.JobId then
+                local parent6 = ui.IconButton({Name = "Join", LayoutOrder = 1, Size = udim2FromOffset(38, 38), Color = colors.Accent, Parent = parent4})
+                ui.Glyph("person-teleport", 18, colors.Text, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent6})
+
+                parent6.Activated:Connect(
                     function()
                         --[[
                           line: 1432
                           upvalues:
-                            u10 (ref,  index: 1)
+                            timestamp (ref,  index: 1)
                             openDialog (copy, index: 2)
-                            a88 (copy, index: 3)
+                            value (copy, index: 3)
                             act (copy, index: 4)
-                            a1 (copy, index: 5)
-                            MenuManager_upv_1 (copy, index: 6)
+                            a26 (copy, index: 5)
+                            menuManager (copy, index: 6)
                         ]]
-                        local v218 = os.clock() - u10 >= 0.5
-                        if not v218 then
+                        if not (0.5 <= os.clock() - timestamp) then
                             return
                         end
-                        local v219 = ("Join %*?"):format(a88.display)
-                        local tbl_68 = {text = "JOIN THEIR LOBBY", style = "Primary"}
-                        function tbl_68.fn()
-                            --[[
-                              name: fn
-                              line: 1437
-                              upvalues:
-                                act (copy, index: 1)
-                                a88 (copy, index: 2)
-                                a1 (copy, index: 3)
-                                MenuManager_upv_1 (copy, index: 4)
-                            ]]
-                            if not act("Visit", a88.userId) then
-                                return
-                            end
-                            a1.Toast(("Joining %*'s lobby..."):format(a88.display), "info")
-                            MenuManager_upv_1.Close("Tribe")
-                        end
-                        openDialog(v219, "You'll move to their lobby.", {tbl_68, {text = "CANCEL"}})
+
+                        openDialog(
+                            `Join {value.display}?`,
+                            "You'll move to their lobby.",
+                            {
+                                {
+                                    text = "JOIN THEIR LOBBY",
+                                    style = "Primary",
+                                    fn = (function()
+                                        --[[
+                                          name: fn
+                                          line: 1437
+                                          upvalues:
+                                            act (copy, index: 1)
+                                            value (copy, index: 2)
+                                            a26 (copy, index: 3)
+                                            menuManager (copy, index: 4)
+                                        ]]
+                                        if act("Visit", value.userId) then
+                                            a26.Toast(`Joining {value.display}'s lobby...`, "info")
+                                            menuManager.Close("Tribe")
+                                        end
+                                    end)
+                                },
+                                {text = "CANCEL"}
+                            }
+                        )
                     end
                 )
             end
-            local role_1 = a88.role
-            local v220
-            if v194 ~= "chief" then
-                v220 = (v194 == "elder") and (role_1 == "member")
-            else
-                v220 = true
-                if role_1 == "chief" then
-                    v220 = (v194 == "elder") and (role_1 == "member")
-                end
-            end
-            if v220 then
-                local v221 = UI_upv_1.IconButton({LayoutOrder = 2, Name = "Manage", Size = fromOffset_upv_1(38, 38), Color = Colors_upv_1.Raised, Parent = v211})
-                UI_upv_1.Glyph("three-dots-horizontal", 18, Colors_upv_1.Text, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v221})
-                v221.Activated:Connect(
+
+            local role = value.role
+
+            if v549 == "chief" and role ~= "chief" or v549 == "elder" and role == "member" then
+                local parent7 = ui.IconButton({Name = "Manage", LayoutOrder = 2, Size = udim2FromOffset(38, 38), Color = colors.Raised, Parent = parent4})
+                ui.Glyph("three-dots-horizontal", 18, colors.Text, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent7})
+
+                parent7.Activated:Connect(
                     function()
                         --[[
                           line: 1450
                           upvalues:
-                            u10 (ref,  index: 1)
+                            timestamp (ref,  index: 1)
                             manage (copy, index: 2)
-                            a88 (copy, index: 3)
-                            a89 (copy, index: 4)
+                            value (copy, index: 3)
+                            tribe (copy, index: 4)
                         ]]
-                        local v222 = os.clock() - u10 >= 0.5
-                        if not v222 then
-                            return
+                        if 0.5 <= os.clock() - timestamp then
+                            manage(value, tribe)
                         end
-                        manage(a88, a89)
                     end
                 )
             end
         end
-        return v197
+
+        return parent
     end
+
     local function invitePicker()
         --[[
           name: invitePicker
           line: 1460
           upvalues:
             openDialog (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-            u6 (ref,  index: 3)
+            ui (copy, index: 2)
+            v42 (ref,  index: 3)
             roleIn (copy, index: 4)
-            Tribes_upv_2 (copy, index: 5)
-            Players_upv_1 (copy, index: 6)
-            LocalPlayer_upv_1 (copy, index: 7)
-            Colors_upv_1 (copy, index: 8)
-            fromOffset_upv_1 (copy, index: 9)
-            Theme_upv_1 (copy, index: 10)
+            tribes (copy, index: 5)
+            players (copy, index: 6)
+            localPlayer (copy, index: 7)
+            colors (copy, index: 8)
+            udim2FromOffset (copy, index: 9)
+            theme (copy, index: 10)
             label (copy, index: 11)
-            Fonts_upv_1 (copy, index: 12)
+            fonts (copy, index: 12)
             smallButton (copy, index: 13)
             act (copy, index: 14)
-            u1 (copy, index: 15)
+            textColor3 (copy, index: 15)
         ]]
         openDialog(
             "Invite players",
             "Players in this lobby who aren't in a tribe. Invites last 24 hours.",
             {{text = "DONE"}},
-            function(a91)
+            function(parent)
                 --[[
                   line: 1461
                   upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    u6 (ref,  index: 2)
+                    ui (copy, index: 1)
+                    v42 (ref,  index: 2)
                     roleIn (copy, index: 3)
-                    Tribes_upv_2 (copy, index: 4)
-                    Players_upv_1 (copy, index: 5)
-                    LocalPlayer_upv_1 (copy, index: 6)
-                    Colors_upv_1 (copy, index: 7)
-                    fromOffset_upv_1 (copy, index: 8)
-                    Theme_upv_1 (copy, index: 9)
+                    tribes (copy, index: 4)
+                    players (copy, index: 5)
+                    localPlayer (copy, index: 6)
+                    colors (copy, index: 7)
+                    udim2FromOffset (copy, index: 8)
+                    theme (copy, index: 9)
                     label (copy, index: 10)
-                    Fonts_upv_1 (copy, index: 11)
+                    fonts (copy, index: 11)
                     smallButton (copy, index: 12)
                     act (copy, index: 13)
-                    u1 (copy, index: 14)
+                    textColor3 (copy, index: 14)
                 ]]
-                UI_upv_1.List(Enum.FillDirection.Vertical, 6).Parent = a91
-                local v223 = 0
-                local v224 = u6 and (u6.tribe)
-                local v225
-                if type(v224) ~= "table" then
-                    v225 = Tribes_upv_2.Mine()
+                local v585
+                local v586
+                ui.List(Enum.FillDirection.Vertical, 6).Parent = parent
+                local count = 0
+                local tribe = v42 and v42.tribe
+
+                if type(tribe) ~= "table" then
+                    v585 = tribes.Mine()
                 else
-                    v225 = {}
-                    v225.id = v224.id
-                    v225.role = roleIn(v224)
+                    v585 = {id = tribe.id, role = roleIn(tribe)}
                 end
-                local tbl_69 = {}
-                local v226
-                if (v225) and type(v225.invites) == "table" then
-                    v226 = v225.invites
+
+                local v589 = {}
+
+                if not v585 or type(v585.invites) ~= "table" then
+                    v586 = {}
                 else
-                    v226 = {}
+                    v586 = v585.invites
                 end
-                for _, value_22 in v226 do
-                    if type(value_22) ~= "table" then
-                        continue
-                    end
-                    if type(value_22.userId) == "number" then
-                        tbl_69[value_22.userId] = true
+
+                for _, v591 in v586 do
+                    if type(v591) == "table" and type(v591.userId) == "number" then
+                        v589[v591.userId] = true
                     end
                 end
-                for _, value_upv_23 in Players_upv_1:GetPlayers() do
-                    local v227 = value_upv_23:GetAttribute("TribeId")
-                    if value_upv_23 == LocalPlayer_upv_1 then
-                        continue
-                    end
-                    if type(v227) ~= "number" or v227 == 0 then
-                        v223 = v223 + 1
-                        local v228 = UI_upv_1.new("Frame", {Name = value_upv_23.Name, Size = UDim2.new(1, 0, 0, 46), LayoutOrder = v223, ZIndex = 22, BackgroundColor3 = Colors_upv_1.PanelHi, BackgroundTransparency = 0.5, [1] = UI_upv_1.Corner(10), Parent = a91})
-                        UI_upv_1.new("ImageLabel", {Name = "Head", Image = ("rbxthumb://type=AvatarHeadShot&id=%*&w=150&h=150"):format(value_upv_23.UserId), Position = fromOffset_upv_1(6, 5), Size = fromOffset_upv_1(36, 36), BackgroundColor3 = Colors_upv_1.Raised, ZIndex = 22, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v228})
-                        label({ZIndex = 22, Name = "Name", TextSize = 16, Text = value_upv_23.DisplayName, FontFace = Fonts_upv_1.Heavy, Position = fromOffset_upv_1(52, 0), Size = UDim2.new(1, -160, 1, 0), Parent = v228})
-                        local u51 = nil
-                        local v229 = smallButton(
-                            "INVITE",
-                            "Primary",
-                            v228,
-                            function()
-                                --[[
-                                  line: 1479
-                                  upvalues:
-                                    act (copy, index: 1)
-                                    value_upv_23 (copy, index: 2)
-                                    u51 (ref,  index: 3)
-                                ]]
-                                if not act("Invite", value_upv_23.UserId) then
-                                    return
-                                end
-                                u51:SetText("SENT")
-                                u51:SetEnabled(false)
-                            end,
-                            {Height = 36, TextSize = 15, Width = 96, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -6, 0.5, 0)}
-                        )
-                        u51 = v229
-                        u51.Instance.ZIndex = 23
-                        if tbl_69[value_upv_23.UserId] then
-                            u51:SetText("SENT")
-                            u51:SetEnabled(false)
+
+                for _, player in players:GetPlayers() do
+                    local tribeId = player:GetAttribute("TribeId")
+
+                    if player ~= localPlayer then
+                        if type(tribeId) ~= "number" or tribeId == 0 then
+                            count += 1
+                            local parent2 = ui.new("Frame", {Name = player.Name, Size = UDim2.new(1, 0, 0, 46), LayoutOrder = count, ZIndex = 22, BackgroundColor3 = colors.PanelHi, BackgroundTransparency = 0.5, (ui.Corner(10)), Parent = parent})
+                            ui.new("ImageLabel", {Name = "Head", Image = `rbxthumb://type=AvatarHeadShot&id={player.UserId}&w=150&h=150`, Position = udim2FromOffset(6, 5), Size = udim2FromOffset(36, 36), BackgroundColor3 = colors.Raised, ZIndex = 22, (ui.Corner(theme.Radius.Pill)), Parent = parent2})
+                            label({Name = "Name", TextSize = 16, ZIndex = 22, Text = player.DisplayName, FontFace = fonts.Heavy, Position = udim2FromOffset(52, 0), Size = UDim2.new(1, -160, 1, 0), Parent = parent2})
+                            local v596 = nil
+
+                            v596 = smallButton(
+                                "INVITE",
+                                "Primary",
+                                parent2,
+                                function()
+                                    --[[
+                                      line: 1479
+                                      upvalues:
+                                        act (copy, index: 1)
+                                        player (copy, index: 2)
+                                        v596 (ref,  index: 3)
+                                    ]]
+                                    if act("Invite", player.UserId) then
+                                        v596:SetText("SENT")
+                                        v596:SetEnabled(false)
+                                    end
+                                end,
+                                {Width = 96, Height = 36, TextSize = 15, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -6, 0.5, 0)}
+                            )
+
+                            v596.Instance.ZIndex = 23
+
+                            if v589[player.UserId] then
+                                v596:SetText("SENT")
+                                v596:SetEnabled(false)
+                            end
                         end
                     end
                 end
-                if v223 ~= 0 then
-                    return
+
+                if count == 0 then
+                    label({Name = "None", Text = "Nobody to invite here right now.", TextSize = 15, ZIndex = 22, FontFace = fonts.SemiBold, TextColor3 = textColor3, Size = UDim2.new(1, 0, 0, 30), Parent = parent})
                 end
-                label({ZIndex = 22, Name = "None", Text = "Nobody to invite here right now.", TextSize = 15, FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, Size = UDim2.new(1, 0, 0, 30), Parent = a91})
             end
         )
     end
-    local tbl_upv_70 = {}
-    local function lookupName(a92, a93)
-        --[[
-          name: lookupName
-          line: 1500
-          upvalues:
-            tbl_upv_70 (copy, index: 1)
-        ]]
-        if tbl_upv_70[a92] then
-            a93(tbl_upv_70[a92])
-        else
-            task.spawn(function() end)
+
+    local v597 = {}
+
+    do
+        local function lookupName(userId, callback)
+            --[[
+              name: lookupName
+              line: 1500
+              upvalues:
+                v597 (copy, index: 1)
+                players (copy, index: 2)
+            ]]
+            if v597[userId] then
+                callback(v597[userId])
+                return
+            end
+
+            task.spawn(
+                function()
+                    --[[
+                      line: 1505
+                      upvalues:
+                        players (copy, index: 1)
+                        userId (copy, index: 2)
+                        v597 (copy, index: 3)
+                        callback (copy, index: 4)
+                    ]]
+                    local success, name = pcall(
+                        function()
+                            --[[
+                              line: 1506
+                              upvalues:
+                                players (copy, index: 1)
+                                userId (copy, index: 2)
+                            ]]
+                            return players:GetNameFromUserIdAsync(userId)
+                        end
+                    )
+
+                    if success and type(name) == "string" then
+                        v597[userId] = name
+                        callback(name)
+                    end
+                end
+            )
         end
     end
-    local function pendingRow(a94, a95)
+
+    local function pendingRow(a604, layoutOrder)
         --[[
           name: pendingRow
           line: 1515
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            tbl_upv_1 (ref,  index: 2)
-            Colors_upv_1 (copy, index: 3)
-            u50 (copy, index: 4)
-            fromOffset_upv_1 (copy, index: 5)
-            Theme_upv_1 (copy, index: 6)
+            ui (copy, index: 1)
+            v27 (ref,  index: 2)
+            colors (copy, index: 3)
+            parent16 (copy, index: 4)
+            udim2FromOffset (copy, index: 5)
+            theme (copy, index: 6)
             label (copy, index: 7)
-            Fonts_upv_1 (copy, index: 8)
+            fonts (copy, index: 8)
             ago (copy, index: 9)
-            u1 (copy, index: 10)
-            tbl_upv_70 (copy, index: 11)
-            Players_upv_1 (copy, index: 12)
+            textColor3 (copy, index: 10)
+            v597 (copy, index: 11)
+            players (copy, index: 12)
             smallButton (copy, index: 13)
             act (copy, index: 14)
-            a1 (copy, index: 15)
+            a26 (copy, index: 15)
         ]]
-        local u52 = tonumber(a94.userId) or 0
-        local v230 = UI_upv_1.new("Frame", {Name = "I" .. tostring(u52), Size = UDim2.new(1, -4, 0, tbl_upv_1.row), LayoutOrder = a95, BackgroundColor3 = Colors_upv_1.PanelHi, BackgroundTransparency = 0.55, [1] = UI_upv_1.Corner(12), Parent = u50})
-        UI_upv_1.new("ImageLabel", {Name = "Head", Image = ("rbxthumb://type=AvatarHeadShot&id=%*&w=150&h=150"):format(u52), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, 0), Size = fromOffset_upv_1(tbl_upv_1.row - 18, tbl_upv_1.row - 18), BackgroundColor3 = Colors_upv_1.Raised, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v230})
-        local v231 = tbl_upv_1.row + 8
-        local v232
-        if type(a94.display) ~= "string" or a94.display == "" then
-            v232 = nil
+        local display
+        local name
+        local formattedText
+        local name2
+        local number = tonumber(a604.userId) or 0
+        local parent = ui.new("Frame", {Name = "I" .. tostring(number), Size = UDim2.new(1, -4, 0, v27.row), LayoutOrder = layoutOrder, BackgroundColor3 = colors.PanelHi, BackgroundTransparency = 0.55, (ui.Corner(12)), Parent = parent16})
+        ui.new("ImageLabel", {Name = "Head", Image = `rbxthumb://type=AvatarHeadShot&id={number}&w=150&h=150`, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, 0), Size = udim2FromOffset(v27.row - 18, v27.row - 18), BackgroundColor3 = colors.Raised, (ui.Corner(theme.Radius.Pill)), Parent = parent})
+        local v612 = v27.row + 8
+
+        if type(a604.display) == "string" and a604.display ~= "" then
+            display = a604.display
         else
-            v232 = a94.display
+            display = nil
         end
-        local v233
-        if type(a94.name) ~= "string" or a94.name == "" then
-            v233 = nil
+
+        if type(a604.name) == "string" and a604.name ~= "" then
+            name = a604.name
         else
-            v233 = a94.name
+            name = nil
         end
-        local tbl_71 = {FontFace = 0, Name = "Name", Position = 0, Parent = 0, Text = 0, TextSize = 0, Size = 0}
-        tbl_71.Text = v232 or (v233 or "Player")
-        tbl_71.FontFace = Fonts_upv_1.Heavy
-        tbl_71.TextSize = tbl_upv_1.text
-        tbl_71.Position = fromOffset_upv_1(v231, (math.floor(tbl_upv_1.row / 2) - tbl_upv_1.text) - 2)
-        tbl_71.Size = UDim2.new(1, -(v231 + 150), 0, tbl_upv_1.text + 4)
-        tbl_71.Parent = v230
-        local u53 = label(tbl_71)
-        local v234 = math.max(0, (tonumber(a94.expiresAt) or 0) - os.time())
-        local u54
-        if v234 >= 3600 then
-            u54 = ("%*h"):format(v234 // 3600)
+
+        local v613 = {Name = "Name", Text = display or name or "Player", FontFace = fonts.Heavy, TextSize = v27.text, Position = udim2FromOffset(v612, (math.floor(v27.row / 2) - v27.text) - 2), Size = UDim2.new(1, -(v612 + 150), 0, v27.text + 4), Parent = parent}
+        local v614 = label(v613)
+        local v615 = math.max(0, (tonumber(a604.expiresAt) or 0) - os.time())
+
+        if not (3600 <= v615) then
+            formattedText = `{(math.max(1, v615 // 60))}m`
         else
-            u54 = ("%*m"):format(math.max(1, v234 // 60))
+            formattedText = `{v615 // 3600}h`
         end
-        local v235
-        if v233 then
-            if v232 ~= nil and string.lower(v233) == string.lower(v232) then
-                v235 = nil
-            else
-                v235 = v233
-            end
-        else
-            v235 = nil
-        end
-        local tbl_72 = {Position = 0, FontFace = 0, Name = "Sub", TextColor3 = 0, Parent = 0, Text = 0, TextSize = 0, Size = 0}
-        local v236
-        if v235 then
-            v236 = ("@%*  \194\183  "):format(v235)
-        else
-            v236 = ""
-        end
-        tbl_72.Text = ("%*invited by %* %*  \194\183  expires in %*"):format(v236, tostring(a94.from or "?"), ago(a94.at), u54)
-        tbl_72.FontFace = Fonts_upv_1.SemiBold
-        local function sub_1(a96)
+
+        local function sub(a617)
             --[[
               name: sub
               line: 1525
               upvalues:
-                a94 (copy, index: 1)
+                a604 (copy, index: 1)
                 ago (copy, index: 2)
-                u54 (copy, index: 3)
+                formattedText (copy, index: 3)
             ]]
-            local v237 = ((not a96) and "") or (("@%*  \194\183  "):format(a96))
-            return (("%*invited by %* %*  \194\183  expires in %*"):format(v237, tostring(a94.from or "?"), ago(a94.at), u54))
+            local v618 = not a617 and "" or `@{a617}  ·  `
+            return (`{v618}invited by {tostring((a604.from or "?"))} {ago(a604.at)}  ·  expires in {formattedText}`)
         end
-        tbl_72.TextSize = tbl_upv_1.sub
-        tbl_72.TextColor3 = u1
-        tbl_72.Position = fromOffset_upv_1(v231, math.floor(tbl_upv_1.row / 2) + 3)
-        tbl_72.Size = UDim2.new(1, -(v231 + 150), 0, tbl_upv_1.sub + 2)
-        tbl_72.Parent = v230
-        label(tbl_72)
-        if not (v232) and not (v233) and u52 > 0 then
-            local u55 = function(a97)
+
+        if not name or display ~= nil and string.lower(name) == string.lower(display) then
+            name2 = nil
+        else
+            name2 = name
+        end
+
+        local v619 = {Name = "Sub"}
+        local v620 = not name2 and "" or `@{name2}  ·  `
+        v619.Text = `{v620}invited by {tostring((a604.from or "?"))} {ago(a604.at)}  ·  expires in {formattedText}`
+        v619.FontFace = fonts.SemiBold
+        v619.TextSize = v27.sub
+        v619.TextColor3 = textColor3
+        v619.Position = udim2FromOffset(v612, math.floor(v27.row / 2) + 3)
+        v619.Size = UDim2.new(1, -(v612 + 150), 0, v27.sub + 2)
+        v619.Parent = parent
+        label(v619)
+
+        if not display and not name and 0 < number then
+            local v621 = function(text)
                 --[[
                   line: 1533
                   upvalues:
-                    u53 (copy, index: 1)
+                    v614 (copy, index: 1)
                 ]]
-                if not u53.Parent then
-                    return
+                if v614.Parent then
+                    v614.Text = text
                 end
-                u53.Text = a97
             end
-            if tbl_upv_70[u52] then
-                local v238 = tbl_upv_70[u52]
-                if u53.Parent then
-                    u53.Text = v238
+
+            if v597[number] then
+                local text = v597[number]
+
+                if v614.Parent then
+                    v614.Text = text
                 end
             else
                 task.spawn(
@@ -2971,101 +3248,112 @@ function v1.Init(a1)
                         --[[
                           line: 1505
                           upvalues:
-                            Players_upv_1 (copy, index: 1)
-                            u52 (copy, index: 2)
-                            tbl_upv_70 (copy, index: 3)
-                            u55 (copy, index: 4)
+                            players (copy, index: 1)
+                            number (copy, index: 2)
+                            v597 (copy, index: 3)
+                            v621 (copy, index: 4)
                         ]]
-                        local success_5, v239 = pcall(
+                        local success, name = pcall(
                             function()
                                 --[[
                                   line: 1506
                                   upvalues:
-                                    Players_upv_1 (copy, index: 1)
-                                    u52 (copy, index: 2)
+                                    players (copy, index: 1)
+                                    number (copy, index: 2)
                                 ]]
-                                return Players_upv_1:GetNameFromUserIdAsync(u52)
+                                return players:GetNameFromUserIdAsync(number)
                             end
                         )
-                        if not success_5 or type(v239) ~= "string" then
-                            return
+
+                        if success and type(name) == "string" then
+                            v597[number] = name
+                            v621(name)
                         end
-                        tbl_upv_70[u52] = v239
-                        u55(v239)
                     end
                 )
             end
         end
+
+        local ui2 = ui.new("Frame", {Name = "Actions", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = udim2FromOffset(130, 40), (ui.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center)), Parent = parent})
+
         smallButton(
             "CANCEL",
             "Dark",
-            UI_upv_1.new("Frame", {Name = "Actions", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = fromOffset_upv_1(130, 40), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center), Parent = v230}),
+            ui2,
             function()
                 --[[
                   line: 1540
                   upvalues:
                     act (copy, index: 1)
-                    u52 (copy, index: 2)
-                    a1 (copy, index: 3)
-                    u53 (copy, index: 4)
+                    number (copy, index: 2)
+                    a26 (copy, index: 3)
+                    v614 (copy, index: 4)
                 ]]
-                if not act("Uninvite", u52) then
-                    return
+                if act("Uninvite", number) then
+                    a26.Toast(`Invite to {v614.Text} withdrawn`, "info")
                 end
-                a1.Toast(("Invite to %* withdrawn"):format(u53.Text), "info")
             end,
-            {TextSize = 15, Width = 110}
+            {Width = 110, TextSize = 15}
         )
     end
-    local function renderMembers(a98)
+
+    local function renderMembers(tribe)
         --[[
           name: renderMembers
           line: 1547
           upvalues:
             clear (copy, index: 1)
-            u50 (copy, index: 2)
-            u49 (copy, index: 3)
-            u48 (copy, index: 4)
+            parent16 (copy, index: 2)
+            ui5 (copy, index: 3)
+            ui4 (copy, index: 4)
             section (copy, index: 5)
-            Tribes_upv_1 (copy, index: 6)
-            fromOffset_upv_1 (copy, index: 7)
+            child (copy, index: 6)
+            udim2FromOffset (copy, index: 7)
             roleIn (copy, index: 8)
             smallButton (copy, index: 9)
             invitePicker (copy, index: 10)
-            UI_upv_1 (copy, index: 11)
-            Colors_upv_1 (copy, index: 12)
-            tbl_upv_1 (ref,  index: 13)
-            Theme_upv_1 (copy, index: 14)
+            ui (copy, index: 11)
+            colors (copy, index: 12)
+            v27 (ref,  index: 13)
+            theme (copy, index: 14)
             label (copy, index: 15)
-            Fonts_upv_1 (copy, index: 16)
+            fonts (copy, index: 16)
             ago (copy, index: 17)
-            u1 (copy, index: 18)
+            textColor3 (copy, index: 18)
             act (copy, index: 19)
             memberRow (copy, index: 20)
             pendingRow (copy, index: 21)
         ]]
-        clear(u50)
-        clear(u49)
-        clear(u48)
-        local v240 = ((type(a98.membersList) ~= "table") and {}) or (a98.membersList)
-        local v241 = 0
-        for _, value_24 in v240 do
-            v241 = ((value_24.where) and (v241 + 1)) or v241
-        end
-        local v242 = section("MEMBERS", ("%*/%*"):format(#v240, Tribes_upv_1.MAX_MEMBERS), ("%* online"):format(v241), 1, u48)
-        v242.Position = fromOffset_upv_1(0, 9)
-        v241 = roleIn(a98)
-        local v243 = true
-        if v241 == "chief" then
-            v242 = v243
+        local v629
+        local v630
+        local v631
+        local v632
+        clear(parent16)
+        clear(ui5)
+        clear(ui4)
+
+        if type(tribe.membersList) ~= "table" then
+            v629 = {}
         else
-            v242 = v241 == "elder"
+            v629 = tribe.membersList
         end
-        if v242 then
+
+        local count = 0
+
+        for _, v635 in v629 do
+            if v635.where then
+                count += 1
+            end
+        end
+
+        section("MEMBERS", `{#v629}/{child.MAX_MEMBERS}`, `{count} online`, 1, ui4).Position = udim2FromOffset(0, 9)
+        local v636 = roleIn(tribe)
+        local v637 = v636 == "chief" or v636 == "elder"
+        if v637 then
             smallButton(
                 "INVITE PLAYERS",
                 "Primary",
-                u49,
+                ui5,
                 function()
                     --[[
                       line: 1562
@@ -3074,3086 +3362,2941 @@ function v1.Init(a1)
                     ]]
                     invitePicker()
                 end,
-                {TextSize = 15, Size = UDim2.fromScale(1, 1), Icon = UI_upv_1.Glyph("person-plus", 18, Colors_upv_1.Text)}
+                {TextSize = 15, Size = UDim2.fromScale(1, 1), Icon = ui.Glyph("person-plus", 18, colors.Text)}
             )
         end
-        local v244 = 0
-        local v245 = ((type(a98.requests) ~= "table") and {}) or (a98.requests)
-        if v242 and #v245 > 0 then
-            local v246 = v244 + 1
-            section("JOIN REQUESTS", #v245, nil, v246, u50, Colors_upv_1.Warning)
-            v241 = v246
-            for _, value_upv_25 in v245 do
-                local v247 = v241 + 1
-                local tbl_73 = {}
-                tbl_73.Name = "R" .. tostring(value_upv_25.userId)
-                tbl_73.Size = UDim2.new(1, -4, 0, tbl_upv_1.row)
-                tbl_73.LayoutOrder = v247
-                tbl_73.BackgroundColor3 = Color3.fromRGB(60, 46, 20)
-                tbl_73.BackgroundTransparency = 0.35
-                tbl_73[1], tbl_73[2] = UI_upv_1.Corner(12), UI_upv_1.Stroke(Colors_upv_1.Warning, 1, 0.6)
-                tbl_73.Parent = u50
-                local v248 = UI_upv_1.new("Frame", tbl_73)
-                UI_upv_1.new("ImageLabel", {Name = "Head", Image = ("rbxthumb://type=AvatarHeadShot&id=%*&w=150&h=150"):format(value_upv_25.userId), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, 0), Size = fromOffset_upv_1(tbl_upv_1.row - 18, tbl_upv_1.row - 18), BackgroundColor3 = Colors_upv_1.Raised, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v248})
-                local v249 = tbl_upv_1.row + 8
-                label({Name = "Name", Text = tostring(value_upv_25.display), FontFace = Fonts_upv_1.Heavy, TextSize = tbl_upv_1.text, Position = fromOffset_upv_1(v249, (math.floor(tbl_upv_1.row / 2) - tbl_upv_1.text) - 2), Size = UDim2.new(1, -(v249 + 260), 0, tbl_upv_1.text + 4), Parent = v248})
-                label({Name = "Sub", Text = ("@%*  \194\183  Lv %*  \194\183  asked %*"):format(value_upv_25.name, value_upv_25.level, ago(value_upv_25.at)), FontFace = Fonts_upv_1.SemiBold, TextSize = tbl_upv_1.sub, TextColor3 = u1, Position = fromOffset_upv_1(v249, math.floor(tbl_upv_1.row / 2) + 3), Size = UDim2.new(1, -(v249 + 260), 0, tbl_upv_1.sub + 2), Parent = v248})
-                local v250 = UI_upv_1.new("Frame", {Name = "Actions", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = fromOffset_upv_1(240, 40), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center), Parent = v248})
+
+        local v638 = 0
+
+        if type(tribe.requests) ~= "table" then
+            v630 = {}
+        else
+            v630 = tribe.requests
+        end
+
+        if v637 and 0 < #v630 then
+            local v639
+            local layoutOrder = v638 + 1
+            section("JOIN REQUESTS", #v630, nil, layoutOrder, parent16, colors.Warning)
+            v639 = layoutOrder
+
+            for _, v642 in v630 do
+                local layoutOrder2 = v639 + 1
+                local parent = ui.new("Frame", {Name = "R" .. tostring(v642.userId), Size = UDim2.new(1, -4, 0, v27.row), LayoutOrder = layoutOrder2, BackgroundColor3 = Color3.fromRGB(60, 46, 20), BackgroundTransparency = 0.35, ui.Corner(12), (ui.Stroke(colors.Warning, 1, 0.6)), Parent = parent16})
+                ui.new("ImageLabel", {Name = "Head", Image = `rbxthumb://type=AvatarHeadShot&id={v642.userId}&w=150&h=150`, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 12, 0.5, 0), Size = udim2FromOffset(v27.row - 18, v27.row - 18), BackgroundColor3 = colors.Raised, (ui.Corner(theme.Radius.Pill)), Parent = parent})
+                local v645 = v27.row + 8
+                label({Name = "Name", Text = tostring(v642.display), FontFace = fonts.Heavy, TextSize = v27.text, Position = udim2FromOffset(v645, (math.floor(v27.row / 2) - v27.text) - 2), Size = UDim2.new(1, -(v645 + 260), 0, v27.text + 4), Parent = parent})
+                label({Name = "Sub", Text = `@{v642.name}  ·  Lv {v642.level}  ·  asked {(ago(v642.at))}`, FontFace = fonts.SemiBold, TextSize = v27.sub, TextColor3 = textColor3, Position = udim2FromOffset(v645, math.floor(v27.row / 2) + 3), Size = UDim2.new(1, -(v645 + 260), 0, v27.sub + 2), Parent = parent})
+                local ui2 = ui.new("Frame", {Name = "Actions", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = udim2FromOffset(240, 40), (ui.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center)), Parent = parent})
                 smallButton(
                     "ACCEPT",
                     "Success",
-                    v250,
+                    ui2,
                     function()
                         --[[
                           line: 1579
                           upvalues:
                             act (copy, index: 1)
-                            value_upv_25 (copy, index: 2)
+                            v642 (copy, index: 2)
                         ]]
-                        act("Respond", value_upv_25.userId, true)
+                        act("Respond", v642.userId, true)
                     end,
-                    {LayoutOrder = 1, TextSize = 15, Width = 110}
+                    {Width = 110, LayoutOrder = 1, TextSize = 15}
                 )
                 smallButton(
                     "DECLINE",
                     "Dark",
-                    v250,
+                    ui2,
                     function()
                         --[[
                           line: 1582
                           upvalues:
                             act (copy, index: 1)
-                            value_upv_25 (copy, index: 2)
+                            v642 (copy, index: 2)
                         ]]
-                        act("Respond", value_upv_25.userId, false)
+                        act("Respond", v642.userId, false)
                     end,
-                    {LayoutOrder = 2, TextSize = 15, Width = 110}
+                    {Width = 110, LayoutOrder = 2, TextSize = 15}
                 )
-                v241 = v247
+                v639 = layoutOrder2
             end
-            local v251 = v241 + 1
-            section("MEMBERS", nil, nil, v251, u50)
-            v244 = v251
+
+            v638 = v639 + 1
+            section("MEMBERS", nil, nil, v638, parent16)
         end
-        local v252 = table.clone(v240)
-        local tbl_upv_74 = {chief = 0, member = 2, elder = 1}
+
+        local values = table.clone(v629)
+        local v648 = {chief = 0, elder = 1, member = 2}
+
         table.sort(
-            v252,
-            function(a99, a100)
+            values,
+            function(left, right)
                 --[[
                   line: 1592
                   upvalues:
-                    tbl_upv_74 (copy, index: 1)
+                    v648 (copy, index: 1)
                 ]]
-                local v253 = ((a99.where) and 0) or 1
-                local v254 = ((a100.where) and 0) or 1
-                if v253 ~= v254 then
-                    return v253 < v254
+                local v651 = left.where and 0 or 1
+                local v652 = right.where and 0 or 1
+
+                if v651 ~= v652 then
+                    return v651 < v652
                 end
-                if (tbl_upv_74[a99.role] or 3) ~= (tbl_upv_74[a100.role] or 3) then
-                    return (tbl_upv_74[a99.role] or 3) < (tbl_upv_74[a100.role] or 3)
+                if (v648[left.role] or 3) ~= (v648[right.role] or 3) then
+                    return (v648[left.role] or 3) < (v648[right.role] or 3)
                 end
-                local v255 = tonumber(a99.weekRenown) or 0
-                local v256 = (tonumber(a100.weekRenown) or 0) < v255
-                return v256
+
+                local number = tonumber(left.weekRenown) or 0
+
+                return (tonumber(right.weekRenown) or 0) < number
             end
         )
-        v241 = v244
-        for key_16, value_26 in v252 do
-            local v257 = v241 + 1
-            UI_upv_1.Enter(memberRow(value_26, a98, v257), Vector2.new(0, 8), math.min(key_16 * 0.025, 0.25), UDim2.new())
-            v241 = v257
+
+        v631 = v638
+
+        for v654, value in values do
+            local layoutOrder = v631 + 1
+            local v657 = memberRow(value, tribe, layoutOrder)
+            ui.Enter(v657, Vector2.new(0, 8), math.min(v654 * 0.025, 0.25), UDim2.new())
+            v631 = layoutOrder
         end
-        local v258 = ((type(a98.invites) ~= "table") and {}) or (a98.invites)
-        if not v242 then
-            return
+
+        if type(tribe.invites) ~= "table" then
+            v632 = {}
+        else
+            v632 = tribe.invites
         end
-        if #v258 > 0 then
-            local v259 = v241 + 1
-            section("PENDING INVITES", ("%*/%*"):format(#v258, tonumber(a98.inviteMax) or 50), "expire after 24 h", v259, u50, Colors_upv_1.Accent)
-            v241 = v259
-            for _, value_27 in v258 do
-                local v260 = v241 + 1
-                pendingRow(value_27, v260)
-                v241 = v260
+
+        if v637 and 0 < #v632 then
+            local layoutOrder = v631 + 1
+            section("PENDING INVITES", `{#v632}/{tonumber(tribe.inviteMax) or 50}`, "expire after 24 h", layoutOrder, parent16, colors.Accent)
+            local v659 = layoutOrder
+
+            for _, v661 in v632 do
+                v659 += 1
+                pendingRow(v661, v659)
             end
         end
     end
-    local v261 = UI_upv_1.new("Frame", {Name = "Top", Size = UDim2.new(1, 0, 0, 46), Parent = v28.page})
-    local tbl_75 = {}
-    tbl_75.Name = "Period"
-    tbl_75.Size = fromOffset_upv_1(280, 46)
-    tbl_75.BackgroundColor3 = u2
-    tbl_75.BackgroundTransparency = 0.25
-    tbl_75[1], tbl_75[2], tbl_75[3] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Padding(4, 4, 4, 4), UI_upv_1.List(Enum.FillDirection.Horizontal, 4)
-    tbl_75.Parent = v261
-    local v262 = UI_upv_1.new("Frame", tbl_75)
-    local u56 = "top"
-    local tbl_upv_76 = {}
-    for key_17, value_28 in {{"top", "THIS WEEK"}, {"alltime", "ALL TIME"}} do
-        tbl_upv_76[value_28[1]] = UI_upv_1.new("TextButton", {Name = value_28[1], Text = value_28[2], AutoButtonColor = false, FontFace = Fonts_upv_1.Heavy, TextSize = 14, TextColor3 = Colors_upv_1.TextDim, Size = UDim2.new(0.5, -2, 1, 0), LayoutOrder = key_17, BackgroundColor3 = Colors_upv_1.Accent, BackgroundTransparency = 1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v262})
+
+    local parent17 = ui.new("Frame", {Name = "Top", Size = UDim2.new(1, 0, 0, 46), Parent = tab4.page})
+    local parent18 = ui.new("Frame", {Name = "Period", Size = udim2FromOffset(280, 46), BackgroundColor3 = backgroundColor3, BackgroundTransparency = 0.25, ui.Corner(theme.Radius.Pill), ui.Padding(4, 4, 4, 4), (ui.List(Enum.FillDirection.Horizontal, 4)), Parent = parent17})
+    local v664 = "top"
+    local v665 = {}
+
+    for layoutOrder, v667 in {{"top", "THIS WEEK"}, {"alltime", "ALL TIME"}} do
+        v665[v667[1]] = ui.new("TextButton", {Name = v667[1], Text = v667[2], AutoButtonColor = false, FontFace = fonts.Heavy, TextSize = 14, TextColor3 = colors.TextDim, Size = UDim2.new(0.5, -2, 1, 0), LayoutOrder = layoutOrder, BackgroundColor3 = colors.Accent, BackgroundTransparency = 1, (ui.Corner(theme.Radius.Pill)), Parent = parent18})
     end
-    local u57 = label({RichText = true, Text = "", Name = "Note", TextSize = 15, FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = UDim2.new(1, -300, 0, 20), Parent = v261})
-    local tbl_upv_77 = {}
-    tbl_upv_77.Name = "List"
-    tbl_upv_77.Position = fromOffset_upv_1(0, 58)
-    tbl_upv_77.Size = UDim2.new(1, 0, 1, -58)
-    tbl_upv_77.ScrollBarThickness = 3
-    tbl_upv_77.Selectable = false
-    tbl_upv_77[1], tbl_upv_77[2] = UI_upv_1.List(Enum.FillDirection.Vertical, 8), UI_upv_1.Padding(4, 10, 10, 4)
-    tbl_upv_77.Parent = v28.page
-    local u58 = UI_upv_1.new("ScrollingFrame", tbl_upv_77)
-    local u59 = UI_upv_1.new("Frame", {Name = "Pinned", Visible = false, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, tbl_upv_1.row + 22), Parent = v28.page})
-    local u60 = UI_upv_1.new("Frame", {Visible = false, Name = "Empty", Position = fromOffset_upv_1(0, 120), Size = UDim2.new(1, 0, 0, 120), Parent = v28.page})
-    UI_upv_1.Glyph("trophy", 48, Colors_upv_1.TextMuted, {AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Parent = u60})
-    local u61 = label({Text = "", Name = "Text", TextSize = 17, FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Center, Position = fromOffset_upv_1(0, 60), Size = UDim2.new(1, 0, 0, 24), Parent = u60})
-    tbl_upv_77 = {u3, Color3.fromRGB(196, 206, 222), Color3.fromRGB(222, 140, 74)}
-    local function boardValue(a101)
-        --[[
-          name: boardValue
-          line: 1684
-          upvalues:
-            u56 (ref, index: 1)
-        ]]
-        local v263
-        if u56 ~= "alltime" then
-            v263 = a101.weekRenown
-        else
-            v263 = a101.renown
+
+    local v668 = label({Name = "Note", Text = "", RichText = true, TextSize = 15, FontFace = fonts.SemiBold, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = UDim2.new(1, -300, 0, 20), Parent = parent17})
+    local parent19 = ui.new("ScrollingFrame", {Name = "List", Position = udim2FromOffset(0, 58), Size = UDim2.new(1, 0, 1, -58), ScrollBarThickness = 3, Selectable = false, ui.List(Enum.FillDirection.Vertical, 8), (ui.Padding(4, 10, 10, 4)), Parent = tab4.page})
+    local parent20 = ui.new("Frame", {Name = "Pinned", Visible = false, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, v27.row + 22), Parent = tab4.page})
+    local parent21 = ui.new("Frame", {Name = "Empty", Visible = false, Position = udim2FromOffset(0, 120), Size = UDim2.new(1, 0, 0, 120), Parent = tab4.page})
+    ui.Glyph("trophy", 48, colors.TextMuted, {AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 0), Parent = parent21})
+    local v672 = label({Name = "Text", Text = "", TextSize = 17, FontFace = fonts.SemiBold, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Center, Position = udim2FromOffset(0, 60), Size = UDim2.new(1, 0, 0, 24), Parent = parent21})
+    local v673 = {textColor32, Color3.fromRGB(196, 206, 222), Color3.fromRGB(222, 140, 74)}
+
+    do
+        local function boardValue(a675)
+            --[[
+              name: boardValue
+              line: 1684
+              upvalues:
+                v664 (ref, index: 1)
+            ]]
+            local v676 = if v664 == "alltime" then a675.renown else a675.weekRenown
+            return tonumber(v676) or 0
         end
-        return tonumber(v263) or 0
     end
-    local function boardRow(a102, a103, a104, a105, a106)
+
+    local function boardRow(a678, a679, parent, layoutOrder: number, a682: boolean)
         --[[
           name: boardRow
           line: 1688
           upvalues:
-            tbl_upv_1 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            Tribes_upv_1 (copy, index: 3)
-            Colors_upv_1 (copy, index: 4)
+            v27 (ref,  index: 1)
+            ui (copy, index: 2)
+            child (copy, index: 3)
+            colors (copy, index: 4)
             openable (copy, index: 5)
-            tbl_upv_77 (copy, index: 6)
-            fromOffset_upv_1 (copy, index: 7)
-            Theme_upv_1 (copy, index: 8)
+            v673 (copy, index: 6)
+            udim2FromOffset (copy, index: 7)
+            theme (copy, index: 8)
             label (copy, index: 9)
-            Fonts_upv_1 (copy, index: 10)
-            TribeEmblem_upv_1 (copy, index: 11)
-            u1 (copy, index: 12)
+            fonts (copy, index: 10)
+            TribeEmblem (copy, index: 11)
+            textColor3 (copy, index: 12)
             rowStat (copy, index: 13)
-            u56 (ref,  index: 14)
-            u3 (copy, index: 15)
+            v664 (ref,  index: 14)
+            textColor32 (copy, index: 15)
         ]]
-        local v264 = tbl_upv_1.row + 8
-        local v265 = UI_upv_1.new("TextButton", {Name = "R" .. tostring(a103 or 0), Text = "", AutoButtonColor = false, Size = UDim2.new(1, -4, 0, v264), LayoutOrder = a105, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.1, ClipsDescendants = true, [1] = UI_upv_1.Corner(12), Parent = a104})
-        UI_upv_1.Gradient(Tribes_upv_1.Color(a102.color1):Lerp(Colors_upv_1.Panel, 0.8), Colors_upv_1.PanelHi:Lerp(Colors_upv_1.Panel, 0.55), 0).Parent = v265
-        local v266
-        if a106 then
-            v266 = UI_upv_1.Stroke(Colors_upv_1.Accent, 2, 0)
+        local v683
+        local v684
+        local v685
+        local v686 = v27.row + 8
+        local parent2 = ui.new("TextButton", {Name = "R" .. tostring((a679 or 0)), Text = "", AutoButtonColor = false, Size = UDim2.new(1, -4, 0, v686), LayoutOrder = layoutOrder, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.1, ClipsDescendants = true, (ui.Corner(12)), Parent = parent})
+        ui.Gradient(child.Color(a678.color1):Lerp(colors.Panel, 0.8), colors.PanelHi:Lerp(colors.Panel, 0.55), 0).Parent = parent2
+
+        if a682 then
+            v683 = ui.Stroke(colors.Accent, 2, 0)
         else
-            v266 = UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.92)
+            v683 = ui.Stroke(colors.Stroke, 1, 0.92)
         end
-        v266.Parent = v265
-        openable(v265, v266, a102)
-        local v267 = a103
-        v266 = v267 and (tbl_upv_77[a103])
-        local v268 = ((UI_upv_1.Compact) and 46) or 56
-        local new_11 = UI_upv_1.new
-        local tbl_78 = {}
-        tbl_78.Name = "Rank"
-        tbl_78.AnchorPoint = Vector2.new(0.5, 0.5)
-        tbl_78.Position = UDim2.new(0, (v268 / 2) + 10, 0.5, 0)
-        tbl_78.Size = fromOffset_upv_1(v268 - 6, v268 - 6)
-        tbl_78.BackgroundColor3 = a103 or (Colors_upv_1.Inset)
-        tbl_78.BackgroundTransparency = (v266 and 0.78) or 1
-        tbl_78[1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill)
-        tbl_78.Parent = v265
-        local v269 = new_11("Frame", tbl_78)
-        local tbl_79 = {FontFace = 0, TextColor3 = 0, Parent = 0, Text = 0, Name = "Text", TextXAlignment = 0, TextTruncate = 0, TextSize = 0, Size = 0}
-        tbl_79.Text = not a103 and "-" or tostring(a103)
-        tbl_79.FontFace = Fonts_upv_1.Display
-        local v271
-        if (a103) and (a103 >= 100) then
-            v271 = tbl_upv_1.text
+
+        v683.Parent = parent2
+        openable(parent2, v683, a678)
+        local v688 = a679 and v673[a679]
+        local v689 = ui.Compact and 46 or 56
+        local newUi = ui.new
+        local v691 = {Name = "Rank", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, (v689 / 2) + 10, 0.5, 0), Size = udim2FromOffset(v689 - 6, v689 - 6), BackgroundColor3 = v688
+            or colors.Inset}
+        v691.BackgroundTransparency = v688 and 0.78 or 1
+        v691[1] = (ui.Corner(theme.Radius.Pill))
+        v691.Parent = parent2
+        local parent3 = newUi("Frame", v691)
+        local v693 = {Name = "Text", Text = if a679 then tostring(a679) else "-"}
+        v693.FontFace = fonts.Display
+        v693.TextSize = if a679 and 100 <= a679 then v27.text else v27.text + 6
+        v693.TextColor3 = v688 or colors.TextDim
+        v693.TextXAlignment = Enum.TextXAlignment.Center
+        v693.TextTruncate = Enum.TextTruncate.None
+        v693.Size = UDim2.fromScale(1, 1)
+        v693.Parent = parent3
+        label(v693)
+        local v694 = v689 + 14
+        local newTribeEmblem = TribeEmblem.new
+        local v696 = v27.row - 6
+        local v697 = {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, v694, 0.5, 0), Parent = parent2}
+        newTribeEmblem(v696, v697):Set(a678.icon, a678.color1, a678.color2, a678.tag)
+        local v698 = v694 + v27.row + 8
+        local v699 = ui.Compact and 96 or 260
+        local v700 = {Name = "Name", RichText = true}
+        local stringFormat = string.format
+        local v702 = TribeEmblem.TagColor(a678.color1):ToHex()
+        local tag = TribeEmblem.Tag
+
+        if type(a678) ~= "table" then
+            v684 = a678
         else
-            v271 = tbl_upv_1.text + 6
+            v684 = a678.tag
         end
-        tbl_79.TextSize = v271
-        tbl_79.TextColor3 = a103 or (Colors_upv_1.TextDim)
-        tbl_79.TextXAlignment = Enum.TextXAlignment.Center
-        tbl_79.TextTruncate = Enum.TextTruncate.None
-        tbl_79.Size = UDim2.fromScale(1, 1)
-        tbl_79.Parent = v269
-        label(tbl_79)
-        local v272 = v268 + 14
-        local v273 = tbl_upv_1.row - 6
-        local tbl_80 = {}
-        tbl_80.AnchorPoint = Vector2.new(0, 0.5)
-        tbl_80.Position = UDim2.new(0, v272, 0.5, 0)
-        tbl_80.Parent = v265
-        TribeEmblem_upv_1.new(v273, tbl_80):Set(a102.icon, a102.color1, a102.color2, a102.tag)
-        local v274 = v272 + tbl_upv_1.row + 8
-        v269 = ((UI_upv_1.Compact) and 96) or 260
-        local tbl_81 = {FontFace = 0, RichText = true, Name = "Name", Position = 0, Parent = 0, Text = 0, TextSize = 0, Size = 0}
-        local v275 = TribeEmblem_upv_1.TagColor(a102.color1):ToHex()
-        local Tag_12 = TribeEmblem_upv_1.Tag
-        local v276
-        if type(a102) ~= "table" then
-            v276 = a102
+
+        v700.Text = stringFormat("<font color=\"#%s\">%s</font>  %s", v702, tag(v684), (tostring(a678.name or "")))
+        v700.FontFace = fonts.Heavy
+        v700.TextSize = v27.text
+        v700.Position = udim2FromOffset(v698, (math.floor(v686 / 2) - v27.text) - 2)
+        v700.Size = UDim2.new(1, -((v698 + v699) + 12), 0, v27.text + 2)
+        v700.Parent = parent2
+        label(v700)
+        local number = tonumber(a678.members) or 0
+        local number2 = tonumber(a678.held) or 0
+
+        if number ~= 1 then
+            v685 = "members"
         else
-            v276 = a102.tag
+            v685 = "member"
         end
-        tbl_81.Text = string.format("<font color=\"#%s\">%s</font>  %s", v275, Tag_12(v276), tostring(a102.name or ""))
-        tbl_81.FontFace = Fonts_upv_1.Heavy
-        tbl_81.TextSize = tbl_upv_1.text
-        tbl_81.Position = fromOffset_upv_1(v274, (math.floor(v264 / 2) - tbl_upv_1.text) - 2)
-        tbl_81.Size = UDim2.new(1, -((v274 + v269) + 12), 0, tbl_upv_1.text + 2)
-        tbl_81.Parent = v265
-        label(tbl_81)
-        local v277 = tonumber(a102.members) or 0
-        local v278 = tonumber(a102.held) or 0
-        local v279 = ("%* %*"):format(v277, ((v277 ~= 1) and "members") or "member")
-        if v278 > 0 and UI_upv_1.Compact then
-            v279 = v279 .. ("  \194\183  holds %* %*"):format(v278, ((v278 ~= 1) and "maps") or "map")
+
+        local v706 = `{number} {v685}`
+
+        if 0 < number2 and ui.Compact then
+            local v707 = number2 ~= 1 and "maps" or "map"
+            v706 ..= `  ·  holds {number2} {v707}`
         end
-        v279 = (a106 and (("<font color=\"#%*\">Your tribe</font>  \194\183  "):format(Colors_upv_1.Accent:ToHex()) .. v279)) or v279
-        label({RichText = true, Name = "Sub", Text = v279, FontFace = Fonts_upv_1.SemiBold, TextSize = tbl_upv_1.sub, TextColor3 = u1, Position = fromOffset_upv_1(v274, math.floor(v264 / 2) + 3), Size = UDim2.new(1, -((v274 + v269) + 12), 0, tbl_upv_1.sub + 2), Parent = v265})
-        local v280 = UI_upv_1.new("Frame", {Name = "Stats", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0), Size = fromOffset_upv_1(v269, 40), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 4, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center), Parent = v265})
-        local v282 = nil
-        if not (UI_upv_1.Compact) then
-            rowStat(v280, ("%*/%*"):format(v277, Tribes_upv_1.MAX_MEMBERS), "MEMBERS", 1)
-            local str_3 = tostring(v278)
-            if v278 > 0 then
-                v282 = Colors_upv_1.Text
+
+        if a682 then
+            v706 = `<font color="#{(colors.Accent:ToHex())}">Your tribe</font>  ·  ` .. v706
+        end
+
+        label({Name = "Sub", RichText = true, Text = v706, FontFace = fonts.SemiBold, TextSize = v27.sub, TextColor3 = textColor3, Position = udim2FromOffset(v698, math.floor(v686 / 2) + 3), Size = UDim2.new(1, -((v698 + v699) + 12), 0, v27.sub + 2), Parent = parent2})
+        local ui2 = ui.new("Frame", {Name = "Stats", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0), Size = udim2FromOffset(v699, 40), (ui.List(Enum.FillDirection.Horizontal, 4, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center)), Parent = parent2})
+
+        if not ui.Compact then
+            local v709
+            rowStat(ui2, `{number}/{child.MAX_MEMBERS}`, "MEMBERS", 1)
+            local text = tostring(number2)
+
+            if not (0 < number2) then
+                v709 = colors.TextDim
             else
-                v282 = Colors_upv_1.TextDim
+                v709 = colors.Text
             end
-            rowStat(v280, str_3, "MAPS HELD", 2, v282)
+
+            rowStat(ui2, text, "MAPS HELD", 2, v709)
         end
-        local FormatNumber_1 = UI_upv_1.FormatNumber
-        if u56 ~= "alltime" then
-            v282 = a102.weekRenown
-        else
-            v282 = a102.renown
-        end
-        rowStat(v280, FormatNumber_1(tonumber(v282) or 0), "GLORY", 3, u3)
-        return v265
+
+        local formatNumber = ui.FormatNumber
+        local v712 = if v664 == "alltime" then a678.renown else a678.weekRenown
+        rowStat(ui2, formatNumber((tonumber(v712) or 0)), "GLORY", 3, textColor32)
+
+        return parent2
     end
+
     local function paintPeriod()
         --[[
           name: paintPeriod
           line: 1762
           upvalues:
-            tbl_upv_76 (copy, index: 1)
-            u56 (ref,  index: 2)
-            Colors_upv_1 (copy, index: 3)
-            u57 (copy, index: 4)
+            v665 (copy, index: 1)
+            v664 (ref,  index: 2)
+            colors (copy, index: 3)
+            v668 (copy, index: 4)
             untilText (copy, index: 5)
-            Tribes_upv_1 (copy, index: 6)
+            child (copy, index: 6)
         ]]
-        local v283 = nil
-        for key_18, value_29 in tbl_upv_76 do
-            value_29.BackgroundTransparency = ((key_18 ~= u56) and 1) or 0
-            if key_18 ~= u56 then
-                v283 = Colors_upv_1.TextDim
-            else
-                v283 = Colors_upv_1.Text
-            end
-            value_29.TextColor3 = v283
+        for v714, v715 in v665 do
+            v715.BackgroundTransparency = v714 ~= v664 and 1 or 0
+            v715.TextColor3 = if v714 == v664 then colors.Text else colors.TextDim
         end
-        if u56 ~= "top" then
-            u57.Text = "Every match since tribes began"
-        else
-            u57.Text = ("Resets in <font color=\"#%*\">%*</font>"):format(Colors_upv_1.Text:ToHex(), untilText(Tribes_upv_1.WeekEndsAt(Tribes_upv_1.WeekOf(os.time()))))
+
+        if v664 == "top" then
+            v668.Text = `Resets in <font color="#{colors.Text:ToHex()}">{(untilText(child.WeekEndsAt(child.WeekOf(os.time()))))}</font>`
+            return
         end
+
+        v668.Text = "Every match since tribes began"
     end
-    local u62 = 0
-    local u63 = 0
-    local u64 = nil
-    local u65 = nil
-    local u66 = nil
-    local function drawPin(a107)
+
+    local count4 = 0
+    local count5 = 0
+    local formattedText = nil
+    local v719 = nil
+    local v720 = nil
+
+    local function drawPin(a722)
         --[[
           name: drawPin
           line: 1785
           upvalues:
-            u56 (ref,  index: 1)
-            HttpService_upv_1 (copy, index: 2)
-            u66 (ref,  index: 3)
+            v664 (ref,  index: 1)
+            httpService (copy, index: 2)
+            v720 (ref,  index: 3)
             clear (copy, index: 4)
-            u59 (copy, index: 5)
-            u58 (copy, index: 6)
-            tbl_upv_1 (ref,  index: 7)
-            UI_upv_1 (copy, index: 8)
-            fromOffset_upv_1 (copy, index: 9)
-            Colors_upv_1 (copy, index: 10)
+            parent20 (copy, index: 5)
+            parent19 (copy, index: 6)
+            v27 (ref,  index: 7)
+            ui (copy, index: 8)
+            udim2FromOffset (copy, index: 9)
+            colors (copy, index: 10)
             boardRow (copy, index: 11)
         ]]
-        local v284, v285 = pcall(HttpService_upv_1.JSONEncode, HttpService_upv_1, a107 or false)
-        local v286
-        if v284 then
-            v286 = v285
+        local v723
+        local v724 = v664
+        local success, result = pcall(httpService.JSONEncode, httpService, (a722 or false))
+
+        if success then
+            v723 = result
         else
-            v286 = tostring(os.clock())
+            v723 = tostring(os.clock())
         end
-        local v287 = u56 .. v286
-        if v287 == u66 then
+
+        local v727 = v724 .. v723
+
+        if v727 == v720 then
             return
         end
-        u66 = v287
-        clear(u59)
-        if type(a107) == "table" and type(a107.tribe) == "table" then
-            local tribe_2 = a107.tribe
-            if u56 ~= "alltime" then
-                v284 = tribe_2.weekRenown
-            else
-                v284 = tribe_2.renown
+
+        v720 = v727
+        clear(parent20)
+
+        if type(a722) == "table" then
+            if type(a722.tribe) == "table" then
+                local rank
+                local tribe = a722.tribe
+                local v730 = if v664 == "alltime" then tribe.renown else tribe.weekRenown
+
+                if not (0 < (tonumber(v730) or 0)) or type(a722.rank) ~= "number" then
+                    rank = nil
+                    parent20.Visible = true
+                    parent20.Size = UDim2.new(1, 0, 0, v27.row + 22)
+                    parent19.Size = UDim2.new(1, 0, 1, -((58 + v27.row) + 26))
+                    ui.new("Frame", {Name = "Rule", BackgroundTransparency = 0.85, Position = udim2FromOffset(4, 2), Size = UDim2.new(1, -18, 0, 1), BackgroundColor3 = colors.Stroke, Parent = parent20})
+                    local v731 = boardRow(tribe, rank, parent20, 1, true)
+                    v731.AnchorPoint = Vector2.new(0, 1)
+                    v731.Position = UDim2.new(0, 4, 1, -4)
+                    v731.Size = UDim2.new(1, -18, 0, v27.row + 8)
+                    ui.Enter(v731, Vector2.new(0, 10), 0.1, UDim2.new(0, 4, 1, -4))
+
+                    return
+                end
+
+                rank = a722.rank
+                parent20.Visible = true
+                parent20.Size = UDim2.new(1, 0, 0, v27.row + 22)
+                parent19.Size = UDim2.new(1, 0, 1, -((58 + v27.row) + 26))
+                ui.new("Frame", {Name = "Rule", BackgroundTransparency = 0.85, Position = udim2FromOffset(4, 2), Size = UDim2.new(1, -18, 0, 1), BackgroundColor3 = colors.Stroke, Parent = parent20})
+                local v731 = boardRow(tribe, rank, parent20, 1, true)
+                v731.AnchorPoint = Vector2.new(0, 1)
+                v731.Position = UDim2.new(0, 4, 1, -4)
+                v731.Size = UDim2.new(1, -18, 0, v27.row + 8)
+                ui.Enter(v731, Vector2.new(0, 10), 0.1, UDim2.new(0, 4, 1, -4))
+
+                return
             end
-            local v288
-            if ((tonumber(v284) or 0) > 0) and type(a107.rank) == "number" then
-                v288 = a107.rank
-            else
-                v288 = nil
-            end
-            u59.Visible = true
-            u59.Size = UDim2.new(1, 0, 0, tbl_upv_1.row + 22)
-            u58.Size = UDim2.new(1, 0, 1, -((58 + tbl_upv_1.row) + 26))
-            UI_upv_1.new("Frame", {Name = "Rule", BackgroundTransparency = 0.85, Position = fromOffset_upv_1(4, 2), Size = UDim2.new(1, -18, 0, 1), BackgroundColor3 = Colors_upv_1.Stroke, Parent = u59})
-            local v289 = boardRow(tribe_2, v288, u59, 1, true)
-            v289.AnchorPoint = Vector2.new(0, 1)
-            v289.Position = UDim2.new(0, 4, 1, -4)
-            v289.Size = UDim2.new(1, -18, 0, tbl_upv_1.row + 8)
-            UI_upv_1.Enter(v289, Vector2.new(0, 10), 0.1, UDim2.new(0, 4, 1, -4))
-            return
         end
-        u59.Visible = false
-        u58.Size = UDim2.new(1, 0, 1, -58)
+
+        parent20.Visible = false
+        parent19.Size = UDim2.new(1, 0, 1, -58)
     end
-    local function showBoard(a108, a109)
+
+    local function showBoard(a733, a734: number)
         --[[
           name: showBoard
           line: 1809
           upvalues:
-            u6 (ref,  index: 1)
+            v42 (ref,  index: 1)
             roleIn (copy, index: 2)
-            Tribes_upv_2 (copy, index: 3)
-            u56 (ref,  index: 4)
+            tribes (copy, index: 3)
+            v664 (ref,  index: 4)
             drawPin (copy, index: 5)
-            u63 (ref,  index: 6)
-            u62 (ref,  index: 7)
-            HttpService_upv_1 (copy, index: 8)
-            u66 (ref,  index: 9)
+            count5 (ref,  index: 6)
+            count4 (ref,  index: 7)
+            httpService (copy, index: 8)
+            v720 (ref,  index: 9)
             clear (copy, index: 10)
-            u59 (copy, index: 11)
-            u58 (copy, index: 12)
-            u64 (ref,  index: 13)
-            u65 (ref,  index: 14)
-            u60 (copy, index: 15)
-            u61 (copy, index: 16)
+            parent20 (copy, index: 11)
+            parent19 (copy, index: 12)
+            formattedText (ref,  index: 13)
+            v719 (ref,  index: 14)
+            parent21 (copy, index: 15)
+            v672 (copy, index: 16)
             boardRow (copy, index: 17)
-            UI_upv_1 (copy, index: 18)
+            ui (copy, index: 18)
         ]]
-        local v290 = u6 and (u6.tribe)
-        local v291
-        if type(v290) ~= "table" then
-            v291 = Tribes_upv_2.Mine()
+        local v735
+        local v736
+        local v737
+        local tribe = v42 and v42.tribe
+
+        if type(tribe) ~= "table" then
+            v735 = tribes.Mine()
         else
-            v291 = {}
-            v291.id = v290.id
-            v291.role = roleIn(v290)
+            v735 = {id = tribe.id, role = roleIn(tribe)}
         end
-        local u68
-        if v291 then
-            u68 = v291.id
-        else
-            v290 = nil
-        end
-        local tbl_upv_82 = {}
-        local u67 = false
-        local v292 = nil
-        local v293 = nil
-        for _, value_30 in a108 do
-            if type(value_30) ~= "table" then
-                continue
-            end
-            if u56 ~= "alltime" then
-                v292 = value_30.weekRenown
-            else
-                v292 = value_30.renown
-            end
-            if (tonumber(v292) or 0) > 0 then
-                table.insert(tbl_upv_82, value_30)
-                v293 = u67 or ((u68 ~= nil) and (value_30.id == u68))
-                u67 = v293
+
+        local v739 = if v735 then v735.id else nil
+        local v740 = {}
+        local v741 = false
+        v736 = v741
+
+        for _, v743 in a733 do
+            if type(v743) == "table" then
+                local v744 = if v664 == "alltime" then v743.renown else v743.weekRenown
+
+                if not (0 < (tonumber(v744) or 0)) then
+                    continue
+                end
+
+                table.insert(v740, v743)
+                local v745 = v736 or v739 ~= nil and v743.id == v739
+                v736 = v745
             end
         end
-        local function pin_1()
+
+        local function pin()
             --[[
               name: pin
               line: 1821
               upvalues:
-                u68 (copy, index: 1)
-                u67 (ref,  index: 2)
+                v739 (copy, index: 1)
+                v736 (ref,  index: 2)
                 drawPin (copy, index: 3)
-                Tribes_upv_2 (copy, index: 4)
-                u56 (ref,  index: 5)
-                u63 (ref,  index: 6)
-                a109 (copy, index: 7)
-                u62 (ref,  index: 8)
-                HttpService_upv_1 (copy, index: 9)
-                u66 (ref,  index: 10)
+                tribes (copy, index: 4)
+                v664 (ref,  index: 5)
+                count5 (ref,  index: 6)
+                a734 (copy, index: 7)
+                count4 (ref,  index: 8)
+                httpService (copy, index: 9)
+                v720 (ref,  index: 10)
                 clear (copy, index: 11)
-                u59 (copy, index: 12)
-                u58 (copy, index: 13)
+                parent20 (copy, index: 12)
+                parent19 (copy, index: 13)
             ]]
-            if u68 and not (u67) then
-                drawPin(Tribes_upv_2.CachedRank(u56))
-                local u69 = u56
-                local u70 = u63
+            local v747
+
+            if v739 and not v736 then
+                drawPin(tribes.CachedRank(v664))
+                local v748 = v664
+                local v749 = count5
+
                 task.spawn(
                     function()
                         --[[
                           line: 1825
                           upvalues:
-                            Tribes_upv_2 (copy, index: 1)
-                            u69 (copy, index: 2)
-                            a109 (copy, index: 3)
-                            u62 (ref,  index: 4)
-                            u70 (copy, index: 5)
-                            u63 (ref,  index: 6)
+                            tribes (copy, index: 1)
+                            v748 (copy, index: 2)
+                            a734 (copy, index: 3)
+                            count4 (ref,  index: 4)
+                            v749 (copy, index: 5)
+                            count5 (ref,  index: 6)
                             drawPin (copy, index: 7)
                         ]]
-                        local v294, v295 = Tribes_upv_2.Rank(u69)
-                        if not v294 or a109 ~= u62 or u70 ~= u63 then
-                            return
+                        local v750, v751 = tribes.Rank(v748)
+
+                        if v750 and a734 == count4 and v749 == count5 then
+                            drawPin(v751)
                         end
-                        drawPin(v295)
                     end
                 )
+
                 return
             end
-            local success_6, v296 = pcall(HttpService_upv_1.JSONEncode, HttpService_upv_1, false)
-            local v297
-            if success_6 then
-                v297 = v296
+
+            local v752 = v664
+            local success, result = pcall(httpService.JSONEncode, httpService, false)
+
+            if success then
+                v747 = result
             else
-                v297 = tostring(os.clock())
+                v747 = tostring(os.clock())
             end
-            local v298 = u56 .. v297
-            if v298 == u66 then
+
+            local v755 = v752 .. v747
+
+            if v755 == v720 then
                 return
             end
-            u66 = v298
-            clear(u59)
-            u59.Visible = false
-            u58.Size = UDim2.new(1, 0, 1, -58)
+
+            v720 = v755
+            clear(parent20)
+            parent20.Visible = false
+            parent19.Size = UDim2.new(1, 0, 1, -58)
         end
-        local v299 = "%*|%*|%*"
-        local v300 = u56
-        local value_30 = u68 or 0
-        local success_7, v301 = pcall(HttpService_upv_1.JSONEncode, HttpService_upv_1, a108)
-        if success_7 then
-            v293 = v301
+
+        local v756 = v664
+        local success, result = pcall(httpService.JSONEncode, httpService, a733)
+
+        if success then
+            v737 = result
         else
-            v293 = tostring(os.clock())
+            v737 = tostring(os.clock())
         end
-        local v302 = v299:format(v300, value_30, v293)
-        if v302 ~= u64 then
-            local u71 = u65 ~= u56
-            u64 = v302
-            u65 = u56
-            u63 = u63 + 1
-            local u72 = u63
-            clear(u58)
-            u60.Visible = #tbl_upv_82 == 0
-            u61.Text = ((u56 ~= "top") and "No tribe has earned Glory yet.") or "No Glory yet this week. Win matches with tribemates to climb."
-            local function build_upv_1(a110)
+
+        local formattedText2 = `{v756}|{v739 or 0}|{v737}`
+
+        if formattedText2 == formattedText then
+            pin()
+            return
+        end
+
+        local v760 = v719 ~= v664
+        formattedText = formattedText2
+        v719 = v664
+        count5 += 1
+        local v761 = count5
+        clear(parent19)
+        parent21.Visible = #v740 == 0
+        v672.Text = v664 ~= "top" and "No tribe has earned Glory yet."
+            or "No Glory yet this week. Win matches with tribemates to climb."
+
+        local function build(key: number)
+            --[[
+              name: build
+              line: 1847
+              upvalues:
+                v740 (copy, index: 1)
+                boardRow (copy, index: 2)
+                parent19 (copy, index: 3)
+                v739 (copy, index: 4)
+                v760 (copy, index: 5)
+                ui (copy, index: 6)
+            ]]
+            local v764 = v740[key]
+            local v765 = boardRow(v764, key, parent19, key, ((v739 ~= nil) and (v764.id == v739)))
+
+            if v760 and key <= 10 then
+                ui.Enter(v765, Vector2.new(0, 10), math.min(key * 0.03, 0.3), UDim2.new())
+            end
+        end
+
+        for index = 1, math.min(#v740, 10) do
+            build(index)
+        end
+
+        if 10 < #v740 then
+            task.spawn(
+                function()
+                    --[[
+                      line: 1858
+                      upvalues:
+                        v740 (copy, index: 1)
+                        v761 (copy, index: 2)
+                        count5 (ref,  index: 3)
+                        build (copy, index: 4)
+                    ]]
+                    for index = 11, #v740 do
+                        if (index - 10) % 8 == 1 then
+                            task.wait()
+
+                            if v761 ~= count5 then
+                                return
+                            end
+                        end
+
+                        build(index)
+                    end
+                end
+            )
+        end
+
+        pin()
+    end
+
+    do
+        local function loadBoard()
+            --[[
+              name: loadBoard
+              line: 1872
+              upvalues:
+                count4 (ref,  index: 1)
+                v664 (ref,  index: 2)
+                paintPeriod (copy, index: 3)
+                tribes (copy, index: 4)
+                showBoard (copy, index: 5)
+                v719 (ref,  index: 6)
+                formattedText (ref,  index: 7)
+                count5 (ref,  index: 8)
+                clear (copy, index: 9)
+                parent19 (copy, index: 10)
+                httpService (copy, index: 11)
+                v720 (ref,  index: 12)
+                parent20 (copy, index: 13)
+                parent21 (copy, index: 14)
+                ui (copy, index: 15)
+                v27 (ref,  index: 16)
+                colors (copy, index: 17)
+                v672 (copy, index: 18)
+                child (copy, index: 19)
+            ]]
+            count4 += 1
+            local v769 = count4
+            local v770 = v664
+            paintPeriod()
+            local v771 = tribes.CachedBoard(v770)
+
+            if type(v771) ~= "table" then
+                if v719 ~= v770 then
+                    local v772
+                    formattedText = nil
+                    v719 = nil
+                    count5 += 1
+                    clear(parent19)
+                    local v773 = v770
+                    local success, result = pcall(httpService.JSONEncode, httpService, false)
+
+                    if success then
+                        v772 = result
+                    else
+                        v772 = tostring(os.clock())
+                    end
+
+                    local v776 = v773 .. v772
+
+                    if v776 ~= v720 then
+                        v720 = v776
+                        clear(parent20)
+                        parent20.Visible = false
+                        parent19.Size = UDim2.new(1, 0, 1, -58)
+                    end
+
+                    parent21.Visible = false
+
+                    for layoutOrder = 1, 5 do
+                        local ui2 = ui.new("Frame", {Name = "Skeleton", Size = UDim2.new(1, -4, 0, v27.row + 8), LayoutOrder = layoutOrder, BackgroundColor3 = colors.PanelHi, BackgroundTransparency = 0.5, (ui.Corner(12)), Parent = parent19})
+                        local v779 = {BackgroundTransparency = 0.78}
+                        ui.Tween(ui2, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true, layoutOrder * 0.12), v779)
+                    end
+                end
+            else
+                showBoard(v771, v769)
+            end
+
+            local v780, v781 = tribes.Board(v770)
+
+            if v769 ~= count4 then
+                return
+            end
+
+            if v780 and type(v781) == "table" then
+                showBoard(v781, v769)
+                return
+            end
+
+            if type(v771) ~= "table" then
+                local v782
+                formattedText = nil
+                v719 = nil
+                count5 += 1
+                clear(parent19)
+                local v783 = v770
+                local success, result = pcall(httpService.JSONEncode, httpService, false)
+
+                if success then
+                    v782 = result
+                else
+                    v782 = tostring(os.clock())
+                end
+
+                local v786 = v783 .. v782
+
+                if v786 ~= v720 then
+                    v720 = v786
+                    clear(parent20)
+                    parent20.Visible = false
+                    parent19.Size = UDim2.new(1, 0, 1, -58)
+                end
+
+                parent21.Visible = true
+                v672.Text = tostring((v781 or child.Message("unavailable")))
+            end
+        end
+
+        for v787, v788 in v665 do
+            v788.Activated:Connect(
+                function()
+                    --[[
+                      line: 1908
+                      upvalues:
+                        v664 (ref,  index: 1)
+                        v787 (copy, index: 2)
+                        timestamp (ref,  index: 3)
+                        a26 (copy, index: 4)
+                        loadBoard (copy, index: 5)
+                    ]]
+                    if v664 ~= v787 and 0.5 <= os.clock() - timestamp then
+                        v664 = v787
+                        a26.Sounds.Play("Click")
+                        loadBoard()
+                    end
+                end
+            )
+        end
+
+        v141.Leaderboard = loadBoard
+    end
+
+    local parent22 = ui.new("Frame", {Name = "MapArea", BackgroundColor3 = Color3.fromRGB(14, 52, 92), BackgroundTransparency = 0, ClipsDescendants = true, ui.Corner(14), (ui.Stroke(colors.Stroke, 1, 0.9)), Parent = tab5.page})
+    local parent23 = column("Side", tab5.page, 10)
+    local parent24 = ui.new("Frame", {Name = "Layer", Size = UDim2.fromScale(1, 1), Parent = parent22})
+    local parent25 = ui.new("ScrollingFrame", {Name = "Tiles", Size = UDim2.fromScale(1, 1), ScrollBarThickness = 3, Selectable = false, Visible = false, (ui.Padding(12, 12, 12, 12)), Parent = parent22})
+    local ui6 = ui.new("UIGridLayout", {CellSize = udim2FromOffset(200, 150), CellPadding = udim2FromOffset(10, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = parent25})
+
+    do
+        local v794 = label({Name = "Loading", Text = "Loading the map...", TextSize = 17, FontFace = fonts.SemiBold, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Center, Size = UDim2.fromScale(1, 1), Parent = parent22})
+        local parent26 = ui.new("Frame", {Name = "Legend", AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 10, 1, -10), AutomaticSize = Enum.AutomaticSize.X, Size = udim2FromOffset(0, 30), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.35, ZIndex = 6, ui.Corner(theme.Radius.Pill), ui.Padding(0, 12, 0, 10), (ui.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)), Parent = parent22})
+        ui.new("Frame", {Name = "Ring", Size = udim2FromOffset(14, 14), BackgroundTransparency = 1, LayoutOrder = 1, ZIndex = 6, ui.Corner(theme.Radius.Pill), (ui.Stroke(colors.Accent, 2, 0)), Parent = parent26})
+        caps("YOUR TRIBE", {LayoutOrder = 2, ZIndex = 6, Size = udim2FromOffset(76, 14), TextColor3 = colors.TextDim, Parent = parent26})
+        ui.new("Frame", {Name = "Fog", Size = udim2FromOffset(14, 14), BackgroundColor3 = Color3.fromRGB(58, 64, 78), LayoutOrder = 3, ZIndex = 6, (ui.Corner(theme.Radius.Pill)), Parent = parent26})
+        caps("NOT IN ROTATION", {LayoutOrder = 4, ZIndex = 6, Size = udim2FromOffset(108, 14), TextColor3 = colors.TextDim, Parent = parent26})
+        local v796 = nil
+        local v797 = nil
+
+        do
+            local function holderOf(mapKey)
                 --[[
-                  name: build
-                  line: 1847
+                  name: holderOf
+                  line: 1934
                   upvalues:
-                    tbl_upv_82 (copy, index: 1)
-                    boardRow (copy, index: 2)
-                    u58 (copy, index: 3)
-                    u68 (copy, index: 4)
-                    u71 (copy, index: 5)
-                    UI_upv_1 (copy, index: 6)
+                    v797 (ref, index: 1)
                 ]]
-                local v303 = tbl_upv_82[a110]
-                local v304 = boardRow(v303, a110, u58, a110, (u68 ~= nil) and (v303.id == u68))
-                if not u71 or not (a110 <= 10) then
+                local map = v797 and v797.maps and v797.maps[mapKey]
+
+                if map and map.holder then
+                    return v797.tribes and v797.tribes[tostring(map.holder)]
+                end
+
+                return nil
+            end
+        end
+
+        local v801 = nil
+        local v802 = {}
+
+        local function regionAt(a804, a805)
+            --[[
+              name: regionAt
+              line: 1946
+              upvalues:
+                TribeMapGrid (copy, index: 1)
+                v802 (copy, index: 2)
+            ]]
+            local v806 = math.floor(a804 / TribeMapGrid.cell) + 1
+            local rowKey = math.floor(a805 / TribeMapGrid.cell) + 1
+            local row = TribeMapGrid.rows[rowKey]
+
+            if not row or v806 < 1 or TribeMapGrid.cols < v806 then
+                return nil
+            end
+
+            local v809 = v802[rowKey]
+            if not v809 then
+                v809 = {}
+
+                for pattern, v811 in string.gmatch(row, "(%D)(%d+)") do
+                    local v813 = if const startIndex = string.find("abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXY", pattern, 1, true) then TribeMapGrid.keys[startIndex]
+                        or false else false
+
+                    for _ = 1, tonumber(v811) or 0 do
+                        table.insert(v809, v813)
+                    end
+                end
+
+                v802[rowKey] = v809
+            end
+
+            return v809[v806] or nil
+        end
+
+        local v815 = nil
+
+        do
+            local function selectTerritory(a817)
+                --[[
+                  name: selectTerritory
+                  line: 1968
+                  upvalues:
+                    timestamp (ref,  index: 1)
+                    v796 (ref,  index: 2)
+                    a26 (copy, index: 3)
+                    v815 (ref,  index: 4)
+                    v801 (ref,  index: 5)
+                ]]
+                if not (0.5 <= os.clock() - timestamp) then
                     return
                 end
-                UI_upv_1.Enter(v304, Vector2.new(0, 10), math.min(a110 * 0.03, 0.3), UDim2.new())
+
+                if v796 ~= a817 then
+                    a26.Sounds.Play("Click")
+                end
+
+                v796 = a817
+                v815()
+                v801(a817)
             end
-            for n_3 = 1, math.min(#tbl_upv_82, 10) do
-                build_upv_1(n_3)
+        end
+
+        v815 = function()
+            --[[
+              line: 1980
+              upvalues:
+                v794 (copy, index: 1)
+                v797 (ref,  index: 2)
+                clear (copy, index: 3)
+                parent24 (copy, index: 4)
+                parent25 (copy, index: 5)
+                ui6 (copy, index: 6)
+                v42 (ref,  index: 7)
+                roleIn (copy, index: 8)
+                tribes (copy, index: 9)
+                TribeArt (copy, index: 10)
+                parent26 (copy, index: 11)
+                parent22 (copy, index: 12)
+                ui (copy, index: 13)
+                udim2FromOffset (copy, index: 14)
+                regionAt (copy, index: 15)
+                timestamp (ref,  index: 16)
+                v796 (ref,  index: 17)
+                a26 (copy, index: 18)
+                v815 (ref,  index: 19)
+                v801 (ref,  index: 20)
+                child (copy, index: 21)
+                TribeEmblem (copy, index: 22)
+                colors (copy, index: 23)
+                theme (copy, index: 24)
+                label (copy, index: 25)
+                fonts (copy, index: 26)
+                textColor3 (copy, index: 27)
+            ]]
+            local v818
+            v794.Visible = v797 == nil
+            clear(parent24)
+            clear(parent25)
+            ui6.Parent = parent25
+
+            if not v797 then
+                return
             end
-            if #tbl_upv_82 > 10 then
-                task.spawn(
-                    function()
-                        --[[
-                          line: 1858
-                          upvalues:
-                            tbl_upv_82 (copy, index: 1)
-                            u72 (copy, index: 2)
-                            u63 (ref,  index: 3)
-                            build_upv_1 (copy, index: 4)
-                        ]]
-                        for n_4 = 11, #tbl_upv_82 do
-                            if (n_4 - 10) % 8 ~= 1 then
-                                build_upv_1(n_4)
-                                continue
-                            end
-                            task.wait()
-                            if u72 == u63 then
-                                build_upv_1(n_4)
-                                continue
-                            end
-                            return
+
+            local v819 = v42 and v42.tribe
+
+            if type(v819) ~= "table" then
+                v818 = tribes.Mine()
+            else
+                v818 = {id = v819.id, role = roleIn(v819)}
+            end
+
+            if type(v797.order) ~= "table" then
+                v819 = {}
+            else
+                v819 = v797.order
+            end
+
+            local visible = TribeArt.Map.image ~= ""
+            parent25.Visible = not visible
+            parent24.Visible = visible
+            parent26.Visible = visible
+
+            if not visible then
+                local _, _
+
+                for layoutOrder, v824 in v819 do
+                    local tribe
+                    local v826
+                    local formattedText
+                    local map = v797.maps[v824]
+                    local map2 = v797 and v797.maps and v797.maps[v824]
+
+                    if not map2 or not map2.holder then
+                        tribe = nil
+                    else
+                        tribe = v797.tribes and v797.tribes[tostring(map2.holder)]
+                    end
+
+                    local parent = ui.new("TextButton", {Name = v824, Text = "", AutoButtonColor = false, LayoutOrder = layoutOrder, BackgroundColor3 = colors.PanelHi, BackgroundTransparency = 0.2, ClipsDescendants = true, (ui.Corner(12)), Parent = parent25})
+                    local v831 = tribe and v818 and tribe.id == v818.id
+                    local stroke = ui.Stroke
+
+                    if v796 == v824 then
+                        v826 = colors.Text
+                    else
+                        v826 = if v831 then colors.Accent else colors.Stroke
+                    end
+
+                    local v833 = v796 ~= v824 and not v831 and 1 or 2
+                    local v834 = v796 ~= v824 and (v831 and 0 or 0.9) or 0.1
+                    stroke(v826, v833, v834).Parent = parent
+                    local newUi = ui.new
+                    local v836 = {Name = "Thumb"}
+                    local thumb = map and map.thumb or ""
+                    v836.Image = tostring(thumb)
+                    v836.Size = UDim2.new(1, 0, 0, 100)
+                    v836.ScaleType = Enum.ScaleType.Crop
+                    v836.BackgroundColor3 = colors.Raised
+                    v836.Parent = parent
+                    newUi("ImageLabel", v836)
+
+                    if tribe then
+                        ui.new("Frame", {Name = "Tint", BackgroundTransparency = 0.7, Size = UDim2.new(1, 0, 0, 100), BackgroundColor3 = child.Color(tribe.color1), Parent = parent})
+                        local newTribeEmblem = TribeEmblem.new
+                        local v839 = {Position = udim2FromOffset(8, 50), Parent = parent}
+                        newTribeEmblem(44, v839):Set(tribe.icon, tribe.color1, tribe.color2, tribe.tag)
+                    end
+
+                    local v840 = {Name = "Name", TextSize = 16}
+                    local v841 = map and map.name or v824
+                    v840.Text = tostring(v841)
+                    v840.FontFace = fonts.Heavy
+                    v840.Position = udim2FromOffset(10, 104)
+                    v840.Size = UDim2.new(1, -20, 0, 20)
+                    v840.Parent = parent
+                    label(v840)
+                    local v842 = {Name = "By", TextSize = 14}
+
+                    if tribe then
+                        local v843
+                        local tag = TribeEmblem.Tag
+
+                        if type(tribe) == "table" then
+                            v843 = tribe.tag
+                        else
+                            v843 = tribe
                         end
+
+                        formattedText = `Held by {(tag(v843))}`
+                    else
+                        formattedText = "Unclaimed"
                     end
-                )
+
+                    v842.Text = formattedText
+                    v842.FontFace = fonts.SemiBold
+                    v842.TextColor3 = if tribe then TribeEmblem.TagColor(tribe.color1) else textColor3
+                    v842.Position = udim2FromOffset(10, 124)
+                    v842.Size = UDim2.new(1, -20, 0, 18)
+                    v842.Parent = parent
+                    label(v842)
+
+                    parent.Activated:Connect(
+                        function()
+                            --[[
+                              line: 2082
+                              upvalues:
+                                timestamp (ref,  index: 1)
+                                a26 (copy, index: 2)
+                                v796 (ref,  index: 3)
+                                v824 (copy, index: 4)
+                                v815 (ref,  index: 5)
+                                v801 (ref,  index: 6)
+                            ]]
+                            if 0.5 <= os.clock() - timestamp then
+                                a26.Sounds.Play("Click")
+                                v796 = v824
+                                v815()
+                                v801(v824)
+                            end
+                        end
+                    )
+                end
+
+                return
             end
-        end
-        pin_1()
-    end
-    local function loadBoard()
-        --[[
-          name: loadBoard
-          line: 1872
-          upvalues:
-            u62 (ref,  index: 1)
-            u56 (ref,  index: 2)
-            paintPeriod (copy, index: 3)
-            Tribes_upv_2 (copy, index: 4)
-            showBoard (copy, index: 5)
-            u65 (ref,  index: 6)
-            u64 (ref,  index: 7)
-            u63 (ref,  index: 8)
-            clear (copy, index: 9)
-            u58 (copy, index: 10)
-            HttpService_upv_1 (copy, index: 11)
-            u66 (ref,  index: 12)
-            u59 (copy, index: 13)
-            u60 (copy, index: 14)
-            UI_upv_1 (copy, index: 15)
-            tbl_upv_1 (ref,  index: 16)
-            Colors_upv_1 (copy, index: 17)
-            u61 (copy, index: 18)
-            Tribes_upv_1 (copy, index: 19)
-        ]]
-        u62 = u62 + 1
-        local v305 = u62
-        local v306 = u56
-        paintPeriod()
-        local v307 = Tribes_upv_2.CachedBoard(v306)
-        if type(v307) ~= "table" then
-            local v308 = nil
-            if u65 ~= v306 then
-                u64 = nil
-                u65 = nil
-                u63 = u63 + 1
-                clear(u58)
-                local v309 = u56
-                local success_8, v310 = pcall(HttpService_upv_1.JSONEncode, HttpService_upv_1, false)
-                local v311
-                if success_8 then
-                    v311 = v310
-                else
-                    v311 = tostring(os.clock())
-                end
-                v308 = v309 .. v311
-                if v308 ~= u66 then
-                    u66 = v308
-                    clear(u59)
-                    u59.Visible = false
-                    u58.Size = UDim2.new(1, 0, 1, -58)
-                end
-                u60.Visible = false
-                for n_5 = 1, 5 do
-                    local tbl_83 = {BackgroundTransparency = 0.78}
-                    UI_upv_1.Tween(UI_upv_1.new("Frame", {Name = "Skeleton", Size = UDim2.new(1, -4, 0, tbl_upv_1.row + 8), LayoutOrder = n_5, BackgroundColor3 = Colors_upv_1.PanelHi, BackgroundTransparency = 0.5, [1] = UI_upv_1.Corner(12), Parent = u58}), TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true, n_5 * 0.12), tbl_83)
-                end
-            end
-        else
-            showBoard(v307, v305)
-        end
-        local v312, v313 = Tribes_upv_2.Board(u56)
-        if u62 ~= u62 then
-            return
-        end
-        if not v312 or type(v313) ~= "table" then
-            if type(v307) ~= "table" then
-                u64 = nil
-                u65 = nil
-                u63 = u63 + 1
-                clear(u58)
-                local v314 = u56
-                local success_9, v315 = pcall(HttpService_upv_1.JSONEncode, HttpService_upv_1, false)
-                local v316
-                if success_9 then
-                    v316 = v315
-                else
-                    v316 = tostring(os.clock())
-                end
-                local v317 = v314 .. v316
-                if v317 ~= u66 then
-                    u66 = v317
-                    clear(u59)
-                    u59.Visible = false
-                    u58.Size = UDim2.new(1, 0, 1, -58)
-                end
-                u60.Visible = true
-                local v318 = v313 or (Tribes_upv_1.Message("unavailable"))
-                u61.Text = tostring(v318)
-            end
-            return
-        end
-        showBoard(v313, u62)
-    end
-    for key_upv_19, value_31 in tbl_upv_76 do
-        value_31.Activated:Connect(
-            function()
-                --[[
-                  line: 1908
-                  upvalues:
-                    u56 (ref,  index: 1)
-                    key_upv_19 (copy, index: 2)
-                    u10 (ref,  index: 3)
-                    a1 (copy, index: 4)
-                    loadBoard (copy, index: 5)
-                ]]
-                if u56 ~= key_upv_19 then
-                    local v319 = os.clock() - u10 >= 0.5
-                    if not v319 then
-                        return
-                    end
-                    u56 = key_upv_19
-                    a1.Sounds.Play("Click")
-                    loadBoard()
-                end
-            end
-        )
-    end
-    tbl_upv_11.Leaderboard = loadBoard
-    local tbl_84 = {}
-    tbl_84.Name = "MapArea"
-    tbl_84.BackgroundColor3 = Color3.fromRGB(14, 52, 92)
-    tbl_84.BackgroundTransparency = 0
-    tbl_84.ClipsDescendants = true
-    tbl_84[1], tbl_84[2] = UI_upv_1.Corner(14), UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.9)
-    tbl_84.Parent = v29.page
-    local u73 = UI_upv_1.new("Frame", tbl_84)
-    local u74 = column("Side", v29.page, 10)
-    local u75 = UI_upv_1.new("Frame", {Name = "Layer", Size = UDim2.fromScale(1, 1), Parent = u73})
-    local u76 = UI_upv_1.new("ScrollingFrame", {Name = "Tiles", Size = UDim2.fromScale(1, 1), ScrollBarThickness = 3, Selectable = false, Visible = false, [1] = UI_upv_1.Padding(12, 12, 12, 12), Parent = u73})
-    local u77 = UI_upv_1.new("UIGridLayout", {CellSize = fromOffset_upv_1(200, 150), CellPadding = fromOffset_upv_1(10, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = u76})
-    local u78 = label({Name = "Loading", Text = "Loading the map...", TextSize = 17, FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Center, Size = UDim2.fromScale(1, 1), Parent = u73})
-    local tbl_85 = {}
-    tbl_85.Name = "Legend"
-    tbl_85.AnchorPoint = Vector2.new(0, 1)
-    tbl_85.Position = UDim2.new(0, 10, 1, -10)
-    tbl_85.AutomaticSize = Enum.AutomaticSize.X
-    tbl_85.Size = fromOffset_upv_1(0, 30)
-    tbl_85.BackgroundColor3 = Colors_upv_1.Void
-    tbl_85.BackgroundTransparency = 0.35
-    tbl_85.ZIndex = 6
-    tbl_85[1], tbl_85[2], tbl_85[3] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Padding(0, 12, 0, 10), UI_upv_1.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)
-    tbl_85.Parent = u73
-    local u79 = UI_upv_1.new("Frame", tbl_85)
-    local tbl_86 = {}
-    tbl_86.Name = "Ring"
-    tbl_86.Size = fromOffset_upv_1(14, 14)
-    tbl_86.BackgroundTransparency = 1
-    tbl_86.LayoutOrder = 1
-    tbl_86.ZIndex = 6
-    tbl_86[1], tbl_86[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Accent, 2, 0)
-    tbl_86.Parent = u79
-    UI_upv_1.new("Frame", tbl_86)
-    caps("YOUR TRIBE", {LayoutOrder = 2, ZIndex = 6, Size = fromOffset_upv_1(76, 14), TextColor3 = Colors_upv_1.TextDim, Parent = u79})
-    UI_upv_1.new("Frame", {Name = "Fog", Size = fromOffset_upv_1(14, 14), BackgroundColor3 = Color3.fromRGB(58, 64, 78), LayoutOrder = 3, ZIndex = 6, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u79})
-    caps("NOT IN ROTATION", {LayoutOrder = 4, ZIndex = 6, Size = fromOffset_upv_1(108, 14), TextColor3 = Colors_upv_1.TextDim, Parent = u79})
-    local u80 = nil
-    local u81 = nil
-    local function holderOf(a111)
-        --[[
-          name: holderOf
-          line: 1934
-          upvalues:
-            u81 (ref, index: 1)
-        ]]
-        local v320 = u81 and (u81.maps and (u81.maps[a111]))
-        if v320 and v320.holder then
-            local v321 = u81.tribes and (u81.tribes[tostring(v320.holder)])
-            return v321
-        end
-        return nil
-    end
-    local u82 = nil
-    local tbl_upv_87 = {}
-    local function u83(a112)
-        --[[
-          name: selectTerritory
-          line: 1968
-          upvalues:
-            u10 (ref,  index: 1)
-            u80 (ref,  index: 2)
-            a1 (copy, index: 3)
-            u83 (ref,  index: 4)
-            u82 (ref,  index: 5)
-        ]]
-        local v322 = os.clock() - u10 >= 0.5
-        if not v322 then
-            return
-        end
-        if u80 ~= a112 then
-            a1.Sounds.Play("Click")
-        end
-        u80 = a112
-        u83()
-        u82(a112)
-    end
-    local function regionAt(a113, a114)
-        --[[
-          name: regionAt
-          line: 1946
-          upvalues:
-            TribeMapGrid_upv_1 (copy, index: 1)
-            tbl_upv_87 (copy, index: 2)
-        ]]
-        local v323 = math.floor(a113 / TribeMapGrid_upv_1.cell) + 1
-        local v324 = math.floor(a114 / TribeMapGrid_upv_1.cell) + 1
-        local v325 = TribeMapGrid_upv_1.rows[v324]
-        if not v325 or v323 < 1 or TribeMapGrid_upv_1.cols < v323 then
-            return nil
-        end
-        local v326 = tbl_upv_87[v324]
-        if not (v326) then
-            local tbl_88 = {}
-            local v327 = nil
-            for key_20, value_32 in string.gmatch(v325, "(%D)(%d+)") do
-                local v328 = string.find("abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXY", key_20, 1, true)
-                v327 = v328 and TribeMapGrid_upv_1.keys[v328] or false
-                for _ = 1, tonumber(value_32) or 0 do
-                    table.insert(tbl_88, v327)
-                end
-            end
-            tbl_upv_87[v324] = tbl_88
-            v326 = tbl_88
-        end
-        return v326[v323] or nil
-    end
-    u83 = function()
-        --[[
-          line: 1980
-          upvalues:
-            u78 (copy, index: 1)
-            u81 (ref,  index: 2)
-            clear (copy, index: 3)
-            u75 (copy, index: 4)
-            u76 (copy, index: 5)
-            u77 (copy, index: 6)
-            u6 (ref,  index: 7)
-            roleIn (copy, index: 8)
-            Tribes_upv_2 (copy, index: 9)
-            TribeArt_upv_1 (copy, index: 10)
-            u79 (copy, index: 11)
-            u73 (copy, index: 12)
-            UI_upv_1 (copy, index: 13)
-            fromOffset_upv_1 (copy, index: 14)
-            regionAt (copy, index: 15)
-            u10 (ref,  index: 16)
-            u80 (ref,  index: 17)
-            a1 (copy, index: 18)
-            u83 (ref,  index: 19)
-            u82 (ref,  index: 20)
-            Tribes_upv_1 (copy, index: 21)
-            TribeEmblem_upv_1 (copy, index: 22)
-            Colors_upv_1 (copy, index: 23)
-            Theme_upv_1 (copy, index: 24)
-            label (copy, index: 25)
-            Fonts_upv_1 (copy, index: 26)
-            u1 (copy, index: 27)
-        ]]
-        u78.Visible = u81 == nil
-        clear(u75)
-        clear(u76)
-        u77.Parent = u76
-        if not u81 then
-            return
-        end
-        local v329 = u6 and (u6.tribe)
-        local v330
-        if type(v329) ~= "table" then
-            v330 = Tribes_upv_2.Mine()
-        else
-            v330 = {}
-            v330.id = v329.id
-            v330.role = roleIn(v329)
-        end
-        local u84 = ((type(u81.order) ~= "table") and {}) or (u81.order)
-        local v331 = TribeArt_upv_1.Map.image ~= ""
-        u76.Visible = not v331
-        u75.Visible = v331
-        u79.Visible = v331
-        if v331 then
-            local v332 = u73.AbsoluteSize / math.max(UI_upv_1.Scale, 0.01)
-            local size_upv_1 = TribeArt_upv_1.Map.size
-            local v333 = math.min(v332.X / size_upv_1.X, v332.Y / size_upv_1.Y)
-            local v334 = math.floor(size_upv_1.X * v333)
-            local v335 = math.floor(size_upv_1.Y * v333)
-            local v336 = math.floor((v332.X - v334) / 2)
-            local v337 = math.floor((v332.Y - v335) / 2)
-            UI_upv_1.new("ImageLabel", {Name = "Base", ZIndex = 1, Image = TribeArt_upv_1.Map.image, Position = fromOffset_upv_1(v336, v337), Size = fromOffset_upv_1(v334, v335), Parent = u75})
-            local u85 = UI_upv_1.new("TextButton", {ZIndex = 3, Name = "Hit", Selectable = false, Text = "", AutoButtonColor = false, Position = fromOffset_upv_1(v336, v337), Size = fromOffset_upv_1(v334, v335), Parent = u75})
-            u85.Activated:Connect(
+
+            local v845 = parent22.AbsoluteSize / math.max(ui.Scale, 0.01)
+            local size = TribeArt.Map.size
+            local v847 = math.min(v845.X / size.X, v845.Y / size.Y)
+            local flooredValue = math.floor(size.X * v847)
+            local flooredValue2 = math.floor(size.Y * v847)
+            local flooredValue3 = math.floor((v845.X - flooredValue) / 2)
+            local flooredValue4 = math.floor((v845.Y - flooredValue2) / 2)
+            ui.new("ImageLabel", {Name = "Base", ZIndex = 1, Image = TribeArt.Map.image, Position = udim2FromOffset(flooredValue3, flooredValue4), Size = udim2FromOffset(flooredValue, flooredValue2), Parent = parent24})
+            local ui2 = ui.new("TextButton", {Name = "Hit", Text = "", AutoButtonColor = false, Selectable = false, ZIndex = 3, Position = udim2FromOffset(flooredValue3, flooredValue4), Size = udim2FromOffset(flooredValue, flooredValue2), Parent = parent24})
+
+            ui2.Activated:Connect(
                 function()
                     --[[
                       line: 2005
                       upvalues:
-                        u85 (copy, index: 1)
-                        UI_upv_1 (copy, index: 2)
+                        ui2 (copy, index: 1)
+                        ui (copy, index: 2)
                         regionAt (copy, index: 3)
-                        size_upv_1 (copy, index: 4)
-                        u84 (copy, index: 5)
-                        u10 (ref,  index: 6)
-                        u80 (ref,  index: 7)
-                        a1 (copy, index: 8)
-                        u83 (ref,  index: 9)
-                        u82 (ref,  index: 10)
+                        size (copy, index: 4)
+                        v819 (copy, index: 5)
+                        timestamp (ref,  index: 6)
+                        v796 (ref,  index: 7)
+                        a26 (copy, index: 8)
+                        v815 (ref,  index: 9)
+                        v801 (ref,  index: 10)
                     ]]
-                    local AbsoluteSize_1 = u85.AbsoluteSize
-                    if (AbsoluteSize_1.X <= 0) then
+                    local absoluteSize = ui2.AbsoluteSize
+
+                    if absoluteSize.X <= 0 or absoluteSize.Y <= 0 then
                         return
                     end
-                    if not (AbsoluteSize_1.Y <= 0) then
-                        local v338 = (UI_upv_1.PointerAbs() - u85.AbsolutePosition) / AbsoluteSize_1
-                        local v339 = regionAt(v338.X * size_upv_1.X, v338.Y * size_upv_1.Y)
-                        if v339 and table.find(u84, v339) then
-                            local v340 = os.clock() - u10 >= 0.5
-                            if not v340 then
-                                return
-                            end
-                            if u80 ~= v339 then
-                                a1.Sounds.Play("Click")
-                            end
-                            u80 = v339
-                            u83()
-                            u82(v339)
+
+                    local v854 = (ui.PointerAbs() - ui2.AbsolutePosition) / absoluteSize
+                    local target = regionAt(v854.X * size.X, v854.Y * size.Y)
+
+                    if target and table.find(v819, target) then
+                        if not (0.5 <= os.clock() - timestamp) then
+                            return
                         end
+
+                        if v796 ~= target then
+                            a26.Sounds.Play("Click")
+                        end
+
+                        v796 = target
+                        v815()
+                        v801(target)
                     end
                 end
             )
-            local v341 = nil
-            local v342 = nil
-            for key_upv_21, value_33 in TribeArt_upv_1.Map.regions do
-                local v343 = table.find(u84, key_upv_21) ~= nil
-                if v343 then
-                    local v344 = u81 and u81.maps and u81.maps[key_upv_21]
-                    if not (v344) or not (v344.holder) then
-                        v334 = nil
-                        local v344 = value_33.bbox[1]
-                        local v345 = value_33.bbox[2]
-                        v342 = value_33.bbox[3]
-                        local v346 = value_33.bbox[4]
-                        if value_33.mask ~= "" then
-                            local v347 = u80 == key_upv_21
-                            local new_12 = UI_upv_1.new
-                            local tbl_89 = {ImageColor3 = 0, ImageTransparency = 0, Parent = 0, ZIndex = 2, Position = 0, Size = 0}
-                            tbl_89.Name = "Mask_" .. key_upv_21
-                            tbl_89.Image = value_33.mask
-                            if v334 then
-                                v341 = Tribes_upv_1.Color(v334.color1)
-                            elseif v343 then
-                                v341 = Color3.new(1, 1, 1)
-                            else
-                                v341 = Color3.fromRGB(58, 64, 78)
-                            end
-                            tbl_89.ImageColor3 = v341
-                            if v334 then
-                                v341 = (v347 and 0.3) or 0.42
-                            else
-                                v341 = ((not v343) and 0.28) or ((v347 and 0.8) or 1)
-                            end
-                            tbl_89.ImageTransparency = v341
-                            tbl_89.Position = fromOffset_upv_1(v336 + math.floor(v344 * v333), v337 + math.floor(v345 * v333))
-                            tbl_89.Size = fromOffset_upv_1(math.ceil((v342 - v344) * v333), math.ceil((v346 - v345) * v333))
-                            tbl_89.Parent = u75
-                            new_12("ImageLabel", tbl_89)
-                        end
-                        if not (v343) then
-                            continue
-                        end
-                        local v348 = UI_upv_1.new("TextButton", {ZIndex = 4, Text = "", AutoButtonColor = false, Name = "Pin_" .. key_upv_21, AnchorPoint = Vector2.new(0.5, 0.92), Position = fromOffset_upv_1(math.floor(v336 + (value_33.anchor[1] * v333)), math.floor(v337 + (value_33.anchor[2] * v333))), Size = fromOffset_upv_1(64, 70), Parent = u75})
-                        if v334 then
-                            local new_13 = TribeEmblem_upv_1.new
-                            local v349 = ((UI_upv_1.Compact) and 58) or 54
-                            local tbl_90 = {ZIndex = 4}
-                            tbl_90.AnchorPoint = Vector2.new(0.5, 0.5)
-                            tbl_90.Position = UDim2.fromScale(0.5, 0.5)
-                            tbl_90.Parent = v348
-                            new_13(v349, tbl_90):Set(v334.icon, v334.color1, v334.color2, v334.tag)
-                        else
-                            local tbl_91 = {}
-                            tbl_91.Name = "Dot"
-                            tbl_91.AnchorPoint = Vector2.new(0.5, 0.5)
-                            tbl_91.Position = UDim2.fromScale(0.5, 0.62)
-                            tbl_91.Size = fromOffset_upv_1(14, 14)
-                            tbl_91.BackgroundColor3 = Colors_upv_1.Text
-                            tbl_91.ZIndex = 4
-                            tbl_91[1], tbl_91[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Void, 2, 0.3)
-                            tbl_91.Parent = v348
-                            UI_upv_1.new("Frame", tbl_91)
-                        end
-                        if v334 and v330 and v334.id == v330.id then
-                            local new_14 = UI_upv_1.new
-                            local tbl_92 = {}
-                            tbl_92.Name = "Mine"
-                            tbl_92.AnchorPoint = Vector2.new(0.5, 0.5)
-                            tbl_92.Position = UDim2.fromScale(0.5, 0.5)
-                            tbl_92.Size = fromOffset_upv_1(((UI_upv_1.Compact) and 70) or 66, ((UI_upv_1.Compact) and 76) or 72)
-                            tbl_92.ZIndex = 3
-                            tbl_92[1], tbl_92[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Accent, 3, 0)
-                            tbl_92.Parent = v348
-                            new_14("Frame", tbl_92)
-                        end
-                        if u80 == key_upv_21 then
-                            UI_upv_1.Pop(UI_upv_1.Pill(Tribes_upv_2.MapName(key_upv_21), Colors_upv_1.Void, {Transparency = 0.15, Height = 24, ZIndex = 5, TextSize = 13, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0, -2), Parent = v348}), 0.85)
-                        end
-                        v348.Activated:Connect(
-                            function()
-                                --[[
-                                  line: 2061
-                                  upvalues:
-                                    key_upv_21 (copy, index: 1)
-                                    u10 (ref,  index: 2)
-                                    u80 (ref,  index: 3)
-                                    a1 (copy, index: 4)
-                                    u83 (ref,  index: 5)
-                                    u82 (ref,  index: 6)
-                                ]]
-                                local v350 = os.clock() - u10 >= 0.5
-                                if not v350 then
-                                    return
-                                end
-                                if u80 ~= key_upv_21 then
-                                    a1.Sounds.Play("Click")
-                                end
-                                u80 = key_upv_21
-                                u83()
-                                u82(key_upv_21)
-                            end
-                        )
+
+            local _
+
+            for mapKey, region in TribeArt.Map.regions do
+                local tribe
+                local v860 = table.find(v819, mapKey) ~= nil
+
+                if v860 then
+                    local map = v797 and v797.maps and v797.maps[mapKey]
+
+                    if not map or not map.holder then
+                        tribe = nil
+                    else
+                        tribe = v797.tribes and v797.tribes[tostring(map.holder)]
                     end
-                    v334 = u81.tribes and (u81.tribes[tostring(v344.holder)])
                 else
-                    v334 = nil
+                    tribe = nil
                 end
-                local v344 = value_33.bbox[1]
-                local v345 = value_33.bbox[2]
-                v342 = value_33.bbox[3]
-                local v346 = value_33.bbox[4]
-                if value_33.mask ~= "" then
-                    local v347 = u80 == key_upv_21
-                    local new_12 = UI_upv_1.new
-                    local tbl_89 = {ImageColor3 = 0, ImageTransparency = 0, Parent = 0, ZIndex = 2, Position = 0, Size = 0}
-                    tbl_89.Name = "Mask_" .. key_upv_21
-                    tbl_89.Image = value_33.mask
-                    if v334 then
-                        v341 = Tribes_upv_1.Color(v334.color1)
-                    elseif v343 then
-                        v341 = Color3.new(1, 1, 1)
+
+                local v862 = region.bbox[1]
+                local v863 = region.bbox[2]
+                local v864 = region.bbox[3]
+                local v865 = region.bbox[4]
+
+                if region.mask ~= "" then
+                    local imageColor3
+                    local imageTransparency
+                    local v868 = v796 == mapKey
+                    local newUi = ui.new
+                    local v870 = {ZIndex = 2, Name = "Mask_" .. mapKey, Image = region.mask}
+
+                    if tribe then
+                        imageColor3 = child.Color(tribe.color1)
                     else
-                        v341 = Color3.fromRGB(58, 64, 78)
+                        imageColor3 = if v860 then Color3.new(1, 1, 1) else Color3.fromRGB(58, 64, 78)
                     end
-                    tbl_89.ImageColor3 = v341
-                    if v334 then
-                        v341 = (v347 and 0.3) or 0.42
+
+                    v870.ImageColor3 = imageColor3
+
+                    if tribe then
+                        imageTransparency = v868 and 0.3 or 0.42
                     else
-                        v341 = ((not v343) and 0.28) or ((v347 and 0.8) or 1)
+                        imageTransparency = v860 and (v868 and 0.8 or 1) or 0.28
                     end
-                    tbl_89.ImageTransparency = v341
-                    tbl_89.Position = fromOffset_upv_1(v336 + math.floor(v344 * v333), v337 + math.floor(v345 * v333))
-                    tbl_89.Size = fromOffset_upv_1(math.ceil((v342 - v344) * v333), math.ceil((v346 - v345) * v333))
-                    tbl_89.Parent = u75
-                    new_12("ImageLabel", tbl_89)
+
+                    v870.ImageTransparency = imageTransparency
+                    v870.Position = udim2FromOffset(flooredValue3 + math.floor(v862 * v847), flooredValue4 + math.floor(v863 * v847))
+                    v870.Size = udim2FromOffset(math.ceil((v864 - v862) * v847), (math.ceil((v865 - v863) * v847)))
+                    v870.Parent = parent24
+                    newUi("ImageLabel", v870)
                 end
-                if not (v343) then
-                    continue
-                end
-                local v348 = UI_upv_1.new("TextButton", {ZIndex = 4, Text = "", AutoButtonColor = false, Name = "Pin_" .. key_upv_21, AnchorPoint = Vector2.new(0.5, 0.92), Position = fromOffset_upv_1(math.floor(v336 + (value_33.anchor[1] * v333)), math.floor(v337 + (value_33.anchor[2] * v333))), Size = fromOffset_upv_1(64, 70), Parent = u75})
-                if v334 then
-                    local new_13 = TribeEmblem_upv_1.new
-                    local v349 = ((UI_upv_1.Compact) and 58) or 54
-                    local tbl_90 = {ZIndex = 4}
-                    tbl_90.AnchorPoint = Vector2.new(0.5, 0.5)
-                    tbl_90.Position = UDim2.fromScale(0.5, 0.5)
-                    tbl_90.Parent = v348
-                    new_13(v349, tbl_90):Set(v334.icon, v334.color1, v334.color2, v334.tag)
-                else
-                    local tbl_91 = {}
-                    tbl_91.Name = "Dot"
-                    tbl_91.AnchorPoint = Vector2.new(0.5, 0.5)
-                    tbl_91.Position = UDim2.fromScale(0.5, 0.62)
-                    tbl_91.Size = fromOffset_upv_1(14, 14)
-                    tbl_91.BackgroundColor3 = Colors_upv_1.Text
-                    tbl_91.ZIndex = 4
-                    tbl_91[1], tbl_91[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Void, 2, 0.3)
-                    tbl_91.Parent = v348
-                    UI_upv_1.new("Frame", tbl_91)
-                end
-                if v334 and v330 and v334.id == v330.id then
-                    local new_14 = UI_upv_1.new
-                    local tbl_92 = {}
-                    tbl_92.Name = "Mine"
-                    tbl_92.AnchorPoint = Vector2.new(0.5, 0.5)
-                    tbl_92.Position = UDim2.fromScale(0.5, 0.5)
-                    tbl_92.Size = fromOffset_upv_1(((UI_upv_1.Compact) and 70) or 66, ((UI_upv_1.Compact) and 76) or 72)
-                    tbl_92.ZIndex = 3
-                    tbl_92[1], tbl_92[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Accent, 3, 0)
-                    tbl_92.Parent = v348
-                    new_14("Frame", tbl_92)
-                end
-                if u80 == key_upv_21 then
-                    UI_upv_1.Pop(UI_upv_1.Pill(Tribes_upv_2.MapName(key_upv_21), Colors_upv_1.Void, {Transparency = 0.15, Height = 24, ZIndex = 5, TextSize = 13, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0, -2), Parent = v348}), 0.85)
-                end
-                v348.Activated:Connect(
-                    function()
-                        --[[
-                          line: 2061
-                          upvalues:
-                            key_upv_21 (copy, index: 1)
-                            u10 (ref,  index: 2)
-                            u80 (ref,  index: 3)
-                            a1 (copy, index: 4)
-                            u83 (ref,  index: 5)
-                            u82 (ref,  index: 6)
-                        ]]
-                        local v350 = os.clock() - u10 >= 0.5
-                        if not v350 then
-                            return
-                        end
-                        if u80 ~= key_upv_21 then
-                            a1.Sounds.Play("Click")
-                        end
-                        u80 = key_upv_21
-                        u83()
-                        u82(key_upv_21)
-                    end
-                )
-            end
-        else
-            local v351, v352 = nil, nil
-            local v353 = nil
-            local v354 = nil
-            local _ = nil
-            local v342 = nil
-            local v360 = nil
-            for v361, value_upv_34 in u84 do
-                local v355 = u81.maps[value_upv_34]
-                local v356 = u81 and (u81.maps and (u81.maps[value_upv_34]))
-                if not (v356) or not (v356.holder) then
-                    v351 = nil
-                    local v357 = nil
-                    v356 = UI_upv_1.new("TextButton", {Name = value_upv_34, Text = "", AutoButtonColor = false, LayoutOrder = v357, BackgroundColor3 = Colors_upv_1.PanelHi, BackgroundTransparency = 0.2, ClipsDescendants = true, [1] = UI_upv_1.Corner(12), Parent = u76})
-                    if v351 and v330 then
-                        if v351.id == v330.id then
-                            local v362 = true
-                        else
-                            local v363 = false
-                        end
-                    end
-                    local Stroke_2 = UI_upv_1.Stroke
-                    if u80 == value_upv_34 then
-                        v353 = Colors_upv_1.Text
-                    elseif v351 then
-                        v353 = Colors_upv_1.Accent
+
+                if v860 then
+                    local v871 = flooredValue3 + region.anchor[1] * v847
+                    local v872 = flooredValue4 + region.anchor[2] * v847
+                    local parent = ui.new("TextButton", {Text = "", AutoButtonColor = false, ZIndex = 4, Name = "Pin_" .. mapKey, AnchorPoint = Vector2.new(0.5, 0.92), Position = udim2FromOffset(math.floor(v871), (math.floor(v872))), Size = udim2FromOffset(64, 70), Parent = parent24})
+
+                    if tribe then
+                        local newTribeEmblem = TribeEmblem.new
+                        local v875 = ui.Compact and 58 or 54
+                        local v876 = {ZIndex = 4, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent}
+                        newTribeEmblem(v875, v876):Set(tribe.icon, tribe.color1, tribe.color2, tribe.tag)
                     else
-                        v353 = Colors_upv_1.Stroke
+                        ui.new("Frame", {Name = "Dot", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.62), Size = udim2FromOffset(14, 14), BackgroundColor3 = colors.Text, ZIndex = 4, ui.Corner(theme.Radius.Pill), (ui.Stroke(colors.Void, 2, 0.3)), Parent = parent})
                     end
-                    if u80 == value_upv_34 or v351 then
-                        v354 = 2
-                        local v358 = ((u80 == value_upv_34) and 0.1) or ((v351 and 0) or 0.9)
-                        Stroke_2(v353, v354, v358).Parent = v356
-                        local new_15 = UI_upv_1.new
-                        local tbl_93 = {Image = 0, Name = "Thumb", Parent = 0, BackgroundColor3 = 0, ScaleType = 0, Size = 0}
-                        tbl_93.Image = tostring((v355 and (v355.thumb)) or "")
-                        tbl_93.Size = UDim2.new(1, 0, 0, 100)
-                        tbl_93.ScaleType = Enum.ScaleType.Crop
-                        tbl_93.BackgroundColor3 = Colors_upv_1.Raised
-                        tbl_93.Parent = v356
-                        new_15("ImageLabel", tbl_93)
-                        if v351 then
-                            UI_upv_1.new("Frame", {Name = "Tint", BackgroundTransparency = 0.7, Size = UDim2.new(1, 0, 0, 100), BackgroundColor3 = Tribes_upv_1.Color(v351.color1), Parent = v356})
-                            local tbl_94 = {}
-                            tbl_94.Position = fromOffset_upv_1(8, 50)
-                            tbl_94.Parent = v356
-                            TribeEmblem_upv_1.new(44, tbl_94):Set(v351.icon, v351.color1, v351.color2, v351.tag)
-                        end
-                        local tbl_95 = {FontFace = 0, Name = "Name", Position = 0, Parent = 0, Text = 0, TextSize = 16, Size = 0}
-                        v352 = v355 and v355.name or value_upv_34
-                        tbl_95.Text = tostring(v352)
-                        tbl_95.FontFace = Fonts_upv_1.Heavy
-                        tbl_95.Position = fromOffset_upv_1(10, 104)
-                        tbl_95.Size = UDim2.new(1, -20, 0, 20)
-                        tbl_95.Parent = v359
-                        label(tbl_95)
-                        local tbl_96 = {Position = 0, FontFace = 0, Name = "By", TextColor3 = 0, Parent = 0, Text = 0, TextSize = 14, Size = 0}
-                        if v351 then
-                            v354 = "Held by %*"
-                            local Tag_13 = TribeEmblem_upv_1.Tag
-                            if type(v351) ~= "table" then
-                                v342 = v351
-                            else
-                                v342 = v351.tag
-                            end
-                            v354 = v354:format(Tag_13(v342))
-                        else
-                            v354 = "Unclaimed"
-                        end
-                        tbl_96.Text = v354
-                        tbl_96.FontFace = Fonts_upv_1.SemiBold
-                        if v351 then
-                            v354 = TribeEmblem_upv_1.TagColor(v351.color1)
-                        else
-                            v354 = u1
-                        end
-                        tbl_96.TextColor3 = v354
-                        tbl_96.Position = fromOffset_upv_1(10, 124)
-                        tbl_96.Size = UDim2.new(1, -20, 0, 18)
-                        tbl_96.Parent = v359
-                        label(tbl_96)
-                        v359.Activated:Connect(
-                            function()
-                                --[[
-                                  line: 2082
-                                  upvalues:
-                                    u10 (ref,  index: 1)
-                                    a1 (copy, index: 2)
-                                    u80 (ref,  index: 3)
-                                    value_upv_34 (copy, index: 4)
-                                    u83 (ref,  index: 5)
-                                    u82 (ref,  index: 6)
-                                ]]
-                                local v360 = os.clock() - u10 >= 0.5
-                                if not v360 then
-                                    return
-                                end
-                                a1.Sounds.Play("Click")
-                                u80 = value_upv_34
-                                u83()
-                                u82(value_upv_34)
-                            end
-                        )
+
+                    if tribe and v818 and tribe.id == v818.id then
+                        local newUi = ui.new
+                        local v878 = {Name = "Mine", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5)}
+                        local v879 = ui.Compact and 70 or 66
+                        local v880 = ui.Compact and 76 or 72
+                        v878.Size = udim2FromOffset(v879, v880)
+                        v878.ZIndex = 3
+                        v878[1], v878[2] = ui.Corner(theme.Radius.Pill), (ui.Stroke(colors.Accent, 3, 0))
+                        v878.Parent = parent
+                        newUi("Frame", v878)
                     end
-                    v354 = 1
-                    local v358 = ((u80 == value_upv_34) and 0.1) or ((v351 and 0) or 0.9)
-                    Stroke_2(v353, v354, v358).Parent = v356
-                    local new_15 = UI_upv_1.new
-                    local tbl_93 = {Image = 0, Name = "Thumb", Parent = 0, BackgroundColor3 = 0, ScaleType = 0, Size = 0}
-                    tbl_93.Image = tostring((v355 and (v355.thumb)) or "")
-                    tbl_93.Size = UDim2.new(1, 0, 0, 100)
-                    tbl_93.ScaleType = Enum.ScaleType.Crop
-                    tbl_93.BackgroundColor3 = Colors_upv_1.Raised
-                    tbl_93.Parent = v356
-                    new_15("ImageLabel", tbl_93)
-                    if v351 then
-                        UI_upv_1.new("Frame", {Name = "Tint", BackgroundTransparency = 0.7, Size = UDim2.new(1, 0, 0, 100), BackgroundColor3 = Tribes_upv_1.Color(v351.color1), Parent = v359})
-                        local tbl_94 = {}
-                        tbl_94.Position = fromOffset_upv_1(8, 50)
-                        tbl_94.Parent = v359
-                        TribeEmblem_upv_1.new(44, tbl_94):Set(v351.icon, v351.color1, v351.color2, v351.tag)
+
+                    if v796 == mapKey then
+                        local v881 = ui.Pill(tribes.MapName(mapKey), colors.Void, {Height = 24, TextSize = 13, Transparency = 0.15, ZIndex = 5, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 0, -2), Parent = parent})
+                        ui.Pop(v881, 0.85)
                     end
-                    local tbl_95 = {FontFace = 0, Name = "Name", Position = 0, Parent = 0, Text = 0, TextSize = 16, Size = 0}
-                    v352 = v355 and v355.name or value_upv_34
-                    tbl_95.Text = tostring(v352)
-                    tbl_95.FontFace = Fonts_upv_1.Heavy
-                    tbl_95.Position = fromOffset_upv_1(10, 104)
-                    tbl_95.Size = UDim2.new(1, -20, 0, 20)
-                    tbl_95.Parent = v359
-                    label(tbl_95)
-                    local tbl_96 = {Position = 0, FontFace = 0, Name = "By", TextColor3 = 0, Parent = 0, Text = 0, TextSize = 14, Size = 0}
-                    if v351 then
-                        v354 = "Held by %*"
-                        local Tag_13 = TribeEmblem_upv_1.Tag
-                        if type(v351) ~= "table" then
-                            v342 = v351
-                        else
-                            v342 = v351.tag
-                        end
-                        v354 = v354:format(Tag_13(v342))
-                    else
-                        v354 = "Unclaimed"
-                    end
-                    tbl_96.Text = v354
-                    tbl_96.FontFace = Fonts_upv_1.SemiBold
-                    if v351 then
-                        v354 = TribeEmblem_upv_1.TagColor(v351.color1)
-                    else
-                        v354 = u1
-                    end
-                    tbl_96.TextColor3 = v354
-                    tbl_96.Position = fromOffset_upv_1(10, 124)
-                    tbl_96.Size = UDim2.new(1, -20, 0, 18)
-                    tbl_96.Parent = v359
-                    label(tbl_96)
-                    v359.Activated:Connect(
+
+                    parent.Activated:Connect(
                         function()
                             --[[
-                              line: 2082
+                              line: 2061
                               upvalues:
-                                u10 (ref,  index: 1)
-                                a1 (copy, index: 2)
-                                u80 (ref,  index: 3)
-                                value_upv_34 (copy, index: 4)
-                                u83 (ref,  index: 5)
-                                u82 (ref,  index: 6)
+                                mapKey (copy, index: 1)
+                                timestamp (ref,  index: 2)
+                                v796 (ref,  index: 3)
+                                a26 (copy, index: 4)
+                                v815 (ref,  index: 5)
+                                v801 (ref,  index: 6)
                             ]]
-                            local v360 = os.clock() - u10 >= 0.5
-                            if not v360 then
+                            local mapKey2 = mapKey
+
+                            if not (0.5 <= os.clock() - timestamp) then
                                 return
                             end
-                            a1.Sounds.Play("Click")
-                            u80 = value_upv_34
-                            u83()
-                            u82(value_upv_34)
+
+                            if v796 ~= mapKey2 then
+                                a26.Sounds.Play("Click")
+                            end
+
+                            v796 = mapKey2
+                            v815()
+                            v801(mapKey2)
                         end
                     )
                 end
-                v351 = u81.tribes and (u81.tribes[tostring(v356.holder)])
-                local v357 = nil
-                v356 = UI_upv_1.new("TextButton", {Name = value_upv_34, Text = "", AutoButtonColor = false, LayoutOrder = v357, BackgroundColor3 = Colors_upv_1.PanelHi, BackgroundTransparency = 0.2, ClipsDescendants = true, [1] = UI_upv_1.Corner(12), Parent = u76})
-                if v351 and v330 then
-                    if v351.id == v330.id then
-                        local v362 = true
-                    else
-                        local v363 = false
-                    end
-                end
-                local Stroke_2 = UI_upv_1.Stroke
-                if u80 == value_upv_34 then
-                    v353 = Colors_upv_1.Text
-                elseif v351 then
-                    v353 = Colors_upv_1.Accent
+            end
+        end
+
+        v801 = function(mapKey)
+            --[[
+              line: 2094
+              upvalues:
+                clear (copy, index: 1)
+                parent23 (copy, index: 2)
+                v797 (ref,  index: 3)
+                v42 (ref,  index: 4)
+                roleIn (copy, index: 5)
+                tribes (copy, index: 6)
+                ui (copy, index: 7)
+                colors (copy, index: 8)
+                label (copy, index: 9)
+                fonts (copy, index: 10)
+                timestamp (ref,  index: 11)
+                a26 (copy, index: 12)
+                v45 (ref,  index: 13)
+                TribeEmblem (copy, index: 14)
+                udim2FromOffset (copy, index: 15)
+                caps (copy, index: 16)
+                backgroundColor3 (copy, index: 17)
+                theme (copy, index: 18)
+                child (copy, index: 19)
+                textColor32 (copy, index: 20)
+                untilText (copy, index: 21)
+                section (copy, index: 22)
+                openable (copy, index: 23)
+                textColor3 (copy, index: 24)
+            ]]
+            local v884
+            local v885
+            clear(parent23)
+
+            if not v797 then
+                return
+            end
+
+            local tribe = v42 and v42.tribe
+
+            if type(tribe) ~= "table" then
+                v884 = tribes.Mine()
+            else
+                v884 = {id = tribe.id, role = roleIn(tribe)}
+            end
+
+            if mapKey and v797.maps and v797.maps[mapKey] then
+                local tribe3
+                local v888
+                local map = v797.maps[mapKey]
+                local map2 = v797 and v797.maps and v797.maps[mapKey]
+
+                if not map2 or not map2.holder then
+                    tribe3 = nil
                 else
-                    v353 = Colors_upv_1.Stroke
+                    tribe3 = v797.tribes and v797.tribes[tostring(map2.holder)]
                 end
-                if u80 == value_upv_34 or v351 then
-                    v354 = 2
-                    local v358 = ((u80 == value_upv_34) and 0.1) or ((v351 and 0) or 0.9)
-                    Stroke_2(v353, v354, v358).Parent = v356
-                    local new_15 = UI_upv_1.new
-                    local tbl_93 = {Image = 0, Name = "Thumb", Parent = 0, BackgroundColor3 = 0, ScaleType = 0, Size = 0}
-                    tbl_93.Image = tostring((v355 and (v355.thumb)) or "")
-                    tbl_93.Size = UDim2.new(1, 0, 0, 100)
-                    tbl_93.ScaleType = Enum.ScaleType.Crop
-                    tbl_93.BackgroundColor3 = Colors_upv_1.Raised
-                    tbl_93.Parent = v356
-                    new_15("ImageLabel", tbl_93)
-                    if v351 then
-                        UI_upv_1.new("Frame", {Name = "Tint", BackgroundTransparency = 0.7, Size = UDim2.new(1, 0, 0, 100), BackgroundColor3 = Tribes_upv_1.Color(v351.color1), Parent = v356})
-                        local tbl_94 = {}
-                        tbl_94.Position = fromOffset_upv_1(8, 50)
-                        tbl_94.Parent = v356
-                        TribeEmblem_upv_1.new(44, tbl_94):Set(v351.icon, v351.color1, v351.color2, v351.tag)
-                    end
-                    local tbl_95 = {FontFace = 0, Name = "Name", Position = 0, Parent = 0, Text = 0, TextSize = 16, Size = 0}
-                    v352 = v355 and v355.name or value_upv_34
-                    tbl_95.Text = tostring(v352)
-                    tbl_95.FontFace = Fonts_upv_1.Heavy
-                    tbl_95.Position = fromOffset_upv_1(10, 104)
-                    tbl_95.Size = UDim2.new(1, -20, 0, 20)
-                    tbl_95.Parent = v359
-                    label(tbl_95)
-                    local tbl_96 = {Position = 0, FontFace = 0, Name = "By", TextColor3 = 0, Parent = 0, Text = 0, TextSize = 14, Size = 0}
-                    if v351 then
-                        v354 = "Held by %*"
-                        local Tag_13 = TribeEmblem_upv_1.Tag
-                        if type(v351) ~= "table" then
-                            v342 = v351
-                        else
-                            v342 = v351.tag
-                        end
-                        v354 = v354:format(Tag_13(v342))
-                    else
-                        v354 = "Unclaimed"
-                    end
-                    tbl_96.Text = v354
-                    tbl_96.FontFace = Fonts_upv_1.SemiBold
-                    if v351 then
-                        v354 = TribeEmblem_upv_1.TagColor(v351.color1)
-                    else
-                        v354 = u1
-                    end
-                    tbl_96.TextColor3 = v354
-                    tbl_96.Position = fromOffset_upv_1(10, 124)
-                    tbl_96.Size = UDim2.new(1, -20, 0, 18)
-                    tbl_96.Parent = v359
-                    label(tbl_96)
-                    v359.Activated:Connect(
+
+                local parent = ui.Panel({Name = "Selected", BackgroundTransparency = 0.06, LayoutOrder = 1, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Radius = UDim.new(0, 14), Parent = parent23})
+                ui.Padding(10, 10, 10, 10).Parent = parent
+                ui.List(Enum.FillDirection.Vertical, 8).Parent = parent
+                local parent2 = ui.new("ImageLabel", {Name = "Thumb", Image = tostring((map.thumb or "")), Size = UDim2.new(1, 0, 0, 150), ScaleType = Enum.ScaleType.Crop, BackgroundColor3 = colors.Raised, ClipsDescendants = true, LayoutOrder = 1, (ui.Corner(10)), Parent = parent})
+                ui.new("Frame", {Name = "Shade", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), ui.Gradient(Color3.new(0, 0, 0), Color3.new(0, 0, 0), 90, NumberSequence.new(1, 0.1)), (ui.Corner(10)), Parent = parent2})
+                label({Name = "Name", TextSize = 22, Text = string.upper((tostring(map.name or mapKey))), FontFace = fonts.Display, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 12, 1, -8), Size = UDim2.new(1, -24, 0, 26), Parent = parent2})
+                local parent3 = ui.new("TextButton", {Name = "Holder", Text = "", AutoButtonColor = false, LayoutOrder = 2, Size = UDim2.new(1, 0, 0, 54), Parent = parent})
+
+                if tribe3 then
+                    parent3.Activated:Connect(
                         function()
                             --[[
-                              line: 2082
+                              line: 2111
                               upvalues:
-                                u10 (ref,  index: 1)
-                                a1 (copy, index: 2)
-                                u80 (ref,  index: 3)
-                                value_upv_34 (copy, index: 4)
-                                u83 (ref,  index: 5)
-                                u82 (ref,  index: 6)
+                                timestamp (ref,  index: 1)
+                                a26 (copy, index: 2)
+                                v45 (ref,  index: 3)
+                                tribe3 (copy, index: 4)
                             ]]
-                            local v360 = os.clock() - u10 >= 0.5
-                            if not v360 then
-                                return
+                            if 0.5 <= os.clock() - timestamp then
+                                a26.Sounds.Play("Click")
+                                v45(tribe3.id, tribe3)
                             end
-                            a1.Sounds.Play("Click")
-                            u80 = value_upv_34
-                            u83()
-                            u82(value_upv_34)
                         end
                     )
-                end
-                v354 = 1
-                local v358 = ((u80 == value_upv_34) and 0.1) or ((v351 and 0) or 0.9)
-                Stroke_2(v353, v354, v358).Parent = v356
-                local new_15 = UI_upv_1.new
-                local tbl_93 = {Image = 0, Name = "Thumb", Parent = 0, BackgroundColor3 = 0, ScaleType = 0, Size = 0}
-                tbl_93.Image = tostring((v355 and (v355.thumb)) or "")
-                tbl_93.Size = UDim2.new(1, 0, 0, 100)
-                tbl_93.ScaleType = Enum.ScaleType.Crop
-                tbl_93.BackgroundColor3 = Colors_upv_1.Raised
-                tbl_93.Parent = v356
-                new_15("ImageLabel", tbl_93)
-                if v351 then
-                    UI_upv_1.new("Frame", {Name = "Tint", BackgroundTransparency = 0.7, Size = UDim2.new(1, 0, 0, 100), BackgroundColor3 = Tribes_upv_1.Color(v351.color1), Parent = v356})
-                    local tbl_94 = {}
-                    tbl_94.Position = fromOffset_upv_1(8, 50)
-                    tbl_94.Parent = v356
-                    TribeEmblem_upv_1.new(44, tbl_94):Set(v351.icon, v351.color1, v351.color2, v351.tag)
-                end
-                local tbl_95 = {FontFace = 0, Name = "Name", Position = 0, Parent = 0, Text = 0, TextSize = 16, Size = 0}
-                v352 = v355 and v355.name or value_upv_34
-                tbl_95.Text = tostring(v352)
-                tbl_95.FontFace = Fonts_upv_1.Heavy
-                tbl_95.Position = fromOffset_upv_1(10, 104)
-                tbl_95.Size = UDim2.new(1, -20, 0, 20)
-                tbl_95.Parent = v359
-                label(tbl_95)
-                local tbl_96 = {Position = 0, FontFace = 0, Name = "By", TextColor3 = 0, Parent = 0, Text = 0, TextSize = 14, Size = 0}
-                if v351 then
-                    v354 = "Held by %*"
-                    local Tag_13 = TribeEmblem_upv_1.Tag
-                    if type(v351) ~= "table" then
-                        v342 = v351
+
+                    TribeEmblem.new(48, {Position = udim2FromOffset(2, 1), Parent = parent3}):Set(tribe3.icon, tribe3.color1, tribe3.color2, tribe3.tag)
+                    local text = v884 and tribe3.id == v884.id and "HELD BY YOUR TRIBE" or "HELD BY"
+                    local v895
+                    local options = {Position = udim2FromOffset(60, 8), Size = UDim2.new(1, -60, 0, 14), TextColor3 = if v884
+                        and tribe3.id == v884.id then colors.Accent else colors.TextMuted}
+                    options.Parent = parent3
+                    caps(text, options)
+                    local v897 = {Name = "By", RichText = true, TextSize = 16}
+                    local stringFormat = string.format
+                    local v899 = TribeEmblem.TagColor(tribe3.color1):ToHex()
+                    local tag = TribeEmblem.Tag
+
+                    if type(tribe3) ~= "table" then
+                        v895 = tribe3
                     else
-                        v342 = v351.tag
+                        v895 = tribe3.tag
                     end
-                    v354 = v354:format(Tag_13(v342))
+
+                    local v901 = tag(v895)
+                    local name = tribe3.name or ""
+                    v897.Text = stringFormat("<font color=\"#%s\">%s</font>  %s", v899, v901, (tostring(name)))
+                    v897.FontFace = fonts.Heavy
+                    v897.Position = udim2FromOffset(60, 24)
+                    v897.Size = UDim2.new(1, -60, 0, 20)
+                    v897.Parent = parent3
+                    label(v897)
                 else
-                    v354 = "Unclaimed"
+                    ui.Glyph("flag", 26, colors.TextMuted, {Position = udim2FromOffset(8, 8), Parent = parent3})
+                    caps("UNCLAIMED", {Position = udim2FromOffset(50, 3), Size = UDim2.new(1, -50, 0, 14), Parent = parent3})
+                    label({Name = "By", Text = "Win a match here to claim it", TextSize = 15, FontFace = fonts.Heavy, TextColor3 = colors.TextDim, Position = udim2FromOffset(50, 19), Size = UDim2.new(1, -50, 0, 20), Parent = parent3})
                 end
-                tbl_96.Text = v354
-                tbl_96.FontFace = Fonts_upv_1.SemiBold
-                if v351 then
-                    v354 = TribeEmblem_upv_1.TagColor(v351.color1)
+
+                if type(map.top) ~= "table" then
+                    v888 = {}
                 else
-                    v354 = u1
+                    v888 = map.top
                 end
-                tbl_96.TextColor3 = v354
-                tbl_96.Position = fromOffset_upv_1(10, 124)
-                tbl_96.Size = UDim2.new(1, -20, 0, 18)
-                tbl_96.Parent = v359
-                label(tbl_96)
-                v359.Activated:Connect(
-                    function()
-                        --[[
-                          line: 2082
-                          upvalues:
-                            u10 (ref,  index: 1)
-                            a1 (copy, index: 2)
-                            u80 (ref,  index: 3)
-                            value_upv_34 (copy, index: 4)
-                            u83 (ref,  index: 5)
-                            u82 (ref,  index: 6)
-                        ]]
-                        local v360 = os.clock() - u10 >= 0.5
-                        if not v360 then
-                            return
+
+                if 0 < #v888 then
+                    caps("THIS WEEK", {LayoutOrder = 3, Parent = parent})
+                end
+
+                local v903 = not v888[1] and 1 or tonumber(v888[1].points) or 1
+                local tribe2
+
+                for v905, v906 in v888 do
+                    tribe2 = v906.tribe
+
+                    if type(tribe2) == "table" then
+                        local v907
+                        local parent4 = ui.new("Frame", {Name = "Top" .. v905, Size = UDim2.new(1, 0, 0, 38), LayoutOrder = 3 + v905, Parent = parent})
+                        caps(tostring(v905), {Position = udim2FromOffset(0, 12), Size = udim2FromOffset(12, 14), TextXAlignment = Enum.TextXAlignment.Center, Parent = parent4})
+                        local newTribeEmblem = TribeEmblem.new
+                        local v910 = {Position = udim2FromOffset(16, 1), Parent = parent4}
+                        newTribeEmblem(32, v910):Set(tribe2.icon, tribe2.color1, tribe2.color2, tribe2.tag)
+                        local v911 = {Name = "Tag", TextSize = 14}
+                        local tag = TribeEmblem.Tag
+
+                        if type(tribe2) == "table" then
+                            v907 = tribe2.tag
+                        else
+                            v907 = tribe2
                         end
-                        a1.Sounds.Play("Click")
-                        u80 = value_upv_34
-                        u83()
-                        u82(value_upv_34)
+
+                        v911.Text = tag(v907)
+                        v911.FontFace = fonts.Heavy
+                        v911.TextColor3 = TribeEmblem.TagColor(tribe2.color1)
+                        v911.Position = udim2FromOffset(56, 3)
+                        v911.Size = udim2FromOffset(80, 16)
+                        v911.Parent = parent4
+                        label(v911)
+                        local parent5 = ui.new("Frame", {Name = "Bar", Position = udim2FromOffset(56, 23), Size = UDim2.new(1, -112, 0, 6), BackgroundColor3 = backgroundColor3, (ui.Corner(theme.Radius.Pill)), Parent = parent4})
+                        local ui2 = ui.new("Frame", {Name = "Fill", Size = UDim2.fromScale(0, 1), BackgroundColor3 = child.Color(tribe2.color1), (ui.Corner(theme.Radius.Pill)), Parent = parent5})
+                        ui.Tween(ui2, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0, false, v905 * 0.05), {Size = UDim2.fromScale(math.clamp((tonumber(v906.points)
+                            or 0) / v903, 0.04, 1), 1)})
+                        label({Name = "Pts", TextSize = 16, Text = tostring(v906.points), FontFace = fonts.Display, TextColor3 = textColor32, TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 9), Size = udim2FromOffset(50, 20), Parent = parent4})
                     end
-                )
+                end
+
+                if v884 and 0 < #v888 and (not tribe3 or tribe3.id ~= v884.id) then
+                    local v915
+                    local v916 = 0
+                    v915 = v916
+
+                    for _, v918 in v888 do
+                        if type(v918.tribe) == "table" then
+                            if v918.tribe.id ~= v884.id then
+                                continue
+                            end
+
+                            v915 = tonumber(v918.points) or 0
+                        end
+                    end
+
+                    local v919 = not v888[1] and 0 or tonumber(v888[1].points) or 0
+                    label({Name = "Mine", TextSize = 14, TextWrapped = true, LayoutOrder = 9, Text = `Your tribe needs {(v919 - v915) + 1} more Glory here to take it`, FontFace = fonts.Bold, TextColor3 = colors.Accent, TextTruncate = Enum.TextTruncate.None, AutomaticSize = Enum.AutomaticSize.Y, Size = UDim2.new(1, 0, 0, 0), Parent = parent})
+                elseif v884 and tribe3 and tribe3.id == v884.id then
+                    label({Name = "Mine", Text = "Keep playing here to defend it", TextSize = 14, LayoutOrder = 9, FontFace = fonts.Bold, TextColor3 = colors.Accent, Size = UDim2.new(1, 0, 0, 18), Parent = parent})
+                end
             end
-        end
-    end
-    u82 = function(a115)
-        --[[
-          line: 2094
-          upvalues:
-            clear (copy, index: 1)
-            u74 (copy, index: 2)
-            u81 (ref,  index: 3)
-            u6 (ref,  index: 4)
-            roleIn (copy, index: 5)
-            Tribes_upv_2 (copy, index: 6)
-            UI_upv_1 (copy, index: 7)
-            Colors_upv_1 (copy, index: 8)
-            label (copy, index: 9)
-            Fonts_upv_1 (copy, index: 10)
-            u10 (ref,  index: 11)
-            a1 (copy, index: 12)
-            u9 (ref,  index: 13)
-            TribeEmblem_upv_1 (copy, index: 14)
-            fromOffset_upv_1 (copy, index: 15)
-            caps (copy, index: 16)
-            u2 (copy, index: 17)
-            Theme_upv_1 (copy, index: 18)
-            Tribes_upv_1 (copy, index: 19)
-            u3 (copy, index: 20)
-            untilText (copy, index: 21)
-            section (copy, index: 22)
-            openable (copy, index: 23)
-            u1 (copy, index: 24)
-        ]]
-        clear(u74)
-        if not u81 then
-            return
-        end
-        local v361 = u6 and (u6.tribe)
-        local v362
-        if type(v361) ~= "table" then
-            v362 = Tribes_upv_2.Mine()
-        else
-            v362 = {}
-            v362.id = v361.id
-            v362.role = roleIn(v361)
-        end
-        if a115 and u81.maps and u81.maps[a115] then
-            local v363 = u81.maps[a115]
-            local v364 = u81 and (u81.maps and (u81.maps[a115]))
-            local u86 = not (v364) or not (v364.holder) or u81.tribes and (u81.tribes[tostring(v364.holder)])
-            local v365 = UI_upv_1.Panel({LayoutOrder = 1, Name = "Selected", BackgroundTransparency = 0.06, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Radius = UDim.new(0, 14), Parent = u74})
-            UI_upv_1.Padding(10, 10, 10, 10).Parent = v365
-            UI_upv_1.List(Enum.FillDirection.Vertical, 8).Parent = v365
-            local v366 = UI_upv_1.new("ImageLabel", {Name = "Thumb", Image = tostring(v363.thumb or ""), Size = UDim2.new(1, 0, 0, 150), ScaleType = Enum.ScaleType.Crop, BackgroundColor3 = Colors_upv_1.Raised, ClipsDescendants = true, LayoutOrder = 1, [1] = UI_upv_1.Corner(10), Parent = v365})
-            local tbl_97 = {}
-            tbl_97.Name = "Shade"
-            tbl_97.Size = UDim2.fromScale(1, 1)
-            tbl_97.BackgroundColor3 = Color3.new(1, 1, 1)
-            tbl_97[1], tbl_97[2] = UI_upv_1.Gradient(Color3.new(0, 0, 0), Color3.new(0, 0, 0), 90, NumberSequence.new(1, 0.1)), UI_upv_1.Corner(10)
-            tbl_97.Parent = v366
-            UI_upv_1.new("Frame", tbl_97)
-            label({Name = "Name", TextSize = 22, Text = string.upper(tostring(v363.name or a115)), FontFace = Fonts_upv_1.Display, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 12, 1, -8), Size = UDim2.new(1, -24, 0, 26), Parent = v366})
-            local v367 = UI_upv_1.new("TextButton", {LayoutOrder = 2, Name = "Holder", Text = "", AutoButtonColor = false, Size = UDim2.new(1, 0, 0, 54), Parent = v365})
-            if u86 then
-                v367.Activated:Connect(
-                    function()
-                        --[[
-                          line: 2111
-                          upvalues:
-                            u10 (ref,  index: 1)
-                            a1 (copy, index: 2)
-                            u9 (ref,  index: 3)
-                            u86 (copy, index: 4)
-                        ]]
-                        local v368 = os.clock() - u10 >= 0.5
-                        if not v368 then
-                            return
-                        end
-                        a1.Sounds.Play("Click")
-                        u9(u86.id, u86)
-                    end
-                )
-                TribeEmblem_upv_1.new(48, {Position = fromOffset_upv_1(2, 1), Parent = v367}):Set(u86.icon, u86.color1, u86.color2, u86.tag)
-                local v369
-                if (v362) and u86.id == v362.id then
-                    v369 = "HELD BY YOUR TRIBE"
-                else
-                    v369 = "HELD BY"
-                end
-                local tbl_98 = {Parent = 0, TextColor3 = 0}
-                tbl_98.Position = fromOffset_upv_1(60, 8)
-                tbl_98.Size = UDim2.new(1, -60, 0, 14)
-                local v370
-                if (v362) and u86.id == v362.id then
-                    v370 = Colors_upv_1.Accent
-                else
-                    v370 = Colors_upv_1.TextMuted
-                end
-                tbl_98.TextColor3 = v370
-                tbl_98.Parent = v367
-                caps(v369, tbl_98)
-                local tbl_99 = {FontFace = 0, RichText = true, Name = "By", Position = 0, Parent = 0, Text = 0, TextSize = 16, Size = 0}
-                local v371 = TribeEmblem_upv_1.TagColor(u86.color1):ToHex()
-                local Tag_14 = TribeEmblem_upv_1.Tag
-                local v372
-                if type(u86) ~= "table" then
-                    v372 = u86
-                else
-                    v372 = u86.tag
-                end
-                tbl_99.Text = string.format("<font color=\"#%s\">%s</font>  %s", v371, Tag_14(v372), tostring(u86.name or ""))
-                tbl_99.FontFace = Fonts_upv_1.Heavy
-                tbl_99.Position = fromOffset_upv_1(60, 24)
-                tbl_99.Size = UDim2.new(1, -60, 0, 20)
-                tbl_99.Parent = v367
-                label(tbl_99)
+
+            caps(`TERRITORIES RESET IN {(string.upper((untilText(v797.weekEndsAt))))}`, {LayoutOrder = 2, Parent = parent23})
+            local v920 = {}
+
+            if type(v797.order) ~= "table" then
+                v885 = {}
             else
-                UI_upv_1.Glyph("flag", 26, Colors_upv_1.TextMuted, {Position = fromOffset_upv_1(8, 8), Parent = v367})
-                caps("UNCLAIMED", {Position = fromOffset_upv_1(50, 3), Size = UDim2.new(1, -50, 0, 14), Parent = v367})
-                label({Name = "By", Text = "Win a match here to claim it", TextSize = 15, FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, Position = fromOffset_upv_1(50, 19), Size = UDim2.new(1, -50, 0, 20), Parent = v367})
+                v885 = v797.order
             end
-            v367 = ((type(v363.top) ~= "table") and {}) or (v363.top)
-            if #v367 > 0 then
-                caps("THIS WEEK", {LayoutOrder = 3, Parent = v365})
-            end
-            v361 = ((not (v367[1])) and 1) or (tonumber(v367[1].points) or 1)
-            for key_22, value_35 in v367 do
-                local tribe_3 = value_35.tribe
-                if type(tribe_3) ~= "table" then
-                    continue
+
+            for _, mapKey2 in v885 do
+                local map = v797.maps[mapKey2]
+
+                if map and map.holder then
+                    v920[tostring(map.holder)] = (v920[tostring(map.holder)] or 0) + 1
                 end
-                local v373 = UI_upv_1.new("Frame", {Name = "Top" .. key_22, Size = UDim2.new(1, 0, 0, 38), LayoutOrder = 3 + key_22, Parent = v365})
-                caps(tostring(key_22), {Position = fromOffset_upv_1(0, 12), Size = fromOffset_upv_1(12, 14), TextXAlignment = Enum.TextXAlignment.Center, Parent = v373})
-                local tbl_100 = {}
-                tbl_100.Position = fromOffset_upv_1(16, 1)
-                tbl_100.Parent = v373
-                TribeEmblem_upv_1.new(32, tbl_100):Set(tribe_3.icon, tribe_3.color1, tribe_3.color2, tribe_3.tag)
-                local tbl_101 = {Position = 0, FontFace = 0, Name = "Tag", TextColor3 = 0, Parent = 0, Text = 0, TextSize = 14, Size = 0}
-                local Tag_15 = TribeEmblem_upv_1.Tag
-                if type(tribe_3) == "table" then
-                    local _ = tribe_3.tag
-                end
-                tbl_101.Text = Tag_15(tribe_3)
-                tbl_101.FontFace = Fonts_upv_1.Heavy
-                tbl_101.TextColor3 = TribeEmblem_upv_1.TagColor(tribe_3.color1)
-                tbl_101.Position = fromOffset_upv_1(56, 3)
-                tbl_101.Size = fromOffset_upv_1(80, 16)
-                tbl_101.Parent = v373
-                label(tbl_101)
-                local v374 = UI_upv_1.new("Frame", {Name = "Bar", Position = fromOffset_upv_1(56, 23), Size = UDim2.new(1, -112, 0, 6), BackgroundColor3 = u2, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v373})
-                UI_upv_1.Tween(UI_upv_1.new("Frame", {Name = "Fill", Size = UDim2.fromScale(0, 1), BackgroundColor3 = Tribes_upv_1.Color(tribe_3.color1), [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v374}), TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0, false, key_22 * 0.05), {Size = UDim2.fromScale(math.clamp((tonumber(value_35.points) or 0) / v361, 0.04, 1), 1)})
-                label({Name = "Pts", TextSize = 16, Text = tostring(value_35.points), FontFace = Fonts_upv_1.Display, TextColor3 = u3, TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 9), Size = fromOffset_upv_1(50, 20), Parent = v373})
             end
-            if v362 and #v367 > 0 then
-                if u86 and u86.id == v362.id then
-                    if v362 and u86 and u86.id == v362.id then
-                        label({LayoutOrder = 9, Name = "Mine", Text = "Keep playing here to defend it", TextSize = 14, FontFace = Fonts_upv_1.Bold, TextColor3 = Colors_upv_1.Accent, Size = UDim2.new(1, 0, 0, 18), Parent = v365})
-                    end
+
+            local v924 = {}
+            local _
+
+            for tribeKey, n in v920 do
+                if const c = v797.tribes and v797.tribes[tribeKey] then
+                    table.insert(v924, {c = c, n = n})
+                end
+            end
+
+            table.sort(
+                v924,
+                function(left, right)
+                    --[[
+                      line: 2174
+                    ]]
+                    local n = left.n
+                    return right.n < n
+                end
+            )
+
+            section("WHO HOLDS WHAT", nil, nil, 3, parent23)
+            local c
+
+            for v933, v934 in v924 do
+                local v935
+                local parent = ui.new("TextButton", {Name = "H" .. v933, Text = "", AutoButtonColor = false, Size = UDim2.new(1, -6, 0, 50), LayoutOrder = 3 + v933, BackgroundColor3 = colors.PanelHi, BackgroundTransparency = 0.5, (ui.Corner(10)), Parent = parent23})
+                local v937 = ui.Stroke(colors.Stroke, 1, 0.92)
+                v937.Parent = parent
+                openable(parent, v937, v934.c)
+                local newTribeEmblem = TribeEmblem.new
+                local v939 = {AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 8, 0.5, 0), Parent = parent}
+                newTribeEmblem(38, v939):Set(v934.c.icon, v934.c.color1, v934.c.color2, v934.c.tag)
+                local v940 = {Name = "Name", RichText = true, TextSize = 14}
+                c = v934.c
+                local stringFormat = string.format
+                local v942 = TribeEmblem.TagColor(c.color1):ToHex()
+                local tag = TribeEmblem.Tag
+
+                if type(c) == "table" then
+                    v935 = c.tag
                 else
-                    v361 = 0
-                    for _, value_36 in v367 do
-                        if type(value_36.tribe) ~= "table" then
-                            continue
-                        end
-                        if value_36.tribe.id == v362.id then
-                            v361 = tonumber(value_36.points) or 0
-                        end
-                    end
-                    local v376 = ((not (v367[1])) and 0) or (tonumber(v367[1].points) or 0)
-                    label({LayoutOrder = 9, Name = "Mine", TextWrapped = true, TextSize = 14, Text = ("Your tribe needs %* more Glory here to take it"):format((v376 - v361) + 1), FontFace = Fonts_upv_1.Bold, TextColor3 = Colors_upv_1.Accent, TextTruncate = Enum.TextTruncate.None, AutomaticSize = Enum.AutomaticSize.Y, Size = UDim2.new(1, 0, 0, 0), Parent = v365})
+                    v935 = c
                 end
-            elseif v362 and u86 and u86.id == v362.id then
-                label({LayoutOrder = 9, Name = "Mine", Text = "Keep playing here to defend it", TextSize = 14, FontFace = Fonts_upv_1.Bold, TextColor3 = Colors_upv_1.Accent, Size = UDim2.new(1, 0, 0, 18), Parent = v365})
+
+                local v944 = tag(v935)
+                v940.Text = stringFormat("<font color=\"#%s\">%s</font>  %s", v942, v944, (tostring(c.name or "")))
+                v940.FontFace = fonts.Heavy
+                v940.Position = udim2FromOffset(54, 0)
+                v940.Size = UDim2.new(1, -106, 1, 0)
+                v940.Parent = parent
+                label(v940)
+                label({Name = "N", TextSize = 19, Text = tostring(v934.n), FontFace = fonts.Display, TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -12, 0, 0), Size = udim2FromOffset(40, 50), Parent = parent})
+            end
+
+            if #v924 == 0 then
+                label({Name = "NoneHeld", Text = "Every territory is open this week.", TextSize = 14, LayoutOrder = 4, FontFace = fonts.SemiBold, TextColor3 = textColor3, Size = UDim2.new(1, 0, 0, 24), Parent = parent23})
             end
         end
-        caps(("TERRITORIES RESET IN %*"):format(string.upper(untilText(u81.weekEndsAt))), {LayoutOrder = 2, Parent = u74})
-        local tbl_102 = {}
-        local v377 = ((type(u81.order) ~= "table") and {}) or (u81.order)
-        for _, value_37 in v377 do
-            local v378 = u81.maps[value_37]
-            if not (v378) then
-                continue
-            end
-            if v378.holder then
-                local str_4 = tostring(v378.holder)
-                tbl_102[str_4] = (tbl_102[tostring(v378.holder)] or 0) + 1
-            end
-        end
-        local tbl_103 = {}
-        for key_23, value_38 in tbl_102 do
-            local v379 = u81.tribes and (u81.tribes[key_23])
-            if v379 then
-                table.insert(tbl_103, {c = v379, n = value_38})
-            end
-        end
-        table.sort(
-            tbl_103,
-            function(a116, a117)
-                --[[
-                  line: 2174
-                ]]
-                return a117.n < a116.n
-            end
-        )
-        section("WHO HOLDS WHAT", nil, nil, 3, u74)
-        local v380 = nil
-        for key_24, value_39 in tbl_103 do
-            local v381 = UI_upv_1.new("TextButton", {Name = "H" .. key_24, Text = "", AutoButtonColor = false, Size = UDim2.new(1, -6, 0, 50), LayoutOrder = 3 + key_24, BackgroundColor3 = Colors_upv_1.PanelHi, BackgroundTransparency = 0.5, [1] = UI_upv_1.Corner(10), Parent = u74})
-            local v382 = UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.92)
-            v382.Parent = v381
-            openable(v381, v382, value_39.c)
-            local tbl_104 = {}
-            tbl_104.AnchorPoint = Vector2.new(0, 0.5)
-            tbl_104.Position = UDim2.new(0, 8, 0.5, 0)
-            tbl_104.Parent = v381
-            TribeEmblem_upv_1.new(38, tbl_104):Set(value_39.c.icon, value_39.c.color1, value_39.c.color2, value_39.c.tag)
-            local tbl_105 = {FontFace = 0, RichText = true, Name = "Name", Position = 0, Parent = 0, Text = 0, TextSize = 14, Size = 0}
-            local c_1 = value_39.c
-            local v383 = TribeEmblem_upv_1.TagColor(c_1.color1):ToHex()
-            local Tag_16 = TribeEmblem_upv_1.Tag
-            if type(c_1) ~= "table" then
-                v380 = c_1
+
+        v141.Territories = function()
+            --[[
+              line: 2193
+              upvalues:
+                v797 (ref,  index: 1)
+                tribes (copy, index: 2)
+                v794 (copy, index: 3)
+                child (copy, index: 4)
+                v42 (ref,  index: 5)
+                roleIn (copy, index: 6)
+                a26 (copy, index: 7)
+                v796 (ref,  index: 8)
+                v815 (ref,  index: 9)
+                v801 (ref,  index: 10)
+            ]]
+            local text
+            local v946
+            v797 = tribes.Territories(false)
+
+            if v797 then
+                text = "Loading the map..."
             else
-                v380 = c_1.tag
+                text = child.Message("unavailable")
             end
-            tbl_105.Text = string.format("<font color=\"#%s\">%s</font>  %s", v383, Tag_16(v380), tostring(c_1.name or ""))
-            tbl_105.FontFace = Fonts_upv_1.Heavy
-            tbl_105.Position = fromOffset_upv_1(54, 0)
-            tbl_105.Size = UDim2.new(1, -106, 1, 0)
-            tbl_105.Parent = v381
-            label(tbl_105)
-            local v384 = nil
-            label({Name = "N", TextSize = 19, Text = tostring(v384.n), FontFace = Fonts_upv_1.Display, TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -12, 0, 0), Size = fromOffset_upv_1(40, 50), Parent = v381})
-        end
-        if #tbl_103 ~= 0 then
-            return
-        end
-        label({LayoutOrder = 4, Name = "NoneHeld", Text = "Every territory is open this week.", TextSize = 14, FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, Size = UDim2.new(1, 0, 0, 24), Parent = u74})
-    end
-    tbl_upv_11.Territories = function()
-        --[[
-          line: 2193
-          upvalues:
-            u81 (ref,  index: 1)
-            Tribes_upv_2 (copy, index: 2)
-            u78 (copy, index: 3)
-            Tribes_upv_1 (copy, index: 4)
-            u6 (ref,  index: 5)
-            roleIn (copy, index: 6)
-            a1 (copy, index: 7)
-            u80 (ref,  index: 8)
-            u83 (ref,  index: 9)
-            u82 (ref,  index: 10)
-        ]]
-        u81 = Tribes_upv_2.Territories(false)
-        u78.Text = u81 and "Loading the map..." or Tribes_upv_1.Message("unavailable")
-        local v386 = u6 and (u6.tribe)
-        local v387
-        if type(v386) ~= "table" then
-            v387 = Tribes_upv_2.Mine()
-        else
-            v387 = {}
-            v387.id = v386.id
-            v387.role = roleIn(v386)
-        end
-        if a1.TribeMapSelect then
-            u80 = a1.TribeMapSelect
-            a1.TribeMapSelect = nil
-        end
-        if not (u80) and u81 and type(u81.order) == "table" then
-            local v388 = nil
-            for _, value_40 in u81.order do
-                local v389 = u81 and (u81.maps and (u81.maps[value_40]))
-                if not (v389) or not (v389.holder) then
-                    v388 = nil
-                    if not (v388) or not (v387) then
-                        continue
+
+            v794.Text = text
+            local tribe = v42 and v42.tribe
+
+            if type(tribe) ~= "table" then
+                v946 = tribes.Mine()
+            else
+                v946 = {id = tribe.id, role = roleIn(tribe)}
+            end
+
+            if a26.TribeMapSelect then
+                v796 = a26.TribeMapSelect
+                a26.TribeMapSelect = nil
+            end
+
+            if not v796 and v797 and type(v797.order) == "table" then
+                for _, mapKey in v797.order do
+                    local tribe2
+                    local map = v797 and v797.maps and v797.maps[mapKey]
+
+                    if not map or not map.holder then
+                        tribe2 = nil
+                    else
+                        tribe2 = v797.tribes and v797.tribes[tostring(map.holder)]
                     end
-                    if v388.id == v387.id then
-                        u80 = value_40
+
+                    if tribe2 and v946 and tribe2.id == v946.id then
+                        v796 = mapKey
                         break
                     end
                 end
-                v388 = u81.tribes and (u81.tribes[tostring(v389.holder)])
-                if not (v388) or not (v387) then
-                    continue
-                end
-                if v388.id == v387.id then
-                    u80 = value_40
-                    break
-                end
+
+                v796 = v796 or v797.order[1]
             end
-            local v390 = u80 or (u81.order[1])
-            u80 = v390
-        end
-        task.defer(
-            function()
-                --[[
-                  line: 2211
-                  upvalues:
-                    u83 (ref, index: 1)
-                    u82 (ref, index: 2)
-                    u80 (ref, index: 3)
-                ]]
-                u83()
-                u82(u80)
-            end
-        )
-    end
-    local u87 = column("Left", v31.page, 12)
-    local u88 = column("Right", v31.page, 12)
-    local u89 = "Find"
-    local u90 = 0
-    local u91 = nil
-    local function viewMemberRow(a118, a119)
-        --[[
-          name: viewMemberRow
-          line: 2228
-          upvalues:
-            tbl_upv_1 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-            u88 (copy, index: 4)
-            fromOffset_upv_1 (copy, index: 5)
-            Theme_upv_1 (copy, index: 6)
-            label (copy, index: 7)
-            Fonts_upv_1 (copy, index: 8)
-            tbl_upv_2 (copy, index: 9)
-            u1 (copy, index: 10)
-            rowStat (copy, index: 11)
-            u3 (copy, index: 12)
-        ]]
-        local v391 = tbl_upv_1.row - 6
-        local new_16 = UI_upv_1.new
-        local tbl_106 = {}
-        tbl_106.Name = "M" .. tostring(a118.userId)
-        tbl_106.Size = UDim2.new(1, -4, 0, v391)
-        tbl_106.LayoutOrder = a119
-        tbl_106.BackgroundColor3 = Colors_upv_1.PanelHi
-        tbl_106.BackgroundTransparency = ((a119 % 2 ~= 0) and 0.35) or 0.55
-        tbl_106[1] = UI_upv_1.Corner(12)
-        tbl_106.Parent = u88
-        local v392 = new_16("Frame", tbl_106)
-        local v393 = v391 - 16
-        local v394 = UI_upv_1.new("ImageLabel", {Name = "Head", Image = ("rbxthumb://type=AvatarHeadShot&id=%*&w=150&h=150"):format(a118.userId), AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Size = fromOffset_upv_1(v393, v393), BackgroundColor3 = Colors_upv_1.Raised, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v392})
-        local v395 = (a118.where ~= false) and (a118.where ~= nil)
-        if v395 then
-            local tbl_107 = {}
-            tbl_107.Name = "Dot"
-            tbl_107.AnchorPoint = Vector2.new(1, 1)
-            tbl_107.Position = UDim2.fromScale(1.02, 1.02)
-            tbl_107.Size = fromOffset_upv_1(12, 12)
-            tbl_107.BackgroundColor3 = Colors_upv_1.Success
-            tbl_107[1], tbl_107[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Panel, 2, 0)
-            tbl_107.Parent = v394
-            UI_upv_1.new("Frame", tbl_107)
-        else
-            v394.ImageTransparency = 0.35
-        end
-        local v396 = v393 + 22
-        local v397 = ((UI_upv_1.Compact) and 92) or 200
-        local v398 = UI_upv_1.new("Frame", {Name = "NameRow", Position = fromOffset_upv_1(v396, (math.floor(v391 / 2) - tbl_upv_1.text) - 1), Size = UDim2.new(1, -(v396 + v397), 0, tbl_upv_1.text + 4), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center), Parent = v392})
-        local tbl_108 = {LayoutOrder = 1, FontFace = 0, Name = "Name", AutomaticSize = 0, Parent = 0, Text = 0, TextSize = 0, Size = 0}
-        tbl_108.Text = tostring(a118.display or (a118.name))
-        tbl_108.FontFace = Fonts_upv_1.Heavy
-        tbl_108.TextSize = tbl_upv_1.text
-        tbl_108.AutomaticSize = Enum.AutomaticSize.X
-        tbl_108.Size = fromOffset_upv_1(0, tbl_upv_1.text + 4)
-        tbl_108.Parent = v398
-        label(tbl_108)
-        local v399 = tbl_upv_2[a118.role]
-        if v399 then
-            UI_upv_1.Pill(v399.text, v399.color, {LayoutOrder = 2, TextSize = 11, Height = 20, Parent = v398})
-        end
-        label({Name = "Sub", Text = ("@%*  \194\183  Lv %*"):format(a118.name, a118.level), FontFace = Fonts_upv_1.SemiBold, TextSize = tbl_upv_1.sub, TextColor3 = u1, Position = fromOffset_upv_1(v396, math.floor(v391 / 2) + 3), Size = UDim2.new(1, -(v396 + v397), 0, tbl_upv_1.sub + 2), Parent = v392})
-        local v400 = UI_upv_1.new("Frame", {Name = "Stats", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = fromOffset_upv_1(v397 - 10, 40), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 4, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center), Parent = v392})
-        local v401 = tonumber(a118.weekRenown) or 0
-        local str_5 = tostring(v401)
-        local v402
-        if v401 > 0 then
-            v402 = u3
-        else
-            v402 = Colors_upv_1.TextDim
-        end
-        rowStat(v400, str_5, "GLORY", 1, v402)
-        if not (UI_upv_1.Compact) then
-            local Pill_3 = UI_upv_1.Pill
-            local v403 = (v395 and "ONLINE") or "OFFLINE"
-            local v404
-            if v395 then
-                v404 = Colors_upv_1.Success
-            else
-                v404 = Colors_upv_1.TextMuted
-            end
-            local tbl_109 = {LayoutOrder = 2, Transparency = 0, Height = 22, Parent = 0, TextSize = 11, TextColor = 0}
-            tbl_109.Transparency = (v395 and 0.15) or 0.75
-            local v405
-            if v395 then
-                v405 = Colors_upv_1.TextDark
-            else
-                v405 = Colors_upv_1.TextDim
-            end
-            tbl_109.TextColor = v405
-            tbl_109.Parent = v400
-            Pill_3(v403, v404, tbl_109)
-        end
-        return v392
-    end
-    local function renderView(a120, a121)
-        --[[
-          name: renderView
-          line: 2288
-          upvalues:
-            clear (copy, index: 1)
-            u87 (copy, index: 2)
-            u88 (copy, index: 3)
-            Tribes_upv_1 (copy, index: 4)
-            UI_upv_1 (copy, index: 5)
-            smallButton (copy, index: 6)
-            showTab (copy, index: 7)
-            u89 (ref,  index: 8)
-            heroTile (copy, index: 9)
-            tbl_upv_1 (ref,  index: 10)
-            TribeEmblem_upv_1 (copy, index: 11)
-            Colors_upv_1 (copy, index: 12)
-            label (copy, index: 13)
-            Fonts_upv_1 (copy, index: 14)
-            caps (copy, index: 15)
-            tbl_upv_3 (copy, index: 16)
-            statTile (copy, index: 17)
-            u3 (copy, index: 18)
-            u6 (ref,  index: 19)
-            roleIn (copy, index: 20)
-            Tribes_upv_2 (copy, index: 21)
-            joinButton (copy, index: 22)
-            section (copy, index: 23)
-            u90 (ref,  index: 24)
-            heldChips (copy, index: 25)
-            u14 (ref,  index: 26)
-            viewMemberRow (copy, index: 27)
-        ]]
-        clear(u87)
-        clear(u88)
-        local v406 = Tribes_upv_1.Color(a120.color1)
-        smallButton(
-            "\226\128\185  BACK",
-            "Dark",
-            UI_upv_1.new("Frame", {LayoutOrder = 0, Name = "BackRow", Size = UDim2.new(1, -6, 0, 40), Parent = u87}),
-            function()
-                --[[
-                  line: 2293
-                  upvalues:
-                    showTab (copy, index: 1)
-                    u89 (ref,  index: 2)
-                ]]
-                showTab(u89)
-            end,
-            {TextSize = 15, Width = 110}
-        )
-        local v407 = UI_upv_1.Panel({LayoutOrder = 1, Name = "Hero", BackgroundTransparency = 0.06, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Radius = UDim.new(0, 14), Parent = u87})
-        UI_upv_1.Padding(12, 12, 12, 12).Parent = v407
-        UI_upv_1.List(Enum.FillDirection.Vertical, 10).Parent = v407
-        local u92, v408 = heroTile(v407, tbl_upv_1.hero, 1)
-        v408(v406)
-        local new_17 = TribeEmblem_upv_1.new
-        local v409 = ((UI_upv_1.Compact) and 78) or 124
-        local tbl_upv_110 = {ZIndex = 2}
-        tbl_upv_110.AnchorPoint = Vector2.new(0.5, 0.5)
-        tbl_upv_110.Position = UDim2.fromScale(0.5, 0.44)
-        tbl_upv_110.Parent = u92
-        new_17(v409, tbl_upv_110):Set(a120.icon, a120.color1, a120.color2, a120.tag)
-        local Pill_4 = UI_upv_1.Pill
-        local Tag_17 = TribeEmblem_upv_1.Tag
-        local v410
-        if type(a120) ~= "table" then
-            v410 = a120
-        else
-            v410 = a120.tag
-        end
-        Pill_4(Tag_17(v410), Colors_upv_1.Void, {AutoLocalize = false, Transparency = 0.3, Height = 26, ZIndex = 3, TextSize = 15, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -10), TextColor = TribeEmblem_upv_1.TagColor(a120.color1), Parent = u92})
-        UI_upv_1.new("UITextSizeConstraint", {MaxTextSize = 28, MinTextSize = 16, Parent = label({LayoutOrder = 2, Name = "Name", TextScaled = true, Text = string.upper(tostring(a120.name or "")), FontFace = Fonts_upv_1.Display, Size = UDim2.new(1, 0, 0, 32), Parent = v407})})
-        local v411 = tonumber(a120.members) or 0
-        local v412 = tonumber(a120.online) or 0
-        if type(a120.membersList) ~= "table" then
-            u92 = v412
-        else
-            local v413 = 0
-            u92 = v413
-            for _, value_41 in a120.membersList do
-                u92 = ((value_41.where) and (u92 + 1)) or u92
-            end
-        end
-        caps(("%*/%* MEMBERS  \194\183  %* ONLINE  \194\183  %*"):format(v411, Tribes_upv_1.MAX_MEMBERS, u92, string.upper(tbl_upv_3[a120.joinMode] or "")), {LayoutOrder = 3, Parent = v407})
-        local new_18 = UI_upv_1.new
-        local tbl_111 = {}
-        tbl_111.Name = "Stats"
-        local v414
-        if UI_upv_1.Compact then
-            v414 = 52
-        else
-            v414 = 62
-        end
-        tbl_111.Size = UDim2.new(1, 0, 0, v414)
-        tbl_111.LayoutOrder = 4
-        tbl_111[1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 8)
-        tbl_111.Parent = v407
-        local v415 = new_18("Frame", tbl_111)
-        local v416 = statTile(v415, "WEEK RANK", 1)
-        local v417 = statTile(v415, "GLORY", 2)
-        local v418 = statTile(v415, "TERRITORIES", 3)
-        v416.Text = a120.rank and "#" .. tostring(a120.rank) or "-"
-        v417.Text = UI_upv_1.FormatCompact(tonumber(a120.weekRenown) or 0)
-        v417.TextColor3 = u3
-        v417 = ((type(a120.territories) ~= "table") and {}) or (a120.territories)
-        local v420
-        if a121 then
-            v420 = tostring(#v417)
-        else
-            v420 = tostring(tonumber(a120.held) or 0)
-        end
-        v418.Text = v420
-        caps(("%* GLORY ALL TIME"):format(UI_upv_1.FormatNumber(tonumber(a120.renownTotal or (a120.renown)) or 0)), {LayoutOrder = 5, TextXAlignment = Enum.TextXAlignment.Center, Parent = v407})
-        local v421 = u6 and (u6.tribe)
-        local v422
-        if type(v421) ~= "table" then
-            v422 = Tribes_upv_2.Mine()
-        else
-            v422 = {}
-            v422.id = v421.id
-            v422.role = roleIn(v421)
-        end
-        if not (v422) then
-            joinButton(a120, UI_upv_1.new("Frame", {Name = "Join", Size = UDim2.new(1, 0, 0, 46), LayoutOrder = 6, [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 0, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center), Parent = v407}), UDim2.new(1, 0, 0, 46))
-        end
-        local v423 = "TERRITORIES"
-        local v424 = (a121 and (#v417)) or nil
-        local v425 = (not (a121) or #v417 ~= 0) and (a121 and "held this week") or nil
-        section(v423, v424, v425, 1, u88)
-        if a121 then
-            u92 = u90
-            heldChips(
-                v417,
-                u88,
-                2,
-                v406,
+
+            task.defer(
                 function()
                     --[[
-                      line: 2339
+                      line: 2211
                       upvalues:
-                        u92 (copy, index: 1)
-                        u90 (ref,  index: 2)
-                        u14 (ref,  index: 3)
+                        v815 (ref, index: 1)
+                        v801 (ref, index: 2)
+                        v796 (ref, index: 3)
                     ]]
-                    local v426 = (u92 == u90) and (u14 == "View")
-                    return v426
-                end,
-                "No territories this week."
+                    v815()
+                    v801(v796)
+                end
             )
         end
-        if type(a120.membersList) ~= "table" then
-            v417 = nil
-        else
-            v417 = a120.membersList
+    end
+
+    local parent27 = column("Left", tab7.page, 12)
+    local parent28 = column("Right", tab7.page, 12)
+    local v954 = "Find"
+    local count6 = 0
+    local v956 = nil
+
+    do
+        local function viewMemberRow(value, layoutOrder)
+            --[[
+              name: viewMemberRow
+              line: 2228
+              upvalues:
+                v27 (ref,  index: 1)
+                ui (copy, index: 2)
+                colors (copy, index: 3)
+                parent28 (copy, index: 4)
+                udim2FromOffset (copy, index: 5)
+                theme (copy, index: 6)
+                label (copy, index: 7)
+                fonts (copy, index: 8)
+                v16 (copy, index: 9)
+                textColor3 (copy, index: 10)
+                rowStat (copy, index: 11)
+                textColor32 (copy, index: 12)
+            ]]
+            local backgroundTransparency
+            local v961
+            local v962 = v27.row - 6
+            local newUi = ui.new
+            local v964 = {Name = "M" .. tostring(value.userId), Size = UDim2.new(1, -4, 0, v962), LayoutOrder = layoutOrder, BackgroundColor3 = colors.PanelHi}
+
+            if layoutOrder % 2 ~= 0 then
+                backgroundTransparency = 0.35
+            else
+                backgroundTransparency = 0.55
+            end
+
+            v964.BackgroundTransparency = backgroundTransparency
+            v964[1] = (ui.Corner(12))
+            v964.Parent = parent28
+            local parent = newUi("Frame", v964)
+            local v966 = v962 - 16
+            local parent2 = ui.new("ImageLabel", {Name = "Head", Image = `rbxthumb://type=AvatarHeadShot&id={value.userId}&w=150&h=150`, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 10, 0.5, 0), Size = udim2FromOffset(v966, v966), BackgroundColor3 = colors.Raised, (ui.Corner(theme.Radius.Pill)), Parent = parent})
+            local v968 = value.where ~= false and value.where ~= nil
+
+            if v968 then
+                ui.new("Frame", {Name = "Dot", AnchorPoint = Vector2.new(1, 1), Position = UDim2.fromScale(1.02, 1.02), Size = udim2FromOffset(12, 12), BackgroundColor3 = colors.Success, ui.Corner(theme.Radius.Pill), (ui.Stroke(colors.Panel, 2, 0)), Parent = parent2})
+            else
+                parent2.ImageTransparency = 0.35
+            end
+
+            local v969 = v966 + 22
+            local v970 = ui.Compact and 92 or 200
+            local parent3 = ui.new("Frame", {Name = "NameRow", Position = udim2FromOffset(v969, (math.floor(v962 / 2) - v27.text) - 1), Size = UDim2.new(1, -(v969 + v970), 0, v27.text + 4), (ui.List(Enum.FillDirection.Horizontal, 8, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)), Parent = parent})
+            local v972 = {Name = "Name", LayoutOrder = 1, Text = tostring((value.display or value.name)), FontFace = fonts.Heavy, TextSize = v27.text, AutomaticSize = Enum.AutomaticSize.X, Size = udim2FromOffset(0, v27.text + 4), Parent = parent3}
+            label(v972)
+
+            if const v973 = v16[value.role] then
+                ui.Pill(v973.text, v973.color, {LayoutOrder = 2, Height = 20, TextSize = 11, Parent = parent3})
+            end
+
+            label({Name = "Sub", Text = `@{value.name}  ·  Lv {value.level}`, FontFace = fonts.SemiBold, TextSize = v27.sub, TextColor3 = textColor3, Position = udim2FromOffset(v969, math.floor(v962 / 2) + 3), Size = UDim2.new(1, -(v969 + v970), 0, v27.sub + 2), Parent = parent})
+            local parent4 = ui.new("Frame", {Name = "Stats", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = udim2FromOffset(v970 - 10, 40), (ui.List(Enum.FillDirection.Horizontal, 4, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center)), Parent = parent})
+            local number = tonumber(value.weekRenown) or 0
+            local text = tostring(number)
+
+            if not (0 < number) then
+                v961 = colors.TextDim
+            else
+                v961 = textColor32
+            end
+
+            rowStat(parent4, text, "GLORY", 1, v961)
+
+            if not ui.Compact then
+                local transparency
+                local pill = ui.Pill
+                local v979 = v968 and "ONLINE" or "OFFLINE"
+                local v980 = if v968 then colors.Success else colors.TextMuted
+                local v981 = {LayoutOrder = 2, Height = 22, TextSize = 11}
+
+                if v968 then
+                    transparency = 0.15
+                else
+                    transparency = 0.75
+                end
+
+                v981.Transparency = transparency
+                v981.TextColor = if v968 then colors.TextDark else colors.TextDim
+                v981.Parent = parent4
+                pill(v979, v980, v981)
+            end
+
+            return parent
         end
-        section("MEMBERS", v411, nil, 3, u88)
-        if v417 then
-            local v427 = table.clone(v417)
-            tbl_upv_110 = {chief = 0, elder = 1}
+
+        local function renderView(a983, a984: boolean)
+            --[[
+              name: renderView
+              line: 2288
+              upvalues:
+                clear (copy, index: 1)
+                parent27 (copy, index: 2)
+                parent28 (copy, index: 3)
+                child (copy, index: 4)
+                ui (copy, index: 5)
+                smallButton (copy, index: 6)
+                showTab (copy, index: 7)
+                v954 (ref,  index: 8)
+                heroTile (copy, index: 9)
+                v27 (ref,  index: 10)
+                TribeEmblem (copy, index: 11)
+                colors (copy, index: 12)
+                label (copy, index: 13)
+                fonts (copy, index: 14)
+                caps (copy, index: 15)
+                v17 (copy, index: 16)
+                statTile (copy, index: 17)
+                textColor32 (copy, index: 18)
+                v42 (ref,  index: 19)
+                roleIn (copy, index: 20)
+                tribes (copy, index: 21)
+                joinButton (copy, index: 22)
+                section (copy, index: 23)
+                count6 (ref,  index: 24)
+                heldChips (copy, index: 25)
+                target (ref,  index: 26)
+                viewMemberRow (copy, index: 27)
+            ]]
+            local v985
+            local v986
+            local v987
+            local v988
+            local membersList
+            clear(parent27)
+            clear(parent28)
+            local backgroundColor3 = child.Color(a983.color1)
+            smallButton(
+                "‹  BACK",
+                "Dark",
+                ui.new("Frame", {Name = "BackRow", LayoutOrder = 0, Size = UDim2.new(1, -6, 0, 40), Parent = parent27}),
+                function()
+                    --[[
+                      line: 2293
+                      upvalues:
+                        showTab (copy, index: 1)
+                        v954 (ref,  index: 2)
+                    ]]
+                    showTab(v954)
+                end,
+                {Width = 110, TextSize = 15}
+            )
+            local parent = ui.Panel({Name = "Hero", BackgroundTransparency = 0.06, LayoutOrder = 1, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Radius = UDim.new(0, 14), Parent = parent27})
+            ui.Padding(12, 12, 12, 12).Parent = parent
+            ui.List(Enum.FillDirection.Vertical, 10).Parent = parent
+            local parent2, v993 = heroTile(parent, v27.hero, 1)
+            v993(backgroundColor3)
+            local newTribeEmblem = TribeEmblem.new
+            local v995 = ui.Compact and 78 or 124
+            local v996 = {ZIndex = 2, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.44), Parent = parent2}
+            newTribeEmblem(v995, v996):Set(a983.icon, a983.color1, a983.color2, a983.tag)
+            local pill = ui.Pill
+            local tag = TribeEmblem.Tag
+
+            if type(a983) ~= "table" then
+                v985 = a983
+            else
+                v985 = a983.tag
+            end
+
+            pill(tag(v985), colors.Void, {Height = 26, TextSize = 15, Transparency = 0.3, ZIndex = 3, AutoLocalize = false, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -10), TextColor = TribeEmblem.TagColor(a983.color1), Parent = parent2})
+            local parent3 = label({Name = "Name", TextScaled = true, LayoutOrder = 2, Text = string.upper((tostring(a983.name
+                or ""))), FontFace = fonts.Display, Size = UDim2.new(1, 0, 0, 32), Parent = parent})
+            ui.new("UITextSizeConstraint", {MaxTextSize = 28, MinTextSize = 16, Parent = parent3})
+            local number = tonumber(a983.members) or 0
+            local v1001 = tonumber(a983.online) or 0
+
+            if type(a983.membersList) == "table" then
+                local v1002 = 0
+                v1001 = v1002
+
+                for _, v1004 in a983.membersList do
+                    if v1004.where then
+                        v1001 += 1
+                    end
+                end
+            end
+
+            local options = {LayoutOrder = 3, Parent = parent}
+            caps(`{number}/{child.MAX_MEMBERS} MEMBERS  ·  {v1001} ONLINE  ·  {(string.upper((v17[a983.joinMode]
+                or "")))}`, options)
+            local newUi = ui.new
+            local v1007 = {Name = "Stats"}
+            local newUDim2 = UDim2.new
+            local v1009 = ui.Compact and 52 or 62
+            v1007.Size = newUDim2(1, 0, 0, v1009)
+            v1007.LayoutOrder = 4
+            v1007[1] = (ui.List(Enum.FillDirection.Horizontal, 8))
+            v1007.Parent = parent
+            local ui2 = newUi("Frame", v1007)
+            local v1011 = statTile(ui2, "WEEK RANK", 1)
+            local v1012 = statTile(ui2, "GLORY", 2)
+            local v1013 = statTile(ui2, "TERRITORIES", 3)
+            v1011.Text = if a983.rank then "#" .. tostring(a983.rank) else "-"
+            v1012.Text = ui.FormatCompact((tonumber(a983.weekRenown) or 0))
+            v1012.TextColor3 = textColor32
+
+            if type(a983.territories) ~= "table" then
+                v986 = {}
+            else
+                v986 = a983.territories
+            end
+
+            v1013.Text = if a984 then tostring(#v986) else tostring((tonumber(a983.held) or 0))
+            local number2 = tonumber((a983.renownTotal or a983.renown)) or 0
+            caps(`{(ui.FormatNumber(number2))} GLORY ALL TIME`, {LayoutOrder = 5, TextXAlignment = Enum.TextXAlignment.Center, Parent = parent})
+            local tribe = v42 and v42.tribe
+
+            if type(tribe) ~= "table" then
+                v987 = tribes.Mine()
+            else
+                v987 = {id = tribe.id, role = roleIn(tribe)}
+            end
+
+            if not v987 then
+                joinButton(a983, ui.new("Frame", {Name = "Join", Size = UDim2.new(1, 0, 0, 46), LayoutOrder = 6, (ui.List(Enum.FillDirection.Horizontal, 0, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)), Parent = parent}), UDim2.new(1, 0, 0, 46))
+            end
+
+            local v1016 = if a984 then #v986 else nil
+
+            if a984 and #v986 == 0 then
+                v988 = nil
+            else
+                v988 = a984 and "held this week" or nil
+            end
+
+            section("TERRITORIES", v1016, v988, 1, parent28)
+
+            if a984 then
+                local v1017 = count6
+                heldChips(
+                    v986,
+                    parent28,
+                    2,
+                    backgroundColor3,
+                    function()
+                        --[[
+                          line: 2339
+                          upvalues:
+                            v1017 (copy, index: 1)
+                            count6 (ref,  index: 2)
+                            target (ref,  index: 3)
+                        ]]
+                        return v1017 == count6 and target == "View"
+                    end,
+                    "No territories this week."
+                )
+            end
+
+            if type(a983.membersList) ~= "table" then
+                membersList = nil
+            else
+                membersList = a983.membersList
+            end
+
+            section("MEMBERS", number, nil, 3, parent28)
+
+            if not membersList then
+                for index = 1, math.min(math.max(number, 1), 4) do
+                    local ui3 = ui.new("Frame", {Name = "Skeleton", Size = UDim2.new(1, -4, 0, v27.row - 6), LayoutOrder = index + 3, BackgroundColor3 = colors.PanelHi, BackgroundTransparency = 0.5, (ui.Corner(12)), Parent = parent28})
+                    local v1020 = {BackgroundTransparency = 0.78}
+                    ui.Tween(ui3, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true, index * 0.12), v1020)
+                end
+
+                return
+            end
+
+            local values = table.clone(membersList)
+            local v1022 = {chief = 0, elder = 1}
+
             table.sort(
-                v427,
-                function(a122, a123)
+                values,
+                function(left, right)
                     --[[
                       line: 2355
                       upvalues:
-                        tbl_upv_110 (copy, index: 1)
+                        v1022 (copy, index: 1)
                     ]]
-                    local v428 = tbl_upv_110[a122.role] or 2
-                    local v429 = tbl_upv_110[a123.role] or 2
-                    if v428 ~= v429 then
-                        return v428 < v429
+                    local v1025 = v1022[left.role] or 2
+                    local v1026 = v1022[right.role] or 2
+
+                    if v1025 ~= v1026 then
+                        return v1025 < v1026
                     end
-                    local v430 = ((a122.where) and 1) or 0
-                    local v431 = ((a123.where) and 1) or 0
-                    if v430 ~= v431 then
-                        return v431 < v430
+
+                    local v1027 = left.where and 1 or 0
+                    local v1028 = right.where and 1 or 0
+
+                    if v1027 ~= v1028 then
+                        return v1028 < v1027
                     end
-                    local v432 = tonumber(a122.weekRenown) or 0
-                    local v433 = (tonumber(a123.weekRenown) or 0) < v432
-                    return v433
+
+                    local number = tonumber(left.weekRenown) or 0
+
+                    return (tonumber(right.weekRenown) or 0) < number
                 end
             )
-            for key_25, value_42 in v427 do
-                UI_upv_1.Enter(viewMemberRow(value_42, 3 + key_25), Vector2.new(0, 8), math.min(key_25 * 0.025, 0.25), UDim2.new())
-            end
-        else
-            for n_6 = 1, math.min(math.max(v411, 1), 4) do
-                local tbl_112 = {BackgroundTransparency = 0.78}
-                UI_upv_1.Tween(UI_upv_1.new("Frame", {Name = "Skeleton", Size = UDim2.new(1, -4, 0, tbl_upv_1.row - 6), LayoutOrder = n_6 + 3, BackgroundColor3 = Colors_upv_1.PanelHi, BackgroundTransparency = 0.5, [1] = UI_upv_1.Corner(12), Parent = u88}), TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true, n_6 * 0.12), tbl_112)
+
+            for v1030, value in values do
+                local v1032 = viewMemberRow(value, 3 + v1030)
+                ui.Enter(v1032, Vector2.new(0, 8), math.min(v1030 * 0.025, 0.25), UDim2.new())
             end
         end
+
+        v45 = function(a1033, a1034)
+            --[[
+              line: 2372
+              upvalues:
+                v42 (ref,  index: 1)
+                roleIn (copy, index: 2)
+                tribes (copy, index: 3)
+                showTab (copy, index: 4)
+                target (ref,  index: 5)
+                v954 (ref,  index: 6)
+                v956 (ref,  index: 7)
+                count6 (ref,  index: 8)
+                parent27 (copy, index: 9)
+                parent28 (copy, index: 10)
+                renderView (copy, index: 11)
+                clear (copy, index: 12)
+                ui (copy, index: 13)
+                smallButton (copy, index: 14)
+                label (copy, index: 15)
+                child (copy, index: 16)
+                fonts (copy, index: 17)
+                textColor3 (copy, index: 18)
+            ]]
+            if type(a1033) ~= "number" then
+                return
+            end
+
+            local v1035
+            local tribe = v42 and v42.tribe
+
+            if type(tribe) ~= "table" then
+                v1035 = tribes.Mine()
+            else
+                v1035 = {id = tribe.id, role = roleIn(tribe)}
+            end
+
+            if v1035 and v1035.id == a1033 then
+                showTab("Overview")
+                return
+            end
+
+            if target ~= "View" then
+                v954 = target or "Find"
+            end
+
+            v956 = a1033
+            count6 += 1
+            local v1037 = count6
+            parent27.CanvasPosition = Vector2.zero
+            parent28.CanvasPosition = Vector2.zero
+
+            if type(a1034) ~= "table" or not a1034.tag then
+                clear(parent27)
+                clear(parent28)
+            else
+                renderView(a1034, false)
+            end
+
+            showTab("View")
+
+            task.spawn(
+                function()
+                    --[[
+                      line: 2396
+                      upvalues:
+                        tribes (copy, index: 1)
+                        a1033 (copy, index: 2)
+                        v1037 (copy, index: 3)
+                        count6 (ref,  index: 4)
+                        clear (copy, index: 5)
+                        parent27 (copy, index: 6)
+                        parent28 (copy, index: 7)
+                        ui (copy, index: 8)
+                        smallButton (copy, index: 9)
+                        showTab (copy, index: 10)
+                        v954 (ref,  index: 11)
+                        label (copy, index: 12)
+                        child (copy, index: 13)
+                        fonts (copy, index: 14)
+                        textColor3 (copy, index: 15)
+                        renderView (copy, index: 16)
+                    ]]
+                    local v1038, v1039 = tribes.Action("Get", a1033)
+
+                    if v1037 ~= count6 then
+                        return
+                    end
+
+                    if v1038 and type(v1039) == "table" then
+                        renderView(v1039, true)
+                        return
+                    end
+
+                    clear(parent27)
+                    clear(parent28)
+                    local ui2 = ui.new("Frame", {Name = "BackRow", LayoutOrder = 0, Size = UDim2.new(1, -6, 0, 40), Parent = parent27})
+                    smallButton(
+                        "‹  BACK",
+                        "Dark",
+                        ui2,
+                        function()
+                            --[[
+                              line: 2406
+                              upvalues:
+                                showTab (copy, index: 1)
+                                v954 (ref,  index: 2)
+                            ]]
+                            showTab(v954)
+                        end,
+                        {Width = 110, TextSize = 15}
+                    )
+                    local v1041 = {Name = "Gone", TextSize = 16, TextWrapped = true, LayoutOrder = 1, Text = tostring((v1039
+                        or child.Message("unavailable"))), FontFace = fonts.SemiBold, TextColor3 = textColor3, TextTruncate = Enum.TextTruncate.None, Size = UDim2.new(1, 0, 0, 60), Parent = parent28}
+                    label(v1041)
+                end
+            )
+        end
     end
-    u9 = function(a124, a125)
+
+    local v1042 = "create"
+    local v1043 = {tag = "", name = "", icon = 1, color1 = 1, color2 = nil, joinMode = "open", minLevel = 0}
+
+    do
+        local white = child.WHITE
+        v1043.color2 = white
+    end
+
+    local parent29 = column("Left", tab6.page, 10)
+    local parent30 = column("Right", tab6.page, 10)
+    local parent31 = ui.Panel({Name = "PreviewPanel", BackgroundTransparency = 0.06, LayoutOrder = 1, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Radius = UDim.new(0, 14), Parent = parent29})
+    ;(function(parent, a1049: number)
         --[[
-          line: 2372
+          name: pad
+          line: 211
           upvalues:
-            u6 (ref,  index: 1)
-            roleIn (copy, index: 2)
-            Tribes_upv_2 (copy, index: 3)
-            showTab (copy, index: 4)
-            u14 (ref,  index: 5)
-            u89 (ref,  index: 6)
-            u91 (ref,  index: 7)
-            u90 (ref,  index: 8)
-            u87 (copy, index: 9)
-            u88 (copy, index: 10)
-            renderView (copy, index: 11)
-            clear (copy, index: 12)
-            UI_upv_1 (copy, index: 13)
-            smallButton (copy, index: 14)
-            label (copy, index: 15)
-            Tribes_upv_1 (copy, index: 16)
-            Fonts_upv_1 (copy, index: 17)
-            u1 (copy, index: 18)
+            ui (copy, index: 1)
         ]]
-        if type(a124) ~= "number" then
-            return
-        end
-        local v434 = u6 and (u6.tribe)
-        local v435
-        if type(v434) ~= "table" then
-            v435 = Tribes_upv_2.Mine()
-        else
-            v435 = {}
-            v435.id = v434.id
-            v435.role = roleIn(v434)
-        end
-        if v435 and v435.id == a124 then
-            showTab("Overview")
-            return
-        end
-        if u14 ~= "View" then
-            u89 = u14 or "Find"
-        end
-        u91 = a124
-        u90 = u90 + 1
-        local u93 = u90
-        u87.CanvasPosition = Vector2.zero
-        u88.CanvasPosition = Vector2.zero
-        if type(a125) == "table" and (a125.tag) then
-            renderView(a125, false)
-        else
-            clear(u87)
-            clear(u88)
-        end
-        showTab("View")
-        task.spawn(
-            function()
-                --[[
-                  line: 2396
-                  upvalues:
-                    Tribes_upv_2 (copy, index: 1)
-                    a124 (copy, index: 2)
-                    u93 (copy, index: 3)
-                    u90 (ref,  index: 4)
-                    clear (copy, index: 5)
-                    u87 (copy, index: 6)
-                    u88 (copy, index: 7)
-                    UI_upv_1 (copy, index: 8)
-                    smallButton (copy, index: 9)
-                    showTab (copy, index: 10)
-                    u89 (ref,  index: 11)
-                    label (copy, index: 12)
-                    Tribes_upv_1 (copy, index: 13)
-                    Fonts_upv_1 (copy, index: 14)
-                    u1 (copy, index: 15)
-                    renderView (copy, index: 16)
-                ]]
-                local v436, v437 = Tribes_upv_2.Action("Get", a124)
-                if u93 ~= u90 then
-                    return
-                end
-                if v436 and type(v437) == "table" then
-                    renderView(v437, true)
-                    return
-                end
-                clear(u87)
-                clear(u88)
-                smallButton(
-                    "\226\128\185  BACK",
-                    "Dark",
-                    UI_upv_1.new("Frame", {LayoutOrder = 0, Name = "BackRow", Size = UDim2.new(1, -6, 0, 40), Parent = u87}),
-                    function()
-                        --[[
-                          line: 2406
-                          upvalues:
-                            showTab (copy, index: 1)
-                            u89 (ref,  index: 2)
-                        ]]
-                        showTab(u89)
-                    end,
-                    {TextSize = 15, Width = 110}
-                )
-                local tbl_113 = {LayoutOrder = 1, FontFace = 0, TextColor3 = 0, Parent = 0, Text = 0, Name = "Gone", TextTruncate = 0, TextWrapped = true, TextSize = 16, Size = 0}
-                local v438 = v437 or (Tribes_upv_1.Message("unavailable"))
-                tbl_113.Text = tostring(v438)
-                tbl_113.FontFace = Fonts_upv_1.SemiBold
-                tbl_113.TextColor3 = u1
-                tbl_113.TextTruncate = Enum.TextTruncate.None
-                tbl_113.Size = UDim2.new(1, 0, 0, 60)
-                tbl_113.Parent = u88
-                label(tbl_113)
-            end
-        )
-    end
-    local u94 = "create"
-    local u95 = {color2 = 0, name = "", minLevel = 0, joinMode = "open", color1 = 1, icon = 1, tag = ""}
-    u95.color2 = Tribes_upv_1.WHITE
-    local u96 = column("Left", v30.page, 10)
-    local u97 = column("Right", v30.page, 10)
-    local v439 = UI_upv_1.Panel({LayoutOrder = 1, Name = "PreviewPanel", BackgroundTransparency = 0.06, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Radius = UDim.new(0, 14), Parent = u96})
-    pad(v439, 12)
-    UI_upv_1.List(Enum.FillDirection.Vertical, 10).Parent = v439
-    local v440, u98 = heroTile(v439, tbl_upv_1.hero - 40, 1)
-    local u99 = TribeEmblem_upv_1.new(((UI_upv_1.Compact) and 96) or 112, {ZIndex = 2, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v440})
-    local v441 = UI_upv_1.new("Frame", {Name = "Plate", Size = UDim2.new(1, 0, 0, 36), LayoutOrder = 2, BackgroundColor3 = Colors_upv_1.Inset, BackgroundTransparency = 0.3, [1] = UI_upv_1.Corner(10), Parent = v439})
-    local u100 = label({RichText = true, Name = "Text", Text = "", TextSize = 16, FontFace = Fonts_upv_1.Heavy, TextXAlignment = Enum.TextXAlignment.Center, Size = UDim2.fromScale(1, 1), Parent = v441})
-    local function field(a126, a127, a128, a129, a130, a131)
+        ui.Padding(a1049, a1049, a1049, a1049).Parent = parent
+    end)(parent31, 12)
+    ui.List(Enum.FillDirection.Vertical, 10).Parent = parent31
+    local parent32, v1051 = heroTile(parent31, v27.hero - 40, 1)
+    local newTribeEmblem = TribeEmblem.new
+    local v1053 = ui.Compact and 96 or 112
+    local tribeEmblem = newTribeEmblem(v1053, {ZIndex = 2, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent32})
+    local parent33 = ui.new("Frame", {Name = "Plate", Size = UDim2.new(1, 0, 0, 36), LayoutOrder = 2, BackgroundColor3 = colors.Inset, BackgroundTransparency = 0.3, (ui.Corner(10)), Parent = parent31})
+    local v1056 = label({Name = "Text", Text = "", RichText = true, TextSize = 16, FontFace = fonts.Heavy, TextXAlignment = Enum.TextXAlignment.Center, Size = UDim2.fromScale(1, 1), Parent = parent33})
+
+    local function field(name: string, text: string, placeholderText: string, a1061, layoutOrder: number, parent)
         --[[
           name: field
           line: 2430
           upvalues:
-            UI_upv_1 (copy, index: 1)
+            ui (copy, index: 1)
             caps (copy, index: 2)
-            fromOffset_upv_1 (copy, index: 3)
-            u2 (copy, index: 4)
-            Colors_upv_1 (copy, index: 5)
-            Fonts_upv_1 (copy, index: 6)
-            Theme_upv_1 (copy, index: 7)
+            udim2FromOffset (copy, index: 3)
+            backgroundColor3 (copy, index: 4)
+            colors (copy, index: 5)
+            fonts (copy, index: 6)
+            theme (copy, index: 7)
         ]]
-        local v442 = UI_upv_1.new("Frame", {Name = a126 .. "Wrap", Size = UDim2.new(1, -6, 0, 68), LayoutOrder = a130, Parent = a131})
-        caps(a127, {Parent = v442})
-        local u101 = caps(("0/%*"):format(a129), {TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 0), Size = fromOffset_upv_1(60, 14), Parent = v442})
-        local v443 = UI_upv_1.new("Frame", {Name = a126 .. "Field", Position = fromOffset_upv_1(0, 20), Size = UDim2.new(1, 0, 0, 46), BackgroundColor3 = u2, BackgroundTransparency = 0.25, [1] = UI_upv_1.Corner(10), Parent = v442})
-        local u102 = UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.88)
-        u102.Parent = v443
-        local u103 = UI_upv_1.new("TextBox", {Text = "", ClearTextOnFocus = false, BackgroundTransparency = 1, TextSize = 18, Name = a126, PlaceholderText = a128, PlaceholderColor3 = Colors_upv_1.TextMuted, FontFace = Fonts_upv_1.Bold, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, Position = fromOffset_upv_1(14, 0), Size = UDim2.new(1, -28, 1, 0), Parent = v443})
-        u103:GetPropertyChangedSignal("Text"):Connect(
+        local parent2 = ui.new("Frame", {Name = name .. "Wrap", Size = UDim2.new(1, -6, 0, 68), LayoutOrder = layoutOrder, Parent = parent})
+        caps(text, {Parent = parent2})
+        local v1065 = caps(`0/{a1061}`, {TextXAlignment = Enum.TextXAlignment.Right, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 0), Size = udim2FromOffset(60, 14), Parent = parent2})
+        local parent3 = ui.new("Frame", {Name = name .. "Field", Position = udim2FromOffset(0, 20), Size = UDim2.new(1, 0, 0, 46), BackgroundColor3 = backgroundColor3, BackgroundTransparency = 0.25, (ui.Corner(10)), Parent = parent2})
+        local v1067 = ui.Stroke(colors.Stroke, 1, 0.88)
+        v1067.Parent = parent3
+        local ui2 = ui.new("TextBox", {Text = "", ClearTextOnFocus = false, TextSize = 18, BackgroundTransparency = 1, Name = name, PlaceholderText = placeholderText, PlaceholderColor3 = colors.TextMuted, FontFace = fonts.Bold, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Left, Position = udim2FromOffset(14, 0), Size = UDim2.new(1, -28, 1, 0), Parent = parent3})
+
+        ui2:GetPropertyChangedSignal("Text"):Connect(
             function()
                 --[[
                   line: 2452
                   upvalues:
-                    u103 (copy, index: 1)
-                    a129 (copy, index: 2)
-                    u101 (copy, index: 3)
+                    ui2 (copy, index: 1)
+                    a1061 (copy, index: 2)
+                    v1065 (copy, index: 3)
                 ]]
-                if a129 < #u103.Text then
-                    u103.Text = string.sub(u103.Text, 1, a129)
-                else
-                    u101.Text = ("%*/%*"):format(#u103.Text, a129)
+                if a1061 < #ui2.Text then
+                    ui2.Text = string.sub(ui2.Text, 1, a1061)
+                    return
                 end
+
+                v1065.Text = `{#ui2.Text}/{a1061}`
             end
         )
-        u103.Focused:Connect(
+
+        ui2.Focused:Connect(
             function()
                 --[[
                   line: 2459
                   upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    u102 (copy, index: 2)
-                    Theme_upv_1 (copy, index: 3)
-                    Colors_upv_1 (copy, index: 4)
+                    ui (copy, index: 1)
+                    v1067 (copy, index: 2)
+                    theme (copy, index: 3)
+                    colors (copy, index: 4)
                 ]]
-                UI_upv_1.Tween(u102, Theme_upv_1.Tween.Fast, {Transparency = 0.2, Color = Colors_upv_1.Accent})
+                ui.Tween(v1067, theme.Tween.Fast, {Transparency = 0.2, Color = colors.Accent})
             end
         )
-        u103.FocusLost:Connect(
+        ui2.FocusLost:Connect(
             function()
                 --[[
                   line: 2462
                   upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    u102 (copy, index: 2)
-                    Theme_upv_1 (copy, index: 3)
-                    Colors_upv_1 (copy, index: 4)
+                    ui (copy, index: 1)
+                    v1067 (copy, index: 2)
+                    theme (copy, index: 3)
+                    colors (copy, index: 4)
                 ]]
-                UI_upv_1.Tween(u102, Theme_upv_1.Tween.Fast, {Transparency = 0.88, Color = Colors_upv_1.Stroke})
+                ui.Tween(v1067, theme.Tween.Fast, {Transparency = 0.88, Color = colors.Stroke})
             end
         )
-        return u103, u101
+
+        return ui2, v1065
     end
-    local u104 = field("Tag", "TAG  \194\183  2 TO 4 LETTERS OR NUMBERS", "NITE", Tribes_upv_1.TAG_MAX, 3, u96)
-    local u105 = field("TribeName", "NAME", "Night Owls", Tribes_upv_1.NAME_MAX, 4, u96)
-    local v444 = UI_upv_1.new("Frame", {LayoutOrder = 5, Name = "JoinWrap", Size = UDim2.new(1, -6, 0, 86), Parent = u96})
-    caps("WHO CAN JOIN", {Parent = v444})
-    local tbl_114 = {}
-    tbl_114.Name = "JoinMode"
-    tbl_114.Position = fromOffset_upv_1(0, 20)
-    tbl_114.Size = UDim2.new(1, 0, 0, 42)
-    tbl_114.BackgroundColor3 = u2
-    tbl_114.BackgroundTransparency = 0.25
-    tbl_114[1], tbl_114[2], tbl_114[3] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Padding(4, 4, 4, 4), UI_upv_1.List(Enum.FillDirection.Horizontal, 4)
-    tbl_114.Parent = v444
-    local v445 = UI_upv_1.new("Frame", tbl_114)
-    local u106 = label({Name = "JoinDesc", Text = "", TextSize = 13, FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, Position = fromOffset_upv_1(4, 66), Size = UDim2.new(1, -8, 0, 16), Parent = v444})
-    local tbl_upv_115 = {}
-    for key_26, value_43 in Tribes_upv_1.JOIN_MODES do
-        tbl_upv_115[value_43] = UI_upv_1.new("TextButton", {Name = value_43, Text = tbl_upv_3[value_43], AutoButtonColor = false, FontFace = Fonts_upv_1.Heavy, TextSize = 13, TextColor3 = Colors_upv_1.TextDim, Size = UDim2.new(0.3333333333333333, -3, 1, 0), LayoutOrder = key_26, BackgroundColor3 = Colors_upv_1.Accent, BackgroundTransparency = 1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v445})
+
+    local v1069 = field("Tag", "TAG  ·  2 TO 4 LETTERS OR NUMBERS", "NITE", child.TAG_MAX, 3, parent29)
+    local v1070 = field("TribeName", "NAME", "Night Owls", child.NAME_MAX, 4, parent29)
+    local parent34 = ui.new("Frame", {Name = "JoinWrap", LayoutOrder = 5, Size = UDim2.new(1, -6, 0, 86), Parent = parent29})
+    caps("WHO CAN JOIN", {Parent = parent34})
+    local parent35 = ui.new("Frame", {Name = "JoinMode", Position = udim2FromOffset(0, 20), Size = UDim2.new(1, 0, 0, 42), BackgroundColor3 = backgroundColor3, BackgroundTransparency = 0.25, ui.Corner(theme.Radius.Pill), ui.Padding(4, 4, 4, 4), (ui.List(Enum.FillDirection.Horizontal, 4)), Parent = parent34})
+    local v1073 = label({Name = "JoinDesc", Text = "", TextSize = 13, FontFace = fonts.SemiBold, TextColor3 = textColor3, Position = udim2FromOffset(4, 66), Size = UDim2.new(1, -8, 0, 16), Parent = parent34})
+    local v1074 = {}
+
+    for layoutOrder, name in child.JOIN_MODES do
+        v1074[name] = ui.new("TextButton", {Name = name, Text = v17[name], AutoButtonColor = false, FontFace = fonts.Heavy, TextSize = 13, TextColor3 = colors.TextDim, Size = UDim2.new(0.3333333333333333, -3, 1, 0), LayoutOrder = layoutOrder, BackgroundColor3 = colors.Accent, BackgroundTransparency = 1, [1] = (ui.Corner(theme.Radius.Pill)), Parent = parent35})
     end
-    local v446 = UI_upv_1.new("Frame", {LayoutOrder = 6, Name = "LevelWrap", Size = UDim2.new(1, -6, 0, 66), Parent = u96})
-    caps("MINIMUM LEVEL TO JOIN", {Parent = v446})
-    local v447 = UI_upv_1.new("Frame", {Name = "Stepper", Position = fromOffset_upv_1(0, 20), Size = UDim2.new(1, 0, 0, 42), BackgroundColor3 = u2, BackgroundTransparency = 0.25, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v446})
-    local u107 = label({Name = "Value", Text = "", TextSize = 18, FontFace = Fonts_upv_1.Display, TextXAlignment = Enum.TextXAlignment.Center, Size = UDim2.fromScale(1, 1), Parent = v447})
-    local v448 = UI_upv_1.IconButton({Radius = 17, Name = "Minus", Text = "-", TextSize = 24, Size = fromOffset_upv_1(34, 34), Position = fromOffset_upv_1(4, 4), Color = Colors_upv_1.Raised, Parent = v447})
-    local v449 = UI_upv_1.IconButton({Radius = 17, Text = "+", Name = "Plus", TextSize = 22, Size = fromOffset_upv_1(34, 34), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -4, 0, 4), Color = Colors_upv_1.Raised, Parent = v447})
-    section("EMBLEM", #Tribes_upv_1.ICONS, "pick one", 1, u97)
-    v447 = UI_upv_1.new("Frame", {LayoutOrder = 2, Name = "Icons", Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Parent = u97})
-    UI_upv_1.new("UIGridLayout", {FillDirectionMaxCells = 12, CellSize = fromOffset_upv_1(tbl_upv_1.cell, tbl_upv_1.cell), CellPadding = fromOffset_upv_1(6, 6), SortOrder = Enum.SortOrder.LayoutOrder, Parent = v447})
-    section("COLOUR", nil, "the crest", 3, u97)
-    local v450 = UI_upv_1.new("Frame", {LayoutOrder = 4, Name = "Color1", Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Parent = u97})
-    UI_upv_1.new("UIGridLayout", {FillDirectionMaxCells = 12, CellSize = fromOffset_upv_1(tbl_upv_1.swatch, tbl_upv_1.swatch), CellPadding = fromOffset_upv_1(10, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = v450})
-    section("SECOND COLOUR", nil, "the icon and rim", 5, u97)
-    local v451 = UI_upv_1.new("Frame", {LayoutOrder = 6, Name = "Color2", Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Parent = u97})
-    UI_upv_1.new("UIGridLayout", {FillDirectionMaxCells = 12, CellSize = fromOffset_upv_1(tbl_upv_1.swatch, tbl_upv_1.swatch), CellPadding = fromOffset_upv_1(10, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = v451})
-    local v452 = UI_upv_1.new("Frame", {Name = "Buttons", Size = UDim2.new(1, -6, 0, 54), LayoutOrder = 20, [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 10, Enum.HorizontalAlignment.Right), Parent = u97})
-    label({LayoutOrder = 21, Text = "Emblem icons by Lorc, Delapouite, Caro Asercion, Carl Olsen and sbed from game-icons.net, CC BY 3.0 (creativecommons.org/licenses/by/3.0), recoloured", Name = "Credit", TextWrapped = true, TextSize = 12, FontFace = Fonts_upv_1.Medium, TextColor3 = Colors_upv_1.TextMuted, TextTruncate = Enum.TextTruncate.None, AutomaticSize = Enum.AutomaticSize.Y, Size = UDim2.new(1, -6, 0, 0), Parent = u97})
-    local v453 = UI_upv_1.Button({LayoutOrder = 1, Name = "Cancel", Text = "BACK", Style = "Dark", Size = fromOffset_upv_1(150, 52), Parent = v452})
-    local u108 = UI_upv_1.Button({LayoutOrder = 2, Name = "Submit", Text = "FOUND TRIBE", Style = "Primary", Size = fromOffset_upv_1(240, 52), Parent = v452})
-    local tbl_upv_116 = {}
-    local tbl_upv_117 = {}
-    local tbl_upv_118 = {}
+
+    local parent36 = ui.new("Frame", {Name = "LevelWrap", LayoutOrder = 6, Size = UDim2.new(1, -6, 0, 66), Parent = parent29})
+    caps("MINIMUM LEVEL TO JOIN", {Parent = parent36})
+    local parent37 = ui.new("Frame", {Name = "Stepper", Position = udim2FromOffset(0, 20), Size = UDim2.new(1, 0, 0, 42), BackgroundColor3 = backgroundColor3, BackgroundTransparency = 0.25, (ui.Corner(theme.Radius.Pill)), Parent = parent36})
+    local v1079 = label({Name = "Value", Text = "", TextSize = 18, FontFace = fonts.Display, TextXAlignment = Enum.TextXAlignment.Center, Size = UDim2.fromScale(1, 1), Parent = parent37})
+    local v1080 = ui.IconButton({Name = "Minus", Text = "-", TextSize = 24, Radius = 17, Size = udim2FromOffset(34, 34), Position = udim2FromOffset(4, 4), Color = colors.Raised, Parent = parent37})
+    local v1081 = ui.IconButton({Name = "Plus", Text = "+", TextSize = 22, Radius = 17, Size = udim2FromOffset(34, 34), AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -4, 0, 4), Color = colors.Raised, Parent = parent37})
+    section("EMBLEM", #child.ICONS, "pick one", 1, parent30)
+    local parent38 = ui.new("Frame", {Name = "Icons", LayoutOrder = 2, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Parent = parent30})
+    ui.new("UIGridLayout", {FillDirectionMaxCells = 12, CellSize = udim2FromOffset(v27.cell, v27.cell), CellPadding = udim2FromOffset(6, 6), SortOrder = Enum.SortOrder.LayoutOrder, Parent = parent38})
+    section("COLOUR", nil, "the crest", 3, parent30)
+    local parent39 = ui.new("Frame", {Name = "Color1", LayoutOrder = 4, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Parent = parent30})
+    ui.new("UIGridLayout", {FillDirectionMaxCells = 12, CellSize = udim2FromOffset(v27.swatch, v27.swatch), CellPadding = udim2FromOffset(10, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = parent39})
+    section("SECOND COLOUR", nil, "the icon and rim", 5, parent30)
+    local parent40 = ui.new("Frame", {Name = "Color2", LayoutOrder = 6, Size = UDim2.new(1, -6, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Parent = parent30})
+    ui.new("UIGridLayout", {FillDirectionMaxCells = 12, CellSize = udim2FromOffset(v27.swatch, v27.swatch), CellPadding = udim2FromOffset(10, 10), SortOrder = Enum.SortOrder.LayoutOrder, Parent = parent40})
+    local parent41 = ui.new("Frame", {Name = "Buttons", Size = UDim2.new(1, -6, 0, 54), LayoutOrder = 20, (ui.List(Enum.FillDirection.Horizontal, 10, Enum.HorizontalAlignment.Right)), Parent = parent30})
+    label({Name = "Credit", Text = "Emblem icons by Lorc, Delapouite, Caro Asercion, Carl Olsen and sbed from game-icons.net, CC BY 3.0 (creativecommons.org/licenses/by/3.0), recoloured", TextSize = 12, TextWrapped = true, LayoutOrder = 21, FontFace = fonts.Medium, TextColor3 = colors.TextMuted, TextTruncate = Enum.TextTruncate.None, AutomaticSize = Enum.AutomaticSize.Y, Size = UDim2.new(1, -6, 0, 0), Parent = parent30})
+    local v1086 = ui.Button({Name = "Cancel", Text = "BACK", Style = "Dark", LayoutOrder = 1, Size = udim2FromOffset(150, 52), Parent = parent41})
+    local v1087 = ui.Button({Name = "Submit", Text = "FOUND TRIBE", Style = "Primary", LayoutOrder = 2, Size = udim2FromOffset(240, 52), Parent = parent41})
+    local v1088 = {}
+    local v1089 = {}
+    local v1090 = {}
+
     local function paintForm()
         --[[
           name: paintForm
           line: 2502
           upvalues:
-            u99 (copy, index: 1)
-            u95 (ref,  index: 2)
-            u98 (copy, index: 3)
-            Tribes_upv_1 (copy, index: 4)
-            u104 (copy, index: 5)
-            TribeEmblem_upv_1 (copy, index: 6)
-            u100 (copy, index: 7)
-            LocalPlayer_upv_1 (copy, index: 8)
-            tbl_upv_116 (copy, index: 9)
-            tbl_upv_117 (copy, index: 10)
-            tbl_upv_118 (copy, index: 11)
-            tbl_upv_115 (copy, index: 12)
-            Colors_upv_1 (copy, index: 13)
-            u106 (copy, index: 14)
-            tbl_upv_4 (copy, index: 15)
-            u107 (copy, index: 16)
+            tribeEmblem (copy, index: 1)
+            v1043 (ref,  index: 2)
+            v1051 (copy, index: 3)
+            child (copy, index: 4)
+            v1069 (copy, index: 5)
+            TribeEmblem (copy, index: 6)
+            v1056 (copy, index: 7)
+            localPlayer (copy, index: 8)
+            v1088 (copy, index: 9)
+            v1089 (copy, index: 10)
+            v1090 (copy, index: 11)
+            v1074 (copy, index: 12)
+            colors (copy, index: 13)
+            v1073 (copy, index: 14)
+            v18 (copy, index: 15)
+            v1079 (copy, index: 16)
         ]]
-        u99:Set(u95.icon, u95.color1, u95.color2, u95.tag)
-        u98(Tribes_upv_1.Color(u95.color1))
-        local v454 = Tribes_upv_1.CleanTag(u104.Text)
-        local v455 = TribeEmblem_upv_1.TagColor(u95.color1)
-        local v456 = tonumber(LocalPlayer_upv_1:GetAttribute("Level")) or 1
-        local v457 = v455:ToHex()
-        local v458
-        if v454 == "" then
-            v458 = "TAG"
+        local v1092
+        tribeEmblem:Set(v1043.icon, v1043.color1, v1043.color2, v1043.tag)
+        v1051(child.Color(v1043.color1))
+        local v1093 = child.CleanTag(v1069.Text)
+        local v1094 = TribeEmblem.TagColor(v1043.color1)
+        local stringFormat = string.format
+        local number = tonumber(localPlayer:GetAttribute("Level")) or 1
+        local v1097 = v1094:ToHex()
+
+        if v1093 == "" then
+            v1092 = "TAG"
         else
-            v458 = v454
+            v1092 = v1093
         end
-        u100.Text = string.format("<font color=\"#AEB5C2\">[%d]</font> <font color=\"#%s\">[%s]</font> %s", v456, v457, v458, LocalPlayer_upv_1.DisplayName)
-        for key_27, value_44 in tbl_upv_116 do
-            value_44.emblem:Set(key_27, u95.color1, u95.color2, nil)
-            local stroke_1 = value_44.stroke
-            stroke_1.Transparency = key_27 ~= u95.icon and 1 or 0
-            local button_3 = value_44.button
-            local v459 = ((key_27 ~= u95.icon) and 0.45) or 0.1
-            button_3.BackgroundTransparency = v459
+
+        v1056.Text = stringFormat("<font color=\"#AEB5C2\">[%d]</font> <font color=\"#%s\">[%s]</font> %s", number, v1097, v1092, localPlayer.DisplayName)
+
+        for v1098, v1099 in v1088 do
+            v1099.emblem:Set(v1098, v1043.color1, v1043.color2, nil)
+            v1099.stroke.Transparency = v1098 ~= v1043.icon and 1 or 0
+            v1099.button.BackgroundTransparency = v1098 ~= v1043.icon and 0.45 or 0.1
         end
-        for key_28, value_45 in tbl_upv_117 do
-            v458 = ((key_28 ~= u95.color1) and 1) or 0
-            value_45.Transparency = v458
+
+        for v1100, v1101 in v1089 do
+            v1101.Transparency = v1100 ~= v1043.color1 and 1 or 0
         end
-        for key_29, value_46 in tbl_upv_118 do
-            v458 = ((key_29 ~= u95.color2) and 1) or 0
-            value_46.Transparency = v458
+
+        for v1102, v1103 in v1090 do
+            v1103.Transparency = v1102 ~= v1043.color2 and 1 or 0
         end
-        local v460 = nil
-        for key_30, value_47 in tbl_upv_115 do
-            v460 = ((key_30 ~= u95.joinMode) and 1) or 0
-            value_47.BackgroundTransparency = v460
-            if key_30 ~= u95.joinMode then
-                v460 = Colors_upv_1.TextDim
-            else
-                v460 = Colors_upv_1.Text
-            end
-            value_47.TextColor3 = v460
+
+        for v1104, v1105 in v1074 do
+            v1105.BackgroundTransparency = v1104 ~= v1043.joinMode and 1 or 0
+            v1105.TextColor3 = if v1104 == v1043.joinMode then colors.Text else colors.TextDim
         end
-        u106.Text = tbl_upv_4[u95.joinMode] or ""
-        u107.Text = not (u95.minLevel > 0) and "ANY LEVEL" or ("LEVEL %*+"):format(u95.minLevel)
+
+        v1073.Text = v18[v1043.joinMode] or ""
+        v1079.Text = not (0 < v1043.minLevel) and "ANY LEVEL" or `LEVEL {v1043.minLevel}+`
     end
-    for n_upv_7 = 1, #Tribes_upv_1.ICONS do
-        local v462 = UI_upv_1.new("TextButton", {Name = "Icon" .. n_upv_7, Text = "", AutoButtonColor = false, LayoutOrder = n_upv_7, BackgroundColor3 = Colors_upv_1.PanelHi, BackgroundTransparency = 0.45, [1] = UI_upv_1.Corner(10), Parent = v447})
-        local v463 = UI_upv_1.Stroke(Colors_upv_1.Accent, 2, 1)
-        v463.Parent = v462
-        tbl_upv_116[n_upv_7] = {button = v462, stroke = v463, emblem = TribeEmblem_upv_1.new(tbl_upv_1.cell - 6, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v462})}
-        v462.Activated:Connect(
-            function()
-                --[[
-                  line: 2532
-                  upvalues:
-                    u95 (ref,  index: 1)
-                    n_upv_7 (copy, index: 2)
-                    a1 (copy, index: 3)
-                    paintForm (copy, index: 4)
-                    UI_upv_1 (copy, index: 5)
-                    u99 (copy, index: 6)
-                ]]
-                u95.icon = n_upv_7
-                a1.Sounds.Play("Click")
-                paintForm()
-                UI_upv_1.Pop(u99.Instance, 0.9)
+
+    for v1106 = 1, #child.ICONS do
+        do
+            local ui7 = ui.new("TextButton", {Name = "Icon" .. v1106, Text = "", AutoButtonColor = false, LayoutOrder = v1106, BackgroundColor3 = colors.PanelHi, BackgroundTransparency = 0.45, (ui.Corner(10)), Parent = parent38})
+
+            do
+                local stroke = ui.Stroke(colors.Accent, 2, 1)
+                stroke.Parent = ui7
+                v1088[v1106] = {button = ui7, stroke = stroke, emblem = TribeEmblem.new(v27.cell - 6, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = ui7})}
             end
-        )
-    end
-    for key_upv_31, value_48 in Tribes_upv_1.COLORS do
-        for key_upv_32, value_49 in {v450, v451} do
-            v447 = UI_upv_1.new("TextButton", {Name = "C" .. key_upv_31, Text = "", AutoButtonColor = false, LayoutOrder = key_upv_31, BackgroundColor3 = value_48, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = value_49})
-            local v464 = UI_upv_1.Stroke(Colors_upv_1.Text, 3, 1)
-            v464.Parent = v447
-            if key_upv_32 ~= 1 then
-                tbl_upv_118[key_upv_31] = v464
-            else
-                tbl_upv_117[key_upv_31] = v464
-            end
-            v447.Activated:Connect(
+
+            ui7.Activated:Connect(
                 function()
                     --[[
-                      line: 2549
+                      line: 2532
                       upvalues:
-                        key_upv_32 (copy, index: 1)
-                        u95 (ref,  index: 2)
-                        key_upv_31 (copy, index: 3)
-                        a1 (copy, index: 4)
-                        paintForm (copy, index: 5)
+                        v1043 (ref,  index: 1)
+                        v1106 (copy, index: 2)
+                        a26 (copy, index: 3)
+                        paintForm (copy, index: 4)
+                        ui (copy, index: 5)
+                        tribeEmblem (copy, index: 6)
                     ]]
-                    if key_upv_32 ~= 1 then
-                        u95.color2 = key_upv_31
-                    else
-                        u95.color1 = key_upv_31
-                    end
-                    a1.Sounds.Play("Click")
+                    v1043.icon = v1106
+                    a26.Sounds.Play("Click")
                     paintForm()
+                    ui.Pop(tribeEmblem.Instance, 0.9)
                 end
             )
         end
     end
-    for key_upv_33, value_50 in tbl_upv_115 do
-        value_50.Activated:Connect(
+
+    for v1109, backgroundColor32 in child.COLORS do
+        for v1111, parent42 in {parent39, parent40} do
+            do
+                local parent43 = ui.new("TextButton", {Name = "C" .. v1109, Text = "", AutoButtonColor = false, LayoutOrder = v1109, BackgroundColor3 = backgroundColor32, (ui.Corner(theme.Radius.Pill)), Parent = parent42})
+                local v1114 = ui.Stroke(colors.Text, 3, 1)
+                v1114.Parent = parent43
+
+                if v1111 == 1 then
+                    v1089[v1109] = v1114
+                else
+                    v1090[v1109] = v1114
+                end
+
+                parent43.Activated:Connect(
+                    function()
+                        --[[
+                          line: 2549
+                          upvalues:
+                            v1111 (copy, index: 1)
+                            v1043 (ref,  index: 2)
+                            v1109 (copy, index: 3)
+                            a26 (copy, index: 4)
+                            paintForm (copy, index: 5)
+                        ]]
+                        if v1111 ~= 1 then
+                            v1043.color2 = v1109
+                        else
+                            v1043.color1 = v1109
+                        end
+
+                        a26.Sounds.Play("Click")
+                        paintForm()
+                    end
+                )
+            end
+        end
+    end
+
+    for joinMode, v1116 in v1074 do
+        v1116.Activated:Connect(
             function()
                 --[[
                   line: 2561
                   upvalues:
-                    u95 (ref,  index: 1)
-                    key_upv_33 (copy, index: 2)
-                    a1 (copy, index: 3)
+                    v1043 (ref,  index: 1)
+                    joinMode (copy, index: 2)
+                    a26 (copy, index: 3)
                     paintForm (copy, index: 4)
                 ]]
-                u95.joinMode = key_upv_33
-                a1.Sounds.Play("Click")
+                v1043.joinMode = joinMode
+                a26.Sounds.Play("Click")
                 paintForm()
             end
         )
     end
-    local function stepLevel(a132)
-        --[[
-          name: stepLevel
-          line: 2567
-          upvalues:
-            tbl_upv_5 (copy, index: 1)
-            u95 (ref,  index: 2)
-            paintForm (copy, index: 3)
-            UI_upv_1 (copy, index: 4)
-            u107 (copy, index: 5)
-        ]]
-        local v465 = table.find(tbl_upv_5, u95.minLevel) or 1
-        u95.minLevel = tbl_upv_5[math.clamp(v465 + a132, 1, #tbl_upv_5)]
-        paintForm()
-        UI_upv_1.Bump(u107, 0.12)
+
+    do
+        local function stepLevel(a1118)
+            --[[
+              name: stepLevel
+              line: 2567
+              upvalues:
+                v19 (copy, index: 1)
+                v1043 (ref,  index: 2)
+                paintForm (copy, index: 3)
+                ui (copy, index: 4)
+                v1079 (copy, index: 5)
+            ]]
+            local index = table.find(v19, v1043.minLevel) or 1
+            v1043.minLevel = v19[math.clamp(index + a1118, 1, #v19)]
+            paintForm()
+            ui.Bump(v1079, 0.12)
+        end
     end
-    v448.Activated:Connect(
+
+    v1080.Activated:Connect(
         function()
             --[[
               line: 2573
               upvalues:
-                tbl_upv_5 (copy, index: 1)
-                u95 (ref,  index: 2)
+                v19 (copy, index: 1)
+                v1043 (ref,  index: 2)
                 paintForm (copy, index: 3)
-                UI_upv_1 (copy, index: 4)
-                u107 (copy, index: 5)
+                ui (copy, index: 4)
+                v1079 (copy, index: 5)
             ]]
-            local v466 = table.find(tbl_upv_5, u95.minLevel) or 1
-            u95.minLevel = tbl_upv_5[math.clamp(v466 + -1, 1, #tbl_upv_5)]
+            local index = table.find(v19, v1043.minLevel) or 1
+            v1043.minLevel = v19[math.clamp(index + -1, 1, #v19)]
             paintForm()
-            UI_upv_1.Bump(u107, 0.12)
+            ui.Bump(v1079, 0.12)
         end
     )
-    v449.Activated:Connect(
+
+    v1081.Activated:Connect(
         function()
             --[[
               line: 2576
               upvalues:
-                tbl_upv_5 (copy, index: 1)
-                u95 (ref,  index: 2)
+                v19 (copy, index: 1)
+                v1043 (ref,  index: 2)
                 paintForm (copy, index: 3)
-                UI_upv_1 (copy, index: 4)
-                u107 (copy, index: 5)
+                ui (copy, index: 4)
+                v1079 (copy, index: 5)
             ]]
-            local v467 = table.find(tbl_upv_5, u95.minLevel) or 1
-            u95.minLevel = tbl_upv_5[math.clamp(v467 + 1, 1, #tbl_upv_5)]
+            local index = table.find(v19, v1043.minLevel) or 1
+            v1043.minLevel = v19[math.clamp(index + 1, 1, #v19)]
             paintForm()
-            UI_upv_1.Bump(u107, 0.12)
+            ui.Bump(v1079, 0.12)
         end
     )
-    u104:GetPropertyChangedSignal("Text"):Connect(
+
+    v1069:GetPropertyChangedSignal("Text"):Connect(
         function()
             --[[
               line: 2579
               upvalues:
-                u104 (copy, index: 1)
+                v1069 (copy, index: 1)
                 paintForm (copy, index: 2)
             ]]
-            local v468 = string.gsub(string.upper(u104.Text), "[^A-Z0-9]", "")
-            if v468 == u104.Text then
-                paintForm()
-            else
-                u104.Text = v468
+            local text = string.gsub(string.upper(v1069.Text), "[^A-Z0-9]", "")
+
+            if text ~= v1069.Text then
+                v1069.Text = text
+                return
             end
+
+            paintForm()
         end
     )
-    u105:GetPropertyChangedSignal("Text"):Connect(paintForm)
-    a1.OpenTribeForm = function(a133)
+
+    v1070:GetPropertyChangedSignal("Text"):Connect(paintForm)
+
+    a26.OpenTribeForm = function(a1123)
         --[[
           line: 2589
           upvalues:
-            u94 (ref,  index: 1)
-            u6 (ref,  index: 2)
-            u95 (ref,  index: 3)
-            u104 (copy, index: 4)
-            Colors_upv_1 (copy, index: 5)
-            u105 (copy, index: 6)
-            u108 (copy, index: 7)
-            Tribes_upv_1 (copy, index: 8)
+            v1042 (ref,  index: 1)
+            v42 (ref,  index: 2)
+            v1043 (ref,  index: 3)
+            v1069 (copy, index: 4)
+            colors (copy, index: 5)
+            v1070 (copy, index: 6)
+            v1087 (copy, index: 7)
+            child (copy, index: 8)
             paintForm (copy, index: 9)
             showTab (copy, index: 10)
-            u96 (copy, index: 11)
-            u97 (copy, index: 12)
-            UI_upv_1 (copy, index: 13)
-            GuiService_upv_1 (copy, index: 14)
+            parent29 (copy, index: 11)
+            parent30 (copy, index: 12)
+            ui (copy, index: 13)
+            guiService (copy, index: 14)
         ]]
-        u94 = a133
-        local v469 = u6 and (u6.tribe)
-        if a133 == "settings" and type(v469) == "table" then
-            local tbl_119 = {}
-            tbl_119.tag = v469.tag
-            tbl_119.name = v469.name
-            tbl_119.icon = v469.icon
-            tbl_119.color1 = v469.color1
-            tbl_119.color2 = v469.color2
-            tbl_119.joinMode = v469.joinMode
-            tbl_119.minLevel = tonumber(v469.minLevel) or 0
-            u95 = tbl_119
-            u104.Text = v469.tag
-            u104.TextEditable = false
-            u104.TextColor3 = Colors_upv_1.TextDim
-            u105.Text = v469.name
-            u108:SetText("SAVE")
+        v1042 = a1123
+        local tribe = v42 and v42.tribe
+
+        if a1123 ~= "settings" or type(tribe) ~= "table" then
+            v1043 = {tag = "", name = "", joinMode = "open", minLevel = 0, icon = math.random(1, #child.ICONS), color1 = math.random(1, 14), color2 = child.WHITE}
+            v1069.Text = ""
+            v1069.TextEditable = true
+            v1069.TextColor3 = colors.Text
+            v1070.Text = ""
+            v1087:SetText("FOUND TRIBE")
         else
-            local tbl_120 = {name = "", minLevel = 0, joinMode = "open", tag = ""}
-            tbl_120.icon = math.random(1, #Tribes_upv_1.ICONS)
-            tbl_120.color1 = math.random(1, 14)
-            tbl_120.color2 = Tribes_upv_1.WHITE
-            u95 = tbl_120
-            u104.Text = ""
-            u104.TextEditable = true
-            u104.TextColor3 = Colors_upv_1.Text
-            u105.Text = ""
-            u108:SetText("FOUND TRIBE")
+            v1043 = {tag = tribe.tag, name = tribe.name, icon = tribe.icon, color1 = tribe.color1, color2 = tribe.color2, joinMode = tribe.joinMode, minLevel = tonumber(tribe.minLevel)
+                or 0}
+            v1069.Text = tribe.tag
+            v1069.TextEditable = false
+            v1069.TextColor3 = colors.TextDim
+            v1070.Text = tribe.name
+            v1087:SetText("SAVE")
         end
+
         paintForm()
         showTab("Form")
-        u96.CanvasPosition = Vector2.zero
-        u97.CanvasPosition = Vector2.zero
-        if not UI_upv_1.Gamepad then
-            return
+        parent29.CanvasPosition = Vector2.zero
+        parent30.CanvasPosition = Vector2.zero
+
+        if ui.Gamepad then
+            guiService.SelectedObject = v1087.Instance
         end
-        GuiService_upv_1.SelectedObject = u108.Instance
     end
-    local function afterSave()
-        --[[
-          name: afterSave
-          line: 2617
-          upvalues:
-            Tribes_upv_2 (copy, index: 1)
-            u14 (ref,  index: 2)
-            u8 (ref,  index: 3)
-            u6 (ref,  index: 4)
-            showTab (copy, index: 5)
-        ]]
-        local v470 = Tribes_upv_2.Home(true)
-        u14 = nil
-        u8(v470 or u6)
-        if not u6 or type(u6.tribe) ~= "table" then
-            return
+
+    do
+        local function afterSave()
+            --[[
+              name: afterSave
+              line: 2617
+              upvalues:
+                tribes (copy, index: 1)
+                target (ref,  index: 2)
+                v44 (ref,  index: 3)
+                v42 (ref,  index: 4)
+                showTab (copy, index: 5)
+            ]]
+            local v1126 = tribes.Home(true)
+            target = nil
+            v44(v1126 or v42)
+
+            if v42 and type(v42.tribe) == "table" then
+                showTab("Overview")
+            end
         end
-        showTab("Overview")
     end
-    local function leaveForm()
-        --[[
-          name: leaveForm
-          line: 2625
-          upvalues:
-            showTab (copy, index: 1)
-            u6 (ref,  index: 2)
-        ]]
-        local v471
-        if (u6) and (u6.tribe) then
-            v471 = "Overview"
-        else
-            v471 = "Find"
+
+    do
+        local function leaveForm()
+            --[[
+              name: leaveForm
+              line: 2625
+              upvalues:
+                showTab (copy, index: 1)
+                v42 (ref,  index: 2)
+            ]]
+            local v1128 = v42 and v42.tribe and "Overview" or "Find"
+            showTab(v1128)
         end
-        showTab(v471)
     end
-    v453.Activated:Connect(
+
+    v1086.Activated:Connect(
         function()
             --[[
               line: 2628
               upvalues:
-                u10 (ref,  index: 1)
+                timestamp (ref,  index: 1)
                 showTab (copy, index: 2)
-                u6 (ref,  index: 3)
+                v42 (ref,  index: 3)
             ]]
-            local v472 = os.clock() - u10 >= 0.5
-            if v472 then
-                local v473
-                if (u6) and (u6.tribe) then
-                    v473 = "Overview"
-                else
-                    v473 = "Find"
-                end
-                showTab(v473)
+            if 0.5 <= os.clock() - timestamp then
+                local v1129 = v42 and v42.tribe and "Overview" or "Find"
+                showTab(v1129)
             end
         end
     )
-    u108.Activated:Connect(
+
+    v1087.Activated:Connect(
         function()
             --[[
               line: 2633
               upvalues:
-                u10 (ref,  index: 1)
-                Tribes_upv_1 (copy, index: 2)
-                u104 (copy, index: 3)
-                u105 (copy, index: 4)
-                u94 (ref,  index: 5)
-                a1 (copy, index: 6)
-                UI_upv_1 (copy, index: 7)
+                timestamp (ref,  index: 1)
+                child (copy, index: 2)
+                v1069 (copy, index: 3)
+                v1070 (copy, index: 4)
+                v1042 (ref,  index: 5)
+                a26 (copy, index: 6)
+                ui (copy, index: 7)
                 act (copy, index: 8)
-                u95 (ref,  index: 9)
-                Tribes_upv_2 (copy, index: 10)
-                u14 (ref,  index: 11)
-                u8 (ref,  index: 12)
-                u6 (ref,  index: 13)
+                v1043 (ref,  index: 9)
+                tribes (copy, index: 10)
+                target (ref,  index: 11)
+                v44 (ref,  index: 12)
+                v42 (ref,  index: 13)
                 showTab (copy, index: 14)
             ]]
-            local v474 = os.clock() - u10 >= 0.5
-            if not v474 then
+            if not (0.5 <= os.clock() - timestamp) then
                 return
             end
-            local v475 = Tribes_upv_1.CleanTag(u104.Text)
-            local v476 = Tribes_upv_1.CleanName(u105.Text)
-            if u94 ~= "create" or (Tribes_upv_1.ValidTag(v475)) then
-                if Tribes_upv_1.ValidName(v476) then
-                    if u94 ~= "create" then
-                        local tbl_121 = {}
-                        tbl_121.name = v476
-                        tbl_121.icon = u95.icon
-                        tbl_121.color1 = u95.color1
-                        tbl_121.color2 = u95.color2
-                        tbl_121.joinMode = u95.joinMode
-                        tbl_121.minLevel = u95.minLevel
-                        if act("Settings", tbl_121) then
-                            a1.Toast("Tribe saved", "success")
-                            local v477 = Tribes_upv_2.Home(true)
-                            u14 = nil
-                            local v478 = v477 or u6
-                            u8(v478)
-                            if not u6 or type(u6.tribe) ~= "table" then
-                                return
-                            end
-                            showTab("Overview")
-                        end
-                    else
-                        local tbl_122 = {}
-                        tbl_122.tag = v475
-                        tbl_122.name = v476
-                        tbl_122.icon = u95.icon
-                        tbl_122.color1 = u95.color1
-                        tbl_122.color2 = u95.color2
-                        tbl_122.joinMode = u95.joinMode
-                        tbl_122.minLevel = u95.minLevel
-                        if act("Create", tbl_122) then
-                            a1.Sounds.Play("Queue_Join")
-                            a1.Toast(("[%*] %* is founded!"):format(v475, v476), "success")
-                            local v479 = Tribes_upv_2.Home(true)
-                            u14 = nil
-                            local v480 = v479 or u6
-                            u8(v480)
-                            if not u6 or type(u6.tribe) ~= "table" then
-                                return
-                            end
-                            showTab("Overview")
-                        end
+
+            local tag = child.CleanTag(v1069.Text)
+            local name = child.CleanName(v1070.Text)
+
+            if v1042 == "create" and not child.ValidTag(tag) then
+                a26.Toast(child.Message("bad_tag"), "error")
+                ui.Shake(v1069.Parent, 6)
+
+                return
+            end
+
+            if not child.ValidName(name) then
+                a26.Toast(child.Message("bad_name"), "error")
+                ui.Shake(v1070.Parent, 6)
+
+                return
+            end
+
+            if v1042 ~= "create" then
+                if act("Settings", {name = name, icon = v1043.icon, color1 = v1043.color1, color2 = v1043.color2, joinMode = v1043.joinMode, minLevel = v1043.minLevel}) then
+                    a26.Toast("Tribe saved", "success")
+                    local v1132 = tribes.Home(true)
+                    target = nil
+                    v44(v1132 or v42)
+
+                    if v42 and type(v42.tribe) == "table" then
+                        showTab("Overview")
                     end
-                else
-                    a1.Toast(Tribes_upv_1.Message("bad_name"), "error")
-                    UI_upv_1.Shake(u105.Parent, 6)
+                end
+            elseif act("Create", {tag = tag, name = name, icon = v1043.icon, color1 = v1043.color1, color2 = v1043.color2, joinMode = v1043.joinMode, minLevel = v1043.minLevel}) then
+                a26.Sounds.Play("Queue_Join")
+                a26.Toast(`[{tag}] {name} is founded!`, "success")
+                local v1133 = tribes.Home(true)
+                target = nil
+                v44(v1133 or v42)
+
+                if v42 and type(v42.tribe) == "table" then
+                    showTab("Overview")
                 end
             end
-            a1.Toast(Tribes_upv_1.Message("bad_tag"), "error")
-            UI_upv_1.Shake(u104.Parent, 6)
         end
     )
-    if a1.Economy then
-        a1.Economy.Event:Connect(
-            function(a134)
+
+    if a26.Economy then
+        a26.Economy.Event:Connect(
+            function(a1134)
                 --[[
                   line: 2667
                   upvalues:
-                    Tribes_upv_2 (copy, index: 1)
-                    a1 (copy, index: 2)
-                    u34 (ref,  index: 3)
-                    u4 (copy, index: 4)
-                    u14 (ref,  index: 5)
+                    tribes (copy, index: 1)
+                    a26 (copy, index: 2)
+                    timestamp3 (ref,  index: 3)
+                    v39 (copy, index: 4)
+                    target (ref,  index: 5)
                 ]]
-                if a134 ~= "TribePass" then
+                if a1134 ~= "TribePass" then
                     return
                 end
+
                 task.spawn(
                     function()
                         --[[
                           line: 2671
                           upvalues:
-                            Tribes_upv_2 (copy, index: 1)
-                            a1 (copy, index: 2)
-                            u34 (ref,  index: 3)
-                            u4 (copy, index: 4)
-                            u14 (ref,  index: 5)
+                            tribes (copy, index: 1)
+                            a26 (copy, index: 2)
+                            timestamp3 (ref,  index: 3)
+                            v39 (copy, index: 4)
+                            target (ref,  index: 5)
                         ]]
-                        local v481 = Tribes_upv_2.Home(true)
-                        a1.Sounds.Play("Queue_Join")
-                        a1.Toast("Founding unlocked! Make your tribe", "success")
-                        local v482 = os.clock() - u34 < 120
-                        if not v482 or not u4.IsOpen or type(v481) ~= "table" or (v481.tribe) or u14 == "Form" then
-                            return
+                        local v1135 = tribes.Home(true)
+                        a26.Sounds.Play("Queue_Join")
+                        a26.Toast("Founding unlocked! Make your tribe", "success")
+                        local v1136 = os.clock() - timestamp3 < 120
+
+                        if v1136
+                            and v39.IsOpen
+                            and type(v1135) == "table"
+                            and not v1135.tribe
+                            and target ~= "Form"
+                        then
+                            a26.OpenTribeForm("create")
                         end
-                        a1.OpenTribeForm("create")
                     end
                 )
             end
         )
     end
-    local function layout()
-        --[[
-          name: layout
-          line: 2684
-          upvalues:
-            tbl_upv_1 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            tbl_upv_1 (copy, index: 3)
-            u4 (copy, index: 5)
-            fromOffset_upv_1 (copy, index: 6)
-            u20 (copy, index: 7)
-            u21 (copy, index: 8)
-            u44 (copy, index: 9)
-            u45 (copy, index: 10)
-            u96 (copy, index: 11)
-            u97 (copy, index: 12)
-            u87 (copy, index: 13)
-            u88 (copy, index: 14)
-            u6 (ref,  index: 15)
-            u73 (copy, index: 16)
-            u74 (copy, index: 17)
-            u77 (copy, index: 18)
-            u5 (copy, index: 19)
-        ]]
-        local v483 = UI_upv_1.CanvasSize()
-        local v484 = UI_upv_1.TopInset()
-        if UI_upv_1.Compact then
-            u4.Holder.Size = fromOffset_upv_1(math.floor(math.min(1180, v483.X - 24)), math.floor(math.min(680, (v483.Y - v484) - 12)))
-        else
-            u4.Holder.Size = fromOffset_upv_1(math.floor(math.clamp(v483.X - 200, 1040, 1280)), math.floor(math.clamp((v483.Y - v484) - 90, 620, 760)))
-        end
-        local v485 = u4.Holder.Size.X.Offset - 44
-        local v486 = (u4.Holder.Size.Y.Offset - 80) - 32 - (tbl_upv_1.tab + 14)
-        local left_1 = tbl_upv_1.left
-        for _, value_51 in {{u20, u21}, {u44, u45}, {u96, u97}, {u87, u88}} do
-            value_51[1].Size = fromOffset_upv_1(left_1, v486)
-            value_51[2].Position = fromOffset_upv_1(left_1 + tbl_upv_1.gap, 0)
-            value_51[2].Size = fromOffset_upv_1((v485 - left_1) - tbl_upv_1.gap, v486)
-        end
-        local v487 = (u6 ~= nil) and (type(u6.tribe) == "table")
-        u20.Visible = not v487
-        if v487 then
-            u21.Position = fromOffset_upv_1(0, 0)
-            u21.Size = fromOffset_upv_1(v485, v486)
-        end
-        local v488 = ((UI_upv_1.Compact) and 290) or 330
-        u73.Size = fromOffset_upv_1((v485 - v488) - tbl_upv_1.gap, v486)
-        u74.Position = fromOffset_upv_1(v485 - v488, 0)
-        u74.Size = fromOffset_upv_1(v488, v486)
-        u77.CellSize = fromOffset_upv_1(((UI_upv_1.Compact) and 180) or 200, 150)
-        u5.Visible = not UI_upv_1.Compact
-        u4.Refit()
-    end
-    UI_upv_1.LayoutChanged:Connect(
-        function()
+
+    do
+        local function layout()
             --[[
-              line: 2716
+              name: layout
+              line: 2684
               upvalues:
-                u4 (copy, index: 1)
-                layout (copy, index: 2)
+                v27 (ref,  index: 1)
+                ui (copy, index: 2)
+                v12 (copy, index: 3)
+                v11 (copy, index: 4)
+                v39 (copy, index: 5)
+                udim2FromOffset (copy, index: 6)
+                parent5 (copy, index: 7)
+                parent6 (copy, index: 8)
+                parent12 (copy, index: 9)
+                parent13 (copy, index: 10)
+                parent29 (copy, index: 11)
+                parent30 (copy, index: 12)
+                parent27 (copy, index: 13)
+                parent28 (copy, index: 14)
+                v42 (ref,  index: 15)
+                parent22 (copy, index: 16)
+                parent23 (copy, index: 17)
+                ui6 (copy, index: 18)
+                ui2 (copy, index: 19)
             ]]
-            if not u4.IsOpen then
-                return
-            end
-            layout()
-        end
-    )
-    UI_upv_1.ScaleChanged:Connect(
-        function()
-            --[[
-              line: 2721
-              upvalues:
-                u4 (copy, index: 1)
-                layout (copy, index: 2)
-            ]]
-            if not u4.IsOpen then
-                return
-            end
-            layout()
-        end
-    )
-    local u109 = nil
-    u8 = function(a135)
-        --[[
-          line: 2728
-          upvalues:
-            u6 (ref,  index: 1)
-            u4 (copy, index: 2)
-            u5 (copy, index: 3)
-            setTabs (copy, index: 4)
-            clear (copy, index: 5)
-            u20 (copy, index: 6)
-            label (copy, index: 7)
-            Tribes_upv_1 (copy, index: 8)
-            Fonts_upv_1 (copy, index: 9)
-            u1 (copy, index: 10)
-            TribeEmblem_upv_1 (copy, index: 11)
-            UI_upv_1 (copy, index: 12)
-            u3 (copy, index: 13)
-            u109 (ref,  index: 14)
-            u14 (ref,  index: 15)
-            u91 (ref,  index: 16)
-            u15 (copy, index: 17)
-            renderOverview (copy, index: 18)
-            renderMembers (copy, index: 19)
-            renderFindLeft (copy, index: 20)
-            layout (copy, index: 21)
-            paintTabs (copy, index: 22)
-        ]]
-        u6 = a135
-        if a135 then
-            local tribe_4 = a135.tribe
-            if type(tribe_4) ~= "table" then
-                u4.Title.AutoLocalize = true
-                u4.Title.Text = "TRIBES"
-                u4.Subtitle.Text = "Play together, earn Glory, hold the maps"
-                u5.Text = ""
-                if u14 == "Overview" or u14 == "Members" then
-                    u14 = nil
-                end
-                u109 = false
-                u15.text.Text = "FIND A TRIBE"
-                setTabs({"Find", "Leaderboard", "Territories"})
-                renderFindLeft(a135)
+            v27 = if ui.Compact then v12 else v11
+            local v1138 = ui.CanvasSize()
+            local v1139 = ui.TopInset()
+
+            if ui.Compact then
+                v39.Holder.Size = udim2FromOffset(math.floor((math.min(1180, v1138.X - 24))), (math.floor((math.min(680, (v1138.Y - v1139) - 12)))))
             else
-                u4.Title.AutoLocalize = false
-                u4.Title.Text = string.upper(tostring(tribe_4.name))
-                local v489 = tonumber(tribe_4.members) or 0
-                local Subtitle_1 = u4.Subtitle
-                local Tag_18 = TribeEmblem_upv_1.Tag
-                local v490
-                if type(tribe_4) ~= "table" then
-                    v490 = tribe_4
-                else
-                    v490 = tribe_4.tag
-                end
-                local v491 = Tag_18(v490)
-                Subtitle_1.Text = ("%*  \194\183  %* %*  \194\183  %* Glory this week"):format(v491, v489, ((v489 ~= 1) and "members") or "member", UI_upv_1.FormatNumber(tonumber(tribe_4.weekRenown) or 0))
-                u5.Text = not (tribe_4.rank) and "" or string.format("<font color=\"#%s\">#%d</font> THIS WEEK", u3:ToHex(), tribe_4.rank)
-                if u109 == false and (u14 == "Find" or u14 == "View") then
-                    u14 = nil
-                end
-                if u14 == "View" and u91 == tribe_4.id then
-                    u14 = nil
-                end
-                u109 = true
-                u15.text.Text = "BROWSE"
-                setTabs({"Overview", "Members", "Find", "Leaderboard", "Territories"})
-                renderOverview(tribe_4)
-                renderMembers(tribe_4)
+                v39.Holder.Size = udim2FromOffset(math.floor((math.clamp(v1138.X - 200, 1040, 1280))), (math.floor((math.clamp((v1138.Y - v1139) - 90, 620, 760)))))
             end
-            layout()
-            paintTabs()
-        else
-            u4.Title.AutoLocalize = true
-            u4.Title.Text = "TRIBES"
-            u5.Text = ""
-            setTabs({"Find", "Territories"})
-            clear(u20)
-            label({Name = "Down", TextWrapped = true, TextSize = 16, Text = Tribes_upv_1.Message("unavailable"), FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, TextTruncate = Enum.TextTruncate.None, Size = UDim2.new(1, 0, 0, 60), Parent = u20})
-        end
-    end
-    Tribes_upv_2.HomeChanged:Connect(
-        function(a136)
-            --[[
-              line: 2774
-              upvalues:
-                u4 (copy, index: 1)
-                u14 (ref,  index: 2)
-                u8 (ref,  index: 3)
-                u30 (ref,  index: 4)
-                u31 (ref,  index: 5)
-                rowsSig (copy, index: 6)
-                u32 (ref,  index: 7)
-                drawRows (copy, index: 8)
-            ]]
-            if not u4.IsOpen or u14 == "Form" then
-                return
+
+            local v1140 = v39.Holder.Size.X.Offset - 44
+            local v1141 = (v39.Holder.Size.Y.Offset - 80) - 32 - (v27.tab + 14)
+            local left = v27.left
+
+            for _, v1144 in {{parent5, parent6}, {parent12, parent13}, {parent29, parent30}, {parent27, parent28}} do
+                v1144[1].Size = udim2FromOffset(left, v1141)
+                v1144[2].Position = udim2FromOffset(left + v27.gap, 0)
+                v1144[2].Size = udim2FromOffset((v1140 - left) - v27.gap, v1141)
             end
-            u8(a136)
-            if not u30 or (u31) or u14 ~= "Find" or rowsSig() == u32 then
-                return
+
+            local v1145 = v42 ~= nil and type(v42.tribe) == "table"
+            parent5.Visible = not v1145
+
+            if v1145 then
+                parent6.Position = udim2FromOffset(0, 0)
+                parent6.Size = udim2FromOffset(v1140, v1141)
             end
-            drawRows(u30, false)
+
+            local v1146 = ui.Compact and 290 or 330
+            parent22.Size = udim2FromOffset((v1140 - v1146) - v27.gap, v1141)
+            parent23.Position = udim2FromOffset(v1140 - v1146, 0)
+            parent23.Size = udim2FromOffset(v1146, v1141)
+            local v1147 = ui.Compact and 180 or 200
+            ui6.CellSize = udim2FromOffset(v1147, 150)
+            ui2.Visible = not ui.Compact
+            v39.Refit()
         end
-    )
-    local u110 = 0
-    local tbl_123 = {}
-    function tbl_123.open(a137)
-        --[[
-          name: open
-          line: 2783
-          upvalues:
-            u110 (ref,  index: 1)
-            u10 (ref,  index: 2)
-            a1 (copy, index: 3)
-            layout (copy, index: 4)
-            u14 (ref,  index: 5)
-            u109 (ref,  index: 6)
-            u8 (ref,  index: 7)
-            Tribes_upv_2 (copy, index: 8)
-            tbl_upv_10 (copy, index: 9)
-            showTab (copy, index: 10)
-            u4 (copy, index: 11)
-            u30 (ref,  index: 12)
-            u31 (ref,  index: 13)
-            rowsSig (copy, index: 14)
-            u32 (ref,  index: 15)
-            drawRows (copy, index: 16)
-        ]]
-        u110 = u110 + 1
-        local u111 = u110
-        u10 = os.clock()
-        a1.SetHudHidden("Tribe", true)
-        layout()
-        u14 = nil
-        u109 = nil
-        u8(Tribes_upv_2.Cached())
-        if type(a137) == "string" and tbl_upv_10[a137] then
-            showTab(a137)
-        end
-        u4:Open()
-        task.spawn(
+
+        ui.LayoutChanged:Connect(
             function()
                 --[[
-                  line: 2796
+                  line: 2716
                   upvalues:
-                    Tribes_upv_2 (copy, index: 1)
-                    u111 (copy, index: 2)
-                    u110 (ref,  index: 3)
-                    u4 (copy, index: 4)
-                    u14 (ref,  index: 5)
-                    u8 (ref,  index: 6)
-                    u30 (ref,  index: 7)
-                    u31 (ref,  index: 8)
-                    rowsSig (copy, index: 9)
-                    u32 (ref,  index: 10)
-                    drawRows (copy, index: 11)
+                    v39 (copy, index: 1)
+                    layout (copy, index: 2)
                 ]]
-                local v493 = Tribes_upv_2.Home(true)
-                if u111 ~= u110 or not u4.IsOpen then
-                    return
+                if v39.IsOpen then
+                    layout()
                 end
-                if u14 ~= "Form" then
-                    u8(v493)
-                end
-                if not u30 or (u31) or u14 ~= "Find" or rowsSig() == u32 then
-                    return
-                end
-                drawRows(u30, false)
             end
         )
-    end
-    function tbl_123.close(a138)
-        --[[
-          name: close
-          line: 2806
-          upvalues:
-            u33 (ref,  index: 1)
-            u90 (ref,  index: 2)
-            a1 (copy, index: 3)
-            u18 (ref,  index: 4)
-            u16 (copy, index: 5)
-            clear (copy, index: 6)
-            u17 (copy, index: 7)
-            UI_upv_1 (copy, index: 8)
-            MenuManager_upv_1 (copy, index: 9)
-            u104 (copy, index: 10)
-            u105 (copy, index: 11)
-            u22 (copy, index: 12)
-            u4 (copy, index: 13)
-        ]]
-        u33 = u33 + 1
-        u90 = u90 + 1
-        a1.SetHudHidden("Tribe", false)
-        u18 = false
-        u16.Visible = false
-        clear(u17)
-        if UI_upv_1.Gamepad then
-            MenuManager_upv_1.Reselect()
-        end
-        u104:ReleaseFocus()
-        u105:ReleaseFocus()
-        u22:ReleaseFocus()
-        u4:Close(a138)
-    end
-    function tbl_123.select()
-        --[[
-          name: select
-          line: 2816
-          upvalues:
-            u13 (ref,  index: 1)
-            tbl_upv_10 (copy, index: 2)
-        ]]
-        local v494 = u13[1]
-        if v494 and tbl_upv_10[v494] then
-            return tbl_upv_10[v494].button
-        end
-        return nil
-    end
-    function tbl_123.back()
-        --[[
-          name: back
-          line: 2820
-          upvalues:
-            u18 (ref,  index: 1)
-            u16 (copy, index: 2)
-            clear (copy, index: 3)
-            u17 (copy, index: 4)
-            UI_upv_1 (copy, index: 5)
-            MenuManager_upv_1 (copy, index: 6)
-            u14 (ref,  index: 7)
-            showTab (copy, index: 8)
-            u6 (ref,  index: 9)
-            u89 (ref,  index: 10)
-        ]]
-        if u18 then
-            u18 = false
-            u16.Visible = false
-            clear(u17)
-            if UI_upv_1.Gamepad then
-                MenuManager_upv_1.Reselect()
+
+        ui.ScaleChanged:Connect(
+            function()
+                --[[
+                  line: 2721
+                  upvalues:
+                    v39 (copy, index: 1)
+                    layout (copy, index: 2)
+                ]]
+                if v39.IsOpen then
+                    layout()
+                end
             end
-        elseif u14 ~= "Form" then
-            if u14 ~= "View" then
-                return false
+        )
+
+        local v1148 = nil
+
+        v44 = function(a1149)
+            --[[
+              line: 2728
+              upvalues:
+                v42 (ref,  index: 1)
+                v39 (copy, index: 2)
+                ui2 (copy, index: 3)
+                setTabs (copy, index: 4)
+                clear (copy, index: 5)
+                parent5 (copy, index: 6)
+                label (copy, index: 7)
+                child (copy, index: 8)
+                fonts (copy, index: 9)
+                textColor3 (copy, index: 10)
+                TribeEmblem (copy, index: 11)
+                ui (copy, index: 12)
+                textColor32 (copy, index: 13)
+                v1148 (ref,  index: 14)
+                target (ref,  index: 15)
+                v956 (ref,  index: 16)
+                tab (copy, index: 17)
+                renderOverview (copy, index: 18)
+                renderMembers (copy, index: 19)
+                renderFindLeft (copy, index: 20)
+                layout (copy, index: 21)
+                paintTabs (copy, index: 22)
+            ]]
+            v42 = a1149
+
+            if not a1149 then
+                v39.Title.AutoLocalize = true
+                v39.Title.Text = "TRIBES"
+                ui2.Text = ""
+                setTabs({"Find", "Territories"})
+                clear(parent5)
+                label({Name = "Down", TextSize = 16, TextWrapped = true, Text = child.Message("unavailable"), FontFace = fonts.SemiBold, TextColor3 = textColor3, TextTruncate = Enum.TextTruncate.None, Size = UDim2.new(1, 0, 0, 60), Parent = parent5})
+
+                return
             end
-            showTab(u89)
-        else
-            local v495
-            if (u6) and (u6.tribe) then
-                v495 = "Overview"
+
+            local tribe = a1149.tribe
+
+            if type(tribe) ~= "table" then
+                v39.Title.AutoLocalize = true
+                v39.Title.Text = "TRIBES"
+                v39.Subtitle.Text = "Play together, earn Glory, hold the maps"
+                ui2.Text = ""
+
+                if target == "Overview" or target == "Members" then
+                    target = nil
+                end
+
+                v1148 = false
+                tab.text.Text = "FIND A TRIBE"
+                setTabs({"Find", "Leaderboard", "Territories"})
+                renderFindLeft(a1149)
             else
-                v495 = "Find"
+                local v1151
+                local text
+                v39.Title.AutoLocalize = false
+                v39.Title.Text = string.upper((tostring(tribe.name)))
+                local number = tonumber(tribe.members) or 0
+                local subtitle = v39.Subtitle
+                local tag = TribeEmblem.Tag
+
+                if type(tribe) ~= "table" then
+                    v1151 = tribe
+                else
+                    v1151 = tribe.tag
+                end
+
+                local v1156 = tag(v1151)
+                local v1157 = number ~= 1 and "members" or "member"
+                subtitle.Text = `{v1156}  ·  {number} {v1157}  ·  {(ui.FormatNumber((tonumber(tribe.weekRenown)
+                    or 0)))} Glory this week`
+
+                if tribe.rank then
+                    text = string.format("<font color=\"#%s\">#%d</font> THIS WEEK", textColor32:ToHex(), tribe.rank)
+                else
+                    text = ""
+                end
+
+                ui2.Text = text
+
+                if v1148 == false and (target == "Find" or target == "View") then
+                    target = nil
+                end
+
+                if target == "View" and v956 == tribe.id then
+                    target = nil
+                end
+
+                v1148 = true
+                tab.text.Text = "BROWSE"
+                setTabs({"Overview", "Members", "Find", "Leaderboard", "Territories"})
+                renderOverview(tribe)
+                renderMembers(tribe)
             end
-            showTab(v495)
+
+            layout()
+            paintTabs()
         end
-        return true
+
+        tribes.HomeChanged:Connect(
+            function(a1158)
+                --[[
+                  line: 2774
+                  upvalues:
+                    v39 (copy, index: 1)
+                    target (ref,  index: 2)
+                    v44 (ref,  index: 3)
+                    v280 (ref,  index: 4)
+                    v281 (ref,  index: 5)
+                    rowsSig (copy, index: 6)
+                    v282 (ref,  index: 7)
+                    drawRows (copy, index: 8)
+                ]]
+                if v39.IsOpen and target ~= "Form" then
+                    v44(a1158)
+
+                    if v280 and not v281 and target == "Find" and rowsSig() ~= v282 then
+                        drawRows(v280, false)
+                    end
+                end
+            end
+        )
+
+        local count7 = 0
+
+        menuManager.Register(
+            "Tribe",
+            {
+                open = (function(key)
+                    --[[
+                      name: open
+                      line: 2783
+                      upvalues:
+                        count7 (ref,  index: 1)
+                        timestamp (ref,  index: 2)
+                        a26 (copy, index: 3)
+                        layout (copy, index: 4)
+                        target (ref,  index: 5)
+                        v1148 (ref,  index: 6)
+                        v44 (ref,  index: 7)
+                        tribes (copy, index: 8)
+                        v138 (copy, index: 9)
+                        showTab (copy, index: 10)
+                        v39 (copy, index: 11)
+                        v280 (ref,  index: 12)
+                        v281 (ref,  index: 13)
+                        rowsSig (copy, index: 14)
+                        v282 (ref,  index: 15)
+                        drawRows (copy, index: 16)
+                    ]]
+                    count7 += 1
+                    local v1161 = count7
+                    timestamp = os.clock()
+                    a26.SetHudHidden("Tribe", true)
+                    layout()
+                    target = nil
+                    v1148 = nil
+                    v44(tribes.Cached())
+
+                    if type(key) == "string" and v138[key] then
+                        showTab(key)
+                    end
+
+                    v39:Open()
+
+                    task.spawn(
+                        function()
+                            --[[
+                              line: 2796
+                              upvalues:
+                                tribes (copy, index: 1)
+                                v1161 (copy, index: 2)
+                                count7 (ref,  index: 3)
+                                v39 (copy, index: 4)
+                                target (ref,  index: 5)
+                                v44 (ref,  index: 6)
+                                v280 (ref,  index: 7)
+                                v281 (ref,  index: 8)
+                                rowsSig (copy, index: 9)
+                                v282 (ref,  index: 10)
+                                drawRows (copy, index: 11)
+                            ]]
+                            local v1162 = tribes.Home(true)
+
+                            if v1161 == count7 and v39.IsOpen then
+                                if target ~= "Form" then
+                                    v44(v1162)
+                                end
+
+                                if v280 and not v281 and target == "Find" and rowsSig() ~= v282 then
+                                    drawRows(v280, false)
+                                end
+                            end
+                        end
+                    )
+                end),
+                close = (function(a1163)
+                    --[[
+                      name: close
+                      line: 2806
+                      upvalues:
+                        count2 (ref,  index: 1)
+                        count6 (ref,  index: 2)
+                        a26 (copy, index: 3)
+                        dialog (ref,  index: 4)
+                        parent3 (copy, index: 5)
+                        clear (copy, index: 6)
+                        parent4 (copy, index: 7)
+                        ui (copy, index: 8)
+                        menuManager (copy, index: 9)
+                        v1069 (copy, index: 10)
+                        v1070 (copy, index: 11)
+                        ui3 (copy, index: 12)
+                        v39 (copy, index: 13)
+                    ]]
+                    count2 += 1
+                    count6 += 1
+                    a26.SetHudHidden("Tribe", false)
+                    dialog = false
+                    parent3.Visible = false
+                    clear(parent4)
+
+                    if ui.Gamepad then
+                        menuManager.Reselect()
+                    end
+
+                    v1069:ReleaseFocus()
+                    v1070:ReleaseFocus()
+                    ui3:ReleaseFocus()
+                    v39:Close(a1163)
+                end),
+                select = (function()
+                    --[[
+                      name: select
+                      line: 2816
+                      upvalues:
+                        v139 (ref,  index: 1)
+                        v138 (copy, index: 2)
+                    ]]
+                    local v1164 = v139[1]
+
+                    if v1164 and v138[v1164] then
+                        return v138[v1164].button
+                    end
+
+                    return nil
+                end),
+                back = (function()
+                    --[[
+                      name: back
+                      line: 2820
+                      upvalues:
+                        dialog (ref,  index: 1)
+                        parent3 (copy, index: 2)
+                        clear (copy, index: 3)
+                        parent4 (copy, index: 4)
+                        ui (copy, index: 5)
+                        menuManager (copy, index: 6)
+                        target (ref,  index: 7)
+                        showTab (copy, index: 8)
+                        v42 (ref,  index: 9)
+                        v954 (ref,  index: 10)
+                    ]]
+                    if dialog then
+                        dialog = false
+                        parent3.Visible = false
+                        clear(parent4)
+
+                        if ui.Gamepad then
+                            menuManager.Reselect()
+                        end
+
+                        return true
+                    end
+
+                    if target == "Form" then
+                        local v1165 = v42 and v42.tribe and "Overview" or "Find"
+                        showTab(v1165)
+
+                        return true
+                    end
+
+                    if target == "View" then
+                        showTab(v954)
+                        return true
+                    end
+
+                    return false
+                end)
+            }
+        )
     end
-    MenuManager_upv_1.Register("Tribe", tbl_123)
-    State_1.PlayerStateChanged:Connect(
-        function(a139)
+
+    state.PlayerStateChanged:Connect(
+        function(a1166)
             --[[
               line: 2836
               upvalues:
-                MenuManager_upv_1 (copy, index: 1)
+                menuManager (copy, index: 1)
             ]]
-            if a139 ~= "Match" or not MenuManager_upv_1.IsOpen("Tribe") then
-                return
+            if a1166 == "Match" and menuManager.IsOpen("Tribe") then
+                menuManager.Close("Tribe", true)
             end
-            MenuManager_upv_1.Close("Tribe", true)
         end
     )
-    a1.Debug.tribe = function(a140, a141)
+
+    a26.Debug.tribe = function(a1167, options)
         --[[
           line: 2844
           upvalues:
-            MenuManager_upv_1 (copy, index: 1)
+            menuManager (copy, index: 1)
             showTab (copy, index: 2)
-            u9 (ref,  index: 3)
-            a1 (copy, index: 4)
-            u104 (copy, index: 5)
-            u105 (copy, index: 6)
-            u8 (ref,  index: 7)
-            u10 (ref,  index: 8)
-            u108 (copy, index: 9)
-            u4 (copy, index: 10)
-            u14 (ref,  index: 11)
-            u6 (ref,  index: 12)
-            u18 (ref,  index: 13)
+            v45 (ref,  index: 3)
+            a26 (copy, index: 4)
+            v1069 (copy, index: 5)
+            v1070 (copy, index: 6)
+            v44 (ref,  index: 7)
+            timestamp (ref,  index: 8)
+            v1087 (copy, index: 9)
+            v39 (copy, index: 10)
+            target (ref,  index: 11)
+            v42 (ref,  index: 12)
+            dialog (ref,  index: 13)
         ]]
-        if a140 == "open" then
-            MenuManager_upv_1.Open("Tribe", a141)
-        elseif a140 == "tab" then
-            showTab((tostring(a141)))
-        elseif a140 == "view" then
-            u9(tonumber(a141) or 0, nil)
-        elseif a140 == "form" then
-            a1.OpenTribeForm((tostring(a141 or "create")))
-        elseif a140 == "fill" and type(a141) == "table" then
-            u104.Text = tostring(a141.tag or "")
-            u105.Text = tostring(a141.name or "")
-        elseif a140 == "home" and type(a141) == "table" then
-            u8(a141)
-        elseif a140 == "submit" then
-            u10 = -math.huge
+        if a1167 == "open" then
+            menuManager.Open("Tribe", options)
+        elseif a1167 == "tab" then
+            showTab((tostring(options)))
+        elseif a1167 == "view" then
+            v45((tonumber(options) or 0), nil)
+        elseif a1167 == "form" then
+            a26.OpenTribeForm((tostring((options or "create"))))
+        elseif a1167 == "fill" and type(options) == "table" then
+            v1069.Text = tostring((options.tag or ""))
+            v1070.Text = tostring((options.name or ""))
+        elseif a1167 == "home" and type(options) == "table" then
+            v44(options)
+        elseif a1167 == "submit" then
+            timestamp = -math.huge
             task.spawn(
                 function()
                     --[[
                       line: 2860
                       upvalues:
-                        u108 (copy, index: 1)
+                        v1087 (copy, index: 1)
                     ]]
-                    u108.Activated:Fire()
+                    v1087.Activated:Fire()
                 end
             )
         end
-        local tbl_124 = {dialog = 0, inTribe = 0}
-        tbl_124.open = u4.IsOpen
-        tbl_124.tab = u14 or false
-        tbl_124.inTribe = (u6 ~= nil) and (u6.tribe ~= false)
-        tbl_124.dialog = u18
-        return tbl_124
+
+        local v1169 = {open = v39.IsOpen, tab = target or false}
+        v1169.inTribe = v42 ~= nil and v42.tribe ~= false
+        v1169.dialog = dialog
+        return v1169
     end
 end
-return v1
+
+return v10

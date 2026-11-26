@@ -1,421 +1,464 @@
-local v1 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil")
-local u1 = v1.getUserFlag("UserPlayerScriptsCCLIntegrationD")
-local StarterPlayer_upv_1 = game:GetService("StarterPlayer")
-local UserGameSettings_upv_1 = UserSettings():GetService("UserGameSettings")
-local Workspace_upv_1 = game:GetService("Workspace")
-local AvatarAbilitiesInterface_upv_1 = require(script.Parent:WaitForChild("AvatarAbilitiesInterface"))
-local u2 = v1.getUserFlag("UserAbilitiesUserInterfaceB")
-local u3 = (u2 and "ControlState") or "PlayerControlState"
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-function tbl_upv_1._calculatePlayerInputValues(a1)
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v2 = CommonUtils.get("FlagUtil")
+local userFlag = v2.getUserFlag("UserPlayerScriptsCCLIntegrationD")
+    or v2.getUserFlag("UserPlayerScriptsCCLIntegrationDGA")
+local userFlag2 = v2.getUserFlag("UserControlModuleDisabledUpdate")
+local starterPlayer = game:GetService("StarterPlayer")
+local v6 = UserSettings():GetService("UserGameSettings")
+local workspace = game:GetService("Workspace")
+local AvatarAbilitiesInterface = require(script.Parent:WaitForChild("AvatarAbilitiesInterface"))
+local userFlag3 = v2.getUserFlag("UserAbilitiesUserInterfaceB")
+local v10 = userFlag3 and "ControlState" or "PlayerControlState"
+local Class = {}
+Class.__index = Class
+
+function Class._calculatePlayerInputValues(a12)
     --[[
       name: _calculatePlayerInputValues
-      line: 14
+      line: 16
     ]]
-    local v2 = a1.Character
-    if v2 == nil then
+    local character = a12.Character
+    if character == nil then
         return Vector3.new(0, 0, 0), Vector3.new(0, 0, 1), false
     end
-    local Humanoid_1 = v2:FindFirstChild("Humanoid")
-    if Humanoid_1 == nil then
+
+    local humanoid = character:FindFirstChild("Humanoid")
+    if humanoid == nil then
         return Vector3.new(0, 0, 0), Vector3.new(0, 0, 1), false
     end
-    v2 = a1:FindFirstChild("InputContexts")
-    if v2 == nil then
+
+    local inputContexts = a12:FindFirstChild("InputContexts")
+    if inputContexts == nil then
         return Vector3.new(0, 0, 0), Vector3.new(0, 0, 1), false
     end
-    local CharacterContext_1 = v2:FindFirstChild("CharacterContext")
-    if CharacterContext_1 == nil then
+
+    local characterContext = inputContexts:FindFirstChild("CharacterContext")
+    if characterContext == nil then
         return Vector3.new(0, 0, 0), Vector3.new(0, 0, 1), false
     end
-    v2 = CharacterContext_1.MoveAction
-    local RotationAction_1 = CharacterContext_1:FindFirstChild("RotationAction")
-    CharacterContext_1 = (RotationAction_1 ~= nil) and (RotationAction_1:GetState())
-    local function isValidInput2D(a2)
+
+    local moveAction = characterContext.MoveAction
+    local rotationAction = characterContext:FindFirstChild("RotationAction")
+    local state = rotationAction ~= nil and rotationAction:GetState()
+
+    local function isValidInput2D(a21)
         --[[
           name: isValidInput2D
-          line: 35
+          line: 37
         ]]
-        local v3 = true
-        local v4
-        if a2.X ~= a2.X then
-            v4 = v3
-        else
-            v4 = true
-            if a2.Y == a2.Y then
-                v4 = true
-                if a2.X ~= math.huge then
-                    v4 = a2.Y == math.huge
-                end
-            end
-        end
-        return not v4
+        return not (a21.X ~= a21.X or a21.Y ~= a21.Y or a21.X == math.huge or (a21.Y == math.huge))
     end
-    local function isValidInput3D(a3)
+
+    local function isValidInput3D(a23)
         --[[
           name: isValidInput3D
-          line: 43
+          line: 46
         ]]
-        local v5 = true
-        local v6
-        if a3.X ~= a3.X then
-            v6 = v5
-        else
-            v6 = true
-            if a3.Y == a3.Y then
-                v6 = true
-                if a3.Z == a3.Z then
-                    v6 = true
-                    if a3.X ~= math.huge then
-                        v6 = true
-                        if a3.Y ~= math.huge then
-                            v6 = a3.Z == math.huge
-                        end
-                    end
+        return not (a23.X ~= a23.X
+            or a23.Y ~= a23.Y
+            or a23.Z ~= a23.Z
+            or a23.X == math.huge
+            or a23.Y == math.huge
+            or (a23.Z == math.huge))
+    end
+
+    local v24 = if moveAction ~= nil then moveAction:GetState() else Vector2.new(0, 0)
+    local v25 = a12:GetCameraState().CFrame.LookVector
+    local v26 = false
+
+    if v24.X == v24.X and v24.Y == v24.Y and v24.X ~= math.huge and v24.Y ~= math.huge then
+        if v25.X == v25.X
+            and v25.Y == v25.Y
+            and v25.Z == v25.Z
+            and v25.X ~= math.huge
+            and v25.Y ~= math.huge
+            and v25.Z ~= math.huge
+            and 0 < v25.Magnitude
+        then
+            if humanoid then
+                local state2 = humanoid:GetState()
+
+                if state2 ~= Enum.HumanoidStateType.Swimming then
+                    v25 = Vector3.new(v25.X, 0, v25.Z).Unit
                 end
             end
-        end
-        return not v6
-    end
-    local v7
-    if v2 == nil then
-        v7 = Vector2.new(0, 0)
-    else
-        v7 = v2:GetState()
-    end
-    v2 = a1:GetCameraState().CFrame.LookVector
-    local v8 = true
-    local v9
-    if v7.X ~= v7.X then
-        v9 = v8
-    else
-        v9 = true
-        if v7.Y == v7.Y then
-            v9 = true
-            if v7.X ~= math.huge then
-                v9 = v7.Y == math.huge
-            end
-        end
-    end
-    if not (v9) then
-        local v10 = true
-        local v11
-        if v2.X ~= v2.X then
-            v11 = v10
         else
-            v11 = true
-            if v2.Y == v2.Y then
-                v11 = true
-                if v2.Z == v2.Z then
-                    v11 = true
-                    if v2.X ~= math.huge then
-                        v11 = true
-                        if v2.Y ~= math.huge then
-                            v11 = v2.Z == math.huge
-                        end
-                    end
-                end
-            end
+            v26 = true
         end
-        if not (v11) and v2.Magnitude > 0 then
-            if Humanoid_1 and Humanoid_1:GetState() ~= Enum.HumanoidStateType.Swimming then
-                v2 = Vector3.new(v2.X, 0, v2.Z).Unit
-            end
-            return (v2 * v7.Y) + (v2:Cross(Vector3.new(0, 1, 0)).Unit * v7.X), v2, CharacterContext_1
-        end
+    else
+        v26 = true
     end
-    return Vector3.new(0, 0, 0), Vector3.new(0, 0, 1), false
+
+    if v26 then
+        return Vector3.new(0, 0, 0), Vector3.new(0, 0, 1), false
+    end
+
+    local unit = v25:Cross(Vector3.new(0, 1, 0)).Unit
+
+    return (v25 * v24.Y) + (unit * v24.X), v25, state
 end
-function tbl_upv_1.CloneInputsIfAbsent(a1)
+
+function Class.CloneInputsIfAbsent(parent: Instance?)
     --[[
       name: CloneInputsIfAbsent
-      line: 73
+      line: 77
       upvalues:
-        StarterPlayer_upv_1 (copy, index: 1)
+        starterPlayer (copy, index: 1)
     ]]
-    if a1:FindFirstChild("InputContexts") then
+    if parent:FindFirstChild("InputContexts") then
         return
     end
-    local v12 = StarterPlayer_upv_1.PlayerModule.InputContexts:Clone()
-    v12.CharacterContext.Enabled = true
-    v12.CameraContext.Enabled = true
-    v12.Parent = a1
+
+    local inputContexts = starterPlayer.PlayerModule.InputContexts:Clone()
+    inputContexts.CharacterContext.Enabled = true
+    inputContexts.CameraContext.Enabled = true
+    inputContexts.Parent = parent
 end
-function tbl_upv_1.FireCustomInputs(a1)
+
+function Class.FireCustomInputs(a31)
     --[[
       name: FireCustomInputs
-      line: 82
+      line: 88
       upvalues:
-        UserGameSettings_upv_1 (copy, index: 1)
+        v6 (copy, index: 1)
     ]]
-    local InputContexts_1 = a1:FindFirstChild("InputContexts")
-    if not InputContexts_1 then
+    local inputContexts = a31:FindFirstChild("InputContexts")
+    if not inputContexts then
         return
     end
-    local CharacterContext_2 = InputContexts_1:FindFirstChild("CharacterContext")
-    if not CharacterContext_2 or not InputContexts_1:FindFirstChild("CameraContext") then
+
+    local characterContext = inputContexts:FindFirstChild("CharacterContext")
+    if not characterContext then
         return
     end
-    local RotationAction_2 = CharacterContext_2:FindFirstChild("RotationAction")
-    if RotationAction_2 then
-        local RotationScriptableBinding_1 = RotationAction_2:FindFirstChild("RotationScriptableBinding")
-        if RotationScriptableBinding_1 then
-            RotationScriptableBinding_1:Fire(UserGameSettings_upv_1.RotationType == Enum.RotationType.CameraRelative)
+    if not inputContexts:FindFirstChild("CameraContext") then
+        return
+    elseif const rotationAction = characterContext:FindFirstChild("RotationAction") then
+        if const rotationScriptableBinding = rotationAction:FindFirstChild("RotationScriptableBinding") then
+            rotationScriptableBinding:Fire(v6.RotationType == Enum.RotationType.CameraRelative)
         end
     end
 end
-function tbl_upv_1.SendInputToCCLCharacter(a1)
+
+function Class.SendInputToCCLCharacter(a36)
     --[[
       name: SendInputToCCLCharacter
-      line: 101
+      line: 113
       upvalues:
-        AvatarAbilitiesInterface_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        AvatarAbilitiesInterface (copy, index: 1)
+        Class (copy, index: 2)
     ]]
-    if not a1 then
+    local v37
+
+    if not a36 then
         return
     end
-    local v13 = AvatarAbilitiesInterface_upv_1.get(a1)
-    local InputContexts_2 = a1:FindFirstChild("InputContexts")
-    if not InputContexts_2 then
+
+    local v38 = AvatarAbilitiesInterface.get(a36)
+    local inputContexts = a36:FindFirstChild("InputContexts")
+    if not inputContexts then
         return
     end
-    local CharacterContext_3 = InputContexts_2:FindFirstChild("CharacterContext")
-    if CharacterContext_3 then
-        for _, value_1 in v13:GetAbilities() do
-            local v14 = CharacterContext_3:FindFirstChild(value_1 .. "Action")
-            if v14 then
-                v13:SendInput(value_1, v14:GetState())
-            end
+
+    local characterContext = inputContexts:FindFirstChild("CharacterContext")
+    if not characterContext then
+        return
+    end
+
+    for _, ability in v38:GetAbilities() do
+        if const v43 = characterContext:FindFirstChild(ability .. "Action") then
+            v38:SendInput(ability, v43:GetState())
         end
-        local v15, v16, v17 = tbl_upv_1._calculatePlayerInputValues(a1)
-        v13:SendInput("Move", v15)
-        v13:SendInput("CameraLookDirection", v16)
-        v13:SendInput("CameraRelativeRotation", v17)
     end
+
+    local v44, v45
+    v44, v45, v37 = Class._calculatePlayerInputValues(a36)
+    v38:SendInput("Move", v44)
+    v38:SendInput("CameraLookDirection", v45)
+    v38:SendInput("CameraRelativeRotation", v37)
 end
-function tbl_upv_1.SendInputToHumanoidForServerAuth(a1)
+
+function Class.SendInputToHumanoidForServerAuth(a46)
     --[[
       name: SendInputToHumanoidForServerAuth
-      line: 122
+      line: 140
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    local Character_1 = a1.Character
-    if Character_1 == nil then
+    local character = a46.Character
+    if character == nil then
         return
     end
-    local Humanoid_2 = Character_1:FindFirstChild("Humanoid")
-    if Humanoid_2 == nil then
+
+    local humanoid = character:FindFirstChild("Humanoid")
+    if humanoid == nil then
         return
     end
-    local InputContexts_3 = a1:FindFirstChild("InputContexts")
-    if InputContexts_3 == nil then
+
+    local inputContexts = a46:FindFirstChild("InputContexts")
+    if inputContexts == nil then
         return
     end
-    local CharacterContext_4 = InputContexts_3:FindFirstChild("CharacterContext")
-    if CharacterContext_4 == nil then
+
+    local characterContext = inputContexts:FindFirstChild("CharacterContext")
+    if characterContext == nil then
         return
     end
-    local JumpAction_1 = CharacterContext_4.JumpAction
-    local v18, v19, v20 = tbl_upv_1._calculatePlayerInputValues(a1)
-    Humanoid_2:Move(v18)
-    Humanoid_2.AutoRotate = not v20
-    if v20 and Humanoid_2.SeatPart == nil and Humanoid_2.RootPart ~= nil and not (Humanoid_2.Sit) and not (Humanoid_2.RootPart:IsGrounded()) then
-        Humanoid_2.RootPart.CFrame = CFrame.new(Humanoid_2.RootPart.CFrame.Position, Humanoid_2.RootPart.CFrame.Position + v19)
+
+    local jumpAction = characterContext.JumpAction
+    local v52, v53, v54 = Class._calculatePlayerInputValues(a46)
+    humanoid:Move(v52)
+    humanoid.AutoRotate = not v54
+
+    if v54
+        and humanoid.SeatPart == nil
+        and humanoid.RootPart ~= nil
+        and not humanoid.Sit
+        and not humanoid.RootPart:IsGrounded()
+    then
+        humanoid.RootPart.CFrame = CFrame.new(humanoid.RootPart.CFrame.Position, humanoid.RootPart.CFrame.Position + v53)
     end
-    if JumpAction_1 == nil then
-        v20 = false
-    else
-        v20 = JumpAction_1:GetState()
-    end
-    Humanoid_2.Jump = v20
+
+    humanoid.Jump = if jumpAction ~= nil then jumpAction:GetState() else false
 end
-function tbl_upv_1.setupPlayerControlState(a1)
+
+function Class.setupPlayerControlState(a55)
     --[[
       name: setupPlayerControlState
-      line: 151
+      line: 180
     ]]
-    a1:AddVector3Field("Move", Vector3.new(0, 0, 0), 1)
-    a1:AddBoolField("Jump", false)
-    a1:AddBoolField("RotateToLookDirection", false)
-    a1:AddUnitVector3Field("LookDirection", Vector3.new(0, 0, 1))
+    a55:AddVector3Field("Move", Vector3.new(0, 0, 0), 1)
+    a55:AddBoolField("Jump", false)
+    a55:AddBoolField("RotateToLookDirection", false)
+    a55:AddUnitVector3Field("LookDirection", Vector3.new(0, 0, 1))
 end
-function tbl_upv_1.watchForPlayerControlState(a1)
+
+function Class.watchForPlayerControlState(a56)
     --[[
       name: watchForPlayerControlState
-      line: 159
+      line: 188
       upvalues:
-        tbl_upv_1 (copy, index: 2)
+        v10 (copy, index: 1)
+        Class (copy, index: 2)
     ]]
-    local function watchCharacter(a2)
-        --[[
-          name: watchCharacter
-          line: 160
-          upvalues:
-            tbl_upv_1 (copy, index: 2)
-        ]]
-        local v21 = function() end
-        local v22 = a2:FindFirstChildOfClass(u3)
-        if v22 then
-            tbl_upv_1.setupPlayerControlState(v22)
+    if a56.Character then
+        local character = a56.Character
+
+        if const v58 = character:FindFirstChildOfClass(v10) then
+            Class.setupPlayerControlState(v58)
         end
-        a2.ChildAdded:Connect(v21)
-    end
-    local v23 = nil
-    if a1.Character then
-        local Character_2 = a1.Character
-        v23 = Character_2:FindFirstChildOfClass(watchCharacter)
-        if v23 then
-            tbl_upv_1.setupPlayerControlState(v23)
-        end
-        local function onPCSAdded(a3)
-            --[[
-              name: onPCSAdded
-              line: 161
-              upvalues:
-                tbl_upv_1 (copy, index: 2)
-            ]]
-            if not a3:IsA(u3) then
-                return
+
+        character.ChildAdded:Connect(
+            function(a59)
+                --[[
+                  name: onPCSAdded
+                  line: 190
+                  upvalues:
+                    v10 (copy, index: 1)
+                    Class (copy, index: 2)
+                ]]
+                if a59:IsA(v10) then
+                    Class.setupPlayerControlState(a59)
+                end
             end
-            tbl_upv_1.setupPlayerControlState(a3)
-        end
-        Character_2.ChildAdded:Connect(onPCSAdded)
+        )
     end
-    a1.CharacterAdded:Connect(watchCharacter)
+
+    a56.CharacterAdded:Connect(
+        function(a60)
+            --[[
+              name: watchCharacter
+              line: 189
+              upvalues:
+                v10 (copy, index: 1)
+                Class (copy, index: 2)
+            ]]
+            if const v61 = a60:FindFirstChildOfClass(v10) then
+                Class.setupPlayerControlState(v61)
+            end
+
+            a60.ChildAdded:Connect(
+                function(a62)
+                    --[[
+                      name: onPCSAdded
+                      line: 190
+                      upvalues:
+                        v10 (copy, index: 1)
+                        Class (copy, index: 2)
+                    ]]
+                    if a62:IsA(v10) then
+                        Class.setupPlayerControlState(a62)
+                    end
+                end
+            )
+        end
+    )
 end
-function tbl_upv_1.createPlayerControlState(a1)
+
+function Class.createPlayerControlState(owner: Player?)
     --[[
       name: createPlayerControlState
-      line: 175
+      line: 208
       upvalues:
-        u2 (copy, index: 1)
-        u3 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
+        userFlag3 (copy, index: 1)
+        v10 (copy, index: 2)
+        Class (copy, index: 3)
     ]]
-    local function createForCharacter(a2)
+    local character
+    local createForCharacter2
+    local v66 = false
+
+    local function createForCharacter(parent: Instance?)
         --[[
           name: createForCharacter
-          line: 176
+          line: 209
           upvalues:
-            u2 (copy, index: 1)
-            a1 (copy, index: 3)
-            tbl_upv_1 (copy, index: 4)
+            userFlag3 (copy, index: 1)
+            v10 (copy, index: 2)
+            owner (copy, index: 3)
+            Class (copy, index: 4)
         ]]
-        if u2 then
-            if a2:FindFirstChildOfClass(u3) then
+        if userFlag3 then
+            if parent:FindFirstChildOfClass(v10) then
                 return
             end
-        elseif a2:FindFirstChild(u3) then
+        elseif parent:FindFirstChild(v10) then
             return
         end
-        local v24 = Instance.new(u3)
-        v24.Owner = a1
-        v24.Parent = a2
-        tbl_upv_1.setupPlayerControlState(v24)
+
+        local instance = Instance.new(v10)
+        instance.Owner = owner
+        instance.Parent = parent
+        Class.setupPlayerControlState(instance)
     end
-    if a1.Character then
-        local Character_3 = a1.Character
-        if u2 then
-            local v25 = Character_3:FindFirstChildOfClass(createForCharacter)
-            if not (v25) then
-                local v26 = Instance.new(createForCharacter)
-                v26.Owner = a1
-                v26.Parent = Character_3
-                tbl_upv_1.setupPlayerControlState(v26)
+
+    if owner.Character then
+        character = owner.Character
+
+        if userFlag3 then
+            if character:FindFirstChildOfClass(v10) then
+                createForCharacter2 = createForCharacter
+            else
+                createForCharacter2 = createForCharacter
+                v66 = true
             end
+        elseif character:FindFirstChild(v10) then
+            createForCharacter2 = createForCharacter
         else
-            local v27 = Character_3:FindFirstChild(createForCharacter)
-            if not (v27) then
-                local v26 = Instance.new(u3)
-                v26.Owner = a1
-                v26.Parent = Character_3
-                tbl_upv_1.setupPlayerControlState(v26)
-            end
+            createForCharacter2 = createForCharacter
+            v66 = true
         end
-    end
-    a1.CharacterAdded:Connect(createForCharacter)
-end
-function tbl_upv_1.writeInputToPCS(a1, a2)
-    --[[
-      name: writeInputToPCS
-      line: 192
-      upvalues:
-        u2 (copy, index: 1)
-        u3 (copy, index: 2)
-        UserGameSettings_upv_1 (copy, index: 3)
-        Workspace_upv_1 (copy, index: 4)
-        u1 (copy, index: 5)
-        AvatarAbilitiesInterface_upv_1 (copy, index: 6)
-    ]]
-    local data_1 = a2.data
-    local Character_4 = a1.Character
-    if not Character_4 then
-        return
-    end
-    local v28
-    if u2 then
-        v28 = Character_4:FindFirstChildOfClass(u3)
     else
-        v28 = Character_4:FindFirstChild(u3)
+        createForCharacter2 = createForCharacter
     end
-    if not v28 or not a2.humanoid then
+
+    if v66 then
+        local instance = Instance.new(v10)
+        instance.Owner = owner
+        instance.Parent = character
+        Class.setupPlayerControlState(instance)
+    end
+
+    owner.CharacterAdded:Connect(createForCharacter2)
+end
+
+function Class.writeInputToCS(a71, a72)
+    --[[
+      name: writeInputToCS
+      line: 231
+      upvalues:
+        userFlag2 (copy, index: 1)
+        userFlag3 (copy, index: 2)
+        v10 (copy, index: 3)
+        v6 (copy, index: 4)
+        workspace (copy, index: 5)
+        userFlag (copy, index: 6)
+        AvatarAbilitiesInterface (copy, index: 7)
+    ]]
+    assert(not userFlag2)
+    local data = a72.data
+    local character = a71.Character
+    if not character then
         return
     end
-    local isJumping_1 = data_1.controlModule.isJumping
-    local worldMoveVector_1 = data_1.controlModule.worldMoveVector
-    data_1 = UserGameSettings_upv_1.RotationType == Enum.RotationType.CameraRelative
-    local v29 = ((Workspace_upv_1.CurrentCamera) and (Workspace_upv_1.CurrentCamera.CFrame.LookVector)) or Vector3.new(0, 0, 1)
-    local v30 = Vector3.new(v29.X, 0, v29.Z)
-    local v31 = ((not (v30.Magnitude > 0.001)) and Vector3.new(0, 0, 1)) or (v30.Unit)
-    local tbl_2 = {}
-    tbl_2.Move = worldMoveVector_1
-    tbl_2.RotateToLookDirection = data_1
-    tbl_2.LookDirection = v31
-    if not (u1) or not (AvatarAbilitiesInterface_upv_1.get(a1):isEnabled()) then
-        tbl_2.Jump = isJumping_1
+
+    local vector3
+    local v76 = if userFlag3 then character:FindFirstChildOfClass(v10) else character:FindFirstChild(v10)
+    if not v76 then
+        return
     end
-    v28:UpdateFields(tbl_2)
+    if not a72.humanoid then
+        return
+    end
+
+    local isJumping = data.controlModule.isJumping
+    local worldMoveVector = data.controlModule.worldMoveVector
+    local rotateToLookDirection = v6.RotationType == Enum.RotationType.CameraRelative
+    local v80 = workspace.CurrentCamera and workspace.CurrentCamera.CFrame.LookVector
+        or Vector3.new(0, 0, 1)
+    local vector32 = Vector3.new(v80.X, 0, v80.Z)
+
+    if not (0.001 < vector32.Magnitude) then
+        vector3 = Vector3.new(0, 0, 1)
+    else
+        vector3 = vector32.Unit
+    end
+
+    local v82 = {Move = worldMoveVector, RotateToLookDirection = rotateToLookDirection, LookDirection = vector3}
+
+    if not userFlag or not AvatarAbilitiesInterface.get(a71):isEnabled() then
+        v82.Jump = isJumping
+    end
+
+    v76:UpdateFields(v82)
 end
-function tbl_upv_1.processPCSInputs(a1)
+
+function Class.processPCSInputs(a83)
     --[[
       name: processPCSInputs
-      line: 224
+      line: 271
       upvalues:
-        u2 (copy, index: 1)
-        u3 (copy, index: 2)
+        userFlag3 (copy, index: 1)
+        v10 (copy, index: 2)
     ]]
-    local Character_5 = a1.Character
-    if Character_5 == nil then
+    local character = a83.Character
+    if character == nil then
         return
     end
-    local Humanoid_3 = Character_5:FindFirstChild("Humanoid")
-    if Humanoid_3 == nil then
+
+    local humanoid = character:FindFirstChild("Humanoid")
+    if humanoid == nil then
         return
     end
-    local v32
-    if u2 then
-        v32 = Character_5:FindFirstChildOfClass(u3)
-    else
-        v32 = Character_5:FindFirstChild(u3)
-    end
-    if v32 == nil then
+
+    local v86 = if userFlag3 then character:FindFirstChildOfClass(v10) else character:FindFirstChild(v10)
+    if v86 == nil then
         return
     end
-    local v33 = v32:GetState()
-    local Move_1 = v33.Move
-    local Jump_1 = v33.Jump
-    local RotateToLookDirection_1 = v33.RotateToLookDirection
-    local LookDirection_1 = v33.LookDirection
-    if Move_1 then
-        Humanoid_3:Move(Move_1)
+
+    local state = v86:GetState()
+    local move = state.Move
+    local jump = state.Jump
+    local rotateToLookDirection = state.RotateToLookDirection
+    local lookDirection = state.LookDirection
+
+    if move then
+        humanoid:Move(move)
     end
-    Humanoid_3.AutoRotate = not RotateToLookDirection_1
-    if RotateToLookDirection_1 and LookDirection_1 ~= nil and Humanoid_3.RootPart ~= nil and not (Humanoid_3.Sit) and Humanoid_3.SeatPart == nil and not (Humanoid_3.RootPart:IsGrounded()) then
-        Humanoid_3.RootPart.CFrame = CFrame.new(Humanoid_3.RootPart.CFrame.Position, Humanoid_3.RootPart.CFrame.Position + LookDirection_1)
+
+    humanoid.AutoRotate = not rotateToLookDirection
+
+    if rotateToLookDirection
+        and lookDirection ~= nil
+        and humanoid.RootPart ~= nil
+        and not humanoid.Sit
+        and humanoid.SeatPart == nil
+        and not humanoid.RootPart:IsGrounded()
+    then
+        humanoid.RootPart.CFrame = CFrame.new(humanoid.RootPart.CFrame.Position, humanoid.RootPart.CFrame.Position + lookDirection)
     end
-    Humanoid_3.Jump = Jump_1 or false
+
+    humanoid.Jump = jump or false
 end
-return tbl_upv_1
+
+return Class

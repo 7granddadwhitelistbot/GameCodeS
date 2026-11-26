@@ -1,320 +1,397 @@
-local tbl_upv_1 = {0, 30}
-local VRBaseCamera_upv_1 = require(script.Parent:WaitForChild("VRBaseCamera"))
-local CameraUtils_upv_1 = require(script.Parent:WaitForChild("CameraUtils"))
-local CameraInput_upv_1 = require(script.Parent:WaitForChild("CameraInput"))
-local Players_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local VRService_upv_1 = game:GetService("VRService")
-local Lighting_upv_1 = game:GetService("Lighting")
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local mapClamp_upv_1 = CameraUtils_upv_1.mapClamp
-local VehicleCameraConfig_upv_1 = require(script.Parent:WaitForChild("VehicleCamera"):FindFirstChild("VehicleCameraConfig"))
-local u1 = RaycastParams.new()
-u1.FilterType = Enum.RaycastFilterType.Exclude
-u1.IgnoreWater = true
-local function yawVelocity(a1, a2)
+local v1 = {0, 30}
+local VRBaseCamera = require(script.Parent:WaitForChild("VRBaseCamera"))
+local CameraUtils = require(script.Parent:WaitForChild("CameraUtils"))
+local CameraInput = require(script.Parent:WaitForChild("CameraInput"))
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local vrService = game:GetService("VRService")
+local lighting = game:GetService("Lighting")
+local localPlayer = players.LocalPlayer
+local mapClamp = CameraUtils.mapClamp
+local VehicleCameraConfig = require(script.Parent:WaitForChild("VehicleCamera"):FindFirstChild("VehicleCameraConfig"))
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+raycastParams.IgnoreWater = true
+
+local function yawVelocity(a14, a15)
     --[[
       name: yawVelocity
-      line: 36
+      line: 37
     ]]
-    return (math.abs(a2.YVector:Dot(a1)))
+    return (math.abs((a15.YVector:Dot(a14))))
 end
-local function computeCameraCFrame(a1, a2, a3)
+
+local function computeCameraCFrame(a17, a18, a19)
     --[[
       name: computeCameraCFrame
-      line: 40
+      line: 41
     ]]
-    local v1 = math.atan2(a2.X, a2.Z)
-    return CFrame.new(a1.Position + (a2 * a3)) * CFrame.Angles(0, v1, 0)
+    local rotationY = math.atan2(a18.X, a18.Z)
+    return CFrame.new(a17.Position + (a18 * a19)) * CFrame.Angles(0, rotationY, 0)
 end
-local u2 = OverlapParams.new()
-u2.FilterType = Enum.RaycastFilterType.Exclude
-local u3 = 0.016666666666666666
-local u4 = setmetatable({}, VRBaseCamera_upv_1)
-u4.__index = u4
-function u4.new()
-    --[[
-      name: new
-      line: 133
-      upvalues:
-        VRBaseCamera_upv_1 (copy, index: 1)
-        u4 (copy, index: 2)
-        RunService_upv_1 (copy, index: 3)
-        u3 (ref,  index: 4)
-    ]]
-    local v2 = setmetatable(VRBaseCamera_upv_1.new(), u4)
-    v2.skipOcclusion = true
-    v2:Reset()
-    if v2.thirdPersonOptionChanged then
-        v2.thirdPersonOptionChanged:Disconnect()
-        v2.thirdPersonOptionChanged = nil
-    end
-    RunService_upv_1.Stepped:Connect(
-        function(a1, a2)
-            --[[
-              line: 143
-              upvalues:
-                u3 (ref, index: 1)
-            ]]
-            u3 = a2
-        end
-    )
-    return v2
-end
-function u4.Reset(a1)
-    --[[
-      name: Reset
-      line: 150
-      upvalues:
-        CameraUtils_upv_1 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
-    ]]
-    local CurrentCamera_1 = workspace.CurrentCamera
-    local v3 = CurrentCamera_1 and (CurrentCamera_1.CameraSubject)
-    assert(CurrentCamera_1, "VRVehicleCamera initialization error")
-    assert(v3)
-    assert(v3:IsA("VehicleSeat"))
-    a1.lastOrbitalDir = nil
-    a1.wasInFirstPerson = nil
-    local v4 = v3:GetConnectedParts(true)
-    table.insert(v4, v3)
-    local v5, v6 = CameraUtils_upv_1.getLooseBoundingSphere(v4)
-    CurrentCamera_1 = v3:FindFirstAncestorOfClass("Model") or (v3.Parent)
-    a1.vehicleModel = CurrentCamera_1
-    a1.assemblyRadius = math.max(v6, 5)
-    a1.assemblyOffset = CurrentCamera_1.CFrame:Inverse() * v5
-    a1.gamepadZoomLevels = {}
-    for _, value_1 in tbl_upv_1 do
-        table.insert(a1.gamepadZoomLevels, ((value_1 * a1.headScale) * a1.assemblyRadius) / 10)
-    end
-    a1.lastCameraFocus = nil
-    if not (a1:IsInFirstPerson()) then
-        a1:SetCameraToSubjectDistance(a1.gamepadZoomLevels[#a1.gamepadZoomLevels])
-    end
-    a1.needsReset = false
-end
-function u4._getThirdPersonLocalOffset(a1)
-    --[[
-      name: _getThirdPersonLocalOffset
-      line: 184
-      upvalues:
-        VehicleCameraConfig_upv_1 (copy, index: 1)
-    ]]
-    return a1.assemblyOffset + Vector3.new(0, a1.assemblyRadius * VehicleCameraConfig_upv_1.verticalCenterOffset, 0)
-end
-function u4._getFirstPersonLocalOffset(a1, a2)
-    --[[
-      name: _getFirstPersonLocalOffset
-      line: 188
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-    ]]
-    local Character_1 = LocalPlayer_upv_1.Character
-    if Character_1 and Character_1.Parent then
-        local Head_1 = Character_1:FindFirstChild("Head")
-        if Head_1 and Head_1:IsA("BasePart") then
-            return a2:Inverse() * Head_1.Position
-        end
-    end
-    return a1:_getThirdPersonLocalOffset()
-end
-local function findObstructions(a1, a2, a3, a4)
-    --[[
-      name: findObstructions
-      line: 81
-      upvalues:
-        VRService_upv_1 (copy, index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-        u1 (copy, index: 3)
-        u2 (copy, index: 4)
-    ]]
-    local CurrentCamera_2 = workspace.CurrentCamera
-    if not CurrentCamera_2 then
-        return 0, {}
-    end
-    local Position_1 = a2.Position
-    local v7 = VRService_upv_1:GetUserCFrame(Enum.UserCFrame.Head)
-    local v8 = a1 * (CFrame.new(v7.Position * CurrentCamera_2.HeadScale) * v7.Rotation)
-    local v9 = v8.Position - Position_1
-    local Magnitude_1 = v9.Magnitude
-    if Magnitude_1 < 0.5 then
-        return 0, {}
-    end
-    local tbl_2 = {CurrentCamera_2}
-    if a4 then
-        table.insert(tbl_2, a4)
-    end
-    local v10 = LocalPlayer_upv_1 and (LocalPlayer_upv_1.Character)
-    if v10 then
-        table.insert(tbl_2, v10)
-    end
-    u1.FilterDescendantsInstances = tbl_2
-    local v11 = workspace:Raycast(Position_1, v9, u1)
-    if v11 then
-        local Magnitude_2 = (v11.Position - Position_1).Magnitude
-        if Magnitude_2 < Magnitude_1 then
-            local v12 = math.max(math.clamp((1 - -v9.Unit:Dot(v8.LookVector)) / 0.1339745962155613, 0, 1), 1 - (Magnitude_2 / a3), 0.15)
-            local Position_2 = v11.Position
-            local Position_3 = v8.Position
-            local v13 = Vector3.new(2, 2, (Position_3 - Position_2).Magnitude)
-            local v14 = CFrame.lookAt((Position_2 + Position_3) / 2, Position_3)
-            u2.FilterDescendantsInstances = tbl_2
-            return v12, (workspace:GetPartBoundsInBox(v14, v13, u2))
-        end
-    end
-    return 0, {}
-end
-function u4._vrOccludeVignette(a1, a2, a3, a4)
-    --[[
-      name: _vrOccludeVignette
-      line: 202
-      upvalues:
-        findObstructions (copy, index: 1)
-        Lighting_upv_1 (copy, index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
-    ]]
-    local v15 = math.atan2(a3.X, a3.Z)
-    local v16 = CFrame.new(a2.Position + (a3 * a4)) * CFrame.Angles(0, v15, 0)
-    local v17, v18 = findObstructions(v16, a2, a4, a1.vehicleModel)
-    local v19 = Lighting_upv_1:FindFirstChild("VRFade")
-    if not (v19) then
-        local v20 = Instance.new("ColorCorrectionEffect")
-        v20.Name = "VRFade"
-        v20.Parent = Lighting_upv_1
-        v19 = v20
-    end
-    v19.Brightness = -v17
-    if a1.lastOccludedParts then
-        for _, value_2 in a1.lastOccludedParts do
-            value_2.LocalTransparencyModifier = 0
-        end
-    end
-    if #v18 > 0 then
-        for _, value_3 in v18 do
-            value_3.LocalTransparencyModifier = 1
-        end
-        a1:StartVREdgeBlur(LocalPlayer_upv_1, true)
-    end
-    a1.lastOccludedParts = nil
-    return v16
-end
-function u4.Update(a1)
-    --[[
-      name: Update
-      line: 229
-      upvalues:
-        u3 (ref,  index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-    ]]
-    local v21 = u3
-    u3 = 0
-    a1:UpdateFadeFromBlack(v21)
-    a1:UpdateEdgeBlur(LocalPlayer_upv_1, v21)
-    local v22, v23 = a1:_updateStepRotation(v21)
-    return v22, v23
-end
-local function vrOccludeDisplace(a1, a2, a3, a4)
+
+local function vrOccludeDisplace(cframe: CFrame, a23, cameraToSubjectDistance, vehicleModel)
     --[[
       name: vrOccludeDisplace
-      line: 45
+      line: 46
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        u1 (copy, index: 2)
+        localPlayer (copy, index: 1)
+        raycastParams (copy, index: 2)
     ]]
-    local v24 = math.atan2(a2.X, a2.Z)
-    local v25 = CFrame.new(a1.Position + (a2 * a3)) * CFrame.Angles(0, v24, 0)
-    local CurrentCamera_3 = workspace.CurrentCamera
-    if not CurrentCamera_3 then
-        return v25
+    local rotationY = math.atan2(a23.X, a23.Z)
+    local cframe2 = CFrame.new(cframe.Position + (a23 * cameraToSubjectDistance)) * CFrame.Angles(0, rotationY, 0)
+    local camera = workspace.CurrentCamera
+    if not camera then
+        return cframe2
     end
-    local Position_4 = a1.Position
-    local v26 = (v25.Position - Position_4) * Vector3.new(1, 0, 1)
-    local Magnitude_3 = v26.Magnitude
-    if Magnitude_3 < 0.5 then
-        return v25
+
+    local position = cframe.Position
+    local direction = (cframe2.Position - position) * Vector3.new(1, 0, 1)
+    local magnitude = direction.Magnitude
+
+    if magnitude < 0.5 then
+        return cframe2
     end
-    local tbl_3 = {CurrentCamera_3}
-    if a4 then
-        table.insert(tbl_3, a4)
+
+    local filterDescendantsInstances = {camera}
+
+    if vehicleModel then
+        table.insert(filterDescendantsInstances, vehicleModel)
     end
-    local v27 = LocalPlayer_upv_1 and (LocalPlayer_upv_1.Character)
-    if v27 then
-        table.insert(tbl_3, v27)
+
+    if const character = localPlayer and localPlayer.Character then
+        table.insert(filterDescendantsInstances, character)
     end
-    u1.FilterDescendantsInstances = tbl_3
-    local Unit_1 = v26.Unit
-    local v28 = workspace:Raycast(Position_4, v26, u1)
-    if v28 and v28.Normal:Dot(Unit_1) < 0 then
-        local v29 = (v28.Position - Position_4).Magnitude - 0.5
-        if v29 < Magnitude_3 then
-            return CFrame.new(a1.Position + (Unit_1 * math.max(v29, 0.5))) * v25.Rotation
+
+    raycastParams.FilterDescendantsInstances = filterDescendantsInstances
+    local unit = direction.Unit
+    local raycastResult = workspace:Raycast(position, direction, raycastParams)
+
+    if raycastResult and raycastResult.Normal:Dot(unit) < 0 then
+        local v36 = (raycastResult.Position - position).Magnitude - 0.5
+
+        if v36 < magnitude then
+            local v37 = math.max(v36, 0.5)
+            return CFrame.new(cframe.Position + (unit * v37)) * cframe2.Rotation
         end
     end
-    return v25
+
+    return cframe2
 end
-function u4._updateStepRotation(a1, a2)
+
+local overlapParams = OverlapParams.new()
+overlapParams.FilterType = Enum.RaycastFilterType.Exclude
+
+local function findObstructions(cframe2: CFrame, a41, a42, vehicleModel)
+    --[[
+      name: findObstructions
+      line: 82
+      upvalues:
+        vrService (copy, index: 1)
+        localPlayer (copy, index: 2)
+        raycastParams (copy, index: 3)
+        overlapParams (copy, index: 4)
+    ]]
+    local camera = workspace.CurrentCamera
+    if not camera then
+        return 0, {}
+    end
+
+    local position = a41.Position
+    local userCFrame = vrService:GetUserCFrame(Enum.UserCFrame.Head)
+    local headScale = camera.HeadScale
+    local cframe3 = cframe2 * (CFrame.new(userCFrame.Position * headScale) * userCFrame.Rotation)
+    local direction = cframe3.Position - position
+    local magnitude = direction.Magnitude
+
+    if magnitude < 0.5 then
+        return 0, {}
+    end
+
+    local filterDescendantsInstances = {camera}
+
+    if vehicleModel then
+        table.insert(filterDescendantsInstances, vehicleModel)
+    end
+
+    if const character = localPlayer and localPlayer.Character then
+        table.insert(filterDescendantsInstances, character)
+    end
+
+    raycastParams.FilterDescendantsInstances = filterDescendantsInstances
+
+    if const raycastResult = workspace:Raycast(position, direction, raycastParams) then
+        local magnitude2 = (raycastResult.Position - position).Magnitude
+
+        if magnitude2 < magnitude then
+            local lookVector = cframe3.LookVector
+            local v56 = math.max(math.clamp((1 - -direction.Unit:Dot(lookVector)) / 0.1339745962155613, 0, 1), 1 - (magnitude2 / a42), 0.15)
+            local position2 = raycastResult.Position
+            local position3 = cframe3.Position
+            local v59 = (position2 + position3) / 2
+            local size = Vector3.new(2, 2, (position3 - position2).Magnitude)
+            local cframe = CFrame.lookAt(v59, position3)
+            overlapParams.FilterDescendantsInstances = filterDescendantsInstances
+
+            return v56, (workspace:GetPartBoundsInBox(cframe, size, overlapParams))
+        end
+    end
+
+    return 0, {}
+end
+
+local deltaTime = 0.016666666666666666
+local v63 = setmetatable({}, VRBaseCamera)
+v63.__index = v63
+
+function v63.new()
+    --[[
+      name: new
+      line: 139
+      upvalues:
+        VRBaseCamera (copy, index: 1)
+        v63 (copy, index: 2)
+        runService (copy, index: 3)
+        deltaTime (ref,  index: 4)
+    ]]
+    local v64 = setmetatable(VRBaseCamera.new(), v63)
+    v64.skipOcclusion = true
+    v64:Reset()
+
+    if v64.thirdPersonOptionChanged then
+        v64.thirdPersonOptionChanged:Disconnect()
+        v64.thirdPersonOptionChanged = nil
+    end
+
+    runService.Stepped:Connect(
+        function(time: number, deltaTime2: number)
+            --[[
+              line: 149
+              upvalues:
+                deltaTime (ref, index: 1)
+            ]]
+            deltaTime = deltaTime2
+        end
+    )
+
+    return v64
+end
+
+function v63.Reset(self)
+    --[[
+      name: Reset
+      line: 156
+      upvalues:
+        CameraUtils (copy, index: 1)
+        v1 (copy, index: 2)
+    ]]
+    local camera = workspace.CurrentCamera
+    local cameraSubject = camera and camera.CameraSubject
+    assert(camera, "VRVehicleCamera initialization error")
+    assert(cameraSubject)
+    assert(cameraSubject:IsA("VehicleSeat"))
+    self.lastOrbitalDir = nil
+    self.wasInFirstPerson = nil
+    local connectedParts = cameraSubject:GetConnectedParts(true)
+    table.insert(connectedParts, cameraSubject)
+    local looseBoundingSphere, v72 = CameraUtils.getLooseBoundingSphere(connectedParts)
+    local instance = cameraSubject:FindFirstAncestorOfClass("Model") or cameraSubject.Parent
+    self.vehicleModel = instance
+    self.assemblyRadius = math.max(v72, 5)
+    self.assemblyOffset = cameraSubject.CFrame:Inverse() * looseBoundingSphere
+    self.gamepadZoomLevels = {}
+
+    for _, v75 in v1 do
+        table.insert(self.gamepadZoomLevels, (v75 * self.headScale * self.assemblyRadius) / 10)
+    end
+
+    self.lastCameraFocus = nil
+
+    if not self:IsInFirstPerson() then
+        self:SetCameraToSubjectDistance(self.gamepadZoomLevels[#self.gamepadZoomLevels])
+    end
+
+    self.needsReset = false
+end
+
+function v63._getThirdPersonLocalOffset(a76)
+    --[[
+      name: _getThirdPersonLocalOffset
+      line: 190
+      upvalues:
+        VehicleCameraConfig (copy, index: 1)
+    ]]
+    return a76.assemblyOffset + Vector3.new(0, a76.assemblyRadius * VehicleCameraConfig.verticalCenterOffset, 0)
+end
+
+function v63._getFirstPersonLocalOffset(a77, a78)
+    --[[
+      name: _getFirstPersonLocalOffset
+      line: 194
+      upvalues:
+        localPlayer (copy, index: 1)
+    ]]
+    local character = localPlayer.Character
+
+    if character and character.Parent then
+        local head = character:FindFirstChild("Head")
+
+        if head and head:IsA("BasePart") then
+            return a78:Inverse() * head.Position
+        end
+    end
+
+    return a77:_getThirdPersonLocalOffset()
+end
+
+function v63._vrOccludeVignette(a81, a82, a83, a84)
+    --[[
+      name: _vrOccludeVignette
+      line: 208
+      upvalues:
+        findObstructions (copy, index: 1)
+        lighting (copy, index: 2)
+        localPlayer (copy, index: 3)
+    ]]
+    local rotationY = math.atan2(a83.X, a83.Z)
+    local cframe = CFrame.new(a82.Position + (a83 * a84)) * CFrame.Angles(0, rotationY, 0)
+    local obstructions, lastOccludedParts = findObstructions(cframe, a82, a84, a81.vehicleModel)
+    local vrFade = lighting:FindFirstChild("VRFade")
+    if not vrFade then
+        vrFade = Instance.new("ColorCorrectionEffect")
+        vrFade.Name = "VRFade"
+        vrFade.Parent = lighting
+    end
+
+    vrFade.Brightness = -obstructions
+
+    if a81.lastOccludedParts then
+        for _, lastOccludedPart in a81.lastOccludedParts do
+            lastOccludedPart.LocalTransparencyModifier = 0
+        end
+    end
+
+    if 0 < #lastOccludedParts then
+        for _, v93 in lastOccludedParts do
+            v93.LocalTransparencyModifier = 1
+        end
+
+        a81:StartVREdgeBlur(localPlayer, true)
+    end
+
+    a81.lastOccludedParts = lastOccludedParts
+
+    return cframe
+end
+
+function v63.Update(a94)
+    --[[
+      name: Update
+      line: 235
+      upvalues:
+        deltaTime (ref,  index: 1)
+        localPlayer (copy, index: 2)
+    ]]
+    local deltaTime2 = deltaTime
+    deltaTime = 0
+    a94:UpdateFadeFromBlack(deltaTime2)
+    a94:UpdateEdgeBlur(localPlayer, deltaTime2)
+    local v96, v97 = a94:_updateStepRotation(deltaTime2)
+    return v96, v97
+end
+
+function v63._updateStepRotation(a98, a99)
     --[[
       name: _updateStepRotation
-      line: 241
+      line: 247
       upvalues:
-        mapClamp_upv_1 (copy, index: 1)
-        CameraInput_upv_1 (copy, index: 2)
-        VehicleCameraConfig_upv_1 (copy, index: 3)
+        mapClamp (copy, index: 1)
+        CameraInput (copy, index: 2)
+        VehicleCameraConfig (copy, index: 3)
         vrOccludeDisplace (copy, index: 4)
     ]]
-    local v30 = a1:GetSubjectCFrame()
-    local v31 = a1:GetCameraToSubjectDistance()
-    local v32 = mapClamp_upv_1(v31, 0.5, a1.assemblyRadius, 1, 0)
-    local v33 = CFrame.new(v30 * a1:_getThirdPersonLocalOffset():Lerp(a1:_getFirstPersonLocalOffset(v30), v32) + Vector3.new(0, a1:GetCameraHeight(), 0))
-    if a1.needsReset or a1.recentered then
-        a1.lastOrbitalDir = nil
-        a1.needsReset = false
-        a1.recentered = false
+    local v100, cframe
+    local subjectCFrame = a98:GetSubjectCFrame()
+    local cameraToSubjectDistance = a98:GetCameraToSubjectDistance()
+    local alpha = mapClamp(cameraToSubjectDistance, 0.5, a98.assemblyRadius, 1, 0)
+    local startValue = a98:_getThirdPersonLocalOffset()
+    local v106 = subjectCFrame * startValue:Lerp(a98:_getFirstPersonLocalOffset(subjectCFrame), alpha)
+    local cframe2 = CFrame.new(v106 + Vector3.new(0, a98:GetCameraHeight(), 0))
+
+    if a98.needsReset or a98.recentered then
+        a98.lastOrbitalDir = nil
+        a98.needsReset = false
+        a98.recentered = false
     end
-    local v34 = a1.lastOrbitalDir
-    if not (v34) then
-        local Unit_2 = (v30.LookVector * Vector3.new(-1, 0, -1)).Unit
-        a1:StartFadeFromBlack()
-        v34 = Unit_2
+
+    local v108 = a98.lastOrbitalDir
+    if not v108 then
+        v108 = (subjectCFrame.LookVector * Vector3.new(-1, 0, -1)).Unit
+        a98:StartFadeFromBlack()
     end
-    local v35 = (a1:GetSubjectVelocity() * Vector3.new(1, 0, 1)).Magnitude > 2
-    local v36 = nil
-    if v35 then
-        CameraInput_upv_1.getRotation(a2)
+
+    local v109 = 2 < (a98:GetSubjectVelocity() * Vector3.new(1, 0, 1)).Magnitude
+
+    if v109 then
+        CameraInput.getRotation(a99)
     else
-        v36 = a1:getRotation(a2)
-        if math.abs(v36) > 0 then
-            v34 = (CFrame.Angles(0, -v36, 0) * CFrame.new(v34)).Position.Unit
-            a1.lastRotateTime = os.clock()
+        local rotation = a98:getRotation(a99)
+
+        if 0 < math.abs(rotation) then
+            v108 = (CFrame.Angles(0, -rotation, 0) * CFrame.new(v108)).Position.Unit
+            a98.lastRotateTime = os.clock()
         end
     end
-    local v37
-    if a1:IsInFirstPerson() then
-        if not (a1.wasInFirstPerson) or v35 then
-            v34 = (v30.LookVector * Vector3.new(-1, 0, -1)).Unit
-            a1.wasInFirstPerson = true
+
+    if a98:IsInFirstPerson() then
+        if not a98.wasInFirstPerson or v109 then
+            v108 = (subjectCFrame.LookVector * Vector3.new(-1, 0, -1)).Unit
+            a98.wasInFirstPerson = true
         end
-        local v38 = math.atan2(-v30.LookVector.X, -v30.LookVector.Z)
-        local v39 = nil
-        if a1.lastVehicleYaw then
-            v39 = ((v38 - a1.lastVehicleYaw) + math.pi) % math.tau - math.pi
-            if math.abs(v39) > 0.001 then
-                v34 = (CFrame.Angles(0, v39, 0) * CFrame.new(v34)).Position.Unit
+
+        local lastVehicleYaw = math.atan2(-subjectCFrame.LookVector.X, -subjectCFrame.LookVector.Z)
+
+        if a98.lastVehicleYaw then
+            local rotationY = ((lastVehicleYaw - a98.lastVehicleYaw) + math.pi) % math.tau - math.pi
+
+            if not (0.001 < math.abs(rotationY)) then
+                v100 = v108
+            else
+                v100 = (CFrame.Angles(0, rotationY, 0) * CFrame.new(v108)).Position.Unit
             end
+        else
+            v100 = v108
         end
-        a1.lastVehicleYaw = v38
-        local v40 = math.atan2(v34.X, v34.Z)
-        v37 = CFrame.new(v33.Position + (v34 * v31)) * CFrame.Angles(0, v40, 0)
+
+        a98.lastVehicleYaw = lastVehicleYaw
+        local rotationY = math.atan2(v100.X, v100.Z)
+        cframe = CFrame.new(cframe2.Position + (v100 * cameraToSubjectDistance)) * CFrame.Angles(0, rotationY, 0)
     else
-        a1.wasInFirstPerson = false
-        a1.lastVehicleYaw = nil
-        local v41 = a1.lastRotateTime and (os.clock() - a1.lastRotateTime < VehicleCameraConfig_upv_1.autocorrectDelay)
-        if v35 then
-            v34 = (v41) or v34:Lerp((v30.LookVector * Vector3.new(-1, 0, -1)).Unit, math.min(0.01 + math.acos(math.clamp(v34:Dot((v30.LookVector * Vector3.new(-1, 0, -1)).Unit), -1, 1)) / math.pi * 0.05 + math.abs(v30.YVector:Dot(a1:GetSubjectRotVelocity())) * 0.02, 0.15))
+        a98.wasInFirstPerson = false
+        a98.lastVehicleYaw = nil
+        local v114 = a98.lastRotateTime
+            and os.clock() - a98.lastRotateTime < VehicleCameraConfig.autocorrectDelay
+
+        if v109 then
+            if v114 then
+                v100 = v108
+            else
+                local unit = (subjectCFrame.LookVector * Vector3.new(-1, 0, -1)).Unit
+                local v116 = math.acos((math.clamp(v108:Dot(unit), -1, 1)))
+                local subjectRotVelocity = a98:GetSubjectRotVelocity()
+                local absoluteValue = math.abs((subjectCFrame.YVector:Dot(subjectRotVelocity)))
+                v100 = v108:Lerp(unit, (math.min((0.01 + ((v116 / math.pi) * 0.05)) + (absoluteValue * 0.02), 0.15)))
+            end
+        else
+            v100 = v108
         end
-        v37 = vrOccludeDisplace(v33, v34, v31, a1.vehicleModel)
+
+        cframe = vrOccludeDisplace(cframe2, v100, cameraToSubjectDistance, a98.vehicleModel)
     end
-    a1.lastOrbitalDir = v34
-    return v37, v37 * CFrame.new(0, 0, -v31)
+
+    a98.lastOrbitalDir = v100
+
+    return cframe, cframe * CFrame.new(0, 0, -cameraToSubjectDistance)
 end
-return u4
+
+return v63

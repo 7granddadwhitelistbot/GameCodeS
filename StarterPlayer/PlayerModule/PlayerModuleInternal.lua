@@ -1,117 +1,180 @@
-local RunService_upv_1 = game:GetService("RunService")
-local CommonUtils_1 = require(script.Parent:WaitForChild("CommonUtils"))
-local _ = require(script.Parent.Types)
-local u1 = CommonUtils_1.get("CharacterUtil")
-local u2 = CommonUtils_1.get("ConnectionUtil")
-local u3 = CommonUtils_1.get("EventBus")
-local Parent_upv_1 = require(script.Parent)
-local CameraModule_upv_1 = require(script.Parent:WaitForChild("CameraModule"))
-local ControlModule_upv_1 = require(script.Parent:WaitForChild("ControlModule"))
-local ServerAuthority_upv_1 = require(script.Parent:WaitForChild("ServerAuthority"))
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-function tbl_upv_1.new()
+local runService = game:GetService("RunService")
+local CommonUtils = require(script.Parent:WaitForChild("CommonUtils"))
+require(script.Parent.Types)
+local v3 = CommonUtils.get("CharacterUtil")
+local v4 = CommonUtils.get("ConnectionUtil")
+local v5 = CommonUtils.get("EventBus")
+local v6 = CommonUtils.get("FlagUtil")
+local userFlag = v6.getUserFlag("UserPlayerModuleEngineAPI")
+v6 = require(script.Parent)
+local CameraModule = require(script.Parent:WaitForChild("CameraModule"))
+local ControlModule = require(script.Parent:WaitForChild("ControlModule"))
+local EngineInterface = require(script.Parent:WaitForChild("EngineInterface"))
+local InputSampler = require(script.Parent:WaitForChild("InputSampler"))
+local ServerAuthority = require(script.Parent:WaitForChild("ServerAuthority"))
+local Class = {}
+Class.__index = Class
+
+function Class.new()
     --[[
       name: new
-      line: 38
+      line: 51
       upvalues:
-        Parent_upv_1 (copy, index: 1)
-        u2 (copy, index: 2)
-        u3 (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
+        v6 (copy, index: 1)
+        v4 (copy, index: 2)
+        v5 (copy, index: 3)
+        InputSampler (copy, index: 4)
+        Class (copy, index: 5)
     ]]
-    return (setmetatable({data = {isServerAuthority = false, playerModule = Parent_upv_1, controlModule = {isJumping = false, moveVector = Vector2.new(), worldMoveVector = Vector3.new(), actions = {}}, connectionUtil = u2.new(), eventBus = u3.new()}}, tbl_upv_1))
+    return (setmetatable({data = {isServerAuthority = false, playerModule = v6, controlModule = {isJumping = false, enabled = true, moveVector = Vector2.new(), worldMoveVector = Vector3.new(), actions = {}}, engineInterface = {player = nil, character = nil, humanoid = nil, characterChanged = false}, connectionUtil = v4.new(), eventBus = v5.new()}, inputSampler = InputSampler.new()}, Class))
 end
-function tbl_upv_1.start(a1)
+
+function Class.start(self)
     --[[
       name: start
-      line: 59
+      line: 78
       upvalues:
-        u1 (copy, index: 1)
-        ServerAuthority_upv_1 (copy, index: 2)
-        ControlModule_upv_1 (copy, index: 3)
-        RunService_upv_1 (copy, index: 4)
-        CameraModule_upv_1 (copy, index: 5)
+        v3 (copy, index: 1)
+        userFlag (copy, index: 2)
+        EngineInterface (copy, index: 3)
+        ServerAuthority (copy, index: 4)
+        ControlModule (copy, index: 5)
+        runService (copy, index: 6)
+        CameraModule (copy, index: 7)
     ]]
-    a1.data.connectionUtil:trackConnection(
+    self.data.connectionUtil:trackConnection(
         "ONLOCALPLAYER",
-        u1.onLocalPlayer(
-            function(a2)
+        v3.onLocalPlayer(
+            function(player)
                 --[[
-                  line: 63
+                  line: 82
                   upvalues:
-                    a1 (copy, index: 1)
-                    ServerAuthority_upv_1 (copy, index: 2)
-                    ControlModule_upv_1 (copy, index: 3)
-                    RunService_upv_1 (copy, index: 4)
-                    u1 (copy, index: 5)
-                    CameraModule_upv_1 (copy, index: 6)
+                    userFlag (copy, index: 1)
+                    EngineInterface (copy, index: 2)
+                    self (copy, index: 3)
+                    ServerAuthority (copy, index: 4)
+                    ControlModule (copy, index: 5)
+                    runService (copy, index: 6)
+                    CameraModule (copy, index: 7)
+                    v3 (copy, index: 8)
                 ]]
-                a1.data.player = a2
-                ServerAuthority_upv_1.initialize(a1.data)
-                ControlModule_upv_1:initialize(a1.data)
-                RunService_upv_1:BindToRenderStep(
+                if userFlag then
+                    EngineInterface.update(self.data)
+                    ServerAuthority.initialize(self.data)
+                    ControlModule:initialize(self.data)
+
+                    runService:BindToRenderStep(
+                        "PLAYERMODULE_RENDERSTEPPED_INPUT",
+                        Enum.RenderPriority.Input.Value,
+                        function(deltaTime: number)
+                            --[[
+                              line: 92
+                              upvalues:
+                                EngineInterface (copy, index: 1)
+                                self (copy, index: 2)
+                                ControlModule (copy, index: 3)
+                            ]]
+                            EngineInterface.update(self.data)
+                            ControlModule:Update(self.data, deltaTime)
+                        end
+                    )
+
+                    runService:BindToRenderStep(
+                        "PLAYERMODULE_RENDERSTEPPED_CAMERA",
+                        Enum.RenderPriority.Camera.Value,
+                        function(deltaTime: number)
+                            --[[
+                              line: 102
+                              upvalues:
+                                CameraModule (copy, index: 1)
+                                self (copy, index: 2)
+                                EngineInterface (copy, index: 3)
+                            ]]
+                            CameraModule:Update(self.data, deltaTime)
+                            self.inputSampler:Update(self.data)
+                            EngineInterface.cleanDirty(self.data)
+                        end
+                    )
+
+                    return
+                end
+
+                self.data.engineInterface.player = player
+                ServerAuthority.initialize(self.data)
+                ControlModule:initialize(self.data)
+
+                runService:BindToRenderStep(
                     "PLAYERMODULE_RENDERSTEPPED_INPUT",
                     Enum.RenderPriority.Input.Value,
-                    function(a3)
+                    function(deltaTime: number)
                         --[[
-                          line: 70
+                          line: 118
                           upvalues:
-                            a1 (copy, index: 1)
-                            u1 (copy, index: 2)
-                            ControlModule_upv_1 (copy, index: 3)
+                            self (copy, index: 1)
+                            v3 (copy, index: 2)
+                            ControlModule (copy, index: 3)
                         ]]
-                        a1.data.character = u1.getCharacter()
-                        if not a1.data.character then
+                        self.data.engineInterface.character = v3.getCharacter()
+
+                        if not self.data.engineInterface.character then
                             return
                         end
-                        ControlModule_upv_1:Update(a1.data, a3)
+
+                        ControlModule:Update(self.data, deltaTime)
                     end
                 )
-                a1.data.connectionUtil:trackBoundFunction(
+
+                self.data.connectionUtil:trackBoundFunction(
                     "PLAYERMODULE_RENDERSTEPPED_INPUT",
                     function()
                         --[[
-                          line: 78
+                          line: 127
                           upvalues:
-                            RunService_upv_1 (copy, index: 1)
+                            runService (copy, index: 1)
                         ]]
-                        RunService_upv_1:UnbindFromRenderStep("PLAYERMODULE_RENDERSTEPPED_INPUT")
+                        runService:UnbindFromRenderStep("PLAYERMODULE_RENDERSTEPPED_INPUT")
                     end
                 )
-                RunService_upv_1:BindToRenderStep(
+
+                runService:BindToRenderStep(
                     "PLAYERMODULE_RENDERSTEPPED_CAMERA",
                     Enum.RenderPriority.Camera.Value,
-                    function(a4)
+                    function(deltaTime: number)
                         --[[
-                          line: 83
+                          line: 135
                           upvalues:
-                            CameraModule_upv_1 (copy, index: 1)
-                            a1 (copy, index: 2)
+                            CameraModule (copy, index: 1)
+                            self (copy, index: 2)
                         ]]
-                        CameraModule_upv_1:Update(a1.data, a4)
+                        CameraModule:Update(self.data, deltaTime)
+                        self.inputSampler:Update(self.data)
                     end
                 )
-                a1.data.connectionUtil:trackBoundFunction(
+
+                self.data.connectionUtil:trackBoundFunction(
                     "PLAYERMODULE_RENDERSTEPPED_CAMERA",
                     function()
                         --[[
-                          line: 86
+                          line: 140
                           upvalues:
-                            RunService_upv_1 (copy, index: 1)
+                            runService (copy, index: 1)
                         ]]
-                        RunService_upv_1:UnbindFromRenderStep("PLAYERMODULE_RENDERSTEPPED_CAMERA")
+                        runService:UnbindFromRenderStep("PLAYERMODULE_RENDERSTEPPED_CAMERA")
                     end
                 )
             end
         )
     )
 end
-function tbl_upv_1.stop(a1)
-    --[[
-      name: stop
-      line: 93
-    ]]
-    a1.data.connectionUtil:disconnectAll()
+
+if not userFlag then
+    function Class.stop(self)
+        --[[
+          name: stop
+          line: 149
+        ]]
+        self.data.connectionUtil:disconnectAll()
+    end
 end
-return tbl_upv_1
+
+return Class

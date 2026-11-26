@@ -1,90 +1,100 @@
-local Players_upv_1 = game:GetService("Players")
-local RunService_1 = game:GetService("RunService")
-local tbl_upv_1 = {}
-local tbl_upv_2 = {projTime = 0, fxTime = 0, fx = 0}
-tbl_upv_1.projLive = 0
-tbl_upv_1.sounds = 0
-local tbl_upv_3 = {}
-function tbl_upv_1.AddFx(a1, a2)
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local v3 = {}
+local v4 = {fx = 0, fxTime = 0, projTime = 0}
+v3.projLive = 0
+v3.sounds = 0
+local v5 = {}
+
+function v3.AddFx(a6, key)
     --[[
       name: AddFx
       line: 18
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        tbl_upv_3 (copy, index: 2)
+        v4 (copy, index: 1)
+        v5 (copy, index: 2)
     ]]
-    tbl_upv_2.fx = tbl_upv_2.fx + 1
-    tbl_upv_2.fxTime = tbl_upv_2.fxTime + a1
-    if not a2 then
-        return
+    v4.fx += 1
+    v4.fxTime += a6
+
+    if key then
+        v5[key] = (v5[key] or 0) + a6
     end
-    tbl_upv_3[a2] = (tbl_upv_3[a2] or 0) + a1
 end
-function tbl_upv_1.AddProj(a1, a2)
+
+function v3.AddProj(a8, projLive)
     --[[
       name: AddProj
       line: 26
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v4 (copy, index: 1)
+        v3 (copy, index: 2)
     ]]
-    tbl_upv_2.projTime = tbl_upv_2.projTime + a1
-    tbl_upv_1.projLive = a2
+    v4.projTime += a8
+    v3.projLive = projLive
 end
-local u1 = 0
-local u2 = 0
-local u3 = 0
-local u4 = os.clock()
-RunService_1.RenderStepped:Connect(
-    function(a1)
+
+local v10 = 0
+local v11 = 0
+local v12 = 0
+local timestamp = os.clock()
+
+runService.RenderStepped:Connect(
+    function(deltaTime: number)
         --[[
           line: 33
           upvalues:
-            u1 (ref,  index: 1)
-            u2 (ref,  index: 2)
-            u3 (ref,  index: 3)
-            u4 (ref,  index: 4)
-            Players_upv_1 (copy, index: 5)
-            tbl_upv_2 (copy, index: 6)
-            tbl_upv_1 (copy, index: 7)
-            tbl_upv_3 (copy, index: 8)
+            v10 (ref,  index: 1)
+            v11 (ref,  index: 2)
+            v12 (ref,  index: 3)
+            timestamp (ref,  index: 4)
+            players (copy, index: 5)
+            v4 (copy, index: 6)
+            v3 (copy, index: 7)
+            v5 (copy, index: 8)
         ]]
-        u1 = u1 + 1
-        u2 = u2 + a1
-        u3 = math.max(u3, a1)
-        local v1 = os.clock()
-        if v1 - u4 < 1 then
+        v10 += 1
+        v11 += deltaTime
+        v12 = math.max(v12, deltaTime)
+        local timestamp2 = os.clock()
+
+        if timestamp2 - timestamp < 1 then
             return
         end
-        local v2 = v1 - u4
-        u4 = v1
-        local v3 = Players_upv_1.LocalPlayer:FindFirstChildOfClass("PlayerScripts")
-        if v3 then
-            local FX_1 = workspace:FindFirstChild("FX")
-            v3:SetAttribute("CombatFxPerSec", (math.floor((tbl_upv_2.fx / v2) + 0.5)))
-            v3:SetAttribute("CombatFxMsPerSec", math.floor((((tbl_upv_2.fxTime / v2) * 1000) * 100) + 0.5) / 100)
-            v3:SetAttribute("CombatProjMsPerSec", math.floor((((tbl_upv_2.projTime / v2) * 1000) * 100) + 0.5) / 100)
-            v3:SetAttribute("CombatProjLive", tbl_upv_1.projLive)
-            local v4 = (FX_1 and (#FX_1:GetChildren())) or 0
-            v3:SetAttribute("CombatFxLive", v4)
-            v3:SetAttribute("CombatSounds", tbl_upv_1.sounds)
-            local v5 = ((u1 > 0) and (math.floor((((u2 / u1) * 1000) * 10) + 0.5) / 10)) or 0
-            v3:SetAttribute("CombatFrameMsAvg", v5)
-            v3:SetAttribute("CombatFrameMsMax", math.floor(((u3 * 1000) * 10) + 0.5) / 10)
-            local tbl_4 = {}
-            for key_1, value_1 in tbl_upv_3 do
-                table.insert(tbl_4, string.format("%s=%.1f", key_1, (value_1 / v2) * 1000))
+
+        local elapsedTime = timestamp2 - timestamp
+        timestamp = timestamp2
+
+        if const playerScripts = players.LocalPlayer:FindFirstChildOfClass("PlayerScripts") then
+            local fx = workspace:FindFirstChild("FX")
+            playerScripts:SetAttribute("CombatFxPerSec", (math.floor((v4.fx / elapsedTime) + 0.5)))
+            playerScripts:SetAttribute("CombatFxMsPerSec", math.floor((((v4.fxTime / elapsedTime) * 1000) * 100) + 0.5) / 100)
+            playerScripts:SetAttribute("CombatProjMsPerSec", math.floor((((v4.projTime / elapsedTime) * 1000) * 100) + 0.5) / 100)
+            playerScripts:SetAttribute("CombatProjLive", v3.projLive)
+            local combatFxLive = fx and #fx:GetChildren() or 0
+            playerScripts:SetAttribute("CombatFxLive", combatFxLive)
+            playerScripts:SetAttribute("CombatSounds", v3.sounds)
+            local combatFrameMsAvg = not (0 < v10) and 0 or math.floor((((v11 / v10) * 1000) * 10) + 0.5) / 10
+            playerScripts:SetAttribute("CombatFrameMsAvg", combatFrameMsAvg)
+            playerScripts:SetAttribute("CombatFrameMsMax", math.floor(((v12 * 1000) * 10) + 0.5) / 10)
+            local parts = {}
+
+            for v22, v23 in v5 do
+                table.insert(parts, string.format("%s=%.1f", v22, (v23 / elapsedTime) * 1000))
             end
-            table.sort(tbl_4)
-            v3:SetAttribute("CombatFxMsByKind", table.concat(tbl_4, " "))
+
+            table.sort(parts)
+            playerScripts:SetAttribute("CombatFxMsByKind", table.concat(parts, " "))
         end
-        table.clear(tbl_upv_3)
-        tbl_upv_2.fx = 0
-        tbl_upv_2.fxTime = 0
-        tbl_upv_2.projTime = 0
-        u1 = 0
-        u2 = 0
-        u3 = 0
+
+        table.clear(v5)
+        v4.fx = 0
+        v4.fxTime = 0
+        v4.projTime = 0
+        v10 = 0
+        v11 = 0
+        v12 = 0
     end
 )
-return tbl_upv_1
+
+return v3

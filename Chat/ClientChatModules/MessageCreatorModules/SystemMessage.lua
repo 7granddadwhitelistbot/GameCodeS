@@ -1,80 +1,93 @@
-local Parent_1 = script.Parent.Parent
-local ChatSettings_upv_1 = require(Parent_1:WaitForChild("ChatSettings"))
-local ChatConstants_1 = require(Parent_1:WaitForChild("ChatConstants"))
-local Util_upv_1 = require(script.Parent:WaitForChild("Util"))
-local ChatLocalization_upv_1 = nil
+local parent = script.Parent.Parent
+local ChatSettings = require(parent:WaitForChild("ChatSettings"))
+local ChatConstants = require(parent:WaitForChild("ChatConstants"))
+local Util = require(script.Parent:WaitForChild("Util"))
+local ChatLocalization = nil
 pcall(
     function()
         --[[
           line: 12
           upvalues:
-            ChatLocalization_upv_1 (ref, index: 1)
+            ChatLocalization (ref, index: 1)
         ]]
-        ChatLocalization_upv_1 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
+        ChatLocalization = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
     end
 )
-function CreateSystemMessageLabel(a1, a2)
+
+function CreateSystemMessageLabel(a6, a7)
     --[[
       name: CreateSystemMessageLabel
       line: 14
       upvalues:
-        ChatLocalization_upv_1 (ref,  index: 1)
-        ChatSettings_upv_1 (copy, index: 2)
-        Util_upv_1 (copy, index: 3)
+        ChatLocalization (ref,  index: 1)
+        ChatSettings (copy, index: 2)
+        Util (copy, index: 3)
     ]]
-    local Message_1 = a1.Message
-    if ChatLocalization_upv_1 and ChatLocalization_upv_1.LocalizeFormattedMessage then
-        Message_1 = ChatLocalization_upv_1:LocalizeFormattedMessage(Message_1)
+    local v8
+    local v9 = a6.Message
+
+    if ChatLocalization and ChatLocalization.LocalizeFormattedMessage then
+        v9 = ChatLocalization:LocalizeFormattedMessage(v9)
     end
-    local v1 = a1.ExtraData or {}
-    local v2 = v1.Font or (ChatSettings_upv_1.DefaultFont)
-    local v3 = v1.TextSize or (ChatSettings_upv_1.ChatWindowTextSize)
-    local v4 = v1.ChatColor or (ChatSettings_upv_1.DefaultMessageColor)
-    local v5 = v1.ChannelColor or v4
-    local u1, u2 = Util_upv_1:CreateBaseMessage(Message_1, v2, v3, v4)
-    u2.AutoLocalize = true
-    local v6 = nil
-    if a2 == a1.OriginalChannel then
-        v4 = v6
+
+    local v10 = a6.ExtraData or {}
+    local v11 = v10.Font or ChatSettings.DefaultFont
+    local v12 = v10.TextSize or ChatSettings.ChatWindowTextSize
+    local v13 = v10.ChatColor or ChatSettings.DefaultMessageColor
+    local v14 = v10.ChannelColor or v13
+    local baseMessage, v16 = Util:CreateBaseMessage(v9, v11, v12, v13)
+    v16.AutoLocalize = true
+
+    if a7 == a6.OriginalChannel then
+        v8 = nil
     else
-        local v7
-        if (ChatLocalization_upv_1) and a1.OriginalChannel == "System" then
-            v7 = string.format("{%s}", ChatLocalization_upv_1:Get("InGame.Chat.Label.SystemMessagePrefix", "System"))
-        elseif (ChatLocalization_upv_1) and a1.OriginalChannel == "Team" then
-            v7 = string.format("{%s}", ChatLocalization_upv_1:Get("InGame.Chat.Label.TeamMessagePrefix", "System"))
+        local formattedText
+
+        if ChatLocalization and a6.OriginalChannel == "System" then
+            local v18 = ChatLocalization:Get("InGame.Chat.Label.SystemMessagePrefix", "System")
+            formattedText = string.format("{%s}", v18)
         else
-            v7 = string.format("{%s}", a1.OriginalChannel)
+            formattedText = if ChatLocalization and a6.OriginalChannel == "Team" then string.format("{%s}", ChatLocalization:Get("InGame.Chat.Label.TeamMessagePrefix", "System")) else string.format("{%s}", a6.OriginalChannel)
         end
-        v4 = Util_upv_1:AddChannelButtonToBaseMessage(u2, v5, v7, a1.OriginalChannel)
-        u2.Text = Util_upv_1:CreateLeadingSpaces(Util_upv_1:GetNumberOfSpaces(v7, v2, v3) + 1) .. Util_upv_1:SanitizeForRichText(Message_1)
+
+        v8 = Util:AddChannelButtonToBaseMessage(v16, v14, formattedText, a6.OriginalChannel)
+        v16.Text = Util:CreateLeadingSpaces(Util:GetNumberOfSpaces(formattedText, v11, v12) + 1) .. Util:SanitizeForRichText(v9)
     end
-    local tbl_1 = {}
-    tbl_1[u2] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
-    if v4 then
-        tbl_1[v4] = {TextTransparency = {FadedOut = 1, FadedIn = 0}, TextStrokeTransparency = {FadedOut = 1, FadedIn = 0.75}}
+
+    local v19 = {}
+    v19[v16] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
+
+    if v8 then
+        v19[v8] = {TextTransparency = {FadedIn = 0, FadedOut = 1}, TextStrokeTransparency = {FadedIn = 0.75, FadedOut = 1}}
     end
-    local v8, v9, v10 = Util_upv_1:CreateFadeFunctions(tbl_1)
-    local tbl_2 = {}
-    tbl_2[Util_upv_1.KEY_BASE_FRAME] = u1
-    tbl_2[Util_upv_1.KEY_BASE_MESSAGE] = u2
-    tbl_2[Util_upv_1.KEY_UPDATE_TEXT_FUNC] = nil
-    tbl_2[Util_upv_1.KEY_GET_HEIGHT] = function(a3)
+
+    local fadeFunctions, v21, v22 = Util:CreateFadeFunctions(v19)
+    local v23 = {}
+    v23[Util.KEY_BASE_FRAME] = baseMessage
+    v23[Util.KEY_BASE_MESSAGE] = v16
+    v23[Util.KEY_UPDATE_TEXT_FUNC] = nil
+
+    v23[Util.KEY_GET_HEIGHT] = function(a24)
         --[[
           name: GetHeightFunction
           line: 45
           upvalues:
-            Util_upv_1 (copy, index: 1)
-            u2 (copy, index: 2)
-            u1 (copy, index: 3)
+            Util (copy, index: 1)
+            v16 (copy, index: 2)
+            baseMessage (copy, index: 3)
         ]]
-        return Util_upv_1:GetMessageHeight(u2, u1, a3)
+        return Util:GetMessageHeight(v16, baseMessage, a24)
     end
-    tbl_2[Util_upv_1.KEY_FADE_IN] = v8
-    tbl_2[Util_upv_1.KEY_FADE_OUT] = v9
-    tbl_2[Util_upv_1.KEY_UPDATE_ANIMATION] = v10
-    return tbl_2
+
+    v23[Util.KEY_FADE_IN] = fadeFunctions
+    v23[Util.KEY_FADE_OUT] = v21
+    v23[Util.KEY_UPDATE_ANIMATION] = v22
+
+    return v23
 end
-local tbl_3 = {}
-tbl_3[Util_upv_1.KEY_MESSAGE_TYPE] = ChatConstants_1.MessageTypeSystem
-tbl_3[Util_upv_1.KEY_CREATOR_FUNCTION] = CreateSystemMessageLabel
-return tbl_3
+
+local v25 = {}
+v25[Util.KEY_MESSAGE_TYPE] = ChatConstants.MessageTypeSystem
+v25[Util.KEY_CREATOR_FUNCTION] = CreateSystemMessageLabel
+
+return v25

@@ -1,171 +1,221 @@
-local Chat_upv_1 = game:GetService("Chat")
-local Players_1 = game:GetService("Players")
-local Util_upv_1 = require(script.Parent:WaitForChild("Util"))
-local u1 = nil
+local function Get(a2, a3, a4)
+    --[[
+      name: Get
+      line: 14
+    ]]
+    return a4
+end
+
+local chat = game:GetService("Chat")
+local players = game:GetService("Players")
+local parent = script.Parent
+local childName = "Util"
+local child = require(parent:WaitForChild(childName))
+local v10 = nil
 pcall(
     function()
         --[[
           line: 13
           upvalues:
-            u1 (ref,  index: 1)
-            Chat_upv_1 (copy, index: 2)
+            v10 (ref,  index: 1)
+            chat (copy, index: 2)
         ]]
-        u1 = require(Chat_upv_1.ClientChatModules.ChatLocalization)
+        v10 = require(chat.ClientChatModules.ChatLocalization)
     end
 )
-if u1 == nil then
-    local tbl_1 = {Get = 0}
-    function tbl_1.Get(a1, a2, a3)
-        --[[
-          name: Get
-          line: 14
-        ]]
-        return a3
-    end
-    u1 = tbl_1
+
+if v10 == nil then
+    v10 = {Get = Get}
 end
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local tbl_upv_2 = {laugh = true, wave = true, point = true, dance2 = true, cheer = true, dance3 = true, dance = true}
-local tbl_upv_3 = {}
-tbl_upv_3["InGame.Chat.Response.EmotesNotSupported"] = "You can't use Emotes here."
-tbl_upv_3["InGame.Chat.Response.EmotesWrongAvatarType"] = "Only R15 avatars can use Emotes."
-tbl_upv_3["InGame.Chat.ErrorMessageSwitchToR15"] = "Switch to your R15 avatar to play Emote."
-tbl_upv_3["InGame.Chat.Response.EmoteNotAvailable"] = "You can't use that Emote."
-tbl_upv_3["InGame.Chat.Response.EmotesTemporarilyUnavailable"] = "You can't use Emotes right now."
-tbl_upv_3["InGame.Chat.ErrorMessageAnimationPlaying"] = "You cannot play Emotes during this action."
-local u2 = Color3.fromRGB(245, 50, 50)
-local function getEmoteName(a1)
+
+local localPlayer = players.LocalPlayer
+local v12 = {wave = true, point = true, dance = true, dance2 = true, dance3 = true, laugh = true, cheer = true}
+local v13 = {
+    ["InGame.Chat.Response.EmotesNotSupported"] = "You can't use Emotes here.",
+    ["InGame.Chat.Response.EmotesWrongAvatarType"] = "Only R15 avatars can use Emotes.",
+    ["InGame.Chat.ErrorMessageSwitchToR15"] = "Switch to your R15 avatar to play Emote.",
+    ["InGame.Chat.Response.EmoteNotAvailable"] = "You can't use that Emote.",
+    ["InGame.Chat.Response.EmotesTemporarilyUnavailable"] = "You can't use Emotes right now.",
+    ["InGame.Chat.ErrorMessageAnimationPlaying"] = "You cannot play Emotes during this action."
+}
+local chatColor = Color3.fromRGB(245, 50, 50)
+
+local function getEmoteName(text: string)
     --[[
       name: getEmoteName
       line: 48
     ]]
-    if string.sub(a1, 1, 3) ~= "/e " then
-        if string.sub(a1, 1, 7) ~= "/emote " then
-            return nil
-        end
-        return (string.sub(a1, 8))
+    if string.sub(text, 1, 3) == "/e " then
+        return (string.sub(text, 4))
     end
-    return (string.sub(a1, 4))
+
+    return if string.sub(text, 1, 7) ~= "/emote " then nil else (string.sub(text, 8))
 end
-local function sendErrorMessage(a1, a2)
+
+local function sendErrorMessage(a18, key)
     --[[
       name: sendErrorMessage
       line: 58
       upvalues:
-        u1 (ref,  index: 1)
-        tbl_upv_3 (copy, index: 2)
-        u2 (copy, index: 3)
-        Util_upv_1 (copy, index: 4)
+        v10 (ref,  index: 1)
+        v13 (copy, index: 2)
+        chatColor (copy, index: 3)
+        child (copy, index: 4)
     ]]
-    Util_upv_1:SendSystemMessageToSelf(u1:Get(a2, tbl_upv_3[a2]), a1, {ChatColor = u2})
+    child:SendSystemMessageToSelf(v10:Get(key, v13[key]), a18, {ChatColor = chatColor})
 end
-local tbl_4 = {}
-tbl_4[Util_upv_1.KEY_COMMAND_PROCESSOR_TYPE] = Util_upv_1.COMPLETED_MESSAGE_PROCESSOR
-tbl_4[Util_upv_1.KEY_PROCESSOR_FUNCTION] = function(a1, a2, a3)
+
+local function ProcessMessage(text: string, a22, a23)
     --[[
       name: ProcessMessage
       line: 67
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-        u1 (ref,  index: 3)
-        tbl_upv_3 (copy, index: 4)
-        u2 (copy, index: 5)
-        Util_upv_1 (copy, index: 6)
+        v12 (copy, index: 1)
+        localPlayer (copy, index: 2)
+        v10 (ref,  index: 3)
+        v13 (copy, index: 4)
+        chatColor (copy, index: 5)
+        child (copy, index: 6)
     ]]
-    local v1
-    if string.sub(a1, 1, 3) == "/e " then
-        v1 = string.sub(a1, 4)
-    elseif string.sub(a1, 1, 7) ~= "/emote " then
-        v1 = nil
-    else
-        v1 = string.sub(a1, 8)
-    end
-    if not v1 then
-        return false
-    end
-    if tbl_upv_2[v1] then
-        return true
-    end
-    local u3 = a2:GetCurrentChannel()
-    if not u3 then
-        return true
-    end
-    local Character_1 = LocalPlayer_upv_1.Character
-    if Character_1 then
-        local Animate_1 = Character_1:FindFirstChild("Animate")
-        if Animate_1 and Animate_1:FindFirstChild("PlayEmote") then
-            local u4 = Character_1:FindFirstChildOfClass("Humanoid")
-            if u4 then
-                if u4.RigType == Enum.HumanoidRigType.R15 then
-                    local v2 = u4:FindFirstChildOfClass("HumanoidDescription")
-                    if v2 then
-                        local tbl_5 = {}
-                        for key_1, _ in pairs(v2:GetEmotes()) do
-                            tbl_5[string.lower(key_1)] = key_1
-                        end
-                        local num_1 = tonumber(v1)
-                        if num_1 then
-                            for _, value_1 in pairs(v2:GetEquippedEmotes()) do
-                                if value_1.Slot == num_1 then
-                                    v1 = value_1.Name
-                                end
-                            end
-                        end
-                        local v3 = string.lower(v1)
-                        local u5 = tbl_5[v3]
-                        if u5 then
-                            spawn(
-                                function()
-                                    --[[
-                                      line: 143
-                                      upvalues:
-                                        u4 (copy, index: 1)
-                                        u5 (ref,  index: 2)
-                                        u3 (copy, index: 3)
-                                        u1 (ref,  index: 4)
-                                        tbl_upv_3 (copy, index: 5)
-                                        u2 (copy, index: 6)
-                                        Util_upv_1 (copy, index: 7)
-                                    ]]
-                                    local success_1, v4 = pcall(
-                                        function()
-                                            --[[
-                                              line: 144
-                                              upvalues:
-                                                u4 (copy, index: 1)
-                                                u5 (ref,  index: 2)
-                                            ]]
-                                            return u4:PlayEmote(u5)
-                                        end
-                                    )
-                                    if success_1 then
-                                        if not (v4) then
-                                            Util_upv_1:SendSystemMessageToSelf(u1:Get("InGame.Chat.Response.EmotesTemporarilyUnavailable", tbl_upv_3["InGame.Chat.Response.EmotesTemporarilyUnavailable"]), u3, {ChatColor = u2})
-                                        end
-                                    else
-                                        Util_upv_1:SendSystemMessageToSelf(u1:Get("InGame.Chat.Response.EmotesNotSupported", tbl_upv_3["InGame.Chat.Response.EmotesNotSupported"]), u3, {ChatColor = u2})
-                                    end
-                                end
-                            )
-                        else
-                            Util_upv_1:SendSystemMessageToSelf(u1:Get("InGame.Chat.Response.EmoteNotAvailable", tbl_upv_3["InGame.Chat.Response.EmoteNotAvailable"]), u3, {ChatColor = u2})
-                        end
-                    else
-                        Util_upv_1:SendSystemMessageToSelf(u1:Get("InGame.Chat.Response.EmotesTemporarilyUnavailable", tbl_upv_3["InGame.Chat.Response.EmotesTemporarilyUnavailable"]), u3, {ChatColor = u2})
-                    end
-                else
-                    Util_upv_1:SendSystemMessageToSelf(u1:Get("InGame.Chat.Response.EmotesWrongAvatarType", tbl_upv_3["InGame.Chat.Response.EmotesWrongAvatarType"]), u3, {ChatColor = u2})
-                end
-            else
-                Util_upv_1:SendSystemMessageToSelf(u1:Get("InGame.Chat.Response.EmotesTemporarilyUnavailable", tbl_upv_3["InGame.Chat.Response.EmotesTemporarilyUnavailable"]), u3, {ChatColor = u2})
-            end
+    local v24
+
+    if string.sub(text, 1, 3) ~= "/e " then
+        if string.sub(text, 1, 7) ~= "/emote " then
+            v24 = nil
         else
-            Util_upv_1:SendSystemMessageToSelf(u1:Get("InGame.Chat.Response.EmotesNotSupported", tbl_upv_3["InGame.Chat.Response.EmotesNotSupported"]), u3, {ChatColor = u2})
+            v24 = string.sub(text, 8)
         end
     else
-        Util_upv_1:SendSystemMessageToSelf(u1:Get("InGame.Chat.Response.EmotesTemporarilyUnavailable", tbl_upv_3["InGame.Chat.Response.EmotesTemporarilyUnavailable"]), u3, {ChatColor = u2})
+        v24 = string.sub(text, 4)
     end
+
+    if not v24 then
+        return false
+    end
+    if v12[v24] then
+        return true
+    end
+
+    local currentChannel = a22:GetCurrentChannel()
+    if not currentChannel then
+        return true
+    end
+
+    local character = localPlayer.Character
+    if not character then
+        local v27 = v10
+        child:SendSystemMessageToSelf(v27:Get("InGame.Chat.Response.EmotesTemporarilyUnavailable", v13["InGame.Chat.Response.EmotesTemporarilyUnavailable"]), currentChannel, {ChatColor = chatColor})
+
+        return true
+    end
+
+    local animate = character:FindFirstChild("Animate")
+    if not animate then
+        local v29 = v10
+        child:SendSystemMessageToSelf(v29:Get("InGame.Chat.Response.EmotesNotSupported", v13["InGame.Chat.Response.EmotesNotSupported"]), currentChannel, {ChatColor = chatColor})
+
+        return true
+    end
+
+    if not animate:FindFirstChild("PlayEmote") then
+        local v30 = v10
+        child:SendSystemMessageToSelf(v30:Get("InGame.Chat.Response.EmotesNotSupported", v13["InGame.Chat.Response.EmotesNotSupported"]), currentChannel, {ChatColor = chatColor})
+
+        return true
+    end
+
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if not humanoid then
+        local v32 = v10
+        child:SendSystemMessageToSelf(v32:Get("InGame.Chat.Response.EmotesTemporarilyUnavailable", v13["InGame.Chat.Response.EmotesTemporarilyUnavailable"]), currentChannel, {ChatColor = chatColor})
+
+        return true
+    end
+
+    if humanoid.RigType ~= Enum.HumanoidRigType.R15 then
+        local v33 = v10
+        child:SendSystemMessageToSelf(v33:Get("InGame.Chat.Response.EmotesWrongAvatarType", v13["InGame.Chat.Response.EmotesWrongAvatarType"]), currentChannel, {ChatColor = chatColor})
+
+        return true
+    end
+
+    local humanoidDescription = humanoid:FindFirstChildOfClass("HumanoidDescription")
+    if not humanoidDescription then
+        local v35 = v10
+        child:SendSystemMessageToSelf(v35:Get("InGame.Chat.Response.EmotesTemporarilyUnavailable", v13["InGame.Chat.Response.EmotesTemporarilyUnavailable"]), currentChannel, {ChatColor = chatColor})
+
+        return true
+    end
+
+    local emoteNames = {}
+    local emotes = humanoidDescription:GetEmotes()
+
+    for text2, _ in pairs(emotes) do
+        emoteNames[string.lower(text2)] = text2
+    end
+
+    if const number = tonumber(v24) then
+        local equippedEmotes = humanoidDescription:GetEquippedEmotes()
+
+        for _, equippedEmote in pairs(equippedEmotes) do
+            if equippedEmote.Slot == number then
+                v24 = equippedEmote.Name
+            end
+        end
+    end
+
+    local emoteName = emoteNames[string.lower(v24)]
+    if not emoteName then
+        local v45 = v10
+        local v46 = {ChatColor = chatColor}
+        child:SendSystemMessageToSelf(v45:Get("InGame.Chat.Response.EmoteNotAvailable", v13["InGame.Chat.Response.EmoteNotAvailable"]), currentChannel, v46)
+
+        return true
+    end
+
+    spawn(
+        function()
+            --[[
+              line: 143
+              upvalues:
+                humanoid (copy, index: 1)
+                emoteName (ref,  index: 2)
+                currentChannel (copy, index: 3)
+                v10 (ref,  index: 4)
+                v13 (copy, index: 5)
+                chatColor (copy, index: 6)
+                child (copy, index: 7)
+            ]]
+            local success, result = pcall(
+                function()
+                    --[[
+                      line: 144
+                      upvalues:
+                        humanoid (copy, index: 1)
+                        emoteName (ref,  index: 2)
+                    ]]
+                    return humanoid:PlayEmote(emoteName)
+                end
+            )
+
+            if success then
+                if not result then
+                    local v49 = v10
+                    local v50 = {ChatColor = chatColor}
+                    child:SendSystemMessageToSelf(v49:Get("InGame.Chat.Response.EmotesTemporarilyUnavailable", v13["InGame.Chat.Response.EmotesTemporarilyUnavailable"]), currentChannel, v50)
+                end
+            else
+                local v51 = v10
+                child:SendSystemMessageToSelf(v51:Get("InGame.Chat.Response.EmotesNotSupported", v13["InGame.Chat.Response.EmotesNotSupported"]), currentChannel, {ChatColor = chatColor})
+            end
+        end
+    )
+
     return true
 end
-return tbl_4
+
+local v52 = {}
+v52[child.KEY_COMMAND_PROCESSOR_TYPE] = child.COMPLETED_MESSAGE_PROCESSOR
+v52[child.KEY_PROCESSOR_FUNCTION] = ProcessMessage
+
+return v52

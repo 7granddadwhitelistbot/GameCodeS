@@ -1,201 +1,226 @@
-local RunService_upv_1 = game:GetService("RunService")
-local SoundService_upv_1 = game:GetService("SoundService")
-local tbl_1 = {}
-local tbl_upv_2 = {}
-local u1 = nil
-function tbl_1.Init(a1)
+local runService = game:GetService("RunService")
+local soundService = game:GetService("SoundService")
+local v3 = {}
+local v4 = {}
+local v5 = nil
+
+function v3.Init(a6)
     --[[
       name: Init
       line: 26
       upvalues:
-        u1 (ref,  index: 1)
-        RunService_upv_1 (copy, index: 2)
-        tbl_upv_2 (copy, index: 3)
+        v5 (ref,  index: 1)
+        runService (copy, index: 2)
+        v4 (copy, index: 3)
     ]]
-    u1 = a1
-    RunService_upv_1.Heartbeat:Connect(
-        function(a2)
+    v5 = a6
+
+    runService.Heartbeat:Connect(
+        function(deltaTime: number)
             --[[
               line: 28
               upvalues:
-                tbl_upv_2 (copy, index: 1)
+                v4 (copy, index: 1)
             ]]
-            for _, value_1 in tbl_upv_2 do
-                value_1.current = value_1.current + ((value_1.target - value_1.current) * (1 - math.exp(-value_1.rate * a2)))
-                if math.abs(value_1.target - value_1.current) < 0.002 then
-                    value_1.current = value_1.target
+            for _, v9 in v4 do
+                local v10 = 1 - math.exp(-v9.rate * deltaTime)
+                v9.current += ((v9.target - v9.current) * v10)
+
+                if math.abs(v9.target - v9.current) < 0.002 then
+                    v9.current = v9.target
                 end
-                local sound_1 = value_1.sound
-                if not (value_1.current <= 0.001) or value_1.target ~= 0 then
-                    if value_1.target > 0 and not (sound_1.IsPlaying) and not (value_1.ended) then
-                        if value_1.started then
-                            sound_1:Resume()
-                        else
-                            value_1.started = true
-                            sound_1:Play()
-                        end
+
+                local sound = v9.sound
+
+                if v9.current <= 0.001 and v9.target == 0 then
+                    v9.current = 0
+
+                    if sound.IsPlaying then
+                        sound:Pause()
                     end
-                    local v1 = value_1.base * value_1.current
-                    if math.abs(sound_1.Volume - v1) > 1e-04 then
-                        sound_1.Volume = v1
-                        continue
+                elseif 0 < v9.target and not sound.IsPlaying and not v9.ended then
+                    if v9.started then
+                        sound:Resume()
+                    else
+                        v9.started = true
+                        sound:Play()
                     end
                 end
-                value_1.current = 0
-                if sound_1.IsPlaying then
-                    sound_1:Pause()
-                end
-                local v1 = value_1.base * value_1.current
-                if math.abs(sound_1.Volume - v1) > 1e-04 then
-                    sound_1.Volume = v1
+
+                local volume = v9.base * v9.current
+
+                if 1e-04 < math.abs(sound.Volume - volume) then
+                    sound.Volume = volume
                 end
             end
         end
     )
 end
-function tbl_1.Get(a1, a2, a3)
+
+function v3.Get(key, name, a15)
     --[[
       name: Get
       line: 58
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        u1 (ref,  index: 2)
-        SoundService_upv_1 (copy, index: 3)
+        v4 (copy, index: 1)
+        v5 (ref,  index: 2)
+        soundService (copy, index: 3)
     ]]
-    local v2 = tbl_upv_2[a1]
-    if v2 and v2.name == a2 then
-        return v2
+    local v16 = v4[key]
+
+    if v16 and v16.name == name then
+        return v16
     end
-    if v2 then
-        v2.sound:Destroy()
-        tbl_upv_2[a1] = nil
+
+    if v16 then
+        v16.sound:Destroy()
+        v4[key] = nil
     end
-    local u2 = u1.Clone(a2)
-    if not u2 then
+
+    local sound = v5.Clone(name)
+    if not sound then
         return nil
     end
-    u2.Name = "Layer_" .. a1
-    local Volume_1 = u2.Volume
-    u2.Volume = 0
-    u2.Parent = SoundService_upv_1
-    local tbl_upv_3 = {current = 0, started = false, ended = false, target = 0}
-    tbl_upv_3.key = a1
-    tbl_upv_3.name = a2
-    tbl_upv_3.sound = u2
-    tbl_upv_3.base = Volume_1
-    tbl_upv_3.rate = a3 or 0.8
-    u2.Ended:Connect(
+
+    sound.Name = "Layer_" .. key
+    local volume = sound.Volume
+    sound.Volume = 0
+    sound.Parent = soundService
+    local v19 = {current = 0, target = 0, ended = false, started = false, key = key, name = name, sound = sound, base = volume, rate = a15
+        or 0.8}
+
+    sound.Ended:Connect(
         function()
             --[[
               line: 76
               upvalues:
-                u2 (copy, index: 1)
-                tbl_upv_3 (copy, index: 2)
+                sound (copy, index: 1)
+                v19 (copy, index: 2)
             ]]
-            if (u2.Looped) then
-                return
+            if not sound.Looped then
+                v19.ended = true
             end
-            tbl_upv_3.ended = true
         end
     )
-    tbl_upv_2[a1] = tbl_upv_3
-    return tbl_upv_3
+
+    v4[key] = v19
+
+    return v19
 end
-function tbl_1.Find(a1)
+
+function v3.Find(key)
     --[[
       name: Find
       line: 85
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    return tbl_upv_2[a1]
+    return v4[key]
 end
-function tbl_1.SetTarget(a1, a2, a3)
+
+function v3.SetTarget(key, a22: number, rate)
     --[[
       name: SetTarget
       line: 89
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local v3 = tbl_upv_2[a1]
-    if not v3 then
-        return
+    if const v24 = v4[key] then
+        v24.target = math.clamp(a22, 0, 2)
+
+        if rate then
+            v24.rate = rate
+        end
     end
-    v3.target = math.clamp(a2, 0, 2)
-    if not a3 then
-        return
-    end
-    v3.rate = a3
 end
-function tbl_1.Restart(a1, a2)
+
+function v3.Restart(key, a26)
     --[[
       name: Restart
       line: 100
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local v4 = tbl_upv_2[a1]
-    if not v4 then
+    local v27 = v4[key]
+    if not v27 then
         return
     end
-    v4.ended = false
-    v4.started = true
-    v4.sound.TimePosition = 0
-    v4.sound:Play()
-    v4.target = a2 or (v4.target)
+
+    v27.ended = false
+    v27.started = true
+    v27.sound.TimePosition = 0
+    v27.sound:Play()
+    v27.target = a26 or v27.target
 end
-function tbl_1.FadeAll(a1, a2)
+
+function v3.FadeAll(a28, a29)
     --[[
       name: FadeAll
       line: 113
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    for key_1, value_2 in tbl_upv_2 do
-        if string.sub(key_1, 1, #a1) == a1 and (not (a2) or not (a2[key_1])) then
-            value_2.target = 0
+    for text, v31 in v4 do
+        if string.sub(text, 1, #a28) == a28 then
+            if not a29 or not a29[text] then
+                v31.target = 0
+            end
         end
     end
 end
-function tbl_1.Audible(a1)
+
+function v3.Audible(a32)
     --[[
       name: Audible
       line: 122
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local tbl_4 = {}
-    for key_2, value_3 in tbl_upv_2 do
-        if string.sub(key_2, 1, #a1) ~= a1 or not (value_3.sound.IsPlaying) then
-            continue
-        end
-        if value_3.current > 0.02 then
-            table.insert(tbl_4, value_3)
+    local v33 = {}
+
+    for text, v35 in v4 do
+        if string.sub(text, 1, #a32) == a32 then
+            if v35.sound.IsPlaying and 0.02 < v35.current then
+                table.insert(v33, v35)
+            end
         end
     end
+
     table.sort(
-        tbl_4,
-        function(a2, a3)
+        v33,
+        function(left, right)
             --[[
               line: 129
             ]]
-            return a3.current < a2.current
+            local current = left.current
+            return right.current < current
         end
     )
-    return tbl_4
+
+    return v33
 end
-function tbl_1.Debug()
+
+function v3.Debug()
     --[[
       name: Debug
       line: 135
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local tbl_5 = {}
-    for key_3, value_4 in tbl_upv_2 do
-        table.insert(tbl_5, string.format("%s=%s %.2f/%.2f%s", key_3, value_4.name, value_4.current, value_4.target, ((value_4.sound.IsPlaying) and " playing") or ""))
+    local v39 = {}
+
+    for v40, v41 in v4 do
+        local stringFormat = string.format
+        local name = v41.name
+        local current = v41.current
+        local target = v41.target
+        local v46 = v41.sound.IsPlaying and " playing" or ""
+        table.insert(v39, stringFormat("%s=%s %.2f/%.2f%s", v40, name, current, target, v46))
     end
-    table.sort(tbl_5)
-    return tbl_5
+
+    table.sort(v39)
+
+    return v39
 end
-return tbl_1
+
+return v3

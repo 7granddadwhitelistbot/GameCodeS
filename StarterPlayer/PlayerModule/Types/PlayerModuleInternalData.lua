@@ -1,3 +1,5 @@
-local _ = require(script.Parent.Parent)
-local v1 = require(script.Parent.ControlModuleData)
+require(script.Parent.Parent)
+require(script.Parent.ControlModuleData)
+require(script.Parent.EngineInterfaceData)
+
 return {}

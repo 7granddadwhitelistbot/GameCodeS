@@ -1,80 +1,88 @@
-local tbl_1 = {}
-local tbl_upv_2 = {}
-tbl_upv_2.__index = tbl_upv_2
-local ClientChatModules_1 = game:GetService("Chat"):WaitForChild("ClientChatModules")
-local CommandModules_upv_1 = ClientChatModules_1:WaitForChild("CommandModules")
-local Util_upv_1 = require(CommandModules_upv_1:WaitForChild("Util"))
-local ChatSettings_upv_1 = require(ClientChatModules_1:WaitForChild("ChatSettings"))
-function tbl_upv_2.SetupCommandProcessors(a1)
+local v1 = {}
+local Class = {}
+Class.__index = Class
+local chat = game:GetService("Chat")
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local commandModules = clientChatModules:WaitForChild("CommandModules")
+local childName = "Util"
+local child = require(commandModules:WaitForChild(childName))
+local _ = script.Parent
+local ChatSettings = require(clientChatModules:WaitForChild("ChatSettings"))
+
+function Class.SetupCommandProcessors(self)
     --[[
       name: SetupCommandProcessors
       line: 19
       upvalues:
-        CommandModules_upv_1 (copy, index: 1)
-        Util_upv_1 (copy, index: 2)
+        commandModules (copy, index: 1)
+        child (copy, index: 2)
     ]]
-    local v1 = CommandModules_upv_1:GetChildren()
-    for n_1 = 1, #v1 do
-        local v2 = v1[n_1]:IsA("ModuleScript")
-        if not (v2) or v1[n_1].Name == "Util" then
-            continue
-        end
-        local v3 = require(v1[n_1])
-        local v4 = v3[Util_upv_1.KEY_COMMAND_PROCESSOR_TYPE]
-        local v5 = v3[Util_upv_1.KEY_PROCESSOR_FUNCTION]
-        if v4 == Util_upv_1.IN_PROGRESS_MESSAGE_PROCESSOR then
-            table.insert(a1.InProgressMessageProcessors, v5)
-            continue
-        end
-        if v4 == Util_upv_1.COMPLETED_MESSAGE_PROCESSOR then
-            table.insert(a1.CompletedMessageProcessors, v5)
+    local children = commandModules:GetChildren()
+
+    for childKey = 1, #children do
+        if children[childKey]:IsA("ModuleScript") and children[childKey].Name ~= "Util" then
+            local Module = require(children[childKey])
+            local v14 = Module[child.KEY_COMMAND_PROCESSOR_TYPE]
+            local v15 = Module[child.KEY_PROCESSOR_FUNCTION]
+
+            if v14 == child.IN_PROGRESS_MESSAGE_PROCESSOR then
+                table.insert(self.InProgressMessageProcessors, v15)
+            elseif v14 == child.COMPLETED_MESSAGE_PROCESSOR then
+                table.insert(self.CompletedMessageProcessors, v15)
+            end
         end
     end
 end
-function tbl_upv_2.ProcessCompletedChatMessage(a1, a2, a3)
+
+function Class.ProcessCompletedChatMessage(self, a17, a18)
     --[[
       name: ProcessCompletedChatMessage
       line: 37
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        ChatSettings (copy, index: 1)
     ]]
-    for n_2 = 1, #a1.CompletedMessageProcessors do
-        local v6 = a1.CompletedMessageProcessors[n_2](a2, a3, ChatSettings_upv_1)
-        if not (v6) then
-            continue
+    for completedMessageProcessorKey = 1, #self.CompletedMessageProcessors do
+        if self.CompletedMessageProcessors[completedMessageProcessorKey](a17, a18, ChatSettings) then
+            return true
         end
-        return true
     end
+
     return false
 end
-function tbl_upv_2.ProcessInProgressChatMessage(a1, a2, a3, a4)
+
+function Class.ProcessInProgressChatMessage(self, a21, a22, a23)
     --[[
       name: ProcessInProgressChatMessage
       line: 47
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        ChatSettings (copy, index: 1)
     ]]
-    local v7 = nil
-    for n_3 = 1, #a1.InProgressMessageProcessors do
-        v7 = a1.InProgressMessageProcessors[n_3](a2, a3, a4, ChatSettings_upv_1)
-        if not (v7) then
-            continue
+    local v24
+
+    for inProgressMessageProcessorKey = 1, #self.InProgressMessageProcessors do
+        v24 = self.InProgressMessageProcessors[inProgressMessageProcessorKey](a21, a22, a23, ChatSettings)
+
+        if v24 then
+            return v24
         end
-        return v7
     end
+
     return nil
 end
-function tbl_1.new()
+
+function v1.new()
     --[[
       name: new
       line: 60
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    local v8 = setmetatable({}, tbl_upv_2)
-    v8.CompletedMessageProcessors = {}
-    v8.InProgressMessageProcessors = {}
-    v8:SetupCommandProcessors()
-    return v8
+    local v26 = setmetatable({}, Class)
+    v26.CompletedMessageProcessors = {}
+    v26.InProgressMessageProcessors = {}
+    v26:SetupCommandProcessors()
+
+    return v26
 end
-return tbl_1
+
+return v1

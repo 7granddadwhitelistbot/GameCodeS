@@ -1,662 +1,1013 @@
-local Players_upv_1 = game:GetService("Players")
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local Lighting_upv_1 = game:GetService("Lighting")
-local RunService_upv_1 = game:GetService("RunService")
-local TweenService_upv_1 = game:GetService("TweenService")
-local Shared_1 = ReplicatedStorage_1:WaitForChild("Shared")
-local News_upv_1 = require(Shared_1:WaitForChild("News"))
-local Ranks_upv_1 = require(Shared_1:WaitForChild("Ranks"))
-local RankArt_upv_1 = require(script.Parent.Parent:WaitForChild("RankArt"))
-local tbl_1 = {}
-local u1 = Color3.fromRGB(255, 206, 92)
-local u2 = Color3.fromRGB(214, 140, 34)
-local tbl_upv_2 = {0, 2, 4, 5, 7, 9, 11}
-local tbl_upv_3 = {{text = "Every win earns trophies.\nClimb to Immortal.", key = "trophy", title = "WIN TO CLIMB"}, {text = "Each rank adds new\nweapons to your drops.", key = "weapons", title = "NEW WEAPONS"}, {text = "Every rank-up opens\na Rank Reward.", key = "reward", title = "RANK REWARDS"}}
-function tbl_1.Init(a1)
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local lighting = game:GetService("Lighting")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+local shared = replicatedStorage:WaitForChild("Shared")
+local News = require(shared:WaitForChild("News"))
+local Ranks = require(shared:WaitForChild("Ranks"))
+local RankArt = require(script.Parent.Parent:WaitForChild("RankArt"))
+local v10 = {}
+local color3 = Color3.fromRGB(255, 206, 92)
+local color32 = Color3.fromRGB(214, 140, 34)
+local v13 = {0, 2, 4, 5, 7, 9, 11}
+local v14 = {{key = "trophy", title = "WIN TO CLIMB", text = "Every win earns trophies.\nClimb to Immortal."}, {key = "weapons", title = "NEW WEAPONS", text = "Each rank adds new\nweapons to your drops."}, {key = "reward", title = "RANK REWARDS", text = "Every rank-up opens\na Rank Reward."}}
+
+function v10.Init(a15)
     --[[
       name: Init
       line: 61
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        TweenService_upv_1 (copy, index: 2)
-        u1 (copy, index: 3)
-        u2 (copy, index: 4)
-        Ranks_upv_1 (copy, index: 5)
-        RankArt_upv_1 (copy, index: 6)
-        tbl_upv_3 (copy, index: 7)
-        Lighting_upv_1 (copy, index: 8)
-        tbl_upv_2 (copy, index: 9)
-        News_upv_1 (copy, index: 10)
-        RunService_upv_1 (copy, index: 11)
+        players (copy, index: 1)
+        tweenService (copy, index: 2)
+        color3 (copy, index: 3)
+        color32 (copy, index: 4)
+        Ranks (copy, index: 5)
+        RankArt (copy, index: 6)
+        v14 (copy, index: 7)
+        lighting (copy, index: 8)
+        v13 (copy, index: 9)
+        News (copy, index: 10)
+        runService (copy, index: 11)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local Assets_upv_1 = UI_upv_1.Assets
-    local MenuManager_upv_1 = a1.MenuManager
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local tbl_upv_4 = nil
-    local u3 = 0
-    local u4 = false
-    local u5 = nil
-    local u6 = nil
-    local u7 = nil
-    local function tw(a2, a3, a4, a5, a6)
+    local ui = a15.UI
+    local theme = a15.Theme
+    local state = a15.State
+    local colors = theme.Colors
+    local fonts = theme.Fonts
+    local assets = ui.Assets
+    local menuManager = a15.MenuManager
+    local localPlayer = players.LocalPlayer
+    local v24 = nil
+    local count = 0
+    local playing = false
+    local v27 = nil
+    local v28 = nil
+    local renderSteppedConnection = nil
+
+    local function tw(instance: Instance, a32: number?, propertyTable, a34, a35)
         --[[
           name: tw
           line: 75
           upvalues:
-            TweenService_upv_1 (copy, index: 1)
+            tweenService (copy, index: 1)
         ]]
-        local v1 = a5 or (Enum.EasingStyle.Quad)
-        local v2 = TweenService_upv_1:Create(a2, TweenInfo.new(a3, v1, a6 or (Enum.EasingDirection.Out)), a4)
-        v2:Play()
-        return v2
+        local newTweenInfo = TweenInfo.new
+        local v37 = a34 or Enum.EasingStyle.Quad
+        local v38 = a35 or Enum.EasingDirection.Out
+        local tween = tweenService:Create(instance, newTweenInfo(a32, v37, v38), propertyTable)
+        tween:Play()
+
+        return tween
     end
+
     local function close()
         --[[
           name: close
           line: 81
           upvalues:
-            MenuManager_upv_1 (copy, index: 1)
+            menuManager (copy, index: 1)
         ]]
-        MenuManager_upv_1.Close("News")
+        menuManager.Close("News")
     end
+
     local function build()
         --[[
           name: build
           line: 85
           upvalues:
-            tbl_upv_4 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            a1 (copy, index: 3)
-            Colors_upv_1 (copy, index: 4)
-            Assets_upv_1 (copy, index: 5)
-            u1 (copy, index: 6)
-            Theme_upv_1 (copy, index: 7)
-            Fonts_upv_1 (copy, index: 8)
-            u2 (copy, index: 9)
-            Ranks_upv_1 (copy, index: 10)
-            RankArt_upv_1 (copy, index: 11)
-            tbl_upv_3 (copy, index: 12)
-            MenuManager_upv_1 (copy, index: 13)
+            v24 (ref,  index: 1)
+            ui (copy, index: 2)
+            a15 (copy, index: 3)
+            colors (copy, index: 4)
+            assets (copy, index: 5)
+            color3 (copy, index: 6)
+            theme (copy, index: 7)
+            fonts (copy, index: 8)
+            color32 (copy, index: 9)
+            Ranks (copy, index: 10)
+            RankArt (copy, index: 11)
+            v14 (copy, index: 12)
+            menuManager (copy, index: 13)
             close (copy, index: 14)
         ]]
-        if tbl_upv_4 then
+        if v24 then
             return
         end
-        local v3, v4 = UI_upv_1.Screen("TR_News", 30, a1.PlayerGui, {fullBleed = true})
-        tbl_upv_4 = {sg = v3}
-        local v5 = UI_upv_1.new("Frame", {Visible = false, Name = "Root", Size = UDim2.fromScale(1, 1), Parent = v4})
-        tbl_upv_4.root = v5
-        tbl_upv_4.dim = UI_upv_1.new("Frame", {Name = "Dim", BackgroundTransparency = 1, ZIndex = 1, Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Void, Parent = v5})
-        tbl_upv_4.catcher = UI_upv_1.new("TextButton", {ZIndex = 2, Name = "Backdrop", AutoButtonColor = false, Selectable = false, Text = "", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Parent = v5})
-        local v6 = UI_upv_1.new("Frame", {Name = "Stage", ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(1600, 900), Parent = v5})
-        local u8 = UI_upv_1.new("UIScale", {Scale = 1, Parent = v6})
-        local v7 = UI_upv_1.CanvasSize()
-        u8.Scale = math.min(1, v7.X / 1600, v7.Y / 900)
-        local function fit_1()
+
+        local sg, parent = ui.Screen("TR_News", 30, a15.PlayerGui, {fullBleed = true})
+        v24 = {sg = sg}
+        local ui2 = ui.new("Frame", {Name = "Root", Visible = false, Size = UDim2.fromScale(1, 1), Parent = parent})
+        v24.root = ui2
+        v24.dim = ui.new("Frame", {Name = "Dim", BackgroundTransparency = 1, ZIndex = 1, Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, Parent = ui2})
+        v24.catcher = ui.new("TextButton", {Name = "Backdrop", BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Selectable = false, ZIndex = 2, Size = UDim2.fromScale(1, 1), Parent = ui2})
+        local ui3 = ui.new("Frame", {Name = "Stage", ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(1600, 900), Parent = ui2})
+        local ui4 = ui.new("UIScale", {Scale = 1, Parent = ui3})
+
+        local function fit()
             --[[
               name: fit
               line: 98
               upvalues:
-                UI_upv_1 (copy, index: 1)
-                u8 (copy, index: 2)
+                ui (copy, index: 1)
+                ui4 (copy, index: 2)
             ]]
-            local v8 = UI_upv_1.CanvasSize()
-            u8.Scale = math.min(1, v8.X / 1600, v8.Y / 900)
+            local v48 = ui.CanvasSize()
+            ui4.Scale = math.min(1, v48.X / 1600, v48.Y / 900)
         end
-        UI_upv_1.ScaleChanged:Connect(fit_1)
-        UI_upv_1.LayoutChanged:Connect(fit_1)
-        tbl_upv_4.stage = v6
-        tbl_upv_4.glow = UI_upv_1.Image(Assets_upv_1.Icons.Glow, {ImageTransparency = 1, Name = "Glow", ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 300), Size = UDim2.fromOffset(1500, 1000), ImageColor3 = u1, Parent = v6})
-        tbl_upv_4.rays = UI_upv_1.Image(Assets_upv_1.Fx.Rays, {ImageTransparency = 1, Name = "Rays", ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 270), Size = UDim2.fromOffset(1250, 1250), ImageColor3 = u1, Parent = v6})
-        tbl_upv_4.raysThin = UI_upv_1.Image(Assets_upv_1.Fx.RaysThin, {ImageTransparency = 1, Name = "RaysThin", ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 270), Size = UDim2.fromOffset(1500, 1500), ImageColor3 = Theme_upv_1.Lighten(u1, 0.4), Parent = v6})
-        tbl_upv_4.pill = UI_upv_1.new("Frame", {Name = "Pill", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 74), Size = UDim2.fromOffset(232, 46), BackgroundColor3 = Colors_upv_1.Accent, ZIndex = 6, [1] = UI_upv_1.Corner(UDim.new(0.5, 0)), Parent = v6})
-        UI_upv_1.new("TextLabel", {ZIndex = 7, Name = "T", Text = "NEW UPDATE", TextSize = 25, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, TextColor3 = Color3.new(1, 1, 1), Parent = tbl_upv_4.pill})
-        tbl_upv_4.pillScale = UI_upv_1.new("UIScale", {Scale = 1, Parent = tbl_upv_4.pill})
-        tbl_upv_4.title = UI_upv_1.DisplayText({StrokeThickness = 4, Text = "THE RANKED UPDATE", Name = "Title", ZIndex = 6, TextSize = 116, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 168), Size = UDim2.fromOffset(1500, 128), TextColor3 = Color3.new(1, 1, 1), Parent = v6})
-        v7 = UI_upv_1.Gradient(Theme_upv_1.Lighten(u1, 0.45), u2, 90)
-        v7.Parent = tbl_upv_4.title
-        tbl_upv_4.titleScale = UI_upv_1.new("UIScale", {Scale = 1, Parent = tbl_upv_4.title})
-        tbl_upv_4.sub = UI_upv_1.new("TextLabel", {TextTransparency = 1, Text = "Eight ranks. New weapons. Prove you're Immortal.", Name = "Sub", ZIndex = 6, TextSize = 36, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 258), Size = UDim2.fromOffset(1300, 44), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.Text, Parent = v6})
-        tbl_upv_4.subStroke = UI_upv_1.TextStroke(Colors_upv_1.Void, 2, 0.35)
-        tbl_upv_4.subStroke.Parent = tbl_upv_4.sub
-        local v9 = Ranks_upv_1.Count()
-        UI_upv_1.new("Frame", {Name = "RoadBack", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.fromOffset(190, 405), Size = UDim2.fromOffset(1220, 8), BackgroundColor3 = Colors_upv_1.Void, BackgroundTransparency = 0.45, ZIndex = 4, [1] = UI_upv_1.Corner(UDim.new(0.5, 0)), Parent = v6})
-        tbl_upv_4.road = UI_upv_1.new("Frame", {Name = "Road", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.fromOffset(190, 405), Size = UDim2.fromOffset(0, 8), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 5, [1] = UI_upv_1.Corner(UDim.new(0.5, 0)), Parent = v6})
-        UI_upv_1.new("UIGradient", {Color = ColorSequence.new({ColorSequenceKeypoint.new(0, RankArt_upv_1.Color(1)), ColorSequenceKeypoint.new(0.5, RankArt_upv_1.Color(4)), ColorSequenceKeypoint.new(1, u1)}), Parent = tbl_upv_4.road})
-        tbl_upv_4.emblems = {}
-        for n_1 = 1, v9 do
-            local v10 = 190 + ((n_1 - 1) * 1220) / (v9 - 1)
-            local v11 = ((n_1 ~= v9) and ((n_1 - 1) * 7 + 100)) or 176
-            local v12 = ((n_1 ~= v9) and 405) or 393
-            local v13 = UI_upv_1.new("Frame", {ZIndex = 8, Visible = false, Name = "Rank" .. n_1, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(v10, v12), Size = UDim2.fromOffset(v11, v11), Parent = v6})
-            RankArt_upv_1.Emblem(n_1, v11, {ZIndex = 8, Parent = v13})
-            local v14 = UI_upv_1.new("UIScale", {Scale = 1, Parent = v13})
-            local v15 = RankArt_upv_1.Color(n_1)
-            local v16 = UI_upv_1.new("Frame", {Name = "Ring", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(v10, v12), Size = UDim2.fromOffset(v11, v11), BackgroundTransparency = 1, Visible = false, ZIndex = 7, [1] = UI_upv_1.Corner(UDim.new(0.5, 0)), Parent = v6})
-            local v17 = UI_upv_1.Stroke(v15, 4, 0)
-            v17.Parent = v16
-            local new_1 = UI_upv_1.new
-            local tbl_5 = {TextColor3 = 0, TextTransparency = 1, Name = "Name", Parent = 0, ZIndex = 8, TextSize = 0}
-            tbl_5.AnchorPoint = Vector2.new(0.5, 0)
-            tbl_5.Position = UDim2.fromOffset(v10, 485)
-            tbl_5.Size = UDim2.fromOffset(200, 34)
-            tbl_5.Text = string.upper(Ranks_upv_1.Get(n_1).name)
-            tbl_5.FontFace = Fonts_upv_1.Display
-            tbl_5.TextSize = ((n_1 ~= v9) and 24) or 31
-            tbl_5.TextColor3 = v15
-            tbl_5.Parent = v6
-            local v18 = new_1("TextLabel", tbl_5)
-            local v19 = UI_upv_1.TextStroke(Colors_upv_1.Void, 2, 0.3)
-            v19.Parent = v18
-            tbl_upv_4.emblems[n_1] = {holder = v13, scale = v14, ring = v16, ringStroke = v17, name = v18, nameStroke = v19, size = v11}
-        end
-        tbl_upv_4.cards = {}
-        for key_1, value_1 in tbl_upv_3 do
-            local v20 = UI_upv_1.Panel({Visible = false, StrokeTransparency = 0.55, ZIndex = 6, BackgroundTransparency = 0.12, Name = "Card_" .. value_1.key, Position = UDim2.fromOffset(71 + ((key_1 - 1) * 494), 548), Size = UDim2.fromOffset(470, 156), StrokeColor = u1, Parent = v6})
-            local v21 = UI_upv_1.new("Frame", {Name = "Icon", ZIndex = 7, BackgroundTransparency = 1, Position = UDim2.fromOffset(16, 0), Size = UDim2.fromOffset(124, 156), Parent = v20})
-            if value_1.key == "trophy" then
-                RankArt_upv_1.Trophy(96, {ZIndex = 7, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v21})
-                UI_upv_1.DisplayText({StrokeThickness = 2, Name = "Title", ZIndex = 7, TextSize = 34, Position = UDim2.fromOffset(156, 26), Size = UDim2.fromOffset(294, 38), Text = value_1.title, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Left, Parent = v20})
-                UI_upv_1.new("TextLabel", {ZIndex = 7, TextWrapped = true, Name = "Text", TextSize = 25, Position = UDim2.fromOffset(156, 70), Size = UDim2.fromOffset(294, 70), Text = value_1.text, FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Parent = v20})
-                tbl_upv_4.cards[key_1] = v20
-                continue
-            end
-            if value_1.key ~= "weapons" then
-                RankArt_upv_1.Emblem(Ranks_upv_1.Count() - 1, 100, {ZIndex = 7, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v21})
+
+        local v49 = ui.CanvasSize()
+        ui4.Scale = math.min(1, v49.X / 1600, v49.Y / 900)
+        ui.ScaleChanged:Connect(fit)
+        ui.LayoutChanged:Connect(fit)
+        v24.stage = ui3
+        v24.glow = ui.Image(assets.Icons.Glow, {Name = "Glow", ImageTransparency = 1, ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 300), Size = UDim2.fromOffset(1500, 1000), ImageColor3 = color3, Parent = ui3})
+        v24.rays = ui.Image(assets.Fx.Rays, {Name = "Rays", ImageTransparency = 1, ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 270), Size = UDim2.fromOffset(1250, 1250), ImageColor3 = color3, Parent = ui3})
+        v24.raysThin = ui.Image(assets.Fx.RaysThin, {Name = "RaysThin", ImageTransparency = 1, ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 270), Size = UDim2.fromOffset(1500, 1500), ImageColor3 = theme.Lighten(color3, 0.4), Parent = ui3})
+        v24.pill = ui.new("Frame", {Name = "Pill", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 74), Size = UDim2.fromOffset(232, 46), BackgroundColor3 = colors.Accent, ZIndex = 6, (ui.Corner(UDim.new(0.5, 0))), Parent = ui3})
+        ui.new("TextLabel", {Name = "T", Text = "NEW UPDATE", TextSize = 25, ZIndex = 7, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, TextColor3 = Color3.new(1, 1, 1), Parent = v24.pill})
+        v24.pillScale = ui.new("UIScale", {Scale = 1, Parent = v24.pill})
+        v24.title = ui.DisplayText({Name = "Title", Text = "THE RANKED UPDATE", TextSize = 116, StrokeThickness = 4, ZIndex = 6, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 168), Size = UDim2.fromOffset(1500, 128), TextColor3 = Color3.new(1, 1, 1), Parent = ui3})
+        ui.Gradient(theme.Lighten(color3, 0.45), color32, 90).Parent = v24.title
+        v24.titleScale = ui.new("UIScale", {Scale = 1, Parent = v24.title})
+        v24.sub = ui.new("TextLabel", {Name = "Sub", Text = "Eight ranks. New weapons. Prove you're Immortal.", TextSize = 36, TextTransparency = 1, ZIndex = 6, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(800, 258), Size = UDim2.fromOffset(1300, 44), FontFace = fonts.Heavy, TextColor3 = colors.Text, Parent = ui3})
+        v24.subStroke = ui.TextStroke(colors.Void, 2, 0.35)
+        v24.subStroke.Parent = v24.sub
+        local endIndex = Ranks.Count()
+        ui.new("Frame", {Name = "RoadBack", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.fromOffset(190, 405), Size = UDim2.fromOffset(1220, 8), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.45, ZIndex = 4, (ui.Corner(UDim.new(0.5, 0))), Parent = ui3})
+        v24.road = ui.new("Frame", {Name = "Road", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.fromOffset(190, 405), Size = UDim2.fromOffset(0, 8), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 5, (ui.Corner(UDim.new(0.5, 0))), Parent = ui3})
+        ui.new("UIGradient", {Color = ColorSequence.new({ColorSequenceKeypoint.new(0, RankArt.Color(1)), ColorSequenceKeypoint.new(0.5, RankArt.Color(4)), ColorSequenceKeypoint.new(1, color3)}), Parent = v24.road})
+        v24.emblems = {}
+
+        for emblemKey = 1, endIndex do
+            local textSize
+            local v53 = 190 + (emblemKey - 1) * 1220 / (endIndex - 1)
+            local size = emblemKey == endIndex and 176 or (emblemKey - 1) * 7 + 100
+            local v55 = emblemKey ~= endIndex and 405 or 393
+            local ui5 = ui.new("Frame", {Visible = false, ZIndex = 8, Name = "Rank" .. emblemKey, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(v53, v55), Size = UDim2.fromOffset(size, size), Parent = ui3})
+            RankArt.Emblem(emblemKey, size, {ZIndex = 8, Parent = ui5})
+            local scale = ui.new("UIScale", {Scale = 1, Parent = ui5})
+            local textColor3 = RankArt.Color(emblemKey)
+            local ui6 = ui.new("Frame", {Name = "Ring", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(v53, v55), Size = UDim2.fromOffset(size, size), BackgroundTransparency = 1, Visible = false, ZIndex = 7, (ui.Corner(UDim.new(0.5, 0))), Parent = ui3})
+            local ringStroke = ui.Stroke(textColor3, 4, 0)
+            ringStroke.Parent = ui6
+            local newUi = ui.new
+            local v62 = {Name = "Name", TextTransparency = 1, ZIndex = 8, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromOffset(v53, 485), Size = UDim2.fromOffset(200, 34), Text = string.upper(Ranks.Get(emblemKey).name), FontFace = fonts.Display}
+
+            if emblemKey == endIndex then
+                textSize = 31
             else
-                local NewWeapons_1 = Assets_upv_1.News.NewWeapons
-                UI_upv_1.Image(NewWeapons_1, {ImageTransparency = 0.55, Name = "Shadow", ZIndex = 7, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 3, 0.5, 5), Size = UDim2.fromOffset(136, 136), ImageColor3 = Color3.new(0, 0, 0), Parent = v21})
-                UI_upv_1.Image(NewWeapons_1, {Name = "Art", ZIndex = 8, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(136, 136), Parent = v21})
+                textSize = 24
             end
-            UI_upv_1.DisplayText({StrokeThickness = 2, Name = "Title", ZIndex = 7, TextSize = 34, Position = UDim2.fromOffset(156, 26), Size = UDim2.fromOffset(294, 38), Text = value_1.title, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Left, Parent = v20})
-            UI_upv_1.new("TextLabel", {ZIndex = 7, TextWrapped = true, Name = "Text", TextSize = 25, Position = UDim2.fromOffset(156, 70), Size = UDim2.fromOffset(294, 70), Text = value_1.text, FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Parent = v20})
-            tbl_upv_4.cards[key_1] = v20
+
+            v62.TextSize = textSize
+            v62.TextColor3 = textColor3
+            v62.Parent = ui3
+            local ui7 = newUi("TextLabel", v62)
+            local nameStroke = ui.TextStroke(colors.Void, 2, 0.3)
+            nameStroke.Parent = ui7
+            v24.emblems[emblemKey] = {holder = ui5, scale = scale, ring = ui6, ringStroke = ringStroke, name = ui7, nameStroke = nameStroke, size = size}
         end
-        tbl_upv_4.rankBtn = UI_upv_1.Button({Visible = false, Radius = 16, Text = "SEE YOUR RANK", Name = "SeeRank", Style = "Primary", TextSize = 30, Size = UDim2.fromOffset(360, 80), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(604, 790), Parent = v6})
-        tbl_upv_4.goBtn = UI_upv_1.Button({Visible = false, Radius = 16, Text = "LET'S GO", Name = "Go", Style = "Dark", TextSize = 30, Size = UDim2.fromOffset(360, 80), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(996, 790), Parent = v6})
-        tbl_upv_4.rankBtn.Activated:Connect(
+
+        v24.cards = {}
+
+        for cardKey, v66 in v14 do
+            local parent2 = ui.Panel({BackgroundTransparency = 0.12, StrokeTransparency = 0.55, Visible = false, ZIndex = 6, Name = "Card_" .. v66.key, Position = UDim2.fromOffset(71 + ((cardKey - 1) * 494), 548), Size = UDim2.fromOffset(470, 156), StrokeColor = color3, Parent = ui3})
+            local parent3 = ui.new("Frame", {Name = "Icon", BackgroundTransparency = 1, ZIndex = 7, Position = UDim2.fromOffset(16, 0), Size = UDim2.fromOffset(124, 156), Parent = parent2})
+
+            if v66.key == "trophy" then
+                RankArt.Trophy(96, {ZIndex = 7, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent3})
+            elseif v66.key ~= "weapons" then
+                RankArt.Emblem(Ranks.Count() - 1, 100, {ZIndex = 7, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent3})
+            else
+                local newWeapons = assets.News.NewWeapons
+                ui.Image(newWeapons, {Name = "Shadow", ImageTransparency = 0.55, ZIndex = 7, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 3, 0.5, 5), Size = UDim2.fromOffset(136, 136), ImageColor3 = Color3.new(0, 0, 0), Parent = parent3})
+                ui.Image(newWeapons, {Name = "Art", ZIndex = 8, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(136, 136), Parent = parent3})
+            end
+
+            ui.DisplayText({Name = "Title", TextSize = 34, StrokeThickness = 2, ZIndex = 7, Position = UDim2.fromOffset(156, 26), Size = UDim2.fromOffset(294, 38), Text = v66.title, TextColor3 = color3, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent2})
+            ui.new("TextLabel", {Name = "Text", TextSize = 25, TextWrapped = true, ZIndex = 7, Position = UDim2.fromOffset(156, 70), Size = UDim2.fromOffset(294, 70), Text = v66.text, FontFace = fonts.SemiBold, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Parent = parent2})
+            v24.cards[cardKey] = parent2
+        end
+
+        v24.rankBtn = ui.Button({Name = "SeeRank", Text = "SEE YOUR RANK", TextSize = 30, Style = "Primary", Radius = 16, Visible = false, Size = UDim2.fromOffset(360, 80), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(604, 790), Parent = ui3})
+        v24.goBtn = ui.Button({Name = "Go", Text = "LET'S GO", TextSize = 30, Style = "Dark", Radius = 16, Visible = false, Size = UDim2.fromOffset(360, 80), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(996, 790), Parent = ui3})
+        v24.rankBtn.Activated:Connect(
             function()
                 --[[
                   line: 299
                   upvalues:
-                    MenuManager_upv_1 (copy, index: 1)
+                    menuManager (copy, index: 1)
                 ]]
-                MenuManager_upv_1.Open("Ranks")
+                menuManager.Open("Ranks")
             end
         )
-        tbl_upv_4.goBtn.Activated:Connect(close)
+        v24.goBtn.Activated:Connect(close)
     end
-    local u9 = nil
-    local function setBlur(a7)
+
+    local ui2 = nil
+
+    local function setBlur(blur)
         --[[
           name: setBlur
           line: 307
           upvalues:
-            u9 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            Lighting_upv_1 (copy, index: 3)
-            TweenService_upv_1 (copy, index: 4)
+            ui2 (ref,  index: 1)
+            ui (copy, index: 2)
+            lighting (copy, index: 3)
+            tweenService (copy, index: 4)
         ]]
-        if a7 then
-            if not (u9) or not (u9.Parent) then
-                local v22 = UI_upv_1.new("BlurEffect", {Name = "TR_NewsBlur", Size = 0, Parent = Lighting_upv_1})
-                u9 = v22
+        if blur then
+            if not ui2 or not ui2.Parent then
+                ui2 = ui.new("BlurEffect", {Name = "TR_NewsBlur", Size = 0, Parent = lighting})
             end
-            local tbl_6 = {Size = 16}
-            TweenService_upv_1:Create(u9, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_6):Play()
-        elseif u9 then
-            local v23 = u9
-            u9 = nil
-            local tbl_7 = {Size = 0}
-            local v24 = TweenService_upv_1:Create(v23, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_7)
-            v24:Play()
-            v24.Completed:Connect(function() end)
+
+            local propertyTable = {Size = 16}
+            tweenService:Create(ui2, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable):Play()
+
+            return
+        end
+
+        if ui2 then
+            local instance = ui2
+            ui2 = nil
+            local propertyTable = {Size = 0}
+            local tween = tweenService:Create(instance, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable)
+            tween:Play()
+            tween.Completed:Connect(
+                function()
+                    --[[
+                      line: 316
+                      upvalues:
+                        instance (copy, index: 1)
+                    ]]
+                    instance:Destroy()
+                end
+            )
         end
     end
+
     local function markSeen()
         --[[
           name: markSeen
           line: 322
           upvalues:
-            u6 (ref,  index: 1)
-            a1 (copy, index: 2)
+            v28 (ref,  index: 1)
+            a15 (copy, index: 2)
         ]]
-        if not u6 then
-            return
+        if v28 then
+            a15.Remotes.Fire("NewsAction", "Seen", v28)
+            v28 = nil
         end
-        a1.Remotes.Fire("NewsAction", "Seen", u6)
-        u6 = nil
     end
+
     local function showAll()
         --[[
           name: showAll
           line: 330
           upvalues:
-            tbl_upv_4 (ref, index: 1)
-            u5 (ref, index: 2)
-            u4 (ref, index: 3)
+            v24 (ref, index: 1)
+            v27 (ref, index: 2)
+            playing (ref, index: 3)
         ]]
-        tbl_upv_4.dim.BackgroundTransparency = 0.18
-        tbl_upv_4.glow.ImageTransparency = 0.72
-        tbl_upv_4.rays.ImageTransparency = 0.8
-        tbl_upv_4.raysThin.ImageTransparency = 0.88
-        tbl_upv_4.pill.Visible = true
-        tbl_upv_4.pillScale.Scale = 1
-        tbl_upv_4.title.Visible = true
-        tbl_upv_4.titleScale.Scale = 1
-        tbl_upv_4.sub.TextTransparency = 0
-        tbl_upv_4.subStroke.Transparency = 0.35
-        local road_1 = tbl_upv_4.road
-        road_1.Size = UDim2.fromOffset(1220, 8)
-        for _, value_2 in tbl_upv_4.emblems do
-            value_2.holder.Visible = true
-            value_2.scale.Scale = 1
-            value_2.ring.Visible = false
-            value_2.name.TextTransparency = 0
-            value_2.nameStroke.Transparency = 0.3
+        v24.dim.BackgroundTransparency = 0.18
+        v24.glow.ImageTransparency = 0.72
+        v24.rays.ImageTransparency = 0.8
+        v24.raysThin.ImageTransparency = 0.88
+        v24.pill.Visible = true
+        v24.pillScale.Scale = 1
+        v24.title.Visible = true
+        v24.titleScale.Scale = 1
+        v24.sub.TextTransparency = 0
+        v24.subStroke.Transparency = 0.35
+        v24.road.Size = UDim2.fromOffset(1220, 8)
+
+        for _, emblem in v24.emblems do
+            emblem.holder.Visible = true
+            emblem.scale.Scale = 1
+            emblem.ring.Visible = false
+            emblem.name.TextTransparency = 0
+            emblem.nameStroke.Transparency = 0.3
         end
-        for _, value_3 in tbl_upv_4.cards do
-            value_3.Visible = true
-            value_3.Position = UDim2.fromOffset(value_3.Position.X.Offset, 548)
+
+        for _, card in v24.cards do
+            card.Visible = true
+            card.Position = UDim2.fromOffset(card.Position.X.Offset, 548)
         end
-        tbl_upv_4.rankBtn.Instance.Visible = true
-        tbl_upv_4.goBtn.Instance.Visible = true
-        u5 = nil
-        u4 = false
+
+        v24.rankBtn.Instance.Visible = true
+        v24.goBtn.Instance.Visible = true
+        v27 = nil
+        playing = false
     end
+
     local function play()
         --[[
           name: play
           line: 359
           upvalues:
-            u3 (ref,  index: 1)
-            u4 (ref,  index: 2)
-            tbl_upv_4 (ref,  index: 3)
-            u5 (ref,  index: 4)
+            count (ref,  index: 1)
+            playing (ref,  index: 2)
+            v24 (ref,  index: 3)
+            v27 (ref,  index: 4)
             showAll (copy, index: 5)
-            TweenService_upv_1 (copy, index: 6)
-            a1 (copy, index: 7)
-            UI_upv_1 (copy, index: 8)
-            tbl_upv_2 (copy, index: 9)
+            tweenService (copy, index: 6)
+            a15 (copy, index: 7)
+            ui (copy, index: 8)
+            v13 (copy, index: 9)
         ]]
-        u3 = u3 + 1
-        local u10 = u3
-        u4 = true
-        tbl_upv_4.dim.BackgroundTransparency = 1
-        for _, value_4 in {tbl_upv_4.glow, tbl_upv_4.rays, tbl_upv_4.raysThin} do
-            value_4.ImageTransparency = 1
+        count += 1
+        local v84 = count
+        playing = true
+        v24.dim.BackgroundTransparency = 1
+
+        for _, v86 in {v24.glow, v24.rays, v24.raysThin} do
+            v86.ImageTransparency = 1
         end
-        tbl_upv_4.pill.Visible = false
-        tbl_upv_4.title.Visible = false
-        tbl_upv_4.sub.TextTransparency = 1
-        tbl_upv_4.subStroke.Transparency = 1
-        local road_2 = tbl_upv_4.road
-        road_2.Size = UDim2.fromOffset(0, 8)
-        for _, value_5 in tbl_upv_4.emblems do
-            value_5.holder.Visible = false
-            value_5.ring.Visible = false
-            value_5.name.TextTransparency = 1
-            value_5.nameStroke.Transparency = 1
+
+        v24.pill.Visible = false
+        v24.title.Visible = false
+        v24.sub.TextTransparency = 1
+        v24.subStroke.Transparency = 1
+        v24.road.Size = UDim2.fromOffset(0, 8)
+
+        for _, emblem in v24.emblems do
+            emblem.holder.Visible = false
+            emblem.ring.Visible = false
+            emblem.name.TextTransparency = 1
+            emblem.nameStroke.Transparency = 1
         end
-        for _, value_6 in tbl_upv_4.cards do
-            value_6.Visible = false
+
+        for _, card in v24.cards do
+            card.Visible = false
         end
-        tbl_upv_4.rankBtn.Instance.Visible = false
-        tbl_upv_4.goBtn.Instance.Visible = false
-        u5 = function()
+
+        v24.rankBtn.Instance.Visible = false
+        v24.goBtn.Instance.Visible = false
+
+        v27 = function()
             --[[
               line: 384
               upvalues:
-                u3 (ref,  index: 1)
+                count (ref,  index: 1)
                 showAll (copy, index: 2)
             ]]
-            u3 = u3 + 1
+            count += 1
             showAll()
         end
-        local function at_1(a8, a9)
+
+        local function at(a92: number, callback)
             --[[
               name: at
               line: 388
+              upvalues:
+                v84 (copy, index: 1)
+                count (ref,  index: 2)
             ]]
-            task.delay(a8, function() end)
+            task.delay(
+                a92,
+                function()
+                    --[[
+                      line: 389
+                      upvalues:
+                        v84 (copy, index: 1)
+                        count (ref,  index: 2)
+                        callback (copy, index: 3)
+                    ]]
+                    if v84 == count then
+                        callback()
+                    end
+                end
+            )
         end
-        local tbl_8 = {BackgroundTransparency = 0.18}
-        TweenService_upv_1:Create(tbl_upv_4.dim, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_8):Play()
-        tbl_8 = {ImageTransparency = 0.72}
-        TweenService_upv_1:Create(tbl_upv_4.glow, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_8):Play()
-        tbl_8 = {ImageTransparency = 0.8}
-        TweenService_upv_1:Create(tbl_upv_4.rays, TweenInfo.new(1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_8):Play()
-        tbl_8 = {ImageTransparency = 0.88}
-        TweenService_upv_1:Create(tbl_upv_4.raysThin, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_8):Play()
-        task.delay(0.15, function() end)
-        task.delay(0.3, function() end)
-        task.delay(0.6, function() end)
-        local u11 = #tbl_upv_4.emblems
-        task.delay(0.75, function() end)
-        for key_upv_2, value_upv_7 in tbl_upv_4.emblems do
-            local _ = function()
+
+        local propertyTable = {BackgroundTransparency = 0.18}
+        tweenService:Create(v24.dim, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable):Play()
+        local propertyTable2 = {ImageTransparency = 0.72}
+        tweenService:Create(v24.glow, TweenInfo.new(0.9, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable2):Play()
+        local propertyTable3 = {ImageTransparency = 0.8}
+        tweenService:Create(v24.rays, TweenInfo.new(1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable3):Play()
+        local propertyTable4 = {ImageTransparency = 0.88}
+        tweenService:Create(v24.raysThin, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable4):Play()
+
+        local v98 = function()
+            --[[
+              line: 399
+              upvalues:
+                v24 (ref,  index: 1)
+                tweenService (copy, index: 2)
+                a15 (copy, index: 3)
+            ]]
+            v24.pill.Visible = true
+            v24.pillScale.Scale = 0.4
+            local pillScale = v24.pillScale
+            local propertyTable = {Scale = 1}
+            local back = Enum.EasingStyle.Back
+            local newTweenInfo = TweenInfo.new
+            local easingStyle = back or Enum.EasingStyle.Quad
+            tweenService:Create(pillScale, newTweenInfo(0.35, easingStyle, Enum.EasingDirection.Out), propertyTable):Play()
+            a15.Sounds.Play("Whoosh")
+        end
+
+        task.delay(
+            0.15,
+            function()
+                --[[
+                  line: 389
+                  upvalues:
+                    v84 (copy, index: 1)
+                    count (ref,  index: 2)
+                    v98 (copy, index: 3)
+                ]]
+                if v84 == count then
+                    v98()
+                end
+            end
+        )
+
+        local v104 = function()
+            --[[
+              line: 405
+              upvalues:
+                v24 (ref,  index: 1)
+                tweenService (copy, index: 2)
+                a15 (copy, index: 3)
+                ui (copy, index: 4)
+            ]]
+            v24.title.Visible = true
+            v24.titleScale.Scale = 1.9
+            local titleScale = v24.titleScale
+            local propertyTable = {Scale = 1}
+            local back = Enum.EasingStyle.Back
+            local newTweenInfo = TweenInfo.new
+            local easingStyle = back or Enum.EasingStyle.Quad
+            tweenService:Create(titleScale, newTweenInfo(0.32, easingStyle, Enum.EasingDirection.Out), propertyTable):Play()
+            a15.Sounds.Play("LevelUp")
+            ui.Shake(v24.stage, 6, 0.25)
+        end
+
+        task.delay(
+            0.3,
+            function()
+                --[[
+                  line: 389
+                  upvalues:
+                    v84 (copy, index: 1)
+                    count (ref,  index: 2)
+                    v104 (copy, index: 3)
+                ]]
+                if v84 == count then
+                    v104()
+                end
+            end
+        )
+
+        local v110 = function()
+            --[[
+              line: 412
+              upvalues:
+                v24 (ref,  index: 1)
+                tweenService (copy, index: 2)
+            ]]
+            local propertyTable = {TextTransparency = 0}
+            tweenService:Create(v24.sub, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable):Play()
+            local propertyTable2 = {Transparency = 0.35}
+            tweenService:Create(v24.subStroke, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable2):Play()
+        end
+
+        task.delay(
+            0.6,
+            function()
+                --[[
+                  line: 389
+                  upvalues:
+                    v84 (copy, index: 1)
+                    count (ref,  index: 2)
+                    v110 (copy, index: 3)
+                ]]
+                if v84 == count then
+                    v110()
+                end
+            end
+        )
+
+        local emblemCount = #v24.emblems
+
+        local v114 = function()
+            --[[
+              line: 419
+              upvalues:
+                v24 (ref,  index: 1)
+                emblemCount (copy, index: 2)
+                tweenService (copy, index: 3)
+            ]]
+            local road = v24.road
+            local v116 = (emblemCount - 1) * 0.26 + 0.1
+            local propertyTable = {Size = UDim2.fromOffset(1220, 8)}
+            local linear = Enum.EasingStyle.Linear
+            local newTweenInfo = TweenInfo.new
+            local easingStyle = linear or Enum.EasingStyle.Quad
+            tweenService:Create(road, newTweenInfo(v116, easingStyle, Enum.EasingDirection.Out), propertyTable):Play()
+        end
+
+        task.delay(
+            0.75,
+            function()
+                --[[
+                  line: 389
+                  upvalues:
+                    v84 (copy, index: 1)
+                    count (ref,  index: 2)
+                    v114 (copy, index: 3)
+                ]]
+                if v84 == count then
+                    v114()
+                end
+            end
+        )
+
+        for v121, emblem in v24.emblems do
+            local v123 = 0.75 + (v121 - 1) * 0.26
+
+            local v124 = function()
                 --[[
                   line: 423
                   upvalues:
-                    value_upv_7 (copy, index: 1)
-                    key_upv_2 (copy, index: 2)
-                    u11 (copy, index: 3)
-                    TweenService_upv_1 (copy, index: 4)
-                    a1 (copy, index: 5)
-                    UI_upv_1 (copy, index: 6)
-                    tbl_upv_4 (ref,  index: 7)
-                    u10 (copy, index: 8)
-                    u3 (ref,  index: 9)
-                    tbl_upv_2 (copy, index: 10)
+                    emblem (copy, index: 1)
+                    v121 (copy, index: 2)
+                    emblemCount (copy, index: 3)
+                    tweenService (copy, index: 4)
+                    a15 (copy, index: 5)
+                    ui (copy, index: 6)
+                    v24 (ref,  index: 7)
+                    v84 (copy, index: 8)
+                    count (ref,  index: 9)
+                    v13 (copy, index: 10)
                 ]]
-                value_upv_7.holder.Visible = true
-                value_upv_7.scale.Scale = ((key_upv_2 ~= u11) and 1.7) or 2.4
-                local scale_1 = value_upv_7.scale
-                local v25 = ((key_upv_2 ~= u11) and 0.34) or 0.5
-                local tbl_9 = {Scale = 1}
-                TweenService_upv_1:Create(scale_1, TweenInfo.new(v25, Enum.EasingStyle.Back or (Enum.EasingStyle.Quad), Enum.EasingDirection.Out), tbl_9):Play()
-                local tbl_10 = {TextTransparency = 0}
-                TweenService_upv_1:Create(value_upv_7.name, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_10):Play()
-                local tbl_11 = {Transparency = 0.3}
-                TweenService_upv_1:Create(value_upv_7.nameStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_11):Play()
-                value_upv_7.ring.Visible = true
-                value_upv_7.ring.Size = UDim2.fromOffset(value_upv_7.size * 0.8, value_upv_7.size * 0.8)
-                value_upv_7.ringStroke.Transparency = 0
-                local tbl_12 = {}
-                tbl_12.Size = UDim2.fromOffset(value_upv_7.size * 1.9, value_upv_7.size * 1.9)
-                TweenService_upv_1:Create(value_upv_7.ring, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_12):Play()
-                local tbl_13 = {Transparency = 1}
-                TweenService_upv_1:Create(value_upv_7.ringStroke, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_13):Play()
-                if key_upv_2 ~= u11 then
-                    a1.Sounds.Play("Rank_Pop", {pitch = 0.8 * (2 ^ ((tbl_upv_2[key_upv_2] or 12) / 12))})
-                else
-                    a1.Sounds.Play("Fanfare")
-                    UI_upv_1.Shake(tbl_upv_4.stage, 10, 0.35)
-                    local tbl_14 = {ImageTransparency = 0.5}
-                    TweenService_upv_1:Create(tbl_upv_4.glow, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_14):Play()
+                emblem.holder.Visible = true
+                emblem.scale.Scale = v121 ~= emblemCount and 1.7 or 2.4
+                local scale = emblem.scale
+                local v126 = v121 ~= emblemCount and 0.34 or 0.5
+                local propertyTable = {Scale = 1}
+                local back = Enum.EasingStyle.Back
+                local newTweenInfo = TweenInfo.new
+                local easingStyle = back or Enum.EasingStyle.Quad
+                tweenService:Create(scale, newTweenInfo(v126, easingStyle, Enum.EasingDirection.Out), propertyTable):Play()
+                local propertyTable2 = {TextTransparency = 0}
+                tweenService:Create(emblem.name, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable2):Play()
+                local propertyTable3 = {Transparency = 0.3}
+                tweenService:Create(emblem.nameStroke, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable3):Play()
+                emblem.ring.Visible = true
+                emblem.ring.Size = UDim2.fromOffset(emblem.size * 0.8, emblem.size * 0.8)
+                emblem.ringStroke.Transparency = 0
+                local ring = emblem.ring
+                local propertyTable4 = {Size = UDim2.fromOffset(emblem.size * 1.9, emblem.size * 1.9)}
+                tweenService:Create(ring, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable4):Play()
+                local propertyTable5 = {Transparency = 1}
+                tweenService:Create(emblem.ringStroke, TweenInfo.new(0.45, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable5):Play()
+
+                if v121 == emblemCount then
+                    a15.Sounds.Play("Fanfare")
+                    ui.Shake(v24.stage, 10, 0.35)
+                    local propertyTable6 = {ImageTransparency = 0.5}
+                    tweenService:Create(v24.glow, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable6):Play()
+
                     task.delay(
                         0.3,
                         function()
                             --[[
                               line: 439
                               upvalues:
-                                u10 (copy, index: 1)
-                                u3 (ref,  index: 2)
-                                tbl_upv_4 (ref,  index: 3)
-                                TweenService_upv_1 (copy, index: 4)
+                                v84 (copy, index: 1)
+                                count (ref,  index: 2)
+                                v24 (ref,  index: 3)
+                                tweenService (copy, index: 4)
                             ]]
-                            if u10 == u3 then
-                                local tbl_15 = {ImageTransparency = 0.72}
-                                TweenService_upv_1:Create(tbl_upv_4.glow, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_15):Play()
+                            if v84 == count then
+                                local propertyTable = {ImageTransparency = 0.72}
+                                local tween = tweenService:Create(v24.glow, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable)
+                                tween:Play()
                             end
                         end
                     )
+
+                    return
                 end
+
+                a15.Sounds.Play("Rank_Pop", {pitch = 0.8 * (2 ^ (function(...) return ... end)((((v13[v121] or 12) / 12))))})
             end
-            task.delay(0.75 + ((key_upv_2 - 1) * 0.26), function() end)
+
+            task.delay(
+                v123,
+                function()
+                    --[[
+                      line: 389
+                      upvalues:
+                        v84 (copy, index: 1)
+                        count (ref,  index: 2)
+                        v124 (copy, index: 3)
+                    ]]
+                    if v84 == count then
+                        v124()
+                    end
+                end
+            )
         end
-        local v26 = ((u11 - 1) * 0.26) + 0.75 + 0.45
-        for key_3, _ in tbl_upv_4.cards do
-            task.delay(v26 + ((key_3 - 1) * 0.12), function() end)
+
+        local v139 = ((emblemCount - 1) * 0.26) + 0.75 + 0.45
+
+        for v140, instance in v24.cards do
+            local v142 = v139 + (v140 - 1) * 0.12
+
+            local v143 = function()
+                --[[
+                  line: 453
+                  upvalues:
+                    instance (copy, index: 1)
+                    tweenService (copy, index: 2)
+                    a15 (copy, index: 3)
+                ]]
+                instance.Visible = true
+                local offset = instance.Position.X.Offset
+                instance.Position = UDim2.fromOffset(offset, 628)
+                local propertyTable = {Position = UDim2.fromOffset(offset, 548)}
+                local back = Enum.EasingStyle.Back
+                local newTweenInfo = TweenInfo.new
+                local easingStyle = back or Enum.EasingStyle.Quad
+                tweenService:Create(instance, newTweenInfo(0.4, easingStyle, Enum.EasingDirection.Out), propertyTable):Play()
+                a15.Sounds.Play("Whoosh", {volume = 0.3})
+            end
+
+            task.delay(
+                v142,
+                function()
+                    --[[
+                      line: 389
+                      upvalues:
+                        v84 (copy, index: 1)
+                        count (ref,  index: 2)
+                        v143 (copy, index: 3)
+                    ]]
+                    if v84 == count then
+                        v143()
+                    end
+                end
+            )
         end
-        local u12 = function()
+
+        local v149 = v139 + 0.55
+
+        local v150 = function()
             --[[
               line: 461
               upvalues:
-                tbl_upv_4 (ref,  index: 1)
-                UI_upv_1 (copy, index: 2)
-                u5 (ref,  index: 3)
-                u4 (ref,  index: 4)
+                v24 (ref,  index: 1)
+                ui (copy, index: 2)
+                v27 (ref,  index: 3)
+                playing (ref,  index: 4)
             ]]
-            tbl_upv_4.rankBtn.Instance.Visible = true
-            tbl_upv_4.goBtn.Instance.Visible = true
-            UI_upv_1.Pop(tbl_upv_4.rankBtn.Instance, 0.7)
-            UI_upv_1.Pop(tbl_upv_4.goBtn.Instance, 0.7)
-            u5 = nil
-            u4 = false
+            v24.rankBtn.Instance.Visible = true
+            v24.goBtn.Instance.Visible = true
+            ui.Pop(v24.rankBtn.Instance, 0.7)
+            ui.Pop(v24.goBtn.Instance, 0.7)
+            v27 = nil
+            playing = false
         end
+
         task.delay(
-            v26 + 0.55,
+            v149,
             function()
                 --[[
                   line: 389
                   upvalues:
-                    u10 (copy, index: 1)
-                    u3 (ref,  index: 2)
-                    u12 (copy, index: 3)
+                    v84 (copy, index: 1)
+                    count (ref,  index: 2)
+                    v150 (copy, index: 3)
                 ]]
-                if u10 ~= u3 then
-                    return
+                if v84 == count then
+                    v150()
                 end
-                u12()
             end
         )
     end
-    local tbl_16 = {}
-    function tbl_16.open()
-        --[[
-          name: open
-          line: 472
-          upvalues:
-            build (copy, index: 1)
-            u6 (ref,  index: 2)
-            LocalPlayer_upv_1 (copy, index: 3)
-            News_upv_1 (copy, index: 4)
-            a1 (copy, index: 5)
-            UI_upv_1 (copy, index: 7)
-            Lighting_upv_1 (copy, index: 8)
-            TweenService_upv_1 (copy, index: 9)
-            tbl_upv_4 (ref,  index: 10)
-            u7 (ref,  index: 11)
-            RunService_upv_1 (copy, index: 12)
-            play (copy, index: 13)
-        ]]
-        build()
-        local v27 = LocalPlayer_upv_1:GetAttribute("News") or (News_upv_1.CURRENT)
-        u6 = v27
-        a1.SetHudHidden("News", true)
-        if not (u6) or not (u6.Parent) then
-            local v28 = UI_upv_1.new("BlurEffect", {Name = "TR_NewsBlur", Size = 0, Parent = Lighting_upv_1})
-            u6 = v28
-        end
-        local tbl_17 = {Size = 16}
-        TweenService_upv_1:Create(u6, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_17):Play()
-        if a1.TopbarSettings and type(a1.TopbarSettings.SetHidden) == "function" then
-            pcall(a1.TopbarSettings.SetHidden, "News", true)
-        end
-        tbl_upv_4.root.Visible = true
-        if u7 then
-            u7:Disconnect()
-        end
-        local v29 = RunService_upv_1.RenderStepped:Connect(
-            function(a10)
+
+    menuManager.Register(
+        "News",
+        {
+            open = (function()
                 --[[
-                  line: 485
+                  name: open
+                  line: 472
                   upvalues:
-                    tbl_upv_4 (ref, index: 1)
+                    build (copy, index: 1)
+                    v28 (ref,  index: 2)
+                    localPlayer (copy, index: 3)
+                    News (copy, index: 4)
+                    a15 (copy, index: 5)
+                    ui2 (ref,  index: 6)
+                    ui (copy, index: 7)
+                    lighting (copy, index: 8)
+                    tweenService (copy, index: 9)
+                    v24 (ref,  index: 10)
+                    renderSteppedConnection (ref,  index: 11)
+                    runService (copy, index: 12)
+                    play (copy, index: 13)
                 ]]
-                tbl_upv_4.rays.Rotation = (tbl_upv_4.rays.Rotation + (a10 * 6)) % 360
-                tbl_upv_4.raysThin.Rotation = (tbl_upv_4.raysThin.Rotation - (a10 * 3.5)) % 360
-            end
-        )
-        u7 = v29
-        play()
-    end
-    function tbl_16.close(a11)
-        --[[
-          name: close
-          line: 491
-          upvalues:
-            u3 (ref,  index: 1)
-            u5 (ref,  index: 2)
-            u4 (ref,  index: 3)
-            u7 (ref,  index: 4)
-            a1 (copy, index: 5)
-            u9 (ref,  index: 6)
-            TweenService_upv_1 (copy, index: 7)
-            u6 (ref,  index: 8)
-            tbl_upv_4 (ref,  index: 9)
-        ]]
-        u3 = u3 + 1
-        u5 = nil
-        u4 = false
-        if u7 then
-            u7:Disconnect()
-            u7 = nil
-        end
-        a1.SetHudHidden("News", false)
-        if u9 then
-            local u13 = u9
-            u9 = nil
-            local tbl_18 = {Size = 0}
-            local v30 = TweenService_upv_1:Create(u13, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_18)
-            v30:Play()
-            v30.Completed:Connect(
-                function()
-                    --[[
-                      line: 316
-                      upvalues:
-                        u13 (copy, index: 1)
-                    ]]
-                    u13:Destroy()
+                build()
+                v28 = localPlayer:GetAttribute("News") or News.CURRENT
+                a15.SetHudHidden("News", true)
+
+                if not ui2 or not ui2.Parent then
+                    ui2 = ui.new("BlurEffect", {Name = "TR_NewsBlur", Size = 0, Parent = lighting})
                 end
-            )
-        end
-        if a1.TopbarSettings and type(a1.TopbarSettings.SetHidden) == "function" then
-            pcall(a1.TopbarSettings.SetHidden, "News", false)
-        end
-        if u6 then
-            a1.Remotes.Fire("NewsAction", "Seen", u6)
-            u6 = nil
-        end
-        if not tbl_upv_4 then
-            return
-        end
-        tbl_upv_4.root.Visible = false
-    end
-    function tbl_16.select()
-        --[[
-          name: select
-          line: 509
-          upvalues:
-            tbl_upv_4 (ref, index: 1)
-        ]]
-        if tbl_upv_4 then
-            return tbl_upv_4.rankBtn.Instance
-        end
-        return nil
-    end
-    function tbl_16.back()
-        --[[
-          name: back
-          line: 513
-          upvalues:
-            u4 (ref, index: 1)
-        ]]
-        return u4
-    end
-    MenuManager_upv_1.Register("News", tbl_16)
-    local u14 = false
-    local function maybeShow()
-        --[[
-          name: maybeShow
-          line: 534
-          upvalues:
-            u14 (ref,  index: 1)
-            LocalPlayer_upv_1 (copy, index: 2)
-            News_upv_1 (copy, index: 3)
-        ]]
-        if (u14) or LocalPlayer_upv_1:GetAttribute("News") ~= News_upv_1.CURRENT then
-            return
-        end
-        u14 = true
-        task.spawn(function() end)
-    end
-    LocalPlayer_upv_1:GetAttributeChangedSignal("News"):Connect(maybeShow)
+
+                local propertyTable = {Size = 16}
+                tweenService:Create(ui2, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable):Play()
+
+                if a15.TopbarSettings and type(a15.TopbarSettings.SetHidden) == "function" then
+                    pcall(a15.TopbarSettings.SetHidden, "News", true)
+                end
+
+                v24.root.Visible = true
+
+                if renderSteppedConnection then
+                    renderSteppedConnection:Disconnect()
+                end
+
+                renderSteppedConnection = runService.RenderStepped:Connect(
+                    function(deltaTime: number)
+                        --[[
+                          line: 485
+                          upvalues:
+                            v24 (ref, index: 1)
+                        ]]
+                        v24.rays.Rotation = (v24.rays.Rotation + (deltaTime * 6)) % 360
+                        v24.raysThin.Rotation = (v24.raysThin.Rotation - (deltaTime * 3.5)) % 360
+                    end
+                )
+
+                play()
+            end),
+            close = (function(a153)
+                --[[
+                  name: close
+                  line: 491
+                  upvalues:
+                    count (ref,  index: 1)
+                    v27 (ref,  index: 2)
+                    playing (ref,  index: 3)
+                    renderSteppedConnection (ref,  index: 4)
+                    a15 (copy, index: 5)
+                    ui2 (ref,  index: 6)
+                    tweenService (copy, index: 7)
+                    v28 (ref,  index: 8)
+                    v24 (ref,  index: 9)
+                ]]
+                count += 1
+                v27 = nil
+                playing = false
+
+                if renderSteppedConnection then
+                    renderSteppedConnection:Disconnect()
+                    renderSteppedConnection = nil
+                end
+
+                a15.SetHudHidden("News", false)
+
+                if ui2 then
+                    local instance = ui2
+                    ui2 = nil
+                    local propertyTable = {Size = 0}
+                    local tween = tweenService:Create(instance, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), propertyTable)
+                    tween:Play()
+                    tween.Completed:Connect(
+                        function()
+                            --[[
+                              line: 316
+                              upvalues:
+                                instance (copy, index: 1)
+                            ]]
+                            instance:Destroy()
+                        end
+                    )
+                end
+
+                if a15.TopbarSettings and type(a15.TopbarSettings.SetHidden) == "function" then
+                    pcall(a15.TopbarSettings.SetHidden, "News", false)
+                end
+
+                if v28 then
+                    a15.Remotes.Fire("NewsAction", "Seen", v28)
+                    v28 = nil
+                end
+
+                if v24 then
+                    v24.root.Visible = false
+                end
+            end),
+            select = (function()
+                --[[
+                  name: select
+                  line: 509
+                  upvalues:
+                    v24 (ref, index: 1)
+                ]]
+                if v24 then
+                    return v24.rankBtn.Instance
+                end
+
+                return nil
+            end),
+            back = (function()
+                --[[
+                  name: back
+                  line: 513
+                  upvalues:
+                    playing (ref, index: 1)
+                ]]
+                return playing
+            end)
+        }
+    )
+
     local function lobbyQuiet()
         --[[
           name: lobbyQuiet
           line: 520
           upvalues:
-            State_upv_1 (copy, index: 1)
-            MenuManager_upv_1 (copy, index: 2)
-            a1 (copy, index: 3)
-            LocalPlayer_upv_1 (copy, index: 4)
+            state (copy, index: 1)
+            menuManager (copy, index: 2)
+            a15 (copy, index: 3)
+            localPlayer (copy, index: 4)
         ]]
-        local v31 = not State_upv_1.InMatch() and (not MenuManager_upv_1.IsOpen() and (not a1.IsHudHiddenFor("Reveal") and (not a1.IsHudHiddenFor("RankUp") and (not a1.IsHudHiddenFor("MatchEnd") and (not a1.IsHudHiddenFor("Celebrate") and (not a1.IsHudHiddenFor("Intro") and ((LocalPlayer_upv_1:GetAttribute("WelcomeCard") ~= true) and ((LocalPlayer_upv_1:GetAttribute("Teleporting") ~= true) and ((LocalPlayer_upv_1:GetAttribute("Queued") ~= true) and (LocalPlayer_upv_1.Character ~= nil))))))))))
-        return v31
+        local v158 = not state.InMatch()
+            and not menuManager.IsOpen()
+            and not a15.IsHudHiddenFor("Reveal")
+            and not a15.IsHudHiddenFor("RankUp")
+            and not a15.IsHudHiddenFor("MatchEnd")
+            and not a15.IsHudHiddenFor("Celebrate")
+            and not a15.IsHudHiddenFor("Intro")
+            and localPlayer:GetAttribute("WelcomeCard") ~= true
+            and localPlayer:GetAttribute("Teleporting") ~= true
+            and localPlayer:GetAttribute("Queued") ~= true
+            and localPlayer.Character ~= nil
+        return v158
     end
-    if not (u14) and LocalPlayer_upv_1:GetAttribute("News") == News_upv_1.CURRENT then
-        u14 = true
-        task.spawn(
-            function()
-                --[[
-                  line: 539
-                  upvalues:
-                    LocalPlayer_upv_1 (copy, index: 1)
-                    News_upv_1 (copy, index: 2)
-                    lobbyQuiet (copy, index: 3)
-                    MenuManager_upv_1 (copy, index: 4)
-                    u14 (ref,  index: 5)
-                ]]
-                local v32 = nil
-                local v33 = os.clock()
-                while LocalPlayer_upv_1:GetAttribute("News") == News_upv_1.CURRENT and (os.clock() - v33 < 180) do
-                    if not (lobbyQuiet()) then
-                        v32 = nil
-                        task.wait(0.25)
-                        continue
+
+    local waiting = false
+
+    local function maybeShow()
+        --[[
+          name: maybeShow
+          line: 534
+          upvalues:
+            waiting (ref,  index: 1)
+            localPlayer (copy, index: 2)
+            News (copy, index: 3)
+            lobbyQuiet (copy, index: 4)
+            menuManager (copy, index: 5)
+        ]]
+        if not waiting then
+            local news = localPlayer:GetAttribute("News")
+
+            if news == News.CURRENT then
+                waiting = true
+
+                task.spawn(
+                    function()
+                        --[[
+                          line: 539
+                          upvalues:
+                            localPlayer (copy, index: 1)
+                            News (copy, index: 2)
+                            lobbyQuiet (copy, index: 3)
+                            menuManager (copy, index: 4)
+                            waiting (ref,  index: 5)
+                        ]]
+                        local timestamp
+                        local timestamp2 = os.clock()
+
+                        while true do
+                            local news = localPlayer:GetAttribute("News")
+
+                            if news ~= News.CURRENT then
+                                break
+                            end
+
+                            local timestamp3
+
+                            if not (os.clock() - timestamp2 < 180) then
+                                break
+                            end
+
+                            if lobbyQuiet() then
+                                timestamp3 = timestamp or os.clock()
+
+                                if 1.5 <= os.clock() - timestamp3 then
+                                    menuManager.Open("News")
+                                    break
+                                end
+                            else
+                                timestamp3 = nil
+                            end
+
+                            task.wait(0.25)
+                            timestamp = timestamp3
+                        end
+
+                        waiting = false
                     end
-                    v32 = v32 or os.clock()
-                    if os.clock() - v32 >= 1.5 then
-                        MenuManager_upv_1.Open("News")
-                        break
-                    else
-                        task.wait(0.25)
-                    end
-                end
-                u14 = false
+                )
             end
-        )
+        end
     end
-    a1.ShowNews = function()
+
+    localPlayer:GetAttributeChangedSignal("News"):Connect(maybeShow)
+
+    if not waiting then
+        local news = localPlayer:GetAttribute("News")
+
+        if news == News.CURRENT then
+            waiting = true
+
+            task.spawn(
+                function()
+                    --[[
+                      line: 539
+                      upvalues:
+                        localPlayer (copy, index: 1)
+                        News (copy, index: 2)
+                        lobbyQuiet (copy, index: 3)
+                        menuManager (copy, index: 4)
+                        waiting (ref,  index: 5)
+                    ]]
+                    local timestamp
+                    local timestamp2 = os.clock()
+
+                    while true do
+                        local news = localPlayer:GetAttribute("News")
+
+                        if news ~= News.CURRENT then
+                            break
+                        end
+
+                        local timestamp3
+
+                        if not (os.clock() - timestamp2 < 180) then
+                            break
+                        end
+
+                        if lobbyQuiet() then
+                            timestamp3 = timestamp or os.clock()
+
+                            if 1.5 <= os.clock() - timestamp3 then
+                                menuManager.Open("News")
+                                break
+                            end
+                        else
+                            timestamp3 = nil
+                        end
+
+                        task.wait(0.25)
+                        timestamp = timestamp3
+                    end
+
+                    waiting = false
+                end
+            )
+        end
+    end
+
+    a15.ShowNews = function()
         --[[
           line: 560
           upvalues:
-            MenuManager_upv_1 (copy, index: 1)
+            menuManager (copy, index: 1)
         ]]
-        MenuManager_upv_1.Open("News")
+        menuManager.Open("News")
     end
-    a1.Debug.news = function(a12)
+
+    a15.Debug.news = function(a171)
         --[[
           line: 563
           upvalues:
-            MenuManager_upv_1 (copy, index: 1)
-            u5 (ref,  index: 2)
-            LocalPlayer_upv_1 (copy, index: 3)
-            u14 (ref,  index: 4)
-            News_upv_1 (copy, index: 5)
-            u4 (ref,  index: 6)
+            menuManager (copy, index: 1)
+            v27 (ref,  index: 2)
+            localPlayer (copy, index: 3)
+            waiting (ref,  index: 4)
+            News (copy, index: 5)
+            playing (ref,  index: 6)
         ]]
-        if a12 == "open" then
-            MenuManager_upv_1.Open("News")
-        elseif a12 == "skip" and (u5) then
-            u5()
-        elseif a12 == "close" then
-            MenuManager_upv_1.Close("News")
+        if a171 == "open" then
+            menuManager.Open("News")
+        elseif a171 == "skip" and v27 then
+            v27()
+        elseif a171 == "close" then
+            menuManager.Close("News")
         end
-        local tbl_19 = {}
-        tbl_19.attr = LocalPlayer_upv_1:GetAttribute("News") or false
-        tbl_19.open = MenuManager_upv_1.IsOpen("News")
-        tbl_19.waiting = u14
-        tbl_19.item = News_upv_1.CURRENT
-        tbl_19.playing = u4
-        return tbl_19
+
+        return {attr = localPlayer:GetAttribute("News") or false, open = menuManager.IsOpen("News"), waiting = waiting, item = News.CURRENT, playing = playing}
     end
 end
-return tbl_1
+
+return v10

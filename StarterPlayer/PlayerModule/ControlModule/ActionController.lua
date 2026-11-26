@@ -1,71 +1,85 @@
-local tbl_upv_1 = {}
-tbl_upv_1.__index = tbl_upv_1
-function tbl_upv_1.new()
+local Class = {}
+Class.__index = Class
+
+function Class.new()
     --[[
       name: new
       line: 19
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    local v1 = setmetatable({}, tbl_upv_1)
-    v1.enabled = true
-    return v1
+    local v2 = setmetatable({}, Class)
+    v2.enabled = true
+    return v2
 end
-function tbl_upv_1.initializeActions(a1)
+
+function Class.initializeActions(a3)
     --[[
       name: initializeActions
-      line: 27
+      line: 26
     ]]
-    a1.connectionUtil:trackConnection(
+    a3.connectionUtil:trackConnection(
         "SERVER_AUTHORITY_CHANGED",
-        a1.eventBus:subscribe("SERVER_AUTHORITY_CHANGED"):Connect(
+        a3.eventBus:subscribe("SERVER_AUTHORITY_CHANGED"):Connect(
             function()
                 --[[
                   line: 29
                   upvalues:
-                    a1 (copy, index: 1)
+                    a3 (copy, index: 1)
                 ]]
-                a1.controlModule.actions = {}
+                a3.controlModule.actions = {}
             end
         )
     )
-    if (not a1.controlModule.actions.MoveAction or not a1.controlModule.actions.JumpAction) and a1.player then
-        pcall(
-            function()
-                --[[
-                  line: 38
-                  upvalues:
-                    a1 (copy, index: 1)
-                ]]
-                local InputContexts_1 = script.Parent.Parent.InputContexts
-                if a1.isServerAuthority then
-                    InputContexts_1 = a1.player.InputContexts
-                end
-                local CharacterContext_1 = InputContexts_1.CharacterContext
-                a1.controlModule.actions = {MoveAction = CharacterContext_1.MoveAction, JumpAction = CharacterContext_1.JumpAction}
-                a1.eventBus:publish("ACTIONS_RELOADED")
-            end
-        )
-    end
-end
-function tbl_upv_1.update(a1)
-    --[[
-      name: update
-      line: 54
-    ]]
-    if not a1.controlModule.actions.MoveAction or not a1.controlModule.actions.JumpAction then
+
+    if a3.controlModule.actions.MoveAction and a3.controlModule.actions.JumpAction then
         return
     end
-    local ControlModule_1 = a1.playerModule.ControlModule
-    a1.controlModule.actions.MoveAction.Enabled = ControlModule_1.Enabled
-    a1.controlModule.actions.JumpAction.Enabled = ControlModule_1.Enabled
-    a1.controlModule.moveVector = a1.controlModule.actions.MoveAction:GetState()
-    a1.controlModule.isJumping = a1.controlModule.actions.JumpAction:GetState()
+    if not a3.engineInterface.player then
+        return
+    end
+
+    pcall(
+        function()
+            --[[
+              line: 42
+              upvalues:
+                a3 (copy, index: 1)
+            ]]
+            local inputContexts = script.Parent.Parent.InputContexts
+
+            if a3.isServerAuthority then
+                inputContexts = a3.engineInterface.player.InputContexts
+            end
+
+            local characterContext = inputContexts.CharacterContext
+            a3.controlModule.actions = {MoveAction = characterContext.MoveAction, JumpAction = characterContext.JumpAction}
+            a3.eventBus:publish("ACTIONS_RELOADED")
+        end
+    )
 end
-function tbl_upv_1.Enable(a1, a2)
+
+function Class.update(a6)
+    --[[
+      name: update
+      line: 58
+    ]]
+    if not a6.controlModule.actions.MoveAction or not a6.controlModule.actions.JumpAction then
+        return
+    end
+
+    local controlModule = a6.playerModule.ControlModule
+    a6.controlModule.actions.MoveAction.Enabled = controlModule.Enabled
+    a6.controlModule.actions.JumpAction.Enabled = controlModule.Enabled
+    a6.controlModule.moveVector = a6.controlModule.actions.MoveAction:GetState()
+    a6.controlModule.isJumping = a6.controlModule.actions.JumpAction:GetState()
+end
+
+function Class.Enable(a8, a9)
     --[[
       name: Enable
-      line: 68
+      line: 72
     ]]
 end
-return tbl_upv_1
+
+return Class

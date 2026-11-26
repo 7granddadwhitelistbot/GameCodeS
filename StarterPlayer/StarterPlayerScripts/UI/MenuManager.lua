@@ -1,1108 +1,1180 @@
-local ReplicatedStorage_upv_1 = game:GetService("ReplicatedStorage")
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local Workspace_upv_1 = game:GetService("Workspace")
-local TweenService_upv_1 = game:GetService("TweenService")
-local RunService_1 = game:GetService("RunService")
-local GuiService_upv_1 = game:GetService("GuiService")
-local Players_upv_1 = game:GetService("Players")
-local Signal_1 = require(ReplicatedStorage_upv_1:WaitForChild("Shared"):WaitForChild("Signal"))
-local Keybinds_upv_1 = require(ReplicatedStorage_upv_1.Shared:WaitForChild("Keybinds"))
-local UI_upv_1 = require(script.Parent:WaitForChild("UI"))
-local tbl_upv_1 = {}
-local tbl_upv_2 = {}
-local u1 = nil
-local tbl_upv_3 = {}
-local u2 = false
-local u3 = nil
-local u4 = 0
-tbl_upv_1.Changed = Signal_1.new()
-function tbl_upv_1.Camera()
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local userInputService = game:GetService("UserInputService")
+local workspace = game:GetService("Workspace")
+local tweenService = game:GetService("TweenService")
+local runService = game:GetService("RunService")
+local guiService = game:GetService("GuiService")
+local players = game:GetService("Players")
+local Signal = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Signal"))
+local Keybinds = require(replicatedStorage.Shared:WaitForChild("Keybinds"))
+local UI = require(script.Parent:WaitForChild("UI"))
+local v11 = {}
+local v12 = {}
+local v13 = nil
+local v14 = {}
+local v15 = false
+local result = nil
+local timestamp = 0
+v11.Changed = Signal.new()
+
+function v11.Camera()
     --[[
       name: Camera
       line: 45
       upvalues:
-        u3 (ref,  index: 1)
-        u4 (ref,  index: 2)
-        ReplicatedStorage_upv_1 (copy, index: 3)
+        result (ref,  index: 1)
+        timestamp (ref,  index: 2)
+        replicatedStorage (copy, index: 3)
     ]]
-    if u3 then
-        return u3
+    if result then
+        return result
     end
-    if os.clock() - u4 < 3 then
+    if os.clock() - timestamp < 3 then
         return nil
     end
-    u4 = os.clock()
-    local Shared_1 = ReplicatedStorage_upv_1:FindFirstChild("Shared")
-    local v1 = Shared_1 and (Shared_1:FindFirstChild("Camera"))
-    if v1 and v1:IsA("ModuleScript") then
-        local success_1, v2 = pcall(require, v1)
-        if success_1 and type(v2) == "table" then
-            u3 = v2
+
+    timestamp = os.clock()
+    local shared = replicatedStorage:FindFirstChild("Shared")
+    local camera = shared and shared:FindFirstChild("Camera")
+
+    if camera and camera:IsA("ModuleScript") then
+        local success, result2 = pcall(require, camera)
+
+        if success and type(result2) == "table" then
+            result = result2
         end
     end
-    return u3
+
+    return result
 end
+
 local function applyMouse()
     --[[
       name: applyMouse
       line: 64
       upvalues:
-        tbl_upv_3 (copy, index: 1)
-        u2 (ref,  index: 2)
-        tbl_upv_1 (copy, index: 3)
-        UserInputService_upv_1 (copy, index: 4)
+        v14 (copy, index: 1)
+        v15 (ref,  index: 2)
+        v11 (copy, index: 3)
+        userInputService (copy, index: 4)
     ]]
-    local v3 = next(tbl_upv_3) ~= nil
-    if v3 == u2 then
+    local mouseIconEnabled = next(v14) ~= nil
+
+    if mouseIconEnabled == v15 then
         return
     end
-    u2 = v3
-    local v4 = tbl_upv_1.Camera()
-    if v4 then
-        local v5
-        if v3 then
-            v5 = v4.PushMouseUnlock
-        else
-            v5 = v4.PopMouseUnlock
-        end
-        if type(v5) == "function" then
-            pcall(v5, "UI")
+
+    v15 = mouseIconEnabled
+
+    if const v24 = v11.Camera() then
+        local v25 = if mouseIconEnabled then v24.PushMouseUnlock else v24.PopMouseUnlock
+
+        if type(v25) == "function" then
+            pcall(v25, "UI")
         end
     end
-    if not v3 then
-        return
+
+    if mouseIconEnabled then
+        userInputService.MouseIconEnabled = true
     end
-    UserInputService_upv_1.MouseIconEnabled = true
 end
-function tbl_upv_1.PushMouse(a1)
+
+function v11.PushMouse(key)
     --[[
       name: PushMouse
       line: 83
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v14 (copy, index: 1)
         applyMouse (copy, index: 2)
     ]]
-    tbl_upv_3[a1] = true
+    v14[key] = true
     applyMouse()
 end
-function tbl_upv_1.PopMouse(a1)
+
+function v11.PopMouse(key)
     --[[
       name: PopMouse
       line: 87
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v14 (copy, index: 1)
         applyMouse (copy, index: 2)
     ]]
-    tbl_upv_3[a1] = nil
+    v14[key] = nil
     applyMouse()
 end
-local u5 = nil
-local function setBlur(a1)
+
+local blurEffect = nil
+
+local function setBlur(blur: boolean)
     --[[
       name: setBlur
       line: 93
       upvalues:
-        Workspace_upv_1 (copy, index: 1)
-        u5 (ref,  index: 2)
-        TweenService_upv_1 (copy, index: 3)
+        workspace (copy, index: 1)
+        blurEffect (ref,  index: 2)
+        tweenService (copy, index: 3)
     ]]
-    local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
-    if not CurrentCamera_1 then
+    local size
+    local camera = workspace.CurrentCamera
+    if not camera then
         return
     end
-    if not (u5) or u5.Parent ~= CurrentCamera_1 then
-        if u5 then
-            u5:Destroy()
+
+    if not blurEffect or blurEffect.Parent ~= camera then
+        if blurEffect then
+            blurEffect:Destroy()
         end
-        local v6 = Instance.new("BlurEffect")
-        v6.Name = "TribesMenuBlur"
-        v6.Size = 0
-        v6.Parent = CurrentCamera_1
-        u5 = v6
+
+        local tribesMenuBlur = Instance.new("BlurEffect")
+        tribesMenuBlur.Name = "TribesMenuBlur"
+        tribesMenuBlur.Size = 0
+        tribesMenuBlur.Parent = camera
+        blurEffect = tribesMenuBlur
     end
-    local v7 = TweenInfo.new(0.25, Enum.EasingStyle.Quad)
-    local tbl_4 = {Size = 0}
-    tbl_4.Size = (a1 and 12) or 0
-    TweenService_upv_1:Create(u5, v7, tbl_4):Play()
+
+    local blurEffect2 = blurEffect
+    local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad)
+    local propertyTable = {}
+
+    if blur then
+        size = 12
+    else
+        size = 0
+    end
+
+    propertyTable.Size = size
+    tweenService:Create(blurEffect2, tweenInfo, propertyTable):Play()
 end
-local u6 = nil
+
+local v37 = nil
+
 local function hideChat()
     --[[
       name: hideChat
       line: 117
       upvalues:
-        u6 (ref, index: 1)
+        v37 (ref, index: 1)
     ]]
-    if u6 then
+    if v37 then
         return
     end
-    local tbl_upv_5 = {}
-    u6 = tbl_upv_5
+
+    local v39 = {}
+    v37 = v39
+
     pcall(
         function()
             --[[
               line: 123
               upvalues:
-                tbl_upv_5 (copy, index: 1)
+                v39 (copy, index: 1)
             ]]
-            local TextChatService_1 = game:GetService("TextChatService")
-            local v8 = TextChatService_1:FindFirstChildOfClass("ChatWindowConfiguration")
-            local v9 = TextChatService_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-            if v8 then
-                tbl_upv_5.window = v8.Enabled
-                v8.Enabled = false
+            local textChatService = game:GetService("TextChatService")
+            local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+            if chatWindowConfiguration then
+                v39.window = chatWindowConfiguration.Enabled
+                chatWindowConfiguration.Enabled = false
             end
-            if not v9 then
-                return
+
+            if chatInputBarConfiguration then
+                v39.bar = chatInputBarConfiguration.Enabled
+                chatInputBarConfiguration.Enabled = false
             end
-            tbl_upv_5.bar = v9.Enabled
-            v9.Enabled = false
         end
     )
+
     pcall(
         function()
             --[[
               line: 136
               upvalues:
-                tbl_upv_5 (copy, index: 1)
+                v39 (copy, index: 1)
             ]]
-            local StarterGui_1 = game:GetService("StarterGui")
-            tbl_upv_5.core = StarterGui_1:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
-            StarterGui_1:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+            local starterGui = game:GetService("StarterGui")
+            v39.core = starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
+            starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
         end
     )
 end
+
 local function restoreChat()
     --[[
       name: restoreChat
       line: 142
       upvalues:
-        u6 (ref, index: 1)
+        v37 (ref, index: 1)
     ]]
-    local u7 = u6
-    if not u7 then
+    local v45 = v37
+    if not v45 then
         return
     end
-    u6 = nil
+
+    v37 = nil
+
     pcall(
         function()
             --[[
               line: 148
               upvalues:
-                u7 (copy, index: 1)
+                v45 (copy, index: 1)
             ]]
-            local TextChatService_2 = game:GetService("TextChatService")
-            local v10 = TextChatService_2:FindFirstChildOfClass("ChatWindowConfiguration")
-            local v11 = TextChatService_2:FindFirstChildOfClass("ChatInputBarConfiguration")
-            if v10 and u7.window ~= nil then
-                v10.Enabled = u7.window
+            local textChatService = game:GetService("TextChatService")
+            local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+            if chatWindowConfiguration and v45.window ~= nil then
+                chatWindowConfiguration.Enabled = v45.window
             end
-            if not v11 or u7.bar == nil then
-                return
+
+            if chatInputBarConfiguration and v45.bar ~= nil then
+                chatInputBarConfiguration.Enabled = v45.bar
             end
-            v11.Enabled = u7.bar
         end
     )
+
     pcall(
         function()
             --[[
               line: 159
               upvalues:
-                u7 (copy, index: 1)
+                v45 (copy, index: 1)
             ]]
-            if u7.core == nil then
-                return
+            if v45.core ~= nil then
+                game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, v45.core)
             end
-            game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, u7.core)
         end
     )
 end
-local tbl_upv_6 = {}
-function tbl_upv_1.HoldChat(a1, a2)
+
+local v49 = {}
+
+function v11.HoldChat(key, a51)
     --[[
       name: HoldChat
       line: 170
       upvalues:
-        tbl_upv_6 (copy, index: 1)
+        v49 (copy, index: 1)
         hideChat (copy, index: 2)
         restoreChat (copy, index: 3)
     ]]
-    if a2 then
-        tbl_upv_6[a1] = true
+    if a51 then
+        v49[key] = true
         hideChat()
-    else
-        tbl_upv_6[a1] = nil
-        if next(tbl_upv_6) == nil then
-            restoreChat()
-        end
+
+        return
+    end
+
+    v49[key] = nil
+
+    if next(v49) == nil then
+        restoreChat()
     end
 end
-local tbl_upv_7 = {}
-local u8 = false
-tbl_upv_1.FocusChanged = Signal_1.new()
+
+local v52 = {}
+local v53 = false
+v11.FocusChanged = Signal.new()
+
 local function topFocus()
     --[[
       name: topFocus
       line: 190
       upvalues:
-        tbl_upv_7 (copy, index: 1)
+        v52 (copy, index: 1)
     ]]
-    return tbl_upv_7[#tbl_upv_7]
+    return v52[#v52]
 end
-local function usable(a1)
+
+local function usable(a56)
     --[[
       name: usable
       line: 195
     ]]
-    if typeof(a1) ~= "Instance" or not a1:IsA("GuiObject") or not a1:IsDescendantOf(game) or not a1.Selectable then
+    if typeof(a56) ~= "Instance" or not a56:IsA("GuiObject") or not a56:IsDescendantOf(game) or not a56.Selectable then
         return false
     end
-    local v12 = a1
-    while v12 and v12 ~= game do
-        if (v12:IsA("GuiObject")) and not v12.Visible then
+
+    local v57
+    v57 = a56
+
+    while v57 and v57 ~= game do
+        if v57:IsA("GuiObject") and not v57.Visible then
             return false
-        elseif not (v12:IsA("ScreenGui")) or v12.Enabled then
-            v12 = v12.Parent
         end
+        if v57:IsA("ScreenGui") and not v57.Enabled then
+            return false
+        end
+
+        v57 = v57.Parent
     end
+
     return true
 end
-local function selectOwner(a1)
+
+local function selectOwner(a59: boolean?)
     --[[
       name: selectOwner
       line: 210
       upvalues:
-        UI_upv_1 (copy, index: 1)
+        UI (copy, index: 1)
         usable (copy, index: 2)
-        GuiService_upv_1 (copy, index: 3)
-        u1 (ref,  index: 4)
-        tbl_upv_2 (copy, index: 5)
-        tbl_upv_7 (copy, index: 6)
+        guiService (copy, index: 3)
+        v13 (ref,  index: 4)
+        v12 (copy, index: 5)
+        v52 (copy, index: 6)
     ]]
-    if not UI_upv_1.Gamepad or a1 and usable(GuiService_upv_1.SelectedObject) then
+    local select
+
+    if not UI.Gamepad then
         return
     end
-    local v13
-    if u1 then
-        local _ = tbl_upv_2[u1]
-        v13 = tbl_upv_2[u1] and tbl_upv_2[u1].select
+    if a59 and usable(guiService.SelectedObject) then
+        return
+    end
+
+    if v13 then
+        local v61 = v12[v13]
+        select = v61 and v61.select
     else
-        local _ = tbl_upv_7[#tbl_upv_7]
-        v13 = tbl_upv_7[#tbl_upv_7] and tbl_upv_7[#tbl_upv_7].select
+        local v62 = v52[#v52]
+        select = v62 and v62.select
     end
-    if not v13 then
+
+    if not select then
         return
     end
-    local success_2, v16 = pcall(v13)
-    if not success_2 then
-        return
-    end
-    if usable(v16) then
-        GuiService_upv_1.SelectedObject = v16
+
+    local success, result = pcall(select)
+
+    if success and usable(result) then
+        guiService.SelectedObject = result
     end
 end
-local u9 = false
-local u10 = 0
-local tbl_upv_8 = {}
-local tbl_upv_9 = {}
+
+local v65 = false
+local count = 0
+local v67 = {}
+local v68 = {}
+
 local function characterContexts()
     --[[
       name: characterContexts
       line: 243
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    local tbl_10 = {}
-    local tbl_11 = {Players_upv_1.LocalPlayer, game:GetService("StarterPlayer"):FindFirstChild("PlayerModule")}
-    for _, value_1 in tbl_11 do
-        local v17 = value_1 and (value_1:FindFirstChild("InputContexts"))
-        local v18 = v17 and (v17:FindFirstChild("CharacterContext"))
-        if not (v18) then
-            continue
-        end
-        if v18:IsA("InputContext") then
-            table.insert(tbl_10, v18)
+    local v70 = {}
+    local playerModule = game:GetService("StarterPlayer"):FindFirstChild("PlayerModule")
+
+    for _, instance in {players.LocalPlayer, playerModule} do
+        local inputContexts = instance and instance:FindFirstChild("InputContexts")
+        local characterContext = inputContexts and inputContexts:FindFirstChild("CharacterContext")
+
+        if characterContext and characterContext:IsA("InputContext") then
+            table.insert(v70, characterContext)
         end
     end
-    return tbl_10
+
+    return v70
 end
-local function setWalk(a1)
+
+local function setWalk(walk: boolean)
     --[[
       name: setWalk
       line: 255
       upvalues:
-        tbl_upv_9 (copy, index: 1)
+        v68 (copy, index: 1)
         characterContexts (copy, index: 2)
     ]]
-    if a1 then
-        for key_1 in tbl_upv_9 do
-            if key_1.Parent then
-                key_1.Enabled = true
+    if walk then
+        for v78 in v68 do
+            if v78.Parent then
+                v78.Enabled = true
             end
         end
-        table.clear(tbl_upv_9)
-    else
-        for _, value_2 in characterContexts() do
-            if value_2.Enabled then
-                value_2.Enabled = false
-                tbl_upv_9[value_2] = true
-            end
+
+        table.clear(v68)
+
+        return
+    end
+
+    for _, instance in characterContexts() do
+        if instance.Enabled then
+            instance.Enabled = false
+            v68[instance] = true
         end
     end
 end
-local function applyPadBlock(a1)
+
+local function applyPadBlock(padMenu)
     --[[
       name: applyPadBlock
       line: 272
       upvalues:
-        u9 (ref,  index: 1)
-        Keybinds_upv_1 (copy, index: 2)
+        v65 (ref,  index: 1)
+        Keybinds (copy, index: 2)
         setWalk (copy, index: 3)
-        Players_upv_1 (copy, index: 4)
+        players (copy, index: 4)
     ]]
-    if a1 == u9 then
+    if padMenu == v65 then
         return
     end
-    u9 = a1
-    Keybinds_upv_1.SetPadBlocked(a1)
-    setWalk(not a1)
-    Players_upv_1.LocalPlayer:SetAttribute("PadMenu", a1)
+
+    v65 = padMenu
+    Keybinds.SetPadBlocked(padMenu)
+    setWalk(not padMenu)
+    players.LocalPlayer:SetAttribute("PadMenu", padMenu)
 end
+
 local function refreshPadBlock()
     --[[
       name: refreshPadBlock
       line: 281
       upvalues:
-        UI_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
-        tbl_upv_7 (copy, index: 3)
-        u8 (ref,  index: 4)
-        u10 (ref,  index: 5)
-        u9 (ref,  index: 6)
-        Keybinds_upv_1 (copy, index: 7)
+        UI (copy, index: 1)
+        v13 (ref,  index: 2)
+        v52 (copy, index: 3)
+        v53 (ref,  index: 4)
+        count (ref,  index: 5)
+        v65 (ref,  index: 6)
+        Keybinds (copy, index: 7)
         characterContexts (copy, index: 8)
-        tbl_upv_9 (copy, index: 9)
-        Players_upv_1 (copy, index: 10)
-        tbl_upv_8 (copy, index: 11)
+        v68 (copy, index: 9)
+        players (copy, index: 10)
+        v67 (copy, index: 11)
     ]]
-    local u11 = UI_upv_1.Gamepad
-    if u11 then
-        local v19 = true
-        if u1 ~= nil then
-            u11 = v19
-        else
-            local v20 = true
-            if tbl_upv_7[#tbl_upv_7] ~= nil then
-                u11 = v20
-            else
-                local v21 = u8
-                u11 = v21
-            end
-        end
-    end
-    u10 = u10 + 1
-    if u11 then
-        if u9 == true then
+    local v84 = UI.Gamepad and (v13 ~= nil or v52[#v52] ~= nil or v53)
+    count += 1
+
+    if not v84 then
+        if not v65 then
             return
         end
-        u9 = true
-        Keybinds_upv_1.SetPadBlocked(true)
-        for _, value_3 in characterContexts() do
-            if value_3.Enabled then
-                value_3.Enabled = false
-                tbl_upv_9[value_3] = true
-            end
-        end
-        Players_upv_1.LocalPlayer:SetAttribute("PadMenu", true)
-    elseif u9 then
-        u11 = u10
+
+        local v85 = count
+
         task.spawn(
             function()
                 --[[
                   line: 292
                   upvalues:
-                    tbl_upv_8 (copy, index: 1)
-                    u11 (copy, index: 2)
-                    u10 (ref,  index: 3)
-                    u9 (ref,  index: 4)
-                    Keybinds_upv_1 (copy, index: 5)
-                    tbl_upv_9 (copy, index: 6)
-                    Players_upv_1 (copy, index: 7)
+                    v67 (copy, index: 1)
+                    v85 (copy, index: 2)
+                    count (ref,  index: 3)
+                    v65 (ref,  index: 4)
+                    Keybinds (copy, index: 5)
+                    v68 (copy, index: 6)
+                    players (copy, index: 7)
                 ]]
-                local v22 = os.clock()
-                while true do
-                    if not (tbl_upv_8[Enum.KeyCode.ButtonA]) and not (tbl_upv_8[Enum.KeyCode.ButtonB]) or not (os.clock() - v22 < 3) then
-                        break
-                    end
+                local timestamp = os.clock()
+
+                while (v67[Enum.KeyCode.ButtonA] or v67[Enum.KeyCode.ButtonB]) and os.clock() - timestamp < 3 do
                     task.wait()
                 end
+
                 task.wait(0.05)
-                if u11 ~= u10 or u9 == false then
-                    return
-                end
-                u9 = false
-                Keybinds_upv_1.SetPadBlocked(false)
-                for key_2 in tbl_upv_9 do
-                    if key_2.Parent then
-                        key_2.Enabled = true
+
+                if v85 == count then
+                    if v65 == false then
+                        return
                     end
+
+                    v65 = false
+                    Keybinds.SetPadBlocked(false)
+
+                    for v87 in v68 do
+                        if v87.Parent then
+                            v87.Enabled = true
+                        end
+                    end
+
+                    table.clear(v68)
+                    players.LocalPlayer:SetAttribute("PadMenu", false)
                 end
-                table.clear(tbl_upv_9)
-                Players_upv_1.LocalPlayer:SetAttribute("PadMenu", false)
             end
         )
+
         return
     end
+
+    if v65 == true then
+        return
+    end
+
+    v65 = true
+    Keybinds.SetPadBlocked(true)
+
+    for _, instance in characterContexts() do
+        if instance.Enabled then
+            instance.Enabled = false
+            v68[instance] = true
+        end
+    end
+
+    players.LocalPlayer:SetAttribute("PadMenu", true)
 end
-function tbl_upv_1.PadBlocked()
+
+function v11.PadBlocked()
     --[[
       name: PadBlocked
       line: 303
       upvalues:
-        u9 (ref, index: 1)
+        v65 (ref, index: 1)
     ]]
-    return u9
+    return v65
 end
-local function endHudFocus(a1)
+
+local function endHudFocus(a91)
     --[[
       name: endHudFocus
       line: 307
       upvalues:
-        u8 (ref,  index: 1)
-        GuiService_upv_1 (copy, index: 2)
+        v53 (ref,  index: 1)
+        guiService (copy, index: 2)
         refreshPadBlock (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
+        v11 (copy, index: 4)
     ]]
-    if not u8 then
+    if not v53 then
         return
     end
-    u8 = false
-    if a1 then
-        GuiService_upv_1.SelectedObject = nil
+
+    v53 = false
+
+    if a91 then
+        guiService.SelectedObject = nil
     end
+
     refreshPadBlock()
-    tbl_upv_1.FocusChanged:Fire()
+    v11.FocusChanged:Fire()
 end
-function tbl_upv_1.PushFocus(a1, a2, a3)
+
+function v11.PushFocus(key, select, back)
     --[[
       name: PushFocus
       line: 321
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_7 (copy, index: 2)
-        u8 (ref,  index: 3)
+        v11 (copy, index: 1)
+        v52 (copy, index: 2)
+        v53 (ref,  index: 3)
         refreshPadBlock (copy, index: 4)
-        u1 (ref,  index: 5)
+        v13 (ref,  index: 5)
         selectOwner (copy, index: 6)
     ]]
-    tbl_upv_1.PopFocus(a1, true)
-    table.insert(tbl_upv_7, {key = a1, select = a2, back = a3, at = os.clock()})
-    if u8 then
-        u8 = false
+    v11.PopFocus(key, true)
+    table.insert(v52, {key = key, select = select, back = back, at = os.clock()})
+
+    if v53 then
+        v53 = false
         refreshPadBlock()
-        tbl_upv_1.FocusChanged:Fire()
+        v11.FocusChanged:Fire()
     end
-    if not (u1) then
+
+    if not v13 then
         selectOwner()
     end
+
     refreshPadBlock()
-    tbl_upv_1.FocusChanged:Fire()
+    v11.FocusChanged:Fire()
 end
-function tbl_upv_1.PopFocus(a1, a2)
+
+function v11.PopFocus(a95, a96)
     --[[
       name: PopFocus
       line: 331
       upvalues:
-        tbl_upv_7 (copy, index: 1)
-        u1 (ref,  index: 2)
-        GuiService_upv_1 (copy, index: 3)
+        v52 (copy, index: 1)
+        v13 (ref,  index: 2)
+        guiService (copy, index: 3)
         selectOwner (copy, index: 4)
         refreshPadBlock (copy, index: 5)
-        tbl_upv_1 (copy, index: 6)
+        v11 (copy, index: 6)
     ]]
-    for key_3, value_4 in tbl_upv_7 do
-        if value_4.key == a1 then
-            table.remove(tbl_upv_7, key_3)
-            if not (a2) then
-                if not (u1) then
-                    GuiService_upv_1.SelectedObject = nil
+    for v97, v98 in v52 do
+        if v98.key == a95 then
+            table.remove(v52, v97)
+
+            if not a96 then
+                if not v13 then
+                    guiService.SelectedObject = nil
                     selectOwner()
                 end
+
                 refreshPadBlock()
-                tbl_upv_1.FocusChanged:Fire()
+                v11.FocusChanged:Fire()
             end
+
             return
         end
     end
 end
-function tbl_upv_1.HasFocus(a1)
+
+function v11.HasFocus(a99)
     --[[
       name: HasFocus
       line: 347
       upvalues:
-        tbl_upv_7 (copy, index: 1)
+        v52 (copy, index: 1)
     ]]
-    if a1 ~= nil then
-        for _, value_5 in tbl_upv_7 do
-            if value_5.key ~= a1 then
-                continue
-            end
+    if a99 == nil then
+        return v52[#v52] ~= nil
+    end
+
+    for _, v101 in v52 do
+        if v101.key == a99 then
             return true
         end
-        return false
     end
-    return tbl_upv_7[#tbl_upv_7] ~= nil
+
+    return false
 end
-function tbl_upv_1.Reselect()
+
+function v11.Reselect()
     --[[
       name: Reselect
       line: 359
       upvalues:
-        u1 (ref,  index: 1)
-        tbl_upv_7 (copy, index: 2)
+        v13 (ref,  index: 1)
+        v52 (copy, index: 2)
         selectOwner (copy, index: 3)
     ]]
-    if not u1 and not tbl_upv_7[#tbl_upv_7] then
-        return
+    if v13 or v52[#v52] then
+        selectOwner(true)
     end
-    selectOwner(true)
 end
-function tbl_upv_1.HudFocus(a1)
+
+function v11.HudFocus(selectedObject: GuiObject?)
     --[[
       name: HudFocus
       line: 366
       upvalues:
-        UI_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
-        tbl_upv_7 (copy, index: 3)
+        UI (copy, index: 1)
+        v13 (ref,  index: 2)
+        v52 (copy, index: 3)
         usable (copy, index: 4)
-        u8 (ref,  index: 5)
-        GuiService_upv_1 (copy, index: 6)
+        v53 (ref,  index: 5)
+        guiService (copy, index: 6)
         refreshPadBlock (copy, index: 7)
-        tbl_upv_1 (copy, index: 8)
+        v11 (copy, index: 8)
     ]]
-    if UI_upv_1.Gamepad and not (u1) and not (tbl_upv_7[#tbl_upv_7]) and usable(a1) then
-        u8 = true
-        GuiService_upv_1.SelectedObject = a1
-        refreshPadBlock()
-        tbl_upv_1.FocusChanged:Fire()
-        return true
+    if not UI.Gamepad or v13 or v52[#v52] or not usable(selectedObject) then
+        return false
     end
-    return false
+
+    v53 = true
+    guiService.SelectedObject = selectedObject
+    refreshPadBlock()
+    v11.FocusChanged:Fire()
+
+    return true
 end
-function tbl_upv_1.EndHudFocus()
+
+function v11.EndHudFocus()
     --[[
       name: EndHudFocus
       line: 376
       upvalues:
-        u8 (ref,  index: 1)
-        GuiService_upv_1 (copy, index: 2)
+        v53 (ref,  index: 1)
+        guiService (copy, index: 2)
         refreshPadBlock (copy, index: 3)
-        tbl_upv_1 (copy, index: 4)
+        v11 (copy, index: 4)
     ]]
-    if not u8 then
+    if not v53 then
         return
     end
-    u8 = false
-    GuiService_upv_1.SelectedObject = nil
+
+    v53 = false
+    guiService.SelectedObject = nil
     refreshPadBlock()
-    tbl_upv_1.FocusChanged:Fire()
+    v11.FocusChanged:Fire()
 end
-function tbl_upv_1.HudFocused()
+
+function v11.HudFocused()
     --[[
       name: HudFocused
       line: 379
       upvalues:
-        u8 (ref, index: 1)
+        v53 (ref, index: 1)
     ]]
-    return u8
+    return v53
 end
-function tbl_upv_1.Register(a1, a2)
+
+function v11.Register(key, value)
     --[[
       name: Register
       line: 383
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v12 (copy, index: 1)
     ]]
-    tbl_upv_2[a1] = a2
+    v12[key] = value
 end
-local u12 = nil
-function tbl_upv_1.SetLoader(a1)
+
+local v105 = nil
+
+function v11.SetLoader(loader)
     --[[
       name: SetLoader
       line: 388
       upvalues:
-        u12 (ref, index: 1)
+        v105 (ref, index: 1)
     ]]
-    u12 = a1
+    v105 = loader
 end
-function tbl_upv_1.IsOpen(a1)
+
+function v11.IsOpen(a107)
     --[[
       name: IsOpen
       line: 392
       upvalues:
-        u1 (ref, index: 1)
+        v13 (ref, index: 1)
     ]]
-    if a1 ~= nil then
-        local v23 = u1 == a1
-        return v23
-    else
-        local v24 = u1 ~= nil
-        return v24
+    if a107 == nil then
+        return v13 ~= nil
     end
+
+    return v13 == a107
 end
-function tbl_upv_1.Current()
+
+function v11.Current()
     --[[
       name: Current
       line: 399
       upvalues:
-        u1 (ref, index: 1)
+        v13 (ref, index: 1)
     ]]
-    return u1
+    return v13
 end
-local u13 = -math.huge
-function tbl_upv_1.RecentlyOpen(a1)
+
+local timestamp2 = -math.huge
+
+function v11.RecentlyOpen(a109)
     --[[
       name: RecentlyOpen
       line: 405
       upvalues:
-        u1 (ref, index: 1)
-        u13 (ref, index: 2)
+        v13 (ref, index: 1)
+        timestamp2 (ref, index: 2)
     ]]
-    local v25 = true
-    if u1 == nil then
-        v25 = os.clock() - u13 < (a1 or 0.2)
-    end
-    return v25
+    return v13 ~= nil or os.clock() - timestamp2 < (a109 or 0.2)
 end
-function tbl_upv_1.Close(a1, a2)
+
+function v11.Close(a110, a111)
     --[[
       name: Close
       line: 409
       upvalues:
-        u1 (ref,  index: 1)
-        tbl_upv_2 (copy, index: 2)
-        u13 (ref,  index: 3)
-        tbl_upv_1 (copy, index: 4)
+        v13 (ref,  index: 1)
+        v12 (copy, index: 2)
+        timestamp2 (ref,  index: 3)
+        v11 (copy, index: 4)
         setBlur (copy, index: 5)
-        tbl_upv_3 (copy, index: 6)
+        v14 (copy, index: 6)
         applyMouse (copy, index: 7)
-        GuiService_upv_1 (copy, index: 8)
+        guiService (copy, index: 8)
         selectOwner (copy, index: 9)
         refreshPadBlock (copy, index: 10)
     ]]
-    local v26 = a1 or u1
-    if not v26 then
+    local v112 = a110 or v13
+
+    if not v112 or v112 ~= v13 then
         return
     end
-    if v26 == u1 then
-        local v27 = tbl_upv_2[v26]
-        u1 = nil
-        u13 = os.clock()
-        if v27 then
-            local success_3, v28 = pcall(v27.close, a2)
-            if not (success_3) then
-                warn("[UI] menu " .. v26 .. " failed to close: " .. tostring(v28))
-            end
+
+    local v113 = v12[v112]
+    v13 = nil
+    timestamp2 = os.clock()
+
+    if v113 then
+        local success, result = pcall(v113.close, a111)
+        if not success then
+            warn("[UI] menu " .. v112 .. " failed to close: " .. tostring(result))
         end
-        tbl_upv_1.HoldChat("menu", false)
-        setBlur(false)
-        tbl_upv_3.Menu = nil
-        applyMouse()
-        GuiService_upv_1.SelectedObject = nil
-        selectOwner()
-        refreshPadBlock()
-        tbl_upv_1.Changed:Fire(nil)
     end
+
+    v11.HoldChat("menu", false)
+    setBlur(false)
+    v14.Menu = nil
+    applyMouse()
+    guiService.SelectedObject = nil
+    selectOwner()
+    refreshPadBlock()
+    v11.Changed:Fire(nil)
 end
-function tbl_upv_1.Open(a1, ...)
+
+function v11.Open(key, ...)
     --[[
       name: Open
       line: 436
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        u12 (ref,  index: 2)
-        u1 (ref,  index: 3)
-        tbl_upv_1 (copy, index: 4)
-        u8 (ref,  index: 5)
+        v12 (copy, index: 1)
+        v105 (ref,  index: 2)
+        v13 (ref,  index: 3)
+        v11 (copy, index: 4)
+        v53 (ref,  index: 5)
         refreshPadBlock (copy, index: 6)
-        GuiService_upv_1 (copy, index: 7)
+        guiService (copy, index: 7)
         setBlur (copy, index: 8)
-        tbl_upv_3 (copy, index: 9)
+        v14 (copy, index: 9)
         applyMouse (copy, index: 10)
         selectOwner (copy, index: 11)
     ]]
-    local v29 = tbl_upv_2[a1]
-    if not (v29) and u12 then
-        u12(a1)
-        v29 = tbl_upv_2[a1]
+    local v117 = v12[key]
+
+    if not v117 and v105 then
+        v105(key)
+        v117 = v12[key]
     end
-    if v29 then
-        if u1 ~= a1 then
-            tbl_upv_1.HoldChat("menu", true)
-            if u1 then
-                local v30 = tbl_upv_2[u1]
-                u1 = nil
-                if v30 then
-                    v30.close(true)
-                end
-            end
-            u1 = a1
-            if u8 then
-                u8 = false
-                refreshPadBlock()
-                tbl_upv_1.FocusChanged:Fire()
-            end
-            GuiService_upv_1.SelectedObject = nil
-            v29.open(...)
-            local v31
-            if v29.blur ~= false then
-                v31 = true
-            else
-                v31 = false
-            end
-            setBlur(v31)
-            tbl_upv_3.Menu = true
-            applyMouse()
-            selectOwner(true)
-            refreshPadBlock()
-            tbl_upv_1.Changed:Fire(a1)
-        else
-            v29.open(...)
+
+    if not v117 then
+        warn("[UI] unknown menu " .. key)
+        return
+    end
+
+    if v13 == key then
+        v117.open(...)
+        return
+    end
+
+    v11.HoldChat("menu", true)
+
+    if v13 then
+        local v118 = v12[v13]
+        v13 = nil
+
+        if v118 then
+            v118.close(true)
         end
-    else
-        warn("[UI] unknown menu " .. a1)
     end
+
+    v13 = key
+
+    if v53 then
+        v53 = false
+        refreshPadBlock()
+        v11.FocusChanged:Fire()
+    end
+
+    guiService.SelectedObject = nil
+    v117.open(...)
+    setBlur(v117.blur ~= false)
+    v14.Menu = true
+    applyMouse()
+    selectOwner(true)
+    refreshPadBlock()
+    v11.Changed:Fire(key)
 end
-function tbl_upv_1.Toggle(a1, ...)
+
+function v11.Toggle(a119, ...)
     --[[
       name: Toggle
       line: 471
       upvalues:
-        u1 (ref,  index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v13 (ref,  index: 1)
+        v11 (copy, index: 2)
     ]]
-    if u1 ~= a1 then
-        tbl_upv_1.Open(a1, ...)
-    else
-        tbl_upv_1.Close(a1)
+    if v13 == a119 then
+        v11.Close(a119)
+        return
     end
+
+    v11.Open(a119, ...)
 end
-function tbl_upv_1.CloseAll(a1)
+
+function v11.CloseAll(a120)
     --[[
       name: CloseAll
       line: 479
       upvalues:
-        u1 (ref,  index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v13 (ref,  index: 1)
+        v11 (copy, index: 2)
     ]]
-    if not u1 then
-        return
+    if v13 then
+        v11.Close(v13, a120)
     end
-    tbl_upv_1.Close(u1, a1)
 end
-function tbl_upv_1.Back()
+
+function v11.Back()
     --[[
       name: Back
       line: 487
       upvalues:
-        u1 (ref,  index: 1)
-        tbl_upv_2 (copy, index: 2)
-        tbl_upv_1 (copy, index: 3)
-        tbl_upv_7 (copy, index: 4)
-        u8 (ref,  index: 5)
-        GuiService_upv_1 (copy, index: 6)
+        v13 (ref,  index: 1)
+        v12 (copy, index: 2)
+        v11 (copy, index: 3)
+        v52 (copy, index: 4)
+        v53 (ref,  index: 5)
+        guiService (copy, index: 6)
         refreshPadBlock (copy, index: 7)
     ]]
-    local v32, v33 = nil, nil
-    if u1 then
-        v32 = tbl_upv_2[u1]
-        if v32 and v32.back then
-            local success_4, v34 = pcall(v32.back)
-            if success_4 and v34 then
+    if v13 then
+        local v121 = v12[v13]
+
+        if v121 and v121.back then
+            local success, result = pcall(v121.back)
+
+            if success and result then
                 return true
             end
         end
-        tbl_upv_1.Close(u1)
+
+        v11.Close(v13)
+
         return true
-    end
-    v33 = tbl_upv_7[#tbl_upv_7]
-    if v33 then
-        if not v33.back then
-            return false
+    elseif const v124 = v52[#v52] then
+        if v124.back then
+            local success, result = pcall(v124.back)
+            return success and (result == true)
         end
-        local success_5, v35 = pcall(v33.back)
-        return success_5 and (v35 == true)
-    elseif u8 then
-        if u8 then
-            u8 = false
-            GuiService_upv_1.SelectedObject = nil
-            refreshPadBlock()
-            tbl_upv_1.FocusChanged:Fire()
-        end
-        return true
-    else
+
         return false
     end
+
+    if not v53 then
+        return false
+    end
+
+    if v53 then
+        v53 = false
+        guiService.SelectedObject = nil
+        refreshPadBlock()
+        v11.FocusChanged:Fire()
+    end
+
+    return true
 end
-Keybinds_upv_1.OnInput(
+
+Keybinds.OnInput(
     "Began",
-    function(a1)
+    function(a127)
         --[[
           line: 514
           upvalues:
-            tbl_upv_8 (copy, index: 1)
-            tbl_upv_1 (copy, index: 2)
+            v67 (copy, index: 1)
+            v11 (copy, index: 2)
         ]]
-        local KeyCode_1 = a1.KeyCode
-        if KeyCode_1 == Enum.KeyCode.ButtonA or KeyCode_1 == Enum.KeyCode.ButtonB then
-            tbl_upv_8[KeyCode_1] = true
+        local keyCode = a127.KeyCode
+
+        if keyCode == Enum.KeyCode.ButtonA or keyCode == Enum.KeyCode.ButtonB then
+            v67[keyCode] = true
         end
-        if KeyCode_1 ~= Enum.KeyCode.ButtonB then
-            return
+
+        if keyCode == Enum.KeyCode.ButtonB then
+            v11.Back()
         end
-        tbl_upv_1.Back()
     end
 )
-Keybinds_upv_1.OnInput(
+
+Keybinds.OnInput(
     "Ended",
-    function(a1)
+    function(a129)
         --[[
           line: 523
           upvalues:
-            tbl_upv_8 (copy, index: 1)
+            v67 (copy, index: 1)
         ]]
-        local KeyCode_2 = a1.KeyCode
-        if KeyCode_2 ~= Enum.KeyCode.ButtonA and KeyCode_2 ~= Enum.KeyCode.ButtonB then
-            return
+        local keyCode = a129.KeyCode
+
+        if keyCode == Enum.KeyCode.ButtonA or keyCode == Enum.KeyCode.ButtonB then
+            v67[keyCode] = nil
         end
-        tbl_upv_8[KeyCode_2] = nil
     end
 )
-Keybinds_upv_1.OnInput(
+
+Keybinds.OnInput(
     "Changed",
-    function(a1)
+    function(a131)
         --[[
           line: 530
           upvalues:
-            u8 (ref,  index: 1)
-            GuiService_upv_1 (copy, index: 2)
+            v53 (ref,  index: 1)
+            guiService (copy, index: 2)
             refreshPadBlock (copy, index: 3)
-            tbl_upv_1 (copy, index: 4)
+            v11 (copy, index: 4)
         ]]
-        if not u8 or a1.KeyCode ~= Enum.KeyCode.Thumbstick1 or not (a1.Position.Magnitude > 0.6) or not u8 then
-            return
+        if v53 and a131.KeyCode == Enum.KeyCode.Thumbstick1 and 0.6 < a131.Position.Magnitude and v53 then
+            v53 = false
+            guiService.SelectedObject = nil
+            refreshPadBlock()
+            v11.FocusChanged:Fire()
         end
-        u8 = false
-        GuiService_upv_1.SelectedObject = nil
-        refreshPadBlock()
-        tbl_upv_1.FocusChanged:Fire()
     end
 )
-GuiService_upv_1:GetPropertyChangedSignal("SelectedObject"):Connect(
+
+guiService:GetPropertyChangedSignal("SelectedObject"):Connect(
     function()
         --[[
           line: 536
           upvalues:
-            GuiService_upv_1 (copy, index: 1)
-            u8 (ref,  index: 2)
+            guiService (copy, index: 1)
+            v53 (ref,  index: 2)
             refreshPadBlock (copy, index: 3)
-            tbl_upv_1 (copy, index: 4)
-            UI_upv_1 (copy, index: 5)
-            u1 (ref,  index: 6)
-            tbl_upv_7 (copy, index: 7)
+            v11 (copy, index: 4)
+            UI (copy, index: 5)
+            v13 (ref,  index: 6)
+            v52 (copy, index: 7)
         ]]
-        if GuiService_upv_1.SelectedObject ~= nil then
+        if guiService.SelectedObject ~= nil then
             return
         end
-        if u8 then
-            if not u8 then
-                return
+
+        if not v53 then
+            if UI.Gamepad and (v13 or v52[#v52]) then
+                task.defer(v11.Reselect)
             end
-            u8 = false
-            refreshPadBlock()
-            tbl_upv_1.FocusChanged:Fire()
-        elseif UI_upv_1.Gamepad and (u1 or tbl_upv_7[#tbl_upv_7]) then
-            task.defer(tbl_upv_1.Reselect)
+
+            return
         end
+
+        if not v53 then
+            return
+        end
+
+        v53 = false
+        refreshPadBlock()
+        v11.FocusChanged:Fire()
     end
 )
-local u14 = 0
+
+local v132 = 0
+
 task.spawn(
     function()
         --[[
           line: 550
           upvalues:
-            u8 (ref,  index: 1)
+            v53 (ref,  index: 1)
             usable (copy, index: 2)
-            GuiService_upv_1 (copy, index: 3)
-            Players_upv_1 (copy, index: 4)
+            guiService (copy, index: 3)
+            players (copy, index: 4)
             refreshPadBlock (copy, index: 5)
-            tbl_upv_1 (copy, index: 6)
-            u1 (ref,  index: 7)
-            tbl_upv_7 (copy, index: 8)
-            u14 (ref,  index: 9)
+            v11 (copy, index: 6)
+            v13 (ref,  index: 7)
+            v52 (copy, index: 8)
+            v132 (ref,  index: 9)
         ]]
-        task.wait(0.5)
-        local v36 = nil
-        if u8 then
-            if usable(GuiService_upv_1.SelectedObject) then
-                if Players_upv_1.LocalPlayer:GetAttribute("State") == "Match" and u8 then
-                    u8 = false
-                    GuiService_upv_1.SelectedObject = nil
-                    refreshPadBlock()
-                    tbl_upv_1.FocusChanged:Fire()
-                    v36 = u1 or tbl_upv_7[#tbl_upv_7]
-                    if v36 then
-                        local success_6, v37 = pcall(v36.select)
-                        if success_6 and usable(v37) then
-                            u14 = 0
-                        else
-                            u14 = u14 + 1
-                            if not (u14 >= 4) then
-                                return
-                            end
-                            u14 = 0
-                            tbl_upv_1.PopFocus(v36.key)
-                        end
-                    else
-                        u14 = 0
+        while true do
+            local v133
+            local v134, v135 = false, false
+            task.wait(0.5)
+
+            if v53 then
+                if usable(guiService.SelectedObject) then
+                    if players.LocalPlayer:GetAttribute("State") == "Match" then
+                        v134 = true
                     end
                 else
-                    v36 = u1 or tbl_upv_7[#tbl_upv_7]
-                    if v36 then
-                        local success_6, v37 = pcall(v36.select)
-                        if success_6 and usable(v37) then
-                            u14 = 0
-                        else
-                            u14 = u14 + 1
-                            if not (u14 >= 4) then
-                                return
-                            end
-                            u14 = 0
-                            tbl_upv_1.PopFocus(v36.key)
-                        end
-                    else
-                        u14 = 0
-                    end
-                end
-            elseif u8 then
-                u8 = false
-                GuiService_upv_1.SelectedObject = nil
-                refreshPadBlock()
-                tbl_upv_1.FocusChanged:Fire()
-                v36 = u1 or tbl_upv_7[#tbl_upv_7]
-                if v36 then
-                    local success_6, v37 = pcall(v36.select)
-                    if success_6 and usable(v37) then
-                        u14 = 0
-                    else
-                        u14 = u14 + 1
-                        if not (u14 >= 4) then
-                            return
-                        end
-                        u14 = 0
-                        tbl_upv_1.PopFocus(v36.key)
-                    end
-                else
-                    u14 = 0
-                end
-            else
-                v36 = u1 or tbl_upv_7[#tbl_upv_7]
-                if v36 then
-                    local success_6, v37 = pcall(v36.select)
-                    if success_6 and usable(v37) then
-                        u14 = 0
-                    else
-                        u14 = u14 + 1
-                        if not (u14 >= 4) then
-                            return
-                        end
-                        u14 = 0
-                        tbl_upv_1.PopFocus(v36.key)
-                    end
-                else
-                    u14 = 0
+                    v134 = true
                 end
             end
-        else
-            v36 = u1 or tbl_upv_7[#tbl_upv_7]
-            if v36 then
-                local success_6, v37 = pcall(v36.select)
-                if success_6 and usable(v37) then
-                    u14 = 0
-                else
-                    u14 = u14 + 1
-                    if not (u14 >= 4) then
-                        return
+
+            if v134 and v53 then
+                v53 = false
+                guiService.SelectedObject = nil
+                refreshPadBlock()
+                v11.FocusChanged:Fire()
+            end
+
+            if v13 then
+                v133 = nil
+            else
+                v133 = v52[#v52]
+            end
+
+            if v133 then
+                local success, result = pcall(v133.select)
+
+                if success then
+                    if usable(result) then
+                        v132 = 0
+                    else
+                        v135 = true
                     end
-                    u14 = 0
-                    tbl_upv_1.PopFocus(v36.key)
+                else
+                    v135 = true
                 end
             else
-                u14 = 0
+                v132 = 0
+            end
+
+            if v135 then
+                v132 += 1
+
+                if 4 <= v132 then
+                    v132 = 0
+                    v11.PopFocus(v133.key)
+                end
             end
         end
     end
 )
-UI_upv_1.GamepadChanged:Connect(
-    function(a1)
+
+UI.GamepadChanged:Connect(
+    function(a138)
         --[[
           line: 575
           upvalues:
             selectOwner (copy, index: 1)
-            u8 (ref,  index: 2)
-            GuiService_upv_1 (copy, index: 3)
+            v53 (ref,  index: 2)
+            guiService (copy, index: 3)
             refreshPadBlock (copy, index: 4)
         ]]
-        if a1 then
+        if a138 then
             selectOwner(true)
         else
-            u8 = false
-            GuiService_upv_1.SelectedObject = nil
+            v53 = false
+            guiService.SelectedObject = nil
         end
+
         refreshPadBlock()
     end
 )
-function tbl_upv_1.Reasons()
+
+function v11.Reasons()
     --[[
       name: Reasons
       line: 586
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v14 (copy, index: 1)
     ]]
-    local tbl_12 = {}
-    for key_4 in tbl_upv_3 do
-        table.insert(tbl_12, key_4)
+    local v139 = {}
+
+    for v140 in v14 do
+        table.insert(v139, v140)
     end
-    table.sort(tbl_12)
-    return tbl_12
+
+    table.sort(v139)
+
+    return v139
 end
-RunService_1:BindToRenderStep(
+
+runService:BindToRenderStep(
     "TribesUIMouse",
     Enum.RenderPriority.Camera.Value + 5,
     function()
         --[[
           line: 597
           upvalues:
-            tbl_upv_3 (copy, index: 1)
-            u1 (ref,  index: 2)
+            v14 (copy, index: 1)
+            v13 (ref,  index: 2)
             applyMouse (copy, index: 3)
-            u2 (ref,  index: 4)
-            tbl_upv_1 (copy, index: 5)
-            UserInputService_upv_1 (copy, index: 6)
+            v15 (ref,  index: 4)
+            v11 (copy, index: 5)
+            userInputService (copy, index: 6)
         ]]
-        if tbl_upv_3.Menu and u1 == nil then
-            tbl_upv_3.Menu = nil
+        if v14.Menu and v13 == nil then
+            v14.Menu = nil
             applyMouse()
         end
-        if u2 then
-            local v38 = tbl_upv_1.Camera()
-            if not (v38) then
-                UserInputService_upv_1.MouseBehavior = Enum.MouseBehavior.Default
+
+        if v15 then
+            if not v11.Camera() then
+                userInputService.MouseBehavior = Enum.MouseBehavior.Default
             end
-            UserInputService_upv_1.MouseIconEnabled = true
+
+            userInputService.MouseIconEnabled = true
         end
     end
 )
-return tbl_upv_1
+
+return v11

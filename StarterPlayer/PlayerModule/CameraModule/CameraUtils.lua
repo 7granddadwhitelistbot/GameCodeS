@@ -1,338 +1,455 @@
-local Players_upv_1 = game:GetService("Players")
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local UserGameSettings_upv_1 = UserSettings():GetService("UserGameSettings")
-local tbl_upv_1 = {}
-local function round(a1)
+local players = game:GetService("Players")
+local userInputService = game:GetService("UserInputService")
+local v3 = UserSettings():GetService("UserGameSettings")
+local v4 = {}
+
+local function round(a6)
     --[[
       name: round
       line: 12
     ]]
-    return (math.floor(a1 + 0.5))
+    return (math.floor(a6 + 0.5))
 end
-local tbl_upv_2 = {}
-tbl_upv_2.__index = tbl_upv_2
-function tbl_upv_2.new(a1, a2)
+
+local Spring = {}
+Spring.__index = Spring
+
+function Spring.new(freq, a9)
     --[[
       name: new
-      line: 21
+      line: 22
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        Spring (copy, index: 1)
     ]]
-    return (setmetatable({vel = 0, freq = a1, goal = a2, pos = a2}, tbl_upv_2))
+    return (setmetatable({vel = 0, freq = freq, goal = a9, pos = a9}, Spring))
 end
-function tbl_upv_2.step(a1, a2)
+
+function Spring.step(self, a11)
     --[[
       name: step
-      line: 31
+      line: 32
     ]]
-    local v1 = a1.freq * 2 * math.pi
-    local goal_1 = a1.goal
-    local vel_1 = a1.vel
-    local v2 = a1.pos - goal_1
-    local v3 = math.exp(-v1 * a2)
-    local v4 = ((v2 * ((v1 * a2) + 1)) + (vel_1 * a2)) * v3 + goal_1
-    a1.pos = v4
-    a1.vel = ((vel_1 * (1 - (v1 * a2))) - (v2 * ((v1 * v1) * a2))) * v3
-    return v4
+    local v12 = self.freq * 2 * math.pi
+    local goal = self.goal
+    local pos = self.pos
+    local vel = self.vel
+    local v16 = pos - goal
+    local v17 = math.exp(-v12 * a11)
+    local pos2 = (v16 * ((v12 * a11) + 1) + (vel * a11)) * v17 + goal
+    self.pos, self.vel = pos2, (vel * (1 - (v12 * a11)) - (v16 * ((v12 * v12) * a11))) * v17
+
+    return pos2
 end
-tbl_upv_1.Spring = tbl_upv_2
-function tbl_upv_1.map(a1, a2, a3, a4, a5)
+
+v4.Spring = Spring
+
+function v4.map(a19, a20, a21, a22, a23)
     --[[
       name: map
-      line: 53
+      line: 54
     ]]
-    return (((a1 - a2) * (a5 - a4)) / (a3 - a2)) + a4
+    return ((a19 - a20) * (a23 - a22) / (a21 - a20)) + a22
 end
-function tbl_upv_1.mapClamp(a1, a2, a3, a4, a5)
+
+function v4.mapClamp(a24, a25, a26, a27: number, a28: number)
     --[[
       name: mapClamp
-      line: 58
+      line: 59
     ]]
-    return (math.clamp((((a1 - a2) * (a5 - a4)) / (a3 - a2)) + a4, math.min(a4, a5), math.max(a4, a5)))
+    return (math.clamp(((a24 - a25) * (a28 - a27) / (a26 - a25)) + a27, math.min(a27, a28), (math.max(a27, a28))))
 end
-function tbl_upv_1.getLooseBoundingSphere(a1)
+
+function v4.getLooseBoundingSphere(a29)
     --[[
       name: getLooseBoundingSphere
-      line: 67
+      line: 68
     ]]
-    local v5 = table.create(#a1)
-    for key_1, value_1 in pairs(a1) do
-        v5[key_1] = value_1.Position
+    local value
+    local value2
+    local values = table.create(#a29)
+
+    for valueKey, v34 in pairs(a29) do
+        values[valueKey] = v34.Position
     end
-    local v6 = v5[1]
-    local Magnitude_1 = 0
-    local v7 = v6
-    for _, value_2 in ipairs(v5) do
-        local Magnitude_2 = (value_2 - v6).Magnitude
-        if Magnitude_1 < Magnitude_2 then
-            Magnitude_1, v7 = Magnitude_2, value_2
+
+    local value3 = values[1]
+    local maxMagnitude = 0
+    value = value3
+
+    for _, value4 in ipairs(values) do
+        local magnitude = (value4 - value3).Magnitude
+
+        if maxMagnitude < magnitude then
+            maxMagnitude, value = magnitude, value4
         end
     end
-    local v8 = 0
-    local v9
-    v9, Magnitude_1 = v8, v7
-    for _, value_3 in ipairs(v5) do
-        local Magnitude_3 = (value_3 - v7).Magnitude
-        if v9 < Magnitude_3 then
-            v9, Magnitude_1 = Magnitude_3, value_3
+
+    local maxMagnitude2 = 0
+    value2 = value
+
+    for _, value5 in ipairs(values) do
+        local magnitude = (value5 - value).Magnitude
+
+        if maxMagnitude2 < magnitude then
+            maxMagnitude2, value2 = magnitude, value5
         end
     end
-    local v10 = (v7 + Magnitude_1) * 0.5
-    local v11 = (v7 - Magnitude_1).Magnitude * 0.5
-    local v12
-    v9, v12 = v10, v11
-    for _, value_4 in ipairs(v5) do
-        Magnitude_1 = (value_4 - v9).Magnitude
-        if v12 < Magnitude_1 then
-            v9, v12 = v9 + ((Magnitude_1 - v12) * 0.5) * (value_4 - v9).Unit, (Magnitude_1 + v12) * 0.5
+
+    local v44 = (value + value2) * 0.5
+    local v45 = (value - value2).Magnitude * 0.5
+
+    for _, value6 in ipairs(values) do
+        local magnitude = (value6 - v44).Magnitude
+
+        if v45 < magnitude then
+            v44 += (magnitude - v45) * 0.5 * (value6 - v44).Unit
+            v45 = (magnitude + v45) * 0.5
         end
     end
-    return v9, v12
+
+    return v44, v45
 end
-function tbl_upv_1.sanitizeAngle(a1)
+
+function v4.sanitizeAngle(a49)
     --[[
       name: sanitizeAngle
-      line: 123
+      line: 124
     ]]
-    return ((a1 + math.pi) % math.tau) - math.pi
+    return ((a49 + math.pi) % math.tau) - math.pi
 end
-function tbl_upv_1.Round(a1, a2)
+
+function v4.Round(a50, a51)
     --[[
       name: Round
-      line: 128
+      line: 129
     ]]
-    local v13 = 10 ^ a2
-    return math.floor((a1 * v13) + 0.5) / v13
+    local v52 = 10 ^ a51
+    return math.floor((a50 * v52) + 0.5) / v52
 end
-function tbl_upv_1.IsFinite(a1)
+
+function v4.IsFinite(a53)
     --[[
       name: IsFinite
-      line: 133
+      line: 134
     ]]
-    return (a1 == a1) and ((a1 ~= math.huge) and (a1 ~= -math.huge))
+    return a53 == a53 and a53 ~= math.huge and (a53 ~= -math.huge)
 end
-function tbl_upv_1.IsFiniteVector3(a1)
+
+function v4.IsFiniteVector3(a54)
     --[[
       name: IsFiniteVector3
-      line: 137
+      line: 138
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local v14 = tbl_upv_1.IsFinite(a1.X) and (tbl_upv_1.IsFinite(a1.Y) and (tbl_upv_1.IsFinite(a1.Z)))
-    return v14
+    return v4.IsFinite(a54.X) and v4.IsFinite(a54.Y) and v4.IsFinite(a54.Z)
 end
-function tbl_upv_1.GetAngleBetweenXZVectors(a1, a2)
+
+function v4.GetAngleBetweenXZVectors(a55, a56)
     --[[
       name: GetAngleBetweenXZVectors
-      line: 142
+      line: 143
     ]]
-    return (math.atan2((a2.X * a1.Z) - (a2.Z * a1.X), (a2.X * a1.X) + (a2.Z * a1.Z)))
+    return (math.atan2((a56.X * a55.Z) - (a56.Z * a55.X), a56.X * a55.X + (a56.Z * a55.Z)))
 end
-function tbl_upv_1.RotateVectorByAngleAndRound(a1, a2, a3)
+
+function v4.RotateVectorByAngleAndRound(a57, a58, a59)
     --[[
       name: RotateVectorByAngleAndRound
-      line: 146
+      line: 147
     ]]
-    if not (a1.Magnitude > 0) then
-        return 0
+    if 0 < a57.Magnitude then
+        local unit = a57.Unit
+        local v61 = math.atan2(unit.Z, unit.X)
+
+        return (math.floor(((math.atan2(unit.Z, unit.X) + a58) / a59) + 0.5) * a59) - v61
     end
-    local Unit_1 = a1.Unit
-    local v15 = math.atan2(Unit_1.Z, Unit_1.X)
-    return (math.floor(((math.atan2(Unit_1.Z, Unit_1.X) + a2) / a3) + 0.5) * a3) - v15
+
+    return 0
 end
-local function SCurveTranform(a1)
+
+local function SCurveTranform(a63: number)
     --[[
       name: SCurveTranform
-      line: 160
+      line: 161
     ]]
-    local v16 = math.clamp(a1, -1, 1)
-    if v16 >= 0 then
-        return (v16 * 0.35) / ((0.35 - v16) + 1)
+    local clampedValue = math.clamp(a63, -1, 1)
+
+    if not (0 <= clampedValue) then
+        return -(-clampedValue * 0.8 / ((clampedValue + 0.8) + 1))
     end
-    return -((-v16 * 0.8) / ((v16 + 0.8) + 1))
+
+    return clampedValue * 0.35 / ((0.35 - clampedValue) + 1)
 end
-local function toSCurveSpace(a1)
+
+local function toSCurveSpace(a66: number)
     --[[
       name: toSCurveSpace
-      line: 169
+      line: 170
     ]]
-    return (((math.abs(a1) * 2) - 1) * 1.1) - 0.1
+    return (((math.abs(a66) * 2) - 1) * 1.1) - 0.1
 end
-local function fromSCurveSpace(a1)
+
+local function fromSCurveSpace(a68)
     --[[
       name: fromSCurveSpace
-      line: 173
+      line: 174
     ]]
-    return (a1 / 2) + 0.5
+    return (a68 / 2) + 0.5
 end
-function tbl_upv_1.GamepadLinearToCurve(a1)
+
+function v4.GamepadLinearToCurve(a69)
     --[[
       name: GamepadLinearToCurve
-      line: 177
+      line: 178
     ]]
-    local function onAxis(a2)
+    local v70
+    local v71, newVector2
+
+    local function onAxis(a74: number)
         --[[
           name: onAxis
-          line: 178
+          line: 179
         ]]
-        local v17 = ((a2 < 0) and -1) or 1
-        local v18 = math.clamp((((math.abs(math.abs(a2)) * 2) - 1) * 1.1) - 0.1, -1, 1)
-        return (math.clamp((((((v18 >= 0) and (v18 * 0.35 / ((0.35 - v18) + 1))) or (-((-v18 * 0.8) / ((v18 + 0.8) + 1)))) / 2) + 0.5) * v17, -1, 1))
+        local v75
+        local v76 = 1
+
+        if a74 < 0 then
+            v76 = -1
+        end
+
+        local clampedValue = math.clamp((((math.abs((math.abs(a74))) * 2) - 1) * 1.1) - 0.1, -1, 1)
+
+        if not (0 <= clampedValue) then
+            v75 = -(-clampedValue * 0.8 / ((clampedValue + 0.8) + 1))
+        else
+            v75 = clampedValue * 0.35 / ((0.35 - clampedValue) + 1)
+        end
+
+        return (math.clamp(((v75 / 2) + 0.5) * v76, -1, 1))
     end
-    local X_1 = a1.X
-    local v19 = ((X_1 < 0) and -1) or 1
-    local v20 = math.clamp((((math.abs(math.abs(X_1)) * 2) - 1) * 1.1) - 0.1, -1, 1)
-    local v21 = math.clamp((((((v20 >= 0) and (v20 * 0.35 / ((0.35 - v20) + 1))) or (-((-v20 * 0.8) / ((v20 + 0.8) + 1)))) / 2) + 0.5) * v19, -1, 1)
-    local Y_1 = a1.Y
-    local v22 = ((Y_1 < 0) and -1) or 1
-    local v23 = math.clamp((((math.abs(math.abs(Y_1)) * 2) - 1) * 1.1) - 0.1, -1, 1)
-    return Vector2.new(v21, math.clamp((((((v23 >= 0) and (v23 * 0.35 / ((0.35 - v23) + 1))) or (-((-v23 * 0.8) / ((v23 + 0.8) + 1)))) / 2) + 0.5) * v22, -1, 1))
+
+    local newVector22 = Vector2.new
+    local x = a69.X
+    local v80 = 1
+
+    if x < 0 then
+        v80 = -1
+    end
+
+    local clampedValue = math.clamp((((math.abs((math.abs(x))) * 2) - 1) * 1.1) - 0.1, -1, 1)
+
+    if not (0 <= clampedValue) then
+        v70 = -(-clampedValue * 0.8 / ((clampedValue + 0.8) + 1))
+    else
+        v70 = clampedValue * 0.35 / ((0.35 - clampedValue) + 1)
+    end
+
+    local x2 = math.clamp(((v70 / 2) + 0.5) * v80, -1, 1)
+    local y = a69.Y
+    local v84 = 1
+
+    if y < 0 then
+        v84 = -1
+    end
+
+    local clampedValue2 = math.clamp((((math.abs((math.abs(y))) * 2) - 1) * 1.1) - 0.1, -1, 1)
+
+    if not (0 <= clampedValue2) then
+        v71 = -(-clampedValue2 * 0.8 / ((clampedValue2 + 0.8) + 1))
+        newVector2 = newVector22
+    else
+        v71 = clampedValue2 * 0.35 / ((0.35 - clampedValue2) + 1)
+        newVector2 = newVector22
+    end
+
+    return newVector2(x2, (math.clamp(((v71 / 2) + 0.5) * v84, -1, 1)))
 end
-function tbl_upv_1.ConvertCameraModeEnumToStandard(a1)
+
+function v4.ConvertCameraModeEnumToStandard(a86)
     --[[
       name: ConvertCameraModeEnumToStandard
-      line: 191
+      line: 192
     ]]
-    if a1 ~= Enum.TouchCameraMovementMode.Default then
-        if a1 ~= Enum.ComputerCameraMovementMode.Default and a1 ~= Enum.TouchCameraMovementMode.Classic and a1 ~= Enum.DevTouchCameraMovementMode.Classic and a1 ~= Enum.DevComputerCameraMovementMode.Classic and a1 ~= Enum.ComputerCameraMovementMode.Classic then
-            if a1 ~= Enum.TouchCameraMovementMode.Follow and a1 ~= Enum.DevTouchCameraMovementMode.Follow and a1 ~= Enum.DevComputerCameraMovementMode.Follow and a1 ~= Enum.ComputerCameraMovementMode.Follow then
-                if a1 ~= Enum.TouchCameraMovementMode.Orbital and a1 ~= Enum.DevTouchCameraMovementMode.Orbital and a1 ~= Enum.DevComputerCameraMovementMode.Orbital and a1 ~= Enum.ComputerCameraMovementMode.Orbital then
-                    if a1 ~= Enum.ComputerCameraMovementMode.CameraToggle and a1 ~= Enum.DevComputerCameraMovementMode.CameraToggle then
-                        if a1 ~= Enum.DevTouchCameraMovementMode.UserChoice and a1 ~= Enum.DevComputerCameraMovementMode.UserChoice then
-                            return Enum.ComputerCameraMovementMode.Classic
-                        end
-                        return Enum.DevComputerCameraMovementMode.UserChoice
-                    end
-                    return Enum.ComputerCameraMovementMode.CameraToggle
-                end
-                return Enum.ComputerCameraMovementMode.Orbital
-            end
-            return Enum.ComputerCameraMovementMode.Follow
-        end
+    if a86 == Enum.TouchCameraMovementMode.Default then
+        return Enum.ComputerCameraMovementMode.Follow
+    end
+    if a86 == Enum.ComputerCameraMovementMode.Default then
         return Enum.ComputerCameraMovementMode.Classic
     end
-    return Enum.ComputerCameraMovementMode.Follow
+    if a86 == Enum.TouchCameraMovementMode.Classic
+        or a86 == Enum.DevTouchCameraMovementMode.Classic
+        or a86 == Enum.DevComputerCameraMovementMode.Classic
+        or a86 == Enum.ComputerCameraMovementMode.Classic
+    then
+        return Enum.ComputerCameraMovementMode.Classic
+    end
+    if a86 == Enum.TouchCameraMovementMode.Follow
+        or a86 == Enum.DevTouchCameraMovementMode.Follow
+        or a86 == Enum.DevComputerCameraMovementMode.Follow
+        or a86 == Enum.ComputerCameraMovementMode.Follow
+    then
+        return Enum.ComputerCameraMovementMode.Follow
+    end
+    if a86 == Enum.TouchCameraMovementMode.Orbital
+        or a86 == Enum.DevTouchCameraMovementMode.Orbital
+        or a86 == Enum.DevComputerCameraMovementMode.Orbital
+        or a86 == Enum.ComputerCameraMovementMode.Orbital
+    then
+        return Enum.ComputerCameraMovementMode.Orbital
+    end
+    if a86 == Enum.ComputerCameraMovementMode.CameraToggle or a86 == Enum.DevComputerCameraMovementMode.CameraToggle then
+        return Enum.ComputerCameraMovementMode.CameraToggle
+    end
+    if a86 ~= Enum.DevTouchCameraMovementMode.UserChoice and a86 ~= Enum.DevComputerCameraMovementMode.UserChoice then
+        return Enum.ComputerCameraMovementMode.Classic
+    end
+
+    return Enum.DevComputerCameraMovementMode.UserChoice
 end
+
 local function getMouse()
     --[[
       name: getMouse
-      line: 240
+      line: 249
       upvalues:
-        Players_upv_1 (copy, index: 1)
+        players (copy, index: 1)
     ]]
-    local LocalPlayer_1 = Players_upv_1.LocalPlayer
-    if not (LocalPlayer_1) then
-        Players_upv_1:GetPropertyChangedSignal("LocalPlayer"):Wait()
-        LocalPlayer_1 = Players_upv_1.LocalPlayer
+    local localPlayer = players.LocalPlayer
+    if not localPlayer then
+        players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+        localPlayer = players.LocalPlayer
     end
-    assert(LocalPlayer_1)
-    return LocalPlayer_1:GetMouse()
+
+    assert(localPlayer)
+
+    return localPlayer:GetMouse()
 end
-local Icon_upv_1 = ""
-local u1 = nil
-function tbl_upv_1.setMouseIconOverride(a1)
+
+local icon = ""
+local v90 = nil
+
+function v4.setMouseIconOverride(mouseIconOverride: string)
     --[[
       name: setMouseIconOverride
-      line: 252
+      line: 261
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
-        Icon_upv_1 (ref,  index: 3)
+        players (copy, index: 1)
+        v90 (ref,  index: 2)
+        icon (ref,  index: 3)
     ]]
-    local LocalPlayer_2 = Players_upv_1.LocalPlayer
-    if not (LocalPlayer_2) then
-        Players_upv_1:GetPropertyChangedSignal("LocalPlayer"):Wait()
-        LocalPlayer_2 = Players_upv_1.LocalPlayer
+    local localPlayer = players.LocalPlayer
+    if not localPlayer then
+        players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+        localPlayer = players.LocalPlayer
     end
-    assert(LocalPlayer_2)
-    local v24 = LocalPlayer_2:GetMouse()
-    if v24.Icon ~= u1 then
-        Icon_upv_1 = v24.Icon
+
+    assert(localPlayer)
+    local mouse = localPlayer:GetMouse()
+
+    if mouse.Icon ~= v90 then
+        icon = mouse.Icon
     end
-    v24.Icon = a1
-    u1 = a1
+
+    mouse.Icon = mouseIconOverride
+    v90 = mouseIconOverride
 end
-function tbl_upv_1.restoreMouseIcon()
+
+function v4.restoreMouseIcon()
     --[[
       name: restoreMouseIcon
-      line: 263
+      line: 272
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
-        Icon_upv_1 (ref,  index: 3)
+        players (copy, index: 1)
+        v90 (ref,  index: 2)
+        icon (ref,  index: 3)
     ]]
-    local LocalPlayer_3 = Players_upv_1.LocalPlayer
-    if not (LocalPlayer_3) then
-        Players_upv_1:GetPropertyChangedSignal("LocalPlayer"):Wait()
-        LocalPlayer_3 = Players_upv_1.LocalPlayer
+    local localPlayer = players.LocalPlayer
+    if not localPlayer then
+        players:GetPropertyChangedSignal("LocalPlayer"):Wait()
+        localPlayer = players.LocalPlayer
     end
-    assert(LocalPlayer_3)
-    local v25 = LocalPlayer_3:GetMouse()
-    if v25.Icon == u1 then
-        v25.Icon = Icon_upv_1
+
+    assert(localPlayer)
+    local mouse = localPlayer:GetMouse()
+
+    if mouse.Icon == v90 then
+        mouse.Icon = icon
     end
-    u1 = nil
+
+    v90 = nil
 end
-local u2 = Enum.MouseBehavior.Default
-local u3 = nil
-function tbl_upv_1.setMouseBehaviorOverride(a1)
+
+local mouseBehavior = Enum.MouseBehavior.Default
+local mouseBehavior2 = nil
+
+function v4.setMouseBehaviorOverride(mouseBehaviorOverride: Enum.MouseBehavior)
     --[[
       name: setMouseBehaviorOverride
-      line: 274
-      upvalues:
-        UserInputService_upv_1 (copy, index: 1)
-        u3 (ref,  index: 2)
-        u2 (ref,  index: 3)
-    ]]
-    if UserInputService_upv_1.MouseBehavior ~= u3 then
-        u2 = UserInputService_upv_1.MouseBehavior
-    end
-    UserInputService_upv_1.MouseBehavior = a1
-    u3 = a1
-end
-function tbl_upv_1.restoreMouseBehavior()
-    --[[
-      name: restoreMouseBehavior
       line: 283
       upvalues:
-        UserInputService_upv_1 (copy, index: 1)
-        u3 (ref,  index: 2)
-        u2 (ref,  index: 3)
+        userInputService (copy, index: 1)
+        mouseBehavior2 (ref,  index: 2)
+        mouseBehavior (ref,  index: 3)
     ]]
-    if UserInputService_upv_1.MouseBehavior == u3 then
-        UserInputService_upv_1.MouseBehavior = u2
+    if userInputService.MouseBehavior ~= mouseBehavior2 then
+        mouseBehavior = userInputService.MouseBehavior
     end
-    u3 = nil
+
+    userInputService.MouseBehavior = mouseBehaviorOverride
+    mouseBehavior2 = mouseBehaviorOverride
 end
-local u4 = Enum.RotationType.MovementRelative
-local u5 = nil
-function tbl_upv_1.setRotationTypeOverride(a1)
+
+function v4.restoreMouseBehavior()
     --[[
-      name: setRotationTypeOverride
+      name: restoreMouseBehavior
       line: 292
       upvalues:
-        UserGameSettings_upv_1 (copy, index: 1)
-        u5 (ref,  index: 2)
-        u4 (ref,  index: 3)
+        userInputService (copy, index: 1)
+        mouseBehavior2 (ref,  index: 2)
+        mouseBehavior (ref,  index: 3)
     ]]
-    if UserGameSettings_upv_1.RotationType ~= u5 then
-        u4 = UserGameSettings_upv_1.RotationType
+    if userInputService.MouseBehavior == mouseBehavior2 then
+        userInputService.MouseBehavior = mouseBehavior
     end
-    UserGameSettings_upv_1.RotationType = a1
-    u5 = a1
+
+    mouseBehavior2 = nil
 end
-function tbl_upv_1.restoreRotationType()
+
+local v99 = Enum.RotationType.MovementRelative
+local v100 = nil
+
+function v4.setRotationTypeOverride(rotationTypeOverride)
     --[[
-      name: restoreRotationType
+      name: setRotationTypeOverride
       line: 301
       upvalues:
-        UserGameSettings_upv_1 (copy, index: 1)
-        u5 (ref,  index: 2)
-        u4 (ref,  index: 3)
+        v3 (copy, index: 1)
+        v100 (ref,  index: 2)
+        v99 (ref,  index: 3)
     ]]
-    if UserGameSettings_upv_1.RotationType == u5 then
-        UserGameSettings_upv_1.RotationType = u4
+    if v3.RotationType ~= v100 then
+        v99 = v3.RotationType
     end
-    u5 = nil
+
+    v3.RotationType = rotationTypeOverride
+    v100 = rotationTypeOverride
 end
-return tbl_upv_1
+
+function v4.restoreRotationType()
+    --[[
+      name: restoreRotationType
+      line: 310
+      upvalues:
+        v3 (copy, index: 1)
+        v100 (ref,  index: 2)
+        v99 (ref,  index: 3)
+    ]]
+    if v3.RotationType == v100 then
+        v3.RotationType = v99
+    end
+
+    v100 = nil
+end
+
+return v4

@@ -1,1221 +1,1296 @@
-local GuiService_upv_1 = game:GetService("GuiService")
-local Players_upv_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local TweenService_upv_1 = game:GetService("TweenService")
-local tbl_1 = {}
-function tbl_1.Init(a1)
-    --[[
-      name: Init
-      line: 19
-      upvalues:
-        Players_upv_1 (copy, index: 1)
-        TweenService_upv_1 (copy, index: 2)
-        GuiService_upv_1 (copy, index: 3)
-        RunService_upv_1 (copy, index: 4)
-    ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local Portraits_upv_1 = a1.Portraits
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local u1 = UI_upv_1.new("Frame", {Visible = false, Name = "MatchHud", Size = UDim2.fromScale(1, 1), Parent = a1.Canvas.HUD})
-    local u2 = Color3.fromRGB(255, 146, 52)
-    local u3 = UI_upv_1.new("Frame", {Name = "Scoreboard", AnchorPoint = Vector2.new(0.5, 0), Size = UDim2.fromOffset(700, 96), Parent = u1})
-    a1.Scoreboard = u3
-    local v1 = UI_upv_1.Panel({Name = "Center", BackgroundTransparency = 0.2, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0), Size = UDim2.fromOffset(150, 74), Radius = UDim.new(0, 12), Trim = Colors_upv_1.Accent, Parent = u3})
-    local u4 = UI_upv_1.DisplayText({Name = "Timer", Text = "1:15", TextSize = 42, Position = UDim2.fromOffset(0, 4), Size = UDim2.new(1, 0, 0, 44), TextColor3 = Colors_upv_1.Text, Parent = v1})
-    local u5 = UI_upv_1.new("TextLabel", {Name = "Round", Text = "ROUND 1", TextSize = 15, Position = UDim2.fromOffset(0, 48), Size = UDim2.new(1, 0, 0, 20), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, Parent = v1})
-    local tbl_upv_2 = {}
-    local function makeSide(a2)
+local guiService = game:GetService("GuiService")
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+
+return {
+    Init = (function(a5)
         --[[
-          name: makeSide
-          line: 80
+          name: Init
+          line: 19
           upvalues:
-            Colors_upv_1 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-            u3 (copy, index: 3)
-            u2 (copy, index: 4)
-            Theme_upv_1 (copy, index: 5)
-            Fonts_upv_1 (copy, index: 6)
+            players (copy, index: 1)
+            tweenService (copy, index: 2)
+            guiService (copy, index: 3)
+            runService (copy, index: 4)
         ]]
-        local v2
-        if a2 then
-            v2 = Colors_upv_1.Ally
-        else
-            v2 = Colors_upv_1.Enemy
-        end
-        local new_1 = UI_upv_1.new
-        local tbl_3 = {AnchorPoint = 0, Name = 0, Position = 0, Parent = 0, Size = 0}
-        tbl_3.Name = (a2 and "Left") or "Right"
-        tbl_3.AnchorPoint = Vector2.new((a2 and 1) or 0, 0)
-        tbl_3.Position = UDim2.new(0.5, (a2 and -80) or 80, 0, 0)
-        tbl_3.Size = UDim2.fromOffset(270, 96)
-        tbl_3.Parent = u3
-        local v3 = new_1("Frame", tbl_3)
-        local new_2 = UI_upv_1.new
-        local tbl_4 = {ImageColor3 = 0, ImageTransparency = 1, Parent = 0, Image = 0, Name = "FinalGlow", Position = 0, ZIndex = 0, Size = 0}
-        tbl_4.AnchorPoint = Vector2.new(0.5, 0.5)
-        tbl_4.Position = UDim2.new((a2 and 1) or 0, (a2 and -33) or 33, 0, 30)
-        tbl_4.Size = UDim2.fromOffset(150, 136)
-        tbl_4.Image = UI_upv_1.Assets.Icons.Glow
-        tbl_4.ImageColor3 = u2
-        tbl_4.Parent = v3
-        local v4 = new_2("ImageLabel", tbl_4)
-        local v5 = UI_upv_1.Stroke(Theme_upv_1.Lighten(v2, 0.4), 2, 0.3)
-        local new_3 = UI_upv_1.new
-        local tbl_5 = {}
-        tbl_5.Name = "ScoreBox"
-        tbl_5.AnchorPoint = Vector2.new((a2 and 1) or 0, 0)
-        tbl_5.Position = UDim2.fromScale((a2 and 1) or 0, 0)
-        tbl_5.Size = UDim2.fromOffset(66, 60)
-        tbl_5.BackgroundColor3 = Color3.new(1, 1, 1)
-        tbl_5.BackgroundTransparency = 0.05
-        tbl_5[1], tbl_5[2], tbl_5[3] = UI_upv_1.Corner(12), UI_upv_1.Gradient(Theme_upv_1.Lighten(v2, 0.1), Theme_upv_1.Darken(v2, 0.35), 90), v5
-        tbl_5.Parent = v3
-        local v6 = new_3("Frame", tbl_5)
-        local v7 = UI_upv_1.DisplayText({StrokeThickness = 2.5, Text = "0", Name = "Score", TextSize = 44, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1, 1), TextColor3 = Colors_upv_1.Text, StrokeColor = Theme_upv_1.Darken(v2, 0.7), Parent = v6})
-        local v8 = UI_upv_1.new
-        local tbl_6 = {}
-        tbl_6.Name = "Pips"
-        tbl_6.AnchorPoint = Vector2.new(0.5, 0)
-        local v9 = (a2 and 1) or 0
-        tbl_6.Position = UDim2.new(v9, (a2 and -33) or 33, 0, 64)
-        tbl_6.Size = UDim2.fromOffset(66, 10)
-        tbl_6[1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 3, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)
-        tbl_6.Parent = v3
-        v6 = v8("Frame", tbl_6)
-        local new_4 = UI_upv_1.new
-        local v10 = "Frame"
-        local tbl_7 = {}
-        tbl_7.Name = "Portraits"
-        tbl_7.AnchorPoint = Vector2.new((a2 and 1) or 0, 0)
-        local v11 = (a2 and 1) or 0
-        tbl_7.Position = UDim2.new(v11, (a2 and -74) or 74, 0, 2)
-        tbl_7.Size = UDim2.fromOffset(174, 54)
-        local List_1 = UI_upv_1.List
-        local Horizontal_1 = Enum.FillDirection.Horizontal
-        local v12
-        if a2 then
-            v12 = Enum.HorizontalAlignment.Right
-        else
-            v12 = Enum.HorizontalAlignment.Left
-        end
-        tbl_7[1] = List_1(Horizontal_1, 6, v12, Enum.VerticalAlignment.Top)
-        tbl_7.Parent = v3
-        v8 = new_4(v10, tbl_7)
-        local new_5 = UI_upv_1.new
-        local v13 = "TextLabel"
-        local tbl_8 = {Visible = false, FontFace = 0, TextColor3 = 0, Parent = 0, Text = "WOLF", AnchorPoint = 0, Name = "Tribe", Position = 0, TextXAlignment = 0, TextSize = 16, Size = 0}
-        tbl_8.AnchorPoint = Vector2.new((a2 and 1) or 0, 0)
-        local v14 = (a2 and 1) or 0
-        tbl_8.Position = UDim2.new(v14, (a2 and -74) or 74, 0, 60)
-        tbl_8.Size = UDim2.fromOffset(174, 18)
-        tbl_8.FontFace = Fonts_upv_1.Heavy
-        tbl_8.TextColor3 = Theme_upv_1.Lighten(v2, 0.45)
-        local v15
-        if a2 then
-            v15 = Enum.TextXAlignment.Right
-        else
-            v15 = Enum.TextXAlignment.Left
-        end
-        tbl_8.TextXAlignment = v15
-        tbl_8.Parent = v3
-        v10 = new_5(v13, tbl_8)
-        local tbl_9 = {}
-        local v16 = tbl_9
-        for n_1 = 1, 3 do
-            local new_6 = UI_upv_1.new
-            local tbl_10 = {}
-            tbl_10.Name = "P" .. n_1
-            tbl_10.Size = UDim2.fromOffset(54, 54)
-            tbl_10.BackgroundColor3 = Theme_upv_1.Darken(v2, 0.55)
-            tbl_10.BackgroundTransparency = 0.1
-            local v17
-            if a2 then
-                v17 = 4 - n_1
-            else
-                v17 = n_1
-            end
-            tbl_10.LayoutOrder = v17
-            tbl_10.ClipsDescendants = false
-            tbl_10[1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill)
-            tbl_10.Parent = v8
-            local v18 = new_6("Frame", tbl_10)
-            local v19 = UI_upv_1.Stroke(v2, 2.5, 0)
-            v19.Parent = v18
-            local v20 = UI_upv_1.new("ImageLabel", {Name = "Img", Size = UDim2.fromScale(1, 1), ScaleType = Enum.ScaleType.Crop, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v18})
-            local v21 = UI_upv_1.new("Frame", {Name = "Dim", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Void, BackgroundTransparency = 0.35, Visible = false, ZIndex = 2, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v18})
-            local v22 = UI_upv_1.Icon("cross", 40, Colors_upv_1.Danger, {ZIndex = 3, Thickness = 5, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v18})
-            v22.Visible = false
-            v16[n_1] = {holder = v18, img = v20, stroke = v19, x = v22, dim = v21}
-        end
-        local tbl_11 = {}
-        tbl_11.frame = v3
-        tbl_11.score = v7
-        tbl_11.boxStroke = v5
-        tbl_11.glow = v4
-        tbl_11.name = v10
-        tbl_11.pips = v6
-        tbl_11.portraits = v16
-        return tbl_11
-    end
-    tbl_upv_2[1] = makeSide(true)
-    tbl_upv_2[2] = makeSide(false)
-    local function setPips(a3, a4, a5, a6)
-        --[[
-          name: setPips
-          line: 207
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-        ]]
-        local tbl_12 = {}
-        for _, value_1 in a3.pips:GetChildren() do
-            if value_1:IsA("Frame") then
-                table.insert(tbl_12, value_1)
-            end
-        end
-        for n_2 = #tbl_12 + 1, a5 do
-            table.insert(tbl_12, UI_upv_1.new("Frame", {Size = UDim2.fromOffset(12, 8), BackgroundColor3 = a6, LayoutOrder = n_2, [1] = UI_upv_1.Corner(3), Parent = a3.pips}))
-        end
-        local v23 = math.clamp(math.floor(66 / math.max(a5, 1)) - 3, 4, 14)
-        local v24, v24 = nil, nil
-        for key_1, value_2 in tbl_12 do
-            value_2.Visible = key_1 <= a5
-            value_2.Size = UDim2.fromOffset(v23, 8)
-            if key_1 <= a4 then
-                v24 = a6
-            else
-                v24 = Color3.fromRGB(52, 56, 68)
-            end
-            value_2.BackgroundColor3 = v24
-            if key_1 <= a4 then
-                v24 = 0
-            else
-                v24 = 0.25
-            end
-            value_2.BackgroundTransparency = v24
-        end
-    end
-    local u6 = -1
-    local u7 = false
-    local u8 = false
-    local u9 = v1:FindFirstChildOfClass("UIStroke")
-    local u10 = u9 and {u9.Color, u9.Transparency, u9.Thickness}
-    local function paintFinal(a7)
-        --[[
-          name: paintFinal
-          line: 275
-          upvalues:
-            u8 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            u5 (copy, index: 3)
-            tbl_upv_2 (copy, index: 4)
-            Theme_upv_1 (copy, index: 5)
-            Colors_upv_1 (copy, index: 6)
-            u9 (copy, index: 7)
-            u10 (copy, index: 8)
-            u2 (copy, index: 9)
-        ]]
-        if a7 ~= u8 then
-            u8 = a7
-            if a7 then
-                UI_upv_1.Bump(u5, 0.25)
-            else
-                local v25 = nil
-                for key_2, value_3 in tbl_upv_2 do
-                    value_3.glow.ImageTransparency = 1
-                    local boxStroke_1 = value_3.boxStroke
-                    local Lighten_1 = Theme_upv_1.Lighten
-                    if key_2 ~= 1 then
-                        v25 = Colors_upv_1.Enemy
-                    else
-                        v25 = Colors_upv_1.Ally
-                    end
-                    boxStroke_1.Color = Lighten_1(v25, 0.4)
-                    value_3.boxStroke.Transparency = 0.3
-                end
-                if u9 and u10 then
-                    u9.Color = u10[1]
-                    u9.Transparency = u10[2]
-                    u9.Thickness = u10[3]
-                end
-            end
-        end
-        if not a7 then
-            return
-        end
-        local v26 = math.sin(os.clock() * 2.4) * 0.5 + 0.5
-        local v27 = nil
-        for key_3, value_4 in tbl_upv_2 do
-            value_4.glow.ImageTransparency = 0.7 - (v26 * 0.24)
-            local boxStroke_2 = value_4.boxStroke
-            local Lighten_2 = Theme_upv_1.Lighten
-            if key_3 ~= 1 then
-                v27 = Colors_upv_1.Enemy
-            else
-                v27 = Colors_upv_1.Ally
-            end
-            boxStroke_2.Color = Lighten_2(v27, 0.4):Lerp(u2, (v26 * 0.35) + 0.35)
-            value_4.boxStroke.Transparency = 0.25 - (v26 * 0.15)
-        end
-        if not u9 then
-            return
-        end
-        u9.Color = u2
-        u9.Thickness = 1.5
-        u9.Transparency = 0.6 - (v26 * 0.3)
-    end
-    local u11 = UI_upv_1.new("TextLabel", {Visible = false, Text = "OVERTIME", Name = "Overtime", TextSize = 17, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 78), Size = UDim2.fromOffset(200, 20), FontFace = Fonts_upv_1.Title, TextColor3 = Colors_upv_1.Danger, Parent = u3})
-    UI_upv_1.TextStroke(Colors_upv_1.Void, 2, 0.1).Parent = u11
-    local function phaseText(a8)
-        --[[
-          name: phaseText
-          line: 306
-          upvalues:
-            State_upv_1 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-        ]]
-        local v28 = a8 and (a8.phase)
-        local v29 = State_upv_1.PhaseTimeLeft()
-        if v28 == "Overtime" then
-            local v30 = ((not (v29 > 0)) and "OVERTIME") or (UI_upv_1.FormatTime(v29))
-            return v30, Colors_upv_1.Danger
-        elseif v28 ~= "Live" then
-            if v28 ~= "PreRound" and v28 ~= "Intro" then
-                if v28 ~= "RoundEnd" and v28 ~= "MatchEnd" then
-                    return UI_upv_1.FormatTime(v29), Colors_upv_1.Text
-                end
-                return "0:00", Colors_upv_1.TextDim
-            end
-            return UI_upv_1.FormatTime(State_upv_1.RoundTime()), Colors_upv_1.TextDim
-        else
-            local v31 = UI_upv_1.FormatTime(v29)
-            if v29 <= 10 then
-                return v31, Colors_upv_1.Danger
-            end
-            return v31, Colors_upv_1.Text
-        end
-    end
-    local function tickTimer()
-        --[[
-          name: tickTimer
-          line: 335
-          upvalues:
-            State_upv_1 (copy, index: 1)
-            phaseText (copy, index: 2)
-            u4 (copy, index: 3)
-            a1 (copy, index: 4)
-            u5 (copy, index: 5)
-            u2 (copy, index: 6)
-            Colors_upv_1 (copy, index: 7)
-            paintFinal (copy, index: 8)
-            u7 (ref,  index: 9)
-            u11 (copy, index: 10)
-            UI_upv_1 (copy, index: 11)
-            u6 (ref,  index: 12)
-        ]]
-        local Match_1 = State_upv_1.Match
-        local v32, v33 = phaseText(Match_1)
-        u4.Text = v32
-        u4.TextColor3 = v33
-        v33 = (a1.Decider ~= nil) and (a1.Decider.Active())
-        local v34
-        if v33 then
-            v34 = "FINAL ROUND"
-        else
-            v34 = "ROUND " .. tostring((Match_1 and (Match_1.round)) or 1)
-        end
-        u5.Text = v34
-        local v35
-        if v33 then
-            v35 = u2
-        else
-            v35 = Colors_upv_1.TextDim
-        end
-        u5.TextColor3 = v35
-        paintFinal(v33)
-        local v36 = (Match_1 and (Match_1.phase)) == "Overtime"
-        if v36 ~= u7 then
-            u7 = v36
-            u11.Visible = v36
-            if v36 then
-                UI_upv_1.Pop(u11, 1.5)
-            end
-        end
-        if v36 then
-            u11.TextTransparency = (math.sin(os.clock() * 6) * 0.25) + 0.25
-        end
-        if Match_1 == "Live" or Match_1 == "Overtime" then
-            local v37 = math.ceil(State_upv_1.PhaseTimeLeft())
-            if v37 == u6 then
-                return
-            end
-            u6 = v37
-            if not (v37 <= 10) or not (v37 > 0) then
-                return
-            end
-            UI_upv_1.Bump(u4, 0.12)
-        end
-    end
-    local u12 = UI_upv_1.new("Frame", {Name = "Health", AnchorPoint = Vector2.new(0.5, 1), Size = UDim2.fromOffset(372, 40), Parent = u1})
-    local u13 = UI_upv_1.DisplayText({StrokeThickness = 2.5, Text = "100", Name = "Number", TextSize = 40, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 0, 1, 2), Size = UDim2.fromOffset(72, 40), TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = Colors_upv_1.Text, Parent = u12})
-    local tbl_upv_13 = {}
-    tbl_upv_13.Name = "Bar"
-    tbl_upv_13.AnchorPoint = Vector2.new(1, 1)
-    tbl_upv_13.Position = UDim2.new(1, 0, 1, -4)
-    tbl_upv_13.Size = UDim2.new(1, -80, 0, 20)
-    tbl_upv_13.BackgroundColor3 = Colors_upv_1.Void
-    tbl_upv_13.BackgroundTransparency = 0.3
-    tbl_upv_13.ClipsDescendants = true
-    tbl_upv_13[1], tbl_upv_13[2] = UI_upv_1.Corner(6), UI_upv_1.Stroke(Colors_upv_1.Stroke, 2, 0.6)
-    tbl_upv_13.Parent = u12
-    local v38 = UI_upv_1.new("Frame", tbl_upv_13)
-    local u14 = UI_upv_1.new("Frame", {Name = "Trail", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.HealthTrail, BackgroundTransparency = 0.15, [1] = UI_upv_1.Corner(6), Parent = v38})
-    tbl_upv_13 = UI_upv_1.new("Frame", {Name = "Fill", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), [1] = UI_upv_1.Corner(6), Parent = v38})
-    local u15 = UI_upv_1.Gradient(Theme_upv_1.Lighten(Colors_upv_1.Health, 0.2), Theme_upv_1.Darken(Colors_upv_1.Health, 0.15), 90)
-    u15.Parent = tbl_upv_13
-    for n_3 = 1, 3 do
-        UI_upv_1.new("Frame", {BackgroundTransparency = 0.55, ZIndex = 2, Position = UDim2.new(n_3 * 0.25, -1, 0, 3), Size = UDim2.new(0, 2, 1, -6), BackgroundColor3 = Colors_upv_1.Void, Parent = v38})
-        local u16 = n_3
-    end
-    local u17 = UI_upv_1.new("Frame", {Name = "Flash", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, ZIndex = 3, [1] = UI_upv_1.Corner(6), Parent = v38})
-    local Armor_upv_1 = Colors_upv_1.Armor
-    local u18 = UI_upv_1.new("Frame", {Name = "Armor", Visible = false, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 0, 0, -2), Size = UDim2.new(1, -80, 0, 12), Parent = u12})
-    local u16 = UI_upv_1.Image(UI_upv_1.Assets.Icons.Shield, {AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(0, -6, 0.5, 0), Size = UDim2.fromOffset(16, 16), ImageColor3 = Armor_upv_1, Parent = u18})
-    local u19 = UI_upv_1.DisplayText({StrokeThickness = 1.5, Text = "0", TextSize = 16, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(0, -26, 0.5, 1), Size = UDim2.fromOffset(40, 16), TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = Armor_upv_1, Parent = u18})
-    local tbl_upv_14 = {}
-    tbl_upv_14.Size = UDim2.fromScale(1, 1)
-    tbl_upv_14.BackgroundColor3 = Colors_upv_1.Void
-    tbl_upv_14.BackgroundTransparency = 0.3
-    tbl_upv_14.ClipsDescendants = true
-    tbl_upv_14[1], tbl_upv_14[2] = UI_upv_1.Corner(4), UI_upv_1.Stroke(Colors_upv_1.Stroke, 1.5, 0.7)
-    tbl_upv_14.Parent = u18
-    local paintArmor = UI_upv_1.new("Frame", tbl_upv_14)
-    local u20 = UI_upv_1.Gradient(Theme_upv_1.Lighten(Armor_upv_1, 0.2), Theme_upv_1.Darken(Armor_upv_1, 0.15), 90)
-    tbl_upv_14 = UI_upv_1.new("Frame", {Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), [1] = UI_upv_1.Corner(4), Parent = paintArmor})
-    u20.Parent = tbl_upv_14
-    local u21 = 0
-    local u22 = nil
-    local u23 = false
-    local u24 = 0
-    paintArmor = function(a9)
-        --[[
-          name: paintArmor
-          line: 488
-          upvalues:
-            u22 (ref,  index: 1)
-            u18 (copy, index: 2)
-            u21 (ref,  index: 3)
-            u23 (ref,  index: 4)
-            Colors_upv_1 (copy, index: 5)
-            Armor_upv_1 (copy, index: 6)
-            u20 (copy, index: 7)
-            Theme_upv_1 (copy, index: 8)
-            u16 (copy, index: 9)
-            u19 (copy, index: 10)
-            UI_upv_1 (copy, index: 11)
-            u24 (ref,  index: 12)
-            tbl_upv_14 (copy, index: 13)
-        ]]
-        local v39 = u22
-        local v40 = v39 and (u22:GetAttribute("MaxArmor"))
-        local v41 = u22
-        local v42 = v41 and (u22:GetAttribute("Armor"))
-        local v43
-        if type(u22) ~= "number" then
-            v43 = 0
-        else
-            v43 = v40
-        end
-        local v44 = ((type(v42) ~= "number") and 0) or (math.clamp(u22, 0, v43))
-        u18.Visible = v43 > 0
-        if v43 <= 0 then
-            u21 = 0
-        else
-            local v45 = u22 and (u22:GetAttribute("BonusArmor"))
-            local v46 = false
-            if type(v45) == "number" then
-                v46 = v45 > 0
-            end
-            if v46 ~= u23 then
-                u23 = v46
-                local v47
-                if v46 then
-                    v47 = Colors_upv_1.Gold
-                else
-                    v47 = Armor_upv_1
-                end
-                u20.Color = ColorSequence.new(Theme_upv_1.Lighten(v47, 0.2), Theme_upv_1.Darken(v47, 0.15))
-                u16.ImageColor3 = v47
-                u19.TextColor3 = v47
-                if v46 then
-                    UI_upv_1.Bump(u16, 0.3)
-                end
-            end
-            u19.Text = tostring(math.ceil(v44))
-            local v48 = v44 / v43
-            local v49 = workspace:GetServerTimeNow()
-            local v50 = (u24 > 0) and ((u24 - 0.3 < v49) and (v49 < u24 + 1.5))
-            if a9 then
-                tbl_upv_14.Size = UDim2.fromScale(v48, 1)
-            else
-                local Tween_1 = UI_upv_1.Tween
-                local v51
-                if v44 < u21 then
-                    v51 = Theme_upv_1.Tween.Fast
-                else
-                    v51 = Theme_upv_1.Tween.Smooth
-                end
-                Tween_1(tbl_upv_14, v51, {Size = UDim2.fromScale(v48, 1)})
-                if v44 < u21 and not (v50) then
-                    UI_upv_1.Bump(u16, 0.25)
-                    if v44 <= 0 then
-                        UI_upv_1.Shake(u18, 6)
-                    end
-                end
-            end
-            tbl_upv_14.BackgroundTransparency = ((v44 <= 0) and 1) or 0
-            u21 = v44
-        end
-    end
-    local u25 = nil
-    local Health_upv_1 = 100
-    local u26 = 0
-    local u27 = false
-    local function paintHealth(a10)
-        --[[
-          name: paintHealth
-          line: 534
-          upvalues:
-            u25 (ref,  index: 1)
-            u13 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-            u15 (copy, index: 4)
-            Theme_upv_1 (copy, index: 5)
-            u27 (ref,  index: 6)
-            tbl_upv_13 (copy, index: 7)
-            u14 (copy, index: 8)
-            Health_upv_1 (ref,  index: 9)
-            u17 (copy, index: 10)
-            UI_upv_1 (copy, index: 11)
-            u12 (copy, index: 12)
-            u26 (ref,  index: 13)
-        ]]
-        if not u25 then
-            return
-        end
-        local v52 = ((not (u25.MaxHealth > 0)) and 100) or (u25.MaxHealth)
-        local v53 = math.clamp(u25.Health, 0, v52)
-        local u28 = v53 / v52
-        u13.Text = tostring(math.ceil(v53))
-        local v54
-        if u28 <= 0.3 then
-            v54 = Colors_upv_1.HealthLow
-        elseif u28 <= 0.6 then
-            v54 = Color3.fromRGB(240, 196, 70)
-        else
-            v54 = Colors_upv_1.Health
-        end
-        u15.Color = ColorSequence.new(Theme_upv_1.Lighten(v54, 0.2), Theme_upv_1.Darken(v54, 0.15))
-        u27 = (u28 <= 0.3) and (v53 > 0)
-        if a10 then
-            tbl_upv_13.Size = UDim2.fromScale(u28, 1)
-            u14.Size = UDim2.fromScale(u28, 1)
-        elseif v53 < Health_upv_1 then
-            tbl_upv_13.Size = UDim2.fromScale(u28, 1)
-            u17.BackgroundTransparency = 0.35
-            local tbl_15 = {BackgroundTransparency = 1}
-            UI_upv_1.Tween(u17, TweenInfo.new(0.25), tbl_15)
-            UI_upv_1.Bump(u13, (math.clamp((Health_upv_1 - v53) / 60, 0.08, 0.3)))
-            if Health_upv_1 - v53 >= 8 then
-                UI_upv_1.Shake(u12, (math.clamp((Health_upv_1 - v53) / 5, 3, 9)))
-            end
-            u26 = u26 + 1
-            local u29 = u26
-            task.delay(
-                0.35,
-                function()
-                    --[[
-                      line: 561
-                      upvalues:
-                        u29 (copy, index: 1)
-                        u26 (ref,  index: 2)
-                        UI_upv_1 (copy, index: 3)
-                        u14 (copy, index: 4)
-                        u28 (copy, index: 5)
-                    ]]
-                    if u29 ~= u26 then
-                        return
-                    end
-                    UI_upv_1.Tween(u14, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {Size = UDim2.fromScale(u28, 1)})
-                end
-            )
-        else
-            UI_upv_1.Tween(tbl_upv_13, Theme_upv_1.Tween.Smooth, {Size = UDim2.fromScale(u28, 1)})
-            UI_upv_1.Tween(u14, Theme_upv_1.Tween.Smooth, {Size = UDim2.fromScale(u28, 1)})
-            if Health_upv_1 + 1 < v53 then
-                u13.TextColor3 = Colors_upv_1.Health
-                task.delay(
-                    0.4,
-                    function()
-                        --[[
-                          line: 572
-                          upvalues:
-                            u13 (copy, index: 1)
-                            Colors_upv_1 (copy, index: 2)
-                        ]]
-                        u13.TextColor3 = Colors_upv_1.Text
-                    end
-                )
-            end
-        end
-        Health_upv_1 = v53
-    end
-    local tbl_upv_16 = {}
-    local u30 = nil
-    local function hookCharacter(a11)
-        --[[
-          name: hookCharacter
-          line: 585
-          upvalues:
-            tbl_upv_16 (copy, index: 1)
-            u25 (ref,  index: 2)
-            u22 (ref,  index: 3)
-            u21 (ref,  index: 4)
-            u24 (ref,  index: 5)
-            paintArmor (copy, index: 6)
-            LocalPlayer_upv_1 (copy, index: 7)
-            u30 (ref,  index: 8)
-            Health_upv_1 (ref,  index: 9)
-            paintHealth (copy, index: 10)
-        ]]
-        for _, value_5 in tbl_upv_16 do
-            value_5:Disconnect()
-        end
-        table.clear(tbl_upv_16)
-        u25 = nil
-        u22 = a11
-        u21 = 0
-        u24 = 0
-        paintArmor(true)
-        if not a11 then
-            return
-        end
-        table.insert(
-            tbl_upv_16,
-            a11:GetAttributeChangedSignal("Armor"):Connect(
-                function()
-                    --[[
-                      line: 598
-                      upvalues:
-                        paintArmor (copy, index: 1)
-                    ]]
-                    paintArmor(false)
-                end
-            )
-        )
-        table.insert(
-            tbl_upv_16,
-            a11:GetAttributeChangedSignal("BonusArmor"):Connect(
-                function()
-                    --[[
-                      line: 601
-                      upvalues:
-                        paintArmor (copy, index: 1)
-                    ]]
-                    paintArmor(false)
-                end
-            )
-        )
-        table.insert(
-            tbl_upv_16,
-            a11:GetAttributeChangedSignal("BonusArmorUntil"):Connect(
-                function()
-                    --[[
-                      line: 604
-                      upvalues:
-                        a11 (copy, index: 1)
-                        u24 (ref,  index: 2)
-                    ]]
-                    local v55 = a11:GetAttribute("BonusArmorUntil")
-                    if type(v55) ~= "number" then
-                        return
-                    end
-                    u24 = v55
-                end
-            )
-        )
-        table.insert(
-            tbl_upv_16,
-            a11:GetAttributeChangedSignal("MaxArmor"):Connect(
-                function()
-                    --[[
-                      line: 610
-                      upvalues:
-                        paintArmor (copy, index: 1)
-                    ]]
-                    paintArmor(true)
-                end
-            )
-        )
-        local v56 = a11:FindFirstChildOfClass("Humanoid") or (a11:WaitForChild("Humanoid", 10))
-        if not v56 then
-            return
-        end
-        if v56:IsA("Humanoid") and (LocalPlayer_upv_1.Character == a11 or u30 == a11) then
-            u25 = v56
-            Health_upv_1 = v56.Health
-            paintHealth(true)
-            table.insert(
-                tbl_upv_16,
-                v56.HealthChanged:Connect(
-                    function()
-                        --[[
-                          line: 620
-                          upvalues:
-                            paintHealth (copy, index: 1)
-                        ]]
-                        paintHealth(false)
-                    end
-                )
-            )
-            table.insert(
-                tbl_upv_16,
-                v56:GetPropertyChangedSignal("MaxHealth"):Connect(
-                    function()
-                        --[[
-                          line: 623
-                          upvalues:
-                            paintHealth (copy, index: 1)
-                        ]]
-                        paintHealth(true)
-                    end
-                )
-            )
-        end
-    end
-    LocalPlayer_upv_1.CharacterAdded:Connect(
-        function(a12)
+        local paintFinal
+        local ui = a5.UI
+        local theme = a5.Theme
+        local state = a5.State
+        local portraits = a5.Portraits
+        local colors = theme.Colors
+        local fonts = theme.Fonts
+        local localPlayer = players.LocalPlayer
+        local ui2 = ui.new("Frame", {Name = "MatchHud", Visible = false, Size = UDim2.fromScale(1, 1), Parent = a5.Canvas.HUD})
+        local targetValue = Color3.fromRGB(255, 146, 52)
+        local instance = ui.new("Frame", {Name = "Scoreboard", AnchorPoint = Vector2.new(0.5, 0), Size = UDim2.fromOffset(700, 96), Parent = ui2})
+        a5.Scoreboard = instance
+        local parent = ui.Panel({Name = "Center", BackgroundTransparency = 0.2, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.fromScale(0.5, 0), Size = UDim2.fromOffset(150, 74), Radius = UDim.new(0, 12), Trim = colors.Accent, Parent = instance})
+        local v18 = ui.DisplayText({Name = "Timer", Text = "1:15", TextSize = 42, Position = UDim2.fromOffset(0, 4), Size = UDim2.new(1, 0, 0, 44), TextColor3 = colors.Text, Parent = parent})
+        local ui3 = ui.new("TextLabel", {Name = "Round", Text = "ROUND 1", TextSize = 15, Position = UDim2.fromOffset(0, 48), Size = UDim2.new(1, 0, 0, 20), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, Parent = parent})
+        local v20 = {}
+
+        local function makeSide(a22: boolean)
             --[[
-              line: 627
+              name: makeSide
+              line: 80
               upvalues:
-                u30 (ref,  index: 1)
-                hookCharacter (copy, index: 2)
+                colors (copy, index: 1)
+                ui (copy, index: 2)
+                instance (copy, index: 3)
+                targetValue (copy, index: 4)
+                theme (copy, index: 5)
+                fonts (copy, index: 6)
             ]]
-            if (u30) then
+            local name
+            local v24 = if a22 then colors.Ally else colors.Enemy
+            local newUi = ui.new
+            local v26 = {}
+
+            if a22 then
+                name = "Left"
+            else
+                name = "Right"
+            end
+
+            v26.Name = name
+            local v27 = Vector2.new
+            local v28 = a22 and 1 or 0
+            v26.AnchorPoint = v27(v28, 0)
+            v27 = UDim2.new
+            local v29 = a22 and -80 or 80
+            v26.Position = v27(0.5, v29, 0, 0)
+            v26.Size = UDim2.fromOffset(270, 96)
+            v26.Parent = instance
+            local ui2 = newUi("Frame", v26)
+            local newUi2 = ui.new
+            local v32 = {Name = "FinalGlow", ImageTransparency = 1, ZIndex = 0, AnchorPoint = Vector2.new(0.5, 0.5)}
+            local newUDim2 = UDim2.new
+            local v34 = a22 and 1 or 0
+            local v35 = a22 and -33 or 33
+            v32.Position = newUDim2(v34, v35, 0, 30)
+            v32.Size = UDim2.fromOffset(150, 136)
+            v32.Image = ui.Assets.Icons.Glow
+            v32.ImageColor3 = targetValue
+            v32.Parent = ui2
+            local glow = newUi2("ImageLabel", v32)
+            local boxStroke = ui.Stroke(theme.Lighten(v24, 0.4), 2, 0.3)
+            local newUi3 = ui.new
+            local v39 = {Name = "ScoreBox"}
+            local v40 = Vector2.new
+            local v41 = a22 and 1 or 0
+            v39.AnchorPoint = v40(v41, 0)
+            v40 = UDim2.fromScale
+            local v42 = a22 and 1 or 0
+            v39.Position = v40(v42, 0)
+            v39.Size = UDim2.fromOffset(66, 60)
+            v39.BackgroundColor3 = Color3.new(1, 1, 1)
+            v39.BackgroundTransparency = 0.05
+            v39[1], v39[2], v39[3] = ui.Corner(12), ui.Gradient(theme.Lighten(v24, 0.1), theme.Darken(v24, 0.35), 90), boxStroke
+            v39.Parent = ui2
+            local parent = newUi3("Frame", v39)
+            local score = ui.DisplayText({Name = "Score", Text = "0", TextSize = 44, StrokeThickness = 2.5, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1, 1), TextColor3 = colors.Text, StrokeColor = theme.Darken(v24, 0.7), Parent = parent})
+            local newUi4 = ui.new
+            local v46 = {Name = "Pips", AnchorPoint = Vector2.new(0.5, 0)}
+            v40 = UDim2.new
+            local v47 = a22 and 1 or 0
+            local v48 = a22 and -33 or 33
+            v46.Position = v40(v47, v48, 0, 64)
+            v46.Size = UDim2.fromOffset(66, 10)
+            v46[1] = (ui.List(Enum.FillDirection.Horizontal, 3, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center))
+            v46.Parent = ui2
+            local pips = newUi4("Frame", v46)
+            local newUi5 = ui.new
+            local v51 = {Name = "Portraits"}
+            local newVector2 = Vector2.new
+            local x = a22 and 1 or 0
+            v51.AnchorPoint = newVector2(x, 0)
+            v40 = UDim2.new
+            local v54 = a22 and 1 or 0
+            local v55 = a22 and -74 or 74
+            v51.Position = v40(v54, v55, 0, 2)
+            v51.Size = UDim2.fromOffset(174, 54)
+            local list = ui.List
+            local v57 = Enum.FillDirection.Horizontal
+            local horizontalAlignment = if a22 then Enum.HorizontalAlignment.Right else Enum.HorizontalAlignment.Left
+            v51[1] = (list(v57, 6, horizontalAlignment, Enum.VerticalAlignment.Top))
+            v51.Parent = ui2
+            local parent2 = newUi5("Frame", v51)
+            local newUi6 = ui.new
+            local v61 = {Name = "Tribe", Text = "WOLF", TextSize = 16, Visible = false}
+            local newVector22 = Vector2.new
+            local x2 = a22 and 1 or 0
+            v61.AnchorPoint = newVector22(x2, 0)
+            v57 = UDim2.new
+            local v64 = a22 and 1 or 0
+            local v65 = a22 and -74 or 74
+            v61.Position = v57(v64, v65, 0, 60)
+            v61.Size = UDim2.fromOffset(174, 18)
+            v61.FontFace = fonts.Heavy
+            v61.TextColor3 = theme.Lighten(v24, 0.45)
+            v61.TextXAlignment = if a22 then Enum.TextXAlignment.Right else Enum.TextXAlignment.Left
+            v61.Parent = ui2
+            local name2 = newUi6("TextLabel", v61)
+            local portraits = {}
+
+            for index = 1, 3 do
+                local newUi7 = ui.new
+                local v70 = {Name = "P" .. index, Size = UDim2.fromOffset(54, 54), BackgroundColor3 = theme.Darken(v24, 0.55), BackgroundTransparency = 0.1, LayoutOrder = if a22 then 4 - index else index}
+                v70.ClipsDescendants = false
+                v70[1] = (ui.Corner(theme.Radius.Pill))
+                v70.Parent = parent2
+                local ui3 = newUi7("Frame", v70)
+                local stroke = ui.Stroke(v24, 2.5, 0)
+                stroke.Parent = ui3
+                local img = ui.new("ImageLabel", {Name = "Img", Size = UDim2.fromScale(1, 1), ScaleType = Enum.ScaleType.Crop, (ui.Corner(theme.Radius.Pill)), Parent = ui3})
+                local dim = ui.new("Frame", {Name = "Dim", Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.35, Visible = false, ZIndex = 2, (ui.Corner(theme.Radius.Pill)), Parent = ui3})
+                local x3 = ui.Icon("cross", 40, colors.Danger, {Thickness = 5, ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = ui3})
+                x3.Visible = false
+                portraits[index] = {holder = ui3, img = img, stroke = stroke, x = x3, dim = dim}
+            end
+
+            return {frame = ui2, score = score, boxStroke = boxStroke, glow = glow, name = name2, pips = pips, portraits = portraits}
+        end
+
+        v20[1] = makeSide(true)
+        v20[2] = makeSide(false)
+
+        local function setPips(pips, score, a79, backgroundColor3)
+            --[[
+              name: setPips
+              line: 207
+              upvalues:
+                ui (copy, index: 1)
+            ]]
+            local v81 = {}
+
+            for _, child in pips.pips:GetChildren() do
+                if child:IsA("Frame") then
+                    table.insert(v81, child)
+                end
+            end
+
+            for layoutOrder = #v81 + 1, a79 do
+                table.insert(v81, ui.new("Frame", {Size = UDim2.fromOffset(12, 8), BackgroundColor3 = backgroundColor3, LayoutOrder = layoutOrder, (ui.Corner(3)), Parent = pips.pips}))
+            end
+
+            local clampedValue = math.clamp(math.floor(66 / math.max(a79, 1)) - 3, 4, 14)
+
+            for v86, v87 in v81 do
+                local v88
+                v87.Visible = v86 <= a79
+                v87.Size = UDim2.fromOffset(clampedValue, 8)
+
+                if v86 <= score then
+                    v88 = backgroundColor3
+                else
+                    v88 = Color3.fromRGB(52, 56, 68)
+                end
+
+                v87.BackgroundColor3 = v88
+                v87.BackgroundTransparency = not (v86 <= score) and 0.25 or 0
+            end
+        end
+
+        local function paintBoard(a90)
+            --[[
+              name: paintBoard
+              line: 232
+              upvalues:
+                state (copy, index: 1)
+                v20 (copy, index: 2)
+                colors (copy, index: 3)
+                ui (copy, index: 4)
+                setPips (copy, index: 5)
+                portraits (copy, index: 6)
+            ]]
+            if not a90 then
                 return
             end
-            hookCharacter(a12)
-        end
-    )
-    task.spawn(hookCharacter, LocalPlayer_upv_1.Character)
-    local u31 = UDim2.new(0.5, 0, 0, 0)
-    local u32 = 0
-    local u33 = nil
-    local u34 = TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
-    local function boardHomeRect()
-        --[[
-          name: boardHomeRect
-          line: 646
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            u1 (copy, index: 2)
-            u3 (copy, index: 3)
-            u31 (ref,  index: 4)
-        ]]
-        local v57 = math.max(UI_upv_1.Scale, 0.01)
-        local v58 = u1.AbsoluteSize / v57
-        local v59 = u3.AbsoluteSize / v57
-        local v60 = (u31.X.Scale * v58.X) + u31.X.Offset - u3.AnchorPoint.X * v59.X
-        local v61 = u31.Y.Scale * v58.Y + u31.Y.Offset
-        return Rect.new(v60, v61, v60 + v59.X, v61 + v59.Y), v58
-    end
-    local function applyBoard(a13)
-        --[[
-          name: applyBoard
-          line: 669
-          upvalues:
-            u31 (ref,  index: 1)
-            u32 (ref,  index: 2)
-            u33 (ref,  index: 3)
-            u1 (copy, index: 4)
-            u3 (copy, index: 5)
-            TweenService_upv_1 (copy, index: 6)
-            u34 (copy, index: 7)
-            a1 (copy, index: 8)
-        ]]
-        local v62 = u31 + UDim2.fromOffset(u32, 0)
-        if u33 then
-            u33:Cancel()
-            u33 = nil
-        end
-        if a13 and u1.Visible and u3.Visible then
-            local v63 = TweenService_upv_1:Create(u3, u34, {Position = v62})
-            u33 = v63
-            u33:Play()
-        else
-            u3.Position = v62
-        end
-        if not a1.KillFeedRelayout then
-            return
-        end
-        a1.KillFeedRelayout()
-    end
-    local function computeBoardShift()
-        --[[
-          name: computeBoardShift
-          line: 655
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            u1 (copy, index: 2)
-            u3 (copy, index: 3)
-            boardHomeRect (copy, index: 4)
-        ]]
-        local v64 = UI_upv_1.ChatRectIn(u1)
-        if v64 and u1.Visible and u3.Visible and not (UI_upv_1.Compact) then
-            local v65, v66 = boardHomeRect()
-            if not (v64.Max.X + 12 <= v65.Min.X) and not (v65.Max.X <= v64.Min.X) and not (v64.Max.Y <= v65.Min.Y) and not (v65.Max.Y <= v64.Min.Y) then
-                return (math.max(0, math.min((v64.Max.X + 12) - v65.Min.X, (v66.X - 12) - v65.Max.X)))
+
+            local v91 = state.MyTeam()
+
+            for v92, teamKey in {v91, 3 - v91} do
+                local pips = v20[v92]
+                local team = a90.teams[teamKey]
+                local v96 = if v92 == 1 then colors.Ally else colors.Enemy
+                pips.name.Text = ""
+                local score = team.score or 0
+                pips.score.Text = tostring(score)
+
+                if pips.lastScore and pips.lastScore < score then
+                    ui.Pop(pips.score, 1.6)
+                end
+
+                pips.lastScore = score
+                setPips(pips, score, (a90.roundsToWin or state.RoundsToWin()), v96)
+
+                for memberKey, portrait in pips.portraits do
+                    local member = team.members[memberKey]
+                    portrait.holder.Visible = member ~= nil
+
+                    if member then
+                        portraits.Apply(portrait.img, member, 60)
+                        local visible = member.alive == false
+                        local v102 = member.connected == false
+                        portrait.x.Visible = visible
+                        portrait.dim.Visible = visible or v102
+                        local setTint = portraits.SetTint
+                        local img = portrait.img
+                        local color3 = if visible then Color3.fromRGB(150, 150, 150) else Color3.new(1, 1, 1)
+                        local v106 = visible and 0.35 or 0
+                        setTint(img, color3, v106)
+                        portrait.stroke.Color = if visible then Color3.fromRGB(90, 84, 78) else v96
+                        local v107 = member.id == state.MyId()
+                        portrait.stroke.Thickness = v107 and 3.5 or 2.5
+                    end
+                end
             end
+        end
+
+        local ceilingValue = -1
+        local v109 = false
+        local v110 = false
+        local uiStroke = parent:FindFirstChildOfClass("UIStroke")
+        local v112 = uiStroke and {uiStroke.Color, uiStroke.Transparency, uiStroke.Thickness}
+
+        paintFinal = function(a113)
+            --[[
+              name: paintFinal
+              line: 275
+              upvalues:
+                v110 (ref,  index: 1)
+                ui (copy, index: 2)
+                ui3 (copy, index: 3)
+                v20 (copy, index: 4)
+                theme (copy, index: 5)
+                colors (copy, index: 6)
+                uiStroke (copy, index: 7)
+                v112 (copy, index: 8)
+                targetValue (copy, index: 9)
+            ]]
+            if a113 ~= v110 then
+                v110 = a113
+
+                if a113 then
+                    ui.Bump(ui3, 0.25)
+                else
+                    for v114, v115 in v20 do
+                        v115.glow.ImageTransparency = 1
+                        local boxStroke = v115.boxStroke
+                        local lighten = theme.Lighten
+                        local v118 = if v114 == 1 then colors.Ally else colors.Enemy
+                        boxStroke.Color = lighten(v118, 0.4)
+                        v115.boxStroke.Transparency = 0.3
+                    end
+
+                    if uiStroke and v112 then
+                        uiStroke.Color, uiStroke.Transparency, uiStroke.Thickness = v112[1], v112[2], v112[3]
+                    end
+                end
+            end
+
+            if not a113 then
+                return
+            end
+
+            local v119 = math.sin(os.clock() * 2.4) * 0.5 + 0.5
+
+            for v120, v121 in v20 do
+                v121.glow.ImageTransparency = 0.7 - (v119 * 0.24)
+                local boxStroke = v121.boxStroke
+                local lighten = theme.Lighten
+                local v124 = if v120 == 1 then colors.Ally else colors.Enemy
+                boxStroke.Color = lighten(v124, 0.4):Lerp(targetValue, (v119 * 0.35) + 0.35)
+                v121.boxStroke.Transparency = 0.25 - (v119 * 0.15)
+            end
+
+            if uiStroke then
+                uiStroke.Color = targetValue
+                uiStroke.Thickness = 1.5
+                uiStroke.Transparency = 0.6 - (v119 * 0.3)
+            end
+        end
+
+        local function phaseText(match)
+            --[[
+              name: phaseText
+              line: 306
+              upvalues:
+                state (copy, index: 1)
+                ui (copy, index: 2)
+                colors (copy, index: 3)
+            ]]
+            local phase = match and match.phase
+            local v128 = state.PhaseTimeLeft()
+
+            if phase == "Overtime" then
+                local v129 = not (0 < v128) and "OVERTIME" or ui.FormatTime(v128)
+                return v129, colors.Danger
+            end
+
+            if phase == "Live" then
+                local v130 = ui.FormatTime(v128)
+
+                if v128 <= 10 then
+                    return v130, colors.Danger
+                end
+
+                return v130, colors.Text
+            end
+
+            if phase ~= "PreRound" then
+                if phase ~= "Intro" then
+                    if phase == "RoundEnd" or phase == "MatchEnd" then
+                        return "0:00", colors.TextDim
+                    end
+
+                    return ui.FormatTime(v128), colors.Text
+                end
+            end
+
+            return ui.FormatTime(state.RoundTime()), colors.TextDim
+        end
+
+        local parent2 = ui.new("TextLabel", {Name = "Overtime", Text = "OVERTIME", TextSize = 17, Visible = false, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 78), Size = UDim2.fromOffset(200, 20), FontFace = fonts.Title, TextColor3 = colors.Danger, Parent = instance})
+        ui.TextStroke(colors.Void, 2, 0.1).Parent = parent2
+
+        local function tickTimer()
+            --[[
+              name: tickTimer
+              line: 335
+              upvalues:
+                state (copy, index: 1)
+                phaseText (copy, index: 2)
+                v18 (copy, index: 3)
+                a5 (copy, index: 4)
+                ui3 (copy, index: 5)
+                targetValue (copy, index: 6)
+                colors (copy, index: 7)
+                paintFinal (copy, index: 8)
+                v109 (ref,  index: 9)
+                parent2 (copy, index: 10)
+                ui (copy, index: 11)
+                ceilingValue (ref,  index: 12)
+            ]]
+            local text
+            local match = state.Match
+            local text2, textColor3 = phaseText(match)
+            v18.Text = text2
+            v18.TextColor3 = textColor3
+            local v137 = a5.Decider ~= nil and a5.Decider.Active()
+
+            if v137 then
+                text = "FINAL ROUND"
+            else
+                local round = match and match.round or 1
+                text = "ROUND " .. tostring(round)
+            end
+
+            ui3.Text = text
+            ui3.TextColor3 = if v137 then targetValue else colors.TextDim
+            paintFinal(v137)
+            local phase = match and match.phase
+            local visible = phase == "Overtime"
+
+            if visible ~= v109 then
+                v109 = visible
+                parent2.Visible = visible
+
+                if visible then
+                    ui.Pop(parent2, 1.5)
+                end
+            end
+
+            if visible then
+                parent2.TextTransparency = (math.sin(os.clock() * 6) * 0.25) + 0.25
+            end
+
+            if phase == "Live" or phase == "Overtime" then
+                local ceilingValue2 = math.ceil((state.PhaseTimeLeft()))
+
+                if ceilingValue2 ~= ceilingValue then
+                    ceilingValue = ceilingValue2
+
+                    if ceilingValue2 <= 10 and 0 < ceilingValue2 then
+                        ui.Bump(v18, 0.12)
+                    end
+                end
+            end
+        end
+
+        local ui4 = ui.new("Frame", {Name = "Health", AnchorPoint = Vector2.new(0.5, 1), Size = UDim2.fromOffset(372, 40), Parent = ui2})
+        local v143 = ui.DisplayText({Name = "Number", Text = "100", TextSize = 40, StrokeThickness = 2.5, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 0, 1, 2), Size = UDim2.fromOffset(72, 40), TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = colors.Text, Parent = ui4})
+        local parent3 = ui.new("Frame", {Name = "Bar", AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 0, 1, -4), Size = UDim2.new(1, -80, 0, 20), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.3, ClipsDescendants = true, ui.Corner(6), (ui.Stroke(colors.Stroke, 2, 0.6)), Parent = ui4})
+        local ui5 = ui.new("Frame", {Name = "Trail", Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.HealthTrail, BackgroundTransparency = 0.15, (ui.Corner(6)), Parent = parent3})
+        local parent4 = ui.new("Frame", {Name = "Fill", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), (ui.Corner(6)), Parent = parent3})
+        local v147 = ui.Gradient(theme.Lighten(colors.Health, 0.2), theme.Darken(colors.Health, 0.15), 90)
+        v147.Parent = parent4
+
+        for index = 1, 3 do
+            ui.new("Frame", {BackgroundTransparency = 0.55, ZIndex = 2, Position = UDim2.new(index * 0.25, -1, 0, 3), Size = UDim2.new(0, 2, 1, -6), BackgroundColor3 = colors.Void, Parent = parent3})
+        end
+
+        local ui6 = ui.new("Frame", {Name = "Flash", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, ZIndex = 3, (ui.Corner(6)), Parent = parent3})
+        local armor = colors.Armor
+        local parent5 = ui.new("Frame", {Name = "Armor", Visible = false, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, 0, 0, -2), Size = UDim2.new(1, -80, 0, 12), Parent = ui4})
+        local v152 = ui.Image(ui.Assets.Icons.Shield, {AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(0, -6, 0.5, 0), Size = UDim2.fromOffset(16, 16), ImageColor3 = armor, Parent = parent5})
+        local v153 = ui.DisplayText({Text = "0", TextSize = 16, StrokeThickness = 1.5, AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(0, -26, 0.5, 1), Size = UDim2.fromOffset(40, 16), TextXAlignment = Enum.TextXAlignment.Right, TextColor3 = armor, Parent = parent5})
+        local parent6 = ui.new("Frame", {Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.3, ClipsDescendants = true, ui.Corner(4), (ui.Stroke(colors.Stroke, 1.5, 0.7)), Parent = parent5})
+        local v155 = ui.Gradient(theme.Lighten(armor, 0.2), theme.Darken(armor, 0.15), 90)
+        local parent7 = ui.new("Frame", {Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), (ui.Corner(4)), Parent = parent6})
+        v155.Parent = parent7
+        local clampedValue = 0
+        local v158 = nil
+        local v159 = false
+        local bonusArmorUntil = 0
+
+        local function paintArmor(a162: boolean)
+            --[[
+              name: paintArmor
+              line: 488
+              upvalues:
+                v158 (ref,  index: 1)
+                parent5 (copy, index: 2)
+                clampedValue (ref,  index: 3)
+                v159 (ref,  index: 4)
+                colors (copy, index: 5)
+                armor (copy, index: 6)
+                v155 (copy, index: 7)
+                theme (copy, index: 8)
+                v152 (copy, index: 9)
+                v153 (copy, index: 10)
+                ui (copy, index: 11)
+                bonusArmorUntil (ref,  index: 12)
+                parent7 (copy, index: 13)
+            ]]
+            local maxArmor
+            local clampedValue2
+            local v165 = v158
+            local maxArmor2 = v165 and v165:GetAttribute("MaxArmor")
+            local armor2 = v165 and v165:GetAttribute("Armor")
+
+            if type(maxArmor2) ~= "number" then
+                maxArmor = 0
+            else
+                maxArmor = maxArmor2
+            end
+
+            if type(armor2) ~= "number" then
+                clampedValue2 = 0
+            else
+                clampedValue2 = math.clamp(armor2, 0, maxArmor)
+            end
+
+            parent5.Visible = 0 < maxArmor
+
+            if maxArmor <= 0 then
+                clampedValue = 0
+                return
+            end
+
+            local bonusArmor = v165 and v165:GetAttribute("BonusArmor")
+            local v169 = type(bonusArmor) == "number" and 0 < bonusArmor
+
+            if v169 ~= v159 then
+                v159 = v169
+                local v170 = if v169 then colors.Gold else armor
+                v155.Color = ColorSequence.new(theme.Lighten(v170, 0.2), theme.Darken(v170, 0.15))
+                v152.ImageColor3 = v170
+                v153.TextColor3 = v170
+
+                if v169 then
+                    ui.Bump(v152, 0.3)
+                end
+            end
+
+            v153.Text = tostring((math.ceil(clampedValue2)))
+            local v171 = clampedValue2 / maxArmor
+            local serverTimeNow = workspace:GetServerTimeNow()
+            local v173 = 0 < bonusArmorUntil
+                and bonusArmorUntil - 0.3 < serverTimeNow
+                and serverTimeNow < bonusArmorUntil + 1.5
+
+            if a162 then
+                parent7.Size = UDim2.fromScale(v171, 1)
+            else
+                local tween = ui.Tween
+                local v175 = if clampedValue2 < clampedValue then theme.Tween.Fast else theme.Tween.Smooth
+                tween(parent7, v175, {Size = UDim2.fromScale(v171, 1)})
+
+                if clampedValue2 < clampedValue and not v173 then
+                    ui.Bump(v152, 0.25)
+
+                    if clampedValue2 <= 0 then
+                        ui.Shake(parent5, 6)
+                    end
+                end
+            end
+
+            parent7.BackgroundTransparency = not (clampedValue2 <= 0) and 0 or 1
+            clampedValue = clampedValue2
+        end
+
+        local humanoid = nil
+        local v177 = 100
+        local count = 0
+        local v179 = false
+
+        local function paintHealth(a181: boolean)
+            --[[
+              name: paintHealth
+              line: 534
+              upvalues:
+                humanoid (ref,  index: 1)
+                v143 (copy, index: 2)
+                colors (copy, index: 3)
+                v147 (copy, index: 4)
+                theme (copy, index: 5)
+                v179 (ref,  index: 6)
+                parent4 (copy, index: 7)
+                ui5 (copy, index: 8)
+                v177 (ref,  index: 9)
+                ui6 (copy, index: 10)
+                ui (copy, index: 11)
+                ui4 (copy, index: 12)
+                count (ref,  index: 13)
+            ]]
+            local v182
+            local humanoid2 = humanoid
+            if not humanoid2 then
+                return
+            end
+
+            local v184 = not (0 < humanoid2.MaxHealth) and 100 or humanoid2.MaxHealth
+            local clampedValue = math.clamp(humanoid2.Health, 0, v184)
+            local v186 = clampedValue / v184
+            v143.Text = tostring((math.ceil(clampedValue)))
+
+            if not (v186 <= 0.3) then
+                v182 = if v186 <= 0.6 then Color3.fromRGB(240, 196, 70) else colors.Health
+            else
+                v182 = colors.HealthLow
+            end
+
+            v147.Color = ColorSequence.new(theme.Lighten(v182, 0.2), theme.Darken(v182, 0.15))
+            v179 = (v186 <= 0.3) and (0 < clampedValue)
+
+            if a181 then
+                parent4.Size = UDim2.fromScale(v186, 1)
+                ui5.Size = UDim2.fromScale(v186, 1)
+            elseif clampedValue < v177 then
+                parent4.Size = UDim2.fromScale(v186, 1)
+                ui6.BackgroundTransparency = 0.35
+                local v187 = {BackgroundTransparency = 1}
+                ui.Tween(ui6, TweenInfo.new(0.25), v187)
+                ui.Bump(v143, (math.clamp((v177 - clampedValue) / 60, 0.08, 0.3)))
+
+                if 8 <= v177 - clampedValue then
+                    ui.Shake(ui4, (math.clamp((v177 - clampedValue) / 5, 3, 9)))
+                end
+
+                count += 1
+                local v188 = count
+
+                task.delay(
+                    0.35,
+                    function()
+                        --[[
+                          line: 561
+                          upvalues:
+                            v188 (copy, index: 1)
+                            count (ref,  index: 2)
+                            ui (copy, index: 3)
+                            ui5 (copy, index: 4)
+                            v186 (copy, index: 5)
+                        ]]
+                        if v188 == count then
+                            ui.Tween(ui5, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {Size = UDim2.fromScale(v186, 1)})
+                        end
+                    end
+                )
+            else
+                ui.Tween(parent4, theme.Tween.Smooth, {Size = UDim2.fromScale(v186, 1)})
+                ui.Tween(ui5, theme.Tween.Smooth, {Size = UDim2.fromScale(v186, 1)})
+
+                if v177 + 1 < clampedValue then
+                    v143.TextColor3 = colors.Health
+                    task.delay(
+                        0.4,
+                        function()
+                            --[[
+                              line: 572
+                              upvalues:
+                                v143 (copy, index: 1)
+                                colors (copy, index: 2)
+                            ]]
+                            v143.TextColor3 = colors.Text
+                        end
+                    )
+                end
+            end
+
+            v177 = clampedValue
+        end
+
+        local v189 = {}
+        local v190 = nil
+
+        local function hookCharacter(a192)
+            --[[
+              name: hookCharacter
+              line: 585
+              upvalues:
+                v189 (copy, index: 1)
+                humanoid (ref,  index: 2)
+                v158 (ref,  index: 3)
+                clampedValue (ref,  index: 4)
+                bonusArmorUntil (ref,  index: 5)
+                paintArmor (copy, index: 6)
+                localPlayer (copy, index: 7)
+                v190 (ref,  index: 8)
+                v177 (ref,  index: 9)
+                paintHealth (copy, index: 10)
+            ]]
+            for _, v194 in v189 do
+                v194:Disconnect()
+            end
+
+            table.clear(v189)
+            humanoid = nil
+            v158 = a192
+            clampedValue = 0
+            bonusArmorUntil = 0
+            paintArmor(true)
+
+            if not a192 then
+                return
+            end
+
+            table.insert(
+                v189,
+                a192:GetAttributeChangedSignal("Armor"):Connect(
+                    function()
+                        --[[
+                          line: 598
+                          upvalues:
+                            paintArmor (copy, index: 1)
+                        ]]
+                        paintArmor(false)
+                    end
+                )
+            )
+            table.insert(
+                v189,
+                a192:GetAttributeChangedSignal("BonusArmor"):Connect(
+                    function()
+                        --[[
+                          line: 601
+                          upvalues:
+                            paintArmor (copy, index: 1)
+                        ]]
+                        paintArmor(false)
+                    end
+                )
+            )
+
+            table.insert(
+                v189,
+                a192:GetAttributeChangedSignal("BonusArmorUntil"):Connect(
+                    function()
+                        --[[
+                          line: 604
+                          upvalues:
+                            a192 (copy, index: 1)
+                            bonusArmorUntil (ref,  index: 2)
+                        ]]
+                        local bonusArmorUntil2 = a192:GetAttribute("BonusArmorUntil")
+
+                        if type(bonusArmorUntil2) == "number" then
+                            bonusArmorUntil = bonusArmorUntil2
+                        end
+                    end
+                )
+            )
+
+            table.insert(
+                v189,
+                a192:GetAttributeChangedSignal("MaxArmor"):Connect(
+                    function()
+                        --[[
+                          line: 610
+                          upvalues:
+                            paintArmor (copy, index: 1)
+                        ]]
+                        paintArmor(true)
+                    end
+                )
+            )
+            local humanoid2 = a192:FindFirstChildOfClass("Humanoid") or a192:WaitForChild("Humanoid", 10)
+
+            if humanoid2 and humanoid2:IsA("Humanoid") and (localPlayer.Character == a192 or v190 == a192) then
+                humanoid = humanoid2
+                v177 = humanoid2.Health
+                paintHealth(true)
+                table.insert(
+                    v189,
+                    humanoid2.HealthChanged:Connect(
+                        function()
+                            --[[
+                              line: 620
+                              upvalues:
+                                paintHealth (copy, index: 1)
+                            ]]
+                            paintHealth(false)
+                        end
+                    )
+                )
+                table.insert(
+                    v189,
+                    humanoid2:GetPropertyChangedSignal("MaxHealth"):Connect(
+                        function()
+                            --[[
+                              line: 623
+                              upvalues:
+                                paintHealth (copy, index: 1)
+                            ]]
+                            paintHealth(true)
+                        end
+                    )
+                )
+            end
+        end
+
+        localPlayer.CharacterAdded:Connect(
+            function(character: Model)
+                --[[
+                  line: 627
+                  upvalues:
+                    v190 (ref,  index: 1)
+                    hookCharacter (copy, index: 2)
+                ]]
+                if not v190 then
+                    hookCharacter(character)
+                end
+            end
+        )
+
+        task.spawn(hookCharacter, localPlayer.Character)
+        local udim2 = UDim2.new(0.5, 0, 0, 0)
+        local v199 = 0
+        local tween = nil
+        local tweenInfo = TweenInfo.new(0.28, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+
+        local function boardHomeRect()
+            --[[
+              name: boardHomeRect
+              line: 646
+              upvalues:
+                ui (copy, index: 1)
+                ui2 (copy, index: 2)
+                instance (copy, index: 3)
+                udim2 (ref,  index: 4)
+            ]]
+            local v203 = math.max(ui.Scale, 0.01)
+            local v204 = ui2.AbsoluteSize / v203
+            local v205 = instance.AbsoluteSize / v203
+            local v206 = (udim2.X.Scale * v204.X) + udim2.X.Offset - instance.AnchorPoint.X * v205.X
+            local v207 = udim2.Y.Scale * v204.Y + udim2.Y.Offset
+
+            return Rect.new(v206, v207, v206 + v205.X, v207 + v205.Y), v204
+        end
+
+        local function computeBoardShift()
+            --[[
+              name: computeBoardShift
+              line: 655
+              upvalues:
+                ui (copy, index: 1)
+                ui2 (copy, index: 2)
+                instance (copy, index: 3)
+                boardHomeRect (copy, index: 4)
+            ]]
+            local v209 = ui.ChatRectIn(ui2)
+
+            if not v209 or not ui2.Visible or not instance.Visible or ui.Compact then
+                return 0
+            end
+
+            local v210, v211 = boardHomeRect()
+
+            if not (v209.Max.X + 12 <= v210.Min.X) then
+                local x = v209.Min.X
+
+                if not (v210.Max.X <= x) and not (v209.Max.Y <= v210.Min.Y) then
+                    local y = v209.Min.Y
+
+                    if not (v210.Max.Y <= y) then
+                        return (math.max(0, (math.min((v209.Max.X + 12) - v210.Min.X, (v211.X - 12) - v210.Max.X))))
+                    end
+                end
+            end
+
             return 0
         end
-        return 0
-    end
-    local function redodgeBoard(a14)
-        --[[
-          name: redodgeBoard
-          line: 686
-          upvalues:
-            computeBoardShift (copy, index: 1)
-            u32 (ref,  index: 2)
-            applyBoard (copy, index: 3)
-        ]]
-        local v67 = computeBoardShift()
-        if not (math.abs(v67 - u32) > 1) then
-            return
-        end
-        u32 = v67
-        applyBoard(a14)
-    end
-    UI_upv_1.ChatChanged:Connect(
-        function()
+
+        local function applyBoard(a215: boolean)
             --[[
-              line: 693
+              name: applyBoard
+              line: 669
               upvalues:
-                redodgeBoard (copy, index: 1)
+                udim2 (ref,  index: 1)
+                v199 (ref,  index: 2)
+                tween (ref,  index: 3)
+                ui2 (copy, index: 4)
+                instance (copy, index: 5)
+                tweenService (copy, index: 6)
+                tweenInfo (copy, index: 7)
+                a5 (copy, index: 8)
             ]]
-            task.defer(redodgeBoard, true)
+            local position = udim2 + UDim2.fromOffset(v199, 0)
+
+            if tween then
+                tween:Cancel()
+                tween = nil
+            end
+
+            if not a215 or not ui2.Visible or not instance.Visible then
+                instance.Position = position
+            else
+                tween = tweenService:Create(instance, tweenInfo, {Position = position})
+                tween:Play()
+            end
+
+            if a5.KillFeedRelayout then
+                a5.KillFeedRelayout()
+            end
         end
-    )
-    u1:GetPropertyChangedSignal("Visible"):Connect(
-        function()
+
+        local function redodgeBoard(a218: boolean)
             --[[
-              line: 696
+              name: redodgeBoard
+              line: 686
               upvalues:
-                redodgeBoard (copy, index: 1)
+                computeBoardShift (copy, index: 1)
+                v199 (ref,  index: 2)
+                applyBoard (copy, index: 3)
             ]]
-            task.defer(redodgeBoard, false)
+            local v219 = computeBoardShift()
+
+            if 1 < math.abs(v219 - v199) then
+                v199 = v219
+                applyBoard(a218)
+            end
         end
-    )
-    u3:GetPropertyChangedSignal("Visible"):Connect(
-        function()
+
+        ui.ChatChanged:Connect(
+            function()
+                --[[
+                  line: 693
+                  upvalues:
+                    redodgeBoard (copy, index: 1)
+                ]]
+                task.defer(redodgeBoard, true)
+            end
+        )
+        ui2:GetPropertyChangedSignal("Visible"):Connect(
+            function()
+                --[[
+                  line: 696
+                  upvalues:
+                    redodgeBoard (copy, index: 1)
+                ]]
+                task.defer(redodgeBoard, false)
+            end
+        )
+        instance:GetPropertyChangedSignal("Visible"):Connect(
+            function()
+                --[[
+                  line: 699
+                  upvalues:
+                    redodgeBoard (copy, index: 1)
+                ]]
+                task.defer(redodgeBoard, false)
+            end
+        )
+
+        local function boardW()
             --[[
-              line: 699
+              name: boardW
+              line: 712
               upvalues:
-                redodgeBoard (copy, index: 1)
+                state (copy, index: 1)
             ]]
-            task.defer(redodgeBoard, false)
-        end
-    )
-    local function boardW()
-        --[[
-          name: boardW
-          line: 712
-          upvalues:
-            State_upv_1 (copy, index: 1)
-        ]]
-        local v68 = math.clamp(State_upv_1.TeamSize(), 1, 3)
-        if v68 >= 3 then
+            local clampedValue = math.clamp(state.TeamSize(), 1, 3)
+
+            if not (3 <= clampedValue) then
+                return (((clampedValue * 54) + 154 + ((clampedValue - 1) * 6)) * 2) + 24
+            end
+
             return 700
         end
-        return ((((v68 * 54) + 154) + ((v68 - 1) * 6)) * 2) + 24
-    end
-    local u35 = UI_upv_1.new("UIScale", {Name = "FitScale", Parent = u3})
-    local function phoneBoardHome()
-        --[[
-          name: phoneBoardHome
-          line: 720
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            u1 (copy, index: 2)
-            a1 (copy, index: 3)
-            GuiService_upv_1 (copy, index: 4)
-            State_upv_1 (copy, index: 5)
-        ]]
-        local v69 = math.max(UI_upv_1.Scale, 0.01)
-        local AbsolutePosition_1 = u1.AbsolutePosition
-        local v70 = u1.AbsoluteSize / v69
-        local TopbarSettings_1 = a1.TopbarSettings and (a1.TopbarSettings.Button)
-        local v71 = TopbarSettings_1 and (TopbarSettings_1:FindFirstAncestorOfClass("ScreenGui"))
-        local v72, v73
-        if not UI_upv_1.DebugDevice and TopbarSettings_1 and v71 then
-            if TopbarSettings_1.AbsoluteSize.X < 1 then
-                local v74 = (UI_upv_1.TopInset() - 4) * 6
-                local v75
-                v72, v73, v75 = v70.X - 16, v74, 6
-            else
-                v73 = (TopbarSettings_1.AbsolutePosition.X + TopbarSettings_1.AbsoluteSize.X - AbsolutePosition_1.X) / v69 + 12
-                local v75 = (TopbarSettings_1.AbsolutePosition.Y - AbsolutePosition_1.Y) / v69
-                local _ = GuiService_upv_1.TopbarInset
-                v72 = GuiService_upv_1.TopbarInset.Width > 0 and (v71.AbsolutePosition.X + GuiService_upv_1.TopbarInset.Max.X - AbsolutePosition_1.X) / v69 - 8 or v70.X - 16
-            end
-        else
-            local v74 = (UI_upv_1.TopInset() - 4) * 6
-            local v75
-            v72, v73, v75 = v70.X - 16, v74, 6
-        end
-        local v76 = math.min(v72, v70.X - 16)
-        local v77 = math.clamp(State_upv_1.TeamSize(), 1, 3)
-        local v78 = ((v77 >= 3) and 700) or ((((v77 * 54) + 154) + ((v77 - 1) * 6)) * 2 + 24)
-        local v79 = (v76 - v73) / v78
-        if v79 < 0.55 then
-            local v80 = math.min(1, (v70.X - 32) / v78)
-            return UDim2.new(0.5, 0, 0, UI_upv_1.TopInset()), v80
-        else
-            local v81 = math.min(v79, 1)
-            local v82 = v78 * v81
-            v71 = v70.X / 2
-            local v83 = ((v71 - (v82 / 2) < v73) and (v73 + v82 / 2)) or v71
-            if v76 < v83 + (v82 / 2) then
-                v71 = math.max(v73 + (v82 / 2), v76 - (v82 / 2))
-            else
-                v71 = v83
-            end
-            local v75 = nil
-            return UDim2.fromOffset(math.floor(v71), math.floor(math.max(2, v75))), v81
-        end
-    end
-    local function layout()
-        --[[
-          name: layout
-          line: 757
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            phoneBoardHome (copy, index: 2)
-            u31 (ref,  index: 3)
-            u35 (copy, index: 4)
-            u32 (ref,  index: 5)
-            u33 (ref,  index: 6)
-            u3 (copy, index: 7)
-            a1 (copy, index: 8)
-            redodgeBoard (copy, index: 9)
-            u12 (copy, index: 10)
-        ]]
-        local v84 = UI_upv_1.TopInset()
-        if UI_upv_1.Compact then
-            local v85, v86 = phoneBoardHome()
-            u31 = v85
-            u35.Scale = v86
-        else
-            u31 = UDim2.new(0.5, 0, 0, v84)
-            u35.Scale = 1
-        end
-        local v87 = u31 + UDim2.fromOffset(u32, 0)
-        if u33 then
-            u33:Cancel()
-            u33 = nil
-        end
-        u3.Position = v87
-        local v88 = nil
-        if v88.KillFeedRelayout then
-            v88.KillFeedRelayout()
-        end
-        task.defer(redodgeBoard, false)
-        local v89 = ((not (a1.HotbarWidth)) and 372) or (v88.HotbarWidth())
-        u12.Size = UDim2.fromOffset(v89, 40)
-        local v90 = ((not (a1.HotbarTop)) and 110) or (a1.HotbarTop())
-        u12.Position = UDim2.new(0.5, 0, 1, -(v90 + 8))
-    end
-    layout()
-    UI_upv_1.LayoutChanged:Connect(layout)
-    UI_upv_1.TopInsetChanged:Connect(layout)
-    local u36 = false
-    local function queueLayout()
-        --[[
-          name: queueLayout
-          line: 779
-          upvalues:
-            u36 (ref, index: 1)
-        ]]
-        if u36 then
-            return
-        end
-        u36 = true
-        task.defer(function() end)
-    end
-    UI_upv_1.ScaleChanged:Connect(queueLayout)
-    u1:GetPropertyChangedSignal("AbsoluteSize"):Connect(queueLayout)
-    if a1.TopbarSettings and a1.TopbarSettings.Button then
-        a1.TopbarSettings.Button:GetPropertyChangedSignal("AbsolutePosition"):Connect(queueLayout)
-    end
-    if a1.HotbarChanged then
-        a1.HotbarChanged.Event:Connect(layout)
-    end
-    if a1.ToastAvoid then
-        a1.ToastAvoid("Scoreboard", u3)
-    end
-    local u37 = nil
-    local function refreshVisible()
-        --[[
-          name: refreshVisible
-          line: 803
-          upvalues:
-            State_upv_1 (copy, index: 1)
-            a1 (copy, index: 2)
-            u30 (ref,  index: 3)
-            u1 (copy, index: 4)
-            u12 (copy, index: 5)
-            u3 (copy, index: 6)
-            u37 (ref,  index: 7)
-            RunService_upv_1 (copy, index: 8)
-            tickTimer (copy, index: 9)
-            u27 (ref,  index: 10)
-            tbl_upv_13 (copy, index: 11)
-        ]]
-        local v91 = (State_upv_1.SeesMatch() and (not a1.HudHidden)) or (u30 ~= nil)
-        if State_upv_1.Match == nil or State_upv_1.Match.phase == "Loading" then
-            v91 = false
-        end
-        u1.Visible = v91
-        local v92 = State_upv_1.IsAlive() and (not State_upv_1.Watching())
-        u12.Visible = v92 or u30 ~= nil
-        u3.Visible = u30 == nil
-        if a1.TopbarSettings then
-            a1.TopbarSettings.SetHidden("Replay", u30 ~= nil)
-        end
-        if v91 and not (u37) then
-            local v95 = RunService_upv_1.Heartbeat:Connect(
-                function()
-                    --[[
-                      line: 816
-                      upvalues:
-                        tickTimer (copy, index: 1)
-                        u27 (ref,  index: 2)
-                        tbl_upv_13 (copy, index: 3)
-                    ]]
-                    tickTimer()
-                    if u27 then
-                        tbl_upv_13.BackgroundTransparency = (math.sin(os.clock() * 8) * 0.25) + 0.25
-                    elseif tbl_upv_13.BackgroundTransparency ~= 0 then
-                        tbl_upv_13.BackgroundTransparency = 0
-                    end
-                end
-            )
-            u37 = v95
-            return
-        end
-        if (v91) or not u37 then
-            return
-        end
-        u37:Disconnect()
-        u37 = nil
-    end
-    local u38 = State_upv_1.TeamSize()
-    local function paintBoard(a15)
-        --[[
-          name: paintBoard
-          line: 232
-          upvalues:
-            State_upv_1 (copy, index: 1)
-            tbl_upv_2 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-            UI_upv_1 (copy, index: 4)
-            setPips (copy, index: 5)
-            Portraits_upv_1 (copy, index: 6)
-        ]]
-        if not a15 then
-            return
-        end
-        local v96 = State_upv_1.MyTeam()
-        local v97 = nil
-        local v98 = nil
-        local v99 = nil
-        local v100 = nil
-        local _ = nil
-        for key_4, value_6 in {v96, 3 - v96} do
-            local v101 = tbl_upv_2[key_4]
-            local v102 = a15.teams[value_6]
-            if key_4 ~= 1 then
-                v98 = Colors_upv_1.Enemy
-            else
-                v98 = Colors_upv_1.Ally
-            end
-            v101.name.Text = ""
-            local v103 = v102.score or 0
-            v101.score.Text = tostring(v103)
-            if v101.lastScore and v101.lastScore < v103 then
-                UI_upv_1.Pop(v101.score, 1.6)
-            end
-            v101.lastScore = v103
-            local v104 = a15.roundsToWin or (State_upv_1.RoundsToWin())
-            setPips(v101, v103, v104, v98)
-            v97 = nil
-            v99 = nil
-            v100 = nil
-            for key_5, value_7 in v101.portraits do
-                v103 = v102.members[key_5]
-                value_7.holder.Visible = v103 ~= nil
-                if not (v103) then
-                    continue
-                end
-                Portraits_upv_1.Apply(value_7.img, v103, 60)
-                local v105 = v103.alive == false
-                v97 = v103.connected == false
-                value_7.x.Visible = v105
-                value_7.dim.Visible = v105 or v97
-                local SetTint_1 = Portraits_upv_1.SetTint
-                v100 = value_7.img
-                if v105 then
-                    v99 = Color3.fromRGB(150, 150, 150)
-                else
-                    v99 = Color3.new(1, 1, 1)
-                end
-                SetTint_1(v100, v99, (v105 and 0.35) or 0)
-                local stroke_1 = value_7.stroke
-                if v105 then
-                    v100 = Color3.fromRGB(90, 84, 78)
-                else
-                    v100 = v98
-                end
-                stroke_1.Color = v100
-                if v103.id == State_upv_1.MyId() then
-                    v97 = true
-                else
-                    v97 = false
-                end
-                local stroke_2 = value_7.stroke
-                if v97 then
-                    v100 = 3.5
-                else
-                    v100 = 2.5
-                end
-                stroke_2.Thickness = v100
-            end
-        end
-    end
-    State_upv_1.MatchChanged:Connect(
-        function(a16)
+
+        local ui7 = ui.new("UIScale", {Name = "FitScale", Parent = instance})
+
+        local function phoneBoardHome()
             --[[
-              line: 830
+              name: phoneBoardHome
+              line: 720
               upvalues:
-                paintBoard (copy, index: 1)
-                refreshVisible (copy, index: 2)
-                State_upv_1 (copy, index: 3)
-                u38 (ref,  index: 4)
-                u36 (ref,  index: 5)
-                layout (copy, index: 6)
+                ui (copy, index: 1)
+                ui2 (copy, index: 2)
+                a5 (copy, index: 3)
+                guiService (copy, index: 4)
+                state (copy, index: 5)
             ]]
-            paintBoard(a16)
-            refreshVisible()
-            local v106 = State_upv_1.TeamSize()
-            if v106 == u38 then
+            local v224, v225, v226
+            local v227
+            local v228 = math.max(ui.Scale, 0.01)
+            local absolutePosition = ui2.AbsolutePosition
+            local v230 = ui2.AbsoluteSize / v228
+            local button = a5.TopbarSettings and a5.TopbarSettings.Button
+            local firstAncestorOfClass = button and button:FindFirstAncestorOfClass("ScreenGui")
+
+            if ui.DebugDevice or not button or not firstAncestorOfClass or button.AbsoluteSize.X < 1 then
+                v224 = (ui.TopInset() - 4) * 6
+                v225 = v230.X - 16
+                v226 = 6
+            else
+                v224 = (button.AbsolutePosition.X + button.AbsoluteSize.X - absolutePosition.X) / v228 + 12
+                v226 = (button.AbsolutePosition.Y - absolutePosition.Y) / v228
+                local topbarInset = guiService.TopbarInset
+                v225 = if 0 < topbarInset.Width then (firstAncestorOfClass.AbsolutePosition.X + topbarInset.Max.X - absolutePosition.X) / v228 - 8 else v230.X - 16
+            end
+
+            local v234 = math.min(v225, v230.X - 16)
+            local clampedValue = math.clamp(state.TeamSize(), 1, 3)
+
+            if not (3 <= clampedValue) then
+                v227 = ((clampedValue * 54) + 154 + ((clampedValue - 1) * 6)) * 2 + 24
+            else
+                v227 = 700
+            end
+
+            local v236 = (v234 - v224) / v227
+
+            if v236 < 0.55 then
+                local v237 = math.min(1, (v230.X - 32) / v227)
+                return UDim2.new(0.5, 0, 0, ui.TopInset()), v237
+            end
+
+            local v238 = math.min(v236, 1)
+            local v239 = v227 * v238
+            local v240 = v230.X / 2
+
+            if v240 - (v239 / 2) < v224 then
+                v240 = v224 + v239 / 2
+            end
+
+            if v234 < v240 + (v239 / 2) then
+                v240 = math.max(v224 + (v239 / 2), v234 - (v239 / 2))
+            end
+
+            return UDim2.fromOffset(math.floor(v240), (math.floor((math.max(2, v226))))), v238
+        end
+
+        local function layout()
+            --[[
+              name: layout
+              line: 757
+              upvalues:
+                ui (copy, index: 1)
+                phoneBoardHome (copy, index: 2)
+                udim2 (ref,  index: 3)
+                ui7 (copy, index: 4)
+                v199 (ref,  index: 5)
+                tween (ref,  index: 6)
+                instance (copy, index: 7)
+                a5 (copy, index: 8)
+                redodgeBoard (copy, index: 9)
+                ui4 (copy, index: 10)
+            ]]
+            local v242 = ui.TopInset()
+
+            if ui.Compact then
+                local udim22, scale = phoneBoardHome()
+                udim2 = udim22
+                ui7.Scale = scale
+            else
+                udim2 = UDim2.new(0.5, 0, 0, v242)
+                ui7.Scale = 1
+            end
+
+            local position = udim2 + UDim2.fromOffset(v199, 0)
+
+            if tween then
+                tween:Cancel()
+                tween = nil
+            end
+
+            instance.Position = position
+
+            if a5.KillFeedRelayout then
+                a5.KillFeedRelayout()
+            end
+
+            task.defer(redodgeBoard, false)
+            local v246 = not a5.HotbarWidth and 372 or a5.HotbarWidth()
+            ui4.Size = UDim2.fromOffset(v246, 40)
+            local v247 = not a5.HotbarTop and 110 or a5.HotbarTop()
+            ui4.Position = UDim2.new(0.5, 0, 1, -(v247 + 8))
+        end
+
+        layout()
+        ui.LayoutChanged:Connect(layout)
+        ui.TopInsetChanged:Connect(layout)
+        local isBusy = false
+
+        local function queueLayout()
+            --[[
+              name: queueLayout
+              line: 779
+              upvalues:
+                isBusy (ref,  index: 1)
+                layout (copy, index: 2)
+            ]]
+            if isBusy then
                 return
             end
-            u38 = v106
-            if u36 then
-                return
-            end
-            u36 = true
+
+            isBusy = true
+
             task.defer(
                 function()
                     --[[
                       line: 784
                       upvalues:
-                        u36 (ref,  index: 1)
+                        isBusy (ref,  index: 1)
                         layout (copy, index: 2)
                     ]]
-                    u36 = false
+                    isBusy = false
                     layout()
                 end
             )
         end
-    )
-    State_upv_1.PlayerStateChanged:Connect(refreshVisible)
-    State_upv_1.WatchChanged:Connect(
-        function()
-            --[[
-              line: 841
-              upvalues:
-                paintBoard (copy, index: 1)
-                State_upv_1 (copy, index: 2)
-                refreshVisible (copy, index: 3)
-            ]]
-            paintBoard(State_upv_1.Match)
-            refreshVisible()
+
+        ui.ScaleChanged:Connect(queueLayout)
+        ui2:GetPropertyChangedSignal("AbsoluteSize"):Connect(queueLayout)
+
+        if a5.TopbarSettings and a5.TopbarSettings.Button then
+            a5.TopbarSettings.Button:GetPropertyChangedSignal("AbsolutePosition"):Connect(queueLayout)
         end
-    )
-    State_upv_1.AttrChanged:Connect(
-        function(a17)
+
+        if a5.HotbarChanged then
+            a5.HotbarChanged.Event:Connect(layout)
+        end
+
+        if a5.ToastAvoid then
+            a5.ToastAvoid("Scoreboard", instance)
+        end
+
+        local heartbeatConnection = nil
+
+        local function refreshVisible()
             --[[
-              line: 845
+              name: refreshVisible
+              line: 803
               upvalues:
-                refreshVisible (copy, index: 1)
-                paintBoard (copy, index: 2)
-                State_upv_1 (copy, index: 3)
+                state (copy, index: 1)
+                a5 (copy, index: 2)
+                v190 (ref,  index: 3)
+                ui2 (copy, index: 4)
+                ui4 (copy, index: 5)
+                instance (copy, index: 6)
+                heartbeatConnection (ref,  index: 7)
+                runService (copy, index: 8)
+                tickTimer (copy, index: 9)
+                v179 (ref,  index: 10)
+                parent4 (copy, index: 11)
             ]]
-            if a17 ~= "Alive" and a17 ~= "Team" then
+            local v252 = state.SeesMatch() and not a5.HudHidden or v190 ~= nil
+
+            if state.Match == nil or state.Match.phase == "Loading" then
+                v252 = false
+                v252 = state
+            else
+                v252 = state
+            end
+
+            ui2.Visible = v252
+            local v253 = v252.IsAlive() and not v252.Watching()
+            ui4.Visible = v253 or v190 ~= nil
+            instance.Visible = v190 == nil
+
+            if a5.TopbarSettings then
+                a5.TopbarSettings.SetHidden("Replay", v190 ~= nil)
+            end
+
+            if v252 and not heartbeatConnection then
+                heartbeatConnection = runService.Heartbeat:Connect(
+                    function()
+                        --[[
+                          line: 816
+                          upvalues:
+                            tickTimer (copy, index: 1)
+                            v179 (ref,  index: 2)
+                            parent4 (copy, index: 3)
+                        ]]
+                        tickTimer()
+
+                        if v179 then
+                            parent4.BackgroundTransparency = (math.sin(os.clock() * 8) * 0.25) + 0.25
+                            return
+                        end
+
+                        if parent4.BackgroundTransparency ~= 0 then
+                            parent4.BackgroundTransparency = 0
+                        end
+                    end
+                )
+
                 return
             end
-            refreshVisible()
-            paintBoard(State_upv_1.Match)
-        end
-    )
-    a1.HudHiddenChanged:Connect(refreshVisible)
-    paintBoard(State_upv_1.Match)
-    refreshVisible()
-    a1.MatchHud = {Root = u1, Board = u3, Health = u12}
-    function a1.MatchHud.KillFeedTop()
-        --[[
-          name: KillFeedTop
-          line: 858
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            u3 (copy, index: 2)
-            u1 (copy, index: 3)
-            u32 (ref,  index: 4)
-            boardHomeRect (copy, index: 5)
-        ]]
-        if UI_upv_1.Compact and u3.Visible then
-            local v107 = math.max(UI_upv_1.Scale, 0.01)
-            local AbsolutePosition_2 = u1.AbsolutePosition
-            local v108 = ((u3.AbsolutePosition.Y + u3.AbsoluteSize.Y) - AbsolutePosition_2.Y) / v107
-            if (u1.AbsoluteSize / v107).X - 340 < ((u3.AbsolutePosition.X + u3.AbsoluteSize.X) - AbsolutePosition_2.X) / v107 and UI_upv_1.TopInset() < v108 + 8 then
-                return v108 + 8
+
+            if not v252 and heartbeatConnection then
+                heartbeatConnection:Disconnect()
+                heartbeatConnection = nil
             end
-            return nil
-        elseif u32 <= 0 then
-            return nil
-        else
+        end
+
+        local v254 = state.TeamSize()
+
+        state.MatchChanged:Connect(
+            function(a255)
+                --[[
+                  line: 830
+                  upvalues:
+                    paintBoard (copy, index: 1)
+                    refreshVisible (copy, index: 2)
+                    state (copy, index: 3)
+                    v254 (ref,  index: 4)
+                    isBusy (ref,  index: 5)
+                    layout (copy, index: 6)
+                ]]
+                paintBoard(a255)
+                refreshVisible()
+                local v256 = state.TeamSize()
+
+                if v256 ~= v254 then
+                    v254 = v256
+
+                    if not isBusy then
+                        isBusy = true
+
+                        task.defer(
+                            function()
+                                --[[
+                                  line: 784
+                                  upvalues:
+                                    isBusy (ref,  index: 1)
+                                    layout (copy, index: 2)
+                                ]]
+                                isBusy = false
+                                layout()
+                            end
+                        )
+                    end
+                end
+            end
+        )
+
+        state.PlayerStateChanged:Connect(refreshVisible)
+
+        state.WatchChanged:Connect(
+            function()
+                --[[
+                  line: 841
+                  upvalues:
+                    paintBoard (copy, index: 1)
+                    state (copy, index: 2)
+                    refreshVisible (copy, index: 3)
+                ]]
+                paintBoard(state.Match)
+                refreshVisible()
+            end
+        )
+
+        state.AttrChanged:Connect(
+            function(a257)
+                --[[
+                  line: 845
+                  upvalues:
+                    refreshVisible (copy, index: 1)
+                    paintBoard (copy, index: 2)
+                    state (copy, index: 3)
+                ]]
+                if a257 == "Alive" or a257 == "Team" then
+                    refreshVisible()
+                    paintBoard(state.Match)
+                end
+            end
+        )
+
+        a5.HudHiddenChanged:Connect(refreshVisible)
+        paintBoard(state.Match)
+        refreshVisible()
+        a5.MatchHud = {Root = ui2, Board = instance, Health = ui4}
+
+        local function KillFeedTop()
+            --[[
+              name: KillFeedTop
+              line: 858
+              upvalues:
+                ui (copy, index: 1)
+                instance (copy, index: 2)
+                ui2 (copy, index: 3)
+                v199 (ref,  index: 4)
+                boardHomeRect (copy, index: 5)
+            ]]
+            if ui.Compact and instance.Visible then
+                local v259 = math.max(ui.Scale, 0.01)
+                local absolutePosition = ui2.AbsolutePosition
+                local v261 = (instance.AbsolutePosition.X + instance.AbsoluteSize.X - absolutePosition.X) / v259
+                local v262 = (instance.AbsolutePosition.Y + instance.AbsoluteSize.Y - absolutePosition.Y) / v259
+
+                if not ((ui2.AbsoluteSize / v259).X - 340 < v261) then
+                    return nil
+                end
+
+                local v263 = v262 + 8
+
+                if ui.TopInset() < v263 then
+                    return v262 + 8
+                end
+
+                return nil
+            end
+
+            if v199 <= 0 then
+                return nil
+            end
+
             return boardHomeRect().Max.Y + 8
         end
-    end
-    function a1.MatchHud.SetReplaySource(a18)
-        --[[
-          name: SetReplaySource
-          line: 877
-          upvalues:
-            u30 (ref,  index: 1)
-            hookCharacter (copy, index: 2)
-            LocalPlayer_upv_1 (copy, index: 3)
-            refreshVisible (copy, index: 4)
-        ]]
-        u30 = a18
-        local v109 = a18 or LocalPlayer_upv_1.Character
-        hookCharacter(v109)
-        refreshVisible()
-    end
-end
-return tbl_1
+
+        a5.MatchHud.KillFeedTop = KillFeedTop
+
+        local function SetReplaySource(replaySource)
+            --[[
+              name: SetReplaySource
+              line: 877
+              upvalues:
+                v190 (ref,  index: 1)
+                hookCharacter (copy, index: 2)
+                localPlayer (copy, index: 3)
+                refreshVisible (copy, index: 4)
+            ]]
+            v190 = replaySource
+            local v266 = replaySource or localPlayer.Character
+            hookCharacter(v266)
+            refreshVisible()
+        end
+
+        a5.MatchHud.SetReplaySource = SetReplaySource
+    end)
+}

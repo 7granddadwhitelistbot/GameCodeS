@@ -1,52 +1,72 @@
-local UserInputService_1 = game:GetService("UserInputService")
-local tbl_1 = {}
-local tbl_upv_2 = {}
-UserInputService_1.TouchStarted:Connect(
-    function(a1)
+local userInputService = game:GetService("UserInputService")
+local v2 = {}
+local v3 = {}
+userInputService.TouchStarted:Connect(
+    function(touch: InputObject)
         --[[
           line: 19
           upvalues:
-            tbl_upv_2 (copy, index: 1)
+            v3 (copy, index: 1)
         ]]
-        tbl_upv_2[a1] = Vector2.new(a1.Position.X, a1.Position.Y)
+        v3[touch] = Vector2.new(touch.Position.X, touch.Position.Y)
     end
 )
-UserInputService_1.TouchEnded:Connect(
-    function(a1)
+userInputService.TouchEnded:Connect(
+    function(touch: InputObject)
         --[[
           line: 22
           upvalues:
-            tbl_upv_2 (copy, index: 1)
+            v3 (copy, index: 1)
         ]]
         task.defer(
             function()
                 --[[
                   line: 24
                   upvalues:
-                    tbl_upv_2 (copy, index: 1)
-                    a1 (copy, index: 2)
+                    v3 (copy, index: 1)
+                    touch (copy, index: 2)
                 ]]
-                tbl_upv_2[a1] = nil
+                v3[touch] = nil
             end
         )
     end
 )
-function tbl_1.BeganOn(a1, a2)
+
+function v2.BeganOn(a6, key)
     --[[
       name: BeganOn
       line: 29
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v3 (copy, index: 1)
     ]]
-    if a2.UserInputType ~= Enum.UserInputType.Touch then
+    if key.UserInputType ~= Enum.UserInputType.Touch then
         return true
     end
-    local v1 = tbl_upv_2[a2]
-    if v1 == nil then
+
+    local v8 = v3[key]
+    if v8 == nil then
         return true
     end
-    local AbsolutePosition_1 = a1.AbsolutePosition
-    local AbsoluteSize_1 = a1.AbsoluteSize
-    return (AbsolutePosition_1.X - 6 <= v1.X) and ((v1.X <= (AbsolutePosition_1.X + AbsoluteSize_1.X) + 6) and ((AbsolutePosition_1.Y - 6 <= v1.Y) and (v1.Y <= (AbsolutePosition_1.Y + AbsoluteSize_1.Y) + 6)))
+
+    local absolutePosition = a6.AbsolutePosition
+    local absoluteSize = a6.AbsoluteSize
+    local v11 = false
+    local x = v8.X
+
+    if absolutePosition.X - 6 <= x then
+        v11 = false
+
+        if v8.X <= (absolutePosition.X + absoluteSize.X) + 6 then
+            v11 = false
+            local y = v8.Y
+
+            if absolutePosition.Y - 6 <= y then
+                v11 = v8.Y <= (absolutePosition.Y + absoluteSize.Y) + 6
+            end
+        end
+    end
+
+    return v11
 end
-return tbl_1
+
+return v2

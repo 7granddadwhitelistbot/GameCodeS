@@ -1,171 +1,189 @@
-local Players_upv_1 = game:GetService("Players")
-local tbl_upv_1 = {}
-tbl_upv_1._connectionUtil = require(script.Parent).get("ConnectionUtil").new()
-tbl_upv_1._boundEvents = {}
-function tbl_upv_1.getLocalPlayer()
-    --[[
-      name: getLocalPlayer
-      line: 55
-      upvalues:
-        Players_upv_1 (copy, index: 1)
-    ]]
-    return Players_upv_1.LocalPlayer
-end
-function tbl_upv_1.onLocalPlayer(a1)
+local players = game:GetService("Players")
+local Parent = require(script.Parent)
+local v3 = Parent.get("ConnectionUtil")
+local v4 = {
+    _connectionUtil = v3.new(),
+    _boundEvents = {},
+    getLocalPlayer = (function()
+        --[[
+          name: getLocalPlayer
+          line: 55
+          upvalues:
+            players (copy, index: 1)
+        ]]
+        return players.LocalPlayer
+    end)
+}
+
+function v4.onLocalPlayer(callback)
     --[[
       name: onLocalPlayer
       line: 59
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        Players_upv_1 (copy, index: 2)
+        v4 (copy, index: 1)
+        players (copy, index: 2)
     ]]
-    local v1 = tbl_upv_1.getLocalPlayer()
-    if v1 then
-        a1(v1)
+    if const localPlayer = v4.getLocalPlayer() then
+        callback(localPlayer)
     end
-    tbl_upv_1._connectionUtil:trackConnection(
+
+    v4._connectionUtil:trackConnection(
         "LOCAL_PLAYER",
-        Players_upv_1:GetPropertyChangedSignal("LocalPlayer"):Connect(
+        players:GetPropertyChangedSignal("LocalPlayer"):Connect(
             function()
                 --[[
                   line: 68
                   upvalues:
-                    tbl_upv_1 (copy, index: 1)
+                    v4 (copy, index: 1)
                 ]]
-                local v2 = tbl_upv_1.getLocalPlayer()
-                assert(v2)
-                tbl_upv_1._getOrCreateBoundEvent("LOCAL_PLAYER"):Fire(v2)
+                local localPlayer = v4.getLocalPlayer()
+                assert(localPlayer)
+                v4._getOrCreateBoundEvent("LOCAL_PLAYER"):Fire(localPlayer)
             end
         )
     )
-    return tbl_upv_1._getOrCreateBoundEvent("LOCAL_PLAYER").Event:Connect(a1)
+
+    local orCreateBoundEvent = v4._getOrCreateBoundEvent("LOCAL_PLAYER")
+
+    return orCreateBoundEvent.Event:Connect(callback)
 end
-function tbl_upv_1.getCharacter()
+
+function v4.getCharacter()
     --[[
       name: getCharacter
       line: 79
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local v3 = tbl_upv_1.getLocalPlayer()
-    if v3 then
-        return v3.Character
-    end
-    return nil
+    return if const localPlayer = v4.getLocalPlayer() then localPlayer.Character else nil
 end
-function tbl_upv_1.onCharacter(a1)
+
+function v4.onCharacter(callback)
     --[[
       name: onCharacter
       line: 87
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    tbl_upv_1._connectionUtil:trackConnection(
+    v4._connectionUtil:trackConnection(
         "ON_LOCAL_PLAYER",
-        tbl_upv_1.onLocalPlayer(
-            function(a2)
+        v4.onLocalPlayer(
+            function(a11)
                 --[[
                   line: 91
                   upvalues:
-                    tbl_upv_1 (copy, index: 1)
-                    a1 (copy, index: 2)
+                    v4 (copy, index: 1)
+                    callback (copy, index: 2)
                 ]]
-                local v4 = tbl_upv_1.getCharacter()
-                if v4 then
-                    a1(v4)
+                if const character = v4.getCharacter() then
+                    callback(character)
                 end
-                tbl_upv_1._connectionUtil:trackConnection(
+
+                v4._connectionUtil:trackConnection(
                     "CHARACTER_ADDED",
-                    a2.CharacterAdded:Connect(
-                        function(a3)
+                    a11.CharacterAdded:Connect(
+                        function(a13)
                             --[[
                               line: 100
                               upvalues:
-                                tbl_upv_1 (copy, index: 1)
+                                v4 (copy, index: 1)
                             ]]
-                            assert(a3)
-                            tbl_upv_1._getOrCreateBoundEvent("CHARACTER_ADDED"):Fire(a3)
+                            assert(a13)
+                            v4._getOrCreateBoundEvent("CHARACTER_ADDED"):Fire(a13)
                         end
                     )
                 )
             end
         )
     )
-    return tbl_upv_1._getOrCreateBoundEvent("CHARACTER_ADDED").Event:Connect(a1)
+
+    local orCreateBoundEvent = v4._getOrCreateBoundEvent("CHARACTER_ADDED")
+
+    return orCreateBoundEvent.Event:Connect(callback)
 end
-function tbl_upv_1.getChild(a1, a2)
+
+function v4.getChild(a15, a16)
     --[[
       name: getChild
       line: 112
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    local v5 = tbl_upv_1.getCharacter()
-    if not v5 then
+    local character = v4.getCharacter()
+    if not character then
         return nil
     end
-    local v6 = v5:FindFirstChild(a1)
-    if v6 and v6:IsA(a2) then
-        return v6
+
+    local v18 = character:FindFirstChild(a15)
+
+    if v18 and v18:IsA(a16) then
+        return v18
     end
+
     return nil
 end
-function tbl_upv_1.onChild(a1, a2, a3)
+
+function v4.onChild(a19, a20, callback)
     --[[
       name: onChild
       line: 124
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    tbl_upv_1._connectionUtil:trackConnection(
+    v4._connectionUtil:trackConnection(
         "ON_CHARACTER",
-        tbl_upv_1.onCharacter(
-            function(a4)
+        v4.onCharacter(
+            function(a22)
                 --[[
                   line: 128
                   upvalues:
-                    tbl_upv_1 (copy, index: 1)
-                    a1 (copy, index: 2)
-                    a2 (copy, index: 3)
-                    a3 (copy, index: 4)
+                    v4 (copy, index: 1)
+                    a19 (copy, index: 2)
+                    a20 (copy, index: 3)
+                    callback (copy, index: 4)
                 ]]
-                local v7 = tbl_upv_1.getChild(a1, a2)
-                if v7 then
-                    a3(v7)
+                if const child = v4.getChild(a19, a20) then
+                    callback(child)
                 end
-                tbl_upv_1._connectionUtil:trackConnection(
+
+                v4._connectionUtil:trackConnection(
                     "CHARACTER_CHILD_ADDED",
-                    a4.ChildAdded:Connect(
-                        function(a5)
+                    a22.ChildAdded:Connect(
+                        function(a24)
                             --[[
                               line: 137
                               upvalues:
-                                a1 (copy, index: 1)
-                                a2 (copy, index: 2)
-                                tbl_upv_1 (copy, index: 3)
+                                a19 (copy, index: 1)
+                                a20 (copy, index: 2)
+                                v4 (copy, index: 3)
                             ]]
-                            if a5.Name ~= a1 or not a5:IsA(a2) then
-                                return
+                            if a24.Name == a19 and a24:IsA(a20) then
+                                v4._getOrCreateBoundEvent("CHARACTER_CHILD_ADDED" .. a19 .. a20):Fire(a24)
                             end
-                            tbl_upv_1._getOrCreateBoundEvent("CHARACTER_CHILD_ADDED" .. a1 .. a2):Fire(a5)
                         end
                     )
                 )
             end
         )
     )
-    return tbl_upv_1._getOrCreateBoundEvent("CHARACTER_CHILD_ADDED" .. a1 .. a2).Event:Connect(a3)
+
+    local orCreateBoundEvent = v4._getOrCreateBoundEvent("CHARACTER_CHILD_ADDED" .. a19 .. a20)
+
+    return orCreateBoundEvent.Event:Connect(callback)
 end
-function tbl_upv_1._getOrCreateBoundEvent(a1)
+
+function v4._getOrCreateBoundEvent(boundEventKey)
     --[[
       name: _getOrCreateBoundEvent
       line: 151
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v4 (copy, index: 1)
     ]]
-    if not (tbl_upv_1._boundEvents[a1]) then
-        tbl_upv_1._boundEvents[a1] = Instance.new("BindableEvent")
+    if not v4._boundEvents[boundEventKey] then
+        v4._boundEvents[boundEventKey] = Instance.new("BindableEvent")
     end
-    return tbl_upv_1._boundEvents[a1]
+
+    return v4._boundEvents[boundEventKey]
 end
-return tbl_upv_1
+
+return v4

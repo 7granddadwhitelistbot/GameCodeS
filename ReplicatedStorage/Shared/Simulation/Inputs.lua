@@ -1,50 +1,60 @@
-local tbl_upv_1 = {}
-tbl_upv_1.CONTEXT = "TribesInputs"
-tbl_upv_1.ACTIONS = {
-    {name = "Slide", kind = Enum.InputActionType.Bool, keys = {Enum.KeyCode.C, Enum.KeyCode.LeftControl, Enum.KeyCode.ButtonB}},
-    {name = "Jump", kind = Enum.InputActionType.Bool, keys = {Enum.KeyCode.Space, Enum.KeyCode.ButtonA}},
-    {name = "Aim", kind = Enum.InputActionType.Bool, keys = {}},
-    {name = "Charge", kind = Enum.InputActionType.Bool, keys = {}},
-    {name = "Block", kind = Enum.InputActionType.Bool, keys = {}},
-    {name = "Reload", kind = Enum.InputActionType.Bool, keys = {}},
-    {name = "Use", kind = Enum.InputActionType.Bool, keys = {}},
-    {name = "Lunge", kind = Enum.InputActionType.Bool, keys = {}},
-    {name = "Facing", kind = Enum.InputActionType.Direction2D, keys = {}},
-    {name = "Look", kind = Enum.InputActionType.Direction2D, keys = {}},
-    {name = "Hold", kind = Enum.InputActionType.Direction1D, keys = {}}
+local v1 = {
+    CONTEXT = "TribesInputs",
+    ACTIONS = {
+        {name = "Slide", kind = Enum.InputActionType.Bool, keys = {Enum.KeyCode.C, Enum.KeyCode.LeftControl, Enum.KeyCode.ButtonB}},
+        {name = "Jump", kind = Enum.InputActionType.Bool, keys = {Enum.KeyCode.Space, Enum.KeyCode.ButtonA}},
+        {name = "Aim", kind = Enum.InputActionType.Bool, keys = {}},
+        {name = "Charge", kind = Enum.InputActionType.Bool, keys = {}},
+        {name = "Block", kind = Enum.InputActionType.Bool, keys = {}},
+        {name = "Reload", kind = Enum.InputActionType.Bool, keys = {}},
+        {name = "Use", kind = Enum.InputActionType.Bool, keys = {}},
+        {name = "Lunge", kind = Enum.InputActionType.Bool, keys = {}},
+        {name = "Facing", kind = Enum.InputActionType.Direction2D, keys = {}},
+        {name = "Look", kind = Enum.InputActionType.Direction2D, keys = {}},
+        {name = "Hold", kind = Enum.InputActionType.Direction1D, keys = {}}
+    },
+    HOLD_SCALE = 8,
+    HOLD_SLOTS = 7
 }
-tbl_upv_1.HOLD_SCALE = 8
-tbl_upv_1.HOLD_SLOTS = 7
-function tbl_upv_1.Build(a1)
+
+function v1.Build(parent: Instance?)
     --[[
       name: Build
       line: 54
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    local v1 = a1:FindFirstChild(tbl_upv_1.CONTEXT)
-    if v1 and v1:IsA("InputContext") then
-        return v1
+    local child = parent:FindFirstChild(v1.CONTEXT)
+
+    if child and child:IsA("InputContext") then
+        return child
     end
-    local v2 = Instance.new("InputContext")
-    v2.Name = tbl_upv_1.CONTEXT
-    for _, value_1 in tbl_upv_1.ACTIONS do
-        local v3 = Instance.new("InputAction")
-        v3.Name = value_1.name
-        v3.Type = value_1.kind
-        for key_1, value_2 in value_1.keys do
-            local v4 = Instance.new("InputBinding")
-            v4.Name = "Key" .. key_1
-            v4.KeyCode = value_2
-            v4.Parent = v3
+
+    local parent2 = Instance.new("InputContext")
+    parent2.Name = v1.CONTEXT
+
+    for _, action in v1.ACTIONS do
+        local parent3 = Instance.new("InputAction")
+        parent3.Name = action.name
+        parent3.Type = action.kind
+
+        for v8, keyCode in action.keys do
+            local inputBinding = Instance.new("InputBinding")
+            inputBinding.Name = "Key" .. v8
+            inputBinding.KeyCode = keyCode
+            inputBinding.Parent = parent3
         end
-        local v5 = Instance.new("InputBinding")
-        v5.Name = "Script"
-        v5.Type = Enum.InputBindingType.Scriptable
-        v5.Parent = v3
-        v3.Parent = v2
+
+        local script = Instance.new("InputBinding")
+        script.Name = "Script"
+        script.Type = Enum.InputBindingType.Scriptable
+        script.Parent = parent3
+        parent3.Parent = parent2
     end
-    v2.Parent = a1
-    return v2
+
+    parent2.Parent = parent
+
+    return parent2
 end
-return tbl_upv_1
+
+return v1

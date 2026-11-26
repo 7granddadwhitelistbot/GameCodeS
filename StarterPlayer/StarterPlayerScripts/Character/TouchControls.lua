@@ -1,626 +1,719 @@
-local GuiService_upv_1 = game:GetService("GuiService")
-local Players_1 = game:GetService("Players")
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local RunService_upv_1 = game:GetService("RunService")
-local TweenService_upv_1 = game:GetService("TweenService")
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local Camera_upv_1 = require(ReplicatedStorage_1:WaitForChild("Shared"):WaitForChild("Camera"))
-local TouchStart_upv_1 = require(ReplicatedStorage_1:WaitForChild("Shared"):WaitForChild("TouchStart"))
-local Loc_upv_1 = require(ReplicatedStorage_1.Shared:WaitForChild("Loc"))
-local Movement_upv_1 = require(script.Parent:WaitForChild("Movement"))
-local tbl_1 = {}
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local u1 = Color3.fromRGB(18, 20, 26)
-local u2 = Color3.fromRGB(36, 40, 50)
-local u3 = Color3.fromRGB(40, 150, 255)
-local u4 = Color3.fromRGB(255, 255, 255)
-local u5 = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Heavy)
-local u6 = nil
-local u7 = nil
-local u8 = nil
-local u9 = nil
-local u10 = nil
-local u11 = false
-local u12 = false
-local u13 = false
-local tbl_upv_2 = {FreeCursor = true, Spectate = true}
-local function setPressed(a1, a2)
-    --[[
-      name: setPressed
-      line: 97
-      upvalues:
-        u2 (copy, index: 1)
-        u3 (copy, index: 3)
-        u13 (ref,  index: 5)
-        TweenService_upv_1 (copy, index: 6)
-    ]]
-    a1.BackgroundColor3 = u2
-    a1.BackgroundTransparency = (a2 and 0.12) or 0.3
-    local v1 = a1:FindFirstChildOfClass("UIStroke")
-    if v1 then
-        v1.Color = u3
-        v1.Thickness = (a2 and 3) or 2
-        v1.Transparency = (a2 and 0) or ((u13 and 0.92) or 0.8)
-    end
-    local v2 = a1:FindFirstChildOfClass("UIScale")
-    if v2 then
-        local v3 = TweenInfo.new((a2 and 0.06) or 0.12, Enum.EasingStyle.Quad)
-        local tbl_3 = {Scale = 0}
-        tbl_3.Scale = (a2 and 0.92) or 1
-        TweenService_upv_1:Create(v2, v3, tbl_3):Play()
-    end
-end
-local function readOverride(a1, a2, a3, a4)
-    --[[
-      name: readOverride
-      line: 148
-    ]]
-    local v4 = a1:GetAttribute("Override_" .. a2)
-    if type(v4) ~= "string" then
-        return nil, nil
-    end
-    local v5, v6, v7 = string.match(v4, "^(%-?%d+),(%-?%d+),(%d+)$")
-    if not v5 then
-        return nil, nil
-    end
-    local v8 = math.floor(((tonumber(v7) / 1000) * a4) + 0.5)
-    return UDim2.fromOffset(tonumber(v5) / 1000 * a3.X, tonumber(v6) / 1000 * a3.Y), (math.max(v8, 24))
-end
-local function layout()
-    --[[
-      name: layout
-      line: 161
-      upvalues:
-        u7 (ref,  index: 1)
-        u8 (ref,  index: 2)
-        u9 (ref,  index: 3)
-        u10 (ref,  index: 4)
-        u6 (ref,  index: 5)
-        readOverride (copy, index: 6)
-    ]]
-    if not u7 or not u8 or not u9 or not u10 or not u6 then
-        return
-    end
-    local AbsoluteSize_1 = u7.AbsoluteSize
-    if AbsoluteSize_1.X < 10 or AbsoluteSize_1.Y < 10 then
-        return
-    end
-    local v9 = math.clamp(math.min(AbsoluteSize_1.X, AbsoluteSize_1.Y) / 360, 0.85, 1.45)
-    local v10 = math.floor(v9 * 84)
-    local v11 = math.floor(v9 * 64)
-    local v12 = AbsoluteSize_1.X - (v9 * 18) - v10 / 2
-    u8.Size = UDim2.fromOffset(v10, v10)
-    u8.Position = UDim2.fromOffset(v12, (AbsoluteSize_1.Y - (v9 * 14)) - (v10 / 2))
-    u8.TextSize = math.floor(v9 * 17)
-    local AbsolutePosition_1 = (v12 - (v10 / 2)) - (v9 * 14) - v11 / 2
-    u9.Size = UDim2.fromOffset(v11, v11)
-    u9.Position = UDim2.fromOffset(AbsolutePosition_1, (AbsoluteSize_1.Y - (v9 * 14)) - (v11 / 2))
-    u9.TextSize = math.floor(v9 * 14)
-    local v13 = math.max(44, math.floor(v9 * 48))
-    u10.Size = UDim2.fromOffset(v13, v13)
-    u10.Position = UDim2.fromOffset(((AbsolutePosition_1 - (v11 / 2)) - (v9 * 14)) - (v13 / 2), (AbsoluteSize_1.Y - (v9 * 14)) - (v13 / 2))
-    u10.TextSize = math.floor(v9 * 13)
-    for _, value_1 in {u8, u9, u10} do
-        value_1:SetAttribute("DefaultSize", value_1.Size.X.Offset)
-        local v14, v15 = readOverride(u6, value_1.Name, AbsoluteSize_1, value_1.Size.X.Offset)
-        if not (v14) then
-            continue
-        end
-        if v15 then
-            value_1.Position = v14
-            value_1.Size = UDim2.fromOffset(v15, v15)
-            value_1.TextSize = math.floor(v15 * 0.2)
-        end
-    end
-    local v16 = math.huge
-    local v17 = math.huge
-    for _, value_2 in {u8, u9, u10} do
-        v16, v17 = math.min(v16, value_2.Position.X.Offset - (value_2.Size.X.Offset / 2)), math.min(v17, value_2.Position.Y.Offset - (value_2.Size.Y.Offset / 2))
-    end
-    AbsolutePosition_1 = u7.AbsolutePosition
-    u6:SetAttribute("Scale", v9)
-    u6:SetAttribute("ReservedMinX", (math.floor((AbsolutePosition_1.X + v16) - (v9 * 10))))
-    u6:SetAttribute("ReservedMinY", (math.floor((AbsolutePosition_1.Y + v17) - (v9 * 10))))
-end
-local function menuOpen()
-    --[[
-      name: menuOpen
-      line: 226
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        GuiService_upv_1 (copy, index: 2)
-        Camera_upv_1 (copy, index: 3)
-        tbl_upv_2 (copy, index: 4)
-    ]]
-    if LocalPlayer_upv_1:GetAttribute("MenuOpen") == true or GuiService_upv_1.MenuIsOpen then
-        return true
-    end
-    for _, value_3 in Camera_upv_1.GetUnlockReasons() do
-        if tbl_upv_2[value_3] then
-            continue
-        end
-        return true
-    end
-    return false
-end
-local function characterAlive()
-    --[[
-      name: characterAlive
-      line: 238
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-    ]]
-    local Character_1 = LocalPlayer_upv_1.Character
-    local v18 = Character_1 and (Character_1:FindFirstChildOfClass("Humanoid"))
-    if v18 and not (v18.Health <= 0) then
-        local v19 = (LocalPlayer_upv_1:GetAttribute("State") == "Match") and (LocalPlayer_upv_1:GetAttribute("Alive") == false)
-        return not v19
-    end
-    return false
-end
-local u14 = nil
-local function robloxJumpButton()
-    --[[
-      name: robloxJumpButton
-      line: 248
-      upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-    ]]
-    local v20 = LocalPlayer_upv_1:FindFirstChildOfClass("PlayerGui")
-    local v21 = v20 and (v20:FindFirstChild("TouchGui"))
-    local v22 = v21 and (v21:FindFirstChild("TouchControlFrame"))
-    local v23 = v22 and (v22:FindFirstChild("JumpButton"))
-    if v23 and v23:IsA("GuiObject") then
-        return v23
-    end
-    return nil
-end
-local function enforceRobloxJump()
-    --[[
-      name: enforceRobloxJump
-      line: 257
-      upvalues:
-        robloxJumpButton (copy, index: 1)
-        u14 (ref,  index: 2)
-        u12 (ref,  index: 3)
-    ]]
-    local u15 = robloxJumpButton()
-    if not u15 then
-        return
-    end
-    if u15 ~= u14 then
-        u14 = u15
-        u15:GetPropertyChangedSignal("Visible"):Connect(
-            function()
-                --[[
-                  line: 264
-                  upvalues:
-                    u12 (ref,  index: 1)
-                    u15 (copy, index: 2)
-                ]]
-                if not u12 or not u15.Visible then
-                    return
-                end
-                u15.Visible = false
-            end
-        )
-    end
-    if u12 and u15.Visible then
-        u15.Visible = false
-    end
-end
-local function touchPreferred()
-    --[[
-      name: touchPreferred
-      line: 209
-      upvalues:
-        UserInputService_upv_1 (copy, index: 1)
-    ]]
-    local success_1, v24 = pcall(
-        function()
-            --[[
-              line: 210
-              upvalues:
-                UserInputService_upv_1 (copy, index: 1)
-            ]]
-            return UserInputService_upv_1.PreferredInput
-        end
-    )
-    if success_1 and typeof(v24) == "EnumItem" then
-        return v24.Name == "Touch"
-    elseif UserInputService_upv_1.TouchEnabled then
-        if UserInputService_upv_1:GetLastInputType() ~= Enum.UserInputType.Touch then
-            return not UserInputService_upv_1.KeyboardEnabled
-        end
-        return true
-    else
-        return false
-    end
-end
-local function refresh()
-    --[[
-      name: refresh
-      line: 275
-      upvalues:
-        u6 (ref,  index: 1)
-        RunService_upv_1 (copy, index: 2)
-        u12 (ref,  index: 3)
-        touchPreferred (copy, index: 4)
-        LocalPlayer_upv_1 (copy, index: 5)
-        GuiService_upv_1 (copy, index: 6)
-        Camera_upv_1 (copy, index: 7)
-        tbl_upv_2 (copy, index: 8)
-        u11 (ref,  index: 9)
-        Movement_upv_1 (copy, index: 10)
-        u10 (ref,  index: 11)
-        u13 (ref,  index: 12)
-        u8 (ref,  index: 13)
-        u9 (ref,  index: 14)
-        u3 (copy, index: 15)
-        enforceRobloxJump (copy, index: 16)
-    ]]
-    if not u6 then
-        return
-    end
-    local v25 = RunService_upv_1:IsStudio() and (u6:GetAttribute("ForceVisible") == true)
-    u12 = touchPreferred() or v25
-    if u12 then
-        local Character_2 = LocalPlayer_upv_1.Character
-        local v26 = Character_2 and (Character_2:FindFirstChildOfClass("Humanoid"))
-        local v27
-        if not (v26) or v26.Health <= 0 then
-            v27 = false
-        else
-            local v28 = LocalPlayer_upv_1:GetAttribute("State") == "Match" and LocalPlayer_upv_1:GetAttribute("Alive") == false
-            v27 = not v28
-        end
-        if v27 then
-            if LocalPlayer_upv_1:GetAttribute("MenuOpen") == true or GuiService_upv_1.MenuIsOpen then
-                v27 = true
-            else
-                for _, value_4 in Camera_upv_1.GetUnlockReasons() do
-                    if not (tbl_upv_2[value_4]) then
-                        v27 = true
-                    end
-                end
-            end
-            v25 = not v27
-            v25 = v25 or u6:GetAttribute("EditPreview") == true
-        else
-            v25 = u6:GetAttribute("EditPreview") == true
-        end
-    else
-        v25 = u6:GetAttribute("EditPreview") == true
-    end
-    if v25 ~= u11 then
-        u11 = v25
-        u6.Enabled = v25
-        if not (v25) then
-            Movement_upv_1.SetJumpHeld(false)
-            Movement_upv_1.SetSlideHeld(false)
-        end
-    end
-    if u10 then
-        local v29 = u11
-        if v29 then
-            local v30 = true
-            if Camera_upv_1.GetMode() == "combat" then
-                v29 = v30
-            else
-                v29 = u6:GetAttribute("EditPreview") == true
-            end
-        end
-        if u10.Visible ~= v29 then
-            u10.Visible = v29
-        end
-        if (Camera_upv_1.IsFirstPerson) and (Camera_upv_1.IsFirstPerson()) then
-            v29 = "1P"
-        else
-            v29 = "3P"
-        end
-        if u10.Text ~= v29 then
-            u10.Text = v29
-        end
-    end
-    v25 = LocalPlayer_upv_1:GetAttribute("Frozen") == true
-    if v25 ~= u13 then
-        u13 = v25
-        for _, value_5 in {u8, u9} do
-            if not (value_5) then
-                continue
-            end
-            value_5.TextTransparency = (v25 and 0.55) or 0
-            local v31 = value_5:FindFirstChildOfClass("UIStroke")
-            if not (v31) then
-                continue
-            end
-            if v31.Color ~= u3 then
-                v31.Transparency = (v25 and 0.92) or 0.8
-            end
-        end
-    end
-    enforceRobloxJump()
-end
-function tbl_1.IsVisible()
-    --[[
-      name: IsVisible
-      line: 319
-      upvalues:
-        u11 (ref, index: 1)
-    ]]
-    return u11
-end
-local u16 = false
-local function bindHold(a1, a2, a3)
-    --[[
-      name: bindHold
-      line: 113
-      upvalues:
-        TouchStart_upv_1 (copy, index: 1)
-        setPressed (copy, index: 2)
-        UserInputService_upv_1 (copy, index: 3)
-    ]]
-    local u17 = nil
-    a1.InputBegan:Connect(
-        function(a4)
-            --[[
-              line: 115
-              upvalues:
-                u17 (ref,  index: 1)
-                TouchStart_upv_1 (copy, index: 2)
-                a1 (copy, index: 3)
-                setPressed (copy, index: 4)
-                a2 (copy, index: 5)
-            ]]
-            local UserInputType_1 = a4.UserInputType
-            if (UserInputType_1 == Enum.UserInputType.Touch or UserInputType_1 == Enum.UserInputType.MouseButton1) and not (u17) and TouchStart_upv_1.BeganOn(a1, a4) then
-                u17 = a4
-                setPressed(a1, true)
-                a2()
-            end
-        end
-    )
-    UserInputService_upv_1.InputEnded:Connect(
-        function(a5)
-            --[[
-              line: 127
-              upvalues:
-                u17 (ref,  index: 1)
-                setPressed (copy, index: 2)
-                a1 (copy, index: 3)
-                a3 (copy, index: 4)
-            ]]
-            if a5 ~= u17 then
-                return
-            end
-            u17 = nil
-            setPressed(a1, false)
-            a3()
-        end
-    )
-    a1:GetPropertyChangedSignal("Visible"):Connect(
-        function()
-            --[[
-              line: 135
-              upvalues:
-                a1 (copy, index: 1)
-                u17 (ref,  index: 2)
-                setPressed (copy, index: 3)
-                a3 (copy, index: 4)
-            ]]
-            if (a1.Visible) or not u17 then
-                return
-            end
-            u17 = nil
-            setPressed(a1, false)
-            a3()
-        end
-    )
-end
-local function makeButton(a1, a2, a3)
+local guiService = game:GetService("GuiService")
+local players = game:GetService("Players")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+local userInputService = game:GetService("UserInputService")
+local Camera = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("Camera"))
+local TouchStart = require(replicatedStorage:WaitForChild("Shared"):WaitForChild("TouchStart"))
+local Loc = require(replicatedStorage.Shared:WaitForChild("Loc"))
+local Movement = require(script.Parent:WaitForChild("Movement"))
+local v11 = {}
+local localPlayer = players.LocalPlayer
+local backgroundColor3 = Color3.fromRGB(18, 20, 26)
+local color3 = Color3.fromRGB(36, 40, 50)
+local color32 = Color3.fromRGB(40, 150, 255)
+local color33 = Color3.fromRGB(255, 255, 255)
+local fontFace = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Heavy)
+local screenGui = nil
+local frame = nil
+local button = nil
+local button2 = nil
+local button3 = nil
+local v23 = false
+local v24 = false
+local frozen = false
+local v26 = {Spectate = true, FreeCursor = true}
+
+local function makeButton(parent: Frame, name: string, text: string)
     --[[
       name: makeButton
       line: 68
       upvalues:
-        u1 (copy, index: 1)
-        u4 (copy, index: 2)
-        u5 (copy, index: 3)
-        Loc_upv_1 (copy, index: 4)
+        backgroundColor3 (copy, index: 1)
+        color33 (copy, index: 2)
+        fontFace (copy, index: 3)
+        Loc (copy, index: 4)
     ]]
-    local v32 = Instance.new("TextButton")
-    v32.Name = a2
-    v32.AnchorPoint = Vector2.new(0.5, 0.5)
-    v32.BackgroundColor3 = u1
-    v32.BackgroundTransparency = 0.3
-    v32.AutoButtonColor = false
-    v32.Text = a3
-    v32.TextColor3 = u4
-    v32.FontFace = u5
-    v32.Active = true
-    v32.Selectable = false
-    local v33 = Instance.new("UICorner")
-    v33.CornerRadius = UDim.new(1, 0)
-    v33.Parent = v32
-    local v34 = Instance.new("UIStroke")
-    v34.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    v34.Thickness = 2
-    v34.Color = u4
-    v34.Transparency = 0.8
-    v34.Parent = v32
-    Instance.new("UIScale").Parent = v32
-    Loc_upv_1.Fit(v32, 8, 0.06)
-    v32.Parent = a1
-    return v32
+    local parent2 = Instance.new("TextButton")
+    parent2.Name = name
+    parent2.AnchorPoint = Vector2.new(0.5, 0.5)
+    parent2.BackgroundColor3 = backgroundColor3
+    parent2.BackgroundTransparency = 0.3
+    parent2.AutoButtonColor = false
+    parent2.Text = text
+    parent2.TextColor3 = color33
+    parent2.FontFace = fontFace
+    parent2.Active = true
+    parent2.Selectable = false
+
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(1, 0)
+    uiCorner.Parent = parent2
+
+    local uiStroke = Instance.new("UIStroke")
+    uiStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    uiStroke.Thickness = 2
+    uiStroke.Color = color33
+    uiStroke.Transparency = 0.8
+    uiStroke.Parent = parent2
+    Instance.new("UIScale").Parent = parent2
+    Loc.Fit(parent2, 8, 0.06)
+    parent2.Parent = parent
+
+    return parent2
 end
+
+local function setPressed(pressed: TextButton?, a36: boolean)
+    --[[
+      name: setPressed
+      line: 97
+      upvalues:
+        color3 (copy, index: 1)
+        backgroundColor3 (copy, index: 2)
+        color32 (copy, index: 3)
+        color33 (copy, index: 4)
+        frozen (ref,  index: 5)
+        tweenService (copy, index: 6)
+    ]]
+    pressed.BackgroundColor3 = if a36 then color3 else backgroundColor3
+    pressed.BackgroundTransparency = a36 and 0.12 or 0.3
+
+    if const uiStroke = pressed:FindFirstChildOfClass("UIStroke") then
+        uiStroke.Color = if a36 then color32 else color33
+        uiStroke.Thickness = a36 and 3 or 2
+        uiStroke.Transparency = a36 and 0 or frozen and 0.92 or 0.8
+    end
+
+    if const uiScale = pressed:FindFirstChildOfClass("UIScale") then
+        local scale
+        local v40 = TweenInfo.new
+        local v41 = a36 and 0.06 or 0.12
+        v40 = v40(v41, Enum.EasingStyle.Quad)
+        local propertyTable = {}
+
+        if a36 then
+            scale = 0.92
+        else
+            scale = 1
+        end
+
+        propertyTable.Scale = scale
+        tweenService:Create(uiScale, v40, propertyTable):Play()
+    end
+end
+
+local function bindHold(button: TextButton?, callback, callback2)
+    --[[
+      name: bindHold
+      line: 113
+      upvalues:
+        setPressed (copy, index: 1)
+        TouchStart (copy, index: 2)
+        userInputService (copy, index: 3)
+    ]]
+    local inputObject = nil
+
+    button.InputBegan:Connect(
+        function(input: InputObject)
+            --[[
+              line: 115
+              upvalues:
+                inputObject (ref,  index: 1)
+                setPressed (copy, index: 2)
+                button (copy, index: 3)
+                callback2 (copy, index: 4)
+                TouchStart (copy, index: 5)
+                callback (copy, index: 6)
+            ]]
+            local userInputType = input.UserInputType
+
+            if userInputType ~= Enum.UserInputType.Touch and userInputType ~= Enum.UserInputType.MouseButton1 then
+                return
+            end
+
+            local inputObject2 = inputObject
+
+            if inputObject2
+                and inputObject2.UserInputState ~= Enum.UserInputState.Begin
+                and inputObject2.UserInputState ~= Enum.UserInputState.Change
+            then
+                inputObject = nil
+                setPressed(button, false)
+                callback2()
+            end
+
+            if inputObject or not TouchStart.BeganOn(button, input) then
+                return
+            end
+
+            inputObject = input
+            setPressed(button, true)
+            callback()
+        end
+    )
+
+    userInputService.InputEnded:Connect(
+        function(input: InputObject)
+            --[[
+              line: 135
+              upvalues:
+                inputObject (ref,  index: 1)
+                setPressed (copy, index: 2)
+                button (copy, index: 3)
+                callback2 (copy, index: 4)
+            ]]
+            if input == inputObject then
+                inputObject = nil
+                setPressed(button, false)
+                callback2()
+            end
+        end
+    )
+
+    button:GetPropertyChangedSignal("Visible"):Connect(
+        function()
+            --[[
+              line: 143
+              upvalues:
+                button (copy, index: 1)
+                inputObject (ref,  index: 2)
+                setPressed (copy, index: 3)
+                callback2 (copy, index: 4)
+            ]]
+            if not button.Visible and inputObject then
+                inputObject = nil
+                setPressed(button, false)
+                callback2()
+            end
+        end
+    )
+end
+
+local function readOverride(screenGui: ScreenGui?, name: string, absoluteSize: Vector2, offset: number)
+    --[[
+      name: readOverride
+      line: 156
+    ]]
+    local text = screenGui:GetAttribute("Override_" .. name)
+
+    if type(text) ~= "string" then
+        return nil, nil
+    end
+
+    local v58, v59, v60 = string.match(text, "^(%-?%d+),(%-?%d+),(%d+)$")
+    if not v58 then
+        return nil, nil
+    end
+
+    local flooredValue = math.floor(((tonumber(v60) / 1000) * offset) + 0.5)
+
+    return UDim2.fromOffset((tonumber(v58) / 1000) * absoluteSize.X, tonumber(v59) / 1000 * absoluteSize.Y), (math.max(flooredValue, 24))
+end
+
+local function layout()
+    --[[
+      name: layout
+      line: 169
+      upvalues:
+        frame (ref,  index: 1)
+        button (ref,  index: 2)
+        button2 (ref,  index: 3)
+        button3 (ref,  index: 4)
+        screenGui (ref,  index: 5)
+        readOverride (copy, index: 6)
+    ]]
+    local frame2 = frame
+    local button4 = button
+    local button5 = button2
+    local button6 = button3
+
+    if not frame2 or not button4 or not button5 or not button6 or not screenGui then
+        return
+    end
+
+    local absoluteSize = frame2.AbsoluteSize
+
+    if absoluteSize.X < 10 or absoluteSize.Y < 10 then
+        return
+    end
+
+    local scale = math.clamp(math.min(absoluteSize.X, absoluteSize.Y) / 360, 0.85, 1.45)
+    local flooredValue = math.floor(scale * 84)
+    local flooredValue2 = math.floor(scale * 64)
+    local v71 = absoluteSize.X - (scale * 18) - flooredValue / 2
+    local v72 = absoluteSize.Y - (scale * 14) - flooredValue / 2
+    button4.Size = UDim2.fromOffset(flooredValue, flooredValue)
+    button4.Position = UDim2.fromOffset(v71, v72)
+    button4.TextSize = math.floor(scale * 17)
+    local v73 = (v71 - (flooredValue / 2)) - (scale * 14) - flooredValue2 / 2
+    local v74 = absoluteSize.Y - (scale * 14) - flooredValue2 / 2
+    button5.Size = UDim2.fromOffset(flooredValue2, flooredValue2)
+    button5.Position = UDim2.fromOffset(v73, v74)
+    button5.TextSize = math.floor(scale * 14)
+    local v75 = math.max(44, (math.floor(scale * 48)))
+    button6.Size = UDim2.fromOffset(v75, v75)
+    button6.Position = UDim2.fromOffset(((v73 - (flooredValue2 / 2)) - (scale * 14)) - (v75 / 2), absoluteSize.Y - (scale * 14) - (v75 / 2))
+    button6.TextSize = math.floor(scale * 13)
+
+    for _, textButton in {button4, button5, button6} do
+        textButton:SetAttribute("DefaultSize", textButton.Size.X.Offset)
+        local position, v79 = readOverride(screenGui, textButton.Name, absoluteSize, textButton.Size.X.Offset)
+
+        if position and v79 then
+            textButton.Position = position
+            textButton.Size = UDim2.fromOffset(v79, v79)
+            textButton.TextSize = math.floor(v79 * 0.2)
+        end
+    end
+
+    local v80 = math.huge
+    local v81 = math.huge
+
+    for _, textButton in {button4, button5, button6} do
+        v80 = math.min(v80, textButton.Position.X.Offset - (textButton.Size.X.Offset / 2))
+        v81 = math.min(v81, textButton.Position.Y.Offset - (textButton.Size.Y.Offset / 2))
+    end
+
+    local absolutePosition = frame2.AbsolutePosition
+    screenGui:SetAttribute("Scale", scale)
+    screenGui:SetAttribute("ReservedMinX", (math.floor((absolutePosition.X + v80) - (scale * 10))))
+    screenGui:SetAttribute("ReservedMinY", (math.floor((absolutePosition.Y + v81) - (scale * 10))))
+end
+
+local function touchPreferred()
+    --[[
+      name: touchPreferred
+      line: 217
+      upvalues:
+        userInputService (copy, index: 1)
+    ]]
+    local success, preferredInput = pcall(
+        function()
+            --[[
+              line: 218
+              upvalues:
+                userInputService (copy, index: 1)
+            ]]
+            return userInputService.PreferredInput
+        end
+    )
+
+    if success and typeof(preferredInput) == "EnumItem" then
+        return preferredInput.Name == "Touch"
+    end
+    if not userInputService.TouchEnabled then
+        return false
+    end
+
+    local lastInputType = userInputService:GetLastInputType()
+
+    if lastInputType == Enum.UserInputType.Touch then
+        return true
+    end
+
+    return not userInputService.KeyboardEnabled
+end
+
+local function menuOpen()
+    --[[
+      name: menuOpen
+      line: 234
+      upvalues:
+        localPlayer (copy, index: 1)
+        guiService (copy, index: 2)
+        Camera (copy, index: 3)
+        v26 (copy, index: 4)
+    ]]
+    if localPlayer:GetAttribute("MenuOpen") == true or guiService.MenuIsOpen then
+        return true
+    end
+
+    for _, unlockReason in Camera.GetUnlockReasons() do
+        if not v26[unlockReason] then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function characterAlive()
+    --[[
+      name: characterAlive
+      line: 246
+      upvalues:
+        localPlayer (copy, index: 1)
+    ]]
+    local instance = localPlayer.Character
+    instance = instance and instance:FindFirstChildOfClass("Humanoid")
+
+    if not instance or instance.Health <= 0 then
+        return false
+    end
+
+    local v94 = localPlayer:GetAttribute("State") == "Match" and localPlayer:GetAttribute("Alive") == false
+
+    return not v94
+end
+
+local function robloxJumpButton()
+    --[[
+      name: robloxJumpButton
+      line: 256
+      upvalues:
+        localPlayer (copy, index: 1)
+    ]]
+    local instance = localPlayer:FindFirstChildOfClass("PlayerGui")
+    instance = instance and instance:FindFirstChild("TouchGui")
+    local touchControlFrame = instance and instance:FindFirstChild("TouchControlFrame")
+    local jumpButton = touchControlFrame and touchControlFrame:FindFirstChild("JumpButton")
+
+    if jumpButton and jumpButton:IsA("GuiObject") then
+        return jumpButton
+    end
+
+    return nil
+end
+
+local instance = nil
+
+local function enforceRobloxJump()
+    --[[
+      name: enforceRobloxJump
+      line: 265
+      upvalues:
+        robloxJumpButton (copy, index: 1)
+        instance (ref,  index: 2)
+        v24 (ref,  index: 3)
+    ]]
+    local instance2 = robloxJumpButton()
+    if not instance2 then
+        return
+    end
+
+    if instance2 ~= instance then
+        instance = instance2
+
+        instance2:GetPropertyChangedSignal("Visible"):Connect(
+            function()
+                --[[
+                  line: 272
+                  upvalues:
+                    v24 (ref,  index: 1)
+                    instance2 (copy, index: 2)
+                ]]
+                if v24 and instance2.Visible then
+                    instance2.Visible = false
+                end
+            end
+        )
+    end
+
+    if v24 and instance2.Visible then
+        instance2.Visible = false
+    end
+end
+
+local function refresh()
+    --[[
+      name: refresh
+      line: 283
+      upvalues:
+        screenGui (ref,  index: 1)
+        runService (copy, index: 2)
+        v24 (ref,  index: 3)
+        touchPreferred (copy, index: 4)
+        localPlayer (copy, index: 5)
+        guiService (copy, index: 6)
+        Camera (copy, index: 7)
+        v26 (copy, index: 8)
+        v23 (ref,  index: 9)
+        Movement (copy, index: 10)
+        button3 (ref,  index: 11)
+        frozen (ref,  index: 12)
+        button (ref,  index: 13)
+        button2 (ref,  index: 14)
+        color32 (copy, index: 15)
+        enforceRobloxJump (copy, index: 16)
+    ]]
+    local v103
+    local screenGui2 = screenGui
+    if not screenGui2 then
+        return
+    end
+
+    local forceVisible = runService:IsStudio() and screenGui2:GetAttribute("ForceVisible") == true
+    v24 = touchPreferred() or forceVisible
+
+    if v24 then
+        local character = localPlayer.Character
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        local v108 = if humanoid and not (humanoid.Health <= 0) then not (localPlayer:GetAttribute("State") == "Match"
+            and localPlayer:GetAttribute("Alive") == false) else false
+
+        if v108 then
+            local v109
+
+            if localPlayer:GetAttribute("MenuOpen") == true or guiService.MenuIsOpen then
+                v109 = true
+            else
+                v109 = false
+
+                for _, unlockReason in Camera.GetUnlockReasons() do
+                    if not v26[unlockReason] then
+                        v109 = true
+                        break
+                    end
+                end
+            end
+
+            v103 = not v109
+            v103 = v103 or screenGui2:GetAttribute("EditPreview") == true
+        else
+            v103 = screenGui2:GetAttribute("EditPreview") == true
+        end
+    else
+        v103 = screenGui2:GetAttribute("EditPreview") == true
+    end
+
+    if v103 ~= v23 then
+        v23 = v103
+        screenGui2.Enabled = v103
+
+        if not v103 then
+            Movement.SetJumpHeld(false)
+            Movement.SetSlideHeld(false)
+        end
+    end
+
+    if const button4 = button3 then
+        local v113 = v23 and (Camera.GetMode() == "combat" or screenGui2:GetAttribute("EditPreview") == true)
+
+        if button4.Visible ~= v113 then
+            button4.Visible = v113
+        end
+
+        local text = Camera.IsFirstPerson and Camera.IsFirstPerson() and "1P" or "3P"
+
+        if button4.Text ~= text then
+            button4.Text = text
+        end
+    end
+
+    local frozen2 = localPlayer:GetAttribute("Frozen") == true
+
+    if frozen2 ~= frozen then
+        frozen = frozen2
+
+        for _, textButton in {button, button2} do
+            if textButton then
+                textButton.TextTransparency = frozen2 and 0.55 or 0
+                local uiStroke = textButton:FindFirstChildOfClass("UIStroke")
+                if not uiStroke then
+                    continue
+                end
+                if uiStroke.Color == color32 then
+                    continue
+                end
+
+                uiStroke.Transparency = frozen2 and 0.92 or 0.8
+            end
+        end
+    end
+
+    enforceRobloxJump()
+end
+
+function v11.IsVisible()
+    --[[
+      name: IsVisible
+      line: 327
+      upvalues:
+        v23 (ref, index: 1)
+    ]]
+    return v23
+end
+
 local function gateRobloxTouch()
     --[[
       name: gateRobloxTouch
-      line: 336
+      line: 344
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        RunService_upv_1 (copy, index: 2)
+        localPlayer (copy, index: 1)
+        runService (copy, index: 2)
     ]]
-    if LocalPlayer_upv_1:GetAttribute("TouchControlsReady") == true then
+    if localPlayer:GetAttribute("TouchControlsReady") == true then
         return
     end
-    if not (LocalPlayer_upv_1.Character) then
-        LocalPlayer_upv_1:SetAttribute("TouchControlsReady", false)
+
+    if not localPlayer.Character then
+        localPlayer:SetAttribute("TouchControlsReady", false)
     end
+
     task.spawn(
         function()
             --[[
-              line: 343
+              line: 351
               upvalues:
-                LocalPlayer_upv_1 (copy, index: 1)
-                RunService_upv_1 (copy, index: 2)
+                localPlayer (copy, index: 1)
+                runService (copy, index: 2)
             ]]
-            if not (LocalPlayer_upv_1.Character) then
-                local _ = LocalPlayer_upv_1.CharacterAdded:Wait()
+            if not localPlayer.Character then
+                localPlayer.CharacterAdded:Wait()
             end
-            local v35 = os.clock()
-            local v36 = 0
-            while true do
-                if v36 < 6 then
-                    RunService_upv_1.RenderStepped:Wait()
-                    v36 = v36 + 1
-                    continue
-                end
-                if not (os.clock() - v35 < 0.3) then
-                    break
-                end
-                RunService_upv_1.RenderStepped:Wait()
-                v36 = v36 + 1
+
+            local timestamp = os.clock()
+            local count = 0
+
+            while count < 6 or os.clock() - timestamp < 0.3 do
+                runService.RenderStepped:Wait()
+                count += 1
             end
-            LocalPlayer_upv_1:SetAttribute("TouchControlsReady", true)
+
+            localPlayer:SetAttribute("TouchControlsReady", true)
         end
     )
 end
-function tbl_1.Start()
+
+local hasRun = false
+
+function v11.Start()
     --[[
       name: Start
-      line: 357
+      line: 365
       upvalues:
-        u16 (ref,  index: 1)
+        hasRun (ref,  index: 1)
         gateRobloxTouch (copy, index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
-        u7 (ref,  index: 4)
-        u8 (ref,  index: 5)
+        localPlayer (copy, index: 3)
+        frame (ref,  index: 4)
+        button (ref,  index: 5)
         makeButton (copy, index: 6)
-        u9 (ref,  index: 7)
+        button2 (ref,  index: 7)
         bindHold (copy, index: 8)
-        Movement_upv_1 (copy, index: 9)
-        u10 (ref,  index: 10)
-        Camera_upv_1 (copy, index: 11)
+        Movement (copy, index: 9)
+        button3 (ref,  index: 10)
+        Camera (copy, index: 11)
         refresh (copy, index: 12)
-        u6 (ref,  index: 13)
+        screenGui (ref,  index: 13)
         layout (copy, index: 14)
-        UserInputService_upv_1 (copy, index: 15)
+        userInputService (copy, index: 15)
     ]]
-    if u16 then
+    if hasRun then
         return
     end
-    u16 = true
+
+    hasRun = true
     gateRobloxTouch()
-    local PlayerGui_1 = LocalPlayer_upv_1:WaitForChild("PlayerGui")
-    local v37 = Instance.new("ScreenGui")
-    v37.Name = "CharacterTouch"
-    v37.ResetOnSpawn = false
-    v37.IgnoreGuiInset = true
-    v37.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
-    v37.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    v37.DisplayOrder = 3
-    v37.Enabled = false
-    local v38 = Instance.new("Frame")
-    v38.Name = "Buttons"
-    v38.BackgroundTransparency = 1
-    v38.Size = UDim2.fromScale(1, 1)
-    v38.Parent = v37
-    u7 = v38
-    u8 = makeButton(v38, "Jump", "JUMP")
-    u9 = makeButton(v38, "Slide", "SLIDE")
+    local playerGui = localPlayer:WaitForChild("PlayerGui")
+    local characterTouch = Instance.new("ScreenGui")
+    characterTouch.Name = "CharacterTouch"
+    characterTouch.ResetOnSpawn = false
+    characterTouch.IgnoreGuiInset = true
+    characterTouch.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+    characterTouch.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    characterTouch.DisplayOrder = 3
+    characterTouch.Enabled = false
+
+    local buttons = Instance.new("Frame")
+    buttons.Name = "Buttons"
+    buttons.BackgroundTransparency = 1
+    buttons.Size = UDim2.fromScale(1, 1)
+    buttons.Parent = characterTouch
+    frame = buttons
+    button = makeButton(buttons, "Jump", "JUMP")
+    button2 = makeButton(buttons, "Slide", "SLIDE")
     bindHold(
-        u8,
+        button,
         function()
             --[[
-              line: 380
+              line: 388
               upvalues:
-                Movement_upv_1 (copy, index: 1)
+                Movement (copy, index: 1)
             ]]
-            Movement_upv_1.SetJumpHeld(true)
+            Movement.SetJumpHeld(true)
         end,
         function()
             --[[
-              line: 382
+              line: 390
               upvalues:
-                Movement_upv_1 (copy, index: 1)
+                Movement (copy, index: 1)
             ]]
-            Movement_upv_1.SetJumpHeld(false)
+            Movement.SetJumpHeld(false)
         end
     )
     bindHold(
-        u9,
+        button2,
         function()
             --[[
-              line: 385
+              line: 393
               upvalues:
-                Movement_upv_1 (copy, index: 1)
+                Movement (copy, index: 1)
             ]]
-            Movement_upv_1.SetSlideHeld(true)
+            Movement.SetSlideHeld(true)
         end,
         function()
             --[[
-              line: 387
+              line: 395
               upvalues:
-                Movement_upv_1 (copy, index: 1)
+                Movement (copy, index: 1)
             ]]
-            Movement_upv_1.SetSlideHeld(false)
+            Movement.SetSlideHeld(false)
         end
     )
-    u10 = makeButton(v38, "View", "3P")
+    button3 = makeButton(buttons, "View", "3P")
+
     bindHold(
-        u10,
+        button3,
         function()
             --[[
-              line: 391
+              line: 399
               upvalues:
-                Camera_upv_1 (copy, index: 1)
+                Camera (copy, index: 1)
                 refresh (copy, index: 2)
             ]]
-            if Camera_upv_1.ToggleFirstPerson then
-                Camera_upv_1.ToggleFirstPerson()
+            if Camera.ToggleFirstPerson then
+                Camera.ToggleFirstPerson()
             end
+
             task.defer(refresh)
         end,
         function()
             --[[
-              line: 396
+              line: 404
             ]]
         end
     )
-    u6 = v37
-    v37.Parent = PlayerGui_1
-    v38:GetPropertyChangedSignal("AbsoluteSize"):Connect(layout)
-    v37.AttributeChanged:Connect(
-        function(a1)
+
+    screenGui = characterTouch
+    characterTouch.Parent = playerGui
+    buttons:GetPropertyChangedSignal("AbsoluteSize"):Connect(layout)
+
+    characterTouch.AttributeChanged:Connect(
+        function(attribute: string)
             --[[
-              line: 400
+              line: 408
               upvalues:
                 layout (copy, index: 1)
                 refresh (copy, index: 2)
             ]]
-            if string.sub(a1, 1, 9) == "Override_" then
+            if string.sub(attribute, 1, 9) ~= "Override_" then
+                if attribute == "EditPreview" then
+                    task.defer(refresh)
+                end
+            else
                 layout()
-            elseif a1 == "EditPreview" then
-                task.defer(refresh)
             end
         end
     )
-    v38:GetPropertyChangedSignal("AbsolutePosition"):Connect(layout)
+
+    buttons:GetPropertyChangedSignal("AbsolutePosition"):Connect(layout)
     layout()
+
     task.spawn(
         function()
             --[[
-              line: 411
+              line: 419
               upvalues:
                 refresh (copy, index: 1)
             ]]
@@ -630,10 +723,11 @@ function tbl_1.Start()
             end
         end
     )
-    UserInputService_upv_1.LastInputTypeChanged:Connect(
+
+    userInputService.LastInputTypeChanged:Connect(
         function()
             --[[
-              line: 417
+              line: 425
               upvalues:
                 refresh (copy, index: 1)
             ]]
@@ -641,4 +735,5 @@ function tbl_1.Start()
         end
     )
 end
-return tbl_1
+
+return v11

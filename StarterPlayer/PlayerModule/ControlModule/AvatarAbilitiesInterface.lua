@@ -1,500 +1,863 @@
-local Players_1 = game:GetService("Players")
-local v1 = require(script.Parent.Parent:WaitForChild("CommonUtils")).get("FlagUtil")
-local v2 = v1.getUserFlag("UserPlayerScriptsCCLIntegrationD")
-local u1 = v1.getUserFlag("UserPlayerScriptsPlayerControlState2")
-local u2 = v1.getUserFlag("UserPlayerScriptsTaskDeferSimulation")
-local u3 = v1.getUserFlag("UserPlayerScriptsImportWaitForAbilitiesFolder")
-local u4 = nil
-if not (u3) then
-    local function waitForChildren(a1, a2, a3)
-        --[[
-          name: waitForChildren
-          line: 22
-        ]]
-        if #a2 == 0 then
-            return nil
+local v1
+
+local function GetAbilityValidChangedSignal(self, a4)
+    --[[
+      name: GetAbilityValidChangedSignal
+      line: 449
+    ]]
+    return self:GetAbilityAttributeChangedSignal(a4, "IsValid")
+end
+
+local function GetAbilityValid(self, a7)
+    --[[
+      name: GetAbilityValid
+      line: 445
+    ]]
+    return self:GetAbilityAttribute(a7, "IsValid", true)
+end
+
+local function GetAbilityActiveChangedSignal(self, a10)
+    --[[
+      name: GetAbilityActiveChangedSignal
+      line: 441
+    ]]
+    return self:GetAbilityAttributeChangedSignal(a10, "Active")
+end
+
+local function GetAbilityActive(self, a13)
+    --[[
+      name: GetAbilityActive
+      line: 437
+    ]]
+    return self:GetAbilityAttribute(a13, "Active", false)
+end
+
+local function destroy(self)
+    --[[
+      name: destroy
+      line: 492
+    ]]
+    if self._characterAddedConnection then
+        self._characterAddedConnection:Disconnect()
+        self._characterAddedConnection = nil
+    end
+
+    if self._evaluateStateMachineChangedConnection then
+        self._evaluateStateMachineChangedConnection:Disconnect()
+        self._evaluateStateMachineChangedConnection = nil
+    end
+
+    if self._disconnectAbilitiesChanged then
+        self._disconnectAbilitiesChanged()
+        self._disconnectAbilitiesChanged = nil
+    end
+
+    for _, abilityChangedConnection in self._abilityChangedConnections do
+        for _, v19 in abilityChangedConnection do
+            v19:Disconnect()
         end
-        local v3 = nil
-        for _, value_1 in a2 do
-            v3 = a1:FindFirstChild(value_1)
-            if not (v3) then
+    end
+
+    self._abilityChangedConnections = {}
+end
+
+local function GetAbilityConfig(self, key)
+    --[[
+      name: GetAbilityConfig
+      line: 466
+    ]]
+    local v23 = {Slot = -1}
+
+    if const v24 = self._abilitiesByInputName[key] then
+        if const actionSlot = v24:GetAttribute("ActionSlot") then
+            local number = tonumber(actionSlot)
+            local customIcon = v24:GetAttribute("CustomIcon")
+            local customIconActive = v24:GetAttribute("CustomIconActive")
+            local customIconInvalid = v24:GetAttribute("CustomIconInvalid")
+
+            return {Slot = number, ButtonAssetId = customIcon, ButtonPressedAssetId = customIconActive, ButtonInvalidAssetId = customIconInvalid}
+        end
+    end
+
+    return v23
+end
+
+local function GetAbilitiesChangedSignal(self)
+    --[[
+      name: GetAbilitiesChangedSignal
+      line: 462
+    ]]
+    return self._abilitiesChangedEvent.Event
+end
+
+local function GetAbilities(self)
+    --[[
+      name: GetAbilities
+      line: 454
+    ]]
+    local v34 = {}
+
+    for v35 in self._abilitiesByInputName do
+        table.insert(v34, v35)
+    end
+
+    return v34
+end
+
+local function GetAbilityUIStateChangedSignal(self, a38)
+    --[[
+      name: GetAbilityUIStateChangedSignal
+      line: 432
+    ]]
+    return self:GetAbilityAttributeChangedSignal(a38, "UIState")
+end
+
+local function GetAbilityUIState(self, a41)
+    --[[
+      name: GetAbilityUIState
+      line: 428
+    ]]
+    return self:GetAbilityAttribute(a41, "UIState", nil)
+end
+
+local function GetAbilityAttributeChangedSignal(self, key, abilityChangedEventKey)
+    --[[
+      name: GetAbilityAttributeChangedSignal
+      line: 412
+    ]]
+    if not self._abilityChangedEvents[abilityChangedEventKey] then
+        self._abilityChangedEvents[abilityChangedEventKey] = {}
+    end
+
+    if self._abilityChangedEvents[abilityChangedEventKey][key] then
+        return self._abilityChangedEvents[abilityChangedEventKey][key].Event
+    end
+
+    local bindableEvent = Instance.new("BindableEvent")
+    self._abilityChangedEvents[abilityChangedEventKey][key] = bindableEvent
+    self:_hookUpAbilityChangedEvent(key, abilityChangedEventKey)
+
+    return bindableEvent.Event
+end
+
+local function GetAbilityAttribute(self, key, a50, a51)
+    --[[
+      name: GetAbilityAttribute
+      line: 396
+    ]]
+    local v52 = self._abilitiesByInputName[key]
+    if not v52 then
+        return a51
+    end
+
+    local syncedState = v52:FindFirstChild("SyncedState")
+    if not syncedState then
+        return a51
+    end
+
+    local v54 = syncedState:GetAttribute(a50)
+    if v54 == nil then
+        return a51
+    end
+
+    return v54
+end
+
+local function SendInput(self, key, value)
+    --[[
+      name: SendInput
+      line: 385
+    ]]
+    if not self:isEnabled() then
+        return
+    end
+
+    if value ~= self._data[key] then
+        self._data[key] = value
+        self._avatarAbilities().setAbilityManagerCommand(self._character, key, value)
+    end
+end
+
+local function GetEnabledChangedSignal(self)
+    --[[
+      name: GetEnabledChangedSignal
+      line: 381
+    ]]
+    return self._enabledChangedEvent.Event
+end
+
+local function isEnabled(self)
+    --[[
+      name: isEnabled
+      line: 377
+    ]]
+    return (self._humanoid ~= nil) and not self._humanoid.EvaluateStateMachine
+end
+
+local function _hookUpAbilityChangedEvent(self, key, a66)
+    --[[
+      name: _hookUpAbilityChangedEvent
+      line: 231
+    ]]
+    local v67 = self._abilitiesByInputName[key]
+    if not v67 then
+        return
+    end
+
+    local syncedState = v67:FindFirstChild("SyncedState")
+    if not syncedState then
+        return
+    end
+
+    if not self._abilityChangedConnections[a66] then
+        self._abilityChangedConnections[a66] = {}
+    end
+
+    if self._abilityChangedConnections[a66][key] then
+        self._abilityChangedConnections[a66][key]:Disconnect()
+        self._abilityChangedConnections[a66][key] = nil
+    end
+
+    self._abilityChangedConnections[a66][key] = syncedState:GetAttributeChangedSignal(a66):Connect(
+        function()
+            --[[
+              line: 251
+              upvalues:
+                self (copy, index: 1)
+                a66 (copy, index: 2)
+                key (copy, index: 3)
+            ]]
+            self._abilityChangedEvents[a66][key]:Fire()
+        end
+    )
+end
+
+local function notifyAbilitiesChanged(a70, callback)
+    --[[
+      name: notifyAbilitiesChanged
+      line: 152
+    ]]
+    local v72 = a70.ChildAdded:Connect(
+        function(value)
+            --[[
+              line: 153
+              upvalues:
+                callback (copy, index: 1)
+            ]]
+            if value:IsA("Configuration") then
+                callback(value, "added")
+            end
+        end
+    )
+
+    local v74 = a70.ChildRemoved:Connect(
+        function(value)
+            --[[
+              line: 158
+              upvalues:
+                callback (copy, index: 1)
+            ]]
+            if value:IsA("Configuration") then
+                callback(value, "removed")
+            end
+        end
+    )
+
+    return function()
+        --[[
+          line: 163
+          upvalues:
+            v72 (copy, index: 1)
+            v74 (copy, index: 2)
+        ]]
+        v72:Disconnect()
+        v74:Disconnect()
+    end
+end
+
+local function createAbilitiesByInputNameTable(a77)
+    --[[
+      name: createAbilitiesByInputNameTable
+      line: 139
+    ]]
+    local v78 = {}
+
+    for _, child in a77:GetChildren() do
+        if child:IsA("Configuration") then
+            local inputName = child:GetAttribute("InputName")
+            if not inputName then
                 continue
             end
-            return v3
+
+            v78[inputName] = child
         end
-        local u5 = coroutine.running()
-        local u6 = nil
-        local u7 = false
-        local function _(a4)
+    end
+
+    return v78
+end
+
+local players = game:GetService("Players")
+local CommonUtils = require(script.Parent.Parent:WaitForChild("CommonUtils"))
+local v84 = CommonUtils.get("FlagUtil")
+local userFlag = v84.getUserFlag("UserPlayerScriptsCCLIntegrationD")
+    or v84.getUserFlag("UserPlayerScriptsCCLIntegrationDGA")
+local userFlag2 = v84.getUserFlag("UserPlayerScriptsPlayerControlState2")
+    or v84.getUserFlag("UserPlayerScriptsPlayerControlState2GA")
+local userFlag3 = v84.getUserFlag("UserPlayerScriptsTaskDeferSimulation")
+local userFlag4 = v84.getUserFlag("UserPlayerScriptsImportWaitForAbilitiesFolder")
+local userFlag5 = v84.getUserFlag("UserAbilitiesUserInterfaceD")
+
+if userFlag4 then
+    v1 = nil
+else
+    local function waitForChildren(a91, a92, a93)
+        --[[
+          name: waitForChildren
+          line: 26
+        ]]
+        if #a92 == 0 then
+            return nil
+        end
+
+        local v94
+
+        for _, v96 in a92 do
+            v94 = a91:FindFirstChild(v96)
+
+            if v94 then
+                return v94
+            end
+        end
+
+        local v97 = coroutine.running()
+        local v98 = nil
+        local hasRun = false
+
+        local function settle(a101)
             --[[
               name: settle
-              line: 41
+              line: 45
               upvalues:
-                u7 (ref,  index: 1)
-                u6 (ref,  index: 2)
-                u5 (copy, index: 3)
+                hasRun (ref,  index: 1)
+                v98 (ref,  index: 2)
+                v97 (copy, index: 3)
             ]]
-            if u7 then
+            if hasRun then
                 return
             end
-            u7 = true
-            u6 = a4
-            task.spawn(u5)
+
+            hasRun = true
+            v98 = a101
+            task.spawn(v97)
         end
-        local v4 = a1.ChildAdded:Connect(
-            function(a5)
+
+        local v102 = a91.ChildAdded:Connect(
+            function(a103)
                 --[[
-                  line: 54
+                  line: 58
                   upvalues:
-                    a2 (copy, index: 1)
-                    u7 (ref,  index: 2)
-                    u6 (ref,  index: 3)
-                    u5 (copy, index: 4)
+                    a92 (copy, index: 1)
+                    hasRun (ref,  index: 2)
+                    v98 (ref,  index: 3)
+                    v97 (copy, index: 4)
                 ]]
-                if not table.find(a2, a5.Name) or u7 then
-                    return
+                if table.find(a92, a103.Name) and not hasRun then
+                    hasRun = true
+                    v98 = a103
+                    task.spawn(v97)
                 end
-                u7 = true
-                u6 = a5
-                task.spawn(u5)
             end
         )
-        v3 = nil
-        v3 = a3
-            and task.delay(
-                a3,
+
+        local v104 = if a93
+            then task.delay(
+                a93,
                 function()
                     --[[
-                      line: 61
+                      line: 65
                       upvalues:
-                        u7 (ref,  index: 1)
-                        u6 (ref,  index: 2)
-                        u5 (copy, index: 3)
+                        hasRun (ref,  index: 1)
+                        v98 (ref,  index: 2)
+                        v97 (copy, index: 3)
                     ]]
-                    if u7 then
+                    if hasRun then
                         return
                     end
-                    u7 = true
-                    u6 = nil
-                    task.spawn(u5)
+
+                    hasRun = true
+                    v98 = nil
+                    task.spawn(v97)
                 end
             )
+            else nil
         coroutine.yield()
-        v4:Disconnect()
-        if v3 and coroutine.status(v3) == "suspended" then
-            task.cancel(v3)
+        v102:Disconnect()
+
+        if v104 and coroutine.status(v104) == "suspended" then
+            task.cancel(v104)
         end
-        return u6
+
+        return v98
     end
-    local v5 = function(a1, a2)
+
+    v1 = function(a105, a106)
         --[[
-          line: 85
+          line: 89
           upvalues:
             waitForChildren (copy, index: 1)
         ]]
-        if not a1 then
+        if not a105 then
             return nil
         end
-        local u8 = (a2 and (time() + a2)) or nil
-        local function getRemainingTime_1()
+
+        local v107 = if a106 then time() + a106 else nil
+
+        local function getRemainingTime()
             --[[
               name: getRemainingTime
-              line: 92
+              line: 96
               upvalues:
-                u8 (copy, index: 1)
+                v107 (copy, index: 1)
             ]]
-            if u8 then
-                return (math.max(u8 - time(), 0))
+            if v107 then
+                return (math.max(v107 - time(), 0))
             end
+
             return nil
         end
-        local tbl_1 = {"AbilityManagerActor", "Abilities"}
-        local v6
-        if u8 then
-            v6 = math.max(u8 - time(), 0)
-        else
-            v6 = nil
+
+        local v109 = {"AbilityManagerActor", "Abilities"}
+        local v110 = if v107 then math.max(v107 - time(), 0) else nil
+        local children = waitForChildren(a105, v109, v110)
+        if not children then
+            return nil
         end
-        local v7 = waitForChildren(a1, tbl_1, v6)
-        if v7 then
-            if v7.Name ~= "Abilities" then
-                local v8
-                if u8 then
-                    v8 = math.max(u8 - time(), 0)
-                else
-                    v8 = nil
-                end
-                if v8 then
-                    getRemainingTime_1 = v7:WaitForChild("Abilities", v8)
-                else
-                    getRemainingTime_1 = v7:WaitForChild("Abilities")
-                end
-                if getRemainingTime_1 and getRemainingTime_1:IsA("Folder") then
-                    return getRemainingTime_1
-                end
-            elseif v7:IsA("Folder") then
-                return v7
+
+        if children.Name == "Abilities" then
+            if children:IsA("Folder") then
+                return children
             end
+
+            return nil
         end
+
+        local abilities = if const v112 = if v107 then math.max(v107 - time(), 0) else nil then children:WaitForChild("Abilities", v112) else children:WaitForChild("Abilities")
+
+        if abilities and abilities:IsA("Folder") then
+            return abilities
+        end
+
         return nil
     end
-    u4 = v5
 end
-if v2 then
-    local tbl_upv_2 = {}
-    tbl_upv_2.__index = tbl_upv_2
-    local tbl_upv_3 = {}
-    Players_1.PlayerRemoving:Connect(
-        function(a1)
-            --[[
-              line: 125
-              upvalues:
-                tbl_upv_3 (copy, index: 1)
-            ]]
-            wait(1)
-            local v9 = tbl_upv_3[a1.UserId]
-            if not v9 then
-                return
-            end
-            v9:destroy()
-            tbl_upv_3[a1.UserId] = nil
-        end
-    )
-    local function notifyAbilitiesChanged(a1, a2)
+
+if not userFlag then
+    local players2 = game:GetService("Players")
+    local v115 = {}
+    local abilityManagerActor = nil
+    local humanoid = nil
+    local bindableEvent = Instance.new("BindableEvent")
+    local v119 = nil
+    local hasRun = false
+
+    local function characterAdded(a122)
         --[[
-          name: notifyAbilitiesChanged
-          line: 148
-        ]]
-        local u9 = a1.ChildAdded:Connect(
-            function(a3)
-                --[[
-                  line: 149
-                  upvalues:
-                    a2 (copy, index: 1)
-                ]]
-                if not a3:IsA("Configuration") then
-                    return
-                end
-                a2(a3, "added")
-            end
-        )
-        local u10 = a1.ChildRemoved:Connect(
-            function(a4)
-                --[[
-                  line: 154
-                  upvalues:
-                    a2 (copy, index: 1)
-                ]]
-                if not a4:IsA("Configuration") then
-                    return
-                end
-                a2(a4, "removed")
-            end
-        )
-        return function()
-            --[[
-              line: 159
-              upvalues:
-                u9 (copy, index: 1)
-                u10 (copy, index: 2)
-            ]]
-            u9:Disconnect()
-            u10:Disconnect()
-        end
-    end
-    function tbl_upv_2._new(a1)
-        --[[
-          name: _new
-          line: 165
+          name: characterAdded
+          line: 524
           upvalues:
-            tbl_upv_2 (copy, index: 1)
-            u1 (copy, index: 2)
-            u2 (copy, index: 3)
+            abilityManagerActor (ref,  index: 1)
+            humanoid (ref,  index: 2)
+            v119 (ref,  index: 3)
+            bindableEvent (copy, index: 4)
         ]]
-        local u11 = setmetatable({}, tbl_upv_2)
-        u11._player = a1
-        u11._data = {}
-        u11._character = nil
-        u11._humanoid = nil
-        u11._enabledChangedEvent = Instance.new("BindableEvent")
-        u11._abilitiesChangedEvent = Instance.new("BindableEvent")
-        u11._evaluateStateMachineChangedConnection = nil
-        u11._abilityChangedEvents = {}
-        u11._abilityChangedConnections = {}
-        u11._abilitiesByInputName = {}
-        u11._disconnectAbilitiesChanged = nil
-        if not (u1) or u2 then
-            u11._characterAddedConnection = a1.CharacterAdded:Connect(
-                function(a2)
-                    --[[
-                      line: 188
-                      upvalues:
-                        u11 (copy, index: 1)
-                    ]]
-                    u11:_onCharacterAdded(a2)
-                end
-            )
-        else
-            task.spawn(
+        abilityManagerActor = nil
+        humanoid = nil
+
+        if v119 then
+            v119:Disconnect()
+            v119 = nil
+        end
+
+        if a122 then
+            abilityManagerActor = a122:FindFirstChild("AbilityManagerActor")
+            humanoid = a122:FindFirstChildOfClass("Humanoid")
+
+            while not humanoid do
+                a122.ChildAdded:wait()
+                humanoid = a122:FindFirstChildOfClass("Humanoid")
+            end
+
+            bindableEvent:Fire()
+            v119 = humanoid:GetPropertyChangedSignal("EvaluateStateMachine"):Connect(
                 function()
                     --[[
-                      line: 182
+                      line: 543
                       upvalues:
-                        u11 (copy, index: 1)
-                        a1 (copy, index: 2)
+                        bindableEvent (copy, index: 1)
                     ]]
-                    u11._characterAddedConnection = a1.CharacterAdded:Connect(
-                        function(a3)
-                            --[[
-                              line: 183
-                              upvalues:
-                                u11 (copy, index: 1)
-                            ]]
-                            u11:_onCharacterAdded(a3)
-                        end
-                    )
+                    bindableEvent:Fire()
                 end
             )
         end
-        if a1.Character then
-            u11:_onCharacterAdded(a1.Character)
-        end
-        return u11
     end
-    local u12 = nil
-    function tbl_upv_2._avatarAbilities()
+
+    local function lazyInit()
         --[[
-          name: _avatarAbilities
-          line: 202
+          name: lazyInit
+          line: 549
           upvalues:
-            u12 (ref, index: 1)
+            hasRun (ref,  index: 1)
+            players2 (copy, index: 2)
+            characterAdded (copy, index: 3)
         ]]
-        if not (u12) then
-            local Packages_1 = game:GetService("ReplicatedStorage"):FindFirstChild("Packages")
-            local v10
-            if Packages_1 then
-                v10 = Packages_1:FindFirstChild("AvatarAbilities")
-            else
-                v10 = nil
-            end
-            local v11
-            if v10 then
-                v11 = require(v10)
-            else
-                v11 = nil
-            end
-            u12 = v11
-            if not (u12) then
-                u12 = require("@rbx/AvatarAbilities")
-            end
-        end
-        return u12
-    end
-    function tbl_upv_2.get(a1)
-        --[[
-          name: get
-          line: 215
-          upvalues:
-            tbl_upv_3 (copy, index: 1)
-            tbl_upv_2 (copy, index: 2)
-        ]]
-        if a1 and a1.UserId ~= 0 then
-            local v12 = tbl_upv_3[a1.UserId]
-            if not (v12) then
-                v12 = tbl_upv_2._new(a1)
-                tbl_upv_3[a1.UserId] = v12
-            end
-            return v12
-        end
-        return nil
-    end
-    function tbl_upv_2._hookUpAbilityChangedEvent(a1, a2, a3)
-        --[[
-          name: _hookUpAbilityChangedEvent
-          line: 225
-        ]]
-        local v13 = a1._abilitiesByInputName[a2]
-        if not v13 then
+        if hasRun then
             return
         end
-        local SyncedState_1 = v13:FindFirstChild("SyncedState")
-        if not SyncedState_1 then
-            return
+
+        hasRun = true
+
+        if const localPlayer = players2.LocalPlayer then
+            localPlayer.characterAdded:Connect(characterAdded)
+
+            if localPlayer.Character then
+                characterAdded(localPlayer.Character)
+            end
         end
-        if not (a1._abilityChangedConnections[a3]) then
-            a1._abilityChangedConnections[a3] = {}
+    end
+
+    function v115.isEnabled()
+        --[[
+          name: isEnabled
+          line: 564
+          upvalues:
+            hasRun (ref,  index: 1)
+            players2 (copy, index: 2)
+            characterAdded (copy, index: 3)
+            abilityManagerActor (ref,  index: 4)
+            humanoid (ref,  index: 5)
+        ]]
+        if not hasRun then
+            hasRun = true
+
+            if const localPlayer = players2.LocalPlayer then
+                localPlayer.characterAdded:Connect(characterAdded)
+
+                if localPlayer.Character then
+                    characterAdded(localPlayer.Character)
+                end
+            end
         end
-        if a1._abilityChangedConnections[a3][a2] then
-            a1._abilityChangedConnections[a3][a2]:Disconnect()
-            a1._abilityChangedConnections[a3][a2] = nil
+
+        return abilityManagerActor ~= nil and humanoid and not humanoid.EvaluateStateMachine
+    end
+
+    function v115.GetEnabledChangedSignal()
+        --[[
+          name: GetEnabledChangedSignal
+          line: 569
+          upvalues:
+            hasRun (ref,  index: 1)
+            players2 (copy, index: 2)
+            characterAdded (copy, index: 3)
+            bindableEvent (copy, index: 4)
+        ]]
+        if not hasRun then
+            hasRun = true
+
+            if const localPlayer = players2.LocalPlayer then
+                localPlayer.characterAdded:Connect(characterAdded)
+
+                if localPlayer.Character then
+                    characterAdded(localPlayer.Character)
+                end
+            end
         end
-        a1._abilityChangedConnections[a3][a2] = SyncedState_1:GetAttributeChangedSignal(a3):Connect(
-            function()
+
+        return bindableEvent.Event
+    end
+
+    return v115
+end
+
+local Class = {}
+Class.__index = Class
+local v128 = {}
+
+players.PlayerRemoving:Connect(
+    function(player: Player)
+        --[[
+          line: 129
+          upvalues:
+            v128 (copy, index: 1)
+        ]]
+        wait(1)
+
+        if const v130 = v128[player.UserId] then
+            v130:destroy()
+            v128[player.UserId] = nil
+        end
+    end
+)
+
+function Class._new(player)
+    --[[
+      name: _new
+      line: 169
+      upvalues:
+        Class (copy, index: 1)
+        userFlag2 (copy, index: 2)
+        userFlag3 (copy, index: 3)
+    ]]
+    local v132 = setmetatable({}, Class)
+    v132._player = player
+    v132._data = {}
+    v132._character = nil
+    v132._humanoid = nil
+    v132._enabledChangedEvent = Instance.new("BindableEvent")
+    v132._abilitiesChangedEvent = Instance.new("BindableEvent")
+    v132._evaluateStateMachineChangedConnection = nil
+    v132._abilityChangedEvents = {}
+    v132._abilityChangedConnections = {}
+    v132._abilitiesByInputName = {}
+    v132._disconnectAbilitiesChanged = nil
+
+    if not userFlag2 or userFlag3 then
+        v132._characterAddedConnection = player.CharacterAdded:Connect(
+            function(a133)
                 --[[
-                  line: 239
+                  line: 192
                   upvalues:
-                    a1 (copy, index: 1)
-                    a3 (copy, index: 2)
-                    a2 (copy, index: 3)
+                    v132 (copy, index: 1)
                 ]]
-                a1._abilityChangedEvents[a3][a2]:Fire()
+                v132:_onCharacterAdded(a133)
             end
         )
-    end
-    local function createAbilitiesByInputNameTable(a1)
-        --[[
-          name: createAbilitiesByInputNameTable
-          line: 135
-        ]]
-        local tbl_4 = {}
-        for _, value_2 in a1:GetChildren() do
-            if not (value_2:IsA("Configuration")) then
-                continue
-            end
-            local v14 = value_2:GetAttribute("InputName")
-            if v14 then
-                tbl_4[v14] = value_2
-            end
-        end
-        return tbl_4
-    end
-    function tbl_upv_2._onCharacterAdded(a1, a2)
-        --[[
-          name: _onCharacterAdded
-          line: 244
-          upvalues:
-            u3 (copy, index: 1)
-            u4 (ref,  index: 2)
-            notifyAbilitiesChanged (copy, index: 3)
-            createAbilitiesByInputNameTable (copy, index: 4)
-        ]]
-        a1._humanoid = nil
-        a1._character = a2
-        a1._abilitiesByInputName = {}
-        a1._data = {}
-        if a1._disconnectAbilitiesChanged then
-            a1._disconnectAbilitiesChanged()
-            a1._disconnectAbilitiesChanged = nil
-        end
-        for _, value_3 in a1._abilityChangedConnections do
-            for v1, value_4 in value_3 do
-                value_4:Disconnect()
-            end
-        end
-        a1._abilityChangedConnections = {}
-        if a1._evaluateStateMachineChangedConnection then
-            a1._evaluateStateMachineChangedConnection:Disconnect()
-            a1._evaluateStateMachineChangedConnection = nil
-        end
-        if not a1._character then
-            return
-        end
-        local function isStale()
-            --[[
-              name: isStale
-              line: 271
-              upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
-            ]]
-            return a1._character ~= a2
-        end
+    else
         task.spawn(
             function()
                 --[[
-                  line: 276
+                  line: 186
                   upvalues:
-                    u3 (copy, index: 1)
-                    a1 (copy, index: 2)
-                    a2 (copy, index: 3)
-                    u4 (ref,  index: 4)
-                    notifyAbilitiesChanged (copy, index: 5)
-                    createAbilitiesByInputNameTable (copy, index: 6)
+                    v132 (copy, index: 1)
+                    player (copy, index: 2)
                 ]]
-                local u13
-                if u3 then
-                    u13 = a1._avatarAbilities().waitForAbilitiesFolder(a2)
-                else
-                    u13 = u4(a2)
-                end
-                if not u13 or a1._character ~= a2 then
-                    return
-                end
-                a1._humanoid = a2:FindFirstChildOfClass("Humanoid")
-                while not (a1._humanoid) do
-                    a2.ChildAdded:Wait()
-                    if a1._character == a2 then
-                        a1._humanoid = a2:FindFirstChildOfClass("Humanoid")
-                        continue
+                v132._characterAddedConnection = player.CharacterAdded:Connect(
+                    function(a134)
+                        --[[
+                          line: 187
+                          upvalues:
+                            v132 (copy, index: 1)
+                        ]]
+                        v132:_onCharacterAdded(a134)
                     end
-                    return
+                )
+            end
+        )
+    end
+
+    if player.Character then
+        v132:_onCharacterAdded(player.Character)
+    end
+
+    return v132
+end
+
+local v135 = nil
+
+function Class._avatarAbilities()
+    --[[
+      name: _avatarAbilities
+      line: 206
+      upvalues:
+        v135 (ref, index: 1)
+    ]]
+    if not v135 then
+        local instance = if const packages = game:GetService("ReplicatedStorage"):FindFirstChild("Packages") then packages:FindFirstChild("AvatarAbilities") else nil
+        v135 = if instance then require(instance) else nil
+        v135 = v135 or require("@rbx/AvatarAbilities")
+    end
+
+    return v135
+end
+
+function Class.get(a138)
+    --[[
+      name: get
+      line: 219
+      upvalues:
+        v128 (copy, index: 1)
+        Class (copy, index: 2)
+    ]]
+    if not a138 or a138.UserId == 0 then
+        return nil
+    end
+
+    local v139 = v128[a138.UserId]
+    if not v139 then
+        v139 = Class._new(a138)
+        v128[a138.UserId] = v139
+    end
+
+    return v139
+end
+
+Class._hookUpAbilityChangedEvent = _hookUpAbilityChangedEvent
+
+function Class._onCharacterAdded(self, character)
+    --[[
+      name: _onCharacterAdded
+      line: 256
+      upvalues:
+        userFlag4 (copy, index: 1)
+        v1 (ref,  index: 2)
+        notifyAbilitiesChanged (copy, index: 3)
+        createAbilitiesByInputNameTable (copy, index: 4)
+    ]]
+    self._humanoid = nil
+    self._character = character
+    self._abilitiesByInputName = {}
+    self._data = {}
+
+    if self._disconnectAbilitiesChanged then
+        self._disconnectAbilitiesChanged()
+        self._disconnectAbilitiesChanged = nil
+    end
+
+    for _, abilityChangedConnection in self._abilityChangedConnections do
+        for _, v145 in abilityChangedConnection do
+            v145:Disconnect()
+        end
+    end
+
+    self._abilityChangedConnections = {}
+
+    if self._evaluateStateMachineChangedConnection then
+        self._evaluateStateMachineChangedConnection:Disconnect()
+        self._evaluateStateMachineChangedConnection = nil
+    end
+
+    if not self._character then
+        return
+    end
+
+    local function isStale()
+        --[[
+          name: isStale
+          line: 283
+          upvalues:
+            self (copy, index: 1)
+            character (copy, index: 2)
+        ]]
+        return self._character ~= character
+    end
+
+    task.spawn(
+        function()
+            --[[
+              line: 288
+              upvalues:
+                userFlag4 (copy, index: 1)
+                self (copy, index: 2)
+                character (copy, index: 3)
+                v1 (ref,  index: 4)
+                notifyAbilitiesChanged (copy, index: 5)
+                createAbilitiesByInputNameTable (copy, index: 6)
+            ]]
+            local v147 = if userFlag4 then self._avatarAbilities().waitForAbilitiesFolder(character) else v1(character)
+
+            if v147 and self._character == character then
+                local enabledChanged
+                local v149
+                self._humanoid = character:FindFirstChildOfClass("Humanoid")
+                v149 = v147
+
+                while not self._humanoid do
+                    character.ChildAdded:Wait()
+
+                    if self._character ~= character then
+                        return
+                    end
+
+                    self._humanoid = character:FindFirstChildOfClass("Humanoid")
                 end
-                if a1._evaluateStateMachineChangedConnection then
-                    a1._evaluateStateMachineChangedConnection:Disconnect()
-                    a1._evaluateStateMachineChangedConnection = nil
+
+                if self._evaluateStateMachineChangedConnection then
+                    self._evaluateStateMachineChangedConnection:Disconnect()
+                    self._evaluateStateMachineChangedConnection = nil
                 end
-                local function enabledChanged()
+
+                enabledChanged = function()
                     --[[
                       name: enabledChanged
-                      line: 297
+                      line: 313
                       upvalues:
-                        a1 (copy, index: 1)
+                        self (copy, index: 1)
                         notifyAbilitiesChanged (copy, index: 2)
-                        u13 (ref,  index: 3)
+                        v149 (ref,  index: 3)
                         createAbilitiesByInputNameTable (copy, index: 4)
                     ]]
-                    if a1._disconnectAbilitiesChanged then
-                        a1._disconnectAbilitiesChanged()
-                        a1._disconnectAbilitiesChanged = nil
+                    if self._disconnectAbilitiesChanged then
+                        self._disconnectAbilitiesChanged()
+                        self._disconnectAbilitiesChanged = nil
                     end
-                    if a1:isEnabled() then
-                        a1._disconnectAbilitiesChanged = notifyAbilitiesChanged(
-                            u13,
-                            function(a3, a4)
+
+                    if self:isEnabled() then
+                        self._disconnectAbilitiesChanged = notifyAbilitiesChanged(
+                            v149,
+                            function(value, a151: string)
                                 --[[
-                                  line: 304
+                                  line: 320
                                   upvalues:
-                                    a1 (copy, index: 1)
+                                    self (copy, index: 1)
                                 ]]
-                                local v15 = a3:GetAttribute("InputName")
-                                if not v15 then
+                                local inputName = value:GetAttribute("InputName")
+                                if not inputName then
                                     return
                                 end
-                                if a4 == "added" then
-                                    a1._abilitiesByInputName[v15] = a3
-                                    for key_1, value_5 in a1._abilityChangedEvents do
-                                        if value_5[v15] then
-                                            a1:_hookUpAbilityChangedEvent(v15, key_1)
+
+                                if a151 ~= "added" then
+                                    if self._abilitiesByInputName[inputName] == value then
+                                        self._abilitiesByInputName[inputName] = nil
+
+                                        for _, abilityChangedConnection in self._abilityChangedConnections do
+                                            if const v155 = abilityChangedConnection[inputName] then
+                                                v155:Disconnect()
+                                                abilityChangedConnection[inputName] = nil
+                                            end
                                         end
                                     end
-                                elseif a1._abilitiesByInputName[v15] == a3 then
-                                    a1._abilitiesByInputName[v15] = nil
-                                    for _, value_6 in a1._abilityChangedConnections do
-                                        local v16 = value_6[v15]
-                                        if v16 then
-                                            v16:Disconnect()
-                                            value_6[v15] = nil
+                                else
+                                    self._abilitiesByInputName[inputName] = value
+
+                                    for v156, abilityChangedEvent in self._abilityChangedEvents do
+                                        if abilityChangedEvent[inputName] then
+                                            self:_hookUpAbilityChangedEvent(inputName, v156)
                                         end
                                     end
                                 end
-                                a1._abilitiesChangedEvent:Fire()
+
+                                self._abilitiesChangedEvent:Fire()
                             end
                         )
-                        a1._abilitiesByInputName = createAbilitiesByInputNameTable(u13)
-                        a1._abilitiesChangedEvent:Fire()
-                        for key_2, value_7 in a1._abilityChangedEvents do
-                            for key_3, value_8 in value_7 do
-                                value_8:Fire()
-                                a1:_hookUpAbilityChangedEvent(key_3, key_2)
+
+                        self._abilitiesByInputName = createAbilitiesByInputNameTable(v149)
+                        self._abilitiesChangedEvent:Fire()
+
+                        for v158, abilityChangedEvent in self._abilityChangedEvents do
+                            for v160, v161 in abilityChangedEvent do
+                                v161:Fire()
+                                self:_hookUpAbilityChangedEvent(v160, v158)
                             end
                         end
                     end
-                    a1._enabledChangedEvent:Fire()
+
+                    self._enabledChangedEvent:Fire()
                 end
-                a1._evaluateStateMachineChangedConnection = a1._humanoid:GetPropertyChangedSignal("EvaluateStateMachine"):Connect(
+
+                self._evaluateStateMachineChangedConnection = self._humanoid:GetPropertyChangedSignal("EvaluateStateMachine"):Connect(
                     function()
                         --[[
-                          line: 350
+                          line: 370
                           upvalues:
                             enabledChanged (copy, index: 1)
                         ]]
@@ -503,304 +866,28 @@ if v2 then
                 )
                 enabledChanged()
             end
-        )
-    end
-    function tbl_upv_2.isEnabled(a1)
-        --[[
-          name: isEnabled
-          line: 357
-        ]]
-        return (a1._humanoid ~= nil) and (not a1._humanoid.EvaluateStateMachine)
-    end
-    function tbl_upv_2.GetEnabledChangedSignal(a1)
-        --[[
-          name: GetEnabledChangedSignal
-          line: 361
-        ]]
-        return a1._enabledChangedEvent.Event
-    end
-    function tbl_upv_2.SendInput(a1, a2, a3)
-        --[[
-          name: SendInput
-          line: 365
-        ]]
-        if not a1:isEnabled() then
-            return
         end
-        if a3 ~= a1._data[a2] then
-            a1._data[a2] = a3
-            a1._avatarAbilities().setAbilityManagerCommand(a1._character, a2, a3)
-        end
-    end
-    function tbl_upv_2.GetAbilityAttribute(a1, a2, a3, a4)
-        --[[
-          name: GetAbilityAttribute
-          line: 374
-        ]]
-        local v17 = a1._abilitiesByInputName[a2]
-        if not v17 then
-            return a4
-        end
-        local SyncedState_2 = v17:FindFirstChild("SyncedState")
-        if not SyncedState_2 then
-            return a4
-        end
-        local v18 = SyncedState_2:GetAttribute(a3)
-        if v18 ~= nil then
-            return v18
-        end
-        return a4
-    end
-    function tbl_upv_2.GetAbilityAttributeChangedSignal(a1, a2, a3)
-        --[[
-          name: GetAbilityAttributeChangedSignal
-          line: 384
-        ]]
-        if not (a1._abilityChangedEvents[a3]) then
-            a1._abilityChangedEvents[a3] = {}
-        end
-        if a1._abilityChangedEvents[a3][a2] then
-            return a1._abilityChangedEvents[a3][a2].Event
-        end
-        local v19 = Instance.new("BindableEvent")
-        a1._abilityChangedEvents[a3][a2] = v19
-        a1:_hookUpAbilityChangedEvent(a2, a3)
-        return v19.Event
-    end
-    function tbl_upv_2.GetAbilityEnabled(a1, a2)
-        --[[
-          name: GetAbilityEnabled
-          line: 400
-        ]]
-        return a1:GetAbilityAttribute(a2, "Enabled", false)
-    end
-    function tbl_upv_2.GetAbilityEnabledChangedSignal(a1, a2)
-        --[[
-          name: GetAbilityEnabledChangedSignal
-          line: 404
-        ]]
-        return a1:GetAbilityAttributeChangedSignal(a2, "Enabled")
-    end
-    function tbl_upv_2.GetAbilitySuspended(a1, a2)
-        --[[
-          name: GetAbilitySuspended
-          line: 408
-        ]]
-        return a1:GetAbilityAttribute(a2, "Suspended", false)
-    end
-    function tbl_upv_2.GetAbilitySuspendedChangedSignal(a1, a2)
-        --[[
-          name: GetAbilitySuspendedChangedSignal
-          line: 412
-        ]]
-        return a1:GetAbilityAttributeChangedSignal(a2, "Suspended")
-    end
-    function tbl_upv_2.GetAbilityActive(a1, a2)
-        --[[
-          name: GetAbilityActive
-          line: 416
-        ]]
-        return a1:GetAbilityAttribute(a2, "Active", false)
-    end
-    function tbl_upv_2.GetAbilityActiveChangedSignal(a1, a2)
-        --[[
-          name: GetAbilityActiveChangedSignal
-          line: 420
-        ]]
-        return a1:GetAbilityAttributeChangedSignal(a2, "Active")
-    end
-    function tbl_upv_2.GetAbilityValid(a1, a2)
-        --[[
-          name: GetAbilityValid
-          line: 424
-        ]]
-        return a1:GetAbilityAttribute(a2, "IsValid", true)
-    end
-    function tbl_upv_2.GetAbilityValidChangedSignal(a1, a2)
-        --[[
-          name: GetAbilityValidChangedSignal
-          line: 428
-        ]]
-        return a1:GetAbilityAttributeChangedSignal(a2, "IsValid")
-    end
-    function tbl_upv_2.GetAbilities(a1)
-        --[[
-          name: GetAbilities
-          line: 432
-        ]]
-        local tbl_5 = {}
-        for key_4 in a1._abilitiesByInputName do
-            table.insert(tbl_5, key_4)
-        end
-        return tbl_5
-    end
-    function tbl_upv_2.GetAbilitiesChangedSignal(a1)
-        --[[
-          name: GetAbilitiesChangedSignal
-          line: 440
-        ]]
-        return a1._abilitiesChangedEvent.Event
-    end
-    function tbl_upv_2.GetAbilityConfig(a1, a2)
-        --[[
-          name: GetAbilityConfig
-          line: 444
-        ]]
-        local tbl_6 = {Slot = -1}
-        local v20 = a1._abilitiesByInputName[a2]
-        if not v20 then
-            return tbl_6
-        end
-        local v21 = v20:GetAttribute("ActionSlot")
-        if not v21 then
-            return tbl_6
-        end
-        local tbl_7 = {}
-        tbl_7.Slot = tonumber(v21)
-        tbl_7.ButtonAssetId = v20:GetAttribute("CustomIcon")
-        tbl_7.ButtonPressedAssetId = v20:GetAttribute("CustomIconActive")
-        tbl_7.ButtonInvalidAssetId = v20:GetAttribute("CustomIconInvalid")
-        return tbl_7
-    end
-    function tbl_upv_2.destroy(a1)
-        --[[
-          name: destroy
-          line: 466
-        ]]
-        if a1._characterAddedConnection then
-            a1._characterAddedConnection:Disconnect()
-            a1._characterAddedConnection = nil
-        end
-        if a1._evaluateStateMachineChangedConnection then
-            a1._evaluateStateMachineChangedConnection:Disconnect()
-            a1._evaluateStateMachineChangedConnection = nil
-        end
-        if a1._disconnectAbilitiesChanged then
-            a1._disconnectAbilitiesChanged()
-            a1._disconnectAbilitiesChanged = nil
-        end
-        for _, value_9 in a1._abilityChangedConnections do
-            for v1, value_10 in value_9 do
-                value_10:Disconnect()
-            end
-        end
-        a1._abilityChangedConnections = {}
-    end
-    return tbl_upv_2
-else
-    local Players_upv_2 = game:GetService("Players")
-    local tbl_8 = {}
-    local AbilityManagerActor_upv_1 = nil
-    local u14 = nil
-    local u15 = Instance.new("BindableEvent")
-    local u16 = nil
-    local u17 = false
-    local function characterAdded(a1)
-        --[[
-          name: characterAdded
-          line: 500
-          upvalues:
-            AbilityManagerActor_upv_1 (ref,  index: 1)
-            u14 (ref,  index: 2)
-            u16 (ref,  index: 3)
-            u15 (copy, index: 4)
-        ]]
-        AbilityManagerActor_upv_1 = nil
-        u14 = nil
-        if u16 then
-            u16:Disconnect()
-            u16 = nil
-        end
-        if a1 then
-            AbilityManagerActor_upv_1 = a1:FindFirstChild("AbilityManagerActor")
-            u14 = a1:FindFirstChildOfClass("Humanoid")
-            while not (u14) do
-                a1.ChildAdded:wait()
-                u14 = a1:FindFirstChildOfClass("Humanoid")
-            end
-            u15:Fire()
-            local v22 = u14:GetPropertyChangedSignal("EvaluateStateMachine"):Connect(
-                function()
-                    --[[
-                      line: 517
-                      upvalues:
-                        u15 (copy, index: 1)
-                    ]]
-                    u15:Fire()
-                end
-            )
-            u16 = v22
-        end
-    end
-    local function lazyInit()
-        --[[
-          name: lazyInit
-          line: 523
-          upvalues:
-            u17 (ref,  index: 1)
-            Players_upv_2 (copy, index: 2)
-            characterAdded (copy, index: 3)
-        ]]
-        if u17 then
-            return
-        end
-        u17 = true
-        local LocalPlayer_1 = Players_upv_2.LocalPlayer
-        if not LocalPlayer_1 then
-            return
-        end
-        LocalPlayer_1.characterAdded:Connect(characterAdded)
-        if LocalPlayer_1.Character then
-            characterAdded(LocalPlayer_1.Character)
-        end
-    end
-    function tbl_8.isEnabled()
-        --[[
-          name: isEnabled
-          line: 538
-          upvalues:
-            u17 (ref,  index: 1)
-            Players_upv_2 (copy, index: 2)
-            characterAdded (copy, index: 3)
-            AbilityManagerActor_upv_1 (ref,  index: 4)
-            u14 (ref,  index: 5)
-        ]]
-        local v23 = nil
-        if not (u17) then
-            u17 = true
-            v23 = Players_upv_2.LocalPlayer
-            if v23 then
-                v23.characterAdded:Connect(characterAdded)
-                if v23.Character then
-                    characterAdded(v23.Character)
-                end
-            end
-        end
-        local v24 = (AbilityManagerActor_upv_1 ~= nil) and (u14 and (not u14.EvaluateStateMachine))
-        return v24
-    end
-    function tbl_8.GetEnabledChangedSignal()
-        --[[
-          name: GetEnabledChangedSignal
-          line: 543
-          upvalues:
-            u17 (ref,  index: 1)
-            Players_upv_2 (copy, index: 2)
-            characterAdded (copy, index: 3)
-            u15 (copy, index: 4)
-        ]]
-        local v25 = nil
-        if not (u17) then
-            u17 = true
-            v25 = Players_upv_2.LocalPlayer
-            if v25 then
-                v25.characterAdded:Connect(characterAdded)
-                if v25.Character then
-                    characterAdded(v25.Character)
-                end
-            end
-        end
-        return u15.Event
-    end
-    return tbl_8
+    )
 end
+
+Class.isEnabled = isEnabled
+Class.GetEnabledChangedSignal = GetEnabledChangedSignal
+Class.SendInput = SendInput
+Class.GetAbilityAttribute = GetAbilityAttribute
+Class.GetAbilityAttributeChangedSignal = GetAbilityAttributeChangedSignal
+Class.GetAbilityUIState = GetAbilityUIState
+Class.GetAbilityUIStateChangedSignal = GetAbilityUIStateChangedSignal
+
+if not userFlag5 then
+    Class.GetAbilityActive = GetAbilityActive
+    Class.GetAbilityActiveChangedSignal = GetAbilityActiveChangedSignal
+    Class.GetAbilityValid = GetAbilityValid
+    Class.GetAbilityValidChangedSignal = GetAbilityValidChangedSignal
+end
+
+Class.GetAbilities = GetAbilities
+Class.GetAbilitiesChangedSignal = GetAbilitiesChangedSignal
+Class.GetAbilityConfig = GetAbilityConfig
+Class.destroy = destroy
+
+return Class

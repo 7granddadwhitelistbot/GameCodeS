@@ -1,7 +1,11 @@
-local tbl_1 = {}
-local RunService_upv_1 = game:GetService("RunService")
-local ChatSettings_upv_1 = require(game:GetService("Chat"):WaitForChild("ClientChatModules"):WaitForChild("ChatSettings"))
-local success_1, v1 = pcall(
+local v1 = {}
+local runService = game:GetService("RunService")
+local chat = game:GetService("Chat")
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local childName = "ChatSettings"
+local child = require(clientChatModules:WaitForChild(childName))
+local _ = script.Parent
+local success, isUserFeatureEnabled = pcall(
     function()
         --[[
           line: 16
@@ -9,8 +13,8 @@ local success_1, v1 = pcall(
         return UserSettings():IsUserFeatureEnabled("UserRemoveMessageOnTextFilterFailures")
     end
 )
-local u1 = success_1 and v1
-local _, v2 = pcall(
+local isUserFeatureEnabled2 = success and isUserFeatureEnabled
+_, _ = pcall(
     function()
         --[[
           line: 24
@@ -18,538 +22,605 @@ local _, v2 = pcall(
         return UserSettings():IsUserFeatureEnabled("UserIsChatTranslationEnabled2")
     end
 )
-local function ShallowCopy(a1)
+
+local function ShallowCopy(a14)
     --[[
       name: ShallowCopy
       line: 32
     ]]
-    local tbl_2 = {}
-    for key_1, value_1 in pairs(a1) do
-        tbl_2[key_1] = value_1
+    local v15 = {}
+
+    for key, v17 in pairs(a14) do
+        v15[key] = v17
     end
-    return tbl_2
+
+    return v15
 end
-local tbl_upv_3 = {}
-local tbl_upv_4 = {eChannelJoined = true, eMainChannelSet = true, eMessageDoneFiltering = true, eDestroyed = true, eChannelNameColorUpdated = true, eExtraDataUpdated = true, eMuted = true, eUnmuted = true, eChannelLeft = true, eReceivedMessage = true, eSaidMessage = true, eReceivedSystemMessage = true, eReceivedUnfilteredMessage = true}
-local tbl_upv_5 = {
-    ChannelJoined = "eChannelJoined",
-    ReceivedSystemMessage = "eReceivedSystemMessage",
-    ChannelNameColorUpdated = "eChannelNameColorUpdated",
+
+local v18 = {}
+local v19 = {eDestroyed = true, eSaidMessage = true, eReceivedMessage = true, eReceivedUnfilteredMessage = true, eMessageDoneFiltering = true, eReceivedSystemMessage = true, eChannelJoined = true, eChannelLeft = true, eMuted = true, eUnmuted = true, eExtraDataUpdated = true, eMainChannelSet = true, eChannelNameColorUpdated = true}
+local v20 = {
     Destroyed = "eDestroyed",
     SaidMessage = "eSaidMessage",
-    ExtraDataUpdated = "eExtraDataUpdated",
-    ReceivedUnfilteredMessage = "eReceivedUnfilteredMessage",
-    Unmuted = "eUnmuted",
-    Muted = "eMuted",
-    ChannelLeft = "eChannelLeft",
-    RecievedUnfilteredMessage = "eReceivedUnfilteredMessage",
     ReceivedMessage = "eReceivedMessage",
+    ReceivedUnfilteredMessage = "eReceivedUnfilteredMessage",
+    RecievedUnfilteredMessage = "eReceivedUnfilteredMessage",
+    MessageDoneFiltering = "eMessageDoneFiltering",
+    ReceivedSystemMessage = "eReceivedSystemMessage",
+    ChannelJoined = "eChannelJoined",
+    ChannelLeft = "eChannelLeft",
+    Muted = "eMuted",
+    Unmuted = "eUnmuted",
+    ExtraDataUpdated = "eExtraDataUpdated",
     MainChannelSet = "eMainChannelSet",
-    MessageDoneFiltering = "eMessageDoneFiltering"
+    ChannelNameColorUpdated = "eChannelNameColorUpdated"
 }
-tbl_upv_3.__index = function(a1, a2)
+
+v18.__index = function(a21, key)
     --[[
       line: 76
       upvalues:
-        tbl_upv_3 (copy, index: 1)
-        tbl_upv_4 (copy, index: 2)
-        tbl_upv_5 (copy, index: 3)
+        v18 (copy, index: 1)
+        v19 (copy, index: 2)
+        v20 (copy, index: 3)
     ]]
-    local value_2 = rawget(tbl_upv_3, a2)
-    if value_2 then
-        return value_2
+    if const value = rawget(v18, key) then
+        return value
     end
-    if tbl_upv_4[a2] and not (rawget(a1, a2)) then
-        rawset(a1, a2, Instance.new("BindableEvent"))
+
+    if v19[key] and not rawget(a21, key) then
+        rawset(a21, key, Instance.new("BindableEvent"))
     end
-    local v2 = tbl_upv_5[a2]
-    if v2 and not (rawget(a1, a2)) then
-        local v3 = rawget(a1, v2)
-        if not (v3) then
-            v3 = Instance.new("BindableEvent")
-            rawset(a1, v2, v3)
+
+    local v24 = v20[key]
+
+    if v24 and not rawget(a21, key) then
+        local v25 = rawget(a21, v24)
+        if not v25 then
+            v25 = Instance.new("BindableEvent")
+            rawset(a21, v24, v25)
         end
-        rawset(a1, a2, v3.Event)
+
+        rawset(a21, key, v25.Event)
     end
-    return (rawget(a1, a2))
+
+    return (rawget(a21, key))
 end
-function tbl_upv_3.LazyFire(a1, a2, ...)
+
+function v18.LazyFire(a26, a27, ...)
     --[[
       name: LazyFire
       line: 95
     ]]
-    local value_3 = rawget(a1, a2)
-    if not value_3 then
-        return
+    if const value = rawget(a26, a27) then
+        value:Fire(...)
     end
-    value_3:Fire(...)
 end
-function tbl_upv_3.SayMessage(a1, a2, a3, a4)
+
+function v18.SayMessage(a29, a30, a31, a32)
     --[[
       name: SayMessage
       line: 102
     ]]
-    if a1.ChatService:InternalDoProcessCommands(a1.Name, a2, a3) or not a3 then
+    if a29.ChatService:InternalDoProcessCommands(a29.Name, a30, a31) then
         return
     end
-    local v4 = a1.Channels[a3:lower()]
-    if not v4 then
+    if not a31 then
         return
     end
-    local u2 = v4:InternalPostMessage(a1, a2, a4)
-    if u2 then
+
+    local channel = a29.Channels[a31:lower()]
+    if not channel then
+        return
+    end
+
+    local v34 = channel:InternalPostMessage(a29, a30, a32)
+    if v34 then
         pcall(
             function()
                 --[[
                   line: 117
                   upvalues:
-                    a1 (copy, index: 1)
-                    u2 (copy, index: 2)
-                    a3 (copy, index: 3)
+                    a29 (copy, index: 1)
+                    v34 (copy, index: 2)
+                    a31 (copy, index: 3)
                 ]]
-                a1:LazyFire("eSaidMessage", u2, a3)
+                a29:LazyFire("eSaidMessage", v34, a31)
             end
         )
     end
-    return u2
+
+    return v34
 end
-function tbl_upv_3.JoinChannel(a1, a2)
+
+function v18.JoinChannel(a35, a36)
     --[[
       name: JoinChannel
       line: 125
     ]]
-    if a1.Channels[a2:lower()] then
-        warn("Speaker is already in channel \"" .. a2 .. "\"")
-    else
-        local u3 = a1.ChatService:GetChannel(a2)
-        if not (u3) then
-            error("Channel \"" .. a2 .. "\" does not exist!")
+    if a35.Channels[a36:lower()] then
+        warn("Speaker is already in channel \"" .. a36 .. "\"")
+        return
+    end
+
+    local channel = a35.ChatService:GetChannel(a36)
+    if not channel then
+        error("Channel \"" .. a36 .. "\" does not exist!")
+    end
+
+    a35.Channels[a36:lower()] = channel
+    channel:InternalAddSpeaker(a35)
+    local success, result = pcall(
+        function()
+            --[[
+              line: 138
+              upvalues:
+                a35 (copy, index: 1)
+                channel (copy, index: 2)
+            ]]
+            a35.eChannelJoined:Fire(channel.Name, channel:GetWelcomeMessageForSpeaker(a35))
         end
-        a1.Channels[a2:lower()] = u3
-        u3:InternalAddSpeaker(a1)
-        local success_2, v5 = pcall(
-            function()
-                --[[
-                  line: 138
-                  upvalues:
-                    a1 (copy, index: 1)
-                    u3 (copy, index: 2)
-                ]]
-                a1.eChannelJoined:Fire(u3.Name, u3:GetWelcomeMessageForSpeaker(a1))
-            end
-        )
-        if not (success_2) and v5 then
-            print("Error joining channel: " .. v5)
-        end
+    )
+
+    if not success and result then
+        print("Error joining channel: " .. result)
     end
 end
-function tbl_upv_3.LeaveChannel(a1, a2)
+
+function v18.LeaveChannel(a40, a41)
     --[[
       name: LeaveChannel
       line: 146
     ]]
-    if a1.Channels[a2:lower()] then
-        local u4 = a1.Channels[a2:lower()]
-        a1.Channels[a2:lower()] = nil
-        u4:InternalRemoveSpeaker(a1)
-        local success_3, v6 = pcall(
-            function()
-                --[[
-                  line: 156
-                  upvalues:
-                    a1 (copy, index: 1)
-                    u4 (copy, index: 2)
-                ]]
-                a1:LazyFire("eChannelLeft", u4.Name)
-                if not a1.PlayerObj then
-                    return
-                end
-                a1.EventFolder.OnChannelLeft:FireClient(a1.PlayerObj, u4.Name)
+    if not a40.Channels[a41:lower()] then
+        warn("Speaker is not in channel \"" .. a41 .. "\"")
+        return
+    end
+
+    local channel = a40.Channels[a41:lower()]
+    a40.Channels[a41:lower()] = nil
+    channel:InternalRemoveSpeaker(a40)
+
+    local success, result = pcall(
+        function()
+            --[[
+              line: 156
+              upvalues:
+                a40 (copy, index: 1)
+                channel (copy, index: 2)
+            ]]
+            a40:LazyFire("eChannelLeft", channel.Name)
+
+            if a40.PlayerObj then
+                a40.EventFolder.OnChannelLeft:FireClient(a40.PlayerObj, channel.Name)
             end
-        )
-        if not (success_3) and v6 then
-            print("Error leaving channel: " .. v6)
         end
-    else
-        warn("Speaker is not in channel \"" .. a2 .. "\"")
+    )
+
+    if not success and result then
+        print("Error leaving channel: " .. result)
     end
 end
-function tbl_upv_3.IsInChannel(a1, a2)
+
+function v18.IsInChannel(a45, a46)
     --[[
       name: IsInChannel
       line: 167
     ]]
-    local v7 = a1.Channels[a2:lower()] ~= nil
-    return v7
+    return a45.Channels[a46:lower()] ~= nil
 end
-function tbl_upv_3.GetChannelList(a1)
+
+function v18.GetChannelList(a47)
     --[[
       name: GetChannelList
       line: 171
     ]]
-    local tbl_6 = {}
-    for _, value_4 in pairs(a1.Channels) do
-        table.insert(tbl_6, value_4.Name)
+    local v48 = {}
+
+    for _, channel in pairs(a47.Channels) do
+        table.insert(v48, channel.Name)
     end
-    return tbl_6
+
+    return v48
 end
-function tbl_upv_3.SendMessage(a1, a2, a3, a4, a5)
+
+function v18.SendMessage(a51, a52, a53, a54, a55)
     --[[
       name: SendMessage
       line: 179
       upvalues:
-        RunService_upv_1 (copy, index: 1)
+        runService (copy, index: 1)
     ]]
-    local v8 = a1.Channels[a3:lower()]
-    if v8 then
-        v8:SendMessageToSpeaker(a2, a1.Name, a4, a5)
-    elseif RunService_upv_1:IsStudio() then
-        warn(string.format("Speaker '%s' is not in channel '%s' and cannot receive a message in it.", a1.Name, a3))
+    if const channel = a51.Channels[a53:lower()] then
+        channel:SendMessageToSpeaker(a52, a51.Name, a54, a55)
+        return
+    end
+
+    if runService:IsStudio() then
+        warn(string.format("Speaker '%s' is not in channel '%s' and cannot receive a message in it.", a51.Name, a53))
     end
 end
-function tbl_upv_3.SendSystemMessage(a1, a2, a3, a4)
+
+function v18.SendSystemMessage(a57, a58, a59, a60)
     --[[
       name: SendSystemMessage
       line: 190
       upvalues:
-        RunService_upv_1 (copy, index: 1)
+        runService (copy, index: 1)
     ]]
-    local v9 = a1.Channels[a3:lower()]
-    if v9 then
-        v9:SendSystemMessageToSpeaker(a2, a1.Name, a4)
-    elseif RunService_upv_1:IsStudio() then
-        warn(string.format("Speaker '%s' is not in channel '%s' and cannot receive a system message in it.", a1.Name, a3))
+    if const channel = a57.Channels[a59:lower()] then
+        channel:SendSystemMessageToSpeaker(a58, a57.Name, a60)
+        return
+    end
+
+    if runService:IsStudio() then
+        warn(string.format("Speaker '%s' is not in channel '%s' and cannot receive a system message in it.", a57.Name, a59))
     end
 end
-function tbl_upv_3.GetPlayer(a1)
+
+function v18.GetPlayer(a62)
     --[[
       name: GetPlayer
       line: 201
     ]]
-    return a1.PlayerObj
+    return a62.PlayerObj
 end
-function tbl_upv_3.GetNameForDisplay(a1)
+
+function v18.GetNameForDisplay(a63)
     --[[
       name: GetNameForDisplay
       line: 205
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        child (copy, index: 1)
     ]]
-    if not ChatSettings_upv_1.PlayerDisplayNamesEnabled then
-        return a1.Name
-    end
-    local v10 = a1:GetPlayer()
-    if v10 then
-        return v10.DisplayName
-    end
-    return a1.Name
+    return if not child.PlayerDisplayNamesEnabled then a63.Name elseif const player = a63:GetPlayer() then player.DisplayName else a63.Name
 end
-function tbl_upv_3.SetExtraData(a1, a2, a3)
+
+function v18.SetExtraData(extraData, key, value)
     --[[
       name: SetExtraData
       line: 219
     ]]
-    a1.ExtraData[a2] = a3
-    a1:LazyFire("eExtraDataUpdated", a2, a3)
+    extraData.ExtraData[key] = value
+    extraData:LazyFire("eExtraDataUpdated", key, value)
 end
-function tbl_upv_3.GetExtraData(a1, a2)
+
+function v18.GetExtraData(a68, key)
     --[[
       name: GetExtraData
       line: 224
     ]]
-    return a1.ExtraData[a2]
+    return a68.ExtraData[key]
 end
-function tbl_upv_3.SetMainChannel(a1, a2)
+
+function v18.SetMainChannel(mainChannel, a71)
     --[[
       name: SetMainChannel
       line: 228
     ]]
-    local success_4, v11 = pcall(
+    local success, result = pcall(
         function()
             --[[
               line: 229
               upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
+                mainChannel (copy, index: 1)
+                a71 (copy, index: 2)
             ]]
-            a1:LazyFire("eMainChannelSet", a2)
-            if not a1.PlayerObj then
-                return
+            mainChannel:LazyFire("eMainChannelSet", a71)
+
+            if mainChannel.PlayerObj then
+                mainChannel.EventFolder.OnMainChannelSet:FireClient(mainChannel.PlayerObj, a71)
             end
-            a1.EventFolder.OnMainChannelSet:FireClient(a1.PlayerObj, a2)
         end
     )
-    if (success_4) or not v11 then
-        return
+
+    if not success and result then
+        print("Error setting main channel: " .. result)
     end
-    print("Error setting main channel: " .. v11)
 end
-function tbl_upv_3.AddMutedSpeaker(a1, a2)
+
+function v18.AddMutedSpeaker(a74, a75)
     --[[
       name: AddMutedSpeaker
       line: 241
     ]]
-    a1.MutedSpeakers[a2:lower()] = true
+    a74.MutedSpeakers[a75:lower()] = true
 end
-function tbl_upv_3.RemoveMutedSpeaker(a1, a2)
+
+function v18.RemoveMutedSpeaker(a76, a77)
     --[[
       name: RemoveMutedSpeaker
       line: 245
     ]]
-    a1.MutedSpeakers[a2:lower()] = false
+    a76.MutedSpeakers[a77:lower()] = false
 end
-function tbl_upv_3.IsSpeakerMuted(a1, a2)
+
+function v18.IsSpeakerMuted(a78, a79)
     --[[
       name: IsSpeakerMuted
       line: 249
     ]]
-    return a1.MutedSpeakers[a2:lower()]
+    return a78.MutedSpeakers[a79:lower()]
 end
-function tbl_upv_3.InternalDestroy(a1)
+
+function v18.InternalDestroy(a80)
     --[[
       name: InternalDestroy
       line: 255
     ]]
-    for _, value_5 in pairs(a1.Channels) do
-        value_5:InternalRemoveSpeaker(a1)
+    for _, channel in pairs(a80.Channels) do
+        channel:InternalRemoveSpeaker(a80)
     end
-    a1.eDestroyed:Fire()
-    a1.EventFolder = nil
-    a1.eDestroyed:Destroy()
-    a1.eSaidMessage:Destroy()
-    a1.eReceivedMessage:Destroy()
-    a1.eReceivedUnfilteredMessage:Destroy()
-    a1.eMessageDoneFiltering:Destroy()
-    a1.eReceivedSystemMessage:Destroy()
-    a1.eChannelJoined:Destroy()
-    a1.eChannelLeft:Destroy()
-    a1.eMuted:Destroy()
-    a1.eUnmuted:Destroy()
-    a1.eExtraDataUpdated:Destroy()
-    a1.eMainChannelSet:Destroy()
-    a1.eChannelNameColorUpdated:Destroy()
+
+    a80.eDestroyed:Fire()
+    a80.EventFolder = nil
+    a80.eDestroyed:Destroy()
+    a80.eSaidMessage:Destroy()
+    a80.eReceivedMessage:Destroy()
+    a80.eReceivedUnfilteredMessage:Destroy()
+    a80.eMessageDoneFiltering:Destroy()
+    a80.eReceivedSystemMessage:Destroy()
+    a80.eChannelJoined:Destroy()
+    a80.eChannelLeft:Destroy()
+    a80.eMuted:Destroy()
+    a80.eUnmuted:Destroy()
+    a80.eExtraDataUpdated:Destroy()
+    a80.eMainChannelSet:Destroy()
+    a80.eChannelNameColorUpdated:Destroy()
 end
-function tbl_upv_3.InternalAssignPlayerObject(a1, a2)
+
+function v18.InternalAssignPlayerObject(a83, playerObj)
     --[[
       name: InternalAssignPlayerObject
       line: 278
     ]]
-    a1.PlayerObj = a2
+    a83.PlayerObj = playerObj
 end
-function tbl_upv_3.InternalAssignEventFolder(a1, a2)
+
+function v18.InternalAssignEventFolder(a85, eventFolder)
     --[[
       name: InternalAssignEventFolder
       line: 282
     ]]
-    a1.EventFolder = a2
+    a85.EventFolder = eventFolder
 end
-function tbl_upv_3.InternalSendMessage(a1, a2, a3)
+
+function v18.InternalSendMessage(a87, a88, a89)
     --[[
       name: InternalSendMessage
       line: 286
     ]]
-    local success_5, v12 = pcall(
+    local success, result = pcall(
         function()
             --[[
               line: 287
               upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
-                a3 (copy, index: 3)
+                a87 (copy, index: 1)
+                a88 (copy, index: 2)
+                a89 (copy, index: 3)
             ]]
-            a1:LazyFire("eReceivedUnfilteredMessage", a2, a3)
-            if not a1.PlayerObj then
-                return
+            a87:LazyFire("eReceivedUnfilteredMessage", a88, a89)
+
+            if a87.PlayerObj then
+                a87.EventFolder.OnNewMessage:FireClient(a87.PlayerObj, a88, a89)
             end
-            a1.EventFolder.OnNewMessage:FireClient(a1.PlayerObj, a2, a3)
         end
     )
-    if (success_5) or not v12 then
-        return
+
+    if not success and result then
+        print("Error sending internal message: " .. result)
     end
-    print("Error sending internal message: " .. v12)
 end
-function tbl_upv_3.InternalSendFilteredMessage(a1, a2, a3)
+
+function v18.InternalSendFilteredMessage(a92, a93, a94)
     --[[
       name: InternalSendFilteredMessage
       line: 298
     ]]
-    local success_6, v13 = pcall(
+    local success, result = pcall(
         function()
             --[[
               line: 299
               upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
-                a3 (copy, index: 3)
+                a92 (copy, index: 1)
+                a93 (copy, index: 2)
+                a94 (copy, index: 3)
             ]]
-            a1:LazyFire("eReceivedMessage", a2, a3)
-            a1:LazyFire("eMessageDoneFiltering", a2, a3)
-            if not a1.PlayerObj then
-                return
+            a92:LazyFire("eReceivedMessage", a93, a94)
+            a92:LazyFire("eMessageDoneFiltering", a93, a94)
+
+            if a92.PlayerObj then
+                a92.EventFolder.OnMessageDoneFiltering:FireClient(a92.PlayerObj, a93, a94)
             end
-            a1.EventFolder.OnMessageDoneFiltering:FireClient(a1.PlayerObj, a2, a3)
         end
     )
-    if (success_6) or not v13 then
-        return
+
+    if not success and result then
+        print("Error sending internal filtered message: " .. result)
     end
-    print("Error sending internal filtered message: " .. v13)
 end
-function tbl_upv_3.InternalSendFilteredMessageWithTranslatedFilterResult(a1, a2, a3, a4)
+
+function v18.InternalSendFilteredMessageWithTranslatedFilterResult(a97, a98, a99, a100)
     --[[
       name: InternalSendFilteredMessageWithTranslatedFilterResult
       line: 314
       upvalues:
-        u1 (ref, index: 1)
+        isUserFeatureEnabled2 (ref, index: 1)
     ]]
-    local tbl_upv_7 = {}
-    for key_2, value_6 in pairs(a2) do
-        tbl_upv_7[key_2] = value_6
+    local v101 = {}
+
+    for key, v103 in pairs(a98) do
+        local v104 = v103
+        local key2 = key
+        v101[key2] = v104
     end
-    local FilterResult_upv_1 = tbl_upv_7.FilterResult
-    local u5 = a1:GetPlayer()
-    local u6
-    if u5 == nil then
-        u6 = nil
-    else
-        u6 = a4:GetTranslationForLocale(u5.LocaleId)
-    end
-    local u7 = ""
-    local u8 = nil
+
+    local filterResult = v101.FilterResult
+    local player = a97:GetPlayer()
+    local v108 = if player ~= nil then a100:GetTranslationForLocale(player.LocaleId) else nil
+    local v109 = ""
+    local translatedMessage = nil
+
     pcall(
         function()
             --[[
               line: 324
               upvalues:
-                tbl_upv_7 (copy, index: 1)
-                u5 (copy, index: 2)
-                u7 (ref,  index: 3)
-                FilterResult_upv_1 (copy, index: 4)
-                u6 (copy, index: 5)
-                u8 (ref,  index: 6)
+                v101 (copy, index: 1)
+                player (copy, index: 2)
+                v109 (ref,  index: 3)
+                filterResult (copy, index: 4)
+                v108 (copy, index: 5)
+                translatedMessage (ref,  index: 6)
             ]]
-            if tbl_upv_7.IsFilterResult then
-                if u5 then
-                    u7 = FilterResult_upv_1:GetChatForUserAsync(u5.UserId)
-                    if not u6 then
-                        return
+            if v101.IsFilterResult then
+                if player then
+                    v109 = filterResult:GetChatForUserAsync(player.UserId)
+
+                    if v108 then
+                        translatedMessage = v108:GetChatForUserAsync(player.UserId)
                     end
-                    u8 = u6:GetChatForUserAsync(u5.UserId)
                 else
-                    u7 = FilterResult_upv_1:GetNonChatStringForBroadcastAsync()
-                    if not u6 then
-                        return
+                    v109 = filterResult:GetNonChatStringForBroadcastAsync()
+
+                    if v108 then
+                        translatedMessage = v108:GetNonChatStringForBroadcastAsync()
                     end
-                    u8 = u6:GetNonChatStringForBroadcastAsync()
                 end
             else
-                u7 = FilterResult_upv_1
+                v109 = filterResult
             end
         end
     )
-    if u1 or (#u7 > 0) then
-        tbl_upv_7.Message = u7
-        if u8 then
-            tbl_upv_7.TranslatedMessage = u8
+
+    if isUserFeatureEnabled2 then
+        v101.Message = v109
+
+        if translatedMessage then
+            v101.TranslatedMessage = translatedMessage
         end
-        tbl_upv_7.FilterResult = nil
-        a1:InternalSendFilteredMessage(tbl_upv_7, a3)
+
+        v101.FilterResult = nil
+        a97:InternalSendFilteredMessage(v101, a99)
+    elseif 0 < #v109 then
+        v101.Message = v109
+
+        if translatedMessage then
+            v101.TranslatedMessage = translatedMessage
+        end
+
+        v101.FilterResult = nil
+        a97:InternalSendFilteredMessage(v101, a99)
     end
 end
-function tbl_upv_3.InternalSendFilteredMessageWithFilterResult(a1, a2, a3)
+
+function v18.InternalSendFilteredMessageWithFilterResult(a111, a112, a113)
     --[[
       name: InternalSendFilteredMessageWithFilterResult
       line: 360
       upvalues:
-        u1 (ref, index: 1)
+        isUserFeatureEnabled2 (ref, index: 1)
     ]]
-    local tbl_upv_8 = {}
-    for key_3, value_7 in pairs(a2) do
-        tbl_upv_8[key_3] = value_7
+    local v114 = {}
+
+    for key, v116 in pairs(a112) do
+        v114[key] = v116
     end
-    local FilterResult_upv_2 = tbl_upv_8.FilterResult
-    local u9 = a1:GetPlayer()
-    local u10 = ""
+
+    local filterResult = v114.FilterResult
+    local player = a111:GetPlayer()
+    local v119 = ""
+
     pcall(
         function()
             --[[
               line: 367
               upvalues:
-                tbl_upv_8 (copy, index: 1)
-                u9 (copy, index: 2)
-                u10 (ref,  index: 3)
-                FilterResult_upv_2 (copy, index: 4)
+                v114 (copy, index: 1)
+                player (copy, index: 2)
+                v119 (ref,  index: 3)
+                filterResult (copy, index: 4)
             ]]
-            if tbl_upv_8.IsFilterResult then
-                if u9 then
-                    u10 = FilterResult_upv_2:GetChatForUserAsync(u9.UserId)
-                else
-                    u10 = FilterResult_upv_2:GetNonChatStringForBroadcastAsync()
-                end
-            else
-                u10 = FilterResult_upv_2
+            if not v114.IsFilterResult then
+                v119 = filterResult
+                return
             end
+
+            if player then
+                v119 = filterResult:GetChatForUserAsync(player.UserId)
+                return
+            end
+
+            v119 = filterResult:GetNonChatStringForBroadcastAsync()
         end
     )
-    if u1 or (#u10 > 0) then
-        tbl_upv_8.Message = u10
-        tbl_upv_8.FilterResult = nil
-        a1:InternalSendFilteredMessage(tbl_upv_8, a3)
+
+    if isUserFeatureEnabled2 then
+        v114.Message = v119
+        v114.FilterResult = nil
+        a111:InternalSendFilteredMessage(v114, a113)
+    elseif 0 < #v119 then
+        v114.Message = v119
+        v114.FilterResult = nil
+        a111:InternalSendFilteredMessage(v114, a113)
     end
 end
-function tbl_upv_3.InternalSendSystemMessage(a1, a2, a3)
+
+function v18.InternalSendSystemMessage(a120, a121, a122)
     --[[
       name: InternalSendSystemMessage
       line: 396
     ]]
-    local success_7, v14 = pcall(
+    local success, result = pcall(
         function()
             --[[
               line: 397
               upvalues:
-                a1 (copy, index: 1)
-                a2 (copy, index: 2)
-                a3 (copy, index: 3)
+                a120 (copy, index: 1)
+                a121 (copy, index: 2)
+                a122 (copy, index: 3)
             ]]
-            a1:LazyFire("eReceivedSystemMessage", a2, a3)
-            if not a1.PlayerObj then
-                return
+            a120:LazyFire("eReceivedSystemMessage", a121, a122)
+
+            if a120.PlayerObj then
+                a120.EventFolder.OnNewSystemMessage:FireClient(a120.PlayerObj, a121, a122)
             end
-            a1.EventFolder.OnNewSystemMessage:FireClient(a1.PlayerObj, a2, a3)
         end
     )
-    if (success_7) or not v14 then
-        return
+
+    if not success and result then
+        print("Error sending internal system message: " .. result)
     end
-    print("Error sending internal system message: " .. v14)
 end
-function tbl_upv_3.UpdateChannelNameColor(a1, a2, a3)
+
+function v18.UpdateChannelNameColor(a125, a126, a127)
     --[[
       name: UpdateChannelNameColor
       line: 408
     ]]
-    a1:LazyFire("eChannelNameColorUpdated", a2, a3)
-    if not a1.PlayerObj then
-        return
+    a125:LazyFire("eChannelNameColorUpdated", a126, a127)
+
+    if a125.PlayerObj then
+        a125.EventFolder.ChannelNameColorUpdated:FireClient(a125.PlayerObj, a126, a127)
     end
-    a1.EventFolder.ChannelNameColorUpdated:FireClient(a1.PlayerObj, a2, a3)
 end
-function tbl_1.new(a1, a2)
+
+function v1.new(chatService, name)
     --[[
       name: new
       line: 418
       upvalues:
-        tbl_upv_3 (copy, index: 1)
+        v18 (copy, index: 1)
     ]]
-    local v15 = setmetatable({}, tbl_upv_3)
-    v15.ChatService = a1
-    v15.PlayerObj = nil
-    v15.Name = a2
-    v15.ExtraData = {}
-    v15.Channels = {}
-    v15.MutedSpeakers = {}
-    v15.EventFolder = nil
-    return v15
+    local v130 = setmetatable({}, v18)
+    v130.ChatService = chatService
+    v130.PlayerObj = nil
+    v130.Name = name
+    v130.ExtraData = {}
+    v130.Channels = {}
+    v130.MutedSpeakers = {}
+    v130.EventFolder = nil
+    return v130
 end
-return tbl_1
+
+return v1

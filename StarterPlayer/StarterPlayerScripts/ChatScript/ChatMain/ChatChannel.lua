@@ -1,4 +1,81 @@
-local success_1, v1 = pcall(
+local function RegisterChannelTab(self, channelTab)
+    --[[
+      name: RegisterChannelTab
+      line: 186
+    ]]
+    self.ChannelTab = channelTab
+end
+
+local function ClearMessageLog(self)
+    --[[
+      name: ClearMessageLog
+      line: 178
+    ]]
+    self.MessageLog = {}
+
+    if self.Active then
+        self.MessageLogDisplay:Clear()
+    end
+end
+
+local function RemoveLastMessageFromChannel(self)
+    --[[
+      name: RemoveLastMessageFromChannel
+      line: 170
+    ]]
+    table.remove(self.MessageLog, 1)
+
+    if self.Active then
+        self.MessageLogDisplay:RemoveLastMessage()
+    end
+end
+
+local function InternalAddMessageAtTimeStamp(self, a10)
+    --[[
+      name: InternalAddMessageAtTimeStamp
+      line: 115
+    ]]
+    for index = 1, #self.MessageLog do
+        if a10.Time < self.MessageLog[index].Time then
+            table.insert(self.MessageLog, index, a10)
+            return
+        end
+    end
+
+    table.insert(self.MessageLog, a10)
+end
+
+local function SetActive(self, active)
+    --[[
+      name: SetActive
+      line: 54
+    ]]
+    if active == self.Active then
+        return
+    end
+
+    if active ~= false then
+        self.MessageLogDisplay:SetCurrentChannelName(self.Name)
+
+        for index = 1, #self.MessageLog do
+            self.MessageLogDisplay:AddMessage(self.MessageLog[index])
+        end
+    else
+        self.MessageLogDisplay:Clear()
+    end
+
+    self.Active = active
+end
+
+local function Destroy(self)
+    --[[
+      name: Destroy
+      line: 50
+    ]]
+    self.Destroyed = true
+end
+
+local success, isUserFeatureEnabled = pcall(
     function()
         --[[
           line: 7
@@ -6,8 +83,8 @@ local success_1, v1 = pcall(
         return UserSettings():IsUserFeatureEnabled("UserFlagRemoveMessageFromMessageLog")
     end
 )
-local u1 = success_1 and v1
-local success_2, v2 = pcall(
+local isUserFeatureEnabled2 = success and isUserFeatureEnabled
+local success2, isUserFeatureEnabled3 = pcall(
     function()
         --[[
           line: 15
@@ -15,228 +92,210 @@ local success_2, v2 = pcall(
         return UserSettings():IsUserFeatureEnabled("UserIsChatTranslationEnabled2")
     end
 )
-local u2 = success_2 and v2
-local tbl_1 = {}
-local ClientChatModules_1 = game:GetService("Chat"):WaitForChild("ClientChatModules")
-local Parent_1 = script.Parent
-local ChatSettings_upv_1 = require(ClientChatModules_1:WaitForChild("ChatSettings"))
-local u3 = nil
-if u2 then
-    local u4 = Parent_1:FindFirstChild("ChatTranslationEnabled")
-    if u4 == nil then
-        local u5 = nil
-        local v3 = Parent_1.ChildAdded:Connect(
-            function(a1)
+local isUserFeatureEnabled4 = success2 and isUserFeatureEnabled3
+local v24 = {}
+local chat = game:GetService("Chat")
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local parent = script.Parent
+local ChatSettings = require(clientChatModules:WaitForChild("ChatSettings"))
+local instance = nil
+
+if isUserFeatureEnabled4 then
+    local instance2 = parent:FindFirstChild("ChatTranslationEnabled")
+
+    if instance2 ~= nil then
+        instance = instance2
+    else
+        local childAddedConnection = nil
+
+        childAddedConnection = parent.ChildAdded:Connect(
+            function(child: Instance)
                 --[[
                   line: 35
                   upvalues:
-                    u4 (ref, index: 1)
-                    u5 (ref, index: 2)
+                    instance2 (ref, index: 1)
+                    childAddedConnection (ref, index: 2)
                 ]]
-                if a1.Name ~= "ChatTranslationEnabled" then
-                    return
+                if child.Name == "ChatTranslationEnabled" then
+                    instance2 = child
+                    childAddedConnection:Disconnect()
                 end
-                u4 = a1
-                u5:Disconnect()
             end
         )
-        u5 = v3
+
+        instance = instance2
     end
 end
-local tbl_upv_2 = {}
-tbl_upv_2.__index = tbl_upv_2
-function tbl_upv_2.Destroy(a1)
-    --[[
-      name: Destroy
-      line: 50
-    ]]
-    a1.Destroyed = true
-end
-function tbl_upv_2.SetActive(a1, a2)
-    --[[
-      name: SetActive
-      line: 54
-    ]]
-    if a2 == a1.Active then
-        return
-    end
-    if a2 ~= false then
-        a1.MessageLogDisplay:SetCurrentChannelName(a1.Name)
-        for n_1 = 1, #a1.MessageLog do
-            a1.MessageLogDisplay:AddMessage(a1.MessageLog[n_1])
-        end
-    else
-        a1.MessageLogDisplay:Clear()
-    end
-    a1.Active = a2
-end
-function tbl_upv_2.UpdateMessageFiltered(a1, a2)
+
+local Class = {}
+Class.__index = Class
+Class.Destroy = Destroy
+Class.SetActive = SetActive
+
+function Class.UpdateMessageFiltered(self, a35)
     --[[
       name: UpdateMessageFiltered
       line: 69
       upvalues:
-        u2 (ref, index: 1)
-        u3 (ref, index: 2)
-        u1 (ref, index: 3)
+        isUserFeatureEnabled4 (ref, index: 1)
+        instance (ref, index: 2)
+        isUserFeatureEnabled2 (ref, index: 3)
     ]]
-    local v4 = 1
-    local MessageLog_1 = a1.MessageLog
-    local v5 = nil
-    local v6 = nil
-    while v4 <= #MessageLog_1 do
-        v6 = MessageLog_1[v4]
-        if v6.ID ~= a2.ID then
-            v4 = v4 + 1
-            continue
-        else
-            v5 = v6
+    local v36
+    local readIndex = 1
+    local messageLog = self.MessageLog
+
+    while true do
+        if not (readIndex <= #messageLog) then
+            v36 = nil
             break
         end
+
+        local v39 = messageLog[readIndex]
+
+        if v39.ID == a35.ID then
+            v36 = v39
+            break
+        end
+
+        readIndex += 1
     end
-    if v5 then
-        v5.Message = a2.Message
-        v5.IsFiltered = true
-        if u2 and u3 ~= nil and u3.Value then
-            v5.TranslatedMessage = a2.TranslatedMessage
-            v5.ShowTranslated = true
+
+    if v36 then
+        v36.Message = a35.Message
+        v36.IsFiltered = true
+
+        if isUserFeatureEnabled4 and instance ~= nil and instance.Value then
+            v36.TranslatedMessage = a35.TranslatedMessage
+            v36.ShowTranslated = true
         end
-        if not a1.Active then
-            return
+
+        if self.Active then
+            if isUserFeatureEnabled2 and v36.Message == "" then
+                table.remove(self.MessageLog, readIndex)
+            end
+
+            self.MessageLogDisplay:UpdateMessageFiltered(v36)
         end
-        if u1 and v5.Message == "" then
-            table.remove(a1.MessageLog, v4)
-        end
-        a1.MessageLogDisplay:UpdateMessageFiltered(v5)
     else
-        a1:AddMessageToChannelByTimeStamp(a2)
+        self:AddMessageToChannelByTimeStamp(a35)
     end
 end
-function tbl_upv_2.AddMessageToChannel(a1, a2)
+
+function Class.AddMessageToChannel(self, a41)
     --[[
       name: AddMessageToChannel
       line: 105
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        ChatSettings (copy, index: 1)
     ]]
-    table.insert(a1.MessageLog, a2)
-    if a1.Active then
-        a1.MessageLogDisplay:AddMessage(a2)
+    table.insert(self.MessageLog, a41)
+
+    if self.Active then
+        self.MessageLogDisplay:AddMessage(a41)
     end
-    if not (ChatSettings_upv_1.MessageHistoryLengthPerChannel < #a1.MessageLog) then
-        return
+
+    local messageLogLength = #self.MessageLog
+
+    if ChatSettings.MessageHistoryLengthPerChannel < messageLogLength then
+        self:RemoveLastMessageFromChannel()
     end
-    a1:RemoveLastMessageFromChannel()
 end
-function tbl_upv_2.InternalAddMessageAtTimeStamp(a1, a2)
-    --[[
-      name: InternalAddMessageAtTimeStamp
-      line: 115
-    ]]
-    for n_2 = 1, #a1.MessageLog do
-        if not (a2.Time < a1.MessageLog[n_2].Time) then
-            continue
-        end
-        table.insert(a1.MessageLog, n_2, a2)
-        return
-    end
-    table.insert(a1.MessageLog, a2)
-end
-function tbl_upv_2.AddMessagesToChannelByTimeStamp(a1, a2, a3)
+
+Class.InternalAddMessageAtTimeStamp = InternalAddMessageAtTimeStamp
+
+function Class.AddMessagesToChannelByTimeStamp(self, a44, startIndex: number)
     --[[
       name: AddMessagesToChannelByTimeStamp
       line: 125
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        ChatSettings (copy, index: 1)
     ]]
-    for n_3 = a3, #a2 do
-        a1:InternalAddMessageAtTimeStamp(a2[n_3])
+    for index = startIndex, #a44 do
+        self:InternalAddMessageAtTimeStamp(a44[index])
     end
-    while ChatSettings_upv_1.MessageHistoryLengthPerChannel < #a1.MessageLog do
-        table.remove(a1.MessageLog, 1)
+
+    while true do
+        local messageLogLength = #self.MessageLog
+
+        if not (ChatSettings.MessageHistoryLengthPerChannel < messageLogLength) then
+            break
+        end
+
+        table.remove(self.MessageLog, 1)
     end
-    if not a1.Active then
-        return
-    end
-    a1.MessageLogDisplay:Clear()
-    for n_4 = 1, #a1.MessageLog do
-        a1.MessageLogDisplay:AddMessage(a1.MessageLog[n_4])
+
+    if self.Active then
+        self.MessageLogDisplay:Clear()
+
+        for index = 1, #self.MessageLog do
+            self.MessageLogDisplay:AddMessage(self.MessageLog[index])
+        end
     end
 end
-function tbl_upv_2.AddMessageToChannelByTimeStamp(a1, a2)
+
+function Class.AddMessageToChannelByTimeStamp(self, a50)
     --[[
       name: AddMessageToChannelByTimeStamp
       line: 140
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        ChatSettings (copy, index: 1)
     ]]
-    if #a1.MessageLog >= 1 then
-        if (a2.Time < a1.MessageLog[1].Time) then
+    if not (1 <= #self.MessageLog) then
+        self:AddMessageToChannel(a50)
+        return
+    end
+
+    local time = self.MessageLog[1].Time
+
+    if a50.Time < time then
+        return
+    end
+
+    local time2 = a50.Time
+
+    if self.MessageLog[#self.MessageLog].Time <= time2 then
+        self:AddMessageToChannel(a50)
+        return
+    end
+
+    for index = 1, #self.MessageLog do
+        if a50.Time < self.MessageLog[index].Time then
+            table.insert(self.MessageLog, index, a50)
+            local messageLogLength = #self.MessageLog
+
+            if ChatSettings.MessageHistoryLengthPerChannel < messageLogLength then
+                self:RemoveLastMessageFromChannel()
+            end
+
+            if self.Active then
+                self.MessageLogDisplay:AddMessageAtIndex(a50, index)
+            end
+
             return
         end
-        if a1.MessageLog[#a1.MessageLog].Time <= a2.Time then
-            a1:AddMessageToChannel(a2)
-        else
-            for n_5 = 1, #a1.MessageLog do
-                if not (a2.Time < a1.MessageLog[n_5].Time) then
-                    continue
-                end
-                table.insert(a1.MessageLog, n_5, a2)
-                if ChatSettings_upv_1.MessageHistoryLengthPerChannel < #a1.MessageLog then
-                    a1:RemoveLastMessageFromChannel()
-                end
-                if a1.Active then
-                    a1.MessageLogDisplay:AddMessageAtIndex(a2, n_5)
-                end
-                return
-            end
-        end
-    else
-        a1:AddMessageToChannel(a2)
     end
 end
-function tbl_upv_2.RemoveLastMessageFromChannel(a1)
-    --[[
-      name: RemoveLastMessageFromChannel
-      line: 170
-    ]]
-    table.remove(a1.MessageLog, 1)
-    if not a1.Active then
-        return
-    end
-    a1.MessageLogDisplay:RemoveLastMessage()
-end
-function tbl_upv_2.ClearMessageLog(a1)
-    --[[
-      name: ClearMessageLog
-      line: 178
-    ]]
-    a1.MessageLog = {}
-    if not a1.Active then
-        return
-    end
-    a1.MessageLogDisplay:Clear()
-end
-function tbl_upv_2.RegisterChannelTab(a1, a2)
-    --[[
-      name: RegisterChannelTab
-      line: 186
-    ]]
-    a1.ChannelTab = a2
-end
-function tbl_1.new(a1, a2)
+
+Class.RemoveLastMessageFromChannel = RemoveLastMessageFromChannel
+Class.ClearMessageLog = ClearMessageLog
+Class.RegisterChannelTab = RegisterChannelTab
+
+function v24.new(name, messageLogDisplay)
     --[[
       name: new
       line: 193
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        Class (copy, index: 1)
     ]]
-    local v7 = setmetatable({}, tbl_upv_2)
-    v7.Destroyed = false
-    v7.Active = false
-    v7.MessageLog = {}
-    v7.MessageLogDisplay = a2
-    v7.ChannelTab = nil
-    v7.Name = a1
-    return v7
+    local v57 = setmetatable({}, Class)
+    v57.Destroyed = false
+    v57.Active = false
+    v57.MessageLog = {}
+    v57.MessageLogDisplay = messageLogDisplay
+    v57.ChannelTab = nil
+    v57.Name = name
+    return v57
 end
-return tbl_1
+
+return v24

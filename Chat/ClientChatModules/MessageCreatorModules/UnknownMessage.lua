@@ -1,13 +1,17 @@
-local _ = require(script.Parent.Parent:WaitForChild("ChatSettings"))
-local Util_1 = require(script.Parent:WaitForChild("Util"))
-function CreateUnknownMessageLabel(a1)
+local parent = script.Parent.Parent
+require(parent:WaitForChild("ChatSettings"))
+local Util = require(script.Parent:WaitForChild("Util"))
+
+function CreateUnknownMessageLabel(a3)
     --[[
       name: CreateUnknownMessageLabel
       line: 13
     ]]
-    print("No message creator for message: " .. a1.Message)
+    print("No message creator for message: " .. a3.Message)
 end
-local tbl_1 = {}
-tbl_1[Util_1.KEY_MESSAGE_TYPE] = "UnknownMessage"
-tbl_1[Util_1.KEY_CREATOR_FUNCTION] = CreateUnknownMessageLabel
-return tbl_1
+
+local v4 = {}
+v4[Util.KEY_MESSAGE_TYPE] = "UnknownMessage"
+v4[Util.KEY_CREATOR_FUNCTION] = CreateUnknownMessageLabel
+
+return v4

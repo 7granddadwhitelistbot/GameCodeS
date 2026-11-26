@@ -1,533 +1,527 @@
-local CollectionService_upv_1 = game:GetService("CollectionService")
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local Workspace_upv_1 = game:GetService("Workspace")
-local v1 = ReplicatedStorage_1:WaitForChild("Shared")
-local Tribes_upv_1 = require(v1:WaitForChild("Tribes"))
-local TribeArt_upv_1 = require(v1:WaitForChild("TribeArt"))
-v1 = {}
-local u1 = Color3.fromRGB(176, 162, 134)
-local u2 = Color3.fromRGB(228, 232, 240)
-local u3 = Color3.fromRGB(142, 149, 166)
-local u4 = Color3.fromRGB(255, 186, 46)
-local tbl_upv_1 = {u4, Color3.fromRGB(196, 206, 222), Color3.fromRGB(222, 140, 74)}
-local u5 = Color3.fromRGB(14, 15, 20)
-function v1.Init(a1)
+local collectionService = game:GetService("CollectionService")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local workspace = game:GetService("Workspace")
+local shared = replicatedStorage:WaitForChild("Shared")
+local Tribes = require(shared:WaitForChild("Tribes"))
+local TribeArt = require(shared:WaitForChild("TribeArt"))
+local v7 = {}
+local color3 = Color3.fromRGB(176, 162, 134)
+local textColor3 = Color3.fromRGB(228, 232, 240)
+local textColor32 = Color3.fromRGB(142, 149, 166)
+local textColor33 = Color3.fromRGB(255, 186, 46)
+local v12 = {textColor33, Color3.fromRGB(196, 206, 222), Color3.fromRGB(222, 140, 74)}
+local backgroundColor3 = Color3.fromRGB(14, 15, 20)
+
+function v7.Init(a14)
     --[[
       name: Init
       line: 29
       upvalues:
-        Tribes_upv_1 (copy, index: 1)
-        u1 (copy, index: 2)
-        CollectionService_upv_1 (copy, index: 3)
-        Workspace_upv_1 (copy, index: 4)
-        TribeArt_upv_1 (copy, index: 5)
-        u5 (copy, index: 6)
-        u4 (copy, index: 7)
-        u3 (copy, index: 8)
-        tbl_upv_1 (copy, index: 9)
-        u2 (copy, index: 10)
+        Tribes (copy, index: 1)
+        color3 (copy, index: 2)
+        collectionService (copy, index: 3)
+        workspace (copy, index: 4)
+        TribeArt (copy, index: 5)
+        backgroundColor3 (copy, index: 6)
+        textColor33 (copy, index: 7)
+        textColor32 (copy, index: 8)
+        v12 (copy, index: 9)
+        textColor3 (copy, index: 10)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local Tribes_upv_2 = a1.Tribes
-    local TribeEmblem_upv_1 = require(script.Parent.Parent:WaitForChild("TribeEmblem"))
-    TribeEmblem_upv_1.Init(UI_upv_1)
-    local tbl_upv_2 = {}
-    local tbl_upv_3 = {}
-    local tbl_upv_4 = {}
-    local function paintBanner(a2)
+    local ui = a14.UI
+    local theme = a14.Theme
+    local fonts = theme.Fonts
+    local tribes = a14.Tribes
+    local TribeEmblem = require(script.Parent.Parent:WaitForChild("TribeEmblem"))
+    TribeEmblem.Init(ui)
+    local v20 = {}
+    local v21 = {}
+    local v22 = {}
+
+    local function paintBanner(tribeBanner: Instance)
         --[[
           name: paintBanner
           line: 40
           upvalues:
-            tbl_upv_2 (ref,  index: 1)
-            tbl_upv_4 (copy, index: 2)
-            Tribes_upv_1 (copy, index: 3)
-            u1 (copy, index: 4)
-            TribeEmblem_upv_1 (copy, index: 5)
-            UI_upv_1 (copy, index: 6)
-            Fonts_upv_1 (copy, index: 7)
+            v20 (ref,  index: 1)
+            v22 (copy, index: 2)
+            Tribes (copy, index: 3)
+            color3 (copy, index: 4)
+            TribeEmblem (copy, index: 5)
+            ui (copy, index: 6)
+            fonts (copy, index: 7)
         ]]
-        local v2 = a2:GetAttribute("Rank")
-        local v3
-        if type(v2) ~= "number" then
-            v3 = nil
+        local v25
+        local rank = tribeBanner:GetAttribute("Rank")
+
+        if type(rank) ~= "number" then
+            v25 = nil
         else
-            v3 = tbl_upv_2[v2]
+            v25 = v20[rank]
         end
-        local v4
-        if v3 then
-            v4 = string.format("%s:%s:%s:%s", tostring(v3.id), tostring(v3.icon), tostring(v3.color1), tostring(v3.color2))
-        else
-            v4 = "-"
-        end
-        if tbl_upv_4[a2] == v4 then
+
+        local v27 = not v25 and "-"
+            or string.format("%s:%s:%s:%s", tostring(v25.id), tostring(v25.icon), tostring(v25.color1), (tostring(v25.color2)))
+
+        if v22[tribeBanner] == v27 then
             return
         end
-        tbl_upv_4[a2] = v4
-        local v5
-        if v3 then
-            v5 = Tribes_upv_1.Color(v3.color1):Lerp(Color3.new(0, 0, 0), 0.12)
-        else
-            v5 = u1
-        end
-        a2.Color = v5
-        local v6 = a2:FindFirstAncestorOfClass("Model")
-        if v6 then
-            for _, value_1 in v6:GetDescendants() do
-                if not (value_1:IsA("BasePart")) then
-                    continue
-                end
-                if value_1:GetAttribute("BannerTail") == v2 then
-                    value_1.Color = v5
+
+        v22[tribeBanner] = v27
+        local color = if v25 then Tribes.Color(v25.color1):Lerp(Color3.new(0, 0, 0), 0.12) else color3
+        tribeBanner.Color = color
+
+        if const firstAncestorOfClass = tribeBanner:FindFirstAncestorOfClass("Model") then
+            for _, descendant in firstAncestorOfClass:GetDescendants() do
+                if descendant:IsA("BasePart") and descendant:GetAttribute("BannerTail") == rank then
+                    descendant.Color = color
                 end
             end
         end
-        local Placeholder_1 = a2:FindFirstChild("Placeholder")
-        if Placeholder_1 and Placeholder_1:IsA("SurfaceGui") then
-            Placeholder_1.Enabled = v3 == nil
+
+        local placeholder = tribeBanner:FindFirstChild("Placeholder")
+
+        if placeholder and placeholder:IsA("SurfaceGui") then
+            placeholder.Enabled = v25 == nil
         end
-        local Emblem_1 = a2:FindFirstChild("Emblem")
-        if not Emblem_1 then
+
+        local emblem = tribeBanner:FindFirstChild("Emblem")
+        if not emblem then
             return
         end
-        for _, value_2 in Emblem_1:GetChildren() do
-            value_2:Destroy()
+
+        for _, child in emblem:GetChildren() do
+            child:Destroy()
         end
-        if not v3 then
+
+        if not v25 then
             return
         end
-        local tbl_5 = {}
-        tbl_5.AnchorPoint = Vector2.new(0.5, 0)
-        tbl_5.Position = UDim2.new(0.5, 0, 0, 22)
-        tbl_5.Parent = Emblem_1
-        TribeEmblem_upv_1.new(116, tbl_5):Set(v3.icon, v3.color2, v3.color1, v3.tag)
-        local v7 = UI_upv_1.new("TextLabel", {AutoLocalize = false, Name = "Tag", TextScaled = true, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 160), Size = UDim2.new(1, -16, 0, 40), Text = "[" .. tostring(v3.tag) .. "]", FontFace = Fonts_upv_1.Display, TextColor3 = Tribes_upv_1.Color(v3.color2), Parent = Emblem_1})
-        UI_upv_1.TextStroke(Color3.new(0, 0, 0), 1.5, 0.6).Parent = v7
+
+        local newTribeEmblem = TribeEmblem.new
+        local v37 = {AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 22), Parent = emblem}
+        newTribeEmblem(116, v37):Set(v25.icon, v25.color2, v25.color1, v25.tag)
+        local parent = ui.new("TextLabel", {Name = "Tag", AutoLocalize = false, TextScaled = true, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 160), Size = UDim2.new(1, -16, 0, 40), Text = "[" .. tostring(v25.tag) .. "]", FontFace = fonts.Display, TextColor3 = Tribes.Color(v25.color2), Parent = emblem})
+        ui.TextStroke(Color3.new(0, 0, 0), 1.5, 0.6).Parent = parent
     end
-    local function paintMap()
-        --[[
-          name: paintMap
-          line: 98
-          upvalues:
-            Workspace_upv_1 (copy, index: 1)
-            TribeArt_upv_1 (copy, index: 2)
-            UI_upv_1 (copy, index: 3)
-        ]]
-        local TribeHall_1 = Workspace_upv_1:FindFirstChild("TribeHall")
-        local v8 = TribeHall_1 and (TribeHall_1:FindFirstChild("MapCloth", true))
-        local v9 = v8 and (v8:FindFirstChild("Map"))
-        if not v9 or TribeArt_upv_1.Map.image == "" then
-            return
-        end
-        if not (v9:FindFirstChild("Base")) then
-            local Title_1 = v9:FindFirstChild("Title")
-            if Title_1 and Title_1:IsA("GuiObject") then
-                Title_1.Visible = false
-            end
-            UI_upv_1.new("ImageLabel", {Name = "Base", Image = TribeArt_upv_1.Map.image, Size = UDim2.fromScale(1, 1), ScaleType = Enum.ScaleType.Crop, Parent = v8})
-        end
-    end
-    local LocalPlayer_upv_1 = game:GetService("Players").LocalPlayer
-    local u6 = UI_upv_1.new("ScreenGui", {ResetOnSpawn = false, Name = "TR_TribeBoards", Parent = a1.PlayerGui})
-    local tbl_upv_6 = {}
-    local u7 = "top"
+
     local function paintAll()
         --[[
           name: paintAll
           line: 90
           upvalues:
-            CollectionService_upv_1 (copy, index: 1)
+            collectionService (copy, index: 1)
             paintBanner (copy, index: 2)
         ]]
-        for _, value_3 in CollectionService_upv_1:GetTagged("TribeBanner") do
-            if value_3:IsA("BasePart") then
-                paintBanner(value_3)
+        for _, tribeBanner in collectionService:GetTagged("TribeBanner") do
+            if tribeBanner:IsA("BasePart") then
+                paintBanner(tribeBanner)
             end
         end
     end
-    local function fillBoard(a3)
+
+    local function paintMap()
         --[[
-          name: fillBoard
-          line: 195
+          name: paintMap
+          line: 98
           upvalues:
-            u7 (ref,  index: 1)
-            tbl_upv_3 (ref,  index: 2)
-            tbl_upv_2 (ref,  index: 3)
-            LocalPlayer_upv_1 (copy, index: 4)
-            Tribes_upv_1 (copy, index: 5)
-            TribeEmblem_upv_1 (copy, index: 6)
-            u2 (copy, index: 7)
-            UI_upv_1 (copy, index: 8)
-            u3 (copy, index: 9)
+            workspace (copy, index: 1)
+            TribeArt (copy, index: 2)
+            ui (copy, index: 3)
         ]]
-        local v10
-        if u7 ~= "alltime" then
-            v10 = tbl_upv_2
-        else
-            v10 = tbl_upv_3
+        local instance = workspace:FindFirstChild("TribeHall")
+        instance = instance and instance:FindFirstChild("MapCloth", true)
+        local map = instance and instance:FindFirstChild("Map")
+
+        if not map or TribeArt.Map.image == "" or map:FindFirstChild("Base") then
+            return
         end
-        local v11 = LocalPlayer_upv_1:GetAttribute("TribeId")
-        local v12 = nil
-        if u7 ~= "alltime" then
-            v12 = math.max(0, Tribes_upv_1.WeekEndsAt(Tribes_upv_1.WeekOf(os.time())) - os.time())
-            local v13
-            if v12 >= 86400 then
-                v13 = ("%*D %*H"):format(v12 // 86400, (v12 % 86400) // 3600)
-            else
-                v13 = ("%*H %*M"):format(v12 // 3600, (v12 % 3600) // 60)
-            end
-            a3.caption.Text = ("THIS WEEK  \194\183  RESETS IN %*"):format(v13)
-        else
-            a3.caption.Text = "ALL TIME  \194\183  GLORY"
+
+        local title = map:FindFirstChild("Title")
+
+        if title and title:IsA("GuiObject") then
+            title.Visible = false
         end
-        local v14 = nil
-        for key_1, value_4 in a3.rows do
-            local v15 = v10[key_1]
-            local v16 = a3.emblems[key_1]
-            if not (v15) then
-                value_4.crest.Visible = false
-                value_4.name.Text = "-"
-                value_4.name.TextColor3 = u3
-                value_4.value.Text = ""
-                value_4.stroke.Enabled = false
-                continue
-            end
-            if not (v16) then
-                v16 = TribeEmblem_upv_1.new(a3.emblemSize, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = value_4.crest})
-                a3.emblems[key_1] = v16
-            end
-            v16:Set(v15.icon, v15.color1, v15.color2, v15.tag)
-            value_4.crest.Visible = true
-            value_4.name.Text = string.format("<font color=\"#%s\">%s</font> %s", TribeEmblem_upv_1.TagColor(v15.color1):ToHex(), TribeEmblem_upv_1.Tag(v15.tag), tostring(v15.name or ""))
-            value_4.name.TextColor3 = u2
-            local value_5 = value_4.value
-            local FormatNumber_1 = UI_upv_1.FormatNumber
-            if u7 ~= "alltime" then
-                v14 = v15.weekRenown
-            else
-                v14 = v15.renown
-            end
-            value_5.Text = FormatNumber_1(tonumber(v14) or 0)
-            local stroke_1 = value_4.stroke
-            stroke_1.Enabled = type(v11) == "number" and v11 > 0 and v15.id == v11
-        end
+
+        ui.new("ImageLabel", {Name = "Base", Image = TribeArt.Map.image, Size = UDim2.fromScale(1, 1), ScaleType = Enum.ScaleType.Crop, Parent = map})
     end
-    local function buildBoard(a4)
+
+    local players = game:GetService("Players")
+    local localPlayer = players.LocalPlayer
+    local parent = ui.new("ScreenGui", {Name = "TR_TribeBoards", ResetOnSpawn = false, Parent = a14.PlayerGui})
+    local v49 = {}
+    local v50 = "top"
+
+    local function buildBoard(adornee: Instance)
         --[[
           name: buildBoard
           line: 121
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            u6 (copy, index: 2)
-            u5 (copy, index: 3)
-            Fonts_upv_1 (copy, index: 4)
-            u4 (copy, index: 5)
-            Theme_upv_1 (copy, index: 6)
-            u3 (copy, index: 7)
-            tbl_upv_1 (copy, index: 8)
-            u2 (copy, index: 9)
+            ui (copy, index: 1)
+            parent (copy, index: 2)
+            backgroundColor3 (copy, index: 3)
+            fonts (copy, index: 4)
+            textColor33 (copy, index: 5)
+            theme (copy, index: 6)
+            textColor32 (copy, index: 7)
+            v12 (copy, index: 8)
+            textColor3 (copy, index: 9)
         ]]
-        local v18 = math.floor((800 * a4.Size.Y) / math.max(a4.Size.X, 0.1))
-        local v19 = UI_upv_1.new("SurfaceGui", {LightInfluence = 0, Name = "TopTribes", ResetOnSpawn = false, MaxDistance = 220, Adornee = a4, Face = Enum.NormalId.Front, SizingMode = Enum.SurfaceGuiSizingMode.FixedSize, CanvasSize = Vector2.new(800, v18), ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Parent = u6})
-        local v20 = UI_upv_1.new("Frame", {BackgroundTransparency = 0.05, Size = UDim2.fromScale(1, 1), BackgroundColor3 = u5, Parent = v19})
-        UI_upv_1.new("UIPadding", {PaddingTop = UDim.new(0.03, 0), PaddingBottom = UDim.new(0.03, 0), PaddingLeft = UDim.new(0.04, 0), PaddingRight = UDim.new(0.04, 0), Parent = v20})
-        local v21 = UI_upv_1.new("TextLabel", {Text = "TOP TRIBES", TextScaled = true, Size = UDim2.fromScale(1, 0.1), FontFace = Fonts_upv_1.Display, TextColor3 = u4, Parent = v20})
-        UI_upv_1.TextStroke(Theme_upv_1.Colors.Void, 3, 0).Parent = v21
-        local v22 = UI_upv_1.new("TextLabel", {Text = "", TextScaled = true, Position = UDim2.fromScale(0, 0.105), Size = UDim2.fromScale(1, 0.045), FontFace = Fonts_upv_1.Heavy, TextColor3 = u3, Parent = v20})
-        UI_upv_1.new("Frame", {Position = UDim2.fromScale(0, 0.162), Size = UDim2.new(1, 0, 0, 4), BackgroundColor3 = Color3.fromRGB(176, 120, 22), Parent = v20})
-        local v23 = UI_upv_1.new("Frame", {Position = UDim2.fromScale(0, 0.185), Size = UDim2.fromScale(1, 0.815), [1] = UI_upv_1.new("UIListLayout", {Padding = UDim.new(0.022, 0), SortOrder = Enum.SortOrder.LayoutOrder}), Parent = v20})
-        v20 = (v18 * 0.94) * 0.815 * 0.18
-        v18 = math.clamp(math.floor(v20 * 0.36), 14, 60)
-        local tbl_7 = {}
-        local v24 = nil
-        for n_1 = 1, 5 do
-            local new_1 = UI_upv_1.new
-            local tbl_8 = {}
-            tbl_8.Name = "Row" .. n_1
-            tbl_8.Size = UDim2.fromScale(1, 0.18)
-            local v25
-            if n_1 % 2 ~= 1 then
-                v25 = Color3.fromRGB(24, 26, 34)
-            else
-                v25 = Color3.fromRGB(30, 33, 42)
-            end
-            tbl_8.BackgroundColor3 = v25
-            tbl_8.LayoutOrder = n_1
-            tbl_8[1] = UI_upv_1.Corner(UDim.new(0.18, 0))
-            tbl_8.Parent = v23
-            local v26 = new_1("Frame", tbl_8)
-            local v27 = UI_upv_1.new("UIStroke", {Enabled = false, Thickness = 4, Color = Theme_upv_1.Colors.Ally, Parent = v26})
-            local v28 = math.floor(v20 * 0.8)
-            local new_2 = UI_upv_1.new
-            local tbl_9 = {TextColor3 = 0, Parent = 0}
-            tbl_9.Position = UDim2.fromScale(0.005, 0)
-            tbl_9.Size = UDim2.fromScale(0.09, 1)
-            tbl_9.Text = "#" .. n_1
-            tbl_9.FontFace = Fonts_upv_1.Display
-            tbl_9.TextSize = v18
-            v24 = tbl_upv_1[n_1] or u2
-            tbl_9.TextColor3 = v24
-            tbl_9.Parent = v26
-            tbl_7[n_1] = {
-                frame = v26,
-                rank = new_2("TextLabel", tbl_9),
-                crest = UI_upv_1.new("Frame", {Name = "Crest", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.fromScale(0.095, 0.5), Size = UDim2.fromOffset(v28, v28), Parent = v26}),
-                name = UI_upv_1.new("TextLabel", {AutoLocalize = false, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0.095, v28 + 14, 0.5, 0), Size = UDim2.new(0.705, -(v28 + 14), 0.5, 0), Text = "-", RichText = true, FontFace = Fonts_upv_1.Heavy, TextScaled = true, TextWrapped = false, TextColor3 = u2, TextXAlignment = Enum.TextXAlignment.Left, [1] = UI_upv_1.new("UITextSizeConstraint", {MaxTextSize = v18, MinTextSize = math.floor(v18 * 0.55)}), Parent = v26}),
-                value = UI_upv_1.new("TextLabel", {Text = "", AnchorPoint = Vector2.new(1, 0), Position = UDim2.fromScale(0.975, 0), Size = UDim2.fromScale(0.175, 1), FontFace = Fonts_upv_1.Display, TextSize = v18, TextColor3 = u4, TextXAlignment = Enum.TextXAlignment.Right, Parent = v26}),
-                stroke = v27
+        local y = math.floor(800 * adornee.Size.Y / math.max(adornee.Size.X, 0.1))
+        local ui2 = ui.new("SurfaceGui", {Name = "TopTribes", LightInfluence = 0, MaxDistance = 220, ResetOnSpawn = false, Adornee = adornee, Face = Enum.NormalId.Front, SizingMode = Enum.SurfaceGuiSizingMode.FixedSize, CanvasSize = Vector2.new(800, y), ZIndexBehavior = Enum.ZIndexBehavior.Sibling, Parent = parent})
+        local parent2 = ui.new("Frame", {BackgroundTransparency = 0.05, Size = UDim2.fromScale(1, 1), BackgroundColor3 = backgroundColor3, Parent = ui2})
+        ui.new("UIPadding", {PaddingTop = UDim.new(0.03, 0), PaddingBottom = UDim.new(0.03, 0), PaddingLeft = UDim.new(0.04, 0), PaddingRight = UDim.new(0.04, 0), Parent = parent2})
+        local parent3 = ui.new("TextLabel", {Text = "TOP TRIBES", TextScaled = true, Size = UDim2.fromScale(1, 0.1), FontFace = fonts.Display, TextColor3 = textColor33, Parent = parent2})
+        ui.TextStroke(theme.Colors.Void, 3, 0).Parent = parent3
+        local caption = ui.new("TextLabel", {Text = "", TextScaled = true, Position = UDim2.fromScale(0, 0.105), Size = UDim2.fromScale(1, 0.045), FontFace = fonts.Heavy, TextColor3 = textColor32, Parent = parent2})
+        ui.new("Frame", {Position = UDim2.fromScale(0, 0.162), Size = UDim2.new(1, 0, 0, 4), BackgroundColor3 = Color3.fromRGB(176, 120, 22), Parent = parent2})
+        local newUi = ui.new
+        local newUi2 = ui.new
+        local v60 = {Padding = UDim.new(0.022, 0), SortOrder = Enum.SortOrder.LayoutOrder}
+        local parent4 = newUi("Frame", {Position = UDim2.fromScale(0, 0.185), Size = UDim2.fromScale(1, 0.815), (newUi2("UIListLayout", v60)), Parent = parent2})
+        local v62 = (y * 0.94) * 0.815 * 0.18
+        local clampedValue = math.clamp(math.floor(v62 * 0.36), 14, 60)
+        local rows = {}
+
+        for layoutOrder = 1, 5 do
+            local textColor34
+            local newUi3 = ui.new
+            local v68 = {Name = "Row" .. layoutOrder, Size = UDim2.fromScale(1, 0.18), BackgroundColor3 = if layoutOrder % 2 == 1 then Color3.fromRGB(30, 33, 42) else Color3.fromRGB(24, 26, 34)}
+            v68.LayoutOrder = layoutOrder
+            v68[1] = (ui.Corner(UDim.new(0.18, 0)))
+            v68.Parent = parent4
+            local ui3 = newUi3("Frame", v68)
+            local stroke = ui.new("UIStroke", {Thickness = 4, Enabled = false, Color = theme.Colors.Ally, Parent = ui3})
+            local flooredValue = math.floor(v62 * 0.8)
+            local newUi4 = ui.new
+            local v73 = {Position = UDim2.fromScale(0.005, 0), Size = UDim2.fromScale(0.09, 1), Text = "#" .. layoutOrder, FontFace = fonts.Display, TextSize = clampedValue}
+            textColor34 = if const color3 = v12[layoutOrder] then color3 else textColor3
+            v73.TextColor3 = textColor34
+            v73.Parent = ui3
+            local rank = newUi4("TextLabel", v73)
+            local crest = ui.new("Frame", {Name = "Crest", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.fromScale(0.095, 0.5), Size = UDim2.fromOffset(flooredValue, flooredValue), Parent = ui3})
+            local newUi5 = ui.new
+            local newUi6 = ui.new
+            local v79 = {MaxTextSize = clampedValue, MinTextSize = math.floor(clampedValue * 0.55)}
+            rows[layoutOrder] = {
+                frame = ui3,
+                rank = rank,
+                crest = crest,
+                name = newUi5("TextLabel", {AutoLocalize = false, AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0.095, flooredValue + 14, 0.5, 0), Size = UDim2.new(0.705, -(flooredValue + 14), 0.5, 0), Text = "-", RichText = true, FontFace = fonts.Heavy, TextScaled = true, TextWrapped = false, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Left, (newUi6("UITextSizeConstraint", v79)), Parent = ui3}),
+                value = ui.new("TextLabel", {Text = "", AnchorPoint = Vector2.new(1, 0), Position = UDim2.fromScale(0.975, 0), Size = UDim2.fromScale(0.175, 1), FontFace = fonts.Display, TextSize = clampedValue, TextColor3 = textColor33, TextXAlignment = Enum.TextXAlignment.Right, Parent = ui3}),
+                stroke = stroke
             }
         end
-        local tbl_10 = {}
-        tbl_10.sg = v19
-        tbl_10.rows = tbl_7
-        tbl_10.caption = v22
-        tbl_10.emblems = {}
-        tbl_10.emblemSize = math.floor(v20 * 0.74)
-        return tbl_10
+
+        return {sg = ui2, rows = rows, caption = caption, emblems = {}, emblemSize = math.floor(v62 * 0.74)}
     end
-    for _, value_6 in CollectionService_upv_1:GetTagged("TribeLeaderboard") do
-        local v29 = value_6:IsA("BasePart")
-        if not (v29) then
-            continue
-        end
-        if not (tbl_upv_6[value_6]) then
-            local v30 = buildBoard(value_6)
-            tbl_upv_6[value_6] = v30
-            fillBoard(v30)
-        end
-    end
-    local function addBoard(a5)
+
+    local function fillBoard(a81)
         --[[
-          name: addBoard
-          line: 235
+          name: fillBoard
+          line: 195
           upvalues:
-            tbl_upv_6 (copy, index: 1)
-            buildBoard (copy, index: 2)
-            fillBoard (copy, index: 3)
+            v50 (ref,  index: 1)
+            v21 (ref,  index: 2)
+            v20 (ref,  index: 3)
+            localPlayer (copy, index: 4)
+            Tribes (copy, index: 5)
+            TribeEmblem (copy, index: 6)
+            textColor3 (copy, index: 7)
+            ui (copy, index: 8)
+            textColor32 (copy, index: 9)
         ]]
-        if not a5:IsA("BasePart") then
-            return
+        local v82 = if v50 == "alltime" then v21 else v20
+        local tribeId = localPlayer:GetAttribute("TribeId")
+
+        if v50 ~= "alltime" then
+            local formattedText
+            local v85 = math.max(0, Tribes.WeekEndsAt(Tribes.WeekOf(os.time())) - os.time())
+
+            if not (86400 <= v85) then
+                formattedText = `{v85 // 3600}H {(v85 % 3600) // 60}M`
+            else
+                formattedText = `{v85 // 86400}D {(v85 % 86400) // 3600}H`
+            end
+
+            a81.caption.Text = `THIS WEEK  ·  RESETS IN {formattedText}`
+        else
+            a81.caption.Text = "ALL TIME  ·  GLORY"
         end
-        if not (tbl_upv_6[a5]) then
-            local v31 = buildBoard(a5)
-            tbl_upv_6[a5] = v31
-            fillBoard(v31)
+
+        for emblemKey, row in a81.rows do
+            local v88 = v82[emblemKey]
+            local emblem = a81.emblems[emblemKey]
+
+            if v88 then
+                local v90
+                local v91
+
+                if emblem then
+                    v90 = emblem
+                else
+                    v90 = TribeEmblem.new(a81.emblemSize, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = row.crest})
+                    a81.emblems[emblemKey] = v90
+                end
+
+                v90:Set(v88.icon, v88.color1, v88.color2, v88.tag)
+                row.crest.Visible = true
+                row.name.Text = string.format("<font color=\"#%s\">%s</font> %s", TribeEmblem.TagColor(v88.color1):ToHex(), TribeEmblem.Tag(v88.tag), (tostring(v88.name
+                    or "")))
+                row.name.TextColor3 = textColor3
+                local value = row.value
+                local formatNumber = ui.FormatNumber
+
+                if v50 == "alltime" then
+                    v91 = v88.renown
+                else
+                    v91 = v88.weekRenown
+                end
+
+                value.Text = formatNumber((tonumber(v91) or 0))
+                local stroke = row.stroke
+                local enabled = type(tribeId) == "number" and 0 < tribeId and v88.id == tribeId
+                stroke.Enabled = enabled
+            else
+                row.crest.Visible = false
+                row.name.Text = "-"
+                row.name.TextColor3 = textColor32
+                row.value.Text = ""
+                row.stroke.Enabled = false
+            end
         end
     end
-    CollectionService_upv_1:GetInstanceAddedSignal("TribeLeaderboard"):Connect(addBoard)
-    CollectionService_upv_1:GetInstanceRemovedSignal("TribeLeaderboard"):Connect(
-        function(a6)
+
+    for _, tribeLeaderboard in collectionService:GetTagged("TribeLeaderboard") do
+        if tribeLeaderboard:IsA("BasePart") and not v49[tribeLeaderboard] then
+            local v98 = buildBoard(tribeLeaderboard)
+            v49[tribeLeaderboard] = v98
+            fillBoard(v98)
+        end
+    end
+
+    collectionService:GetInstanceAddedSignal("TribeLeaderboard"):Connect(
+        function(tribeLeaderboard: Instance)
+            --[[
+              name: addBoard
+              line: 235
+              upvalues:
+                v49 (copy, index: 1)
+                buildBoard (copy, index: 2)
+                fillBoard (copy, index: 3)
+            ]]
+            if tribeLeaderboard:IsA("BasePart") and not v49[tribeLeaderboard] then
+                local v100 = buildBoard(tribeLeaderboard)
+                v49[tribeLeaderboard] = v100
+                fillBoard(v100)
+            end
+        end
+    )
+
+    collectionService:GetInstanceRemovedSignal("TribeLeaderboard"):Connect(
+        function(tribeLeaderboard: Instance)
             --[[
               line: 246
               upvalues:
-                tbl_upv_6 (copy, index: 1)
+                v49 (copy, index: 1)
             ]]
-            local v32 = tbl_upv_6[a6]
-            if not v32 then
-                return
+            if const v102 = v49[tribeLeaderboard] then
+                v49[tribeLeaderboard] = nil
+                v102.sg:Destroy()
             end
-            tbl_upv_6[a6] = nil
-            v32.sg:Destroy()
         end
     )
-    local function fillAll()
-        --[[
-          name: fillAll
-          line: 229
-          upvalues:
-            tbl_upv_6 (copy, index: 1)
-            fillBoard (copy, index: 2)
-        ]]
-        for _, value_7 in tbl_upv_6 do
-            fillBoard(value_7)
+
+    localPlayer:GetAttributeChangedSignal("TribeId"):Connect(
+        function()
+            --[[
+              name: fillAll
+              line: 229
+              upvalues:
+                v49 (copy, index: 1)
+                fillBoard (copy, index: 2)
+            ]]
+            for _, v104 in v49 do
+                fillBoard(v104)
+            end
         end
-    end
-    LocalPlayer_upv_1:GetAttributeChangedSignal("TribeId"):Connect(fillAll)
-    local function fadeText(a7, a8)
+    )
+
+    local function fadeText(textTransparency: number, a107: number)
         --[[
           name: fadeText
           line: 255
           upvalues:
-            tbl_upv_6 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
+            v49 (copy, index: 1)
+            ui (copy, index: 2)
         ]]
-        local v33 = TweenInfo.new(a8, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
-        for _, value_8 in tbl_upv_6 do
-            UI_upv_1.Tween(value_8.caption, v33, {TextTransparency = a7})
-            for v34, value_9 in value_8.rows do
-                UI_upv_1.Tween(value_9.name, v33, {TextTransparency = a7})
-                UI_upv_1.Tween(value_9.value, v33, {TextTransparency = a7})
+        local tweenInfo = TweenInfo.new(a107, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+
+        for _, v110 in v49 do
+            ui.Tween(v110.caption, tweenInfo, {TextTransparency = textTransparency})
+
+            for _, row in v110.rows do
+                ui.Tween(row.name, tweenInfo, {TextTransparency = textTransparency})
+                ui.Tween(row.value, tweenInfo, {TextTransparency = textTransparency})
             end
         end
     end
+
     task.spawn(
         function()
             --[[
               line: 267
               upvalues:
-                u7 (ref,  index: 1)
-                tbl_upv_3 (ref,  index: 2)
-                tbl_upv_2 (ref,  index: 3)
-                tbl_upv_6 (copy, index: 4)
+                v50 (ref,  index: 1)
+                v21 (ref,  index: 2)
+                v20 (ref,  index: 3)
+                v49 (copy, index: 4)
                 fadeText (copy, index: 5)
                 fillBoard (copy, index: 6)
             ]]
-            task.wait(8)
-            local v34
-            if u7 == "top" and #tbl_upv_3 > 0 then
-                v34 = "alltime"
-            else
-                v34 = ((#tbl_upv_2 > 0) and "top") or "alltime"
-            end
-            if v34 == u7 then
-                if v34 == u7 then
-                    return
+            while true do
+                local v113
+                task.wait(8)
+
+                if v50 == "top" then
+                    if not (0 < #v21) then
+                        if not (0 < #v20) then
+                            v113 = "alltime"
+                        else
+                            v113 = "top"
+                        end
+                    else
+                        v113 = "alltime"
+                    end
+                elseif not (0 < #v20) then
+                    v113 = "alltime"
+                else
+                    v113 = "top"
                 end
-                u7 = v34
-            elseif next(tbl_upv_6) then
-                fadeText(1, 0.18)
-                task.wait(0.2)
-                u7 = v34
-                for _, value_10 in tbl_upv_6 do
-                    fillBoard(value_10)
+
+                if v113 ~= v50 and next(v49) then
+                    fadeText(1, 0.18)
+                    task.wait(0.2)
+                    v50 = v113
+
+                    for _, v115 in v49 do
+                        fillBoard(v115)
+                    end
+
+                    fadeText(0, 0.3)
+                    continue
                 end
-                fadeText(0, 0.3)
-            elseif v34 ~= u7 then
-                u7 = v34
+
+                if v113 ~= v50 then
+                    v50 = v113
+                end
             end
         end
     )
-    CollectionService_upv_1:GetInstanceAddedSignal("TribeBanner"):Connect(
-        function(a9)
+
+    collectionService:GetInstanceAddedSignal("TribeBanner"):Connect(
+        function(tribeBanner: Instance)
             --[[
               line: 285
               upvalues:
-                tbl_upv_4 (copy, index: 1)
+                v22 (copy, index: 1)
                 paintBanner (copy, index: 2)
                 paintMap (copy, index: 3)
             ]]
-            if not a9:IsA("BasePart") then
-                return
+            if tribeBanner:IsA("BasePart") then
+                v22[tribeBanner] = nil
+                paintBanner(tribeBanner)
+                paintMap()
             end
-            tbl_upv_4[a9] = nil
-            paintBanner(a9)
-            paintMap()
         end
     )
-    CollectionService_upv_1:GetInstanceRemovedSignal("TribeBanner"):Connect(
-        function(a10)
+
+    collectionService:GetInstanceRemovedSignal("TribeBanner"):Connect(
+        function(tribeBanner: Instance)
             --[[
               line: 292
               upvalues:
-                tbl_upv_4 (copy, index: 1)
+                v22 (copy, index: 1)
             ]]
-            tbl_upv_4[a10] = nil
+            v22[tribeBanner] = nil
         end
     )
+
     task.spawn(
         function()
             --[[
               line: 296
               upvalues:
-                Workspace_upv_1 (copy, index: 1)
-                a1 (copy, index: 2)
-                Tribes_upv_2 (copy, index: 3)
-                tbl_upv_2 (ref,  index: 4)
+                workspace (copy, index: 1)
+                a14 (copy, index: 2)
+                tribes (copy, index: 3)
+                v20 (ref,  index: 4)
                 paintAll (copy, index: 5)
-                tbl_upv_3 (ref,  index: 6)
-                u7 (ref,  index: 7)
-                tbl_upv_6 (copy, index: 8)
+                v21 (ref,  index: 6)
+                v50 (ref,  index: 7)
+                v49 (copy, index: 8)
                 fillBoard (copy, index: 9)
                 paintMap (copy, index: 10)
             ]]
-            if Workspace_upv_1:FindFirstChild("TribeHall") then
-                if a1.State.InMatch() then
-                    task.wait(120)
-                else
-                    local v35, v36 = Tribes_upv_2.Board("top")
-                    if v35 then
-                        if type(v36) ~= "table" then
-                            local v37, v38 = Tribes_upv_2.Board("alltime")
-                            if v37 and type(v38) == "table" then
-                                tbl_upv_3 = {}
-                                for _, value_11 in v38 do
-                                    if type(value_11) ~= "table" or not ((tonumber(value_11.renown) or 0) > 0) then
-                                        continue
+            while true do
+                if workspace:FindFirstChild("TribeHall") then
+                    if not a14.State.InMatch() then
+                        local v118, v119 = tribes.Board("top")
+                        if v118 then
+                            if type(v119) == "table" then
+                                v20 = {}
+
+                                for _, v121 in v119 do
+                                    if type(v121) == "table" then
+                                        if 0 < (tonumber(v121.weekRenown) or 0) and #v20 < 5 then
+                                            table.insert(v20, v121)
+                                        end
                                     end
-                                    if #tbl_upv_3 < 5 then
-                                        table.insert(tbl_upv_3, value_11)
+                                end
+
+                                paintAll()
+                            end
+                        end
+
+                        local v122, v123 = tribes.Board("alltime")
+                        if v122 then
+                            if type(v123) == "table" then
+                                v21 = {}
+
+                                for _, v125 in v123 do
+                                    if type(v125) == "table" then
+                                        if 0 < (tonumber(v125.renown) or 0) and #v21 < 5 then
+                                            table.insert(v21, v125)
+                                        end
                                     end
                                 end
                             end
-                            if u7 == "top" and #tbl_upv_2 == 0 then
-                                u7 = "alltime"
+                        end
+
+                        if v50 == "top" then
+                            if #v20 == 0 then
+                                v50 = "alltime"
                             end
-                            for _, value_12 in tbl_upv_6 do
-                                fillBoard(value_12)
+
+                            for _, v127 in v49 do
+                                fillBoard(v127)
                             end
+
                             paintMap()
-                            task.wait(120)
                         else
-                            tbl_upv_2 = {}
-                            for _, value_13 in v36 do
-                                if type(value_13) ~= "table" or not ((tonumber(value_13.weekRenown) or 0) > 0) then
-                                    continue
-                                end
-                                if #tbl_upv_2 < 5 then
-                                    table.insert(tbl_upv_2, value_13)
-                                end
+                            for _, v127 in v49 do
+                                fillBoard(v127)
                             end
-                            paintAll()
-                            local v37, v38 = Tribes_upv_2.Board("alltime")
-                            if v37 and type(v38) == "table" then
-                                tbl_upv_3 = {}
-                                for _, value_11 in v38 do
-                                    if type(value_11) ~= "table" or not ((tonumber(value_11.renown) or 0) > 0) then
-                                        continue
-                                    end
-                                    if #tbl_upv_3 < 5 then
-                                        table.insert(tbl_upv_3, value_11)
-                                    end
-                                end
-                            end
-                            if u7 == "top" and #tbl_upv_2 == 0 then
-                                u7 = "alltime"
-                            end
-                            for _, value_12 in tbl_upv_6 do
-                                fillBoard(value_12)
-                            end
+
                             paintMap()
-                            task.wait(120)
                         end
-                    else
-                        local v37, v38 = Tribes_upv_2.Board("alltime")
-                        if v37 and type(v38) == "table" then
-                            tbl_upv_3 = {}
-                            for _, value_11 in v38 do
-                                if type(value_11) ~= "table" or not ((tonumber(value_11.renown) or 0) > 0) then
-                                    continue
-                                end
-                                if #tbl_upv_3 < 5 then
-                                    table.insert(tbl_upv_3, value_11)
-                                end
-                            end
-                        end
-                        if u7 == "top" and #tbl_upv_2 == 0 then
-                            u7 = "alltime"
-                        end
-                        for _, value_12 in tbl_upv_6 do
-                            fillBoard(value_12)
-                        end
-                        paintMap()
-                        task.wait(120)
                     end
                 end
-            else
+
                 task.wait(120)
             end
         end
     )
 end
-return v1
+
+return v7

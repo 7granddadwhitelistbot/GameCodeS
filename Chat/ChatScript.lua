@@ -1,305 +1,537 @@
-local StarterGui_upv_1 = game:GetService("StarterGui")
-local GuiService_1 = game:GetService("GuiService")
-local Chat_1 = game:GetService("Chat")
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local ChatSettings_upv_1 = require(Chat_1:WaitForChild("ClientChatModules"):WaitForChild("ChatSettings"))
-function SetCoreGuiChatConnections(a1)
+local starterGui = game:GetService("StarterGui")
+local guiService = game:GetService("GuiService")
+local chat = game:GetService("Chat")
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local clientChatModules = chat:WaitForChild("ClientChatModules")
+local ChatSettings = require(clientChatModules:WaitForChild("ChatSettings"))
+
+function SetCoreGuiChatConnections(value)
     --[[
       name: SetCoreGuiChatConnections
       line: 107
       upvalues:
-        StarterGui_upv_1 (copy, index: 1)
+        starterGui (copy, index: 1)
     ]]
-    local v1 = 0
-    while v1 < 10 do
-        v1 = v1 + 1
-        local success_1, v2 = pcall(
+    local count = 0
+
+    while count < 10 do
+        count += 1
+        local success, result = pcall(
             function()
                 --[[
                   line: 111
                   upvalues:
-                    StarterGui_upv_1 (copy, index: 1)
-                    a1 (copy, index: 2)
+                    starterGui (copy, index: 1)
+                    value (copy, index: 2)
                 ]]
-                StarterGui_upv_1:SetCore("CoreGuiChatConnections", a1)
+                starterGui:SetCore("CoreGuiChatConnections", value)
             end
         )
-        if success_1 then
+        if success then
             break
         end
-        if not success_1 and v1 == 10 then
-            error("Error calling SetCore CoreGuiChatConnections: " .. v2)
+
+        if success or count ~= 10 then
+            wait()
+        else
+            error("Error calling SetCore CoreGuiChatConnections: " .. result)
+            wait()
         end
-        wait()
     end
 end
+
 function checkBothChatTypesDisabled()
     --[[
       name: checkBothChatTypesDisabled
       line: 122
       upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
+        ChatSettings (copy, index: 1)
     ]]
-    if ChatSettings_upv_1.BubbleChatEnabled ~= nil and ChatSettings_upv_1.ClassicChatEnabled ~= nil then
-        return not ChatSettings_upv_1.BubbleChatEnabled and not ChatSettings_upv_1.ClassicChatEnabled
+    if ChatSettings.BubbleChatEnabled == nil or ChatSettings.ClassicChatEnabled == nil then
+        return false
     end
-    return false
+
+    local v11 = ChatSettings.BubbleChatEnabled or ChatSettings.ClassicChatEnabled
+
+    return not v11
 end
-local function DoEverything()
-    --[[
-      name: DoEverything
-      line: 16
-      upvalues:
-        ChatSettings_upv_1 (copy, index: 1)
-    ]]
-    local ChatMain_upv_1 = require(script:WaitForChild("ChatMain"))
-    local tbl_upv_1 = {}
-    tbl_upv_1.ChatWindow = {}
-    tbl_upv_1.SetCore = {}
-    tbl_upv_1.GetCore = {}
-    tbl_upv_1.ChatWindow.ChatTypes = {}
-    tbl_upv_1.ChatWindow.ChatTypes.BubbleChatEnabled = ChatSettings_upv_1.BubbleChatEnabled
-    tbl_upv_1.ChatWindow.ChatTypes.ClassicChatEnabled = ChatSettings_upv_1.ClassicChatEnabled
-    local function ConnectEvent_1(a1)
-        --[[
-          name: ConnectEvent
-          line: 29
-          upvalues:
-            tbl_upv_1 (copy, index: 1)
-        ]]
-        local v3 = Instance.new("BindableEvent")
-        v3.Name = a1
-        tbl_upv_1.ChatWindow[a1] = v3
-        v3.Event:connect(function() end)
-    end
-    local function ConnectFunction_1(a2)
-        --[[
-          name: ConnectFunction
-          line: 37
-          upvalues:
-            tbl_upv_1 (copy, index: 1)
-        ]]
-        local v4 = Instance.new("BindableFunction")
-        v4.Name = a2
-        tbl_upv_1.ChatWindow[a2] = v4
-        v4.OnInvoke = function() end
-    end
-    local function ReverseConnectEvent_1(a3)
-        --[[
-          name: ReverseConnectEvent
-          line: 45
-          upvalues:
-            tbl_upv_1 (copy, index: 1)
-            ChatMain_upv_1 (copy, index: 2)
-        ]]
-        local v5 = Instance.new("BindableEvent")
-        v5.Name = a3
-        tbl_upv_1.ChatWindow[a3] = v5
-        ChatMain_upv_1[a3]:connect(function() end)
-    end
-    local function ConnectSignal_1(a4)
-        --[[
-          name: ConnectSignal
-          line: 53
-          upvalues:
-            tbl_upv_1 (copy, index: 1)
-        ]]
-        local v6 = Instance.new("BindableEvent")
-        v6.Name = a4
-        tbl_upv_1.ChatWindow[a4] = v6
-        v6.Event:connect(function() end)
-    end
-    local function ConnectSetCore_1(a5)
-        --[[
-          name: ConnectSetCore
-          line: 61
-          upvalues:
-            tbl_upv_1 (copy, index: 1)
-        ]]
-        local v7 = Instance.new("BindableEvent")
-        v7.Name = a5
-        tbl_upv_1.SetCore[a5] = v7
-        v7.Event:connect(function() end)
-    end
-    local function ConnectGetCore_1(a6)
-        --[[
-          name: ConnectGetCore
-          line: 69
-          upvalues:
-            tbl_upv_1 (copy, index: 1)
-        ]]
-        local v8 = Instance.new("BindableFunction")
-        v8.Name = a6
-        tbl_upv_1.GetCore[a6] = v8
-        v8.OnInvoke = function() end
-    end
-    local v9 = Instance.new("BindableEvent")
-    v9.Name = "ToggleVisibility"
-    tbl_upv_1.ChatWindow.ToggleVisibility = v9
-    local _ = "ToggleVisibility"
-    v9.Event:connect(function() end)
-    local v10 = Instance.new("BindableEvent")
-    v10.Name = "SetVisible"
-    tbl_upv_1.ChatWindow.SetVisible = v10
-    local v29 = "SetVisible"
-    v10.Event:connect(function() end)
-    local v11 = Instance.new("BindableEvent")
-    v11.Name = "FocusChatBar"
-    tbl_upv_1.ChatWindow.FocusChatBar = v11
-    local v30 = "FocusChatBar"
-    v11.Event:connect(function() end)
-    local v12 = Instance.new("BindableEvent")
-    v12.Name = "EnterWhisperState"
-    tbl_upv_1.ChatWindow.EnterWhisperState = v12
-    local v31 = "EnterWhisperState"
-    v12.Event:connect(function() end)
-    local v13 = Instance.new("BindableFunction")
-    v13.Name = "GetVisibility"
-    tbl_upv_1.ChatWindow.GetVisibility = v13
-    local v32 = "GetVisibility"
-    v13.OnInvoke = function() end
-    local v14 = Instance.new("BindableFunction")
-    v14.Name = "GetMessageCount"
-    tbl_upv_1.ChatWindow.GetMessageCount = v14
-    local v33 = "GetMessageCount"
-    v14.OnInvoke = function() end
-    local v15 = Instance.new("BindableEvent")
-    v15.Name = "TopbarEnabledChanged"
-    tbl_upv_1.ChatWindow.TopbarEnabledChanged = v15
-    local v34 = "TopbarEnabledChanged"
-    v15.Event:connect(function() end)
-    local v16 = Instance.new("BindableFunction")
-    v16.Name = "IsFocused"
-    tbl_upv_1.ChatWindow.IsFocused = v16
-    local u1 = "IsFocused"
-    v16.OnInvoke = function(...)
-        --[[
-          line: 42
-          upvalues:
-            ChatMain_upv_1 (copy, index: 1)
-            u1 (copy, index: 2)
-        ]]
-        return ChatMain_upv_1[u1](ChatMain_upv_1, ...)
-    end
-    local v17 = Instance.new("BindableEvent")
-    v17.Name = "ChatBarFocusChanged"
-    tbl_upv_1.ChatWindow.ChatBarFocusChanged = v17
-    ChatMain_upv_1.ChatBarFocusChanged:connect(function() end)
-    local v18 = Instance.new("BindableEvent")
-    v18.Name = "VisibilityStateChanged"
-    tbl_upv_1.ChatWindow.VisibilityStateChanged = v18
-    ChatMain_upv_1.VisibilityStateChanged:connect(function() end)
-    local v19 = Instance.new("BindableEvent")
-    v19.Name = "MessagesChanged"
-    tbl_upv_1.ChatWindow.MessagesChanged = v19
-    ChatMain_upv_1.MessagesChanged:connect(function() end)
-    local u2 = Instance.new("BindableEvent")
-    u2.Name = "MessagePosted"
-    tbl_upv_1.ChatWindow.MessagePosted = u2
-    ChatMain_upv_1.MessagePosted:connect(
-        function(...)
-            --[[
-              line: 50
-              upvalues:
-                u2 (copy, index: 1)
-            ]]
-            u2:Fire(...)
-        end
-    )
-    local v20 = Instance.new("BindableEvent")
-    v20.Name = "CoreGuiEnabled"
-    tbl_upv_1.ChatWindow.CoreGuiEnabled = v20
-    local u3 = "CoreGuiEnabled"
-    v20.Event:connect(
-        function(...)
-            --[[
-              line: 58
-              upvalues:
-                ChatMain_upv_1 (copy, index: 1)
-                u3 (copy, index: 2)
-            ]]
-            ChatMain_upv_1[u3]:fire(...)
-        end
-    )
-    local v21 = Instance.new("BindableEvent")
-    v21.Name = "ChatMakeSystemMessage"
-    tbl_upv_1.SetCore.ChatMakeSystemMessage = v21
-    local v35 = "ChatMakeSystemMessage"
-    v21.Event:connect(function() end)
-    local v22 = Instance.new("BindableEvent")
-    v22.Name = "ChatWindowPosition"
-    tbl_upv_1.SetCore.ChatWindowPosition = v22
-    local v36 = "ChatWindowPosition"
-    v22.Event:connect(function() end)
-    local v23 = Instance.new("BindableEvent")
-    v23.Name = "ChatWindowSize"
-    tbl_upv_1.SetCore.ChatWindowSize = v23
-    local v37 = "ChatWindowSize"
-    v23.Event:connect(function() end)
-    local v24 = Instance.new("BindableFunction")
-    v24.Name = "ChatWindowPosition"
-    tbl_upv_1.GetCore.ChatWindowPosition = v24
-    local v38 = "ChatWindowPosition"
-    v24.OnInvoke = function() end
-    local v25 = Instance.new("BindableFunction")
-    v25.Name = "ChatWindowSize"
-    tbl_upv_1.GetCore.ChatWindowSize = v25
-    local v39 = "ChatWindowSize"
-    v25.OnInvoke = function() end
-    local v26 = Instance.new("BindableEvent")
-    v26.Name = "ChatBarDisabled"
-    tbl_upv_1.SetCore.ChatBarDisabled = v26
-    local u4 = "ChatBarDisabled"
-    v26.Event:connect(
-        function(...)
-            --[[
-              line: 66
-              upvalues:
-                ChatMain_upv_1 (copy, index: 1)
-                u4 (copy, index: 2)
-            ]]
-            ChatMain_upv_1[u4 .. "Event"]:fire(...)
-        end
-    )
-    local v27 = Instance.new("BindableFunction")
-    v27.Name = "ChatBarDisabled"
-    tbl_upv_1.GetCore.ChatBarDisabled = v27
-    local u5 = "ChatBarDisabled"
-    v27.OnInvoke = function(...)
-        --[[
-          line: 74
-          upvalues:
-            ChatMain_upv_1 (copy, index: 1)
-            u5 (copy, index: 2)
-        ]]
-        return ChatMain_upv_1["f" .. u5](...)
-    end
-    local v28 = Instance.new("BindableEvent")
-    v28.Name = "SpecialKeyPressed"
-    tbl_upv_1.ChatWindow.SpecialKeyPressed = v28
-    local u6 = "SpecialKeyPressed"
-    v28.Event:connect(
-        function(...)
-            --[[
-              line: 34
-              upvalues:
-                ChatMain_upv_1 (copy, index: 1)
-                u6 (copy, index: 2)
-            ]]
-            ChatMain_upv_1[u6](ChatMain_upv_1, ...)
-        end
-    )
-    SetCoreGuiChatConnections(tbl_upv_1)
+
+if guiService:IsTenFootInterface() then
+    local defaultChatSystemChatEvents = replicatedStorage:WaitForChild("DefaultChatSystemChatEvents")
+    defaultChatSystemChatEvents.GetInitDataRequest:InvokeServer()
+
+    return
 end
-if GuiService_1:IsTenFootInterface() then
-    ReplicatedStorage_1:WaitForChild("DefaultChatSystemChatEvents").GetInitDataRequest:InvokeServer()
-elseif checkBothChatTypesDisabled() then
-    local tbl_2 = {}
-    tbl_2.ChatWindow = {}
-    tbl_2.ChatWindow.ChatTypes = {}
-    tbl_2.ChatWindow.ChatTypes.BubbleChatEnabled = false
-    tbl_2.ChatWindow.ChatTypes.ClassicChatEnabled = false
-    SetCoreGuiChatConnections(tbl_2)
-else
-    DoEverything()
+
+if not checkBothChatTypesDisabled() then
+    (function()
+        --[[
+          name: DoEverything
+          line: 16
+          upvalues:
+            ChatSettings (copy, index: 1)
+        ]]
+        local ChatMain = require(script:WaitForChild("ChatMain"))
+        local v14 = {ChatWindow = {}, SetCore = {}, GetCore = {}}
+        v14.ChatWindow.ChatTypes = {}
+        v14.ChatWindow.ChatTypes.BubbleChatEnabled = ChatSettings.BubbleChatEnabled
+        v14.ChatWindow.ChatTypes.ClassicChatEnabled = ChatSettings.ClassicChatEnabled
+
+        local function ConnectEvent(name: string)
+            --[[
+              name: ConnectEvent
+              line: 29
+              upvalues:
+                v14 (copy, index: 1)
+                ChatMain (copy, index: 2)
+            ]]
+            local bindableEvent = Instance.new("BindableEvent")
+            bindableEvent.Name = name
+            v14.ChatWindow[name] = bindableEvent
+            bindableEvent.Event:connect(
+                function(...)
+                    --[[
+                      line: 34
+                      upvalues:
+                        ChatMain (copy, index: 1)
+                        name (copy, index: 2)
+                    ]]
+                    ChatMain[name](ChatMain, ...)
+                end
+            )
+        end
+
+        local function ConnectFunction(name: string)
+            --[[
+              name: ConnectFunction
+              line: 37
+              upvalues:
+                v14 (copy, index: 1)
+                ChatMain (copy, index: 2)
+            ]]
+            local bindableFunction = Instance.new("BindableFunction")
+            bindableFunction.Name = name
+            v14.ChatWindow[name] = bindableFunction
+
+            bindableFunction.OnInvoke = function(...)
+                --[[
+                  line: 42
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    name (copy, index: 2)
+                ]]
+                return ChatMain[name](ChatMain, ...)
+            end
+        end
+
+        local function ReverseConnectEvent(name: string)
+            --[[
+              name: ReverseConnectEvent
+              line: 45
+              upvalues:
+                v14 (copy, index: 1)
+                ChatMain (copy, index: 2)
+            ]]
+            local bindableEvent = Instance.new("BindableEvent")
+            bindableEvent.Name = name
+            v14.ChatWindow[name] = bindableEvent
+            ChatMain[name]:connect(
+                function(...)
+                    --[[
+                      line: 50
+                      upvalues:
+                        bindableEvent (copy, index: 1)
+                    ]]
+                    bindableEvent:Fire(...)
+                end
+            )
+        end
+
+        local function ConnectSignal(name: string)
+            --[[
+              name: ConnectSignal
+              line: 53
+              upvalues:
+                v14 (copy, index: 1)
+                ChatMain (copy, index: 2)
+            ]]
+            local bindableEvent = Instance.new("BindableEvent")
+            bindableEvent.Name = name
+            v14.ChatWindow[name] = bindableEvent
+            bindableEvent.Event:connect(
+                function(...)
+                    --[[
+                      line: 58
+                      upvalues:
+                        ChatMain (copy, index: 1)
+                        name (copy, index: 2)
+                    ]]
+                    ChatMain[name]:fire(...)
+                end
+            )
+        end
+
+        local function ConnectSetCore(name: string)
+            --[[
+              name: ConnectSetCore
+              line: 61
+              upvalues:
+                v14 (copy, index: 1)
+                ChatMain (copy, index: 2)
+            ]]
+            local bindableEvent = Instance.new("BindableEvent")
+            bindableEvent.Name = name
+            v14.SetCore[name] = bindableEvent
+            bindableEvent.Event:connect(
+                function(...)
+                    --[[
+                      line: 66
+                      upvalues:
+                        ChatMain (copy, index: 1)
+                        name (copy, index: 2)
+                    ]]
+                    ChatMain[name .. "Event"]:fire(...)
+                end
+            )
+        end
+
+        local function ConnectGetCore(name: string)
+            --[[
+              name: ConnectGetCore
+              line: 69
+              upvalues:
+                v14 (copy, index: 1)
+                ChatMain (copy, index: 2)
+            ]]
+            local bindableFunction = Instance.new("BindableFunction")
+            bindableFunction.Name = name
+            v14.GetCore[name] = bindableFunction
+
+            bindableFunction.OnInvoke = function(...)
+                --[[
+                  line: 74
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    name (copy, index: 2)
+                ]]
+                return ChatMain["f" .. name](...)
+            end
+        end
+
+        local toggleVisibility = Instance.new("BindableEvent")
+        toggleVisibility.Name = "ToggleVisibility"
+        v14.ChatWindow.ToggleVisibility = toggleVisibility
+        local v34 = "ToggleVisibility"
+        toggleVisibility.Event:connect(
+            function(...)
+                --[[
+                  line: 34
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v34 (copy, index: 2)
+                ]]
+                ChatMain[v34](ChatMain, ...)
+            end
+        )
+        local setVisible = Instance.new("BindableEvent")
+        setVisible.Name = "SetVisible"
+        v14.ChatWindow.SetVisible = setVisible
+        local v36 = "SetVisible"
+        setVisible.Event:connect(
+            function(...)
+                --[[
+                  line: 34
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v36 (copy, index: 2)
+                ]]
+                ChatMain[v36](ChatMain, ...)
+            end
+        )
+        local focusChatBar = Instance.new("BindableEvent")
+        focusChatBar.Name = "FocusChatBar"
+        v14.ChatWindow.FocusChatBar = focusChatBar
+        local v38 = "FocusChatBar"
+        focusChatBar.Event:connect(
+            function(...)
+                --[[
+                  line: 34
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v38 (copy, index: 2)
+                ]]
+                ChatMain[v38](ChatMain, ...)
+            end
+        )
+        local enterWhisperState = Instance.new("BindableEvent")
+        enterWhisperState.Name = "EnterWhisperState"
+        v14.ChatWindow.EnterWhisperState = enterWhisperState
+        local v40 = "EnterWhisperState"
+        enterWhisperState.Event:connect(
+            function(...)
+                --[[
+                  line: 34
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v40 (copy, index: 2)
+                ]]
+                ChatMain[v40](ChatMain, ...)
+            end
+        )
+        local getVisibility = Instance.new("BindableFunction")
+        getVisibility.Name = "GetVisibility"
+        v14.ChatWindow.GetVisibility = getVisibility
+        local v42 = "GetVisibility"
+
+        getVisibility.OnInvoke = function(...)
+            --[[
+              line: 42
+              upvalues:
+                ChatMain (copy, index: 1)
+                v42 (copy, index: 2)
+            ]]
+            return ChatMain[v42](ChatMain, ...)
+        end
+
+        local getMessageCount = Instance.new("BindableFunction")
+        getMessageCount.Name = "GetMessageCount"
+        v14.ChatWindow.GetMessageCount = getMessageCount
+        local v44 = "GetMessageCount"
+
+        getMessageCount.OnInvoke = function(...)
+            --[[
+              line: 42
+              upvalues:
+                ChatMain (copy, index: 1)
+                v44 (copy, index: 2)
+            ]]
+            return ChatMain[v44](ChatMain, ...)
+        end
+
+        local topbarEnabledChanged = Instance.new("BindableEvent")
+        topbarEnabledChanged.Name = "TopbarEnabledChanged"
+        v14.ChatWindow.TopbarEnabledChanged = topbarEnabledChanged
+        local v46 = "TopbarEnabledChanged"
+        topbarEnabledChanged.Event:connect(
+            function(...)
+                --[[
+                  line: 34
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v46 (copy, index: 2)
+                ]]
+                ChatMain[v46](ChatMain, ...)
+            end
+        )
+        local isFocused = Instance.new("BindableFunction")
+        isFocused.Name = "IsFocused"
+        v14.ChatWindow.IsFocused = isFocused
+        local v48 = "IsFocused"
+
+        isFocused.OnInvoke = function(...)
+            --[[
+              line: 42
+              upvalues:
+                ChatMain (copy, index: 1)
+                v48 (copy, index: 2)
+            ]]
+            return ChatMain[v48](ChatMain, ...)
+        end
+
+        local chatBarFocusChanged = Instance.new("BindableEvent")
+        chatBarFocusChanged.Name = "ChatBarFocusChanged"
+        v14.ChatWindow.ChatBarFocusChanged = chatBarFocusChanged
+        ChatMain.ChatBarFocusChanged:connect(
+            function(...)
+                --[[
+                  line: 50
+                  upvalues:
+                    chatBarFocusChanged (copy, index: 1)
+                ]]
+                chatBarFocusChanged:Fire(...)
+            end
+        )
+        local visibilityStateChanged = Instance.new("BindableEvent")
+        visibilityStateChanged.Name = "VisibilityStateChanged"
+        v14.ChatWindow.VisibilityStateChanged = visibilityStateChanged
+        ChatMain.VisibilityStateChanged:connect(
+            function(...)
+                --[[
+                  line: 50
+                  upvalues:
+                    visibilityStateChanged (copy, index: 1)
+                ]]
+                visibilityStateChanged:Fire(...)
+            end
+        )
+        local messagesChanged = Instance.new("BindableEvent")
+        messagesChanged.Name = "MessagesChanged"
+        v14.ChatWindow.MessagesChanged = messagesChanged
+        ChatMain.MessagesChanged:connect(
+            function(...)
+                --[[
+                  line: 50
+                  upvalues:
+                    messagesChanged (copy, index: 1)
+                ]]
+                messagesChanged:Fire(...)
+            end
+        )
+        local messagePosted = Instance.new("BindableEvent")
+        messagePosted.Name = "MessagePosted"
+        v14.ChatWindow.MessagePosted = messagePosted
+        ChatMain.MessagePosted:connect(
+            function(...)
+                --[[
+                  line: 50
+                  upvalues:
+                    messagePosted (copy, index: 1)
+                ]]
+                messagePosted:Fire(...)
+            end
+        )
+        local coreGuiEnabled = Instance.new("BindableEvent")
+        coreGuiEnabled.Name = "CoreGuiEnabled"
+        v14.ChatWindow.CoreGuiEnabled = coreGuiEnabled
+        local v54 = "CoreGuiEnabled"
+        coreGuiEnabled.Event:connect(
+            function(...)
+                --[[
+                  line: 58
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v54 (copy, index: 2)
+                ]]
+                ChatMain[v54]:fire(...)
+            end
+        )
+        local chatMakeSystemMessage = Instance.new("BindableEvent")
+        chatMakeSystemMessage.Name = "ChatMakeSystemMessage"
+        v14.SetCore.ChatMakeSystemMessage = chatMakeSystemMessage
+        local v56 = "ChatMakeSystemMessage"
+        chatMakeSystemMessage.Event:connect(
+            function(...)
+                --[[
+                  line: 66
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v56 (copy, index: 2)
+                ]]
+                ChatMain[v56 .. "Event"]:fire(...)
+            end
+        )
+        local chatWindowPosition = Instance.new("BindableEvent")
+        chatWindowPosition.Name = "ChatWindowPosition"
+        v14.SetCore.ChatWindowPosition = chatWindowPosition
+        local v58 = "ChatWindowPosition"
+        chatWindowPosition.Event:connect(
+            function(...)
+                --[[
+                  line: 66
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v58 (copy, index: 2)
+                ]]
+                ChatMain[v58 .. "Event"]:fire(...)
+            end
+        )
+        local chatWindowSize = Instance.new("BindableEvent")
+        chatWindowSize.Name = "ChatWindowSize"
+        v14.SetCore.ChatWindowSize = chatWindowSize
+        local v60 = "ChatWindowSize"
+        chatWindowSize.Event:connect(
+            function(...)
+                --[[
+                  line: 66
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v60 (copy, index: 2)
+                ]]
+                ChatMain[v60 .. "Event"]:fire(...)
+            end
+        )
+        local chatWindowPosition2 = Instance.new("BindableFunction")
+        chatWindowPosition2.Name = "ChatWindowPosition"
+        v14.GetCore.ChatWindowPosition = chatWindowPosition2
+        local v62 = "ChatWindowPosition"
+
+        chatWindowPosition2.OnInvoke = function(...)
+            --[[
+              line: 74
+              upvalues:
+                ChatMain (copy, index: 1)
+                v62 (copy, index: 2)
+            ]]
+            return ChatMain["f" .. v62](...)
+        end
+
+        local chatWindowSize2 = Instance.new("BindableFunction")
+        chatWindowSize2.Name = "ChatWindowSize"
+        v14.GetCore.ChatWindowSize = chatWindowSize2
+        local v64 = "ChatWindowSize"
+
+        chatWindowSize2.OnInvoke = function(...)
+            --[[
+              line: 74
+              upvalues:
+                ChatMain (copy, index: 1)
+                v64 (copy, index: 2)
+            ]]
+            return ChatMain["f" .. v64](...)
+        end
+
+        local chatBarDisabled = Instance.new("BindableEvent")
+        chatBarDisabled.Name = "ChatBarDisabled"
+        v14.SetCore.ChatBarDisabled = chatBarDisabled
+        local v66 = "ChatBarDisabled"
+        chatBarDisabled.Event:connect(
+            function(...)
+                --[[
+                  line: 66
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v66 (copy, index: 2)
+                ]]
+                ChatMain[v66 .. "Event"]:fire(...)
+            end
+        )
+        local chatBarDisabled2 = Instance.new("BindableFunction")
+        chatBarDisabled2.Name = "ChatBarDisabled"
+        v14.GetCore.ChatBarDisabled = chatBarDisabled2
+        local v68 = "ChatBarDisabled"
+
+        chatBarDisabled2.OnInvoke = function(...)
+            --[[
+              line: 74
+              upvalues:
+                ChatMain (copy, index: 1)
+                v68 (copy, index: 2)
+            ]]
+            return ChatMain["f" .. v68](...)
+        end
+
+        local specialKeyPressed = Instance.new("BindableEvent")
+        specialKeyPressed.Name = "SpecialKeyPressed"
+        v14.ChatWindow.SpecialKeyPressed = specialKeyPressed
+        local v70 = "SpecialKeyPressed"
+        specialKeyPressed.Event:connect(
+            function(...)
+                --[[
+                  line: 34
+                  upvalues:
+                    ChatMain (copy, index: 1)
+                    v70 (copy, index: 2)
+                ]]
+                ChatMain[v70](ChatMain, ...)
+            end
+        )
+        SetCoreGuiChatConnections(v14)
+    end)()
+    return
 end
+
+local v71 = {ChatWindow = {}}
+v71.ChatWindow.ChatTypes = {}
+v71.ChatWindow.ChatTypes.BubbleChatEnabled = false
+v71.ChatWindow.ChatTypes.ClassicChatEnabled = false
+SetCoreGuiChatConnections(v71)

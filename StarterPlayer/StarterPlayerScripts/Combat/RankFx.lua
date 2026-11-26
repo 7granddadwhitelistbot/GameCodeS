@@ -1,1278 +1,1401 @@
-local Debris_upv_1 = game:GetService("Debris")
-local Players_1 = game:GetService("Players")
-local RunService_upv_1 = game:GetService("RunService")
-local TweenService_upv_1 = game:GetService("TweenService")
-local Util_upv_1 = require(script.Parent.Util)
-local Effects_upv_1 = require(script.Parent.Effects)
-local Quality_upv_1 = require(script.Parent.Quality)
-local tbl_upv_1 = {}
-local LocalPlayer_upv_1 = Players_1.LocalPlayer
-local u1 = Util_upv_1.Assets:WaitForChild("VFX", 10)
-local u2 = Color3.fromRGB(196, 70, 64)
-local u3 = Color3.fromRGB(70, 132, 196)
-local u4 = Color3.fromRGB(232, 172, 40)
-local u5 = Color3.fromRGB(44, 34, 26)
-local u6 = Color3.fromRGB(255, 214, 140)
+local debris = game:GetService("Debris")
+local players = game:GetService("Players")
+local runService = game:GetService("RunService")
+local tweenService = game:GetService("TweenService")
+local Util = require(script.Parent.Util)
+local Effects = require(script.Parent.Effects)
+local Quality = require(script.Parent.Quality)
+local v8 = {}
+local localPlayer = players.LocalPlayer
+local vfx = Util.Assets:WaitForChild("VFX", 10)
+local color3 = Color3.fromRGB(196, 70, 64)
+local color32 = Color3.fromRGB(70, 132, 196)
+local color33 = Color3.fromRGB(232, 172, 40)
+local color = Color3.fromRGB(44, 34, 26)
+local color34 = Color3.fromRGB(255, 214, 140)
+
 local function fx()
     --[[
       name: fx
       line: 35
     ]]
-    local v1 = workspace:FindFirstChild("FX") or workspace
-    return v1
+    return workspace:FindFirstChild("FX") or workspace
 end
-local function anchored(a1, a2, a3, a4, a5)
+
+local function anchored(name: string, size: Vector3, color: Color3, a21, a22)
     --[[
       name: anchored
       line: 39
     ]]
-    local v2 = Instance.new("Part")
-    v2.Name = a1
-    v2.Anchored = true
-    v2.CanCollide = false
-    v2.CanQuery = false
-    v2.CanTouch = false
-    v2.CastShadow = false
-    v2.Size = a2
-    v2.Color = a3
-    v2.Material = a4 or (Enum.Material.SmoothPlastic)
-    v2.Transparency = a5 or 0
-    return v2
+    local part = Instance.new("Part")
+    part.Name = name
+    part.Anchored = true
+    part.CanCollide = false
+    part.CanQuery = false
+    part.CanTouch = false
+    part.CastShadow = false
+    part.Size = size
+    part.Color = color
+    part.Material = a21 or Enum.Material.SmoothPlastic
+    part.Transparency = a22 or 0
+    return part
 end
-local function modelOf(a1)
+
+local function modelOf(a25)
     --[[
       name: modelOf
       line: 54
     ]]
-    if typeof(a1) == "Instance" and a1:IsA("Model") then
-        return a1
+    if typeof(a25) == "Instance" and a25:IsA("Model") then
+        return a25
     end
+
     return nil
 end
-local function camDistance(a1)
+
+local function rootOf(a27)
+    --[[
+      name: rootOf
+      line: 61
+      upvalues:
+        Util (copy, index: 1)
+    ]]
+    if not a27 then
+        return nil
+    end
+
+    local v28 = Util.Drawn(a27)
+    local v29 = if v28 and v28:IsA("Model") then v28 else a27
+    local humanoidRootPart = v29:FindFirstChild("HumanoidRootPart") or a27:FindFirstChild("HumanoidRootPart")
+
+    if humanoidRootPart and humanoidRootPart:IsA("BasePart") then
+        return humanoidRootPart
+    end
+
+    return nil
+end
+
+local function camDistance(a32)
     --[[
       name: camDistance
       line: 71
     ]]
-    local CurrentCamera_1 = workspace.CurrentCamera
-    if CurrentCamera_1 then
-        return (CurrentCamera_1.CFrame.Position - a1).Magnitude
-    end
-    return 0
+    return if const camera = workspace.CurrentCamera then (camera.CFrame.Position - a32).Magnitude else 0
 end
-local tbl_upv_2 = {}
-local u7 = nil
-local u8 = 0
+
+local v34 = {}
+local heartbeatConnection = nil
+local v36 = 0
+
 local function beeTemplate()
     --[[
       name: beeTemplate
       line: 105
       upvalues:
-        u1 (copy, index: 1)
+        vfx (copy, index: 1)
     ]]
-    local v3
-    if u1 then
-        v3 = u1:FindFirstChild("Bee")
-    else
-        v3 = u1
-    end
-    return v3
+    return vfx and vfx:FindFirstChild("Bee")
 end
-local function endSwarm(a1, a2)
-    --[[
-      name: endSwarm
-      line: 148
-      upvalues:
-        tbl_upv_2 (copy, index: 1)
-        TweenService_upv_1 (copy, index: 2)
-        Debris_upv_1 (copy, index: 3)
-    ]]
-    if tbl_upv_2[a1.id] ~= a1 then
-        return
-    end
-    tbl_upv_2[a1.id] = nil
-    a1.ending = true
-    if a1.stopLoop then
-        a1.stopLoop(a2)
-        a1.stopLoop = nil
-    end
-    for _, value_1 in a1.bees do
-        local v4 = value_1.part.Position - a1.pos
-        v4 = ((not (v4.Magnitude > 0.01)) and Vector3.new(0, 1, 0)) or (v4.Unit)
-        for v6, value_2 in value_1.parts do
-            local v5 = TweenInfo.new(a2, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-            local tbl_3 = {Transparency = 1}
-            tbl_3.CFrame = (value_2.CFrame + (v4 * 2.5)) + Vector3.new(0, 1, 0)
-            TweenService_upv_1:Create(value_2, v5, tbl_3):Play()
-        end
-    end
-    if a1.ring then
-        local tbl_4 = {Transparency = 1}
-        TweenService_upv_1:Create(a1.ring, TweenInfo.new(a2), tbl_4):Play()
-    end
-    Debris_upv_1:AddItem(a1.folder, a2 + 0.1)
-    Debris_upv_1:AddItem(a1.anchor, a2 + 0.2)
-end
-local u9 = RaycastParams.new()
-u9.FilterType = Enum.RaycastFilterType.Exclude
-u9.IgnoreWater = true
-local tbl_upv_5 = {}
-local tbl_upv_6 = {}
-local function rootOf(a1)
-    --[[
-      name: rootOf
-      line: 61
-      upvalues:
-        Util_upv_1 (copy, index: 1)
-    ]]
-    if not a1 then
-        return nil
-    end
-    local v6 = Util_upv_1.Drawn(a1)
-    local v7
-    if (v6) and (v6:IsA("Model")) then
-        v7 = v6
-    else
-        v7 = a1
-    end
-    local v8 = v7:FindFirstChild("HumanoidRootPart") or (a1:FindFirstChild("HumanoidRootPart"))
-    if v8 and v8:IsA("BasePart") then
-        return v8
-    end
-    return nil
-end
-local function stepSwarms(a1)
-    --[[
-      name: stepSwarms
-      line: 183
-      upvalues:
-        tbl_upv_5 (copy, index: 1)
-        tbl_upv_6 (copy, index: 2)
-        LocalPlayer_upv_1 (copy, index: 3)
-        rootOf (copy, index: 4)
-        tbl_upv_2 (copy, index: 5)
-        endSwarm (copy, index: 6)
-        u9 (copy, index: 7)
-        u8 (ref,  index: 8)
-        tbl_upv_1 (copy, index: 9)
-        u7 (ref,  index: 10)
-    ]]
-    local v9 = os.clock()
-    table.clear(tbl_upv_5)
-    table.clear(tbl_upv_6)
-    local Character_1 = LocalPlayer_upv_1.Character
-    local v10 = rootOf(Character_1)
-    local v11 = 0
-    local v12 = false
-    local v14 = nil
-    local value_3 = nil
-    for v27, value_3 in tbl_upv_2 do
-        v12 = true
-        if value_3.untilT <= v9 then
-            endSwarm(value_3, 0.35)
-            continue
-        end
-        local target_1 = value_3.target
-        local v13 = not (target_1) or not (target_1.Parent) or rootOf(target_1)
-        if v13 then
-            local v15 = v13.Position + Vector3.new(0, 0.6000000238418579, 0) - value_3.pos
-            local Magnitude_1 = v15.Magnitude
-            local v16 = math.min(value_3.speed * a1, math.max(0, Magnitude_1 - 0.6))
-            if Magnitude_1 > 0.01 and v16 > 0 then
-                value_3.pos = value_3.pos + (v15.Unit * v16)
-            end
-        end
-        local v17 = 1 - math.exp(-a1 * 6)
-        value_3.pos = value_3.pos + (value_3.err * v17)
-        value_3.err = value_3.err * (1 - v17)
-        value_3.anchor.CFrame = CFrame.new(value_3.pos)
-        v14 = workspace.CurrentCamera
-        if not ((((not v14) and 0) or ((v14.CFrame.Position - value_3.pos).Magnitude)) > 140) then
-            for v28, value_4 in value_3.bees do
-                local v18 = v9 * value_4.speed + value_4.phase
-                local v19 = value_4.radius * ((math.sin((v9 * 3.1) + value_4.phase) * 0.15) + 0.85)
-                local v20 = Vector3.new(math.cos(v18) * v19, math.sin((v9 * value_4.bob) + value_4.phase) * 0.45 + (math.sin(v18) * value_4.tilt), math.sin(v18) * v19)
-                local v21 = Vector3.new(-math.sin(v18), (math.cos(v18) * value_4.tilt) * 0.6, math.cos(v18))
-                local v22 = value_3.pos + v20
-                local v23 = CFrame.lookAt(v22, v22 - v21)
-                for key_1, value_5 in value_4.parts do
-                    table.insert(tbl_upv_5, value_5)
-                    table.insert(tbl_upv_6, v23 * value_4.rel[key_1])
-                end
-            end
-        end
-        local ring_1 = value_3.ring
-        if ring_1 and v9 - value_3.ringAt > 0.1 then
-            value_3.ringAt = v9
-            v14 = workspace:FindFirstChild("FX")
-            v14 = v14 or workspace
-            u9.FilterDescendantsInstances = {v14, Character_1}
-            local v24 = workspace:Raycast(value_3.pos, Vector3.new(0, -14, 0), u9)
-            if v24 then
-                ring_1.CFrame = CFrame.lookAt(v24.Position + (v24.Normal * 0.06), v24.Position + (v24.Normal * 1.06)) * CFrame.Angles(0, 1.5707963267948966, 0)
-                ring_1.Transparency = 0.6
-            else
-                ring_1.Transparency = 1
-            end
-        end
-        if not (target_1) or target_1 ~= Character_1 then
-            continue
-        end
-        if v10 then
-            v11 = math.max(v11, math.clamp(1 - ((((v10.Position + Vector3.new(0, 0.6000000238418579, 0)) - value_3.pos).Magnitude - value_3.reach) / 5), 0, 1))
-        end
-    end
-    if #tbl_upv_5 > 0 then
-        workspace:BulkMoveTo(tbl_upv_5, tbl_upv_6, Enum.BulkMoveMode.FireCFrameChanged)
-    end
-    local v25 = v11 - u8
-    local v26 = ((u8 < v11) and 10) or 3
-    u8 = u8 + v25 * (1 - math.exp(-a1 * v26))
-    tbl_upv_1.StepBuzz(a1, u8)
-    if (v12) or not (u8 < 0.01) or not u7 then
-        return
-    end
-    u7:Disconnect()
-    u7 = nil
-    tbl_upv_1.StepBuzz(a1, 0)
-end
-local function newBee(a1, a2)
+
+local function newBee(parent: Folder, a40)
     --[[
       name: newBee
       line: 111
       upvalues:
-        u1 (copy, index: 1)
-        u4 (copy, index: 2)
-        u5 (copy, index: 3)
+        vfx (copy, index: 1)
+        color33 (copy, index: 2)
+        color (copy, index: 3)
     ]]
-    local v27
-    if u1 then
-        v27 = u1:FindFirstChild("Bee")
-    else
-        v27 = u1
+    local v41
+    local bee2 = vfx and vfx:FindFirstChild("Bee")
+    local v43 = {}
+    local v44 = {}
+
+    if not bee2 then
+        local size = Vector3.new(0.1599999964237213, 0.1599999964237213, 0.25999999046325684) * a40
+        local smoothPlastic = Enum.Material.SmoothPlastic
+        local bee = Instance.new("Part")
+        bee.Name = "Bee"
+        bee.Anchored = true
+        bee.CanCollide = false
+        bee.CanQuery = false
+        bee.CanTouch = false
+        bee.CastShadow = false
+        bee.Size = size
+        bee.Color = color33
+        bee.Material = smoothPlastic or Enum.Material.SmoothPlastic
+        bee.Transparency = 0
+        bee.Shape = Enum.PartType.Ball
+        local size2 = Vector3.new(0.17000000178813934, 0.17000000178813934, 0.05999999865889549) * a40
+        local band = Instance.new("Part")
+        band.Name = "Band"
+        band.Anchored = true
+        band.CanCollide = false
+        band.CanQuery = false
+        band.CanTouch = false
+        band.CastShadow = false
+        band.Size = size2
+        band.Color = color
+        band.Material = Enum.Material.SmoothPlastic
+        band.Transparency = 0
+        band.Shape = Enum.PartType.Ball
+        local size3 = Vector3.new(0.3199999928474426, 0.019999999552965164, 0.10000000149011612) * a40
+        local color2 = Color3.fromRGB(196, 214, 226)
+        local smoothPlastic2 = Enum.Material.SmoothPlastic
+        local wings = Instance.new("Part")
+        wings.Name = "Wings"
+        wings.Anchored = true
+        wings.CanCollide = false
+        wings.CanQuery = false
+        wings.CanTouch = false
+        wings.CastShadow = false
+        wings.Size = size3
+        wings.Color = color2
+        wings.Material = smoothPlastic2 or Enum.Material.SmoothPlastic
+        wings.Transparency = 0.35
+        bee.Parent = parent
+        band.Parent = parent
+        wings.Parent = parent
+        local v54 = {bee, band, wings}
+        local identityCFrame = CFrame.identity
+        local cframe = CFrame.new(0, 0, a40 * 0.04)
+        local v57 = {identityCFrame, cframe, CFrame.new(0, a40 * 0.08, a40 * -0.02)}
+
+        return bee, v54, v57
     end
-    local tbl_7 = {}
-    local tbl_8 = {}
-    local v28 = nil
-    if v27 then
-        v28 = v27:Clone()
-        local v29
-        if v28:IsA("Model") then
-            v29 = v28.PrimaryPart
-        elseif v28:IsA("BasePart") then
-            v29 = v28
-        else
-            v29 = nil
-        end
-        if v28:IsA("Model") and a2 ~= 1 then
-            v28:ScaleTo(a2)
-        end
-        local v30 = ((v28:IsA("BasePart")) and {v28}) or (v28:GetDescendants())
-        local v31 = nil
-        for _, value_6 in v30 do
-            local v32 = value_6:IsA("BasePart")
-            if not (v32) then
-                continue
-            end
-            value_6.Anchored = true
-            value_6.CanCollide = false
-            value_6.CanQuery = false
-            value_6.CanTouch = false
-            value_6.CastShadow = false
-            table.insert(tbl_7, value_6)
-            if v29 then
-                v31 = v29.CFrame:ToObjectSpace(value_6.CFrame)
-            else
-                v31 = CFrame.identity
-            end
-            table.insert(tbl_8, v31)
-        end
-        v28.Parent = a1
-        return v29 or (tbl_7[1]), tbl_7, tbl_8
+
+    local v58 = bee2:Clone()
+
+    if v58:IsA("Model") then
+        v41 = v58.PrimaryPart
     else
-        local v33 = Instance.new("Part")
-        v33.Name = "Bee"
-        v33.Anchored = true
-        v33.CanCollide = false
-        v33.CanQuery = false
-        v33.CanTouch = false
-        v33.CastShadow = false
-        v33.Size = Vector3.new(0.1599999964237213, 0.1599999964237213, 0.25999999046325684) * a2
-        v33.Color = u4
-        v33.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-        v33.Transparency = 0
-        v33.Shape = Enum.PartType.Ball
-        local v34 = Instance.new("Part")
-        v34.Name = "Band"
-        v34.Anchored = true
-        v34.CanCollide = false
-        v34.CanQuery = false
-        v34.CanTouch = false
-        v34.CastShadow = false
-        v34.Size = Vector3.new(0.17000000178813934, 0.17000000178813934, 0.05999999865889549) * a2
-        v34.Color = u5
-        v34.Material = Enum.Material.SmoothPlastic
-        v34.Transparency = 0
-        v34.Shape = Enum.PartType.Ball
-        local v35 = Color3.fromRGB(196, 214, 226)
-        local v36 = Instance.new("Part")
-        v36.Name = "Wings"
-        v36.Anchored = true
-        v36.CanCollide = false
-        v36.CanQuery = false
-        v36.CanTouch = false
-        v36.CastShadow = false
-        v36.Size = Vector3.new(0.3199999928474426, 0.019999999552965164, 0.10000000149011612) * a2
-        v36.Color = v35
-        v36.Material = Enum.Material.SmoothPlastic or (Enum.Material.SmoothPlastic)
-        v36.Transparency = 0.35
-        v33.Parent = a1
-        v34.Parent = a1
-        v36.Parent = a1
-        local tbl_9 = {v33, v34, v36}
-        local tbl_10 = {CFrame.identity, CFrame.new(0, 0, a2 * 0.04), CFrame.new(0, a2 * 0.08, a2 * -0.02)}
-        return v33, tbl_9, tbl_10
+        v41 = if v58:IsA("BasePart") then v58 else nil
+    end
+
+    if v58:IsA("Model") and a40 ~= 1 then
+        v58:ScaleTo(a40)
+    end
+
+    local v59 = v58:IsA("BasePart") and {v58} or v58:GetDescendants()
+
+    for _, v61 in v59 do
+        if v61:IsA("BasePart") then
+            local v62
+            v61.Anchored = true
+            v61.CanCollide = false
+            v61.CanQuery = false
+            v61.CanTouch = false
+            v61.CastShadow = false
+            table.insert(v43, v61)
+
+            if v41 then
+                v62 = v41.CFrame:ToObjectSpace(v61.CFrame)
+            else
+                v62 = CFrame.identity
+            end
+
+            table.insert(v44, v62)
+        end
+    end
+
+    v58.Parent = parent
+    local v63 = v41 or v43[1]
+
+    return v63, v43, v44
+end
+
+local function endSwarm(a65, a66: number)
+    --[[
+      name: endSwarm
+      line: 148
+      upvalues:
+        v34 (copy, index: 1)
+        tweenService (copy, index: 2)
+        debris (copy, index: 3)
+    ]]
+    if v34[a65.id] ~= a65 then
+        return
+    end
+
+    v34[a65.id] = nil
+    a65.ending = true
+
+    if a65.stopLoop then
+        a65.stopLoop(a66)
+        a65.stopLoop = nil
+    end
+
+    for _, bee in a65.bees do
+        local v69 = bee.part.Position - a65.pos
+        local v70 = not (0.01 < v69.Magnitude) and Vector3.new(0, 1, 0) or v69.Unit
+
+        for _, instance in bee.parts do
+            tweenService:Create(instance, TweenInfo.new(a66, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Transparency = 1, CFrame = instance.CFrame + (v70 * 2.5) + Vector3.new(0, 1, 0)}):Play()
+        end
+    end
+
+    if a65.ring then
+        local propertyTable = {Transparency = 1}
+        tweenService:Create(a65.ring, TweenInfo.new(a66), propertyTable):Play()
+    end
+
+    debris:AddItem(a65.folder, a66 + 0.1)
+    debris:AddItem(a65.anchor, a66 + 0.2)
+end
+
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+raycastParams.IgnoreWater = true
+local partList = {}
+local cframeList = {}
+
+local function stepSwarms(deltaTime: number)
+    --[[
+      name: stepSwarms
+      line: 183
+      upvalues:
+        partList (copy, index: 1)
+        cframeList (copy, index: 2)
+        localPlayer (copy, index: 3)
+        rootOf (copy, index: 4)
+        v34 (copy, index: 5)
+        endSwarm (copy, index: 6)
+        raycastParams (copy, index: 7)
+        v36 (ref,  index: 8)
+        v8 (copy, index: 9)
+        heartbeatConnection (ref,  index: 10)
+    ]]
+    local timestamp = os.clock()
+    table.clear(partList)
+    table.clear(cframeList)
+    local character = localPlayer.Character
+    local v81 = rootOf(character)
+    local v82 = 0
+    local v83 = false
+
+    for _, v85 in v34 do
+        local v86 = true
+
+        if v85.untilT <= timestamp then
+            endSwarm(v85, 0.35)
+            v83 = v86
+        else
+            local magnitude
+            local target = v85.target
+
+            if const v89 = if target and target.Parent then rootOf(target) else nil then
+                local v90 = v89.Position + Vector3.new(0, 0.6000000238418579, 0) - v85.pos
+                local magnitude2 = v90.Magnitude
+                local v92 = math.min(v85.speed * deltaTime, (math.max(0, magnitude2 - 0.6)))
+
+                if 0.01 < magnitude2 and 0 < v92 then
+                    v85.pos += (v90.Unit * v92)
+                end
+            end
+
+            local v93 = 1 - math.exp(-deltaTime * 6)
+            v85.pos += (v85.err * v93)
+            v85.err *= (1 - v93)
+            v85.anchor.CFrame = CFrame.new(v85.pos)
+            local pos = v85.pos
+            magnitude = if const camera = workspace.CurrentCamera then (camera.CFrame.Position - pos).Magnitude else 0
+
+            if not (140 < magnitude) then
+                for _, bee in v85.bees do
+                    local v98 = timestamp * bee.speed + bee.phase
+                    local v99 = bee.radius * ((math.sin((timestamp * 3.1) + bee.phase) * 0.15) + 0.85)
+                    local vector3 = Vector3.new(math.cos(v98) * v99, (math.sin((timestamp * bee.bob) + bee.phase) * 0.45) + (math.sin(v98) * bee.tilt), math.sin(v98) * v99)
+                    local vector32 = Vector3.new(-math.sin(v98), (math.cos(v98) * bee.tilt) * 0.6, (math.cos(v98)))
+                    local v102 = v85.pos + vector3
+                    local cframe = CFrame.lookAt(v102, v102 - vector32)
+
+                    for v104, part in bee.parts do
+                        table.insert(partList, part)
+                        table.insert(cframeList, cframe * bee.rel[v104])
+                    end
+                end
+            end
+
+            local ring = v85.ring
+
+            if ring and 0.1 < timestamp - v85.ringAt then
+                v85.ringAt = timestamp
+                local instance = workspace:FindFirstChild("FX") or workspace
+                raycastParams.FilterDescendantsInstances = {instance, character}
+
+                if const raycastResult = workspace:Raycast(v85.pos, Vector3.new(0, -14, 0), raycastParams) then
+                    ring.CFrame = CFrame.lookAt(raycastResult.Position + (raycastResult.Normal * 0.06), raycastResult.Position + (raycastResult.Normal * 1.06)) * CFrame.Angles(0, 1.5707963267948966, 0)
+                    ring.Transparency = 0.6
+                else
+                    ring.Transparency = 1
+                end
+            end
+
+            if target then
+                if target == character then
+                    if v81 then
+                        v82 = math.max(v82, (math.clamp(1 - (((v81.Position + Vector3.new(0, 0.6000000238418579, 0) - v85.pos).Magnitude - v85.reach) / 5), 0, 1)))
+                        v83 = v86
+                    else
+                        v83 = v86
+                    end
+                else
+                    v83 = v86
+                end
+            else
+                v83 = v86
+            end
+        end
+    end
+
+    if 0 < #partList then
+        workspace:BulkMoveTo(partList, cframeList, Enum.BulkMoveMode.FireCFrameChanged)
+    end
+
+    local v109 = v36
+    local v110 = v82 - v36
+    local v111 = -deltaTime
+    local v112 = not (v36 < v82) and 3 or 10
+    v36 = v109 + (v110 * (1 - math.exp(v111 * v112)))
+    v8.StepBuzz(deltaTime, v36)
+
+    if not v83 and v36 < 0.01 and heartbeatConnection then
+        heartbeatConnection:Disconnect()
+        heartbeatConnection = nil
+        v8.StepBuzz(deltaTime, 0)
     end
 end
-function tbl_upv_1.Swarm(a1)
+
+function v8.Swarm(a113)
     --[[
       name: Swarm
       line: 260
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v34 (copy, index: 1)
         endSwarm (copy, index: 2)
-        Util_upv_1 (copy, index: 3)
-        u4 (copy, index: 4)
-        u2 (copy, index: 5)
-        u3 (copy, index: 6)
-        Quality_upv_1 (copy, index: 7)
+        Util (copy, index: 3)
+        color33 (copy, index: 4)
+        color3 (copy, index: 5)
+        color32 (copy, index: 6)
+        Quality (copy, index: 7)
         newBee (copy, index: 8)
-        Effects_upv_1 (copy, index: 9)
-        u7 (ref,  index: 10)
-        RunService_upv_1 (copy, index: 11)
+        Effects (copy, index: 9)
+        heartbeatConnection (ref,  index: 10)
+        runService (copy, index: 11)
         stepSwarms (copy, index: 12)
     ]]
-    local num_1 = tonumber(a1.id)
-    local position_1 = a1.position
-    if not num_1 or typeof(position_1) ~= "Vector3" then
+    local number = tonumber(a113.id)
+    local position = a113.position
+
+    if not number or typeof(position) ~= "Vector3" then
         return
     end
-    local v37 = tbl_upv_2[num_1]
-    if v37 then
-        endSwarm(v37, 0)
+
+    local attacker
+    local rate
+    local magnitude
+
+    if const v119 = v34[number] then
+        endSwarm(v119, 0)
     end
-    local v38 = a1.attacker
-    v37 = typeof(v38) ~= "Instance" or not (v38:IsA("Model")) or v38
-    local v39 = false
-    if v37 == nil then
-        v38 = v39
+
+    local attacker2 = a113.attacker
+
+    if typeof(attacker2) ~= "Instance" or not attacker2:IsA("Model") then
+        attacker = nil
     else
-        v38 = Util_upv_1.IsEnemy(v37)
+        attacker = attacker2
     end
-    local v40 = Instance.new("Folder")
-    v40.Name = "Swarm"
-    local v41 = workspace:FindFirstChild("FX") or workspace
-    v40.Parent = v41
-    v41 = Instance.new("Part")
-    v41.Name = "SwarmCore"
-    v41.Anchored = true
-    v41.CanCollide = false
-    v41.CanQuery = false
-    v41.CanTouch = false
-    v41.CastShadow = false
-    v41.Size = Vector3.new(0.20000000298023224, 0.20000000298023224, 0.20000000298023224)
-    v41.Color = u4
-    v41.Material = Enum.Material.SmoothPlastic
-    v41.Transparency = 1
-    v41.CFrame = CFrame.new(position_1)
-    v41.Parent = v40
-    local v42 = Instance.new("ParticleEmitter")
-    v42.Name = "Haze"
-    v42.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-    local new_1 = ColorSequence.new
-    local v43
-    if v38 then
-        v43 = u2
+
+    local enemy = attacker ~= nil and Util.IsEnemy(attacker)
+    local swarm = Instance.new("Folder")
+    swarm.Name = "Swarm"
+    local instance = workspace:FindFirstChild("FX") or workspace
+    swarm.Parent = instance
+    local swarmCore = Instance.new("Part")
+    swarmCore.Name = "SwarmCore"
+    swarmCore.Anchored = true
+    swarmCore.CanCollide = false
+    swarmCore.CanQuery = false
+    swarmCore.CanTouch = false
+    swarmCore.CastShadow = false
+    swarmCore.Size = Vector3.new(0.20000000298023224, 0.20000000298023224, 0.20000000298023224)
+    swarmCore.Color = color33
+    swarmCore.Material = Enum.Material.SmoothPlastic
+    swarmCore.Transparency = 1
+    swarmCore.CFrame = CFrame.new(position)
+    swarmCore.Parent = swarm
+
+    local haze = Instance.new("ParticleEmitter")
+    haze.Name = "Haze"
+    haze.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+    local newColorSequence = ColorSequence.new
+    local color34 = if enemy then color3 else color32
+    haze.Color = newColorSequence(color34)
+    haze.LightEmission = 0.25
+    haze.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.38), NumberSequenceKeypoint.new(1, 0)})
+    haze.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1)})
+    haze.Lifetime = NumberRange.new(0.35, 0.6)
+    haze.Rate = Quality.layers and 22 or 10
+    haze.Speed = NumberRange.new(0.5, 2)
+    haze.SpreadAngle = Vector2.new(180, 180)
+    haze.Shape = Enum.ParticleEmitterShape.Sphere
+    haze.Parent = swarmCore
+    local specks = Instance.new("ParticleEmitter")
+    specks.Name = "Specks"
+    specks.Texture = "rbxasset://textures/particles/sparkles_main.dds"
+    specks.Color = ColorSequence.new(Color3.fromRGB(60, 44, 20), Color3.fromRGB(150, 110, 30))
+    specks.LightEmission = 0
+    specks.LightInfluence = 1
+    specks.Size = NumberSequence.new(0.16, 0.12)
+    specks.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(0.8, 0.25), NumberSequenceKeypoint.new(1, 1)})
+    specks.Lifetime = NumberRange.new(0.25, 0.45)
+
+    if Quality.layers then
+        rate = 70
     else
-        v43 = u3
+        rate = 30
     end
-    v42.Color = new_1(v43)
-    v42.LightEmission = 0.25
-    v42.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.38), NumberSequenceKeypoint.new(1, 0)})
-    v42.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1)})
-    v42.Lifetime = NumberRange.new(0.35, 0.6)
-    v42.Rate = ((Quality_upv_1.layers) and 22) or 10
-    v42.Speed = NumberRange.new(0.5, 2)
-    v42.SpreadAngle = Vector2.new(180, 180)
-    v42.Shape = Enum.ParticleEmitterShape.Sphere
-    v42.Parent = v41
-    local v44 = Instance.new("ParticleEmitter")
-    v44.Name = "Specks"
-    v44.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-    v44.Color = ColorSequence.new(Color3.fromRGB(60, 44, 20), Color3.fromRGB(150, 110, 30))
-    v44.LightEmission = 0
-    v44.LightInfluence = 1
-    v44.Size = NumberSequence.new(0.16, 0.12)
-    v44.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(0.8, 0.25), NumberSequenceKeypoint.new(1, 1)})
-    v44.Lifetime = NumberRange.new(0.25, 0.45)
-    v44.Rate = ((Quality_upv_1.layers) and 70) or 30
-    v44.Speed = NumberRange.new(4, 8)
-    v44.SpreadAngle = Vector2.new(180, 180)
-    v44.Acceleration = Vector3.new(0, 0, 0)
-    v44.Drag = 3
-    v44.Shape = Enum.ParticleEmitterShape.Sphere
-    v44.ShapeStyle = Enum.ParticleEmitterShapeStyle.Volume
-    v44.Parent = v41
-    v41.Size = Vector3.new(2.5999999046325684, 2.5999999046325684, 2.5999999046325684)
-    local CurrentCamera_2 = workspace.CurrentCamera
-    local v45 = (((((not CurrentCamera_2) and 0) or ((CurrentCamera_2.CFrame.Position - position_1).Magnitude)) > 90) and 10) or (((Quality_upv_1.layers) and 22) or 14)
-    local v46 = Random.new(num_1)
-    local tbl_11 = {}
-    for _ = 1, v45 do
-        local v47, v48, v49 = newBee(v40, 1.5 * v46:NextNumber(0.85, 1.15))
-        local tbl_12 = {bob = 0, tilt = 0, phase = 0, speed = 0}
-        tbl_12.part = v47
-        tbl_12.parts = v48
-        tbl_12.rel = v49
-        tbl_12.radius = v46:NextNumber(0.9, 2.4)
-        local v50 = v46:NextNumber(5, 9)
-        local v51 = ((v46:NextNumber() < 0.5) and -1) or 1
-        tbl_12.speed = v50 * v51
-        tbl_12.phase = v46:NextNumber(0, math.tau)
-        tbl_12.tilt = v46:NextNumber(-0.5, 0.5)
-        tbl_12.bob = v46:NextNumber(5, 9)
-        table.insert(tbl_11, tbl_12)
+
+    specks.Rate = rate
+    specks.Speed = NumberRange.new(4, 8)
+    specks.SpreadAngle = Vector2.new(180, 180)
+    specks.Acceleration = Vector3.new(0, 0, 0)
+    specks.Drag = 3
+    specks.Shape = Enum.ParticleEmitterShape.Sphere
+    specks.ShapeStyle = Enum.ParticleEmitterShapeStyle.Volume
+    specks.Parent = swarmCore
+    swarmCore.Size = Vector3.new(2.5999999046325684, 2.5999999046325684, 2.5999999046325684)
+    local v130 = if const camera = workspace.CurrentCamera then (camera.CFrame.Position - position).Magnitude else 0
+    local v131 = 90 < v130 and 10 or Quality.layers and 22 or 14
+    local random = Random.new(number)
+    local bees = {}
+
+    for _ = 1, v131 do
+        local part, parts, rel = newBee(swarm, 1.5 * random:NextNumber(0.85, 1.15))
+        local v138 = {part = part, parts = parts, rel = rel, radius = random:NextNumber(0.9, 2.4)}
+        local v139 = random:NextNumber(5, 9)
+        local v140 = not (random:NextNumber() < 0.5) and 1 or -1
+        v138.speed = v139 * v140
+        v138.phase = random:NextNumber(0, math.tau)
+        v138.tilt = random:NextNumber(-0.5, 0.5)
+        v138.bob = random:NextNumber(5, 9)
+        table.insert(bees, v138)
     end
-    local v52
-    if v38 then
-        v52 = u2
-    else
-        v52 = u3
+
+    local color = if enemy then color3 else color32
+    local swarmRing = Instance.new("Part")
+    swarmRing.Name = "SwarmRing"
+    swarmRing.Anchored = true
+    swarmRing.CanCollide = false
+    swarmRing.CanQuery = false
+    swarmRing.CanTouch = false
+    swarmRing.CastShadow = false
+    swarmRing.Size = Vector3.new(0.05000000074505806, 5, 5)
+    swarmRing.Color = color
+    swarmRing.Material = Enum.Material.SmoothPlastic
+    swarmRing.Transparency = 1
+    swarmRing.Shape = Enum.PartType.Cylinder
+    swarmRing.Parent = swarm
+    local number2 = tonumber(a113.duration) or 4.5
+    local v144 = {err = Vector3.new(0, 0, 0), target = nil, ringAt = 0, stopLoop = nil, ending = false, id = number, pos = position, speed = tonumber(a113.speed)
+        or 18, reach = tonumber(a113.reach) or 4, untilT = os.clock() + number2, enemy = enemy, bees = bees, ring = swarmRing, folder = swarm, anchor = swarmCore}
+    v34[number] = v144
+    magnitude = if const camera2 = workspace.CurrentCamera then (camera2.CFrame.Position - position).Magnitude else 0
+
+    if magnitude <= 160 then
+        Util.Sound("Beehive_Break", position)
+        v144.stopLoop = Util.Loop("Bees_Loop", swarmCore)
+        Effects.Puff(position, Color3.fromRGB(196, 160, 96), 8, 0.9, 6, 0.5)
     end
-    local v53 = Instance.new("Part")
-    v53.Name = "SwarmRing"
-    v53.Anchored = true
-    v53.CanCollide = false
-    v53.CanQuery = false
-    v53.CanTouch = false
-    v53.CastShadow = false
-    v53.Size = Vector3.new(0.05000000074505806, 5, 5)
-    v53.Color = v52
-    v53.Material = Enum.Material.SmoothPlastic
-    v53.Transparency = 1
-    v53.Shape = Enum.PartType.Cylinder
-    v53.Parent = v40
-    local v54 = tonumber(a1.duration) or 4.5
-    local tbl_13 = {ringAt = 0, ending = false, err = Vector3.new(0, 0, 0)}
-    tbl_13.id = num_1
-    tbl_13.pos = position_1
-    tbl_13.speed = tonumber(a1.speed) or 18
-    tbl_13.reach = tonumber(a1.reach) or 4
-    tbl_13.untilT = os.clock() + v54
-    tbl_13.enemy = v38
-    tbl_13.bees = tbl_11
-    tbl_13.ring = v53
-    tbl_13.folder = v40
-    tbl_13.anchor = v41
-    tbl_upv_2[num_1] = tbl_13
-    local CurrentCamera_3 = workspace.CurrentCamera
-    if (((not CurrentCamera_3) and 0) or ((CurrentCamera_3.CFrame.Position - position_1).Magnitude)) <= 160 then
-        Util_upv_1.Sound("Beehive_Break", position_1)
-        tbl_13.stopLoop = Util_upv_1.Loop("Bees_Loop", v41)
-        Effects_upv_1.Puff(position_1, Color3.fromRGB(196, 160, 96), 8, 0.9, 6, 0.5)
-    end
-    if (u7) then
-        return
-    end
-    u7 = RunService_upv_1.Heartbeat:Connect(stepSwarms)
+
+    heartbeatConnection = heartbeatConnection or runService.Heartbeat:Connect(stepSwarms)
 end
-function tbl_upv_1.SwarmTarget(a1)
+
+function v8.SwarmTarget(a146)
     --[[
       name: SwarmTarget
       line: 359
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        LocalPlayer_upv_1 (copy, index: 2)
-        Util_upv_1 (copy, index: 3)
+        v34 (copy, index: 1)
+        localPlayer (copy, index: 2)
+        Util (copy, index: 3)
     ]]
-    local v55 = tbl_upv_2[tonumber(a1.id) or -1]
-    if not v55 then
+    local v147 = v34[tonumber(a146.id) or -1]
+    if not v147 then
         return
     end
-    if typeof(a1.position) == "Vector3" then
-        v55.err = a1.position - v55.pos
+
+    local target
+
+    if typeof(a146.position) == "Vector3" then
+        v147.err = a146.position - v147.pos
     end
-    local target_2 = a1.target
-    local v56 = typeof(target_2) ~= "Instance" or not (target_2:IsA("Model")) or target_2
-    v55.target = v56
-    if not v56 then
-        return
+
+    local target2 = a146.target
+
+    if typeof(target2) ~= "Instance" or not target2:IsA("Model") then
+        target = nil
+    else
+        target = target2
     end
-    if v56 == LocalPlayer_upv_1.Character then
-        Util_upv_1.Sound("Bees_Angry", v55.anchor)
+
+    v147.target = target
+
+    if target and target == localPlayer.Character then
+        Util.Sound("Bees_Angry", v147.anchor)
     end
 end
-function tbl_upv_1.SwarmSync(a1)
+
+function v8.SwarmSync(a150)
     --[[
       name: SwarmSync
       line: 375
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v34 (copy, index: 1)
     ]]
-    local v57 = tbl_upv_2[tonumber(a1.id) or -1]
-    if not v57 or typeof(a1.position) ~= "Vector3" then
-        return
+    local v151 = v34[tonumber(a150.id) or -1]
+
+    if v151 and typeof(a150.position) == "Vector3" then
+        v151.err = a150.position - v151.pos
     end
-    v57.err = a1.position - v57.pos
 end
-function tbl_upv_1.SwarmEnd(a1)
+
+function v8.SwarmEnd(a152)
     --[[
       name: SwarmEnd
       line: 382
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v34 (copy, index: 1)
         endSwarm (copy, index: 2)
     ]]
-    local v58 = tbl_upv_2[tonumber(a1.id) or -1]
-    if not v58 then
-        return
+    if const v153 = v34[tonumber(a152.id) or -1] then
+        endSwarm(v153, 0.3)
     end
-    endSwarm(v58, 0.3)
 end
-local u10 = nil
-local tbl_upv_14 = {}
-local tbl_upv_15 = {}
+
+local screenGui = nil
+local v155 = {}
+local v156 = {}
+
 local function buildGui()
     --[[
       name: buildGui
       line: 396
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
-        u10 (ref,  index: 2)
-        tbl_upv_14 (copy, index: 3)
-        u4 (copy, index: 4)
-        u5 (copy, index: 5)
-        tbl_upv_15 (copy, index: 6)
+        localPlayer (copy, index: 1)
+        screenGui (ref,  index: 2)
+        v155 (copy, index: 3)
+        color33 (copy, index: 4)
+        color (copy, index: 5)
+        v156 (copy, index: 6)
     ]]
-    local v59 = LocalPlayer_upv_1:FindFirstChildOfClass("PlayerGui")
-    if not v59 then
+    local playerGui = localPlayer:FindFirstChildOfClass("PlayerGui")
+    if not playerGui then
         return
     end
-    local v60 = Instance.new("ScreenGui")
-    v60.Name = "TribesSwarm"
-    v60.IgnoreGuiInset = true
-    v60.ResetOnSpawn = false
-    v60.DisplayOrder = 4
-    v60.Enabled = false
-    v60.Parent = v59
-    u10 = v60
-    local tbl_16 = {UDim2.new(1, 0, 0.22, 0), UDim2.fromScale(0.5, 0), Vector2.new(0.5, 0), 90}
-    local tbl_17 = {UDim2.new(1, 0, 0.22, 0), UDim2.fromScale(0.5, 1), Vector2.new(0.5, 1), -90}
-    local tbl_18 = {UDim2.new(0.18, 0, 1, 0), UDim2.fromScale(0, 0.5), Vector2.new(0, 0.5), 0}
-    local tbl_19 = {tbl_16, tbl_17, tbl_18, {UDim2.new(0.18, 0, 1, 0), UDim2.fromScale(1, 0.5), Vector2.new(1, 0.5), 180}}
-    for _, value_7 in tbl_19 do
-        local v61 = Instance.new("Frame")
-        v61.Name = "Edge"
-        v61.Size = value_7[1]
-        v61.Position = value_7[2]
-        v61.AnchorPoint = value_7[3]
-        v61.BorderSizePixel = 0
-        v61.BackgroundColor3 = Color3.fromRGB(196, 136, 30)
-        v61.BackgroundTransparency = 1
-        local v62 = Instance.new("UIGradient")
-        v62.Rotation = value_7[4]
-        v62.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1)})
-        v62.Parent = v61
-        v61.Parent = v60
-        table.insert(tbl_upv_14, v61)
+
+    local tribesSwarm = Instance.new("ScreenGui")
+    tribesSwarm.Name = "TribesSwarm"
+    tribesSwarm.IgnoreGuiInset = true
+    tribesSwarm.ResetOnSpawn = false
+    tribesSwarm.DisplayOrder = 4
+    tribesSwarm.Enabled = false
+    tribesSwarm.Parent = playerGui
+    screenGui = tribesSwarm
+    local v160 = {{UDim2.new(1, 0, 0.22, 0), UDim2.fromScale(0.5, 0), Vector2.new(0.5, 0), 90}, {UDim2.new(1, 0, 0.22, 0), UDim2.fromScale(0.5, 1), Vector2.new(0.5, 1), -90}, {UDim2.new(0.18, 0, 1, 0), UDim2.fromScale(0, 0.5), Vector2.new(0, 0.5), 0}, {UDim2.new(0.18, 0, 1, 0), UDim2.fromScale(1, 0.5), Vector2.new(1, 0.5), 180}}
+
+    for _, v162 in v160 do
+        local edge = Instance.new("Frame")
+        edge.Name = "Edge"
+        edge.Size = v162[1]
+        edge.Position = v162[2]
+        edge.AnchorPoint = v162[3]
+        edge.BorderSizePixel = 0
+        edge.BackgroundColor3 = Color3.fromRGB(196, 136, 30)
+        edge.BackgroundTransparency = 1
+
+        local uiGradient = Instance.new("UIGradient")
+        uiGradient.Rotation = v162[4]
+        uiGradient.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(1, 1)})
+        uiGradient.Parent = edge
+        edge.Parent = tribesSwarm
+        table.insert(v155, edge)
     end
-    local v63 = Random.new()
-    for n_1 = 1, 12 do
-        local v64 = Instance.new("Frame")
-        v64.Name = "Bee" .. n_1
-        v64.AnchorPoint = Vector2.new(0.5, 0.5)
-        v64.BackgroundColor3 = u4
-        v64.BorderSizePixel = 0
-        v64.BackgroundTransparency = 1
-        local v65 = v63:NextInteger(10, 18)
-        v64.Size = UDim2.fromOffset(v65, math.floor(v65 * 0.66))
-        v65 = Instance.new("UICorner")
-        v65.CornerRadius = UDim.new(0.5, 0)
-        v65.Parent = v64
-        v65 = Instance.new("UIGradient")
-        v65.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, u5), ColorSequenceKeypoint.new(0.22, u5), ColorSequenceKeypoint.new(0.23, u4), ColorSequenceKeypoint.new(0.44, u4), ColorSequenceKeypoint.new(0.45, u5), ColorSequenceKeypoint.new(0.6, u5), ColorSequenceKeypoint.new(0.61, u4), ColorSequenceKeypoint.new(1, u4)})
-        v65.Parent = v64
-        v65 = Instance.new("Frame")
-        v65.Name = "Wing"
-        v65.AnchorPoint = Vector2.new(0.5, 1)
-        v65.Position = UDim2.fromScale(0.45, 0.15)
-        v65.Size = UDim2.fromScale(0.55, 0.9)
-        v65.BackgroundColor3 = Color3.fromRGB(200, 216, 228)
-        v65.BackgroundTransparency = 1
-        v65.BorderSizePixel = 0
-        local v66 = Instance.new("UICorner")
-        v66.CornerRadius = UDim.new(0.5, 0)
-        v66.Parent = v65
-        v65.Parent = v64
-        v64.Parent = v60
-        table.insert(tbl_upv_15, {vy = 0, vx = 0, f = v64, x = v63:NextNumber(), y = v63:NextNumber(), t = v63:NextNumber(0, 10)})
+
+    local random = Random.new()
+
+    for index = 1, 12 do
+        local frame = Instance.new("Frame")
+        frame.Name = "Bee" .. index
+        frame.AnchorPoint = Vector2.new(0.5, 0.5)
+        frame.BackgroundColor3 = color33
+        frame.BorderSizePixel = 0
+        frame.BackgroundTransparency = 1
+        local v168 = random:NextInteger(10, 18)
+        frame.Size = UDim2.fromOffset(v168, (math.floor(v168 * 0.66)))
+        local uiCorner = Instance.new("UICorner")
+        uiCorner.CornerRadius = UDim.new(0.5, 0)
+        uiCorner.Parent = frame
+
+        local uiGradient = Instance.new("UIGradient")
+        uiGradient.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, color), ColorSequenceKeypoint.new(0.22, color), ColorSequenceKeypoint.new(0.23, color33), ColorSequenceKeypoint.new(0.44, color33), ColorSequenceKeypoint.new(0.45, color), ColorSequenceKeypoint.new(0.6, color), ColorSequenceKeypoint.new(0.61, color33), ColorSequenceKeypoint.new(1, color33)})
+        uiGradient.Parent = frame
+
+        local wing = Instance.new("Frame")
+        wing.Name = "Wing"
+        wing.AnchorPoint = Vector2.new(0.5, 1)
+        wing.Position = UDim2.fromScale(0.45, 0.15)
+        wing.Size = UDim2.fromScale(0.55, 0.9)
+        wing.BackgroundColor3 = Color3.fromRGB(200, 216, 228)
+        wing.BackgroundTransparency = 1
+        wing.BorderSizePixel = 0
+
+        local uiCorner2 = Instance.new("UICorner")
+        uiCorner2.CornerRadius = UDim.new(0.5, 0)
+        uiCorner2.Parent = wing
+        wing.Parent = frame
+        frame.Parent = tribesSwarm
+        table.insert(v156, {vx = 0, vy = 0, f = frame, x = random:NextNumber(), y = random:NextNumber(), t = random:NextNumber(0, 10)})
     end
 end
-function tbl_upv_1.StepBuzz(a1, a2)
+
+function v8.StepBuzz(a173, a174: number)
     --[[
       name: StepBuzz
       line: 475
       upvalues:
-        u10 (ref,  index: 1)
+        screenGui (ref,  index: 1)
         buildGui (copy, index: 2)
-        tbl_upv_14 (copy, index: 3)
-        tbl_upv_15 (copy, index: 4)
+        v155 (copy, index: 3)
+        v156 (copy, index: 4)
     ]]
-    if a2 < 0.02 then
-        if u10 and u10.Enabled then
-            u10.Enabled = false
+    if a174 < 0.02 then
+        if screenGui and screenGui.Enabled then
+            screenGui.Enabled = false
         end
-    else
-        if not (u10) then
-            buildGui()
+
+        return
+    end
+
+    if not screenGui then
+        buildGui()
+    end
+
+    local screenGui2 = screenGui
+    if not screenGui2 then
+        return
+    end
+
+    screenGui2.Enabled = true
+
+    for _, frame in v155 do
+        frame.BackgroundTransparency = 1 - (a174 * 0.4)
+    end
+
+    local ceilingValue = math.ceil(#v156 * math.clamp(a174, 0, 1))
+
+    for v179, v180 in v156 do
+        local backgroundTransparency, v182
+        v180.t += a173
+        local v183 = v179 <= ceilingValue
+        local f = v180.f
+
+        if v183 then
+            backgroundTransparency = 0.05
+            v182 = v180
+        else
+            backgroundTransparency = 1
+            v182 = v180
         end
-        if not u10 then
-            return
+
+        f.BackgroundTransparency = backgroundTransparency
+
+        if const wing = v182.f:FindFirstChild("Wing") then
+            local backgroundTransparency2 = v183 and (math.floor(v182.t * 30) % 2 ~= 0 and 0.75 or 0.35) or 1
+            wing.BackgroundTransparency = backgroundTransparency2
         end
-        u10.Enabled = true
-        for _, value_8 in tbl_upv_14 do
-            value_8.BackgroundTransparency = 1 - (a2 * 0.4)
-        end
-        local v67 = math.ceil(#tbl_upv_15 * math.clamp(a2, 0, 1))
-        local v68 = nil
-        for key_2, value_9 in tbl_upv_15 do
-            value_9.t = value_9.t + a1
-            local v69 = key_2 <= v67
-            local f_1 = value_9.f
-            if v69 then
-                v68 = 0.05
-            else
-                v68 = 1
-            end
-            f_1.BackgroundTransparency = v68
-            local Wing_1 = value_9.f:FindFirstChild("Wing")
-            if Wing_1 then
-                v68 = ((not v69) and 1) or (((math.floor(value_9.t * 30) % 2 ~= 0) and 0.75) or 0.35)
-                Wing_1.BackgroundTransparency = v68
-            end
-            if v69 then
-                local v70 = (math.sin((value_9.t * 1.7) + key_2) * 0.38) * (1.15 - (a2 * 0.6)) + 0.5
-                local v71 = (math.cos((value_9.t * 1.3) + (key_2 * 2)) * 0.32) * (1.15 - (a2 * 0.6)) + 0.5
-                value_9.vx = value_9.vx + ((((v70 - value_9.x) * 9) + ((math.random() - 0.5) * 6)) * a1)
-                value_9.vy = value_9.vy + ((((v71 - value_9.y) * 9) + ((math.random() - 0.5) * 6)) * a1)
-                value_9.vx = value_9.vx * 0.94
-                value_9.vy = value_9.vy * 0.94
-                value_9.x = math.clamp(value_9.x + (value_9.vx * a1), -0.05, 1.05)
-                value_9.y = math.clamp(value_9.y + (value_9.vy * a1), -0.05, 1.05)
-                value_9.f.Position = UDim2.fromScale(value_9.x, value_9.y)
-                value_9.f.Rotation = math.deg(math.atan2(value_9.vy, value_9.vx))
-            end
+
+        if v183 then
+            local v187 = math.sin((v182.t * 1.7) + v179) * 0.38 * (1.15 - (a174 * 0.6)) + 0.5
+            local v188 = math.cos((v182.t * 1.3) + (v179 * 2)) * 0.32 * (1.15 - (a174 * 0.6)) + 0.5
+            v182.vx += (((v187 - v182.x) * 9 + ((math.random() - 0.5) * 6)) * a173)
+            v182.vy += (((v188 - v182.y) * 9 + ((math.random() - 0.5) * 6)) * a173)
+            v182.vx *= 0.94
+            v182.vy *= 0.94
+            v182.x = math.clamp(v182.x + (v182.vx * a173), -0.05, 1.05)
+            v182.y = math.clamp(v182.y + (v182.vy * a173), -0.05, 1.05)
+            v182.f.Position = UDim2.fromScale(v182.x, v182.y)
+            v182.f.Rotation = math.deg((math.atan2(v182.vy, v182.vx)))
         end
     end
 end
-function tbl_upv_1.Stung()
+
+function v8.Stung()
     --[[
       name: Stung
       line: 521
       upvalues:
-        u8 (ref,  index: 1)
-        Util_upv_1 (copy, index: 2)
-        u7 (ref,  index: 3)
-        RunService_upv_1 (copy, index: 4)
+        v36 (ref,  index: 1)
+        Util (copy, index: 2)
+        heartbeatConnection (ref,  index: 3)
+        runService (copy, index: 4)
         stepSwarms (copy, index: 5)
     ]]
-    u8 = math.max(u8, 0.7)
-    Util_upv_1.Sound("Bees_Angry")
-    if (u7) then
-        return
-    end
-    u7 = RunService_upv_1.Heartbeat:Connect(stepSwarms)
+    v36 = math.max(v36, 0.7)
+    Util.Sound("Bees_Angry")
+    heartbeatConnection = heartbeatConnection or runService.Heartbeat:Connect(stepSwarms)
 end
-local tbl_upv_20 = {}
-local u11 = Color3.fromRGB(255, 176, 40)
-local u12 = Color3.fromRGB(18, 20, 26)
-local u13 = Color3.fromRGB(255, 255, 255)
-local u14 = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Heavy)
-local u15 = nil
-local u16 = nil
-local u17 = nil
-local function clearMark(a1)
+
+local v189 = {}
+local color35 = Color3.fromRGB(255, 176, 40)
+local color36 = Color3.fromRGB(18, 20, 26)
+local textColor3 = Color3.fromRGB(255, 255, 255)
+local fontFace = Font.new("rbxasset://fonts/families/BuilderSans.json", Enum.FontWeight.Heavy)
+local v194 = nil
+local screenGui2 = nil
+local renderSteppedConnection = nil
+
+local function clearMark(a198)
     --[[
       name: clearMark
       line: 561
       upvalues:
-        u15 (ref, index: 1)
-        u17 (ref, index: 2)
+        v194 (ref, index: 1)
+        renderSteppedConnection (ref, index: 2)
     ]]
-    if not u15 then
-        return
-    end
-    if not a1 or u15.key == a1 then
-        u15 = nil
-        u15.frame:Destroy()
-        if u15.outline then
-            u15.outline:Destroy()
+    if const v199 = v194 then
+        if not a198 or v199.key == a198 then
+            v194 = nil
+            v199.frame:Destroy()
+
+            if v199.outline then
+                v199.outline:Destroy()
+            end
+
+            if renderSteppedConnection then
+                renderSteppedConnection:Disconnect()
+                renderSteppedConnection = nil
+            end
         end
-        if u17 then
-            u17:Disconnect()
-            u17 = nil
-        end
-        return
     end
 end
+
 local function stepMark()
     --[[
       name: stepMark
       line: 577
       upvalues:
-        u15 (ref,  index: 1)
-        TweenService_upv_1 (copy, index: 2)
+        v194 (ref,  index: 1)
+        tweenService (copy, index: 2)
     ]]
-    local CurrentCamera_4 = workspace.CurrentCamera
-    if not u15 or not CurrentCamera_4 then
+    local v201 = v194
+    local camera = workspace.CurrentCamera
+
+    if not v201 or not camera then
         return
     end
-    local ViewportSize_1 = CurrentCamera_4.ViewportSize
-    local v72 = CurrentCamera_4:WorldToViewportPoint(u15.at)
-    local X_1 = v72.X
-    local Y_1 = v72.Y
-    if v72.Z <= 0 then
-        X_1 = ViewportSize_1.X - X_1
-        Y_1 = ViewportSize_1.Y
+
+    local viewportSize = camera.ViewportSize
+    local v204 = camera:WorldToViewportPoint(v201.at)
+    local v205 = v204.X
+    local y = v204.Y
+
+    if v204.Z <= 0 then
+        v205 = viewportSize.X - v205
+        y = viewportSize.Y
     end
-    local v73 = math.max(44, ViewportSize_1.X - 44)
-    local v74 = math.max(84, ViewportSize_1.Y - 44)
-    local v75 = os.clock()
-    local v76
-    if v75 - u15.born < 0.25 then
+
+    local maxValue = math.max(44, viewportSize.X - 44)
+    local maxValue2 = math.max(84, viewportSize.Y - 44)
+    local timestamp = os.clock()
+
+    if timestamp - v201.born < 0.25 then
         return
     end
-    if not (u15.shown) then
-        u15.shown = true
-        u15.frame.Visible = true
-        local tbl_21 = {Scale = 1}
-        TweenService_upv_1:Create(u15.scale, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), tbl_21):Play()
+
+    if not v201.shown then
+        v201.shown = true
+        v201.frame.Visible = true
+        local propertyTable = {Scale = 1}
+        tweenService:Create(v201.scale, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), propertyTable):Play()
     end
-    local v77 = math.clamp(X_1, 44, v73)
-    local v78 = math.clamp(Y_1, 84, v74)
-    u15.frame.Position = UDim2.fromOffset(v77, v78)
-    u15.pointer.Position = UDim2.new(0.5, 0, 1, -9 - (math.abs(math.sin((v75 - u15.born) * 4)) * 2))
-    v76 = math.clamp(1 - ((Vector2.new(v77, v78 - 36) - (ViewportSize_1 / 2)).Magnitude / 110), 0, 1) * 0.75
-    if math.abs(v76 - u15.fade) > 0.01 then
-        u15.fade = v76
-        for _, value_10 in u15.fades do
-            value_10.inst[value_10.prop] = value_10.base + ((1 - value_10.base) * v76)
+
+    local x = math.clamp(v205, 44, maxValue)
+    local clampedValue = math.clamp(y, 84, maxValue2)
+    v201.frame.Position = UDim2.fromOffset(x, clampedValue)
+    v201.pointer.Position = UDim2.new(0.5, 0, 1, -9 - (math.abs((math.sin((timestamp - v201.born) * 4))) * 2))
+    local fade = math.clamp(1 - ((Vector2.new(x, clampedValue - 36) - (viewportSize / 2)).Magnitude / 110), 0, 1) * 0.75
+
+    if 0.01 < math.abs(fade - v201.fade) then
+        v201.fade = fade
+
+        for _, fade2 in v201.fades do
+            fade2.inst[fade2.prop] = fade2.base + ((1 - fade2.base) * fade)
         end
     end
-    u15.bar.Size = UDim2.fromScale(math.clamp((u15.returnsAt - workspace:GetServerTimeNow()) / u15.span, 0, 1), 1)
+
+    local v216 = v201.returnsAt - workspace:GetServerTimeNow()
+    v201.bar.Size = UDim2.fromScale(math.clamp(v216 / v201.span, 0, 1), 1)
 end
-local function showMark(a1, a2, a3, a4)
+
+local function showMark(key, a219, position, returnsAt)
     --[[
       name: showMark
       line: 616
       upvalues:
-        u15 (ref,  index: 1)
-        u17 (ref,  index: 2)
-        u16 (ref,  index: 3)
-        LocalPlayer_upv_1 (copy, index: 4)
-        u12 (copy, index: 5)
-        u11 (copy, index: 6)
-        u14 (copy, index: 7)
-        u13 (copy, index: 8)
-        RunService_upv_1 (copy, index: 9)
+        v194 (ref,  index: 1)
+        renderSteppedConnection (ref,  index: 2)
+        screenGui2 (ref,  index: 3)
+        localPlayer (copy, index: 4)
+        color36 (copy, index: 5)
+        color35 (copy, index: 6)
+        fontFace (copy, index: 7)
+        textColor3 (copy, index: 8)
+        runService (copy, index: 9)
         stepMark (copy, index: 10)
     ]]
-    local v79 = u15
-    if v79 then
-        u15 = nil
-        v79.frame:Destroy()
-        if v79.outline then
-            v79.outline:Destroy()
+    local v222
+
+    if const v223 = v194 then
+        v194 = nil
+        v223.frame:Destroy()
+
+        if v223.outline then
+            v223.outline:Destroy()
         end
-        if u17 then
-            u17:Disconnect()
-            u17 = nil
+
+        if renderSteppedConnection then
+            renderSteppedConnection:Disconnect()
+            renderSteppedConnection = nil
         end
     end
-    local v80 = u16
-    if not (v80) or not (v80.Parent) then
-        local v81 = LocalPlayer_upv_1:FindFirstChildOfClass("PlayerGui")
-        if not v81 then
+
+    local tribesHatchetMark = screenGui2
+
+    if not tribesHatchetMark or not tribesHatchetMark.Parent then
+        local playerGui = localPlayer:FindFirstChildOfClass("PlayerGui")
+        if not playerGui then
             return
         end
-        local v82 = Instance.new("ScreenGui")
-        v82.Name = "TribesHatchetMark"
-        v82.ResetOnSpawn = false
-        v82.IgnoreGuiInset = true
-        v82.ScreenInsets = Enum.ScreenInsets.None
-        v82.DisplayOrder = 4
-        v82.Parent = v81
-        u16 = v82
-        v80 = v82
+
+        tribesHatchetMark = Instance.new("ScreenGui")
+        tribesHatchetMark.Name = "TribesHatchetMark"
+        tribesHatchetMark.ResetOnSpawn = false
+        tribesHatchetMark.IgnoreGuiInset = true
+        tribesHatchetMark.ScreenInsets = Enum.ScreenInsets.None
+        tribesHatchetMark.DisplayOrder = 4
+        tribesHatchetMark.Parent = playerGui
+        screenGui2 = tribesHatchetMark
     end
-    local v83 = Instance.new("Frame")
-    v83.Name = "Mark"
-    v83.AnchorPoint = Vector2.new(0.5, 1)
-    v83.Size = UDim2.fromOffset(96, 54)
-    v83.BackgroundTransparency = 1
-    v83.Visible = false
-    local v84 = Instance.new("UIScale")
-    v84.Scale = 0.6
-    v84.Parent = v83
-    local v85 = Instance.new("Frame")
-    v85.Name = "Pill"
-    v85.AnchorPoint = Vector2.new(0.5, 0)
-    v85.Position = UDim2.new(0.5, 0, 0, 4)
-    v85.Size = UDim2.fromOffset(84, 26)
-    v85.BackgroundColor3 = u12
-    v85.BackgroundTransparency = 0.25
-    v85.BorderSizePixel = 0
-    v85.Parent = v83
-    local v86 = Instance.new("UICorner")
-    v86.CornerRadius = UDim.new(0, 7)
-    v86.Parent = v85
-    local v87 = Instance.new("UIStroke")
-    v87.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    v87.Thickness = 1.5
-    v87.Color = u11
-    v87.Transparency = 0.35
-    v87.Parent = v85
-    local v88 = Instance.new("TextLabel")
-    v88.BackgroundTransparency = 1
-    v88.Size = UDim2.new(1, 0, 1, -4)
-    v88.FontFace = u14
-    v88.TextSize = 15
-    v88.TextColor3 = u13
-    v88.Text = "PICK UP"
-    v88.AutoLocalize = false
-    v88.Parent = v85
-    local v89 = Instance.new("Frame")
-    v89.Name = "Timer"
-    v89.AnchorPoint = Vector2.new(0, 1)
-    v89.Position = UDim2.new(0, 10, 1, -4)
-    v89.Size = UDim2.new(1, -20, 0, 2)
-    v89.BackgroundTransparency = 1
-    v89.Parent = v85
-    local v90 = Instance.new("Frame")
-    v90.Name = "Left"
-    v90.Size = UDim2.fromScale(1, 1)
-    v90.BackgroundColor3 = u11
-    v90.BorderSizePixel = 0
-    v90.Parent = v89
-    local v91 = Instance.new("Frame")
-    v91.Name = "Pointer"
-    v91.AnchorPoint = Vector2.new(0.5, 0.5)
-    v91.Size = UDim2.fromOffset(10, 10)
-    v91.Rotation = 45
-    v91.BackgroundColor3 = u11
-    v91.BorderSizePixel = 0
-    v91.Parent = v83
-    local v92 = Instance.new("UICorner")
-    v92.CornerRadius = UDim.new(0, 2)
-    v92.Parent = v91
-    local v93 = Instance.new("UIStroke")
-    v93.Thickness = 1.5
-    v93.Color = u12
-    v93.Transparency = 0.3
-    v93.Parent = v91
-    v83.Parent = v80
-    v80 = Instance.new("Highlight")
-    v80.Name = "PickUpOutline"
-    v80.FillColor = u11
-    v80.FillTransparency = 0.8
-    v80.OutlineColor = u11
-    v80.OutlineTransparency = 0.15
-    v80.DepthMode = Enum.HighlightDepthMode.Occluded
-    v80.Adornee = a2
-    v80.Parent = a2
-    local v94 = workspace:GetServerTimeNow()
-    local v95
-    if type(a4) == "number" and (v94 < a4) then
-        v95 = a4
+
+    local mark = Instance.new("Frame")
+    mark.Name = "Mark"
+    mark.AnchorPoint = Vector2.new(0.5, 1)
+    mark.Size = UDim2.fromOffset(96, 54)
+    mark.BackgroundTransparency = 1
+    mark.Visible = false
+
+    local scale = Instance.new("UIScale")
+    scale.Scale = 0.6
+    scale.Parent = mark
+
+    local pill = Instance.new("Frame")
+    pill.Name = "Pill"
+    pill.AnchorPoint = Vector2.new(0.5, 0)
+    pill.Position = UDim2.new(0.5, 0, 0, 4)
+    pill.Size = UDim2.fromOffset(84, 26)
+    pill.BackgroundColor3 = color36
+    pill.BackgroundTransparency = 0.25
+    pill.BorderSizePixel = 0
+    pill.Parent = mark
+
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(0, 7)
+    uiCorner.Parent = pill
+
+    local inst = Instance.new("UIStroke")
+    inst.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    inst.Thickness = 1.5
+    inst.Color = color35
+    inst.Transparency = 0.35
+    inst.Parent = pill
+
+    local inst2 = Instance.new("TextLabel")
+    inst2.BackgroundTransparency = 1
+    inst2.Size = UDim2.new(1, 0, 1, -4)
+    inst2.FontFace = fontFace
+    inst2.TextSize = 15
+    inst2.TextColor3 = textColor3
+    inst2.Text = "PICK UP"
+    inst2.AutoLocalize = false
+    inst2.Parent = pill
+
+    local timer = Instance.new("Frame")
+    timer.Name = "Timer"
+    timer.AnchorPoint = Vector2.new(0, 1)
+    timer.Position = UDim2.new(0, 10, 1, -4)
+    timer.Size = UDim2.new(1, -20, 0, 2)
+    timer.BackgroundTransparency = 1
+    timer.Parent = pill
+
+    local left = Instance.new("Frame")
+    left.Name = "Left"
+    left.Size = UDim2.fromScale(1, 1)
+    left.BackgroundColor3 = color35
+    left.BorderSizePixel = 0
+    left.Parent = timer
+
+    local pointer = Instance.new("Frame")
+    pointer.Name = "Pointer"
+    pointer.AnchorPoint = Vector2.new(0.5, 0.5)
+    pointer.Size = UDim2.fromOffset(10, 10)
+    pointer.Rotation = 45
+    pointer.BackgroundColor3 = color35
+    pointer.BorderSizePixel = 0
+    pointer.Parent = mark
+
+    local uiCorner2 = Instance.new("UICorner")
+    uiCorner2.CornerRadius = UDim.new(0, 2)
+    uiCorner2.Parent = pointer
+
+    local inst3 = Instance.new("UIStroke")
+    inst3.Thickness = 1.5
+    inst3.Color = color36
+    inst3.Transparency = 0.3
+    inst3.Parent = pointer
+    mark.Parent = tribesHatchetMark
+    local pickUpOutline = Instance.new("Highlight")
+    pickUpOutline.Name = "PickUpOutline"
+    pickUpOutline.FillColor = color35
+    pickUpOutline.FillTransparency = 0.8
+    pickUpOutline.OutlineColor = color35
+    pickUpOutline.OutlineTransparency = 0.15
+    pickUpOutline.DepthMode = Enum.HighlightDepthMode.Occluded
+    pickUpOutline.Adornee = a219
+    pickUpOutline.Parent = a219
+    local serverTimeNow = workspace:GetServerTimeNow()
+
+    if type(returnsAt) ~= "number" or not (serverTimeNow < returnsAt) then
+        v222 = serverTimeNow + 5
     else
-        v95 = v94 + 5
+        v222 = returnsAt
     end
-    local tbl_22 = {{prop = "BackgroundTransparency", inst = v85, base = v85.BackgroundTransparency}, {prop = "Transparency", inst = v87, base = v87.Transparency}, {base = 0, prop = "TextTransparency", inst = v88}, {base = 0, prop = "BackgroundTransparency", inst = v90}, {base = 0, prop = "BackgroundTransparency", inst = v91}, {prop = "Transparency", inst = v93, base = v93.Transparency}}
-    local tbl_23 = {fade = 0, shown = false}
-    tbl_23.key = a1
-    tbl_23.at = a3 + Vector3.new(0, 1.600000023841858, 0)
-    tbl_23.frame = v83
-    tbl_23.bar = v90
-    tbl_23.pointer = v91
-    tbl_23.scale = v84
-    tbl_23.born = os.clock()
-    tbl_23.returnsAt = v95
-    tbl_23.span = math.max(0.5, v95 - v94)
-    tbl_23.outline = v80
-    tbl_23.fades = tbl_22
-    u15 = tbl_23
-    if not (u17) then
-        u17 = RunService_upv_1.RenderStepped:Connect(stepMark)
-    end
+
+    local fades = {{prop = "BackgroundTransparency", inst = pill, base = pill.BackgroundTransparency}, {prop = "Transparency", inst = inst, base = inst.Transparency}, {prop = "TextTransparency", base = 0, inst = inst2}, {prop = "BackgroundTransparency", base = 0, inst = left}, {prop = "BackgroundTransparency", base = 0, inst = pointer}, {prop = "Transparency", inst = inst3, base = inst3.Transparency}}
+    v194 = {shown = false, fade = 0, key = key, at = position + Vector3.new(0, 1.600000023841858, 0), frame = mark, bar = left, pointer = pointer, scale = scale, born = os.clock(), returnsAt = v222, span = math.max(0.5, v222 - serverTimeNow), outline = pickUpOutline, fades = fades}
+    renderSteppedConnection = renderSteppedConnection or runService.RenderStepped:Connect(stepMark)
     stepMark()
 end
-local function place(a1, a2)
-    --[[
-      name: place
-      line: 755
-    ]]
-    if a1:IsA("Model") then
-        a1:PivotTo(a2)
-    elseif a1:IsA("BasePart") then
-        a1.CFrame = a2
-    end
-end
+
 local function hatchetModel()
     --[[
       name: hatchetModel
       line: 727
       upvalues:
-        u1 (copy, index: 1)
+        vfx (copy, index: 1)
     ]]
-    if u1 and not (u1:FindFirstChild("Hatchet")) and u1:FindFirstChild("Projectiles") then
-        local _ = u1.Projectiles:FindFirstChild("Hatchet")
+    local hatchet = vfx
+        and (vfx:FindFirstChild("Hatchet")
+            or vfx:FindFirstChild("Projectiles") and vfx.Projectiles:FindFirstChild("Hatchet"))
+    if not hatchet then
+        local parent = Instance.new("Model")
+        local color = Color3.fromRGB(150, 104, 66)
+        local wood = Enum.Material.Wood
+        local haft = Instance.new("Part")
+        haft.Name = "Haft"
+        haft.Anchored = true
+        haft.CanCollide = false
+        haft.CanQuery = false
+        haft.CanTouch = false
+        haft.CastShadow = false
+        haft.Size = Vector3.new(0.18000000715255737, 2.200000047683716, 0.18000000715255737)
+        haft.Color = color
+        haft.Material = wood or Enum.Material.SmoothPlastic
+        haft.Transparency = 0
+        haft.CFrame = CFrame.new(0, 1.1, 0.3)
+        haft.Parent = parent
+        local color2 = Color3.fromRGB(80, 80, 86)
+        local metal = Enum.Material.Metal
+        local head = Instance.new("Part")
+        head.Name = "Head"
+        head.Anchored = true
+        head.CanCollide = false
+        head.CanQuery = false
+        head.CanTouch = false
+        head.CastShadow = false
+        head.Size = Vector3.new(0.11999999731779099, 0.800000011920929, 0.75)
+        head.Color = color2
+        head.Material = metal or Enum.Material.SmoothPlastic
+        head.Transparency = 0
+        head.CFrame = CFrame.new(0, 0.2, 0)
+        head.Parent = parent
+        parent.PrimaryPart = head
+
+        return parent
     end
-    if u1 then
-        local v96 = u1:Clone()
-        local v97 = ((v96:IsA("BasePart")) and {v96}) or (v96:GetDescendants())
-        for _, value_11 in v97 do
-            if value_11:IsA("BasePart") then
-                value_11.Anchored = true
-                value_11.CanCollide = false
-                value_11.CanQuery = false
-                value_11.CanTouch = false
-                continue
-            end
-            if value_11:IsA("Trail") or value_11:IsA("ParticleEmitter") then
-                value_11.Enabled = false
-            end
+
+    local v249 = hatchet:Clone()
+    local v250 = v249:IsA("BasePart") and {v249} or v249:GetDescendants()
+
+    for _, v252 in v250 do
+        if v252:IsA("BasePart") then
+            v252.Anchored = true
+            v252.CanCollide = false
+            v252.CanQuery = false
+            v252.CanTouch = false
+        elseif v252:IsA("Trail") or v252:IsA("ParticleEmitter") then
+            v252.Enabled = false
         end
-        return v96
-    else
-        local v98 = Instance.new("Model")
-        local v99 = Color3.fromRGB(150, 104, 66)
-        local v100 = Instance.new("Part")
-        v100.Name = "Haft"
-        v100.Anchored = true
-        v100.CanCollide = false
-        v100.CanQuery = false
-        v100.CanTouch = false
-        v100.CastShadow = false
-        v100.Size = Vector3.new(0.18000000715255737, 2.200000047683716, 0.18000000715255737)
-        v100.Color = v99
-        v100.Material = Enum.Material.Wood or (Enum.Material.SmoothPlastic)
-        v100.Transparency = 0
-        v100.CFrame = CFrame.new(0, 1.1, 0.3)
-        v100.Parent = v98
-        local v101 = Color3.fromRGB(80, 80, 86)
-        local v102 = Instance.new("Part")
-        v102.Name = "Head"
-        v102.Anchored = true
-        v102.CanCollide = false
-        v102.CanQuery = false
-        v102.CanTouch = false
-        v102.CastShadow = false
-        v102.Size = Vector3.new(0.11999999731779099, 0.800000011920929, 0.75)
-        v102.Color = v101
-        v102.Material = Enum.Material.Metal or (Enum.Material.SmoothPlastic)
-        v102.Transparency = 0
-        v102.CFrame = CFrame.new(0, 0.2, 0)
-        v102.Parent = v98
-        v98.PrimaryPart = v102
-        return v98
+    end
+
+    return v249
+end
+
+local function place(a254, cFrame)
+    --[[
+      name: place
+      line: 755
+    ]]
+    if a254:IsA("Model") then
+        a254:PivotTo(cFrame)
+        return
+    end
+
+    if a254:IsA("BasePart") then
+        a254.CFrame = cFrame
     end
 end
-function tbl_upv_1.HatchetDrop(a1)
+
+function v8.HatchetDrop(a256)
     --[[
       name: HatchetDrop
       line: 763
       upvalues:
-        tbl_upv_20 (copy, index: 1)
+        v189 (copy, index: 1)
         hatchetModel (copy, index: 2)
-        Util_upv_1 (copy, index: 3)
-        Effects_upv_1 (copy, index: 4)
-        LocalPlayer_upv_1 (copy, index: 5)
+        Util (copy, index: 3)
+        Effects (copy, index: 4)
+        localPlayer (copy, index: 5)
         showMark (copy, index: 6)
-        u15 (ref,  index: 7)
-        u17 (ref,  index: 8)
+        v194 (ref,  index: 7)
+        renderSteppedConnection (ref,  index: 8)
     ]]
-    local key_upv_3 = a1.key
-    local cframe_1 = a1.cframe
-    if type(key_upv_3) ~= "string" then
+    local key = a256.key
+    local cframe = a256.cframe
+
+    if type(key) ~= "string" or typeof(cframe) ~= "CFrame" then
         return
     end
-    if typeof(cframe_1) == "CFrame" then
-        local v103 = tbl_upv_20[key_upv_3]
-        if v103 then
-            v103.model:Destroy()
-        end
-        local u18 = hatchetModel()
-        if u18:IsA("Model") then
-            u18:PivotTo(cframe_1)
-        elseif u18:IsA("BasePart") then
-            u18.CFrame = cframe_1
-        end
-        local v104 = workspace:FindFirstChild("FX") or workspace
-        u18.Parent = v104
-        local owner_1 = a1.owner
-        v104 = typeof(owner_1) ~= "Instance" or not (owner_1:IsA("Model")) or owner_1
-        tbl_upv_20[key_upv_3] = {model = u18, owner = v104}
-        local CurrentCamera_5 = workspace.CurrentCamera
-        if (((not CurrentCamera_5) and 0) or ((CurrentCamera_5.CFrame.Position - cframe_1.Position).Magnitude)) <= 120 then
-            Util_upv_1.Sound("Hatchet_Thunk", cframe_1.Position)
-            Effects_upv_1.Puff(cframe_1.Position, Color3.fromRGB(150, 132, 108), 5, 0.6, 4, 0.4)
-        end
-        if v104 and v104 == LocalPlayer_upv_1.Character then
-            showMark(key_upv_3, u18, cframe_1.Position, a1.returnsAt)
-        end
-        task.delay(
-            10,
-            function()
-                --[[
-                  line: 786
-                  upvalues:
-                    tbl_upv_20 (copy, index: 1)
-                    key_upv_3 (copy, index: 2)
-                    u18 (copy, index: 3)
-                    u15 (ref,  index: 4)
-                    u17 (ref,  index: 5)
-                ]]
-                local v105 = tbl_upv_20[key_upv_3]
-                if not v105 then
-                    return
-                end
-                if v105.model == u18 then
-                    tbl_upv_20[key_upv_3] = nil
-                    local v106 = key_upv_3
-                    local v107 = u15
-                    if v107 and (not (v106) or v107.key == v106) then
-                        u15 = nil
-                        v107.frame:Destroy()
-                        if v107.outline then
-                            v107.outline:Destroy()
-                        end
-                        if u17 then
-                            u17:Disconnect()
-                            u17 = nil
-                        end
-                    end
-                    u18:Destroy()
-                end
-            end
-        )
+
+    local owner
+
+    if const v260 = v189[key] then
+        v260.model:Destroy()
     end
+
+    local model = hatchetModel()
+
+    if model:IsA("Model") then
+        model:PivotTo(cframe)
+    elseif model:IsA("BasePart") then
+        model.CFrame = cframe
+    end
+
+    local instance = workspace:FindFirstChild("FX") or workspace
+    model.Parent = instance
+    local owner2 = a256.owner
+
+    if typeof(owner2) ~= "Instance" or not owner2:IsA("Model") then
+        owner = nil
+    else
+        owner = owner2
+    end
+
+    v189[key] = {model = model, owner = owner}
+    local position = cframe.Position
+    local v266 = if const camera = workspace.CurrentCamera then (camera.CFrame.Position - position).Magnitude else 0
+
+    if v266 <= 120 then
+        Util.Sound("Hatchet_Thunk", cframe.Position)
+        Effects.Puff(cframe.Position, Color3.fromRGB(150, 132, 108), 5, 0.6, 4, 0.4)
+    end
+
+    if owner and owner == localPlayer.Character then
+        showMark(key, model, cframe.Position, a256.returnsAt)
+    end
+
+    task.delay(
+        10,
+        function()
+            --[[
+              line: 786
+              upvalues:
+                v189 (copy, index: 1)
+                key (copy, index: 2)
+                model (copy, index: 3)
+                v194 (ref,  index: 4)
+                renderSteppedConnection (ref,  index: 5)
+            ]]
+            local v267 = v189[key]
+
+            if v267 and v267.model == model then
+                v189[key] = nil
+                local key2 = key
+                local v269 = v194
+
+                if v269 and (not key2 or v269.key == key2) then
+                    v194 = nil
+                    v269.frame:Destroy()
+
+                    if v269.outline then
+                        v269.outline:Destroy()
+                    end
+
+                    if renderSteppedConnection then
+                        renderSteppedConnection:Disconnect()
+                        renderSteppedConnection = nil
+                    end
+                end
+
+                model:Destroy()
+            end
+        end
+    )
 end
-function tbl_upv_1.HatchetEnd(a1)
+
+function v8.HatchetEnd(a270)
     --[[
       name: HatchetEnd
       line: 796
       upvalues:
-        tbl_upv_20 (copy, index: 1)
-        u15 (ref,  index: 2)
-        u17 (ref,  index: 3)
+        v189 (copy, index: 1)
+        v194 (ref,  index: 2)
+        renderSteppedConnection (ref,  index: 3)
         rootOf (copy, index: 4)
-        RunService_upv_1 (copy, index: 5)
-        TweenService_upv_1 (copy, index: 6)
-        Debris_upv_1 (copy, index: 7)
-        LocalPlayer_upv_1 (copy, index: 8)
-        Util_upv_1 (copy, index: 9)
+        runService (copy, index: 5)
+        tweenService (copy, index: 6)
+        debris (copy, index: 7)
+        localPlayer (copy, index: 8)
+        Util (copy, index: 9)
     ]]
-    local key_4 = a1.key
-    if type(key_4) ~= "string" then
+    local key = a270.key
+
+    if type(key) ~= "string" then
         return
     end
-    local v108 = tbl_upv_20[key_4]
-    tbl_upv_20[key_4] = nil
-    local v109 = u15
-    if v109 and (not (key_4) or v109.key == key_4) then
-        u15 = nil
-        v109.frame:Destroy()
-        if v109.outline then
-            v109.outline:Destroy()
+
+    local owner
+    local v273
+    local v274 = v189[key]
+    v189[key] = nil
+    local v275 = v194
+
+    if v275 and (not key or v275.key == key) then
+        v194 = nil
+        v275.frame:Destroy()
+
+        if v275.outline then
+            v275.outline:Destroy()
         end
-        if u17 then
-            u17:Disconnect()
-            u17 = nil
+
+        if renderSteppedConnection then
+            renderSteppedConnection:Disconnect()
+            renderSteppedConnection = nil
         end
     end
-    local owner_2 = a1.owner
-    key_4 = typeof(owner_2) ~= "Instance" or not (owner_2:IsA("Model")) or owner_2
-    local u19
-    if key_4 then
-        u19 = rootOf(key_4)
+
+    local owner2 = a270.owner
+
+    if typeof(owner2) ~= "Instance" or not owner2:IsA("Model") then
+        owner = nil
     else
-        v109 = nil
+        owner = owner2
     end
-    if v108 then
-        local model_upv_1 = v108.model
-        if u19 then
-            if a1.how ~= "pickup" then
-                local v110 = ((model_upv_1:IsA("BasePart")) and {model_upv_1}) or (model_upv_1:GetDescendants())
-                for _, value_12 in v110 do
-                    if value_12:IsA("BasePart") then
-                        local tbl_24 = {Transparency = 1}
-                        TweenService_upv_1:Create(value_12, TweenInfo.new(0.25), tbl_24):Play()
-                    end
-                end
-                Debris_upv_1:AddItem(model_upv_1, 0.3)
-            else
-                local CFrame_upv_1
-                if model_upv_1:IsA("Model") then
-                    CFrame_upv_1 = model_upv_1:GetPivot()
-                else
-                    CFrame_upv_1 = model_upv_1.CFrame
-                end
-                local u20 = os.clock()
-                local u21 = nil
-                local v111 = RunService_upv_1.Heartbeat:Connect(
-                    function()
-                        --[[
-                          line: 813
-                          upvalues:
-                            u20 (copy, index: 1)
-                            model_upv_1 (copy, index: 2)
-                            u19 (copy, index: 3)
-                            u21 (ref,  index: 4)
-                            CFrame_upv_1 (copy, index: 5)
-                        ]]
-                        local v112 = math.clamp((os.clock() - u20) / 0.12, 0, 1)
-                        if model_upv_1.Parent and u19.Parent then
-                            if v112 >= 1 then
-                                if u21 then
-                                    u21:Disconnect()
-                                end
-                            else
-                                local v113 = CFrame_upv_1:Lerp(u19.CFrame * CFrame.new(0.8, 0.6, -0.6), v112 * v112)
-                                if model_upv_1:IsA("Model") then
-                                    model_upv_1:PivotTo(v113)
-                                elseif model_upv_1:IsA("BasePart") then
-                                    model_upv_1.CFrame = v113
-                                end
-                                return
-                            end
-                        elseif u21 then
-                            u21:Disconnect()
+
+    if owner then
+        local _ = rootOf(owner)
+    else
+        v273 = nil
+    end
+
+    if v274 then
+        local model = v274.model
+
+        if v273 and a270.how == "pickup" then
+            local v279 = if model:IsA("Model") then model:GetPivot() else model.CFrame
+            local timestamp = os.clock()
+            local heartbeatConnection = nil
+
+            heartbeatConnection = runService.Heartbeat:Connect(
+                function()
+                    --[[
+                      line: 813
+                      upvalues:
+                        timestamp (copy, index: 1)
+                        model (copy, index: 2)
+                        v273 (copy, index: 3)
+                        heartbeatConnection (ref,  index: 4)
+                        v279 (copy, index: 5)
+                    ]]
+                    local clampedValue = math.clamp((os.clock() - timestamp) / 0.12, 0, 1)
+
+                    if not model.Parent or not v273.Parent or 1 <= clampedValue then
+                        if heartbeatConnection then
+                            heartbeatConnection:Disconnect()
                         end
-                        model_upv_1:Destroy()
+
+                        model:Destroy()
+
+                        return
                     end
-                )
-                u21 = v111
-            end
+
+                    local cFrame = v279:Lerp(v273.CFrame * CFrame.new(0.8, 0.6, -0.6), clampedValue * clampedValue)
+
+                    if model:IsA("Model") then
+                        model:PivotTo(cFrame)
+                        return
+                    end
+
+                    if model:IsA("BasePart") then
+                        model.CFrame = cFrame
+                    end
+                end
+            )
         else
-            local v110 = ((model_upv_1:IsA("BasePart")) and {model_upv_1}) or (model_upv_1:GetDescendants())
-            for _, value_12 in v110 do
-                if value_12:IsA("BasePart") then
-                    local tbl_24 = {Transparency = 1}
-                    TweenService_upv_1:Create(value_12, TweenInfo.new(0.25), tbl_24):Play()
+            local instances = model:IsA("BasePart") and {model} or model:GetDescendants()
+
+            for _, instance in instances do
+                if instance:IsA("BasePart") then
+                    local propertyTable = {Transparency = 1}
+                    tweenService:Create(instance, TweenInfo.new(0.25), propertyTable):Play()
                 end
             end
-            Debris_upv_1:AddItem(model_upv_1, 0.3)
+
+            debris:AddItem(model, 0.3)
         end
     end
-    if a1.how == "reset" then
-        return
-    end
-    if key_4 and u19 then
-        local v114 = nil
-        if key_4 == LocalPlayer_upv_1.Character then
-            Util_upv_1.Sound("Hatchet_Catch", u19)
+
+    local v288 = false
+
+    if a270.how ~= "reset" and owner and v273 then
+        if owner == localPlayer.Character then
+            v288 = true
         else
-            v114 = workspace.CurrentCamera
-            if ((((not v114) and 0) or ((v114.CFrame.Position - u19.Position).Magnitude)) <= 80) then
-                Util_upv_1.Sound("Hatchet_Catch", u19)
+            local position = v273.Position
+            local camera = workspace.CurrentCamera
+
+            if ((not camera and 0) or (camera.CFrame.Position - position).Magnitude) <= 80 then
+                v288 = true
             end
         end
+    end
+
+    if v288 then
+        Util.Sound("Hatchet_Catch", v273)
     end
 end
-function tbl_upv_1.ParryStart(a1)
+
+function v8.ParryStart(a291)
     --[[
       name: ParryStart
       line: 840
       upvalues:
-        LocalPlayer_upv_1 (copy, index: 1)
+        localPlayer (copy, index: 1)
         rootOf (copy, index: 2)
-        Util_upv_1 (copy, index: 3)
-        Effects_upv_1 (copy, index: 4)
+        Util (copy, index: 3)
+        Effects (copy, index: 4)
     ]]
-    local attacker_1 = a1.attacker
-    local v115 = typeof(attacker_1) ~= "Instance" or not (attacker_1:IsA("Model")) or attacker_1
-    if not v115 then
-        return
+    local attacker
+    local attacker2 = a291.attacker
+
+    if typeof(attacker2) ~= "Instance" or not attacker2:IsA("Model") then
+        attacker = nil
+    else
+        attacker = attacker2
     end
-    if v115 ~= LocalPlayer_upv_1.Character then
-        local v116 = rootOf(v115)
-        if v116 then
-            local CurrentCamera_6 = workspace.CurrentCamera
-            if not ((((not CurrentCamera_6) and 0) or ((CurrentCamera_6.CFrame.Position - v116.Position).Magnitude)) > 150) then
-                Util_upv_1.Sound("Katana_Flick", v116)
-                local v117 = Util_upv_1.ToolPoint(v115:FindFirstChildOfClass("Tool"), "Tip")
-                if v117 then
-                    Effects_upv_1.Burst("Charge_Sparkle", CFrame.new(v117), 0.6, Color3.fromRGB(170, 210, 240))
+
+    if attacker and attacker ~= localPlayer.Character then
+        if const v294 = rootOf(attacker) then
+            local position = v294.Position
+            local camera = workspace.CurrentCamera
+
+            if not (150 < ((not camera and 0) or (camera.CFrame.Position - position).Magnitude)) then
+                Util.Sound("Katana_Flick", v294)
+                local tool = attacker:FindFirstChildOfClass("Tool")
+
+                if const v298 = Util.ToolPoint(tool, "Tip") then
+                    Effects.Burst("Charge_Sparkle", CFrame.new(v298), 0.6, Color3.fromRGB(170, 210, 240))
                 end
-                return
             end
         end
     end
 end
-function tbl_upv_1.Parried(a1)
+
+function v8.Parried(a299)
     --[[
       name: Parried
       line: 860
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        Effects_upv_1 (copy, index: 2)
-        u6 (copy, index: 3)
+        Util (copy, index: 1)
+        Effects (copy, index: 2)
+        color34 (copy, index: 3)
         rootOf (copy, index: 4)
-        TweenService_upv_1 (copy, index: 5)
-        Debris_upv_1 (copy, index: 6)
+        tweenService (copy, index: 5)
+        debris (copy, index: 6)
     ]]
-    local position_2 = a1.position
-    if typeof(position_2) == "Vector3" then
-        local CurrentCamera_7 = workspace.CurrentCamera
-        if not ((((not CurrentCamera_7) and 0) or ((CurrentCamera_7.CFrame.Position - position_2).Magnitude)) > 160) then
-            local v118 = a1.ranged == true
-            local Sound_1 = Util_upv_1.Sound
-            local v119
-            if v118 then
-                v119 = "Katana_Deflect"
+    local position = a299.position
+
+    if typeof(position) == "Vector3" then
+        local camera = workspace.CurrentCamera
+
+        if not (160 < ((not camera and 0) or (camera.CFrame.Position - position).Magnitude)) then
+            local target
+            local ranged = a299.ranged == true
+            local sound = Util.Sound
+            local v305 = ranged and "Katana_Deflect" or "Katana_Parry"
+            sound(v305, position)
+            local burst = Effects.Burst
+            local cframe = CFrame.new(position)
+            local v308 = ranged and 1.2 or 1.6
+            burst("Block_Spark", cframe, v308, color34)
+            Effects.Burst("Impact_Sparks", CFrame.new(position), 0.8, color34)
+            local target2 = a299.target
+
+            if typeof(target2) ~= "Instance" then
+                target = nil
+            elseif target2:IsA("Model") then
+                target = target2
             else
-                v119 = "Katana_Parry"
+                target = nil
             end
-            Sound_1(v119, position_2)
-            local Burst_1 = Effects_upv_1.Burst
-            local v120 = CFrame.new(position_2)
-            Burst_1("Block_Spark", v120, (v118 and 1.2) or 1.6, u6)
-            Effects_upv_1.Burst("Impact_Sparks", CFrame.new(position_2), 0.8, u6)
-            local target_3 = a1.target
-            local v121 = typeof(target_3) ~= "Instance" or not (target_3:IsA("Model")) or target_3
-            local v122 = rootOf(v121)
-            local v123 = ((not v122) and Vector3.new(0, 0, 1)) or (v122.CFrame.LookVector)
-            local v124 = Color3.fromRGB(176, 214, 240)
-            local v125 = Instance.new("Part")
-            v125.Name = "ParryRing"
-            v125.Anchored = true
-            v125.CanCollide = false
-            v125.CanQuery = false
-            v125.CanTouch = false
-            v125.CastShadow = false
-            v125.Size = Vector3.new(0.05000000074505806, 0.6000000238418579, 0.6000000238418579)
-            v125.Color = v124
-            v125.Material = Enum.Material.SmoothPlastic
-            v125.Transparency = 0.3
-            v125.Shape = Enum.PartType.Cylinder
-            v125.CFrame = CFrame.lookAt(position_2, position_2 + v123) * CFrame.Angles(0, 1.5707963267948966, 0)
-            v125.Parent = workspace:FindFirstChild("FX") or workspace
-            local v127 = TweenInfo.new(0.22, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-            local tbl_25 = {Transparency = 1, Size = 0}
-            tbl_25.Size = Vector3.new(0.05, (v118 and 3.2) or 4.2, (v118 and 3.2) or 4.2)
-            TweenService_upv_1:Create(v125, v127, tbl_25):Play()
-            Debris_upv_1:AddItem(v125, 0.3)
+
+            local v311 = if const v310 = rootOf(target) then v310.CFrame.LookVector else Vector3.new(0, 0, 1)
+            local color = Color3.fromRGB(176, 214, 240)
+            local parryRing = Instance.new("Part")
+            parryRing.Name = "ParryRing"
+            parryRing.Anchored = true
+            parryRing.CanCollide = false
+            parryRing.CanQuery = false
+            parryRing.CanTouch = false
+            parryRing.CastShadow = false
+            parryRing.Size = Vector3.new(0.05000000074505806, 0.6000000238418579, 0.6000000238418579)
+            parryRing.Color = color
+            parryRing.Material = Enum.Material.SmoothPlastic
+            parryRing.Transparency = 0.3
+            parryRing.Shape = Enum.PartType.Cylinder
+            parryRing.CFrame = CFrame.lookAt(position, position + v311) * CFrame.Angles(0, 1.5707963267948966, 0)
+            local instance = workspace:FindFirstChild("FX") or workspace
+            parryRing.Parent = instance
+            local tweenInfo = TweenInfo.new(0.22, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+            local propertyTable = {Transparency = 1}
+            local y = ranged and 3.2 or 4.2
+            local z = ranged and 3.2 or 4.2
+            propertyTable.Size = Vector3.new(0.05, y, z)
+            tweenService:Create(parryRing, tweenInfo, propertyTable):Play()
+            debris:AddItem(parryRing, 0.3)
         end
     end
 end
-return tbl_upv_1
+
+return v8

@@ -1,73 +1,81 @@
-local Players_upv_1 = game:GetService("Players")
-local UserInputService_1 = game:GetService("UserInputService")
-local tbl_upv_1 = {}
-local tbl_upv_2 = {}
-tbl_upv_2.High = {remoteHz = 20, propFadeEvery = 1, maxSteps = 16, stepCap = 14, twistRange = 70, stepRadius = 90, dustScale = 1, remoteDust = true}
-tbl_upv_2.Medium = {remoteHz = 15, propFadeEvery = 2, maxSteps = 12, stepCap = 10, twistRange = 45, stepRadius = 70, dustScale = 0.75, remoteDust = true}
-tbl_upv_2.Low = {remoteHz = 10, propFadeEvery = 4, maxSteps = 8, stepCap = 6, twistRange = 25, stepRadius = 45, dustScale = 0.5, remoteDust = false}
-tbl_upv_1.level = ((UserInputService_1.TouchEnabled and (not UserInputService_1.MouseEnabled)) and "Medium") or "High"
-tbl_upv_1.budget = tbl_upv_2[tbl_upv_1.level]
-local u1 = false
-local function refresh(a1)
+local players = game:GetService("Players")
+local userInputService = game:GetService("UserInputService")
+local v3 = {}
+local v4 = {High = {stepCap = 14, stepRadius = 90, maxSteps = 16, remoteHz = 20, remoteDust = true, dustScale = 1, twistRange = 70, propFadeEvery = 1}, Medium = {stepCap = 10, stepRadius = 70, maxSteps = 12, remoteHz = 15, remoteDust = true, dustScale = 0.75, twistRange = 45, propFadeEvery = 2}, Low = {stepCap = 6, stepRadius = 45, maxSteps = 8, remoteHz = 10, remoteDust = false, dustScale = 0.5, twistRange = 25, propFadeEvery = 4}}
+local v5 = userInputService.TouchEnabled and not userInputService.MouseEnabled
+v3.level = v5 and "Medium" or "High"
+v3.budget = v4[v3.level]
+local hasRun = false
+
+local function refresh(playerScripts: Instance?)
     --[[
       name: refresh
       line: 38
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
+        v3 (copy, index: 1)
+        v4 (copy, index: 2)
     ]]
-    local v1 = a1:GetAttribute("CharacterQuality")
-    local v2 = a1:GetAttribute("CombatQualityLevel")
-    local v3 = tbl_upv_1.level
-    if v1 == "Low" or v1 == "Medium" or v1 == "High" then
-        v3 = v1
-    elseif v2 == "Low" or v2 == "Medium" or v2 == "High" then
-        v3 = v2
+    local characterQuality = playerScripts:GetAttribute("CharacterQuality")
+    local combatQualityLevel = playerScripts:GetAttribute("CombatQualityLevel")
+    local v11 = v3.level
+
+    if characterQuality == "Low" then
+        v11 = characterQuality
+    elseif characterQuality == "Medium" or characterQuality == "High" then
+        v11 = characterQuality
+    elseif combatQualityLevel == "Low" or combatQualityLevel == "Medium" or combatQualityLevel == "High" then
+        v11 = combatQualityLevel
     end
-    tbl_upv_1.level = v3
-    tbl_upv_1.budget = tbl_upv_2[v3]
-    a1:SetAttribute("CharacterQualityLevel", v3)
+
+    v3.level = v11
+    v3.budget = v4[v11]
+    playerScripts:SetAttribute("CharacterQualityLevel", v11)
 end
-function tbl_upv_1.Start()
+
+function v3.Start()
     --[[
       name: Start
       line: 52
       upvalues:
-        u1 (ref,  index: 1)
-        Players_upv_1 (copy, index: 2)
+        hasRun (ref,  index: 1)
+        players (copy, index: 2)
         refresh (copy, index: 3)
     ]]
-    if u1 then
+    if hasRun then
         return
     end
-    u1 = true
-    local LocalPlayer_1 = Players_upv_1.LocalPlayer
-    local u2 = LocalPlayer_1:FindFirstChildOfClass("PlayerScripts") or (LocalPlayer_1:WaitForChild("PlayerScripts", 10))
-    if not u2 then
+
+    hasRun = true
+    local localPlayer = players.LocalPlayer
+    local playerScripts = localPlayer:FindFirstChildOfClass("PlayerScripts")
+        or localPlayer:WaitForChild("PlayerScripts", 10)
+    if not playerScripts then
         return
     end
-    refresh(u2)
-    u2:GetAttributeChangedSignal("CharacterQuality"):Connect(
+
+    refresh(playerScripts)
+    playerScripts:GetAttributeChangedSignal("CharacterQuality"):Connect(
         function()
             --[[
               line: 63
               upvalues:
                 refresh (copy, index: 1)
-                u2 (copy, index: 2)
+                playerScripts (copy, index: 2)
             ]]
-            refresh(u2)
+            refresh(playerScripts)
         end
     )
-    u2:GetAttributeChangedSignal("CombatQualityLevel"):Connect(
+    playerScripts:GetAttributeChangedSignal("CombatQualityLevel"):Connect(
         function()
             --[[
               line: 66
               upvalues:
                 refresh (copy, index: 1)
-                u2 (copy, index: 2)
+                playerScripts (copy, index: 2)
             ]]
-            refresh(u2)
+            refresh(playerScripts)
         end
     )
 end
-return tbl_upv_1
+
+return v3

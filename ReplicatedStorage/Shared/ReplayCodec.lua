@@ -1,469 +1,604 @@
-local tbl_upv_1 = {}
-tbl_upv_1.VERSION = 3
-tbl_upv_1.MAGIC = 1196707664
-tbl_upv_1.REC_FRAME = 1
-tbl_upv_1.REC_EVENT = 2
-tbl_upv_1.RECORD_HEADER = 5
-tbl_upv_1.SAMPLE_BYTES = 27
-tbl_upv_1.POS_Q = 20
-tbl_upv_1.ROT_Q = 10430.060040584269
-tbl_upv_1.VEL_Q = 50
-tbl_upv_1.HP_Q = 2.5
-tbl_upv_1.F_ALIVE = 1
-tbl_upv_1.F_GROUNDED = 2
-tbl_upv_1.F_SLIDING = 4
-tbl_upv_1.F_BLOCKING = 8
-tbl_upv_1.F_AIMING = 16
-tbl_upv_1.F_VIEW = 32
-tbl_upv_1.F_FIRST = 64
-tbl_upv_1.F_AIMCAM = 128
-tbl_upv_1.V_LEFT = 1
-tbl_upv_1.VIEW_FORMAT_BYTES = 6
-tbl_upv_1.VIEW_HZ = 15
-tbl_upv_1.INV_FORMAT = "<BBBBBBHHH"
-tbl_upv_1.INV_BYTES = 12
-tbl_upv_1.INTRO_TIME = 2
-tbl_upv_1.OUTRO_TIME = 0.6
-tbl_upv_1.MAX_FIGHTERS = 16
-tbl_upv_1.MAX_KEYS = 250
-tbl_upv_1.T_FALSE = 0
-tbl_upv_1.T_TRUE = 1
-tbl_upv_1.T_U8 = 2
-tbl_upv_1.T_I32 = 3
-tbl_upv_1.T_F32 = 4
-tbl_upv_1.T_F64 = 5
-tbl_upv_1.T_STR = 6
-tbl_upv_1.T_V3 = 7
-tbl_upv_1.T_CF = 8
-tbl_upv_1.T_FIGHTER = 9
-tbl_upv_1.T_PART = 10
-function tbl_upv_1.Writer(a1)
-    --[[
-      name: Writer
-      line: 78
-    ]]
-    local v1 = math.max(64, a1 or 1024)
-    local tbl_2 = {pos = 0}
-    tbl_2.buf = buffer.create(v1)
-    tbl_2.cap = v1
-    return tbl_2
-end
-local function ensure(a1, a2)
+local v1 = {
+    VERSION = 3,
+    MAGIC = 1196707664,
+    REC_FRAME = 1,
+    REC_EVENT = 2,
+    RECORD_HEADER = 5,
+    SAMPLE_BYTES = 27,
+    POS_Q = 20,
+    ROT_Q = 10430.060040584269,
+    VEL_Q = 50,
+    HP_Q = 2.5,
+    F_ALIVE = 1,
+    F_GROUNDED = 2,
+    F_SLIDING = 4,
+    F_BLOCKING = 8,
+    F_AIMING = 16,
+    F_VIEW = 32,
+    F_FIRST = 64,
+    F_AIMCAM = 128,
+    V_LEFT = 1,
+    VIEW_FORMAT_BYTES = 6,
+    VIEW_HZ = 15,
+    INV_FORMAT = "<BBBBBBHHH",
+    INV_BYTES = 12,
+    INTRO_TIME = 2,
+    OUTRO_TIME = 0.6,
+    MAX_FIGHTERS = 16,
+    MAX_KEYS = 250,
+    T_FALSE = 0,
+    T_TRUE = 1,
+    T_U8 = 2,
+    T_I32 = 3,
+    T_F32 = 4,
+    T_F64 = 5,
+    T_STR = 6,
+    T_V3 = 7,
+    T_CF = 8,
+    T_FIGHTER = 9,
+    T_PART = 10,
+    Writer = (function(a2)
+        --[[
+          name: Writer
+          line: 78
+        ]]
+        local cap = math.max(64, (a2 or 1024))
+        return {pos = 0, buf = buffer.create(cap), cap = cap}
+    end)
+}
+
+local function ensure(a5, a6)
     --[[
       name: ensure
       line: 83
     ]]
-    local v2 = a1.pos + a2
-    if v2 <= a1.cap then
+    local v7 = a5.pos + a6
+
+    if v7 <= a5.cap then
         return
     end
-    local v3 = a1.cap * 2
-    while v3 < v2 do
-        v3 = v3 * 2
+
+    local cap = a5.cap * 2
+
+    while cap < v7 do
+        cap *= 2
     end
-    local v4 = buffer.create(v3)
-    buffer.copy(v4, 0, a1.buf, 0, a1.pos)
-    a1.buf = v4
-    a1.cap = v3
+
+    local buf = buffer.create(cap)
+    buffer.copy(buf, 0, a5.buf, 0, a5.pos)
+    a5.buf = buf
+    a5.cap = cap
 end
-tbl_upv_1.Ensure = ensure
-function tbl_upv_1.U8(a1, a2)
+
+v1.Ensure = ensure
+
+function v1.U8(a10, a11: number)
     --[[
       name: U8
       line: 99
       upvalues:
         ensure (copy, index: 1)
     ]]
-    ensure(a1, 1)
-    buffer.writeu8(a1.buf, a1.pos, (math.clamp(a2, 0, 255)))
-    a1.pos = a1.pos + 1
+    ensure(a10, 1)
+    buffer.writeu8(a10.buf, a10.pos, (math.clamp(a11, 0, 255)))
+    a10.pos += 1
 end
-function tbl_upv_1.U16(a1, a2)
+
+function v1.U16(a12, a13: number)
     --[[
       name: U16
       line: 105
       upvalues:
         ensure (copy, index: 1)
     ]]
-    ensure(a1, 2)
-    buffer.writeu16(a1.buf, a1.pos, (math.clamp(a2, 0, 65535)))
-    a1.pos = a1.pos + 2
+    ensure(a12, 2)
+    buffer.writeu16(a12.buf, a12.pos, (math.clamp(a13, 0, 65535)))
+    a12.pos += 2
 end
-function tbl_upv_1.I16(a1, a2)
+
+function v1.I16(a14, a15: number)
     --[[
       name: I16
       line: 111
       upvalues:
         ensure (copy, index: 1)
     ]]
-    ensure(a1, 2)
-    buffer.writei16(a1.buf, a1.pos, (math.clamp(a2, -32768, 32767)))
-    a1.pos = a1.pos + 2
+    ensure(a14, 2)
+    buffer.writei16(a14.buf, a14.pos, (math.clamp(a15, -32768, 32767)))
+    a14.pos += 2
 end
-function tbl_upv_1.U32(a1, a2)
+
+function v1.U32(a16, a17: number)
     --[[
       name: U32
       line: 117
       upvalues:
         ensure (copy, index: 1)
     ]]
-    ensure(a1, 4)
-    buffer.writeu32(a1.buf, a1.pos, a2)
-    a1.pos = a1.pos + 4
+    ensure(a16, 4)
+    buffer.writeu32(a16.buf, a16.pos, a17)
+    a16.pos += 4
 end
-function tbl_upv_1.I32(a1, a2)
+
+function v1.I32(a18, a19: number)
     --[[
       name: I32
       line: 123
       upvalues:
         ensure (copy, index: 1)
     ]]
-    ensure(a1, 4)
-    buffer.writei32(a1.buf, a1.pos, a2)
-    a1.pos = a1.pos + 4
+    ensure(a18, 4)
+    buffer.writei32(a18.buf, a18.pos, a19)
+    a18.pos += 4
 end
-function tbl_upv_1.F32(a1, a2)
+
+function v1.F32(a20, a21: number)
     --[[
       name: F32
       line: 129
       upvalues:
         ensure (copy, index: 1)
     ]]
-    ensure(a1, 4)
-    buffer.writef32(a1.buf, a1.pos, a2)
-    a1.pos = a1.pos + 4
+    ensure(a20, 4)
+    buffer.writef32(a20.buf, a20.pos, a21)
+    a20.pos += 4
 end
-function tbl_upv_1.F64(a1, a2)
+
+function v1.F64(a22, a23: number)
     --[[
       name: F64
       line: 135
       upvalues:
         ensure (copy, index: 1)
     ]]
-    ensure(a1, 8)
-    buffer.writef64(a1.buf, a1.pos, a2)
-    a1.pos = a1.pos + 8
+    ensure(a22, 8)
+    buffer.writef64(a22.buf, a22.pos, a23)
+    a22.pos += 8
 end
-function tbl_upv_1.Str(a1, a2)
+
+function v1.Str(a24, a25: string)
     --[[
       name: Str
       line: 141
       upvalues:
         ensure (copy, index: 1)
     ]]
-    local v5 = math.min(#a2, 255)
-    ensure(a1, v5 + 1)
-    buffer.writeu8(a1.buf, a1.pos, v5)
-    buffer.writestring(a1.buf, a1.pos + 1, a2, v5)
-    a1.pos = a1.pos + (v5 + 1)
+    local v26 = math.min(#a25, 255)
+    ensure(a24, v26 + 1)
+    buffer.writeu8(a24.buf, a24.pos, v26)
+    buffer.writestring(a24.buf, a24.pos + 1, a25, v26)
+    a24.pos += (v26 + 1)
 end
-function tbl_upv_1.V3(a1, a2)
+
+function v1.V3(a27, a28)
     --[[
       name: V3
       line: 149
       upvalues:
         ensure (copy, index: 1)
     ]]
-    ensure(a1, 12)
-    buffer.writef32(a1.buf, a1.pos, a2.X)
-    buffer.writef32(a1.buf, a1.pos + 4, a2.Y)
-    buffer.writef32(a1.buf, a1.pos + 8, a2.Z)
-    a1.pos = a1.pos + 12
+    ensure(a27, 12)
+    buffer.writef32(a27.buf, a27.pos, a28.X)
+    buffer.writef32(a27.buf, a27.pos + 4, a28.Y)
+    buffer.writef32(a27.buf, a27.pos + 8, a28.Z)
+    a27.pos += 12
 end
-function tbl_upv_1.Bytes(a1, a2, a3, a4)
+
+function v1.Bytes(a29, a30: buffer, a31: number?, a32: number?)
     --[[
       name: Bytes
       line: 158
       upvalues:
         ensure (copy, index: 1)
     ]]
-    ensure(a1, a4)
-    buffer.copy(a1.buf, a1.pos, a2, a3, a4)
-    a1.pos = a1.pos + a4
+    ensure(a29, a32)
+    buffer.copy(a29.buf, a29.pos, a30, a31, a32)
+    a29.pos += a32
 end
-function tbl_upv_1.Finish(a1)
+
+function v1.Finish(a33)
     --[[
       name: Finish
       line: 165
     ]]
-    local v6 = buffer.create(a1.pos)
-    buffer.copy(v6, 0, a1.buf, 0, a1.pos)
-    return v6
+    local v34 = buffer.create(a33.pos)
+    buffer.copy(v34, 0, a33.buf, 0, a33.pos)
+
+    return v34
 end
-tbl_upv_1.Q16 = function(a1, a2)
+
+v1.Q16 = function(a35, a36)
     --[[
       name: q16
       line: 172
     ]]
-    local v7 = math.floor((a1 * a2) + 0.5)
-    if v7 == v7 then
-        return (math.clamp(v7, -32767, 32767))
+    local flooredValue = math.floor((a35 * a36) + 0.5)
+
+    if flooredValue == flooredValue then
+        return (math.clamp(flooredValue, -32767, 32767))
     end
+
     return 0
 end
-function tbl_upv_1.WriteSample(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
+
+function v1.WriteSample(a38, a39, a40, a41, a42: number, a43, a44, a45: number, a46, a47, a48: number)
     --[[
       name: WriteSample
       line: 183
       upvalues:
         ensure (copy, index: 1)
-        tbl_upv_1 (copy, index: 2)
+        v1 (copy, index: 2)
     ]]
-    ensure(a1, 27)
-    local buf_1 = a1.buf
-    local pos_1 = a1.pos
-    local v8, v9, v10 = a3:ToEulerAnglesYXZ()
-    local v11 = math.floor((a2.X * tbl_upv_1.POS_Q) + 0.5)
-    local v12 = ((v11 ~= v11) and 0) or (math.clamp(v11, -32767, 32767))
-    buffer.writei16(buf_1, pos_1, v12)
-    local v13 = math.floor((a2.Y * tbl_upv_1.POS_Q) + 0.5)
-    local v14 = ((v13 ~= v13) and 0) or (math.clamp(v13, -32767, 32767))
-    buffer.writei16(buf_1, pos_1 + 2, v14)
-    local v15 = math.floor((a2.Z * tbl_upv_1.POS_Q) + 0.5)
-    local v16 = ((v15 ~= v15) and 0) or (math.clamp(v15, -32767, 32767))
-    buffer.writei16(buf_1, pos_1 + 4, v16)
-    local v17 = math.floor((v8 * tbl_upv_1.ROT_Q) + 0.5)
-    local v18 = ((v17 ~= v17) and 0) or (math.clamp(v17, -32767, 32767))
-    buffer.writei16(buf_1, pos_1 + 6, v18)
-    local v19 = math.floor((v9 * tbl_upv_1.ROT_Q) + 0.5)
-    local v20 = ((v19 ~= v19) and 0) or (math.clamp(v19, -32767, 32767))
-    buffer.writei16(buf_1, pos_1 + 8, v20)
-    local v21 = math.floor((v10 * tbl_upv_1.ROT_Q) + 0.5)
-    local v22 = ((v21 ~= v21) and 0) or (math.clamp(v21, -32767, 32767))
-    buffer.writei16(buf_1, pos_1 + 10, v22)
-    local v23 = math.floor((a4.X * tbl_upv_1.VEL_Q) + 0.5)
-    local v24 = ((v23 ~= v23) and 0) or (math.clamp(v23, -32767, 32767))
-    buffer.writei16(buf_1, pos_1 + 12, v24)
-    local v25 = math.floor((a4.Y * tbl_upv_1.VEL_Q) + 0.5)
-    local v26 = ((v25 ~= v25) and 0) or (math.clamp(v25, -32767, 32767))
-    buffer.writei16(buf_1, pos_1 + 14, v26)
-    local v27 = math.floor((a4.Z * tbl_upv_1.VEL_Q) + 0.5)
-    local v28 = ((v27 ~= v27) and 0) or (math.clamp(v27, -32767, 32767))
-    buffer.writei16(buf_1, pos_1 + 16, v28)
-    buffer.writeu8(buf_1, pos_1 + 18, (math.clamp(a5, 0, 255)))
-    buffer.writeu8(buf_1, pos_1 + 19, (math.clamp(math.floor((a6 * tbl_upv_1.HP_Q) + 0.5), 0, 255)))
-    buffer.writeu8(buf_1, pos_1 + 20, (math.clamp(math.floor(a7 + 0.5), 0, 255)))
-    buffer.writeu8(buf_1, pos_1 + 21, a8)
-    local v29 = math.floor((a9 * tbl_upv_1.ROT_Q) + 0.5)
-    local v30 = ((v29 ~= v29) and 0) or (math.clamp(v29, -32767, 32767))
-    buffer.writei16(buf_1, pos_1 + 22, v30)
-    local v31 = math.floor((a10 * tbl_upv_1.ROT_Q) + 0.5)
-    local v32 = ((v31 ~= v31) and 0) or (math.clamp(v31, -32767, 32767))
-    buffer.writei16(buf_1, pos_1 + 24, v32)
-    buffer.writeu8(buf_1, pos_1 + 26, (math.clamp(math.floor(a11), 0, 255)))
-    a1.pos = pos_1 + 27
+    local clampedValue
+    local clampedValue2
+    local clampedValue3
+    local clampedValue4
+    local clampedValue5
+    local clampedValue6
+    local clampedValue7
+    local clampedValue8
+    local clampedValue9
+    local clampedValue10
+    local clampedValue11
+    ensure(a38, 27)
+    local buf = a38.buf
+    local pos = a38.pos
+    local v62, v63, v64 = a40:ToEulerAnglesYXZ()
+    local flooredValue = math.floor((a39.X * v1.POS_Q) + 0.5)
+
+    if flooredValue == flooredValue then
+        clampedValue = math.clamp(flooredValue, -32767, 32767)
+    else
+        clampedValue = 0
+    end
+
+    buffer.writei16(buf, pos, clampedValue)
+    local v66 = pos + 2
+    local flooredValue2 = math.floor((a39.Y * v1.POS_Q) + 0.5)
+
+    if flooredValue2 == flooredValue2 then
+        clampedValue2 = math.clamp(flooredValue2, -32767, 32767)
+    else
+        clampedValue2 = 0
+    end
+
+    buffer.writei16(buf, v66, clampedValue2)
+    local v68 = pos + 4
+    local flooredValue3 = math.floor((a39.Z * v1.POS_Q) + 0.5)
+
+    if flooredValue3 == flooredValue3 then
+        clampedValue3 = math.clamp(flooredValue3, -32767, 32767)
+    else
+        clampedValue3 = 0
+    end
+
+    buffer.writei16(buf, v68, clampedValue3)
+    local v70 = pos + 6
+    local flooredValue4 = math.floor((v62 * v1.ROT_Q) + 0.5)
+
+    if flooredValue4 == flooredValue4 then
+        clampedValue4 = math.clamp(flooredValue4, -32767, 32767)
+    else
+        clampedValue4 = 0
+    end
+
+    buffer.writei16(buf, v70, clampedValue4)
+    local v72 = pos + 8
+    local flooredValue5 = math.floor((v63 * v1.ROT_Q) + 0.5)
+
+    if flooredValue5 == flooredValue5 then
+        clampedValue5 = math.clamp(flooredValue5, -32767, 32767)
+    else
+        clampedValue5 = 0
+    end
+
+    buffer.writei16(buf, v72, clampedValue5)
+    local v74 = pos + 10
+    local flooredValue6 = math.floor((v64 * v1.ROT_Q) + 0.5)
+
+    if flooredValue6 == flooredValue6 then
+        clampedValue6 = math.clamp(flooredValue6, -32767, 32767)
+    else
+        clampedValue6 = 0
+    end
+
+    buffer.writei16(buf, v74, clampedValue6)
+    local v76 = pos + 12
+    local flooredValue7 = math.floor((a41.X * v1.VEL_Q) + 0.5)
+
+    if flooredValue7 == flooredValue7 then
+        clampedValue7 = math.clamp(flooredValue7, -32767, 32767)
+    else
+        clampedValue7 = 0
+    end
+
+    buffer.writei16(buf, v76, clampedValue7)
+    local v78 = pos + 14
+    local flooredValue8 = math.floor((a41.Y * v1.VEL_Q) + 0.5)
+
+    if flooredValue8 == flooredValue8 then
+        clampedValue8 = math.clamp(flooredValue8, -32767, 32767)
+    else
+        clampedValue8 = 0
+    end
+
+    buffer.writei16(buf, v78, clampedValue8)
+    local v80 = pos + 16
+    local flooredValue9 = math.floor((a41.Z * v1.VEL_Q) + 0.5)
+
+    if flooredValue9 == flooredValue9 then
+        clampedValue9 = math.clamp(flooredValue9, -32767, 32767)
+    else
+        clampedValue9 = 0
+    end
+
+    buffer.writei16(buf, v80, clampedValue9)
+    buffer.writeu8(buf, pos + 18, (math.clamp(a42, 0, 255)))
+    buffer.writeu8(buf, pos + 19, (math.clamp(math.floor((a43 * v1.HP_Q) + 0.5), 0, 255)))
+    buffer.writeu8(buf, pos + 20, (math.clamp(math.floor(a44 + 0.5), 0, 255)))
+    buffer.writeu8(buf, pos + 21, a45)
+    local v82 = pos + 22
+    local flooredValue10 = math.floor((a46 * v1.ROT_Q) + 0.5)
+
+    if flooredValue10 == flooredValue10 then
+        clampedValue10 = math.clamp(flooredValue10, -32767, 32767)
+    else
+        clampedValue10 = 0
+    end
+
+    buffer.writei16(buf, v82, clampedValue10)
+    local v84 = pos + 24
+    local flooredValue11 = math.floor((a47 * v1.ROT_Q) + 0.5)
+
+    if flooredValue11 == flooredValue11 then
+        clampedValue11 = math.clamp(flooredValue11, -32767, 32767)
+    else
+        clampedValue11 = 0
+    end
+
+    buffer.writei16(buf, v84, clampedValue11)
+    buffer.writeu8(buf, pos + 26, (math.clamp(math.floor(a48), 0, 255)))
+    a38.pos = pos + 27
 end
-function tbl_upv_1.WriteValue(a1, a2, a3)
+
+function v1.WriteValue(a86, a87: number, callback)
     --[[
       name: WriteValue
       line: 208
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    local ty_1 = typeof(a2)
-    if ty_1 == "boolean" then
-        local U8_1 = tbl_upv_1.U8
-        local v33
-        if a2 then
-            v33 = tbl_upv_1.T_TRUE
-        else
-            v33 = tbl_upv_1.T_FALSE
-        end
-        U8_1(a1, v33)
-    elseif ty_1 == "number" then
-        if a2 == a2 and a2 ~= math.huge and a2 ~= -math.huge then
-            if a2 ~= math.floor(a2) then
-                tbl_upv_1.U8(a1, tbl_upv_1.T_F32)
-                tbl_upv_1.F32(a1, a2)
-            elseif (a2 >= 0) and (a2 <= 255) then
-                tbl_upv_1.U8(a1, tbl_upv_1.T_U8)
-                tbl_upv_1.U8(a1, a2)
-            elseif (a2 >= -2147483648) and (a2 <= 2147483647) then
-                tbl_upv_1.U8(a1, tbl_upv_1.T_I32)
-                tbl_upv_1.I32(a1, a2)
-            else
-                tbl_upv_1.U8(a1, tbl_upv_1.T_F64)
-                tbl_upv_1.F64(a1, a2)
-            end
-            return true
-        end
-        return false
-    elseif ty_1 == "string" then
-        tbl_upv_1.U8(a1, tbl_upv_1.T_STR)
-        tbl_upv_1.Str(a1, a2)
-    elseif ty_1 == "Vector3" then
-        tbl_upv_1.U8(a1, tbl_upv_1.T_V3)
-        tbl_upv_1.V3(a1, a2)
-    elseif ty_1 ~= "CFrame" then
-        if ty_1 ~= "Instance" then
+    local valueType = typeof(a87)
+
+    if valueType == "boolean" then
+        local u8 = v1.U8
+        local v91 = if a87 then v1.T_TRUE else v1.T_FALSE
+        u8(a86, v91)
+    elseif valueType == "number" then
+        if a87 ~= a87 or a87 == math.huge or a87 == -math.huge then
             return false
         end
-        local v34, v35 = a3(a2)
-        if v34 then
-            if v35 then
-                tbl_upv_1.U8(a1, tbl_upv_1.T_PART)
-                tbl_upv_1.U8(a1, v34)
-                tbl_upv_1.Str(a1, v35)
-            else
-                tbl_upv_1.U8(a1, tbl_upv_1.T_FIGHTER)
-                tbl_upv_1.U8(a1, v34)
-            end
+
+        if a87 ~= math.floor(a87) then
+            v1.U8(a86, v1.T_F32)
+            v1.F32(a86, a87)
+        elseif 0 <= a87 and a87 <= 255 then
+            v1.U8(a86, v1.T_U8)
+            v1.U8(a86, a87)
+        elseif not (-2147483648 <= a87) or not (a87 <= 2147483647) then
+            v1.U8(a86, v1.T_F64)
+            v1.F64(a86, a87)
         else
-            return false
+            v1.U8(a86, v1.T_I32)
+            v1.I32(a86, a87)
         end
+    elseif valueType == "string" then
+        v1.U8(a86, v1.T_STR)
+        v1.Str(a86, a87)
+    elseif valueType == "Vector3" then
+        v1.U8(a86, v1.T_V3)
+        v1.V3(a86, a87)
+    elseif valueType == "CFrame" then
+        local v92, v93, v94 = a87:ToEulerAnglesXYZ()
+        v1.U8(a86, v1.T_CF)
+        v1.V3(a86, a87.Position)
+        v1.F32(a86, v92)
+        v1.F32(a86, v93)
+        v1.F32(a86, v94)
     else
-        local v36, v37, v38 = a2:ToEulerAnglesXYZ()
-        tbl_upv_1.U8(a1, tbl_upv_1.T_CF)
-        tbl_upv_1.V3(a1, a2.Position)
-        tbl_upv_1.F32(a1, v36)
-        tbl_upv_1.F32(a1, v37)
-        tbl_upv_1.F32(a1, v38)
+        if valueType ~= "Instance" then
+            return false
+        end
+
+        local v95, v96 = callback(a87)
+        if not v95 then
+            return false
+        end
+
+        if v96 then
+            v1.U8(a86, v1.T_PART)
+            v1.U8(a86, v95)
+            v1.Str(a86, v96)
+        else
+            v1.U8(a86, v1.T_FIGHTER)
+            v1.U8(a86, v95)
+        end
     end
+
     return true
 end
-function tbl_upv_1.Reader(a1, a2)
+
+function v1.Reader(buf: buffer, a98)
     --[[
       name: Reader
       line: 268
     ]]
-    local tbl_3 = {}
-    tbl_3.buf = a1
-    tbl_3.pos = a2 or 0
-    tbl_3.len = buffer.len(a1)
-    return tbl_3
+    return {buf = buf, pos = a98 or 0, len = buffer.len(buf)}
 end
-function tbl_upv_1.Left(a1)
+
+function v1.Left(a99)
     --[[
       name: Left
       line: 272
     ]]
-    return a1.len - a1.pos
+    return a99.len - a99.pos
 end
-function tbl_upv_1.RU8(a1)
+
+function v1.RU8(a100)
     --[[
       name: RU8
       line: 276
     ]]
-    local v39 = buffer.readu8(a1.buf, a1.pos)
-    a1.pos = a1.pos + 1
-    return v39
+    local v101 = buffer.readu8(a100.buf, a100.pos)
+    a100.pos += 1
+
+    return v101
 end
-function tbl_upv_1.RU16(a1)
+
+function v1.RU16(a102)
     --[[
       name: RU16
       line: 282
     ]]
-    local v40 = buffer.readu16(a1.buf, a1.pos)
-    a1.pos = a1.pos + 2
-    return v40
+    local v103 = buffer.readu16(a102.buf, a102.pos)
+    a102.pos += 2
+
+    return v103
 end
-function tbl_upv_1.RI16(a1)
+
+function v1.RI16(a104)
     --[[
       name: RI16
       line: 288
     ]]
-    local v41 = buffer.readi16(a1.buf, a1.pos)
-    a1.pos = a1.pos + 2
-    return v41
+    local v105 = buffer.readi16(a104.buf, a104.pos)
+    a104.pos += 2
+
+    return v105
 end
-function tbl_upv_1.RU32(a1)
+
+function v1.RU32(a106)
     --[[
       name: RU32
       line: 294
     ]]
-    local v42 = buffer.readu32(a1.buf, a1.pos)
-    a1.pos = a1.pos + 4
-    return v42
+    local v107 = buffer.readu32(a106.buf, a106.pos)
+    a106.pos += 4
+
+    return v107
 end
-function tbl_upv_1.RI32(a1)
+
+function v1.RI32(a108)
     --[[
       name: RI32
       line: 300
     ]]
-    local v43 = buffer.readi32(a1.buf, a1.pos)
-    a1.pos = a1.pos + 4
-    return v43
+    local v109 = buffer.readi32(a108.buf, a108.pos)
+    a108.pos += 4
+
+    return v109
 end
-function tbl_upv_1.RF32(a1)
+
+function v1.RF32(a110)
     --[[
       name: RF32
       line: 306
     ]]
-    local v44 = buffer.readf32(a1.buf, a1.pos)
-    a1.pos = a1.pos + 4
-    return v44
+    local v111 = buffer.readf32(a110.buf, a110.pos)
+    a110.pos += 4
+
+    return v111
 end
-function tbl_upv_1.RF64(a1)
+
+function v1.RF64(a112)
     --[[
       name: RF64
       line: 312
     ]]
-    local v45 = buffer.readf64(a1.buf, a1.pos)
-    a1.pos = a1.pos + 8
-    return v45
+    local v113 = buffer.readf64(a112.buf, a112.pos)
+    a112.pos += 8
+
+    return v113
 end
-function tbl_upv_1.RStr(a1)
+
+function v1.RStr(a114)
     --[[
       name: RStr
       line: 318
     ]]
-    local v46 = buffer.readu8(a1.buf, a1.pos)
-    local v47 = buffer.readstring(a1.buf, a1.pos + 1, v46)
-    a1.pos = a1.pos + (v46 + 1)
-    return v47
+    local count = buffer.readu8(a114.buf, a114.pos)
+    local text = buffer.readstring(a114.buf, a114.pos + 1, count)
+    a114.pos += (count + 1)
+
+    return text
 end
-function tbl_upv_1.RV3(a1)
+
+function v1.RV3(a117)
     --[[
       name: RV3
       line: 325
     ]]
-    local v48 = buffer.readf32(a1.buf, a1.pos)
-    local v49 = buffer.readf32(a1.buf, a1.pos + 4)
-    local v50 = buffer.readf32(a1.buf, a1.pos + 8)
-    a1.pos = a1.pos + 12
-    return (Vector3.new(v48, v49, v50))
+    local x = buffer.readf32(a117.buf, a117.pos)
+    local y = buffer.readf32(a117.buf, a117.pos + 4)
+    local z = buffer.readf32(a117.buf, a117.pos + 8)
+    a117.pos += 12
+
+    return (Vector3.new(x, y, z))
 end
-function tbl_upv_1.ReadValue(a1)
+
+function v1.ReadValue(a121)
     --[[
       name: ReadValue
       line: 337
       upvalues:
-        tbl_upv_1 (copy, index: 1)
+        v1 (copy, index: 1)
     ]]
-    local v51 = tbl_upv_1.RU8(a1)
-    if v51 == tbl_upv_1.T_FALSE then
+    local v122 = v1.RU8(a121)
+
+    if v122 == v1.T_FALSE then
         return false
-    elseif v51 == tbl_upv_1.T_TRUE then
-        return true
-    elseif v51 == tbl_upv_1.T_U8 then
-        return tbl_upv_1.RU8(a1)
-    elseif v51 == tbl_upv_1.T_I32 then
-        return tbl_upv_1.RI32(a1)
-    elseif v51 == tbl_upv_1.T_F32 then
-        return tbl_upv_1.RF32(a1)
-    elseif v51 == tbl_upv_1.T_F64 then
-        return tbl_upv_1.RF64(a1)
-    elseif v51 == tbl_upv_1.T_STR then
-        return tbl_upv_1.RStr(a1)
-    elseif v51 == tbl_upv_1.T_V3 then
-        return tbl_upv_1.RV3(a1)
-    elseif v51 == tbl_upv_1.T_CF then
-        local v52 = tbl_upv_1.RV3(a1)
-        local v53 = tbl_upv_1.RF32(a1)
-        local v54 = tbl_upv_1.RF32(a1)
-        local v55 = tbl_upv_1.RF32(a1)
-        return CFrame.new(v52) * CFrame.fromEulerAnglesXYZ(v53, v54, v55)
-    elseif v51 == tbl_upv_1.T_FIGHTER then
-        local tbl_4 = {}
-        tbl_4.fighter = tbl_upv_1.RU8(a1)
-        return tbl_4
-    elseif v51 ~= tbl_upv_1.T_PART then
-        error("ReplayCodec: bad value tag " .. tostring(v51))
-    else
-        local tbl_5 = {}
-        tbl_5.fighter = tbl_upv_1.RU8(a1)
-        tbl_5.part = tbl_upv_1.RStr(a1)
-        return tbl_5
     end
+    if v122 == v1.T_TRUE then
+        return true
+    end
+    if v122 == v1.T_U8 then
+        return v1.RU8(a121)
+    end
+    if v122 == v1.T_I32 then
+        return v1.RI32(a121)
+    end
+    if v122 == v1.T_F32 then
+        return v1.RF32(a121)
+    end
+    if v122 == v1.T_F64 then
+        return v1.RF64(a121)
+    end
+    if v122 == v1.T_STR then
+        return v1.RStr(a121)
+    end
+    if v122 == v1.T_V3 then
+        return v1.RV3(a121)
+    end
+
+    if v122 == v1.T_CF then
+        local v123 = v1.RV3(a121)
+        local v124 = v1.RF32(a121)
+        local v125 = v1.RF32(a121)
+        local v126 = v1.RF32(a121)
+
+        return CFrame.new(v123) * CFrame.fromEulerAnglesXYZ(v124, v125, v126)
+    end
+
+    if v122 == v1.T_FIGHTER then
+        return {fighter = v1.RU8(a121)}
+    end
+
+    if v122 == v1.T_PART then
+        local fighter = v1.RU8(a121)
+        return {fighter = fighter, part = v1.RStr(a121)}
+    end
+
+    error("ReplayCodec: bad value tag " .. tostring(v122))
 end
-return tbl_upv_1
+
+return v1

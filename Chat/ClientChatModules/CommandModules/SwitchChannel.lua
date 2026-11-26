@@ -1,54 +1,62 @@
-local Util_upv_1 = require(script.Parent:WaitForChild("Util"))
-local u1 = nil
+local Util = require(script.Parent:WaitForChild("Util"))
+local v2 = nil
 pcall(
     function()
         --[[
           line: 10
           upvalues:
-            u1 (ref, index: 1)
+            v2 (ref, index: 1)
         ]]
-        u1 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
+        v2 = require(game:GetService("Chat").ClientChatModules.ChatLocalization)
     end
 )
-if u1 == nil then
-    local tbl_1 = {Get = 0}
-    function tbl_1.Get(a1, a2, a3)
-        --[[
-          name: Get
-          line: 11
-        ]]
-        return a3
-    end
-    u1 = tbl_1
+
+if v2 == nil then
+    v2 = {
+        Get = (function(a3, a4, a5)
+            --[[
+              name: Get
+              line: 11
+            ]]
+            return a5
+        end)
+    }
 end
-function ProcessMessage(a1, a2, a3)
+
+function ProcessMessage(text: string, a7, a8)
     --[[
       name: ProcessMessage
       line: 13
       upvalues:
-        Util_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
+        Util (copy, index: 1)
+        v2 (ref,  index: 2)
     ]]
-    if string.sub(a1, 1, 3):lower() ~= "/c " then
+    if string.sub(text, 1, 3):lower() ~= "/c " then
         return false
     end
-    local v1 = string.sub(a1, 4)
-    local v2 = a2:GetChannel(v1)
-    local v3 = nil
-    if v2 then
-        a2:SwitchCurrentChannel(v1)
-        if not (a3.ShowChannelsBar) and a2:GetCurrentChannel() then
-            Util_upv_1:SendSystemMessageToSelf(string.gsub(u1:Get("GameChat_SwitchChannel_NowInChannel", string.format("You are now chatting in channel: '%s'", v1), {RBX_NAME = v1}), "{RBX_NAME}", v1), v2, {})
+
+    local rbxName = string.sub(text, 4)
+
+    if const channel = a7:GetChannel(rbxName) then
+        a7:SwitchCurrentChannel(rbxName)
+
+        if not a8.ShowChannelsBar and a7:GetCurrentChannel() then
+            local stringGsub = string.gsub
+            local v12 = v2
+            Util:SendSystemMessageToSelf(stringGsub(v12:Get("GameChat_SwitchChannel_NowInChannel", string.format("You are now chatting in channel: '%s'", rbxName), {RBX_NAME = rbxName}), "{RBX_NAME}", rbxName), channel, {})
         end
-    else
-        v3 = a2:GetCurrentChannel()
-        if v3 then
-            Util_upv_1:SendSystemMessageToSelf(string.gsub(u1:Get("GameChat_SwitchChannel_NotInChannel", string.format("You are not in channel: '%s'", v1), {RBX_NAME = v1}), "{RBX_NAME}", v1), v3, {ChatColor = Color3.fromRGB(245, 50, 50)})
-        end
+    elseif const currentChannel = a7:GetCurrentChannel() then
+        local stringGsub = string.gsub
+        local v15 = v2
+        local v16 = {RBX_NAME = rbxName}
+        Util:SendSystemMessageToSelf(stringGsub(v15:Get("GameChat_SwitchChannel_NotInChannel", string.format("You are not in channel: '%s'", rbxName), v16), "{RBX_NAME}", rbxName), currentChannel, {ChatColor = Color3.fromRGB(245, 50, 50)})
     end
+
     return true
 end
-local tbl_2 = {}
-tbl_2[Util_upv_1.KEY_COMMAND_PROCESSOR_TYPE] = Util_upv_1.COMPLETED_MESSAGE_PROCESSOR
-tbl_2[Util_upv_1.KEY_PROCESSOR_FUNCTION] = ProcessMessage
-return tbl_2
+
+local v17 = {}
+v17[Util.KEY_COMMAND_PROCESSOR_TYPE] = Util.COMPLETED_MESSAGE_PROCESSOR
+v17[Util.KEY_PROCESSOR_FUNCTION] = ProcessMessage
+
+return v17

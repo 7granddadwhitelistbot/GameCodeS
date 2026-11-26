@@ -1,2373 +1,2529 @@
-local Players_upv_1 = game:GetService("Players")
-local UserInputService_upv_1 = game:GetService("UserInputService")
-local GuiService_upv_1 = game:GetService("GuiService")
-local TextService_upv_1 = game:GetService("TextService")
-local CustomMatch_upv_1 = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("CustomMatch"))
-local Keybinds_upv_1 = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Keybinds"))
-local tbl_1 = {}
-local _ = {sectionGap = 8, seatGap = 6, label = 18, left = 410, pad = 16, H = 700, teamGap = 12, leaveH = 50, status = 18, moreW = 38, head = 36, hint = 16, seatH = 56, sectionHint = 14, sectionH = 24, playerSub = 13, playerName = 17, mapCols = 4, W = 1180, desc = 15, rowH = 62, switchW = 58, teamHead = 40, mapName = 16, blockGap = 20, button = 60, mapGap = 12, gap = 24}
-local tbl_upv_2 = {sectionGap = 6, seatGap = 6, label = 17, left = 390, pad = 14, H = 700, teamGap = 10, leaveH = 54, status = 17, moreW = 46, head = 38, hint = 15, seatH = 60, sectionHint = 14, sectionH = 24, playerSub = 13, playerName = 17, mapCols = 3, W = 1180, desc = 14, rowH = 56, switchW = 58, teamHead = 40, mapName = 15, blockGap = 14, button = 54, mapGap = 10, gap = 16}
-local u1 = Color3.fromRGB(142, 149, 166)
-function tbl_1.Init(a1)
+local players = game:GetService("Players")
+local userInputService = game:GetService("UserInputService")
+local guiService = game:GetService("GuiService")
+local textService = game:GetService("TextService")
+local CustomMatch = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("CustomMatch"))
+local Keybinds = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Keybinds"))
+local v7 = {}
+local v8 = {W = 1180, H = 700, left = 410, gap = 24, pad = 16, sectionH = 24, sectionGap = 8, blockGap = 20, status = 18, button = 60, hint = 16, rowH = 62, label = 18, desc = 15, switchW = 58, mapCols = 4, mapGap = 12, mapName = 16, playerName = 17, playerSub = 13, leaveH = 50, teamHead = 40, teamGap = 12, seatH = 56, seatGap = 6, head = 36, moreW = 38, sectionHint = 14}
+local v9 = {W = 1180, H = 700, left = 390, gap = 16, pad = 14, sectionH = 24, sectionGap = 6, blockGap = 14, status = 17, button = 54, hint = 15, rowH = 56, label = 17, desc = 14, switchW = 58, mapCols = 3, mapGap = 10, mapName = 15, playerName = 17, playerSub = 13, leaveH = 54, teamHead = 40, teamGap = 10, seatH = 60, seatGap = 6, head = 38, moreW = 46, sectionHint = 14}
+local textColor3 = Color3.fromRGB(142, 149, 166)
+
+function v7.Init(a11)
     --[[
       name: Init
       line: 55
       upvalues:
-        Players_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
-        u1 (copy, index: 4)
-        CustomMatch_upv_1 (copy, index: 5)
-        TextService_upv_1 (copy, index: 6)
-        UserInputService_upv_1 (copy, index: 7)
-        Keybinds_upv_1 (copy, index: 8)
-        GuiService_upv_1 (copy, index: 9)
+        players (copy, index: 1)
+        v9 (copy, index: 2)
+        v8 (copy, index: 3)
+        textColor3 (copy, index: 4)
+        CustomMatch (copy, index: 5)
+        textService (copy, index: 6)
+        userInputService (copy, index: 7)
+        Keybinds (copy, index: 8)
+        guiService (copy, index: 9)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local Custom_upv_1 = a1.Custom
-    local LocalPlayer_upv_1 = Players_upv_1.LocalPlayer
-    local fromOffset_upv_1 = UDim2.fromOffset
-    local function OnCloseRequested()
-        --[[
-          name: OnCloseRequested
-          line: 70
-          upvalues:
-            a1 (copy, index: 1)
-        ]]
-        a1.MenuManager.Close("CustomHost")
+    local v12
+    local ui = a11.UI
+    local theme = a11.Theme
+
+    do
+        local _ = a11.State
     end
-    local u2 = UI_upv_1.Window({HeaderHeight = 80, Subtitle = "", Name = "CustomHost", Title = "CUSTOM MATCH", Size = fromOffset_upv_1(tbl_upv_2.W, tbl_upv_2.H), Parent = a1.Canvas.Menus, OnCloseRequested = OnCloseRequested})
-    local updateFade = u2.Content
-    UI_upv_1.SelectionRing(u2.Root)
-    local tbl_upv_3 = {}
-    tbl_upv_3.Name = "Code"
-    tbl_upv_3.AnchorPoint = Vector2.new(1, 0)
-    tbl_upv_3.BackgroundColor3 = Colors_upv_1.Inset
-    tbl_upv_3.BackgroundTransparency = 0.2
-    tbl_upv_3[1], tbl_upv_3[2] = UI_upv_1.Corner(10), UI_upv_1.Stroke(Colors_upv_1.Accent, 1.5, 0.5)
-    tbl_upv_3.Parent = u2.Header
-    local u3 = UI_upv_1.new("Frame", tbl_upv_3)
-    _ = UI_upv_1.new("TextLabel", {Text = "CODE", Name = "Cap", TextSize = 13, Position = fromOffset_upv_1(14, 0), Size = UDim2.new(0, 48, 1, 0), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = u3})
-    local u4 = UI_upv_1.new("TextBox", {Selectable = false, Text = "", BackgroundTransparency = 1, TextEditable = false, Name = "Value", ClearTextOnFocus = false, PlaceholderText = "", TextSize = 28, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 0), Size = UDim2.new(1, -70, 1, 0), FontFace = Fonts_upv_1.Display, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Right, Parent = u3})
-    tbl_upv_3 = Custom_upv_1.MaskDots({GroupGap = 12, Name = "Mask", Dot = 9, Gap = 5, Color = Colors_upv_1.TextDim, AnchorPoint = Vector2.new(1, 0.5), Parent = u3})
-    tbl_upv_3.Visible = false
-    local u5 = UI_upv_1.IconButton({Name = "Reveal", Visible = false, Size = fromOffset_upv_1(36, 36), AnchorPoint = Vector2.new(1, 0.5), Color = Colors_upv_1.Raised, Parent = u3})
-    local u6 = UI_upv_1.Glyph("eye", 22, Colors_upv_1.Text, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = u5})
-    local u7 = UI_upv_1.Glyph("two-stacked-squares", 18, Colors_upv_1.Text)
-    local u8 = UI_upv_1.Button({Name = "Copy", Gap = 6, Text = "COPY", TextSize = 17, Style = "Dark", AnchorPoint = Vector2.new(1, 0), Icon = u7, Parent = u2.Header})
-    local u9 = UI_upv_1.new("TextLabel", {Visible = false, Text = "", Name = "CopyHint", TextSize = 13, AnchorPoint = Vector2.new(1, 0), FontFace = Fonts_upv_1.Bold, TextColor3 = Colors_upv_1.Accent, TextXAlignment = Enum.TextXAlignment.Right, Parent = u2.Header})
-    local u10 = UI_upv_1.new("ScrollingFrame", {Name = "Left", ScrollBarThickness = 3, Selectable = false, AutomaticCanvasSize = Enum.AutomaticSize.None, VerticalScrollBarInset = Enum.ScrollBarInset.None, Parent = updateFade})
-    local u11 = UI_upv_1.SectionTitle("MATCH", {Parent = u10})
-    local function card(a2, a3)
+
+    local colors = theme.Colors
+    local fonts = theme.Fonts
+    local custom = a11.Custom
+    local localPlayer = players.LocalPlayer
+    local udim2FromOffset = UDim2.fromOffset
+    local v21 = if ui.Compact then v9 else v8
+    local v22 = ui.Window(
+        {
+            Name = "CustomHost",
+            Title = "CUSTOM MATCH",
+            Subtitle = "",
+            HeaderHeight = 80,
+            Size = udim2FromOffset(v21.W, v21.H),
+            Parent = a11.Canvas.Menus,
+            OnCloseRequested = (function()
+                --[[
+                  name: OnCloseRequested
+                  line: 70
+                  upvalues:
+                    a11 (copy, index: 1)
+                ]]
+                a11.MenuManager.Close("CustomHost")
+            end)
+        }
+    )
+    local content = v22.Content
+    ui.SelectionRing(v22.Root)
+    local parent = ui.new("Frame", {Name = "Code", AnchorPoint = Vector2.new(1, 0), BackgroundColor3 = colors.Inset, BackgroundTransparency = 0.2, ui.Corner(10), (ui.Stroke(colors.Accent, 1.5, 0.5)), Parent = v22.Header})
+    ui.new("TextLabel", {Name = "Cap", Text = "CODE", TextSize = 13, Position = udim2FromOffset(14, 0), Size = UDim2.new(0, 48, 1, 0), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent})
+    local ui2 = ui.new("TextBox", {Name = "Value", Text = "", PlaceholderText = "", TextEditable = false, ClearTextOnFocus = false, TextSize = 28, BackgroundTransparency = 1, Selectable = false, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 0), Size = UDim2.new(1, -70, 1, 0), FontFace = fonts.Display, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Right, Parent = parent})
+    local v26 = custom.MaskDots({Name = "Mask", Dot = 9, Gap = 5, GroupGap = 12, Color = colors.TextDim, AnchorPoint = Vector2.new(1, 0.5), Parent = parent})
+    v26.Visible = false
+    local parent2 = ui.IconButton({Name = "Reveal", Visible = false, Size = udim2FromOffset(36, 36), AnchorPoint = Vector2.new(1, 0.5), Color = colors.Raised, Parent = parent})
+    local v28 = ui.Glyph("eye", 22, colors.Text, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = parent2})
+    local icon = ui.Glyph("two-stacked-squares", 18, colors.Text)
+    local v30 = ui.Button({Name = "Copy", Text = "COPY", TextSize = 17, Style = "Dark", Gap = 6, AnchorPoint = Vector2.new(1, 0), Icon = icon, Parent = v22.Header})
+    local ui3 = ui.new("TextLabel", {Name = "CopyHint", Text = "", TextSize = 13, Visible = false, AnchorPoint = Vector2.new(1, 0), FontFace = fonts.Bold, TextColor3 = colors.Accent, TextXAlignment = Enum.TextXAlignment.Right, Parent = v22.Header})
+
+    local function card(name: string, parent)
         --[[
           name: card
           line: 136
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
+            ui (copy, index: 1)
+            colors (copy, index: 2)
         ]]
-        local tbl_4 = {}
-        tbl_4.Name = a2
-        tbl_4.BackgroundColor3 = Colors_upv_1.PanelHi
-        tbl_4.BackgroundTransparency = 0.3
-        tbl_4[1], tbl_4[2] = UI_upv_1.Corner(12), UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.92)
-        tbl_4.Parent = a3
-        return UI_upv_1.new("Frame", tbl_4)
+        return ui.new("Frame", {Name = name, BackgroundColor3 = colors.PanelHi, BackgroundTransparency = 0.3, ui.Corner(12), (ui.Stroke(colors.Stroke, 1, 0.92)), Parent = parent})
     end
-    local u12 = card("Match", u10)
-    local u13 = UI_upv_1.new("Frame", {Name = "Dot", Size = fromOffset_upv_1(10, 10), AnchorPoint = Vector2.new(0, 0.5), BackgroundColor3 = Colors_upv_1.Success, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u12})
-    local u14 = UI_upv_1.new("TextLabel", {Name = "Status", Text = "", FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = u12})
-    local u15 = UI_upv_1.new("TextLabel", {Name = "Teams", Text = "", AnchorPoint = Vector2.new(1, 0), FontFace = Fonts_upv_1.Bold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = u12})
-    local u16 = UI_upv_1.Button({Name = "Start", Text = "START MATCH", Style = "Primary", Icon = UI_upv_1.Glyph("play-large", 26, Colors_upv_1.Text), Parent = u12})
-    local tbl_upv_5 = {}
-    tbl_upv_5.Name = "HostedBy"
-    tbl_upv_5.BackgroundColor3 = Colors_upv_1.Inset
-    tbl_upv_5.BackgroundTransparency = 0.35
-    tbl_upv_5.Visible = false
-    tbl_upv_5[1], tbl_upv_5[2], tbl_upv_5[3] = UI_upv_1.Corner(12), UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.9), UI_upv_1.List(Enum.FillDirection.Horizontal, 10, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)
-    tbl_upv_5.Parent = u12
-    local u17 = UI_upv_1.new("Frame", tbl_upv_5)
-    UI_upv_1.Glyph("crown", 22, Colors_upv_1.Gold, {LayoutOrder = 1, Parent = u17})
-    local u18 = UI_upv_1.new("TextLabel", {LayoutOrder = 2, Name = "Text", Text = "", FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, AutomaticSize = Enum.AutomaticSize.X, Size = fromOffset_upv_1(0, 24), Parent = u17})
-    tbl_upv_5 = UI_upv_1.Button({Visible = false, Name = "End", Text = "END MATCH", Style = "Danger", Parent = u12})
-    local u19 = UI_upv_1.new("TextLabel", {Name = "Hint", Text = "", FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Center, TextTruncate = Enum.TextTruncate.AtEnd, Parent = u12})
-    local u20 = UI_upv_1.SectionTitle("SETTINGS", {Parent = u10})
-    local u21 = card("Settings", u10)
-    local function rowText(a4, a5)
-        --[[
-          name: rowText
-          line: 232
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
-            Fonts_upv_1 (copy, index: 3)
-            u1 (copy, index: 4)
-        ]]
-        return UI_upv_1.Glyph("pencil", 22, Colors_upv_1.Text, {AnchorPoint = Vector2.new(0, 0.5), Parent = a4}), UI_upv_1.new("TextLabel", {Name = "Label", Text = a5, FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, Parent = a4}), (UI_upv_1.new("TextLabel", {Name = "Desc", Text = "", FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = a4}))
-    end
-    local function row(a6, a7)
+
+    local parent3 = ui.new("ScrollingFrame", {Name = "Left", ScrollBarThickness = 3, Selectable = false, AutomaticCanvasSize = Enum.AutomaticSize.None, VerticalScrollBarInset = Enum.ScrollBarInset.None, Parent = content})
+    local v36 = ui.SectionTitle("MATCH", {Parent = parent3})
+    local parent4 = card("Match", parent3)
+    local ui4 = ui.new("Frame", {Name = "Dot", Size = udim2FromOffset(10, 10), AnchorPoint = Vector2.new(0, 0.5), BackgroundColor3 = colors.Success, (ui.Corner(theme.Radius.Pill)), Parent = parent4})
+    local ui5 = ui.new("TextLabel", {Name = "Status", Text = "", FontFace = fonts.Heavy, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = parent4})
+    local ui6 = ui.new("TextLabel", {Name = "Teams", Text = "", AnchorPoint = Vector2.new(1, 0), FontFace = fonts.Bold, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = parent4})
+    local v41 = ui.Button({Name = "Start", Text = "START MATCH", Style = "Primary", Icon = ui.Glyph("play-large", 26, colors.Text), Parent = parent4})
+    local parent5 = ui.new("Frame", {Name = "HostedBy", BackgroundColor3 = colors.Inset, BackgroundTransparency = 0.35, Visible = false, ui.Corner(12), ui.Stroke(colors.Stroke, 1, 0.9), (ui.List(Enum.FillDirection.Horizontal, 10, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)), Parent = parent4})
+    ui.Glyph("crown", 22, colors.Gold, {LayoutOrder = 1, Parent = parent5})
+    local ui7 = ui.new("TextLabel", {Name = "Text", Text = "", LayoutOrder = 2, FontFace = fonts.Heavy, TextColor3 = colors.TextDim, AutomaticSize = Enum.AutomaticSize.X, Size = udim2FromOffset(0, 24), Parent = parent5})
+    local v44 = ui.Button({Name = "End", Text = "END MATCH", Style = "Danger", Visible = false, Parent = parent4})
+    local ui8 = ui.new("TextLabel", {Name = "Hint", Text = "", FontFace = fonts.SemiBold, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Center, TextTruncate = Enum.TextTruncate.AtEnd, Parent = parent4})
+    local v46 = ui.SectionTitle("SETTINGS", {Parent = parent3})
+    local parent6 = card("Settings", parent3)
+
+    local function row(name: string, a50: number)
         --[[
           name: row
           line: 216
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            u21 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-            fromOffset_upv_1 (copy, index: 4)
-            Custom_upv_1 (copy, index: 5)
-            Theme_upv_1 (copy, index: 6)
+            ui (copy, index: 1)
+            parent6 (copy, index: 2)
+            colors (copy, index: 3)
+            udim2FromOffset (copy, index: 4)
+            custom (copy, index: 5)
+            theme (copy, index: 6)
         ]]
-        local v1 = UI_upv_1.new("TextButton", {Text = "", AutoButtonColor = false, Name = a6, Parent = u21})
-        if a7 > 1 then
-            UI_upv_1.new("Frame", {Name = "Divider", BackgroundTransparency = 0.93, BackgroundColor3 = Colors_upv_1.Stroke, Size = UDim2.new(1, -32, 0, 1), Position = fromOffset_upv_1(16, 0), Parent = v1})
+        local parent = ui.new("TextButton", {Text = "", AutoButtonColor = false, Name = name, Parent = parent6})
+
+        if 1 < a50 then
+            ui.new("Frame", {Name = "Divider", BackgroundTransparency = 0.93, BackgroundColor3 = colors.Stroke, Size = UDim2.new(1, -32, 0, 1), Position = udim2FromOffset(16, 0), Parent = parent})
         end
-        local u22 = UI_upv_1.new("Frame", {Name = "Highlight", BackgroundColor3 = Colors_upv_1.White, BackgroundTransparency = 1, Position = fromOffset_upv_1(4, 4), Size = UDim2.new(1, -8, 1, -8), [1] = UI_upv_1.Corner(9), Parent = v1})
-        v1.MouseEnter:Connect(
+
+        local ui2 = ui.new("Frame", {Name = "Highlight", BackgroundColor3 = colors.White, BackgroundTransparency = 1, Position = udim2FromOffset(4, 4), Size = UDim2.new(1, -8, 1, -8), (ui.Corner(9)), Parent = parent})
+
+        parent.MouseEnter:Connect(
             function()
                 --[[
                   line: 222
                   upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    Custom_upv_1 (copy, index: 2)
-                    u22 (copy, index: 3)
-                    Theme_upv_1 (copy, index: 4)
+                    ui (copy, index: 1)
+                    custom (copy, index: 2)
+                    ui2 (copy, index: 3)
+                    theme (copy, index: 4)
                 ]]
-                if (UI_upv_1.Touch) or not Custom_upv_1.IsHost() then
-                    return
+                if not ui.Touch and custom.IsHost() then
+                    ui.Tween(ui2, theme.Tween.Fast, {BackgroundTransparency = 0.955})
                 end
-                UI_upv_1.Tween(u22, Theme_upv_1.Tween.Fast, {BackgroundTransparency = 0.955})
             end
         )
-        v1.MouseLeave:Connect(
+
+        parent.MouseLeave:Connect(
             function()
                 --[[
                   line: 227
                   upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    u22 (copy, index: 2)
-                    Theme_upv_1 (copy, index: 3)
+                    ui (copy, index: 1)
+                    ui2 (copy, index: 2)
+                    theme (copy, index: 3)
                 ]]
-                UI_upv_1.Tween(u22, Theme_upv_1.Tween.Fast, {BackgroundTransparency = 1})
+                ui.Tween(ui2, theme.Tween.Fast, {BackgroundTransparency = 1})
             end
         )
-        return v1, u22
+
+        return parent, ui2
     end
-    local u23 = row("ModeRow", 1)
-    local u24, u25
-    u24, _, u25 = rowText(u23, "MODE")
-    local u26 = nil
-    local u27 = {Name = "Mode", Height = 36, Width = 128}
-    u27.Options = {{id = "3v3", text = "3V3"}, {id = "1v1", text = "1V1"}}
-    u27.Selected = CustomMatch_upv_1.DEFAULT_MODE
-    u27.AnchorPoint = Vector2.new(1, 0.5)
-    u27.Parent = u23
-    function u27.OnSelect(a8)
+
+    local function rowText(parent, text: string)
         --[[
-          name: OnSelect
-          line: 252
+          name: rowText
+          line: 232
           upvalues:
-            u26 (ref, index: 1)
+            ui (copy, index: 1)
+            colors (copy, index: 2)
+            fonts (copy, index: 3)
+            textColor3 (copy, index: 4)
         ]]
-        u26(a8)
+        local v56 = ui.Glyph("pencil", 22, colors.Text, {AnchorPoint = Vector2.new(0, 0.5), Parent = parent})
+        local ui2 = ui.new("TextLabel", {Name = "Label", Text = text, FontFace = fonts.Heavy, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent})
+
+        return v56, ui2, (ui.new("TextLabel", {Name = "Desc", Text = "", FontFace = fonts.SemiBold, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = parent}))
     end
-    local u28 = UI_upv_1.Segmented(u27)
-    local u29 = UI_upv_1.new("TextLabel", {Name = "Value", Text = "", Visible = false, AnchorPoint = Vector2.new(1, 0.5), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Right, Parent = u23})
-    local function OnSelect(a9)
-        --[[
-          name: OnSelect
-          line: 276
-          upvalues:
-            u26 (ref, index: 1)
-        ]]
-        u26(a9)
-    end
-    u27 = UI_upv_1.Segmented({Visible = false, Width = 124, Name = "ModeCompact", TextSize = 20, Options = {{id = "3v3", text = "3V3"}, {id = "1v1", text = "1V1"}}, Selected = CustomMatch_upv_1.DEFAULT_MODE, Height = tbl_upv_2.button, Parent = u12, OnSelect = OnSelect})
-    local u30 = row("NameRow", 2)
-    local u31, u32
-    local u33, u31, u32 = rowText(u30, "SERVER NAME")
-    u32.TextColor3 = Colors_upv_1.TextDim
-    local u34 = UI_upv_1.new("TextLabel", {Name = "Edit", Text = "EDIT", AnchorPoint = Vector2.new(1, 0.5), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.Accent, TextXAlignment = Enum.TextXAlignment.Right, Parent = u30})
-    local tbl_upv_6 = {}
-    tbl_upv_6.Name = "NameBox"
-    tbl_upv_6.Text = ""
-    tbl_upv_6.PlaceholderText = ""
-    tbl_upv_6.PlaceholderColor3 = Colors_upv_1.TextMuted
-    tbl_upv_6.ClearTextOnFocus = false
-    tbl_upv_6.FontFace = Fonts_upv_1.Bold
-    tbl_upv_6.TextColor3 = Colors_upv_1.Text
-    tbl_upv_6.TextXAlignment = Enum.TextXAlignment.Left
-    tbl_upv_6.BackgroundColor3 = Colors_upv_1.Inset
-    tbl_upv_6.BackgroundTransparency = 0.05
-    tbl_upv_6.Visible = false
-    tbl_upv_6.ZIndex = 4
-    tbl_upv_6[1], tbl_upv_6[2] = UI_upv_1.Corner(8), UI_upv_1.Padding(0, 10, 0, 10)
-    tbl_upv_6.Parent = u30
-    local u35 = UI_upv_1.new("TextBox", tbl_upv_6)
-    UI_upv_1.Stroke(Colors_upv_1.Accent, 1.5, 0.3).Parent = u35
-    local u36 = row("PublicRow", 3)
-    local u37, u38
-    tbl_upv_6, u37, u38 = rowText(u36, "PUBLIC")
-    local u39 = UI_upv_1.Switch({Width = 58, AnchorPoint = Vector2.new(1, 0.5), Parent = u36})
-    local u40 = row("BotsRow", 4)
-    local u41, u42
-    u41, _, u42 = rowText(u40, "FILL WITH BOTS")
-    u41.Text = "three-people"
-    u42.Text = "Bots take the empty slots, up to 3v3"
-    local u43 = UI_upv_1.Switch({Width = 58, AnchorPoint = Vector2.new(1, 0.5), Parent = u40})
-    local u44 = UI_upv_1.new("TextLabel", {Name = "Value", Text = "", Visible = false, AnchorPoint = Vector2.new(1, 0.5), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = u40})
-    local u45 = UI_upv_1.Button({Name = "Leave", Text = "LEAVE SERVER", TextSize = 18, Style = "Dark", Parent = u10})
-    local u46 = UI_upv_1.new("ScrollingFrame", {Name = "Right", ScrollBarThickness = 5, Selectable = false, AutomaticCanvasSize = Enum.AutomaticSize.None, Parent = updateFade})
-    local u47 = UI_upv_1.new("Frame", {Name = "Fade", AnchorPoint = Vector2.new(0, 1), BackgroundColor3 = Colors_upv_1.PanelLo, ZIndex = 6, Visible = false, [1] = UI_upv_1.Gradient(Color3.new(1, 1, 1), Color3.new(1, 1, 1), 90, NumberSequence.new(1, 0.05)), Parent = updateFade})
-    updateFade = function()
+
+    local parent7 = row("ModeRow", 1)
+    local v59, _, v61 = rowText(parent7, "MODE")
+    local v62 = nil
+    local v63 = ui.Segmented(
+        {
+            Name = "Mode",
+            Width = 128,
+            Height = 36,
+            Options = {{id = "3v3", text = "3V3"}, {id = "1v1", text = "1V1"}},
+            Selected = CustomMatch.DEFAULT_MODE,
+            AnchorPoint = Vector2.new(1, 0.5),
+            Parent = parent7,
+            OnSelect = (function(a64)
+                --[[
+                  name: OnSelect
+                  line: 252
+                  upvalues:
+                    v62 (ref, index: 1)
+                ]]
+                v62(a64)
+            end)
+        }
+    )
+    local ui9 = ui.new("TextLabel", {Name = "Value", Text = "", Visible = false, AnchorPoint = Vector2.new(1, 0.5), FontFace = fonts.Heavy, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Right, Parent = parent7})
+    local v66 = ui.Segmented(
+        {
+            Name = "ModeCompact",
+            Width = 124,
+            TextSize = 20,
+            Visible = false,
+            Options = {{id = "3v3", text = "3V3"}, {id = "1v1", text = "1V1"}},
+            Selected = CustomMatch.DEFAULT_MODE,
+            Height = v9.button,
+            Parent = parent4,
+            OnSelect = (function(a67)
+                --[[
+                  name: OnSelect
+                  line: 276
+                  upvalues:
+                    v62 (ref, index: 1)
+                ]]
+                v62(a67)
+            end)
+        }
+    )
+    local parent8 = row("NameRow", 2)
+    local v69, v70, v71 = rowText(parent8, "SERVER NAME")
+    v71.TextColor3 = colors.TextDim
+    local ui10 = ui.new("TextLabel", {Name = "Edit", Text = "EDIT", AnchorPoint = Vector2.new(1, 0.5), FontFace = fonts.Heavy, TextColor3 = colors.Accent, TextXAlignment = Enum.TextXAlignment.Right, Parent = parent8})
+    local parent9 = ui.new("TextBox", {Name = "NameBox", Text = "", PlaceholderText = "", PlaceholderColor3 = colors.TextMuted, ClearTextOnFocus = false, FontFace = fonts.Bold, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Left, BackgroundColor3 = colors.Inset, BackgroundTransparency = 0.05, Visible = false, ZIndex = 4, ui.Corner(8), (ui.Padding(0, 10, 0, 10)), Parent = parent8})
+    ui.Stroke(colors.Accent, 1.5, 0.3).Parent = parent9
+    local parent10 = row("PublicRow", 3)
+    local v75, v76, v77 = rowText(parent10, "PUBLIC")
+    local v78 = ui.Switch({Width = 58, AnchorPoint = Vector2.new(1, 0.5), Parent = parent10})
+    local parent11 = row("BotsRow", 4)
+    local v80, _, v82 = rowText(parent11, "FILL WITH BOTS")
+    v80.Text = "three-people"
+    v82.Text = "Bots take the empty slots, up to 3v3"
+    local v83 = ui.Switch({Width = 58, AnchorPoint = Vector2.new(1, 0.5), Parent = parent11})
+    local ui11 = ui.new("TextLabel", {Name = "Value", Text = "", Visible = false, AnchorPoint = Vector2.new(1, 0.5), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = parent11})
+    local v85 = ui.Button({Name = "Leave", Text = "LEAVE SERVER", TextSize = 18, Style = "Dark", Parent = parent3})
+    local parent12 = ui.new("ScrollingFrame", {Name = "Right", ScrollBarThickness = 5, Selectable = false, AutomaticCanvasSize = Enum.AutomaticSize.None, Parent = content})
+    local ui12 = ui.new("Frame", {Name = "Fade", AnchorPoint = Vector2.new(0, 1), BackgroundColor3 = colors.PanelLo, ZIndex = 6, Visible = false, (ui.Gradient(Color3.new(1, 1, 1), Color3.new(1, 1, 1), 90, NumberSequence.new(1, 0.05))), Parent = content})
+
+    local function updateFade()
         --[[
           name: updateFade
           line: 356
           upvalues:
-            u47 (copy, index: 1)
-            u46 (copy, index: 2)
+            ui12 (copy, index: 1)
+            parent12 (copy, index: 2)
         ]]
-        u47.Visible = (u46.AbsoluteCanvasSize.Y - (u46.CanvasPosition.Y + u46.AbsoluteWindowSize.Y)) > 2
+        ui12.Visible = 2 < (parent12.AbsoluteCanvasSize.Y - (parent12.CanvasPosition.Y + parent12.AbsoluteWindowSize.Y))
     end
-    u46:GetPropertyChangedSignal("CanvasPosition"):Connect(updateFade)
-    u46:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(updateFade)
-    u46:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateFade)
-    local tbl_upv_7 = {Colors_upv_1.Ally, Colors_upv_1.Enemy}
-    local u48 = UI_upv_1.SectionTitle("TEAMS", {Parent = u46})
-    local function sectionHint(a10)
+
+    parent12:GetPropertyChangedSignal("CanvasPosition"):Connect(updateFade)
+    parent12:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(updateFade)
+    parent12:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateFade)
+
+    local function sectionHint(name: string)
         --[[
           name: sectionHint
           line: 364
           upvalues:
-            UI_upv_1 (copy, index: 1)
-            Fonts_upv_1 (copy, index: 2)
-            u1 (copy, index: 3)
-            u46 (copy, index: 4)
+            ui (copy, index: 1)
+            fonts (copy, index: 2)
+            textColor3 (copy, index: 3)
+            parent12 (copy, index: 4)
         ]]
-        return UI_upv_1.new("TextLabel", {Text = "", Name = a10, AnchorPoint = Vector2.new(1, 0), FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Right, TextTruncate = Enum.TextTruncate.AtEnd, Parent = u46})
+        return ui.new("TextLabel", {Text = "", Name = name, AnchorPoint = Vector2.new(1, 0), FontFace = fonts.SemiBold, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Right, TextTruncate = Enum.TextTruncate.AtEnd, Parent = parent12})
     end
-    local u49 = sectionHint("TeamsHint")
-    local u50 = nil
-    local function makeSeat(a11, a12, a13)
+
+    local v91 = {colors.Ally, colors.Enemy}
+    local v92 = ui.SectionTitle("TEAMS", {Parent = parent12})
+    local v93 = sectionHint("TeamsHint")
+    local v94 = nil
+
+    local function makeSeat(parent, team: number, name: string)
         --[[
           name: makeSeat
           line: 385
           upvalues:
-            Colors_upv_1 (copy, index: 1)
-            tbl_upv_7 (copy, index: 2)
-            UI_upv_1 (copy, index: 3)
-            Theme_upv_1 (copy, index: 4)
-            Fonts_upv_1 (copy, index: 5)
-            a1 (copy, index: 6)
-            u50 (ref,  index: 7)
+            colors (copy, index: 1)
+            v91 (copy, index: 2)
+            ui (copy, index: 3)
+            theme (copy, index: 4)
+            fonts (copy, index: 5)
+            a11 (copy, index: 6)
+            v94 (ref,  index: 7)
         ]]
-        local Accent_upv_1
-        if a12 ~= 0 then
-            Accent_upv_1 = tbl_upv_7[a12]
-        else
-            Accent_upv_1 = Colors_upv_1.Accent
-        end
-        local u51 = UI_upv_1.new("TextButton", {Name = a13, Text = "", AutoButtonColor = false, BackgroundColor3 = Colors_upv_1.Inset, BackgroundTransparency = 0.75, [1] = UI_upv_1.Corner(10), Parent = a11})
-        local u52 = UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.92)
-        u52.Parent = u51
-        local v2 = UI_upv_1.new("Frame", {Name = "Ring", AnchorPoint = Vector2.new(0, 0.5), [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u51})
-        local u53 = UI_upv_1.Stroke(Colors_upv_1.TextMuted, 1.5, 0.55)
-        u53.Parent = v2
-        local v3 = UI_upv_1.Icon("plus", 16, Accent_upv_1, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v2})
-        local v4 = "TextLabel"
-        local v5 = UI_upv_1.new(v4, {Name = "Label", Text = "Open", AnchorPoint = Vector2.new(0, 0.5), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, Parent = u51})
-        local tbl_upv_8 = nil
-        local u54 = false
-        local function look_upv_1()
+        local v99 = if team == 0 then colors.Accent else v91[team]
+        local ui2 = ui.new("TextButton", {Name = name, Text = "", AutoButtonColor = false, BackgroundColor3 = colors.Inset, BackgroundTransparency = 0.75, (ui.Corner(10)), Parent = parent})
+        local stroke = ui.Stroke(colors.Stroke, 1, 0.92)
+        stroke.Parent = ui2
+        local ui3 = ui.new("Frame", {Name = "Ring", AnchorPoint = Vector2.new(0, 0.5), (ui.Corner(theme.Radius.Pill)), Parent = ui2})
+        local v103 = ui.Stroke(colors.TextMuted, 1.5, 0.55)
+        v103.Parent = ui3
+        local plus = ui.Icon("plus", 16, v99, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = ui3})
+        local label = ui.new("TextLabel", {Name = "Label", Text = "Open", AnchorPoint = Vector2.new(0, 0.5), FontFace = fonts.Heavy, TextColor3 = colors.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, Parent = ui2})
+        local v106 = nil
+        local v107 = false
+
+        local function look()
             --[[
               name: look
               line: 413
               upvalues:
-                tbl_upv_8 (ref,  index: 1)
-                u54 (ref,  index: 2)
-                UI_upv_1 (copy, index: 3)
-                u52 (copy, index: 4)
-                Theme_upv_1 (copy, index: 5)
-                Accent_upv_1 (copy, index: 6)
-                Colors_upv_1 (copy, index: 7)
-                u51 (copy, index: 8)
-                u53 (copy, index: 9)
+                v106 (ref,  index: 1)
+                v107 (ref,  index: 2)
+                ui (copy, index: 3)
+                stroke (copy, index: 4)
+                theme (copy, index: 5)
+                v99 (copy, index: 6)
+                colors (copy, index: 7)
+                ui2 (copy, index: 8)
+                v103 (copy, index: 9)
             ]]
-            local join_1 = tbl_upv_8.join
-            local _ = join_1 and u54
-            local Tween_1 = UI_upv_1.Tween
-            local Fast_1 = Theme_upv_1.Tween.Fast
-            local tbl_9 = {Color = 0, Transparency = 0}
-            local v6
-            if tbl_upv_8.join then
-                v6 = Accent_upv_1
-            else
-                v6 = Colors_upv_1.Stroke
-            end
-            tbl_9.Color = v6
-            v6 = (join_1 and 0.05) or (((tbl_upv_8.join) and 0.45) or 0.92)
-            tbl_9.Transparency = v6
-            Tween_1(u52, Fast_1, tbl_9)
-            local Tween_2 = UI_upv_1.Tween
-            local Fast_2 = Theme_upv_1.Tween.Fast
-            local tbl_10 = {BackgroundTransparency = 0, BackgroundColor3 = 0}
-            local v7
-            if tbl_upv_8.join then
-                v7 = Accent_upv_1
-            else
-                v7 = Colors_upv_1.Inset
-            end
-            tbl_10.BackgroundColor3 = v7
-            tbl_10.BackgroundTransparency = (join_1 and 0.82) or (((tbl_upv_8.join) and 0.92) or 0.75)
-            Tween_2(u51, Fast_2, tbl_10)
-            local v8
-            if tbl_upv_8.join then
-                v8 = Accent_upv_1
-            else
-                v8 = Colors_upv_1.TextMuted
-            end
-            u53.Color = v8
-            u53.Transparency = ((tbl_upv_8.join) and 0.2) or 0.55
+            local v109 = v106.join and v107
+            local tween = ui.Tween
+            local fast = theme.Tween.Fast
+            local v112 = {Color = if v106.join then v99 else colors.Stroke}
+            local transparency = v109 and 0.05 or v106.join and 0.45 or 0.92
+            v112.Transparency = transparency
+            tween(stroke, fast, v112)
+            local tween2 = ui.Tween
+            local fast2 = theme.Tween.Fast
+            local v116 = {BackgroundColor3 = if v106.join then v99 else colors.Inset}
+            local backgroundTransparency = v109 and 0.82 or v106.join and 0.92 or 0.75
+            v116.BackgroundTransparency = backgroundTransparency
+            tween2(ui2, fast2, v116)
+            v103.Color = if v106.join then v99 else colors.TextMuted
+            v103.Transparency = v106.join and 0.2 or 0.55
         end
-        tbl_upv_8 = {join = false, btn = u51, stroke = u52, ring = v2, plus = v3, label = v5, team = a12, look = look_upv_1}
-        u51.MouseEnter:Connect(
+
+        v106 = {join = false, btn = ui2, stroke = stroke, ring = ui3, plus = plus, label = label, team = team, look = look}
+
+        ui2.MouseEnter:Connect(
             function()
                 --[[
                   line: 427
                   upvalues:
-                    u54 (ref,  index: 1)
-                    tbl_upv_8 (ref,  index: 2)
-                    UI_upv_1 (copy, index: 3)
-                    a1 (copy, index: 4)
-                    look_upv_1 (copy, index: 5)
+                    v107 (ref,  index: 1)
+                    v106 (ref,  index: 2)
+                    ui (copy, index: 3)
+                    a11 (copy, index: 4)
+                    look (copy, index: 5)
                 ]]
-                u54 = true
-                if tbl_upv_8.join and not (UI_upv_1.Touch) then
-                    a1.Sounds.Play("Hover")
+                v107 = true
+
+                if v106.join and not ui.Touch then
+                    a11.Sounds.Play("Hover")
                 end
-                look_upv_1()
+
+                look()
             end
         )
-        u51.MouseLeave:Connect(
+
+        ui2.MouseLeave:Connect(
             function()
                 --[[
                   line: 434
                   upvalues:
-                    u54 (ref,  index: 1)
-                    look_upv_1 (copy, index: 2)
+                    v107 (ref,  index: 1)
+                    look (copy, index: 2)
                 ]]
-                u54 = false
-                look_upv_1()
+                v107 = false
+                look()
             end
         )
-        u51.Activated:Connect(
+
+        ui2.Activated:Connect(
             function()
                 --[[
                   line: 438
                   upvalues:
-                    tbl_upv_8 (ref,  index: 1)
-                    UI_upv_1 (copy, index: 2)
-                    u51 (copy, index: 3)
-                    u50 (ref,  index: 4)
+                    v106 (ref,  index: 1)
+                    ui (copy, index: 2)
+                    ui2 (copy, index: 3)
+                    v94 (ref,  index: 4)
                 ]]
-                if not tbl_upv_8.join then
+                if v106.join then
+                    ui.Bump(ui2, 0.04)
+                    v94(v106.team)
+                end
+            end
+        )
+
+        return v106
+    end
+
+    local function setSeat(seat, a120: boolean)
+        --[[
+          name: setSeat
+          line: 446
+          upvalues:
+            theme (copy, index: 1)
+            colors (copy, index: 2)
+            v91 (copy, index: 3)
+            fonts (copy, index: 4)
+        ]]
+        local v121
+        seat.join = a120
+        seat.label.Text = a120 and "JOIN" or "Open"
+        local label = seat.label
+
+        if a120 then
+            local lighten = theme.Lighten
+            local v124 = if seat.team == 0 then colors.Accent else v91[seat.team]
+            v121 = lighten(v124, 0.3)
+        else
+            v121 = colors.TextMuted
+        end
+
+        label.TextColor3 = v121
+        seat.label.FontFace = if a120 then fonts.Heavy else fonts.SemiBold
+        seat.plus.Visible = a120
+        seat.btn.Selectable = a120
+        seat.look()
+    end
+
+    local v125 = {}
+    local v126 = {}
+    v12 = v21
+
+    for index = 1, 2 do
+        do
+            local v128 = card("Team" .. index, parent12)
+
+            do
+                local uiStroke = v128:FindFirstChildOfClass("UIStroke")
+                uiStroke.Color = v91[index]
+                uiStroke.Thickness = 1.5
+                uiStroke.Transparency = 0.7
+            end
+
+            local dot = ui.new("Frame", {Name = "Dot", AnchorPoint = Vector2.new(0, 0.5), BackgroundColor3 = v91[index], (ui.Corner(theme.Radius.Pill)), Parent = v128})
+            local title = ui.new("TextLabel", {Name = "Title", AnchorPoint = Vector2.new(0, 0.5), Text = "TEAM " .. index, FontFace = fonts.Heavy, TextColor3 = theme.Lighten(v91[index], 0.35), TextXAlignment = Enum.TextXAlignment.Left, Parent = v128})
+            local count = ui.new("TextLabel", {Name = "Count", Text = "", AnchorPoint = Vector2.new(1, 0.5), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = v128})
+            local seats = {}
+
+            for index2 = 1, CustomMatch.TEAM_SIZE do
+                table.insert(seats, (makeSeat(v128, index, "Open" .. index2)))
+                table.insert(v126, seats[index2])
+            end
+
+            v125[index] = {n = -1, frame = v128, dot = dot, title = title, count = count, seats = seats}
+        end
+    end
+
+    do
+        local v135 = ui.SectionTitle("RANDOM", {Parent = parent12})
+        local v136 = sectionHint("RandomHint")
+        local parent13 = card("Random", parent12)
+        local seat = makeSeat(parent13, 0, "Join")
+        table.insert(v126, seat)
+        local v139 = ui.SectionTitle("MAP", {Parent = parent12})
+        local ui13 = ui.new("TextLabel", {Name = "MapValue", Text = "", TextSize = 15, AnchorPoint = Vector2.new(1, 0), FontFace = fonts.Heavy, TextColor3 = colors.Accent, TextXAlignment = Enum.TextXAlignment.Right, Parent = parent12})
+        local parent14 = ui.new("Frame", {Name = "Maps", Parent = parent12})
+        local v142 = false
+        local v143 = {}
+        local isBusy = false
+        local isBusy2 = false
+
+        do
+            local function isHost()
+                --[[
+                  name: isHost
+                  line: 516
+                  upvalues:
+                    custom (copy, index: 1)
+                ]]
+                return custom.IsHost()
+            end
+        end
+
+        do
+            local function stateNow()
+                --[[
+                  name: stateNow
+                  line: 520
+                  upvalues:
+                    custom (copy, index: 1)
+                ]]
+                return custom.State() or {}
+            end
+        end
+
+        local function modeOf(a149)
+            --[[
+              name: modeOf
+              line: 525
+              upvalues:
+                CustomMatch (copy, index: 1)
+                v143 (copy, index: 2)
+            ]]
+            local mode = CustomMatch.Mode
+            local mode2 = if v143.mode ~= nil then v143.mode else a149.mode
+
+            return mode(mode2)
+        end
+
+        do
+            local function sizeOf(a153)
+                --[[
+                  name: sizeOf
+                  line: 528
+                  upvalues:
+                    CustomMatch (copy, index: 1)
+                    modeOf (copy, index: 2)
+                ]]
+                return CustomMatch.TeamSize(modeOf(a153))
+            end
+        end
+
+        do
+            local function teamCardH(a155)
+                --[[
+                  name: teamCardH
+                  line: 532
+                  upvalues:
+                    v12 (ref, index: 1)
+                ]]
+                return (v12.teamHead + (a155 * v12.seatH) + ((a155 - 1) * v12.seatGap)) + 8
+            end
+        end
+
+        local v156 = {}
+        local v157 = ""
+        local v158 = nil
+
+        local function buildMapCards(a160)
+            --[[
+              name: buildMapCards
+              line: 543
+              upvalues:
+                v157 (ref,  index: 1)
+                v156 (copy, index: 2)
+                ui (copy, index: 3)
+                colors (copy, index: 4)
+                parent14 (copy, index: 5)
+                fonts (copy, index: 6)
+                v12 (ref,  index: 7)
+                udim2FromOffset (copy, index: 8)
+                theme (copy, index: 9)
+                custom (copy, index: 10)
+                a11 (copy, index: 11)
+                v158 (ref,  index: 12)
+            ]]
+            local v161
+            local v162 = ""
+            v161 = v162
+
+            for _, v164 in a160 do
+                v161 ..= v164.id .. ";"
+            end
+
+            if v161 == v157 then
+                return
+            end
+
+            v157 = v161
+
+            for _, v166 in v156 do
+                v166.btn:Destroy()
+            end
+
+            table.clear(v156)
+            local v167 = {{id = "", name = "Random", thumb = ""}}
+
+            for _, v169 in a160 do
+                table.insert(v167, v169)
+            end
+
+            for layoutOrder, v171 in v167 do
+                local newUi = ui.new
+                local v173 = {}
+                local v174 = v171.id == "" and "Random" or v171.id
+                v173.Name = "Map_" .. v174
+                v173.Text = ""
+                v173.AutoButtonColor = false
+                v173.BackgroundColor3 = colors.Raised
+                v173.LayoutOrder = layoutOrder
+                v173[1] = (ui.Corner(10))
+                v173.Parent = parent14
+                local ui2 = newUi("TextButton", v173)
+                local stroke = ui.Stroke(colors.Stroke, 1, 0.88)
+                stroke.Parent = ui2
+                local img = ui.new("ImageLabel", {Name = "Thumb", Size = UDim2.fromScale(1, 1), ScaleType = Enum.ScaleType.Crop, Image = v171.thumb
+                    or "", BackgroundTransparency = 1, (ui.Corner(10)), Parent = ui2})
+
+                if v171.id == "" then
+                    ui.Gradient(Color3.fromRGB(52, 58, 74), Color3.fromRGB(26, 29, 38), 120).Parent = ui2
+                    ui2.BackgroundColor3 = Color3.new(1, 1, 1)
+                    ui.new("TextLabel", {Name = "Mark", Text = "?", TextSize = 46, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.4), Size = UDim2.fromScale(1, 0.6), FontFace = fonts.Display, TextColor3 = colors.TextDim, Parent = ui2})
+                end
+
+                local parent = ui.new("Frame", {Name = "Band", AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, 34), BackgroundColor3 = colors.Void, BackgroundTransparency = 0, ui.Corner(10), (ui.Gradient(Color3.new(1, 1, 1), Color3.new(1, 1, 1), 90, NumberSequence.new(0.85, 0.2))), Parent = ui2})
+                local name = ui.new("TextLabel", {Name = "MapName", AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 10, 1, -6), Size = UDim2.new(1, -20, 0, 20), Text = string.upper(v171.name), FontFace = fonts.Heavy, TextSize = v12.mapName, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = parent})
+                local ui3 = ui.new("Frame", {Name = "Check", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -8, 0, 8), Size = udim2FromOffset(26, 26), BackgroundColor3 = colors.Accent, Visible = false, ZIndex = 3, ui.Corner(theme.Radius.Pill), (ui.Stroke(colors.Void, 1, 0.6)), Parent = ui2})
+                ui.Icon("check", 16, colors.Text, {ZIndex = 4, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = ui3})
+                local v181 = {id = v171.id, btn = ui2, stroke = stroke, check = ui3, img = img, name = name, scaleObj = ui.GetScaleObj(ui2, "HoverScale")}
+
+                ui2.MouseEnter:Connect(
+                    function()
+                        --[[
+                          line: 635
+                          upvalues:
+                            ui (copy, index: 1)
+                            custom (copy, index: 2)
+                            a11 (copy, index: 3)
+                            v181 (copy, index: 4)
+                            theme (copy, index: 5)
+                        ]]
+                        if not ui.Touch and custom.IsHost() then
+                            a11.Sounds.Play("Hover")
+                            ui.Tween(v181.scaleObj, theme.Tween.PopSmall, {Scale = 1.03})
+
+                            if v181.stroke.Thickness < 2 then
+                                ui.Tween(v181.stroke, theme.Tween.Fast, {Transparency = 0.55})
+                            end
+                        end
+                    end
+                )
+
+                ui2.MouseLeave:Connect(
+                    function()
+                        --[[
+                          line: 644
+                          upvalues:
+                            ui (copy, index: 1)
+                            v181 (copy, index: 2)
+                            theme (copy, index: 3)
+                        ]]
+                        ui.Tween(v181.scaleObj, theme.Tween.PopSmall, {Scale = 1})
+
+                        if v181.stroke.Thickness < 2 then
+                            ui.Tween(v181.stroke, theme.Tween.Fast, {Transparency = 0.88})
+                        end
+                    end
+                )
+
+                ui2.Activated:Connect(
+                    function()
+                        --[[
+                          line: 650
+                          upvalues:
+                            custom (copy, index: 1)
+                            v158 (ref,  index: 2)
+                            v181 (copy, index: 3)
+                        ]]
+                        if custom.IsHost() then
+                            v158(v181.id)
+                        end
+                    end
+                )
+
+                table.insert(v156, v181)
+            end
+        end
+
+        local v182 = {}
+        local v183 = {}
+
+        do
+            local function headshot(userId, a186)
+                --[[
+                  name: headshot
+                  line: 663
+                  upvalues:
+                    v183 (copy, index: 1)
+                    players (copy, index: 2)
+                ]]
+                if userId <= 0 then
+                    a186.Image = ""
                     return
                 end
-                UI_upv_1.Bump(u51, 0.04)
-                u50(tbl_upv_8.team)
+
+                if v183[userId] then
+                    a186.Image = v183[userId]
+                    return
+                end
+
+                task.spawn(
+                    function()
+                        --[[
+                          line: 672
+                          upvalues:
+                            players (copy, index: 1)
+                            userId (copy, index: 2)
+                            v183 (copy, index: 3)
+                            a186 (copy, index: 4)
+                        ]]
+                        local success, image = pcall(
+                            function()
+                                --[[
+                                  line: 673
+                                  upvalues:
+                                    players (copy, index: 1)
+                                    userId (copy, index: 2)
+                                ]]
+                                return players:GetUserThumbnailAsync(userId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size150x150)
+                            end
+                        )
+
+                        if success and type(image) == "string" then
+                            v183[userId] = image
+
+                            if a186.Parent then
+                                a186.Image = image
+                            end
+                        end
+                    end
+                )
             end
-        )
-        return v4
-    end
-    local tbl_upv_11 = {}
-    local tbl_upv_12 = {}
-    for n_1 = 1, 2 do
-        local v9 = card("Team" .. n_1, u46)
-        local v10 = v9:FindFirstChildOfClass("UIStroke")
-        v10.Color = tbl_upv_7[n_1]
-        v10.Thickness = 1.5
-        v10.Transparency = 0.7
-        local v11 = UI_upv_1.new("Frame", {Name = "Dot", AnchorPoint = Vector2.new(0, 0.5), BackgroundColor3 = tbl_upv_7[n_1], [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v9})
-        local v12 = UI_upv_1.new("TextLabel", {Name = "Title", AnchorPoint = Vector2.new(0, 0.5), Text = "TEAM " .. n_1, FontFace = Fonts_upv_1.Heavy, TextColor3 = Theme_upv_1.Lighten(tbl_upv_7[n_1], 0.35), TextXAlignment = Enum.TextXAlignment.Left, Parent = v9})
-        local v13 = UI_upv_1.new("TextLabel", {Name = "Count", Text = "", AnchorPoint = Vector2.new(1, 0.5), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = v9})
-        local tbl_13 = {}
-        for n_2 = 1, CustomMatch_upv_1.TEAM_SIZE do
-            table.insert(tbl_13, (makeSeat(v9, n_1, "Open" .. n_2)))
-            table.insert(tbl_upv_12, tbl_13[n_2])
         end
-        tbl_upv_11[n_1] = {n = -1, frame = v9, dot = v11, title = v12, count = v13, seats = tbl_13}
-        local u55 = n_1
-    end
-    local u56 = UI_upv_1.SectionTitle("RANDOM", {Parent = u46})
-    local u57 = sectionHint("RandomHint")
-    local u58 = card("Random", u46)
-    card = makeSeat(u58, 0, "Join")
-    table.insert(tbl_upv_12, card)
-    local u59 = UI_upv_1.SectionTitle("MAP", {Parent = u46})
-    local u55 = UI_upv_1.new("TextLabel", {Name = "MapValue", Text = "", TextSize = 15, AnchorPoint = Vector2.new(1, 0), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.Accent, TextXAlignment = Enum.TextXAlignment.Right, Parent = u46})
-    local u60 = UI_upv_1.new("Frame", {Name = "Maps", Parent = u46})
-    local u61 = false
-    local tbl_upv_14 = {}
-    local u62 = false
-    local u63 = false
-    local function isHost()
-        --[[
-          name: isHost
-          line: 516
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-        ]]
-        return Custom_upv_1.IsHost()
-    end
-    local function stateNow()
-        --[[
-          name: stateNow
-          line: 520
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-        ]]
-        local v14 = Custom_upv_1.State() or {}
-        return v14
-    end
-    local function modeOf(a14)
-        --[[
-          name: modeOf
-          line: 525
-          upvalues:
-            CustomMatch_upv_1 (copy, index: 1)
-            tbl_upv_14 (copy, index: 2)
-        ]]
-        local Mode_1 = CustomMatch_upv_1.Mode
-        local v15
-        if tbl_upv_14.mode == nil then
-            v15 = a14.mode
-        else
-            v15 = tbl_upv_14.mode
-        end
-        return Mode_1(v15)
-    end
-    local function sizeOf(a15)
-        --[[
-          name: sizeOf
-          line: 528
-          upvalues:
-            CustomMatch_upv_1 (copy, index: 1)
-            modeOf (copy, index: 2)
-        ]]
-        return CustomMatch_upv_1.TeamSize(modeOf(a15))
-    end
-    local function teamCardH(a16)
-        --[[
-          name: teamCardH
-          line: 532
-          upvalues:
-            tbl_upv_2 (ref, index: 1)
-        ]]
-        return (tbl_upv_2.teamHead + (a16 * tbl_upv_2.seatH) + ((a16 - 1) * tbl_upv_2.seatGap)) + 8
-    end
-    local tbl_upv_15 = {}
-    local u64 = ""
-    local u65 = nil
-    local function buildMapCards(a17)
-        --[[
-          name: buildMapCards
-          line: 543
-          upvalues:
-            u64 (ref,  index: 1)
-            tbl_upv_15 (copy, index: 2)
-            UI_upv_1 (copy, index: 3)
-            Colors_upv_1 (copy, index: 4)
-            u60 (copy, index: 5)
-            Fonts_upv_1 (copy, index: 6)
-            tbl_upv_2 (ref,  index: 7)
-            fromOffset_upv_1 (copy, index: 8)
-            Theme_upv_1 (copy, index: 9)
-            Custom_upv_1 (copy, index: 10)
-            a1 (copy, index: 11)
-            u65 (ref,  index: 12)
-        ]]
-        local tbl_16 = ""
-        for _, value_1 in a17 do
-            tbl_16 = tbl_16 .. value_1.id .. ";"
-        end
-        if tbl_16 == u64 then
-            return
-        end
-        u64 = tbl_16
-        for _, value_2 in tbl_upv_15 do
-            value_2.btn:Destroy()
-        end
-        table.clear(tbl_upv_15)
-        tbl_16 = {{id = "", name = "Random", thumb = ""}}
-        for _, value_3 in a17 do
-            table.insert(tbl_16, value_3)
-        end
-        for key_1, value_4 in tbl_16 do
-            local new_1 = UI_upv_1.new
-            local tbl_17 = {}
-            tbl_17.Name = "Map_" .. (((value_4.id == "") and "Random") or (value_4.id))
-            tbl_17.Text = ""
-            tbl_17.AutoButtonColor = false
-            tbl_17.BackgroundColor3 = Colors_upv_1.Raised
-            tbl_17.LayoutOrder = key_1
-            tbl_17[1] = UI_upv_1.Corner(10)
-            tbl_17.Parent = u60
-            local v16 = new_1("TextButton", tbl_17)
-            local v17 = UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.88)
-            v17.Parent = v16
-            local v18 = UI_upv_1.new("ImageLabel", {Name = "Thumb", Size = UDim2.fromScale(1, 1), ScaleType = Enum.ScaleType.Crop, Image = value_4.thumb or "", BackgroundTransparency = 1, [1] = UI_upv_1.Corner(10), Parent = v16})
-            if value_4.id == "" then
-                UI_upv_1.Gradient(Color3.fromRGB(52, 58, 74), Color3.fromRGB(26, 29, 38), 120).Parent = v16
-                v16.BackgroundColor3 = Color3.new(1, 1, 1)
-                UI_upv_1.new("TextLabel", {Text = "?", Name = "Mark", TextSize = 46, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.4), Size = UDim2.fromScale(1, 0.6), FontFace = Fonts_upv_1.Display, TextColor3 = Colors_upv_1.TextDim, Parent = v16})
-            end
-            local tbl_upv_18 = {}
-            tbl_upv_18.Name = "Band"
-            tbl_upv_18.AnchorPoint = Vector2.new(0, 1)
-            tbl_upv_18.Position = UDim2.fromScale(0, 1)
-            tbl_upv_18.Size = UDim2.new(1, 0, 0, 34)
-            tbl_upv_18.BackgroundColor3 = Colors_upv_1.Void
-            tbl_upv_18.BackgroundTransparency = 0
-            tbl_upv_18[1], tbl_upv_18[2] = UI_upv_1.Corner(10), UI_upv_1.Gradient(Color3.new(1, 1, 1), Color3.new(1, 1, 1), 90, NumberSequence.new(0.85, 0.2))
-            tbl_upv_18.Parent = v16
-            local v19 = UI_upv_1.new("Frame", tbl_upv_18)
-            local v20 = UI_upv_1.new("TextLabel", {Name = "MapName", AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 10, 1, -6), Size = UDim2.new(1, -20, 0, 20), Text = string.upper(value_4.name), FontFace = Fonts_upv_1.Heavy, TextSize = tbl_upv_2.mapName, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v19})
-            local tbl_19 = {}
-            tbl_19.Name = "Check"
-            tbl_19.AnchorPoint = Vector2.new(1, 0)
-            tbl_19.Position = UDim2.new(1, -8, 0, 8)
-            tbl_19.Size = fromOffset_upv_1(26, 26)
-            tbl_19.BackgroundColor3 = Colors_upv_1.Accent
-            tbl_19.Visible = false
-            tbl_19.ZIndex = 3
-            tbl_19[1], tbl_19[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Stroke(Colors_upv_1.Void, 1, 0.6)
-            tbl_19.Parent = v16
-            v19 = UI_upv_1.new("Frame", tbl_19)
-            UI_upv_1.Icon("check", 16, Colors_upv_1.Text, {ZIndex = 4, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v19})
-            tbl_upv_18 = {}
-            tbl_upv_18.id = value_4.id
-            tbl_upv_18.btn = v16
-            tbl_upv_18.stroke = v17
-            tbl_upv_18.check = v19
-            tbl_upv_18.img = v18
-            tbl_upv_18.name = v20
-            tbl_upv_18.scaleObj = UI_upv_1.GetScaleObj(v16, "HoverScale")
-            v16.MouseEnter:Connect(
-                function()
-                    --[[
-                      line: 635
-                      upvalues:
-                        UI_upv_1 (copy, index: 1)
-                        Custom_upv_1 (copy, index: 2)
-                        a1 (copy, index: 3)
-                        tbl_upv_18 (copy, index: 4)
-                        Theme_upv_1 (copy, index: 5)
-                    ]]
-                    if (UI_upv_1.Touch) or not Custom_upv_1.IsHost() then
-                        return
-                    end
-                    a1.Sounds.Play("Hover")
-                    UI_upv_1.Tween(tbl_upv_18.scaleObj, Theme_upv_1.Tween.PopSmall, {Scale = 1.03})
-                    if not (tbl_upv_18.stroke.Thickness < 2) then
-                        return
-                    end
-                    UI_upv_1.Tween(tbl_upv_18.stroke, Theme_upv_1.Tween.Fast, {Transparency = 0.55})
-                end
-            )
-            v16.MouseLeave:Connect(
-                function()
-                    --[[
-                      line: 644
-                      upvalues:
-                        UI_upv_1 (copy, index: 1)
-                        tbl_upv_18 (copy, index: 2)
-                        Theme_upv_1 (copy, index: 3)
-                    ]]
-                    UI_upv_1.Tween(tbl_upv_18.scaleObj, Theme_upv_1.Tween.PopSmall, {Scale = 1})
-                    if not (tbl_upv_18.stroke.Thickness < 2) then
-                        return
-                    end
-                    UI_upv_1.Tween(tbl_upv_18.stroke, Theme_upv_1.Tween.Fast, {Transparency = 0.88})
-                end
-            )
-            v16.Activated:Connect(
-                function()
-                    --[[
-                      line: 650
-                      upvalues:
-                        Custom_upv_1 (copy, index: 1)
-                        u65 (ref,  index: 2)
-                        tbl_upv_18 (copy, index: 3)
-                    ]]
-                    if not Custom_upv_1.IsHost() then
-                        return
-                    end
-                    u65(tbl_upv_18.id)
-                end
-            )
-            table.insert(tbl_upv_15, tbl_upv_18)
-        end
-    end
-    local tbl_upv_20 = {}
-    local tbl_upv_21 = {}
-    local function headshot(a18, a19)
-        --[[
-          name: headshot
-          line: 663
-          upvalues:
-            tbl_upv_21 (copy, index: 1)
-        ]]
-        if a18 <= 0 then
-            a19.Image = ""
-        elseif tbl_upv_21[a18] then
-            a19.Image = tbl_upv_21[a18]
-        else
-            task.spawn(function() end)
-        end
-    end
-    local u66 = nil
-    local function textWidth(a20, a21)
-        --[[
-          name: textWidth
-          line: 689
-        ]]
-        local success_1, v21 = pcall(function() end)
-        if success_1 and type(v21) == "number" then
-            return v21
-        end
-        return (#a20 * a21) * 0.62
-    end
-    local function makePRow(a22)
-        --[[
-          name: makePRow
-          line: 711
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
-            Theme_upv_1 (copy, index: 3)
-            Fonts_upv_1 (copy, index: 4)
-            u1 (copy, index: 5)
-            u66 (ref,  index: 6)
-            tbl_upv_21 (copy, index: 7)
-            Players_upv_1 (copy, index: 8)
-        ]]
-        local v22 = UI_upv_1.new("Frame", {Name = "P" .. a22.userId, BackgroundColor3 = Colors_upv_1.Inset, BackgroundTransparency = 0.45, UI_upv_1.Corner(10)})
-        local tbl_22 = {}
-        tbl_22.Name = "Headshot"
-        tbl_22.BackgroundColor3 = Colors_upv_1.Raised
-        tbl_22[1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill)
-        tbl_22.Parent = v22
-        local u67 = UI_upv_1.new("ImageLabel", tbl_22)
-        local v23 = UI_upv_1.new("TextLabel", {Name = "PlayerName", FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v22})
-        local tbl_23 = {}
-        tbl_23.Name = "Line"
-        tbl_23[1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 5, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)
-        tbl_23.Parent = v22
-        local v24 = UI_upv_1.new("Frame", tbl_23)
-        local v25 = UI_upv_1.new("TextLabel", {LayoutOrder = 10, Name = "Username", FontFace = Fonts_upv_1.SemiBold, TextColor3 = u1, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v24})
-        tbl_23 = UI_upv_1.IconButton({Name = "More", Visible = false, AnchorPoint = Vector2.new(1, 0.5), Color = Colors_upv_1.Raised, Parent = v22})
-        UI_upv_1.Glyph("three-dots-horizontal", 20, Colors_upv_1.Text, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = tbl_23})
-        local tbl_upv_24 = {group = -1, tagW = 0}
-        tbl_upv_24.frame = v22
-        tbl_upv_24.img = u67
-        tbl_upv_24.name = v23
-        tbl_upv_24.line = v24
-        tbl_upv_24.sub = v25
-        tbl_upv_24.more = tbl_23
-        tbl_upv_24.userId = a22.userId
-        tbl_23.Activated:Connect(
-            function()
+
+        local v189 = nil
+
+        do
+            local function textWidth(string: string, fontSize: number)
                 --[[
-                  line: 751
+                  name: textWidth
+                  line: 689
                   upvalues:
-                    u66 (ref,  index: 1)
-                    tbl_upv_24 (copy, index: 2)
+                    textService (copy, index: 1)
                 ]]
-                u66(tbl_upv_24.userId)
+                local success, x = pcall(
+                    function()
+                        --[[
+                          line: 690
+                          upvalues:
+                            textService (copy, index: 1)
+                            string (copy, index: 2)
+                            fontSize (copy, index: 3)
+                        ]]
+                        return textService:GetTextSize(string, fontSize, Enum.Font.BuilderSansExtraBold, Vector2.new(1000, 100)).X
+                    end
+                )
+
+                if success and type(x) == "number" then
+                    return x
+                end
+
+                return (#string * fontSize) * 0.62
             end
-        )
-        local userId_upv_1 = a22.userId
-        if userId_upv_1 <= 0 then
-            u67.Image = ""
-        elseif tbl_upv_21[userId_upv_1] then
-            u67.Image = tbl_upv_21[userId_upv_1]
-        else
+        end
+
+        local function tag(parent, text: string, backgroundColor3, textColor3, layoutOrder: number)
+            --[[
+              name: tag
+              line: 696
+              upvalues:
+                ui (copy, index: 1)
+                udim2FromOffset (copy, index: 2)
+                theme (copy, index: 3)
+                fonts (copy, index: 4)
+                textService (copy, index: 5)
+            ]]
+            local v201
+            local parent2 = ui.new("Frame", {Name = "Tag", AutomaticSize = Enum.AutomaticSize.X, Size = udim2FromOffset(0, 18), BackgroundColor3 = backgroundColor3, LayoutOrder = layoutOrder, ui.Corner(theme.Radius.Pill), (ui.Padding(0, 7, 0, 7)), Parent = parent})
+            ui.new("TextLabel", {TextSize = 11, Text = text, FontFace = fonts.Heavy, TextColor3 = textColor3, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromScale(0, 1), Parent = parent2})
+            local fontSize = 11
+            local success, x = pcall(
+                function()
+                    --[[
+                      line: 690
+                      upvalues:
+                        textService (copy, index: 1)
+                        text (copy, index: 2)
+                        fontSize (copy, index: 3)
+                    ]]
+                    return textService:GetTextSize(text, fontSize, Enum.Font.BuilderSansExtraBold, Vector2.new(1000, 100)).X
+                end
+            )
+
+            if not success or type(x) ~= "number" then
+                v201 = #text * 11 * 0.62
+            else
+                v201 = x
+            end
+
+            return (math.ceil(v201) + 14) + 5
+        end
+
+        local function makePRow(options)
+            --[[
+              name: makePRow
+              line: 711
+              upvalues:
+                ui (copy, index: 1)
+                colors (copy, index: 2)
+                theme (copy, index: 3)
+                fonts (copy, index: 4)
+                textColor3 (copy, index: 5)
+                v189 (ref,  index: 6)
+                v183 (copy, index: 7)
+                players (copy, index: 8)
+            ]]
+            local ui2 = ui.new("Frame", {Name = "P" .. options.userId, BackgroundColor3 = colors.Inset, BackgroundTransparency = 0.45, ui.Corner(10)})
+            local img = ui.new("ImageLabel", {Name = "Headshot", BackgroundColor3 = colors.Raised, (ui.Corner(theme.Radius.Pill)), Parent = ui2})
+            local name = ui.new("TextLabel", {Name = "PlayerName", FontFace = fonts.Heavy, TextColor3 = colors.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = ui2})
+            local ui3 = ui.new("Frame", {Name = "Line", (ui.List(Enum.FillDirection.Horizontal, 5, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)), Parent = ui2})
+            local sub = ui.new("TextLabel", {Name = "Username", LayoutOrder = 10, FontFace = fonts.SemiBold, TextColor3 = textColor3, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = ui3})
+            local v213 = ui.IconButton({Name = "More", Visible = false, AnchorPoint = Vector2.new(1, 0.5), Color = colors.Raised, Parent = ui2})
+            ui.Glyph("three-dots-horizontal", 20, colors.Text, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v213})
+            local v214 = {group = -1, tagW = 0, frame = ui2, img = img, name = name, line = ui3, sub = sub, more = v213, userId = options.userId}
+            v213.Activated:Connect(
+                function()
+                    --[[
+                      line: 751
+                      upvalues:
+                        v189 (ref,  index: 1)
+                        v214 (copy, index: 2)
+                    ]]
+                    v189(v214.userId)
+                end
+            )
+            local userId = options.userId
+
+            if userId <= 0 then
+                img.Image = ""
+                return v214
+            end
+
+            if v183[userId] then
+                img.Image = v183[userId]
+                return v214
+            end
+
             task.spawn(
                 function()
                     --[[
                       line: 672
                       upvalues:
-                        Players_upv_1 (copy, index: 1)
-                        userId_upv_1 (copy, index: 2)
-                        tbl_upv_21 (copy, index: 3)
-                        u67 (copy, index: 4)
+                        players (copy, index: 1)
+                        userId (copy, index: 2)
+                        v183 (copy, index: 3)
+                        img (copy, index: 4)
                     ]]
-                    local success_2, v26 = pcall(
+                    local success, image = pcall(
                         function()
                             --[[
                               line: 673
                               upvalues:
-                                Players_upv_1 (copy, index: 1)
-                                userId_upv_1 (copy, index: 2)
+                                players (copy, index: 1)
+                                userId (copy, index: 2)
                             ]]
-                            return Players_upv_1:GetUserThumbnailAsync(userId_upv_1, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size150x150)
+                            return players:GetUserThumbnailAsync(userId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size150x150)
                         end
                     )
-                    if not success_2 or type(v26) ~= "string" then
-                        return
+
+                    if success and type(image) == "string" then
+                        v183[userId] = image
+
+                        if img.Parent then
+                            img.Image = image
+                        end
                     end
-                    tbl_upv_21[userId_upv_1] = v26
-                    if not u67.Parent then
-                        return
-                    end
-                    u67.Image = v26
                 end
             )
+
+            return v214
         end
-        return tbl_upv_24
-    end
-    local function layoutPRow(a23, a24, a25)
-        --[[
-          name: layoutPRow
-          line: 758
-          upvalues:
-            tbl_upv_2 (ref,  index: 1)
-            fromOffset_upv_1 (copy, index: 2)
-        ]]
-        local seatH_1 = tbl_upv_2.seatH
-        local head_1 = tbl_upv_2.head
-        a23.frame.Size = fromOffset_upv_1(a24, seatH_1)
-        a23.img.Position = fromOffset_upv_1(10, math.floor((seatH_1 - head_1) / 2))
-        a23.img.Size = fromOffset_upv_1(head_1, head_1)
-        local v27 = 10 + head_1 + 10
-        a23.more.Visible = a25
-        a23.more.Size = fromOffset_upv_1(tbl_upv_2.moreW, tbl_upv_2.moreW)
-        a23.more.Position = UDim2.new(1, -8, 0.5, 0)
-        local v28 = (a25 and (tbl_upv_2.moreW + 16)) or 10
-        local v29 = a24 - v27 - v28
-        a23.name.Position = fromOffset_upv_1(v27, (math.floor(seatH_1 / 2) - tbl_upv_2.playerName) - 3)
-        a23.name.Size = fromOffset_upv_1(v29, tbl_upv_2.playerName + 4)
-        a23.name.TextSize = tbl_upv_2.playerName
-        a23.line.Position = fromOffset_upv_1(v27, math.floor(seatH_1 / 2) + 2)
-        a23.line.Size = fromOffset_upv_1(v29, 18)
-        a23.sub.TextSize = tbl_upv_2.playerSub
-        a23.sub.Size = fromOffset_upv_1(math.max(0, v29 - a23.tagW), 18)
-    end
-    local tbl_upv_25 = {}
-    local function teamOfRow(a26)
-        --[[
-          name: teamOfRow
-          line: 779
-          upvalues:
-            tbl_upv_25 (copy, index: 1)
-        ]]
-        local v30 = tbl_upv_25[a26.userId]
-        if v30 == nil then
-            v30 = tonumber(a26.team) or 0
+
+        local function layoutPRow(a219, a220: number, visible)
+            --[[
+              name: layoutPRow
+              line: 758
+              upvalues:
+                v12 (ref,  index: 1)
+                udim2FromOffset (copy, index: 2)
+            ]]
+            local v222
+            local seatH = v12.seatH
+            local head = v12.head
+            a219.frame.Size = udim2FromOffset(a220, seatH)
+            a219.img.Position = udim2FromOffset(10, (math.floor((seatH - head) / 2)))
+            a219.img.Size = udim2FromOffset(head, head)
+            local v225 = 10 + head + 10
+            a219.more.Visible = visible
+            a219.more.Size = udim2FromOffset(v12.moreW, v12.moreW)
+            a219.more.Position = UDim2.new(1, -8, 0.5, 0)
+            local v226 = a220 - v225
+
+            if visible then
+                v222 = v12.moreW + 16
+            else
+                v222 = 10
+            end
+
+            local v227 = v226 - v222
+            a219.name.Position = udim2FromOffset(v225, (math.floor(seatH / 2) - v12.playerName) - 3)
+            a219.name.Size = udim2FromOffset(v227, v12.playerName + 4)
+            a219.name.TextSize = v12.playerName
+            a219.line.Position = udim2FromOffset(v225, math.floor(seatH / 2) + 2)
+            a219.line.Size = udim2FromOffset(v227, 18)
+            a219.sub.TextSize = v12.playerSub
+            a219.sub.Size = udim2FromOffset(math.max(0, v227 - a219.tagW), 18)
         end
-        if v30 ~= 1 and v30 ~= 2 then
-            return 0
-        end
-        return v30
-    end
-    local u68 = 600
-    local u69 = 294
-    local u70 = nil
-    local tbl_upv_26 = {{}, {}, {}}
-    local function tag(a27, a28, a29, a30, a31)
-        --[[
-          name: tag
-          line: 696
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            fromOffset_upv_1 (copy, index: 2)
-            Theme_upv_1 (copy, index: 3)
-            Fonts_upv_1 (copy, index: 4)
-            TextService_upv_1 (copy, index: 5)
-        ]]
-        local tbl_27 = {}
-        tbl_27.Name = "Tag"
-        tbl_27.AutomaticSize = Enum.AutomaticSize.X
-        tbl_27.Size = fromOffset_upv_1(0, 18)
-        tbl_27.BackgroundColor3 = a29
-        tbl_27.LayoutOrder = a31
-        tbl_27[1], tbl_27[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Padding(0, 7, 0, 7)
-        tbl_27.Parent = a27
-        local v31 = UI_upv_1.new("Frame", tbl_27)
-        UI_upv_1.new("TextLabel", {TextSize = 11, Text = a28, FontFace = Fonts_upv_1.Heavy, TextColor3 = a30, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromScale(0, 1), Parent = v31})
-        local u71 = 11
-        local success_3, v32 = pcall(
-            function()
+
+        local v228 = {}
+
+        do
+            local function teamOfRow(a230)
                 --[[
-                  line: 690
+                  name: teamOfRow
+                  line: 779
                   upvalues:
-                    TextService_upv_1 (copy, index: 1)
-                    a28 (copy, index: 2)
-                    u71 (copy, index: 3)
+                    v228 (copy, index: 1)
                 ]]
-                return TextService_upv_1:GetTextSize(a28, u71, Enum.Font.BuilderSansExtraBold, Vector2.new(1000, 100)).X
-            end
-        )
-        local v33
-        if (success_3) and type(v32) == "number" then
-            v33 = v32
-        else
-            v33 = #a28 * 11 * 0.62
-        end
-        return (math.ceil(v33) + 14) + 5
-    end
-    local function setSeat(a32, a33)
-        --[[
-          name: setSeat
-          line: 446
-          upvalues:
-            Theme_upv_1 (copy, index: 1)
-            Colors_upv_1 (copy, index: 2)
-            tbl_upv_7 (copy, index: 3)
-            Fonts_upv_1 (copy, index: 4)
-        ]]
-        a32.join = a33
-        a32.label.Text = (a33 and "JOIN") or "Open"
-        local label_1 = a32.label
-        local v34
-        local v36 = nil
-        if a33 then
-            v36 = Theme_upv_1.Lighten
-            local v35
-            if a32.team ~= 0 then
-                v35 = tbl_upv_7[a32.team]
-            else
-                v35 = Colors_upv_1.Accent
-            end
-            v34 = v36(v35, 0.3)
-        else
-            v34 = Colors_upv_1.TextMuted
-        end
-        label_1.TextColor3 = v34
-        local label_2 = a32.label
-        if a33 then
-            v36 = Fonts_upv_1.Heavy
-        else
-            v36 = Fonts_upv_1.SemiBold
-        end
-        label_2.FontFace = v36
-        a32.plus.Visible = a33
-        a32.btn.Selectable = a33
-        a32.look()
-    end
-    local function paintTeams(a34)
-        --[[
-          name: paintTeams
-          line: 790
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-            CustomMatch_upv_1 (copy, index: 2)
-            modeOf (copy, index: 3)
-            u70 (ref,  index: 4)
-            tbl_upv_25 (copy, index: 5)
-            LocalPlayer_upv_1 (copy, index: 6)
-            tbl_upv_20 (copy, index: 7)
-            tbl_upv_26 (copy, index: 8)
-            makePRow (copy, index: 9)
-            tag (copy, index: 10)
-            Colors_upv_1 (copy, index: 11)
-            Theme_upv_1 (copy, index: 12)
-            layoutPRow (copy, index: 13)
-            u69 (ref,  index: 14)
-            fromOffset_upv_1 (copy, index: 15)
-            UI_upv_1 (copy, index: 16)
-            tbl_upv_2 (ref,  index: 17)
-            tbl_upv_11 (copy, index: 18)
-            setSeat (copy, index: 19)
-            u58 (copy, index: 20)
-            card (copy, index: 21)
-            u68 (ref,  index: 22)
-            u56 (copy, index: 23)
-            u57 (copy, index: 24)
-            u49 (copy, index: 25)
-        ]]
-        local v37 = ((type(a34.players) ~= "table") and {}) or (a34.players)
-        local u72 = Custom_upv_1.IsHost()
-        local v38 = true
-        if a34.status ~= "Match" then
-            v38 = a34.status == "Results"
-        end
-        local v39 = CustomMatch_upv_1.TeamSize(modeOf(a34))
-        local tbl_28 = {{}, {}, {}}
-        local tbl_29 = {}
-        u70 = nil
-        local v40 = nil
-        local v41 = nil
-        local v42 = nil
-        for _, value_5 in v37 do
-            if type(value_5) ~= "table" or type(value_5.userId) ~= "number" then
-                continue
-            end
-            tbl_29[value_5.userId] = true
-            v40 = tbl_upv_25[value_5.userId]
-            if v40 == nil then
-                v40 = tonumber(value_5.team) or 0
-            end
-            if v40 == 1 or v40 == 2 then
-                v41 = v40
-                if value_5.userId == LocalPlayer_upv_1.UserId then
-                    u70 = v41
+                local v231 = v228[a230.userId]
+                if v231 == nil then
+                    v231 = tonumber(a230.team) or 0
                 end
-                if v41 ~= 0 then
-                    v42 = v41
-                else
-                    v42 = 3
+
+                if v231 ~= 1 and v231 ~= 2 then
+                    return 0
                 end
-                local v43 = nil
-                table.insert(tbl_28[v42], v43)
-            end
-            v41 = 0
-            if value_5.userId == LocalPlayer_upv_1.UserId then
-                u70 = v41
-            end
-            if v41 ~= 0 then
-                v42 = v41
-            else
-                v42 = 3
-            end
-            local v43 = nil
-            table.insert(tbl_28[v42], v43)
-        end
-        for key_2, value_6 in tbl_upv_20 do
-            if not (tbl_29[key_2]) then
-                value_6.frame:Destroy()
-                tbl_upv_20[key_2] = nil
+
+                return v231
             end
         end
-        for n_3 = 1, 2 do
-            while v39 < #tbl_28[n_3] do
-                table.insert(tbl_28[3], (table.remove(tbl_28[n_3])))
-            end
-        end
-        for n_4 = 1, 3 do
-            tbl_upv_26[n_4] = {}
-            for _, value_7 in tbl_28[n_4] do
-                table.insert(tbl_upv_26[n_4], value_7.userId)
-            end
-        end
-        local function place_1(a35, a36, a37, a38, a39)
+
+        local v232 = 600
+        local flooredValue = 294
+        local v234 = nil
+        local v235 = {{}, {}, {}}
+
+        local function paintTeams(options2)
             --[[
-              name: place
-              line: 829
+              name: paintTeams
+              line: 790
               upvalues:
-                tbl_upv_20 (copy, index: 1)
-                makePRow (copy, index: 2)
-                a34 (copy, index: 3)
-                tag (copy, index: 4)
-                Colors_upv_1 (copy, index: 5)
-                Theme_upv_1 (copy, index: 6)
-                LocalPlayer_upv_1 (copy, index: 7)
-                layoutPRow (copy, index: 8)
-                u69 (ref,  index: 9)
-                u72 (copy, index: 10)
-                fromOffset_upv_1 (copy, index: 11)
-                UI_upv_1 (copy, index: 12)
+                custom (copy, index: 1)
+                CustomMatch (copy, index: 2)
+                modeOf (copy, index: 3)
+                v234 (ref,  index: 4)
+                v228 (copy, index: 5)
+                localPlayer (copy, index: 6)
+                v182 (copy, index: 7)
+                v235 (copy, index: 8)
+                makePRow (copy, index: 9)
+                tag (copy, index: 10)
+                colors (copy, index: 11)
+                theme (copy, index: 12)
+                layoutPRow (copy, index: 13)
+                flooredValue (ref,  index: 14)
+                udim2FromOffset (copy, index: 15)
+                ui (copy, index: 16)
+                v12 (ref,  index: 17)
+                v125 (copy, index: 18)
+                setSeat (copy, index: 19)
+                parent13 (copy, index: 20)
+                seat (copy, index: 21)
+                v232 (ref,  index: 22)
+                v135 (copy, index: 23)
+                v136 (copy, index: 24)
+                v93 (copy, index: 25)
             ]]
-            local v44 = tbl_upv_20[a35.userId]
-            if not (v44) then
-                v44 = makePRow(a35)
-                tbl_upv_20[a35.userId] = v44
-            end
-            v44.name.AutoLocalize = false
-            v44.sub.AutoLocalize = false
-            v44.name.Text = tostring(a35.name or "?")
-            v44.sub.Text = "@" .. tostring(a35.username or "")
-            for _, value_8 in v44.line:GetChildren() do
-                if value_8:IsA("Frame") then
-                    value_8:Destroy()
-                end
-            end
-            local v45 = 0
-            local v46
-            if a35.userId ~= a34.ownerId then
-                v46 = v45
+            local v238
+            local v239
+
+            if type(options2.players) ~= "table" then
+                v238 = {}
             else
-                v46 = v45 + tag(v44.line, "HOST", Colors_upv_1.Gold:Lerp(Colors_upv_1.Panel, 0.72), Theme_upv_1.Lighten(Colors_upv_1.Gold, 0.1), 1)
+                v238 = options2.players
             end
-            if a35.userId ~= LocalPlayer_upv_1.UserId then
-                v45 = v46
-            else
-                v45 = v46 + tag(v44.line, "YOU", Colors_upv_1.Accent:Lerp(Colors_upv_1.Panel, 0.7), Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.25), 2)
-            end
-            v45 = ((a35.playing) and (v45 + tag(v44.line, "PLAYING", Colors_upv_1.Success:Lerp(Colors_upv_1.Panel, 0.75), Theme_upv_1.Lighten(Colors_upv_1.Success, 0.1), 3)))
-                or (((a35.watching) and (v45 + tag(v44.line, "WATCHING", Colors_upv_1.Accent:Lerp(Colors_upv_1.Panel, 0.75), Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.25), 3))) or (((a35.satOut) and (v45 + tag(v44.line, "NEXT UP", Colors_upv_1.Warning:Lerp(Colors_upv_1.Panel, 0.75), Theme_upv_1.Lighten(Colors_upv_1.Warning, 0.1), 3))) or v45))
-            v44.tagW = v45
-            v44.frame.Parent = a36
-            layoutPRow(v44, u69 - 16, u72 and (a35.userId ~= LocalPlayer_upv_1.UserId))
-            v44.frame.Position = fromOffset_upv_1(a37, a38)
-            if v44.group == a39 then
-                return
-            end
-            if v44.group ~= -1 then
-                UI_upv_1.Enter(v44.frame, Vector2.new(0, 6), 0, fromOffset_upv_1(a37, a38))
-            end
-            v44.group = a39
-        end
-        local u73 = tbl_upv_2.seatH + tbl_upv_2.seatGap
-        local v56 = nil
-        for n_5 = 1, 2 do
-            v56 = tbl_upv_11[n_5]
-            local v48 = tbl_28[n_5]
-            v56.count.Text = string.format("%d/%d", #v48, v39)
-            if v56.n ~= #v48 then
-                if v56.n ~= -1 then
-                    UI_upv_1.Pop(v56.count, 1.25)
+
+            local isHost = custom.IsHost()
+            local v241 = options2.status == "Match" or options2.status == "Results"
+            local v242 = CustomMatch.TeamSize(modeOf(options2))
+            local v243 = {{}, {}, {}}
+            local v244 = {}
+            v234 = nil
+
+            for _, v246 in v238 do
+                if type(v246) == "table" then
+                    local v247, v248
+
+                    if type(v246.userId) ~= "number" then
+                        continue
+                    end
+
+                    v244[v246.userId] = true
+                    local v249 = v228[v246.userId]
+                    local v250 = if v249 == nil then tonumber(v246.team) or 0 else v249
+                    local v251 = v250 ~= 1 and v250 ~= 2 and 0 or v250
+
+                    if v246.userId == localPlayer.UserId then
+                        v234 = v251
+                    end
+
+                    v248, v247 = v246, v251 == 0 and 3 or v251
+                    table.insert(v243[v247], v248)
                 end
-                v56.n = #v48
             end
-            v56.frame.Size = fromOffset_upv_1(u69, (tbl_upv_2.teamHead + (v39 * tbl_upv_2.seatH) + ((v39 - 1) * tbl_upv_2.seatGap)) + 8)
-            local v49 = false
-            v41 = v49
-            for n_6 = 1, CustomMatch_upv_1.TEAM_SIZE do
-                local v50 = tbl_upv_2.teamHead + (n_6 - 1) * u73
-                local v51 = v56.seats[n_6]
-                local v52 = v48[n_6]
-                if v39 < n_6 then
-                    v51.btn.Visible = false
-                    continue
+
+            for v252, v253 in v182 do
+                if not v244[v252] then
+                    v253.frame:Destroy()
+                    v182[v252] = nil
                 end
-                if v52 then
-                    place_1(v52, v56.frame, 8, v50, n_5)
-                    v51.btn.Visible = false
+            end
+
+            for index = 1, 2 do
+                while v242 < #v243[index] do
+                    table.insert(v243[3], (table.remove(v243[index])))
+                end
+            end
+
+            for index = 1, 3 do
+                v235[index] = {}
+
+                for _, v257 in v243[index] do
+                    table.insert(v235[index], v257.userId)
+                end
+            end
+
+            local function place(options, parent, a261, a262, group: number)
+                --[[
+                  name: place
+                  line: 829
+                  upvalues:
+                    v182 (copy, index: 1)
+                    makePRow (copy, index: 2)
+                    options2 (copy, index: 3)
+                    tag (copy, index: 4)
+                    colors (copy, index: 5)
+                    theme (copy, index: 6)
+                    localPlayer (copy, index: 7)
+                    layoutPRow (copy, index: 8)
+                    flooredValue (ref,  index: 9)
+                    isHost (copy, index: 10)
+                    udim2FromOffset (copy, index: 11)
+                    ui (copy, index: 12)
+                ]]
+                local tagW
+                local v265 = v182[options.userId]
+                if not v265 then
+                    v265 = makePRow(options)
+                    v182[options.userId] = v265
+                end
+
+                v265.name.AutoLocalize = false
+                v265.sub.AutoLocalize = false
+                v265.name.Text = tostring((options.name or "?"))
+                v265.sub.Text = "@" .. tostring(options.username or "")
+
+                for _, child in v265.line:GetChildren() do
+                    if child:IsA("Frame") then
+                        child:Destroy()
+                    end
+                end
+
+                local v268 = 0
+                local v269 = if options.userId == options2.ownerId then v268 + tag(v265.line, "HOST", colors.Gold:Lerp(colors.Panel, 0.72), theme.Lighten(colors.Gold, 0.1), 1) else v268
+
+                if options.userId == localPlayer.UserId then
+                    v269 += tag(v265.line, "YOU", colors.Accent:Lerp(colors.Panel, 0.7), theme.Lighten(colors.Accent, 0.25), 2)
+                end
+
+                if options.playing then
+                    tagW = v269 + tag(v265.line, "PLAYING", colors.Success:Lerp(colors.Panel, 0.75), theme.Lighten(colors.Success, 0.1), 3)
+                elseif options.watching then
+                    tagW = v269 + tag(v265.line, "WATCHING", colors.Accent:Lerp(colors.Panel, 0.75), theme.Lighten(colors.Accent, 0.25), 3)
                 else
-                    v51.btn.Visible = true
-                    v51.btn.Position = fromOffset_upv_1(8, v50)
-                    v51.btn.Size = fromOffset_upv_1(u69 - 16, tbl_upv_2.seatH)
-                    local v53 = (u70 ~= nil) and ((u70 ~= n_5) and (not v41))
-                    v41 = v41 or v53
-                    setSeat(v51, v53)
+                    tagW = if options.satOut then v269 + tag(v265.line, "NEXT UP", colors.Warning:Lerp(colors.Panel, 0.75), theme.Lighten(colors.Warning, 0.1), 3) else v269
+                end
+
+                v265.tagW = tagW
+                v265.frame.Parent = parent
+                layoutPRow(v265, flooredValue - 16, (isHost and (options.userId ~= localPlayer.UserId)))
+                v265.frame.Position = udim2FromOffset(a261, a262)
+
+                if v265.group ~= group then
+                    if v265.group ~= -1 then
+                        ui.Enter(v265.frame, Vector2.new(0, 6), 0, udim2FromOffset(a261, a262))
+                    end
+
+                    v265.group = group
                 end
             end
+
+            local v270 = v12.seatH + v12.seatGap
+
+            for index = 1, 2 do
+                local v272 = v125[index]
+                local v273 = v243[index]
+                v272.count.Text = string.format("%d/%d", #v273, v242)
+
+                if v272.n ~= #v273 then
+                    if v272.n ~= -1 then
+                        ui.Pop(v272.count, 1.25)
+                    end
+
+                    v272.n = #v273
+                end
+
+                v272.frame.Size = udim2FromOffset(flooredValue, (v12.teamHead + (v242 * v12.seatH) + ((v242 - 1) * v12.seatGap)) + 8)
+                local v274 = false
+
+                for seatKey = 1, CustomMatch.TEAM_SIZE do
+                    local v276 = v12.teamHead + (seatKey - 1) * v270
+                    local seat2 = v272.seats[seatKey]
+                    local options = v273[seatKey]
+
+                    if v242 < seatKey then
+                        seat2.btn.Visible = false
+                    elseif options then
+                        place(options, v272.frame, 8, v276, index)
+                        seat2.btn.Visible = false
+                    else
+                        seat2.btn.Visible = true
+                        seat2.btn.Position = udim2FromOffset(8, v276)
+                        seat2.btn.Size = udim2FromOffset(flooredValue - 16, v12.seatH)
+                        local v279 = v234 ~= nil and v234 ~= index and not v274
+                        v274 = v274 or v279
+                        setSeat(seat2, v279)
+                    end
+                end
+            end
+
+            local v280 = v243[3]
+            local visible = v234 ~= nil and v234 ~= 0
+            local length = #v280
+            local v283 = visible and 1 or 0
+            local v284 = length + v283
+            local v285 = flooredValue + v12.teamGap
+
+            local function at(a287)
+                --[[
+                  name: at
+                  line: 911
+                  upvalues:
+                    v285 (copy, index: 1)
+                    v270 (copy, index: 2)
+                ]]
+                return 8 + (((a287 - 1) % 2) * v285), 8 + (((a287 - 1) // 2) * v270)
+            end
+
+            for v288, options in v280 do
+                place(options, parent13, 8 + (((v288 - 1) % 2) * v285), 8 + (((v288 - 1) // 2) * v270), 0)
+            end
+
+            seat.btn.Visible = visible
+
+            if visible then
+                local v290 = #v280 + 1
+                local v291 = 8 + ((v290 - 1) % 2) * v285
+                local v292 = 8 + ((v290 - 1) // 2) * v270
+                seat.btn.Position = udim2FromOffset(v291, v292)
+                seat.btn.Size = udim2FromOffset(flooredValue - 16, v12.seatH)
+                setSeat(seat, true)
+            end
+
+            local ceilingValue = math.ceil(v284 / 2)
+            local v294 = v232
+
+            if not (0 < ceilingValue) then
+                v239 = 0
+            else
+                v239 = 16 + (ceilingValue * v12.seatH) + (ceilingValue - 1) * v12.seatGap
+            end
+
+            parent13.Size = udim2FromOffset(v294, v239)
+            parent13.Visible = 0 < ceilingValue
+            v135.Visible = 0 < ceilingValue
+            v136.Visible = 0 < ceilingValue
+            v135.Text.Text = not (0 < #v280) and "RANDOM" or string.format("RANDOM  ·  %d", #v280)
+            v93.Text = v241 and "Picks count from the next match" or "Join a team, or stay random"
+            v136.Text = v242 ~= 1 and "Placed where there's room when the match starts" or "They watch and play next"
         end
-        local v54 = tbl_28[3]
-        local v55 = (u70 ~= nil) and (u70 ~= 0)
-        if v55 then
-            v56 = 1
-        else
-            v56 = 0
-        end
-        local u74 = u69 + tbl_upv_2.teamGap
-        local function at_1(a40)
+
+        local function teamsPreview(options)
             --[[
-              name: at
-              line: 911
+              name: teamsPreview
+              line: 937
               upvalues:
-                u74 (copy, index: 1)
-                u73 (copy, index: 2)
+                v143 (copy, index: 1)
+                CustomMatch (copy, index: 2)
+                modeOf (copy, index: 3)
             ]]
-            return 8 + (((a40 - 1) % 2) * u74), 8 + (((a40 - 1) // 2) * u73)
-        end
-        for key_3, value_9 in v54 do
-            place_1(value_9, u58, 8 + (((key_3 - 1) % 2) * u74), 8 + (((key_3 - 1) // 2) * u73), 0)
-        end
-        card.btn.Visible = v55
-        if v55 then
-            local v57 = #v54 + 1
-            card.btn.Position = fromOffset_upv_1(8 + (((v57 - 1) % 2) * u74), 8 + (((v57 - 1) // 2) * u73))
-            card.btn.Size = fromOffset_upv_1(u69 - 16, tbl_upv_2.seatH)
-            setSeat(card, true)
-        end
-        local v58 = math.ceil((#v54 + v56) / 2)
-        u58.Size = fromOffset_upv_1(u68, ((v58 > 0) and (16 + (v58 * tbl_upv_2.seatH) + (v58 - 1) * tbl_upv_2.seatGap)) or 0)
-        u58.Visible = v58 > 0
-        u56.Visible = v58 > 0
-        u57.Visible = v58 > 0
-        local Text_1 = u56.Text
-        Text_1.Text = not (#v54 > 0) and "RANDOM" or string.format("RANDOM  \194\183  %d", #v54)
-        u49.Text = (v38 and "Picks count from the next match") or "Join a team, or stay random"
-        u57.Text = ((v39 ~= 1) and "Placed where there's room when the match starts") or "They watch and play next"
-    end
-    local function anyPicks(a41)
-        --[[
-          name: anyPicks
-          line: 952
-          upvalues:
-            tbl_upv_25 (copy, index: 1)
-        ]]
-        local v60 = ((type(a41.players) ~= "table") and {}) or (a41.players)
-        local v61 = nil
-        local v62 = nil
-        for _, value_10 in v60 do
-            if type(value_10) ~= "table" then
-                continue
+            local bots = if v143.bots ~= nil then v143.bots else options.bots
+            if bots then
+                local v298 = CustomMatch.TeamSize(modeOf(options))
+                return string.format("%d V %d", v298, v298)
             end
-            v61 = tbl_upv_25[value_10.userId]
-            if v61 == nil then
-                v61 = tonumber(value_10.team) or 0
-            end
-            if v61 == 1 or v61 == 2 then
-                v62 = v61
-                if v62 == 0 then
-                    continue
-                end
-                return true
-            end
-            v62 = 0
-            if v62 == 0 then
-                continue
-            end
-            return true
-        end
-        return false
-    end
-    local function paintSwitches(a42, a43)
-        --[[
-          name: paintSwitches
-          line: 961
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-            tbl_upv_14 (copy, index: 2)
-            u39 (copy, index: 3)
-            u37 (copy, index: 4)
-            tbl_upv_6 (copy, index: 5)
-            u38 (copy, index: 6)
-            u43 (copy, index: 7)
-            u44 (copy, index: 8)
-            Colors_upv_1 (copy, index: 9)
-            CustomMatch_upv_1 (copy, index: 10)
-            u28 (copy, index: 11)
-            u27 (copy, index: 12)
-            u29 (copy, index: 13)
-            u24 (copy, index: 14)
-            u25 (copy, index: 15)
-            u42 (copy, index: 16)
-            u34 (copy, index: 17)
-            u63 (ref,  index: 18)
-            u30 (copy, index: 19)
-            u20 (copy, index: 20)
-        ]]
-        local v63 = Custom_upv_1.IsHost()
-        local v64
-        if tbl_upv_14.public == nil then
-            v64 = a42.public == true
-        else
-            v64 = tbl_upv_14.public
-        end
-        u39:Set(v64, a43)
-        u39.Instance.Visible = v63
-        local v65
-        if v64 then
-            v65 = "PUBLIC"
-        else
-            v65 = "PRIVATE"
-        end
-        u37.Text = v65
-        tbl_upv_6.Text = (v64 and "globe-simplified") or "lock-closed"
-        u38.Text = (v64 and "Listed in every lobby's Custom Matches") or "Only people with the code can join"
-        local v66
-        if tbl_upv_14.bots == nil then
-            v66 = a42.bots == true
-        else
-            v66 = tbl_upv_14.bots
-        end
-        u43:Set(v66, a43)
-        u43.Instance.Visible = v63
-        u44.Visible = not v63
-        if v66 then
-            v65 = "ON"
-        else
-            v65 = "OFF"
-        end
-        u44.Text = v65
-        if v66 then
-            v65 = Colors_upv_1.Text
-        else
-            v65 = Colors_upv_1.TextDim
-        end
-        u44.TextColor3 = v65
-        local Mode_2 = CustomMatch_upv_1.Mode
-        local v67
-        if tbl_upv_14.mode == nil then
-            v67 = a42.mode
-        else
-            v67 = tbl_upv_14.mode
-        end
-        local v68 = Mode_2(v67)
-        v67 = v68 == "1v1"
-        if u28.Value ~= v68 or a43 then
-            u28:Set(v68, a43)
-        end
-        if u27.Value ~= v68 or a43 then
-            u27:Set(v68, a43)
-        end
-        u28.Instance.Visible = v63
-        u29.Visible = not v63
-        u29.Text = CustomMatch_upv_1.ModeLabel(v68)
-        u24.Text = (v67 and "person") or "three-people"
-        u25.Text = (v67 and "One on one") or "Three a side"
-        u42.Text = (v67 and "A bot takes an empty side") or "Bots take the empty slots, up to 3v3"
-        u34.Visible = v63 and (not u63)
-        u30.AutoButtonColor = false
-        u20.Text.Text = (v63 and "SETTINGS") or "SERVER"
-    end
-    local function teamsPreview(a44)
-        --[[
-          name: teamsPreview
-          line: 937
-          upvalues:
-            tbl_upv_14 (copy, index: 1)
-            CustomMatch_upv_1 (copy, index: 2)
-            modeOf (copy, index: 3)
-        ]]
-        local v69
-        if tbl_upv_14.bots == nil then
-            v69 = a44.bots
-        else
-            v69 = tbl_upv_14.bots
-        end
-        if v69 then
-            local v70 = CustomMatch_upv_1.TeamSize(modeOf(a44))
-            return string.format("%d V %d", v70, v70)
-        else
-            local split_1 = a44.split
-            if type(split_1) ~= "table" then
+
+            local split = options.split
+
+            if type(split) ~= "table" then
                 return ""
             end
-            local v71 = tonumber(split_1[1]) or 0
-            local v72 = tonumber(split_1[2]) or 0
-            if v71 + v72 >= 2 then
-                return (string.format("%d V %d", v71, v72))
+
+            local number = tonumber(split[1]) or 0
+            local number2 = tonumber(split[2]) or 0
+
+            if not (2 <= number + number2) then
+                return ""
             end
-            return ""
+
+            return (string.format("%d V %d", number, number2))
         end
-    end
-    local function paintMatch(a45)
-        --[[
-          name: paintMatch
-          line: 1014
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-            u16 (copy, index: 2)
-            tbl_upv_5 (copy, index: 3)
-            u17 (copy, index: 4)
-            u27 (copy, index: 5)
-            UI_upv_1 (copy, index: 6)
-            u18 (copy, index: 7)
-            u62 (ref,  index: 8)
-            u13 (copy, index: 9)
-            Colors_upv_1 (copy, index: 10)
-            u14 (copy, index: 11)
-            u15 (copy, index: 12)
-            CustomMatch_upv_1 (copy, index: 13)
-            modeOf (copy, index: 14)
-            teamsPreview (copy, index: 15)
-            tbl_upv_14 (copy, index: 16)
-            Theme_upv_1 (copy, index: 17)
-            u19 (copy, index: 18)
-            u1 (copy, index: 19)
-            anyPicks (copy, index: 20)
-        ]]
-        local v73 = a45.status or "Lobby"
-        local v74 = true
-        if v73 ~= "Match" then
-            v74 = v73 == "Results"
-        end
-        local v75 = Custom_upv_1.IsHost()
-        u16.Instance.Visible = v75 and (not v74)
-        tbl_upv_5.Instance.Visible = v75 and v74
-        u17.Visible = not v75
-        u27.Instance.Visible = UI_upv_1.Compact and v75
-        u18.Text = "HOSTED BY " .. string.upper(tostring(a45.ownerName or "?"))
-        tbl_upv_5:SetText(((v73 ~= "Results") and "END MATCH") or "CLOSE RESULTS")
-        u16:SetEnabled((a45.canStart == true) and (not u62))
-        u16:SetText(((a45.startHint ~= "Starting...") and "START MATCH") or "STARTING...")
-        if v73 == "Match" then
-            u13.BackgroundColor3 = Colors_upv_1.Warning
-            u14.Text = "Match in progress"
-        elseif v73 ~= "Results" then
-            u13.BackgroundColor3 = Colors_upv_1.Success
-            u14.Text = "Waiting to start"
-        else
-            u13.BackgroundColor3 = Colors_upv_1.Accent
-            u14.Text = "Showing the results"
-        end
-        local Compact_1 = UI_upv_1.Compact
-        local v76
-        if Compact_1 and (not v75) then
-            v76 = CustomMatch_upv_1.ModeLabel(modeOf(a45))
-        else
-            v76 = (v74 and "") or (teamsPreview(a45))
-        end
-        u15.Text = v76
-        local v77, v78 = nil, nil
-        if Compact_1 then
-            v77 = CustomMatch_upv_1.Mode
-            local v79
-            if tbl_upv_14.mode == nil then
-                v79 = a45.mode
+
+        local function anyPicks(options)
+            --[[
+              name: anyPicks
+              line: 952
+              upvalues:
+                v228 (copy, index: 1)
+            ]]
+            local v304
+
+            if type(options.players) ~= "table" then
+                v304 = {}
             else
-                v79 = tbl_upv_14.mode
+                v304 = options.players
             end
-            if v77(v79) ~= "1v1" then
-                v78 = Colors_upv_1.TextDim
-            else
-                v78 = Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.2)
-            end
-        else
-            v78 = Colors_upv_1.TextDim
-        end
-        u15.TextColor3 = v78
-        if v74 then
-            u19.Text = "Everyone comes back here after the match"
-            u19.TextColor3 = u1
-        elseif v75 then
-            if a45.canStart then
-                local v80
-                if tbl_upv_14.bots == nil then
-                    v80 = a45.bots == true
-                else
-                    v80 = tbl_upv_14.bots
-                end
-                local v81 = ((type(a45.players) ~= "table") and 0) or (#a45.players)
-                if anyPicks(a45) then
-                    u19.Text = (v80 and "Picked teams stay, bots fill the empty slots") or "Picked teams stay, the rest are shuffled"
-                elseif CustomMatch_upv_1.TeamSize(modeOf(a45)) == 1 and (v81 > 2) then
-                    u19.Text = "Two fight, the rest watch and go next"
-                else
-                    u19.Text = (v80 and "Teams are shuffled, bots fill the empty slots") or "Teams are shuffled every match"
-                end
-                u19.TextColor3 = u1
-            else
-                u19.Text = tostring(a45.startHint or "")
-                if a45.startHint ~= "Starting..." then
-                    v78 = Theme_upv_1.Lighten(Colors_upv_1.Warning, 0.15)
-                else
-                    v78 = u1
-                end
-                u19.TextColor3 = v78
-            end
-        else
-            u19.Text = "The host picks the map and starts the match"
-            u19.TextColor3 = u1
-        end
-    end
-    local u75 = false
-    local function paintCode(a46)
-        --[[
-          name: paintCode
-          line: 1063
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-            CustomMatch_upv_1 (copy, index: 2)
-            u4 (copy, index: 3)
-            tbl_upv_3 (copy, index: 4)
-            u5 (copy, index: 5)
-            u6 (copy, index: 6)
-        ]]
-        local v82 = a46.public == false and (not Custom_upv_1.IsRevealed())
-        local v83 = CustomMatch_upv_1.FormatCode(tostring(a46.code or ""))
-        if u4.Text ~= v83 then
-            u4.Text = v83
-        end
-        u4.TextTransparency = (v82 and 1) or 0
-        tbl_upv_3.Visible = v82
-        u5.Visible = v82
-        u6.Text = Custom_upv_1.IsRevealed() and "eye-slash" or "eye"
-        local v85 = (v82 and -52) or -14
-        u4.Position = UDim2.new(1, v85, 0, 0)
-        tbl_upv_3.Position = UDim2.new(1, v85 - 2, 0.5, 0)
-        u4.Size = UDim2.new(1, v85 - 56, 1, 0)
-    end
-    local u76 = false
-    local function stack()
-        --[[
-          name: stack
-          line: 1094
-          upvalues:
-            u48 (copy, index: 1)
-            fromOffset_upv_1 (copy, index: 2)
-            u49 (copy, index: 3)
-            u68 (ref,  index: 4)
-            tbl_upv_2 (ref,  index: 5)
-            tbl_upv_11 (copy, index: 6)
-            u69 (ref,  index: 7)
-            u58 (copy, index: 8)
-            u56 (copy, index: 9)
-            u57 (copy, index: 10)
-            u59 (copy, index: 11)
-            u55 (copy, index: 12)
-            u60 (copy, index: 13)
-            u76 (ref,  index: 14)
-            u45 (copy, index: 15)
-            u46 (copy, index: 16)
-        ]]
-        local v86 = 8
-        u48.Position = fromOffset_upv_1(8, v86)
-        u49.Position = fromOffset_upv_1(u68 + 8, v86 + 3)
-        local v87 = v86 + (tbl_upv_2.sectionH + tbl_upv_2.sectionGap)
-        tbl_upv_11[1].frame.Position = fromOffset_upv_1(8, v87)
-        tbl_upv_11[2].frame.Position = fromOffset_upv_1((u69 + 8) + tbl_upv_2.teamGap, v87)
-        v87 = v87 + (tbl_upv_11[1].frame.Size.Y.Offset + tbl_upv_2.blockGap)
-        if u58.Visible then
-            u56.Position = fromOffset_upv_1(8, v87)
-            u57.Position = fromOffset_upv_1(u68 + 8, v87 + 3)
-            v87 = v87 + (tbl_upv_2.sectionH + tbl_upv_2.sectionGap)
-            u58.Position = fromOffset_upv_1(8, v87)
-            v87 = v87 + (u58.Size.Y.Offset + tbl_upv_2.blockGap)
-        end
-        u59.Position = fromOffset_upv_1(8, v87)
-        u55.Position = fromOffset_upv_1(u68 + 8, v87 + 3)
-        v87 = v87 + (tbl_upv_2.sectionH + tbl_upv_2.sectionGap)
-        u60.Position = fromOffset_upv_1(8, v87)
-        v87 = v87 + u60.Size.Y.Offset
-        if u76 then
-            u45.Instance.Position = fromOffset_upv_1(8, v87 + 16)
-            v87 = v87 + (16 + tbl_upv_2.leaveH)
-        end
-        u46.CanvasSize = fromOffset_upv_1(0, v87 + 8)
-    end
-    local function paintHeader(a47)
-        --[[
-          name: paintHeader
-          line: 1080
-          upvalues:
-            u2 (copy, index: 1)
-            Custom_upv_1 (copy, index: 2)
-            CustomMatch_upv_1 (copy, index: 3)
-            paintCode (copy, index: 4)
-            u35 (copy, index: 5)
-            u32 (copy, index: 6)
-        ]]
-        u2.Title.Text = "CUSTOM MATCH"
-        local v88 = ((type(a47.players) ~= "table") and 0) or (#a47.players)
-        local v89 = ((Custom_upv_1.IsHost()) and "") or ("  \194\183  hosted by " .. tostring(a47.ownerName or "?"))
-        local Subtitle_1 = u2.Subtitle
-        local str_1 = tostring(a47.name or "")
-        local v90 = tonumber(a47.max) or (CustomMatch_upv_1.MAX_PLAYERS)
-        Subtitle_1.Text = string.format("%s  \194\183  %d/%d players%s", str_1, v88, v90, v89)
-        paintCode(a47)
-        if (u35.Visible) then
-            return
-        end
-        u32.AutoLocalize = false
-        u32.Text = tostring(a47.name or "")
-    end
-    local function paintMaps(a48)
-        --[[
-          name: paintMaps
-          line: 994
-          upvalues:
-            buildMapCards (copy, index: 1)
-            tbl_upv_14 (copy, index: 2)
-            tbl_upv_15 (copy, index: 3)
-            Colors_upv_1 (copy, index: 4)
-            u55 (copy, index: 5)
-        ]]
-        local v91 = ((type(a48.maps) ~= "table") and {}) or (a48.maps)
-        buildMapCards(v91)
-        local v92
-        if tbl_upv_14.map == nil then
-            v92 = a48.map or ""
-        else
-            v92 = tbl_upv_14.map
-        end
-        local v93 = nil
-        for _, value_11 in tbl_upv_15 do
-            local v94 = value_11.id == v92
-            value_11.check.Visible = v94
-            local stroke_1 = value_11.stroke
-            if v94 then
-                v93 = Colors_upv_1.Accent
-            else
-                v93 = Colors_upv_1.Stroke
-            end
-            stroke_1.Color = v93
-            value_11.stroke.Thickness = (v94 and 3) or 1
-            value_11.stroke.Transparency = (v94 and 0) or 0.88
-            local img_1 = value_11.img
-            if v94 then
-                v93 = 0
-                img_1.ImageTransparency = v93
-                continue
-            end
-            if v92 ~= "" then
-                v93 = 0.15
-            else
-                v93 = 0
-            end
-            img_1.ImageTransparency = v93
-        end
-        local v95 = "RANDOM"
-        local v96 = ((type(a48.maps) ~= "table") and {}) or (a48.maps)
-        local v97 = v95
-        for _, value_12 in v96 do
-            if value_12.id == v92 then
-                v97 = string.upper(value_12.name)
-            end
-        end
-        u55.Text = v97
-    end
-    local function paint(a49)
-        --[[
-          name: paint
-          line: 1121
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-            u61 (ref,  index: 2)
-            paintHeader (copy, index: 3)
-            paintMatch (copy, index: 4)
-            paintSwitches (copy, index: 5)
-            paintMaps (copy, index: 6)
-            paintTeams (copy, index: 7)
-            stack (copy, index: 8)
-        ]]
-        local v98 = Custom_upv_1.State() or {}
-        u61 = v98
-        paintHeader(v98)
-        paintMatch(v98)
-        paintSwitches(v98, a49)
-        paintMaps(v98)
-        paintTeams(v98)
-        stack()
-    end
-    local function host(a50, a51, a52, a53)
-        --[[
-          name: host
-          line: 1133
-          upvalues:
-            tbl_upv_14 (copy, index: 1)
-            paint (copy, index: 2)
-            Custom_upv_1 (copy, index: 3)
-            a1 (copy, index: 4)
-        ]]
-        if a52 then
-            tbl_upv_14[a52] = a53
-            paint()
-        end
-        local v99, v100 = Custom_upv_1.Host(a50, a51)
-        if a52 then
-            tbl_upv_14[a52] = nil
-        end
-        if not (v99) then
-            a1.Toast(tostring(v100), "error")
-        end
-        paint()
-        return v99
-    end
-    u65 = function(a54)
-        --[[
-          line: 1149
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-            tbl_upv_14 (copy, index: 2)
-            a1 (copy, index: 3)
-            tbl_upv_15 (copy, index: 4)
-            UI_upv_1 (copy, index: 5)
-            host (copy, index: 6)
-        ]]
-        local v101 = Custom_upv_1.State() or {}
-        local v102
-        if tbl_upv_14.map == nil then
-            v102 = v101.map or ""
-        else
-            v102 = tbl_upv_14.map
-        end
-        if a54 == v102 then
-            return
-        end
-        a1.Sounds.Play("Select")
-        for _, value_13 in tbl_upv_15 do
-            if value_13.id == a54 then
-                UI_upv_1.Bump(value_13.btn, 0.05)
-            end
-        end
-        task.spawn(host, "SetMap", a54, "map", a54)
-    end
-    local tbl_upv_30 = {}
-    local function sideCount(a55, a56)
-        --[[
-          name: sideCount
-          line: 1166
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-            tbl_upv_25 (copy, index: 2)
-        ]]
-        local v103 = 0
-        local v104 = Custom_upv_1.State() or {}
-        local v105
-        if type(v104.players) ~= "table" then
-            v105 = {}
-        else
-            v105 = v104.players
-        end
-        local v106 = nil
-        local v107 = nil
-        for _, value_14 in v105 do
-            if type(value_14) ~= "table" or value_14.userId == a56 then
-                continue
-            end
-            v106 = tbl_upv_25[value_14.userId]
-            if v106 == nil then
-                v106 = tonumber(value_14.team) or 0
-            end
-            if v106 == 1 or v106 == 2 then
-                v107 = v106
-                if v107 == a55 then
-                    v103 = v103 + 1
-                    continue
+
+            for _, v306 in v304 do
+                if type(v306) == "table" then
+                    local v307 = v228[v306.userId]
+                    local v308 = if v307 == nil then tonumber(v306.team) or 0 else v307
+                    local v309 = v308 ~= 1 and v308 ~= 2 and 0 or v308
+
+                    if v309 == 0 then
+                        continue
+                    end
+
+                    return true
                 end
             end
-            v107 = 0
-            if v107 == a55 then
-                v103 = v103 + 1
+
+            return false
+        end
+
+        local function paintSwitches(options, a312: boolean?)
+            --[[
+              name: paintSwitches
+              line: 961
+              upvalues:
+                custom (copy, index: 1)
+                v143 (copy, index: 2)
+                v78 (copy, index: 3)
+                v76 (copy, index: 4)
+                v75 (copy, index: 5)
+                v77 (copy, index: 6)
+                v83 (copy, index: 7)
+                ui11 (copy, index: 8)
+                colors (copy, index: 9)
+                CustomMatch (copy, index: 10)
+                v63 (copy, index: 11)
+                v66 (copy, index: 12)
+                ui9 (copy, index: 13)
+                v59 (copy, index: 14)
+                v61 (copy, index: 15)
+                v82 (copy, index: 16)
+                ui10 (copy, index: 17)
+                isBusy2 (ref,  index: 18)
+                parent8 (copy, index: 19)
+                v46 (copy, index: 20)
+            ]]
+            local v313
+            local visible = custom.IsHost()
+            local public = if v143.public ~= nil then v143.public else options.public == true
+            v78:Set(public, a312)
+            v78.Instance.Visible = visible
+            v76.Text = public and "PUBLIC" or "PRIVATE"
+            v75.Text = public and "globe-simplified" or "lock-closed"
+            v77.Text = public and "Listed in every lobby's Custom Matches" or "Only people with the code can join"
+            local bots = if v143.bots ~= nil then v143.bots else options.bots == true
+            v83:Set(bots, a312)
+            v83.Instance.Visible = visible
+            ui11.Visible = not visible
+            ui11.Text = bots and "ON" or "OFF"
+
+            if bots then
+                v313 = colors.Text
+                v313 = v143
+            else
+                v313 = colors.TextDim
+                v313 = v143
             end
+
+            ui11.TextColor3 = v313
+            local mode = CustomMatch.Mode
+            local mode2 = if v313.mode ~= nil then v313.mode else options.mode
+            local v319 = mode(mode2)
+            local v320 = v319 == "1v1"
+
+            if v63.Value ~= v319 or a312 then
+                v63:Set(v319, a312)
+            end
+
+            if v66.Value ~= v319 or a312 then
+                v66:Set(v319, a312)
+            end
+
+            v63.Instance.Visible = visible
+            ui9.Visible = not visible
+            ui9.Text = CustomMatch.ModeLabel(v319)
+            v59.Text = v320 and "person" or "three-people"
+            v61.Text = v320 and "One on one" or "Three a side"
+            v82.Text = v320 and "A bot takes an empty side" or "Bots take the empty slots, up to 3v3"
+            ui10.Visible = visible and not isBusy2
+            parent8.AutoButtonColor = false
+            v46.Text.Text = visible and "SETTINGS" or "SERVER"
         end
-        return v103
-    end
-    local function setTeamOf(a57, a58)
-        --[[
-          name: setTeamOf
-          line: 1177
-          upvalues:
-            tbl_upv_30 (copy, index: 1)
-            tbl_upv_25 (copy, index: 2)
-            paint (copy, index: 3)
-            LocalPlayer_upv_1 (copy, index: 4)
-            Custom_upv_1 (copy, index: 5)
-            a1 (copy, index: 6)
-        ]]
-        tbl_upv_30[a57] = (tbl_upv_30[a57] or 0) + 1
-        local v108 = tbl_upv_30[a57]
-        tbl_upv_25[a57] = a58
-        paint()
-        local v109, v110
-        if a57 ~= LocalPlayer_upv_1.UserId then
-            local v111, v112 = Custom_upv_1.Host("Move", {userId = a57, team = a58})
-            v109, v110 = v111, v112
-        else
-            local v113, v114 = Custom_upv_1.Host("Team", a58)
-            v109, v110 = v113, v114
+
+        local function paintMaps(options)
+            --[[
+              name: paintMaps
+              line: 994
+              upvalues:
+                buildMapCards (copy, index: 1)
+                v143 (copy, index: 2)
+                v156 (copy, index: 3)
+                colors (copy, index: 4)
+                ui13 (copy, index: 5)
+            ]]
+            local v323
+            local v324
+            local text
+
+            if type(options.maps) ~= "table" then
+                v323 = {}
+            else
+                v323 = options.maps
+            end
+
+            buildMapCards(v323)
+            local map = if v143.map ~= nil then v143.map else options.map or ""
+
+            for _, v328 in v156 do
+                local visible = v328.id == map
+                v328.check.Visible = visible
+                v328.stroke.Color = if visible then colors.Accent else colors.Stroke
+                v328.stroke.Thickness = visible and 3 or 1
+                v328.stroke.Transparency = visible and 0 or 0.88
+                v328.img.ImageTransparency = not visible and map ~= "" and 0.15 or 0
+            end
+
+            local v330 = "RANDOM"
+
+            if type(options.maps) ~= "table" then
+                v324 = {}
+            else
+                v324 = options.maps
+            end
+
+            text = v330
+
+            for _, v332 in v324 do
+                if v332.id == map then
+                    text = string.upper(v332.name)
+                end
+            end
+
+            ui13.Text = text
         end
-        if tbl_upv_30[a57] == v108 then
-            tbl_upv_25[a57] = nil
-        end
-        if not (v109) then
-            a1.Toast(tostring(v110), "error")
-        end
-        paint()
-    end
-    u50 = function(a59)
-        --[[
-          line: 1196
-          upvalues:
-            u70 (ref,  index: 1)
-            sideCount (copy, index: 2)
-            LocalPlayer_upv_1 (copy, index: 3)
-            Custom_upv_1 (copy, index: 4)
-            CustomMatch_upv_1 (copy, index: 5)
-            modeOf (copy, index: 6)
-            a1 (copy, index: 7)
-            setTeamOf (copy, index: 8)
-        ]]
-        if u70 == nil or u70 == a59 then
-            return
-        end
-        if a59 ~= 0 then
-            local v115 = sideCount(a59, LocalPlayer_upv_1.UserId)
-            local v116 = Custom_upv_1.State() or {}
-            if CustomMatch_upv_1.TeamSize(modeOf(v116)) <= v115 then
-                a1.Toast(("Team %* is full"):format(a59), "info")
+
+        local function paintMatch(options)
+            --[[
+              name: paintMatch
+              line: 1014
+              upvalues:
+                custom (copy, index: 1)
+                v41 (copy, index: 2)
+                v44 (copy, index: 3)
+                parent5 (copy, index: 4)
+                v66 (copy, index: 5)
+                ui (copy, index: 6)
+                ui7 (copy, index: 7)
+                isBusy (ref,  index: 8)
+                ui4 (copy, index: 9)
+                colors (copy, index: 10)
+                ui5 (copy, index: 11)
+                ui6 (copy, index: 12)
+                CustomMatch (copy, index: 13)
+                modeOf (copy, index: 14)
+                teamsPreview (copy, index: 15)
+                v143 (copy, index: 16)
+                theme (copy, index: 17)
+                ui8 (copy, index: 18)
+                textColor3 (copy, index: 19)
+                anyPicks (copy, index: 20)
+            ]]
+            local text
+            local text3
+            local status = options.status or "Lobby"
+            local v338 = status == "Match" or status == "Results"
+            local isHost = custom.IsHost()
+            v41.Instance.Visible = isHost and not v338
+            v44.Instance.Visible = isHost and v338
+            parent5.Visible = not isHost
+            v66.Instance.Visible = ui.Compact and isHost
+            ui7.Text = "HOSTED BY " .. string.upper((tostring(options.ownerName or "?")))
+
+            if status ~= "Results" then
+                text = "END MATCH"
+            else
+                text = "CLOSE RESULTS"
+            end
+
+            v44:SetText(text)
+            v41:SetEnabled(options.canStart == true and not isBusy)
+            local text2 = options.startHint ~= "Starting..." and "START MATCH" or "STARTING..."
+            v41:SetText(text2)
+
+            if status == "Match" then
+                ui4.BackgroundColor3 = colors.Warning
+                ui5.Text = "Match in progress"
+            elseif status == "Results" then
+                ui4.BackgroundColor3 = colors.Accent
+                ui5.Text = "Showing the results"
+            else
+                ui4.BackgroundColor3 = colors.Success
+                ui5.Text = "Waiting to start"
+            end
+
+            local v341 = ui.Compact and not isHost
+
+            if v341 then
+                text3 = CustomMatch.ModeLabel(modeOf(options))
+            else
+                text3 = v338 and "" or teamsPreview(options)
+            end
+
+            ui6.Text = text3
+            ui6.TextColor3 = if v341
+                and CustomMatch.Mode(if v143.mode == nil then options.mode else v143.mode) == "1v1" then theme.Lighten(colors.Accent, 0.2) else colors.TextDim
+
+            if v338 then
+                ui8.Text = "Everyone comes back here after the match"
+                ui8.TextColor3 = textColor3
+
                 return
             end
-        end
-        a1.Sounds.Play("Select")
-        task.spawn(setTeamOf, LocalPlayer_upv_1.UserId, a59)
-    end
-    u36.Activated:Connect(
-        function()
-            --[[
-              line: 1208
-              upvalues:
-                Custom_upv_1 (copy, index: 1)
-                tbl_upv_14 (copy, index: 2)
-                a1 (copy, index: 3)
-                host (copy, index: 4)
-            ]]
-            if not Custom_upv_1.IsHost() then
+
+            if not isHost then
+                ui8.Text = "The host picks the map and starts the match"
+                ui8.TextColor3 = textColor3
+
                 return
             end
-            local v117 = Custom_upv_1.State() or {}
-            local v118
-            if tbl_upv_14.public == nil then
-                v118 = v117.public == true
-            else
-                v118 = tbl_upv_14.public
-            end
-            local Play_1 = a1.Sounds.Play
-            local tbl_31 = {pitch = 0}
-            local v119
-            if v118 then
-                v119 = 0.94
-            else
-                v119 = 1.08
-            end
-            tbl_31.pitch = v119
-            Play_1("Click", tbl_31)
-            task.spawn(host, "SetPublic", not v118, "public", not v118)
-        end
-    )
-    u26 = function(a60)
-        --[[
-          line: 1218
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-            CustomMatch_upv_1 (copy, index: 2)
-            tbl_upv_14 (copy, index: 3)
-            a1 (copy, index: 4)
-            host (copy, index: 5)
-        ]]
-        if not Custom_upv_1.IsHost() then
-            return
-        end
-        local v120 = CustomMatch_upv_1.Mode(a60)
-        local v121 = Custom_upv_1.State() or {}
-        local Mode_3 = CustomMatch_upv_1.Mode
-        local v122
-        if tbl_upv_14.mode == nil then
-            v122 = v121.mode
-        else
-            v122 = tbl_upv_14.mode
-        end
-        if v120 == Mode_3(v122) then
-            return
-        end
-        local Play_2 = a1.Sounds.Play
-        local tbl_32 = {pitch = 0}
-        tbl_32.pitch = ((v120 ~= "1v1") and 0.94) or 1.08
-        Play_2("Click", tbl_32)
-        task.spawn(host, "SetMode", v120, "mode", v120)
-    end
-    u23.Activated:Connect(
-        function()
-            --[[
-              line: 1229
-              upvalues:
-                Custom_upv_1 (copy, index: 1)
-                u26 (ref,  index: 2)
-                CustomMatch_upv_1 (copy, index: 3)
-                tbl_upv_14 (copy, index: 4)
-            ]]
-            if Custom_upv_1.IsHost() then
-                local v123 = Custom_upv_1.State() or {}
-                local Mode_4 = CustomMatch_upv_1.Mode
-                local v124
-                if tbl_upv_14.mode == nil then
-                    v124 = v123.mode
+
+            if not options.canStart then
+                local textColor32
+                ui8.Text = tostring((options.startHint or ""))
+
+                if options.startHint ~= "Starting..." then
+                    textColor32 = theme.Lighten(colors.Warning, 0.15)
                 else
-                    v124 = tbl_upv_14.mode
+                    textColor32 = textColor3
                 end
-                local v125
-                if Mode_4(v124) ~= "1v1" then
-                    v125 = "1v1"
-                else
-                    v125 = "3v3"
-                end
-                u26(v125)
-            end
-        end
-    )
-    u40.Activated:Connect(
-        function()
-            --[[
-              line: 1234
-              upvalues:
-                Custom_upv_1 (copy, index: 1)
-                tbl_upv_14 (copy, index: 2)
-                a1 (copy, index: 3)
-                host (copy, index: 4)
-            ]]
-            if not Custom_upv_1.IsHost() then
+
+                ui8.TextColor3 = textColor32
+
                 return
             end
-            local v126 = Custom_upv_1.State() or {}
-            local v127
-            if tbl_upv_14.bots == nil then
-                v127 = v126.bots == true
+
+            local v343
+            local bots = if v143.bots ~= nil then v143.bots else options.bots == true
+
+            if type(options.players) ~= "table" then
+                v343 = 0
             else
-                v127 = tbl_upv_14.bots
+                v343 = #options.players
             end
-            local Play_3 = a1.Sounds.Play
-            local tbl_33 = {pitch = 0}
-            local v128
-            if v127 then
-                v128 = 0.94
+
+            if anyPicks(options) then
+                ui8.Text = bots and "Picked teams stay, bots fill the empty slots"
+                    or "Picked teams stay, the rest are shuffled"
+            elseif CustomMatch.TeamSize(modeOf(options)) == 1 and 2 < v343 then
+                ui8.Text = "Two fight, the rest watch and go next"
             else
-                v128 = 1.08
+                ui8.Text = bots and "Teams are shuffled, bots fill the empty slots" or "Teams are shuffled every match"
             end
-            tbl_33.pitch = v128
-            Play_3("Click", tbl_33)
-            task.spawn(host, "SetBots", not v127, "bots", not v127)
+
+            ui8.TextColor3 = textColor3
         end
-    )
-    u16.Activated:Connect(
-        function()
+
+        local copying = false
+
+        local function paintCode(a347)
             --[[
-              line: 1244
+              name: paintCode
+              line: 1063
               upvalues:
-                u62 (ref,  index: 1)
-                u16 (copy, index: 2)
-                Custom_upv_1 (copy, index: 3)
-                a1 (copy, index: 4)
-                paint (copy, index: 5)
+                custom (copy, index: 1)
+                CustomMatch (copy, index: 2)
+                ui2 (copy, index: 3)
+                v26 (copy, index: 4)
+                parent2 (copy, index: 5)
+                v28 (copy, index: 6)
             ]]
-            if u62 then
-                return
+            local visible = a347.public == false
+            local visible2 = visible and not custom.IsRevealed()
+            local text = CustomMatch.FormatCode((tostring(a347.code or "")))
+
+            if ui2.Text ~= text then
+                ui2.Text = text
             end
-            u62 = true
-            u16:SetText("STARTING...")
-            u16:SetEnabled(false)
-            local v129, v130 = Custom_upv_1.Host("Start", nil)
-            if not (v129) then
-                a1.Toast(tostring(v130), "error")
-            end
-            paint()
-            u62 = false
-            if v129 then
-                a1.Sounds.Play("Match_Found")
-                a1.MenuManager.Close("CustomHost")
+
+            ui2.TextTransparency = visible2 and 1 or 0
+            v26.Visible = visible2
+            parent2.Visible = visible
+            v28.Text = custom.IsRevealed() and "eye-slash" or "eye"
+            local v351 = visible and -52 or -14
+            ui2.Position = UDim2.new(1, v351, 0, 0)
+            v26.Position = UDim2.new(1, v351 - 2, 0.5, 0)
+            ui2.Size = UDim2.new(1, v351 - 56, 1, 0)
+        end
+
+        local function paintHeader(options)
+            --[[
+              name: paintHeader
+              line: 1080
+              upvalues:
+                v22 (copy, index: 1)
+                custom (copy, index: 2)
+                CustomMatch (copy, index: 3)
+                paintCode (copy, index: 4)
+                parent9 (copy, index: 5)
+                v71 (copy, index: 6)
+            ]]
+            local v354
+            v22.Title.Text = "CUSTOM MATCH"
+
+            if type(options.players) ~= "table" then
+                v354 = 0
             else
+                v354 = #options.players
+            end
+
+            local v355 = custom.IsHost() and "" or "  ·  hosted by " .. tostring(options.ownerName or "?")
+            local subtitle = v22.Subtitle
+            local stringFormat = string.format
+            local text = tostring((options.name or ""))
+            subtitle.Text = stringFormat("%s  ·  %d/%d players%s", text, v354, (tonumber(options.max)
+                or CustomMatch.MAX_PLAYERS), v355)
+            paintCode(options)
+
+            if not parent9.Visible then
+                v71.AutoLocalize = false
+                v71.Text = tostring((options.name or ""))
+            end
+        end
+
+        local v359 = false
+
+        local function stack()
+            --[[
+              name: stack
+              line: 1094
+              upvalues:
+                v92 (copy, index: 1)
+                udim2FromOffset (copy, index: 2)
+                v93 (copy, index: 3)
+                v232 (ref,  index: 4)
+                v12 (ref,  index: 5)
+                v125 (copy, index: 6)
+                flooredValue (ref,  index: 7)
+                parent13 (copy, index: 8)
+                v135 (copy, index: 9)
+                v136 (copy, index: 10)
+                v139 (copy, index: 11)
+                ui13 (copy, index: 12)
+                parent14 (copy, index: 13)
+                v359 (ref,  index: 14)
+                v85 (copy, index: 15)
+                parent12 (copy, index: 16)
+            ]]
+            local v361 = 8
+            v92.Position = udim2FromOffset(8, v361)
+            v93.Position = udim2FromOffset(v232 + 8, v361 + 3)
+            local v362 = v361 + (v12.sectionH + v12.sectionGap)
+            v125[1].frame.Position = udim2FromOffset(8, v362)
+            v125[2].frame.Position = udim2FromOffset((flooredValue + 8) + v12.teamGap, v362)
+            local v363 = v362 + (v125[1].frame.Size.Y.Offset + v12.blockGap)
+
+            if parent13.Visible then
+                v135.Position = udim2FromOffset(8, v363)
+                v136.Position = udim2FromOffset(v232 + 8, v363 + 3)
+                local v364 = v363 + (v12.sectionH + v12.sectionGap)
+                parent13.Position = udim2FromOffset(8, v364)
+                v363 = v364 + (parent13.Size.Y.Offset + v12.blockGap)
+            end
+
+            v139.Position = udim2FromOffset(8, v363)
+            ui13.Position = udim2FromOffset(v232 + 8, v363 + 3)
+            local v365 = v363 + (v12.sectionH + v12.sectionGap)
+            parent14.Position = udim2FromOffset(8, v365)
+            local v366 = v365 + parent14.Size.Y.Offset
+
+            if v359 then
+                v85.Instance.Position = udim2FromOffset(8, v366 + 16)
+                v366 += 16 + v12.leaveH
+            end
+
+            parent12.CanvasSize = udim2FromOffset(0, v366 + 8)
+        end
+
+        local function paint(a368: boolean?)
+            --[[
+              name: paint
+              line: 1121
+              upvalues:
+                custom (copy, index: 1)
+                v142 (ref,  index: 2)
+                paintHeader (copy, index: 3)
+                paintMatch (copy, index: 4)
+                paintSwitches (copy, index: 5)
+                paintMaps (copy, index: 6)
+                paintTeams (copy, index: 7)
+                stack (copy, index: 8)
+            ]]
+            local options = custom.State() or {}
+            v142 = options
+            paintHeader(options)
+            paintMatch(options)
+            paintSwitches(options, a368)
+            paintMaps(options)
+            paintTeams(options)
+            stack()
+        end
+
+        local function host(a371: string, a372, key: string?, value)
+            --[[
+              name: host
+              line: 1133
+              upvalues:
+                v143 (copy, index: 1)
+                paint (copy, index: 2)
+                custom (copy, index: 3)
+                a11 (copy, index: 4)
+            ]]
+            if key then
+                v143[key] = value
                 paint()
             end
+
+            local v375, v376 = custom.Host(a371, a372)
+
+            if key then
+                v143[key] = nil
+            end
+
+            if not v375 then
+                a11.Toast(tostring(v376), "error")
+            end
+
+            paint()
+
+            return v375
         end
-    )
-    local function beginEdit()
-        --[[
-          name: beginEdit
-          line: 1262
-          upvalues:
-            u63 (ref,  index: 1)
-            u35 (copy, index: 2)
-            Custom_upv_1 (copy, index: 3)
-            CustomMatch_upv_1 (copy, index: 4)
-            LocalPlayer_upv_1 (copy, index: 5)
-            u32 (copy, index: 6)
-            u31 (copy, index: 7)
-            u34 (copy, index: 8)
-            u33 (copy, index: 9)
-        ]]
-        if u63 then
-            return
-        end
-        u63 = true
-        local v131 = Custom_upv_1.State() or {}
-        u35.Text = tostring(v131.name or "")
-        u35.PlaceholderText = CustomMatch_upv_1.DefaultName(LocalPlayer_upv_1.DisplayName)
-        u35.Visible = true
-        u32.Visible = false
-        u31.Visible = false
-        u34.Visible = false
-        u33.Visible = false
-        u35:CaptureFocus()
-    end
-    local function endEdit()
-        --[[
-          name: endEdit
-          line: 1276
-          upvalues:
-            u63 (ref,  index: 1)
-            u35 (copy, index: 2)
-            u32 (copy, index: 3)
-            u31 (copy, index: 4)
-            u34 (copy, index: 5)
-            u33 (copy, index: 6)
-        ]]
-        u63 = false
-        u35.Visible = false
-        u32.Visible = true
-        u31.Visible = true
-        u34.Visible = true
-        u33.Visible = true
-    end
-    u30.Activated:Connect(
-        function()
+
+        v158 = function(value)
             --[[
-              line: 1284
+              line: 1149
               upvalues:
-                Custom_upv_1 (copy, index: 1)
-                a1 (copy, index: 2)
-                u63 (ref,  index: 3)
-                u35 (copy, index: 4)
-                CustomMatch_upv_1 (copy, index: 5)
-                LocalPlayer_upv_1 (copy, index: 6)
-                u32 (copy, index: 7)
-                u31 (copy, index: 8)
-                u34 (copy, index: 9)
-                u33 (copy, index: 10)
+                custom (copy, index: 1)
+                v143 (copy, index: 2)
+                a11 (copy, index: 3)
+                v156 (copy, index: 4)
+                ui (copy, index: 5)
+                host (copy, index: 6)
             ]]
-            if not Custom_upv_1.IsHost() then
+            local v378 = custom.State() or {}
+            local map = if v143.map ~= nil then v143.map else v378.map or ""
+
+            if value == map then
                 return
             end
-            a1.Sounds.Play("Click")
-            if u63 then
-                return
-            end
-            u63 = true
-            local v132 = Custom_upv_1.State() or {}
-            u35.Text = tostring(v132.name or "")
-            u35.PlaceholderText = CustomMatch_upv_1.DefaultName(LocalPlayer_upv_1.DisplayName)
-            u35.Visible = true
-            u32.Visible = false
-            u31.Visible = false
-            u34.Visible = false
-            u33.Visible = false
-            u35:CaptureFocus()
-        end
-    )
-    u35:GetPropertyChangedSignal("Text"):Connect(
-        function()
-            --[[
-              line: 1291
-              upvalues:
-                u35 (copy, index: 1)
-                CustomMatch_upv_1 (copy, index: 2)
-            ]]
-            local Text_2 = u35.Text
-            local v133 = utf8.len(Text_2) or (#Text_2)
-            if CustomMatch_upv_1.NAME_MAX < v133 then
-                local v134 = utf8.offset(Text_2, CustomMatch_upv_1.NAME_MAX + 1) or (#Text_2 + 1)
-                u35.Text = string.sub(Text_2, 1, v134 - 1)
-            end
-        end
-    )
-    u35.FocusLost:Connect(
-        function()
-            --[[
-              line: 1299
-              upvalues:
-                u63 (ref,  index: 1)
-                u35 (copy, index: 2)
-                Custom_upv_1 (copy, index: 3)
-                u32 (copy, index: 4)
-                u31 (copy, index: 5)
-                u34 (copy, index: 6)
-                u33 (copy, index: 7)
-                CustomMatch_upv_1 (copy, index: 8)
-                LocalPlayer_upv_1 (copy, index: 9)
-                a1 (copy, index: 10)
-                paint (copy, index: 11)
-            ]]
-            if not u63 then
-                return
-            end
-            local Text_upv_3 = u35.Text
-            local v135 = Custom_upv_1.State() or {}
-            local str_upv_2 = tostring(v135.name or "")
-            u63 = false
-            u35.Visible = false
-            u32.Visible = true
-            u31.Visible = true
-            u34.Visible = true
-            u33.Visible = true
-            if CustomMatch_upv_1.CleanName(Text_upv_3) ~= str_upv_2 then
-                local v136
-                if CustomMatch_upv_1.CleanName(Text_upv_3) == "" then
-                    v136 = CustomMatch_upv_1.DefaultName(LocalPlayer_upv_1.DisplayName)
-                else
-                    v136 = CustomMatch_upv_1.CleanName(Text_upv_3)
+
+            a11.Sounds.Play("Select")
+
+            for _, v381 in v156 do
+                if v381.id == value then
+                    ui.Bump(v381.btn, 0.05)
                 end
-                u32.Text = v136
+            end
+
+            task.spawn(host, "SetMap", value, "map", value)
+        end
+
+        local function sideCount(a383, a384)
+            --[[
+              name: sideCount
+              line: 1166
+              upvalues:
+                custom (copy, index: 1)
+                v228 (copy, index: 2)
+            ]]
+            local v385
+            local count = 0
+            local v387 = custom.State() or {}
+
+            if type(v387.players) ~= "table" then
+                v385 = {}
+            else
+                v385 = v387.players
+            end
+
+            for _, v389 in v385 do
+                if type(v389) == "table" then
+                    if v389.userId == a384 then
+                        continue
+                    end
+
+                    local v390 = v228[v389.userId]
+                    local v391 = if v390 == nil then tonumber(v389.team) or 0 else v390
+                    local v392 = v391 ~= 1 and v391 ~= 2 and 0 or v391
+
+                    if v392 == a383 then
+                        count += 1
+                    end
+                end
+            end
+
+            return count
+        end
+
+        local v393 = {}
+
+        local function setTeamOf(userId, team)
+            --[[
+              name: setTeamOf
+              line: 1177
+              upvalues:
+                v393 (copy, index: 1)
+                v228 (copy, index: 2)
+                paint (copy, index: 3)
+                localPlayer (copy, index: 4)
+                custom (copy, index: 5)
+                a11 (copy, index: 6)
+            ]]
+            local v397, v398
+            v393[userId] = (v393[userId] or 0) + 1
+            local v399 = v393[userId]
+            v228[userId] = team
+            paint()
+
+            if userId ~= localPlayer.UserId then
+                v397, v398 = custom.Host("Move", {userId = userId, team = team})
+            else
+                v397, v398 = custom.Host("Team", team)
+            end
+
+            if v393[userId] == v399 then
+                v228[userId] = nil
+            end
+
+            if not v397 then
+                a11.Toast(tostring(v398), "error")
+            end
+
+            paint()
+        end
+
+        v94 = function(team)
+            --[[
+              line: 1196
+              upvalues:
+                v234 (ref,  index: 1)
+                sideCount (copy, index: 2)
+                localPlayer (copy, index: 3)
+                custom (copy, index: 4)
+                CustomMatch (copy, index: 5)
+                modeOf (copy, index: 6)
+                a11 (copy, index: 7)
+                setTeamOf (copy, index: 8)
+            ]]
+            if v234 == nil or v234 == team then
+                return
+            end
+
+            if team ~= 0 then
+                local v401 = sideCount(team, localPlayer.UserId)
+                local v402 = custom.State() or {}
+
+                if CustomMatch.TeamSize(modeOf(v402)) <= v401 then
+                    a11.Toast(`Team {team} is full`, "info")
+                    return
+                end
+            end
+
+            a11.Sounds.Play("Select")
+            task.spawn(setTeamOf, localPlayer.UserId, team)
+        end
+
+        parent10.Activated:Connect(
+            function()
+                --[[
+                  line: 1208
+                  upvalues:
+                    custom (copy, index: 1)
+                    v143 (copy, index: 2)
+                    a11 (copy, index: 3)
+                    host (copy, index: 4)
+                ]]
+                local pitch
+
+                if not custom.IsHost() then
+                    return
+                end
+
+                local v404 = custom.State() or {}
+                local public = if v143.public ~= nil then v143.public else v404.public == true
+                local play = a11.Sounds.Play
+                local v407 = {}
+
+                if public then
+                    pitch = 0.94
+                else
+                    pitch = 1.08
+                end
+
+                v407.pitch = pitch
+                play("Click", v407)
+                task.spawn(host, "SetPublic", not public, "public", not public)
+            end
+        )
+
+        v62 = function(a408)
+            --[[
+              line: 1218
+              upvalues:
+                custom (copy, index: 1)
+                CustomMatch (copy, index: 2)
+                v143 (copy, index: 3)
+                a11 (copy, index: 4)
+                host (copy, index: 5)
+            ]]
+            local pitch
+
+            if not custom.IsHost() then
+                return
+            end
+
+            local value = CustomMatch.Mode(a408)
+            local v411 = custom.State() or {}
+            local mode = CustomMatch.Mode
+            local mode2 = if v143.mode ~= nil then v143.mode else v411.mode
+
+            if value == mode(mode2) then
+                return
+            end
+
+            local play = a11.Sounds.Play
+            local v415 = {}
+
+            if value ~= "1v1" then
+                pitch = 0.94
+            else
+                pitch = 1.08
+            end
+
+            v415.pitch = pitch
+            play("Click", v415)
+            task.spawn(host, "SetMode", value, "mode", value)
+        end
+
+        parent7.Activated:Connect(
+            function()
+                --[[
+                  line: 1229
+                  upvalues:
+                    custom (copy, index: 1)
+                    v62 (ref,  index: 2)
+                    CustomMatch (copy, index: 3)
+                    v143 (copy, index: 4)
+                ]]
+                if custom.IsHost() then
+                    local v416 = v62
+                    local v417 = custom.State() or {}
+                    local mode = CustomMatch.Mode
+                    local mode2 = if v143.mode ~= nil then v143.mode else v417.mode
+                    local v420 = mode(mode2) ~= "1v1" and "1v1" or "3v3"
+                    v416(v420)
+                end
+            end
+        )
+
+        parent11.Activated:Connect(
+            function()
+                --[[
+                  line: 1234
+                  upvalues:
+                    custom (copy, index: 1)
+                    v143 (copy, index: 2)
+                    a11 (copy, index: 3)
+                    host (copy, index: 4)
+                ]]
+                local pitch
+
+                if not custom.IsHost() then
+                    return
+                end
+
+                local v422 = custom.State() or {}
+                local bots = if v143.bots ~= nil then v143.bots else v422.bots == true
+                local play = a11.Sounds.Play
+                local v425 = {}
+
+                if bots then
+                    pitch = 0.94
+                else
+                    pitch = 1.08
+                end
+
+                v425.pitch = pitch
+                play("Click", v425)
+                task.spawn(host, "SetBots", not bots, "bots", not bots)
+            end
+        )
+
+        v41.Activated:Connect(
+            function()
+                --[[
+                  line: 1244
+                  upvalues:
+                    isBusy (ref,  index: 1)
+                    v41 (copy, index: 2)
+                    custom (copy, index: 3)
+                    a11 (copy, index: 4)
+                    paint (copy, index: 5)
+                ]]
+                if isBusy then
+                    return
+                end
+
+                isBusy = true
+                v41:SetText("STARTING...")
+                v41:SetEnabled(false)
+                local v426, v427 = custom.Host("Start", nil)
+                if not v426 then
+                    a11.Toast(tostring(v427), "error")
+                end
+
+                paint()
+                isBusy = false
+
+                if v426 then
+                    a11.Sounds.Play("Match_Found")
+                    a11.MenuManager.Close("CustomHost")
+
+                    return
+                end
+
+                paint()
+            end
+        )
+
+        do
+            local function beginEdit()
+                --[[
+                  name: beginEdit
+                  line: 1262
+                  upvalues:
+                    isBusy2 (ref,  index: 1)
+                    parent9 (copy, index: 2)
+                    custom (copy, index: 3)
+                    CustomMatch (copy, index: 4)
+                    localPlayer (copy, index: 5)
+                    v71 (copy, index: 6)
+                    v70 (copy, index: 7)
+                    ui10 (copy, index: 8)
+                    v69 (copy, index: 9)
+                ]]
+                if isBusy2 then
+                    return
+                end
+
+                isBusy2 = true
+                local v429 = custom.State() or {}
+                parent9.Text = tostring((v429.name or ""))
+                parent9.PlaceholderText = CustomMatch.DefaultName(localPlayer.DisplayName)
+                parent9.Visible = true
+                v71.Visible = false
+                v70.Visible = false
+                ui10.Visible = false
+                v69.Visible = false
+                parent9:CaptureFocus()
+            end
+        end
+
+        do
+            local function endEdit()
+                --[[
+                  name: endEdit
+                  line: 1276
+                  upvalues:
+                    isBusy2 (ref,  index: 1)
+                    parent9 (copy, index: 2)
+                    v71 (copy, index: 3)
+                    v70 (copy, index: 4)
+                    ui10 (copy, index: 5)
+                    v69 (copy, index: 6)
+                ]]
+                isBusy2 = false
+                parent9.Visible = false
+                v71.Visible = true
+                v70.Visible = true
+                ui10.Visible = true
+                v69.Visible = true
+            end
+        end
+
+        parent8.Activated:Connect(
+            function()
+                --[[
+                  line: 1284
+                  upvalues:
+                    custom (copy, index: 1)
+                    a11 (copy, index: 2)
+                    isBusy2 (ref,  index: 3)
+                    parent9 (copy, index: 4)
+                    CustomMatch (copy, index: 5)
+                    localPlayer (copy, index: 6)
+                    v71 (copy, index: 7)
+                    v70 (copy, index: 8)
+                    ui10 (copy, index: 9)
+                    v69 (copy, index: 10)
+                ]]
+                if not custom.IsHost() then
+                    return
+                end
+
+                a11.Sounds.Play("Click")
+
+                if isBusy2 then
+                    return
+                end
+
+                isBusy2 = true
+                local v431 = custom.State() or {}
+                parent9.Text = tostring((v431.name or ""))
+                parent9.PlaceholderText = CustomMatch.DefaultName(localPlayer.DisplayName)
+                parent9.Visible = true
+                v71.Visible = false
+                v70.Visible = false
+                ui10.Visible = false
+                v69.Visible = false
+                parent9:CaptureFocus()
+            end
+        )
+
+        parent9:GetPropertyChangedSignal("Text"):Connect(
+            function()
+                --[[
+                  line: 1291
+                  upvalues:
+                    parent9 (copy, index: 1)
+                    CustomMatch (copy, index: 2)
+                ]]
+                local text = parent9.Text
+                local v433 = utf8.len(text) or #text
+
+                if CustomMatch.NAME_MAX < v433 then
+                    local v434 = utf8.offset(text, CustomMatch.NAME_MAX + 1) or #text + 1
+                    parent9.Text = string.sub(text, 1, v434 - 1)
+                end
+            end
+        )
+
+        parent9.FocusLost:Connect(
+            function()
+                --[[
+                  line: 1299
+                  upvalues:
+                    isBusy2 (ref,  index: 1)
+                    parent9 (copy, index: 2)
+                    custom (copy, index: 3)
+                    v71 (copy, index: 4)
+                    v70 (copy, index: 5)
+                    ui10 (copy, index: 6)
+                    v69 (copy, index: 7)
+                    CustomMatch (copy, index: 8)
+                    localPlayer (copy, index: 9)
+                    a11 (copy, index: 10)
+                    paint (copy, index: 11)
+                ]]
+                if not isBusy2 then
+                    return
+                end
+
+                local text = parent9.Text
+                local v436 = custom.State() or {}
+                local text2 = tostring((v436.name or ""))
+                isBusy2 = false
+                parent9.Visible = false
+                v71.Visible = true
+                v70.Visible = true
+                ui10.Visible = true
+                v69.Visible = true
+
+                if CustomMatch.CleanName(text) == text2 then
+                    return
+                end
+
+                v71.Text = if CustomMatch.CleanName(text) ~= "" then CustomMatch.CleanName(text) else CustomMatch.DefaultName(localPlayer.DisplayName)
+
                 task.spawn(
                     function()
                         --[[
                           line: 1310
                           upvalues:
-                            Text_upv_3 (copy, index: 1)
-                            Custom_upv_1 (copy, index: 2)
-                            a1 (copy, index: 3)
+                            text (copy, index: 1)
+                            custom (copy, index: 2)
+                            a11 (copy, index: 3)
                             paint (copy, index: 4)
-                            u32 (copy, index: 5)
-                            str_upv_2 (copy, index: 6)
+                            v71 (copy, index: 5)
+                            text2 (copy, index: 6)
                         ]]
-                        local v137, v138 = Custom_upv_1.Host("SetName", Text_upv_3)
-                        if not (v137) then
-                            a1.Toast(tostring(v138), "error")
+                        local v438, v439 = custom.Host("SetName", text)
+                        if not v438 then
+                            a11.Toast(tostring(v439), "error")
                         end
+
                         paint()
-                        if v137 then
-                            a1.Sounds.Play("Select")
-                        else
-                            u32.Text = str_upv_2
+
+                        if v438 then
+                            a11.Sounds.Play("Select")
+                            return
                         end
+
+                        v71.Text = text2
                     end
                 )
             end
+        )
+
+        parent2.Activated:Connect(
+            function()
+                --[[
+                  line: 1324
+                  upvalues:
+                    custom (copy, index: 1)
+                ]]
+                if custom.IsRevealed() then
+                    custom.Hide()
+                    return
+                end
+
+                custom.Reveal()
+            end
+        )
+
+        local count = 0
+        local v441 = 0
+
+        do
+            local function resetCopyLook()
+                --[[
+                  name: resetCopyLook
+                  line: 1333
+                  upvalues:
+                    ui3 (copy, index: 1)
+                    v30 (copy, index: 2)
+                    icon (copy, index: 3)
+                ]]
+                ui3.Visible = false
+                v30:SetText("COPY")
+                icon.Text = "two-stacked-squares"
+            end
         end
-    )
-    u5.Activated:Connect(
-        function()
+
+        do
+            local function stopCopy()
+                --[[
+                  name: stopCopy
+                  line: 1338
+                  upvalues:
+                    copying (ref,  index: 1)
+                    v441 (ref,  index: 2)
+                    ui3 (copy, index: 3)
+                    v30 (copy, index: 4)
+                    icon (copy, index: 5)
+                ]]
+                copying = false
+                local timestamp = os.clock()
+
+                if v441 <= timestamp then
+                    ui3.Visible = false
+                    v30:SetText("COPY")
+                    icon.Text = "two-stacked-squares"
+                end
+            end
+        end
+
+        local function copyCode()
             --[[
-              line: 1324
+              name: copyCode
+              line: 1344
               upvalues:
-                Custom_upv_1 (copy, index: 1)
+                custom (copy, index: 1)
+                ui (copy, index: 2)
+                paintCode (copy, index: 3)
+                count (ref,  index: 4)
+                v441 (ref,  index: 5)
+                icon (copy, index: 6)
+                copying (ref,  index: 7)
+                ui2 (copy, index: 8)
+                ui3 (copy, index: 9)
+                v30 (copy, index: 10)
             ]]
-            if Custom_upv_1.IsRevealed() then
-                Custom_upv_1.Hide()
-            else
-                Custom_upv_1.Reveal()
+            local v446 = custom.State() or {}
+
+            if type(v446.code) ~= "string" or v446.code == "" then
+                return
             end
-        end
-    )
-    local u77 = 0
-    local u78 = 0
-    local function resetCopyLook()
-        --[[
-          name: resetCopyLook
-          line: 1333
-          upvalues:
-            u9 (copy, index: 1)
-            u8 (copy, index: 2)
-            u7 (copy, index: 3)
-        ]]
-        u9.Visible = false
-        u8:SetText("COPY")
-        u7.Text = "two-stacked-squares"
-    end
-    local function stopCopy()
-        --[[
-          name: stopCopy
-          line: 1338
-          upvalues:
-            u75 (ref,  index: 1)
-            u78 (ref,  index: 2)
-            u9 (copy, index: 3)
-            u8 (copy, index: 4)
-            u7 (copy, index: 5)
-        ]]
-        u75 = false
-        local v139 = os.clock()
-        if not (u78 <= v139) then
-            return
-        end
-        u9.Visible = false
-        u8:SetText("COPY")
-        u7.Text = "two-stacked-squares"
-    end
-    local function copyCode()
-        --[[
-          name: copyCode
-          line: 1344
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-            paintCode (copy, index: 3)
-            u77 (ref,  index: 4)
-            u78 (ref,  index: 5)
-            u7 (copy, index: 6)
-            u75 (ref,  index: 7)
-            u4 (copy, index: 8)
-            u9 (copy, index: 9)
-            u8 (copy, index: 10)
-        ]]
-        local v140 = Custom_upv_1.State() or {}
-        if type(v140.code) ~= "string" then
-            return
-        end
-        if v140.code ~= "" then
-            if UI_upv_1.Touch and v140.public == false and not (Custom_upv_1.IsRevealed()) then
-                Custom_upv_1.Reveal()
+
+            if ui.Touch and v446.public == false and not custom.IsRevealed() then
+                custom.Reveal()
             end
-            paintCode(v140)
-            u77 = u77 + 1
-            u78 = 0
-            u7.Text = "two-stacked-squares"
-            u75 = true
-            u4:CaptureFocus()
-            local function selectAll_1()
+
+            paintCode(v446)
+            count += 1
+            v441 = 0
+            icon.Text = "two-stacked-squares"
+            copying = true
+            ui2:CaptureFocus()
+
+            local function selectAll()
                 --[[
                   name: selectAll
                   line: 1358
                   upvalues:
-                    u75 (ref,  index: 1)
-                    u4 (copy, index: 2)
+                    copying (ref,  index: 1)
+                    ui2 (copy, index: 2)
                 ]]
-                if not u75 or not u4:IsFocused() then
-                    return
-                end
-                u4.SelectionStart = 1
-                u4.CursorPosition = #u4.Text + 1
-            end
-            if u75 then
-                local v141 = u4:IsFocused()
-                if v141 then
-                    u4.SelectionStart = 1
-                    u4.CursorPosition = #u4.Text + 1
+                if copying and ui2:IsFocused() then
+                    ui2.SelectionStart = 1
+                    ui2.CursorPosition = #ui2.Text + 1
                 end
             end
-            task.defer(selectAll_1)
-            u9.Text = ((UI_upv_1.Touch) and "Tap and hold the code to copy") or "Press Ctrl+C (Cmd+C on Mac) to copy"
-            u9.Visible = true
-            UI_upv_1.Enter(u9, Vector2.new(0, -4), 0, u9.Position)
-            u8:SetText("SELECTED")
-        end
-    end
-    u8.Activated:Connect(copyCode)
-    u8.Instance.Visible = not UI_upv_1.Gamepad
-    local function refreshCopy()
-        --[[
-          name: refreshCopy
-          line: 1374
-          upvalues:
-            u8 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-        ]]
-        u8.Instance.Visible = not UI_upv_1.Gamepad
-    end
-    UI_upv_1.GamepadChanged:Connect(refreshCopy)
-    local function copyModifier()
-        --[[
-          name: copyModifier
-          line: 1382
-          upvalues:
-            UserInputService_upv_1 (copy, index: 1)
-        ]]
-        for _, value_15 in {Enum.KeyCode.LeftControl, Enum.KeyCode.RightControl, Enum.KeyCode.LeftSuper, Enum.KeyCode.RightSuper, Enum.KeyCode.LeftMeta, Enum.KeyCode.RightMeta} do
-            if not (UserInputService_upv_1:IsKeyDown(value_15)) then
-                continue
+
+            if copying and ui2:IsFocused() then
+                ui2.SelectionStart = 1
+                ui2.CursorPosition = #ui2.Text + 1
             end
-            return true
+
+            task.defer(selectAll)
+            ui3.Text = ui.Touch and "Tap and hold the code to copy" or "Press Ctrl+C (Cmd+C on Mac) to copy"
+            ui3.Visible = true
+            ui.Enter(ui3, Vector2.new(0, -4), 0, ui3.Position)
+            v30:SetText("SELECTED")
         end
-        return false
-    end
-    UserInputService_upv_1.InputBegan:Connect(
-        function(a61)
-            --[[
-              line: 1390
-              upvalues:
-                u75 (ref,  index: 1)
-                u4 (copy, index: 2)
-                copyModifier (copy, index: 3)
-                u77 (ref,  index: 4)
-                u78 (ref,  index: 5)
-                u8 (copy, index: 6)
-                u7 (copy, index: 7)
-                u9 (copy, index: 8)
-                Keybinds_upv_1 (copy, index: 9)
-                a1 (copy, index: 10)
-            ]]
-            if not u75 or not u4:IsFocused() then
-                return
+
+        v30.Activated:Connect(copyCode)
+        v30.Instance.Visible = not ui.Gamepad
+        ui.GamepadChanged:Connect(
+            function()
+                --[[
+                  name: refreshCopy
+                  line: 1374
+                  upvalues:
+                    v30 (copy, index: 1)
+                    ui (copy, index: 2)
+                ]]
+                v30.Instance.Visible = not ui.Gamepad
             end
-            if a61.KeyCode == Enum.KeyCode.C and copyModifier() then
-                u77 = u77 + 1
-                local u79 = u77
-                u78 = os.clock() + 1.6
-                u8:SetText("COPIED")
-                u7.Text = "check"
-                u9.Text = "Copied to your clipboard"
-                u9.Visible = true
-                task.delay(
-                    0.2,
-                    function()
-                        --[[
-                          line: 1402
-                          upvalues:
-                            u79 (copy, index: 1)
-                            u77 (ref,  index: 2)
-                            u4 (copy, index: 3)
-                        ]]
-                        if u79 ~= u77 or not u4:IsFocused() then
-                            return
-                        end
-                        u4:ReleaseFocus()
+        )
+
+        do
+            local function copyModifier()
+                --[[
+                  name: copyModifier
+                  line: 1382
+                  upvalues:
+                    userInputService (copy, index: 1)
+                ]]
+                for _, keyCode in {Enum.KeyCode.LeftControl, Enum.KeyCode.RightControl, Enum.KeyCode.LeftSuper, Enum.KeyCode.RightSuper, Enum.KeyCode.LeftMeta, Enum.KeyCode.RightMeta} do
+                    if userInputService:IsKeyDown(keyCode) then
+                        return true
                     end
-                )
-                task.delay(
-                    1.65,
-                    function()
-                        --[[
-                          line: 1407
-                          upvalues:
-                            u79 (copy, index: 1)
-                            u77 (ref,  index: 2)
-                            u75 (ref,  index: 3)
-                            u9 (copy, index: 4)
-                            u8 (copy, index: 5)
-                            u7 (copy, index: 6)
-                        ]]
-                        if u79 ~= u77 or (u75) then
-                            return
-                        end
-                        u9.Visible = false
-                        u8:SetText("COPY")
-                        u7.Text = "two-stacked-squares"
-                    end
-                )
-                return
+                end
+
+                return false
             end
-            if Keybinds_upv_1.IsPad(a61, "CustomMenu") or Keybinds_upv_1.ActionOf(a61) == "CustomMenu" then
-                a1.MenuManager.Toggle("CustomHost")
-            end
-        end
-    )
-    u4.FocusLost:Connect(
-        function()
-            --[[
-              line: 1416
-              upvalues:
-                UI_upv_1 (copy, index: 1)
-                u4 (copy, index: 2)
-                u75 (ref,  index: 3)
-                u78 (ref,  index: 4)
-                u9 (copy, index: 5)
-                u8 (copy, index: 6)
-                u7 (copy, index: 7)
-            ]]
-            task.delay(
-                ((UI_upv_1.Touch) and 0) or 0.15,
-                function()
+
+            userInputService.InputBegan:Connect(
+                function(input: InputObject)
                     --[[
-                      line: 1417
+                      line: 1390
                       upvalues:
-                        u4 (copy, index: 1)
-                        u75 (ref,  index: 2)
-                        u78 (ref,  index: 3)
-                        u9 (copy, index: 4)
-                        u8 (copy, index: 5)
-                        u7 (copy, index: 6)
+                        copying (ref,  index: 1)
+                        ui2 (copy, index: 2)
+                        copyModifier (copy, index: 3)
+                        count (ref,  index: 4)
+                        v441 (ref,  index: 5)
+                        v30 (copy, index: 6)
+                        icon (copy, index: 7)
+                        ui3 (copy, index: 8)
+                        Keybinds (copy, index: 9)
+                        a11 (copy, index: 10)
                     ]]
-                    if not (u4:IsFocused()) then
-                        u75 = false
-                        local v142 = os.clock()
-                        if not (u78 <= v142) then
-                            return
-                        end
-                        u9.Visible = false
-                        u8:SetText("COPY")
-                        u7.Text = "two-stacked-squares"
-                    end
-                end
-            )
-        end
-    )
-    u4:GetPropertyChangedSignal("Text"):Connect(
-        function()
-            --[[
-              line: 1424
-              upvalues:
-                CustomMatch_upv_1 (copy, index: 1)
-                Custom_upv_1 (copy, index: 2)
-                u4 (copy, index: 3)
-            ]]
-            local FormatCode_1 = CustomMatch_upv_1.FormatCode
-            local v143 = Custom_upv_1.State() or {}
-            local v144 = FormatCode_1(tostring(v143.code or ""))
-            if u4.Text == v144 then
-                return
-            end
-            u4.Text = v144
-        end
-    )
-    Custom_upv_1.RevealChanged:Connect(
-        function()
-            --[[
-              line: 1430
-              upvalues:
-                u2 (copy, index: 1)
-                paintCode (copy, index: 2)
-                Custom_upv_1 (copy, index: 3)
-            ]]
-            if u2.IsOpen then
-                local v145 = Custom_upv_1.State() or {}
-                paintCode(v145)
-            end
-        end
-    )
-    local tbl_upv_34 = nil
-    local u80 = nil
-    local function closeConfirm()
-        --[[
-          name: closeConfirm
-          line: 1440
-          upvalues:
-            u80 (ref, index: 1)
-            tbl_upv_34 (ref, index: 2)
-        ]]
-        u80 = nil
-        if not tbl_upv_34 then
-            return
-        end
-        tbl_upv_34.layer.Visible = false
-    end
-    local function openConfirm(a62, a63, a64, a65, a66, a67)
-        --[[
-          name: openConfirm
-          line: 1446
-          upvalues:
-            tbl_upv_34 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            Colors_upv_1 (copy, index: 3)
-            u2 (copy, index: 4)
-            closeConfirm (copy, index: 5)
-            fromOffset_upv_1 (copy, index: 6)
-            Fonts_upv_1 (copy, index: 7)
-            u80 (ref,  index: 8)
-            a1 (copy, index: 9)
-            GuiService_upv_1 (copy, index: 10)
-        ]]
-        if not (tbl_upv_34) then
-            local v146 = UI_upv_1.new("TextButton", {Name = "Confirm", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Void, BackgroundTransparency = 0.3, Text = "", AutoButtonColor = false, Selectable = false, ZIndex = 40, [1] = UI_upv_1.Corner(UDim.new(0, 16)), Parent = u2.Holder})
-            v146.Activated:Connect(closeConfirm)
-            local v147 = UI_upv_1.Panel({Name = "Card", BackgroundTransparency = 0.02, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = fromOffset_upv_1(480, 256), Radius = UDim.new(0, 16), Parent = v146})
-            UI_upv_1.new("TextButton", {Name = "Sink", ZIndex = 41, Selectable = false, Text = "", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Parent = v147})
-            local v148 = UI_upv_1.DisplayText({ZIndex = 42, Name = "Title", Text = "", TextSize = 34, Position = fromOffset_upv_1(0, 24), Size = UDim2.new(1, 0, 0, 40), TextColor3 = Colors_upv_1.Text, Parent = v147})
-            local v149 = UI_upv_1.new("TextLabel", {Text = "", Name = "Body", TextWrapped = true, ZIndex = 42, TextSize = 19, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 74), Size = UDim2.new(1, -56, 0, 74), FontFace = Fonts_upv_1.Bold, TextColor3 = Colors_upv_1.TextDim, Parent = v147})
-            local v150 = UI_upv_1.Button({Text = "", Name = "No", Style = "Dark", ZIndex = 43, TextSize = 21, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 28, 1, -24), Size = fromOffset_upv_1(200, 58), Parent = v147})
-            local v151 = UI_upv_1.Button({Text = "", Name = "Yes", Style = "Danger", ZIndex = 43, TextSize = 21, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -28, 1, -24), Size = fromOffset_upv_1(200, 58), Parent = v147})
-            v150.Activated:Connect(closeConfirm)
-            v151.Activated:Connect(
-                function()
-                    --[[
-                      line: 1488
-                      upvalues:
-                        u80 (ref, index: 1)
-                        tbl_upv_34 (ref, index: 2)
-                    ]]
-                    u80 = nil
-                    if tbl_upv_34 then
-                        tbl_upv_34.layer.Visible = false
-                    end
-                    if not u80 then
+                    if not copying or not ui2:IsFocused() then
                         return
                     end
-                    u80()
+
+                    if input.KeyCode == Enum.KeyCode.C and copyModifier() then
+                        count += 1
+                        local v452 = count
+                        v441 = os.clock() + 1.6
+                        v30:SetText("COPIED")
+                        icon.Text = "check"
+                        ui3.Text = "Copied to your clipboard"
+                        ui3.Visible = true
+
+                        task.delay(
+                            0.2,
+                            function()
+                                --[[
+                                  line: 1402
+                                  upvalues:
+                                    v452 (copy, index: 1)
+                                    count (ref,  index: 2)
+                                    ui2 (copy, index: 3)
+                                ]]
+                                if v452 == count and ui2:IsFocused() then
+                                    ui2:ReleaseFocus()
+                                end
+                            end
+                        )
+
+                        task.delay(
+                            1.65,
+                            function()
+                                --[[
+                                  line: 1407
+                                  upvalues:
+                                    v452 (copy, index: 1)
+                                    count (ref,  index: 2)
+                                    copying (ref,  index: 3)
+                                    ui3 (copy, index: 4)
+                                    v30 (copy, index: 5)
+                                    icon (copy, index: 6)
+                                ]]
+                                if v452 == count and not copying then
+                                    ui3.Visible = false
+                                    v30:SetText("COPY")
+                                    icon.Text = "two-stacked-squares"
+                                end
+                            end
+                        )
+
+                        return
+                    end
+
+                    if Keybinds.IsPad(input, "CustomMenu") or Keybinds.ActionOf(input) == "CustomMenu" then
+                        a11.MenuManager.Toggle("CustomHost")
+                    end
                 end
             )
-            tbl_upv_34 = {layer = v146, card = v147, title = v148, body = v149, no = v150, yes = v151}
         end
-        tbl_upv_34.title.AutoLocalize = true
-        tbl_upv_34.title.Text = a62
-        tbl_upv_34.body.Text = a63
-        tbl_upv_34.no:SetText(a64)
-        tbl_upv_34.yes:SetText(a65)
-        tbl_upv_34.yes:SetStyle(a66)
-        u80 = a67
-        tbl_upv_34.layer.Visible = true
-        UI_upv_1.Enter(tbl_upv_34.card, Vector2.new(0, 16), 0, UDim2.fromScale(0.5, 0.5))
-        a1.Sounds.Play("Open")
-        if not UI_upv_1.Gamepad then
-            return
-        end
-        GuiService_upv_1.SelectedObject = tbl_upv_34.no.Instance
-    end
-    tbl_upv_5.Activated:Connect(
-        function()
+
+        ui2.FocusLost:Connect(
+            function()
+                --[[
+                  line: 1416
+                  upvalues:
+                    ui (copy, index: 1)
+                    ui2 (copy, index: 2)
+                    copying (ref,  index: 3)
+                    v441 (ref,  index: 4)
+                    ui3 (copy, index: 5)
+                    v30 (copy, index: 6)
+                    icon (copy, index: 7)
+                ]]
+                local taskDelay = task.delay
+                local v454 = ui.Touch and 0 or 0.15
+
+                taskDelay(
+                    v454,
+                    function()
+                        --[[
+                          line: 1417
+                          upvalues:
+                            ui2 (copy, index: 1)
+                            copying (ref,  index: 2)
+                            v441 (ref,  index: 3)
+                            ui3 (copy, index: 4)
+                            v30 (copy, index: 5)
+                            icon (copy, index: 6)
+                        ]]
+                        if not ui2:IsFocused() then
+                            copying = false
+                            local timestamp = os.clock()
+
+                            if v441 <= timestamp then
+                                ui3.Visible = false
+                                v30:SetText("COPY")
+                                icon.Text = "two-stacked-squares"
+                            end
+                        end
+                    end
+                )
+            end
+        )
+
+        ui2:GetPropertyChangedSignal("Text"):Connect(
+            function()
+                --[[
+                  line: 1424
+                  upvalues:
+                    CustomMatch (copy, index: 1)
+                    custom (copy, index: 2)
+                    ui2 (copy, index: 3)
+                ]]
+                local formatCode = CustomMatch.FormatCode
+                local v457 = custom.State() or {}
+                local text = formatCode((tostring(v457.code or "")))
+
+                if ui2.Text ~= text then
+                    ui2.Text = text
+                end
+            end
+        )
+
+        custom.RevealChanged:Connect(
+            function()
+                --[[
+                  line: 1430
+                  upvalues:
+                    v22 (copy, index: 1)
+                    paintCode (copy, index: 2)
+                    custom (copy, index: 3)
+                ]]
+                if v22.IsOpen then
+                    paintCode((custom.State() or {}))
+                end
+            end
+        )
+
+        local v459 = nil
+        local v460 = nil
+
+        local function closeConfirm()
             --[[
-              line: 1513
+              name: closeConfirm
+              line: 1440
               upvalues:
-                Custom_upv_1 (copy, index: 1)
-                host (copy, index: 2)
-                openConfirm (copy, index: 3)
-                a1 (copy, index: 4)
-                paint (copy, index: 5)
+                v460 (ref, index: 1)
+                v459 (ref, index: 2)
             ]]
-            local v152 = Custom_upv_1.State() or {}
-            if v152.status ~= "Results" then
+            v460 = nil
+
+            if v459 then
+                v459.layer.Visible = false
+            end
+        end
+
+        local function openConfirm(text: string, text2: string, text3: string, text4: string, style: string, a468)
+            --[[
+              name: openConfirm
+              line: 1446
+              upvalues:
+                v459 (ref,  index: 1)
+                ui (copy, index: 2)
+                colors (copy, index: 3)
+                v22 (copy, index: 4)
+                closeConfirm (copy, index: 5)
+                udim2FromOffset (copy, index: 6)
+                fonts (copy, index: 7)
+                v460 (ref,  index: 8)
+                a11 (copy, index: 9)
+                guiService (copy, index: 10)
+            ]]
+            if not v459 then
+                local ui2 = ui.new("TextButton", {Name = "Confirm", Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.3, Text = "", AutoButtonColor = false, Selectable = false, ZIndex = 40, (ui.Corner(UDim.new(0, 16))), Parent = v22.Holder})
+                ui2.Activated:Connect(closeConfirm)
+                local v470 = ui.Panel({Name = "Card", BackgroundTransparency = 0.02, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = udim2FromOffset(480, 256), Radius = UDim.new(0, 16), Parent = ui2})
+                ui.new("TextButton", {Name = "Sink", BackgroundTransparency = 1, Text = "", Selectable = false, ZIndex = 41, Size = UDim2.fromScale(1, 1), Parent = v470})
+                local title = ui.DisplayText({Name = "Title", Text = "", TextSize = 34, ZIndex = 42, Position = udim2FromOffset(0, 24), Size = UDim2.new(1, 0, 0, 40), TextColor3 = colors.Text, Parent = v470})
+                local body = ui.new("TextLabel", {Name = "Body", Text = "", TextSize = 19, TextWrapped = true, ZIndex = 42, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 74), Size = UDim2.new(1, -56, 0, 74), FontFace = fonts.Bold, TextColor3 = colors.TextDim, Parent = v470})
+                local no = ui.Button({Name = "No", Text = "", TextSize = 21, Style = "Dark", ZIndex = 43, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 28, 1, -24), Size = udim2FromOffset(200, 58), Parent = v470})
+                local yes = ui.Button({Name = "Yes", Text = "", TextSize = 21, Style = "Danger", ZIndex = 43, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -28, 1, -24), Size = udim2FromOffset(200, 58), Parent = v470})
+                no.Activated:Connect(closeConfirm)
+
+                yes.Activated:Connect(
+                    function()
+                        --[[
+                          line: 1488
+                          upvalues:
+                            v460 (ref, index: 1)
+                            v459 (ref, index: 2)
+                        ]]
+                        local v475 = v460
+                        v460 = nil
+
+                        if v459 then
+                            v459.layer.Visible = false
+                        end
+
+                        if v475 then
+                            v475()
+                        end
+                    end
+                )
+
+                v459 = {layer = ui2, card = v470, title = title, body = body, no = no, yes = yes}
+            end
+
+            local v476 = v459
+            v476.title.AutoLocalize = true
+            v476.title.Text = text
+            v476.body.Text = text2
+            v476.no:SetText(text3)
+            v476.yes:SetText(text4)
+            v476.yes:SetStyle(style)
+            v460 = a468
+            v476.layer.Visible = true
+            ui.Enter(v476.card, Vector2.new(0, 16), 0, UDim2.fromScale(0.5, 0.5))
+            a11.Sounds.Play("Open")
+
+            if ui.Gamepad then
+                guiService.SelectedObject = v476.no.Instance
+            end
+        end
+
+        v44.Activated:Connect(
+            function()
+                --[[
+                  line: 1513
+                  upvalues:
+                    custom (copy, index: 1)
+                    host (copy, index: 2)
+                    openConfirm (copy, index: 3)
+                    a11 (copy, index: 4)
+                    paint (copy, index: 5)
+                ]]
+                local v477 = custom.State() or {}
+
+                if v477.status == "Results" then
+                    task.spawn(host, "End")
+                    return
+                end
+
                 openConfirm(
                     "END MATCH?",
                     "Everyone goes back to the lobby now. The match won't count for anything.",
@@ -2378,8 +2534,8 @@ function tbl_1.Init(a1)
                         --[[
                           line: 1519
                           upvalues:
-                            Custom_upv_1 (copy, index: 1)
-                            a1 (copy, index: 2)
+                            custom (copy, index: 1)
+                            a11 (copy, index: 2)
                             paint (copy, index: 3)
                         ]]
                         task.spawn(
@@ -2387,1337 +2543,1158 @@ function tbl_1.Init(a1)
                                 --[[
                                   line: 1520
                                   upvalues:
-                                    Custom_upv_1 (copy, index: 1)
-                                    a1 (copy, index: 2)
+                                    custom (copy, index: 1)
+                                    a11 (copy, index: 2)
                                     paint (copy, index: 3)
                                 ]]
-                                local v153, v154 = Custom_upv_1.Host("End", nil)
-                                if not (v153) then
-                                    a1.Toast(tostring(v154), "error")
+                                local v478, v479 = custom.Host("End", nil)
+                                if not v478 then
+                                    a11.Toast(tostring(v479), "error")
                                 end
+
                                 paint()
-                                if not v153 then
-                                    return
+
+                                if v478 then
+                                    a11.MenuManager.Close("CustomHost")
                                 end
-                                a1.MenuManager.Close("CustomHost")
                             end
                         )
                     end
                 )
-            else
-                task.spawn(host, "End")
             end
-        end
-    )
-    u45.Activated:Connect(
-        function()
+        )
+
+        local v480 = function(a481, text)
             --[[
-              line: 1536
+              line: 1527
               upvalues:
                 openConfirm (copy, index: 1)
-                Custom_upv_1 (copy, index: 2)
-                a1 (copy, index: 3)
+                custom (copy, index: 2)
+                a11 (copy, index: 3)
+                paint (copy, index: 4)
             ]]
             openConfirm(
-                "LEAVE SERVER?",
-                "You'll go back to a public lobby. The player here longest becomes the host.",
-                "STAY",
-                "LEAVE",
+                "REMOVE PLAYER?",
+                string.format("%s goes back to a public lobby and can't rejoin this match.", text),
+                "CANCEL",
+                "REMOVE",
                 "Danger",
                 function()
                     --[[
-                      line: 1537
+                      line: 1528
                       upvalues:
-                        Custom_upv_1 (copy, index: 1)
-                        a1 (copy, index: 2)
+                        a481 (copy, index: 1)
+                        custom (copy, index: 2)
+                        a11 (copy, index: 3)
+                        paint (copy, index: 4)
+                        text (copy, index: 5)
                     ]]
                     task.spawn(
                         function()
                             --[[
-                              line: 1538
+                              line: 1529
                               upvalues:
-                                Custom_upv_1 (copy, index: 1)
-                                a1 (copy, index: 2)
+                                a481 (copy, index: 1)
+                                custom (copy, index: 2)
+                                a11 (copy, index: 3)
+                                paint (copy, index: 4)
+                                text (copy, index: 5)
                             ]]
-                            local v155, v156 = Custom_upv_1.Action("Leave")
-                            if v155 then
-                                a1.MenuManager.Close("CustomHost")
-                            else
-                                a1.Toast(tostring(v156), "error")
+                            local v483, v484 = custom.Host("Kick", a481)
+                            if not v483 then
+                                a11.Toast(tostring(v484), "error")
+                            end
+
+                            paint()
+
+                            if v483 then
+                                a11.Toast(string.format("%s was removed", text), "info")
                             end
                         end
                     )
                 end
             )
         end
-    )
-    local tbl_upv_35 = nil
-    local u81 = 0
-    local tbl_upv_36 = {"TEAM 1", "TEAM 2", "RANDOM"}
-    local function closeMove()
-        --[[
-          name: closeMove
-          line: 1556
-          upvalues:
-            u81 (ref, index: 1)
-            tbl_upv_35 (ref, index: 2)
-        ]]
-        u81 = 0
-        if not tbl_upv_35 then
-            return
-        end
-        tbl_upv_35.layer.Visible = false
-    end
-    local u82 = function(a68, a69)
-        --[[
-          line: 1527
-          upvalues:
-            openConfirm (copy, index: 1)
-            Custom_upv_1 (copy, index: 2)
-            a1 (copy, index: 3)
-            paint (copy, index: 4)
-        ]]
-        openConfirm(
-            "REMOVE PLAYER?",
-            string.format("%s goes back to a public lobby and can't rejoin this match.", a69),
-            "CANCEL",
-            "REMOVE",
-            "Danger",
+
+        v85.Activated:Connect(
             function()
                 --[[
-                  line: 1528
+                  line: 1536
                   upvalues:
-                    a68 (copy, index: 1)
-                    Custom_upv_1 (copy, index: 2)
-                    a1 (copy, index: 3)
-                    paint (copy, index: 4)
-                    a69 (copy, index: 5)
+                    openConfirm (copy, index: 1)
+                    custom (copy, index: 2)
+                    a11 (copy, index: 3)
                 ]]
-                task.spawn(
+                openConfirm(
+                    "LEAVE SERVER?",
+                    "You'll go back to a public lobby. The player here longest becomes the host.",
+                    "STAY",
+                    "LEAVE",
+                    "Danger",
                     function()
                         --[[
-                          line: 1529
+                          line: 1537
                           upvalues:
-                            a68 (copy, index: 1)
-                            Custom_upv_1 (copy, index: 2)
-                            a1 (copy, index: 3)
-                            paint (copy, index: 4)
-                            a69 (copy, index: 5)
+                            custom (copy, index: 1)
+                            a11 (copy, index: 2)
                         ]]
-                        local v157, v158 = Custom_upv_1.Host("Kick", a68)
-                        if not (v157) then
-                            a1.Toast(tostring(v158), "error")
-                        end
-                        paint()
-                        if not v157 then
-                            return
-                        end
-                        a1.Toast(string.format("%s was removed", a69), "info")
+                        task.spawn(
+                            function()
+                                --[[
+                                  line: 1538
+                                  upvalues:
+                                    custom (copy, index: 1)
+                                    a11 (copy, index: 2)
+                                ]]
+                                local v485, v486 = custom.Action("Leave")
+                                if v485 then
+                                    a11.MenuManager.Close("CustomHost")
+                                    return
+                                end
+
+                                a11.Toast(tostring(v486), "error")
+                            end
+                        )
                     end
                 )
             end
         )
-    end
-    local function findPlayer(a70)
-        --[[
-          name: findPlayer
-          line: 1562
-          upvalues:
-            Custom_upv_1 (copy, index: 1)
-        ]]
-        local v159 = Custom_upv_1.State() or {}
-        local v160
-        if type(v159.players) ~= "table" then
-            v160 = {}
-        else
-            v160 = v159.players
-        end
-        for _, value_16 in v160 do
-            if type(value_16) ~= "table" or value_16.userId ~= a70 then
-                continue
+        local v487 = nil
+        local v488 = 0
+
+        do
+            local v489 = {"TEAM 1", "TEAM 2", "RANDOM"}
+
+            local function closeMove()
+                --[[
+                  name: closeMove
+                  line: 1556
+                  upvalues:
+                    v488 (ref, index: 1)
+                    v487 (ref, index: 2)
+                ]]
+                v488 = 0
+
+                if v487 then
+                    v487.layer.Visible = false
+                end
             end
-            return value_16
-        end
-        return nil
-    end
-    u66 = function(a71)
-        --[[
-          line: 1571
-          upvalues:
-            findPlayer (copy, index: 1)
-            Custom_upv_1 (copy, index: 2)
-            tbl_upv_35 (ref,  index: 3)
-            UI_upv_1 (copy, index: 4)
-            Colors_upv_1 (copy, index: 5)
-            u2 (copy, index: 6)
-            closeMove (copy, index: 7)
-            fromOffset_upv_1 (copy, index: 8)
-            Fonts_upv_1 (copy, index: 9)
-            tbl_upv_7 (copy, index: 10)
-            Theme_upv_1 (copy, index: 11)
-            tbl_upv_36 (copy, index: 12)
-            u81 (ref,  index: 13)
-            tbl_upv_25 (copy, index: 14)
-            a1 (copy, index: 15)
-            setTeamOf (copy, index: 16)
-            u82 (ref,  index: 17)
-            sideCount (copy, index: 18)
-            CustomMatch_upv_1 (copy, index: 19)
-            modeOf (copy, index: 20)
-            GuiService_upv_1 (copy, index: 21)
-        ]]
-        local v161 = findPlayer(a71)
-        if not Custom_upv_1.IsHost() or not v161 then
-            return
-        end
-        local body_1
-        if not (tbl_upv_35) then
-            local v162 = UI_upv_1.new("TextButton", {Name = "Move", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Void, BackgroundTransparency = 0.3, Text = "", AutoButtonColor = false, Selectable = false, ZIndex = 40, [1] = UI_upv_1.Corner(UDim.new(0, 16)), Parent = u2.Holder})
-            v162.Activated:Connect(closeMove)
-            local v163 = UI_upv_1.Panel({Name = "Card", BackgroundTransparency = 0.02, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = fromOffset_upv_1(540, 286), Radius = UDim.new(0, 16), Parent = v162})
-            UI_upv_1.new("TextButton", {Name = "Sink", ZIndex = 41, Selectable = false, Text = "", BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Parent = v163})
-            body_1 = UI_upv_1.DisplayText({Text = "", Name = "Title", ZIndex = 42, TextSize = 32, Position = fromOffset_upv_1(28, 24), Size = UDim2.new(1, -56, 0, 40), TextColor3 = Colors_upv_1.Text, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v163})
-            local v164 = UI_upv_1.new("TextLabel", {Text = "", Name = "Body", ZIndex = 42, TextSize = 18, Position = fromOffset_upv_1(28, 66), Size = UDim2.new(1, -56, 0, 22), FontFace = Fonts_upv_1.Bold, TextColor3 = Colors_upv_1.TextDim, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v163})
-            local tbl_37 = {}
-            local tbl_38 = {}
-            local tbl_39 = {tbl_upv_7[1], tbl_upv_7[2], Colors_upv_1.TextMuted}
-            for n_7 = 1, 3 do
-                local u83
-                if n_7 ~= 3 then
-                    u83 = n_7
+
+            local function findPlayer(a492)
+                --[[
+                  name: findPlayer
+                  line: 1562
+                  upvalues:
+                    custom (copy, index: 1)
+                ]]
+                local v493
+                local v494 = custom.State() or {}
+
+                if type(v494.players) ~= "table" then
+                    v493 = {}
                 else
-                    u83 = 0
+                    v493 = v494.players
                 end
-                local v165 = UI_upv_1.new("Frame", {Name = "Mark", Size = fromOffset_upv_1(16, 16)})
-                UI_upv_1.new("Frame", {Name = "Dot", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = fromOffset_upv_1(12, 12), BackgroundColor3 = tbl_39[n_7], [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v165})
-                local v166 = UI_upv_1.Icon("check", 16, Colors_upv_1.TextDim, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = v165})
-                v166.Name = "Check"
-                v166.Visible = false
-                tbl_38[n_7] = v165
-                local tbl_40 = {Style = "Dark", ZIndex = 43, TextSize = 19}
-                tbl_40.Name = "Pick" .. u83
-                tbl_40.Text = tbl_upv_36[n_7]
-                tbl_40.Icon = v165
-                tbl_40.Position = fromOffset_upv_1(((n_7 - 1) * 165) + 28, 110)
-                tbl_40.Size = fromOffset_upv_1(153, 58)
-                tbl_40.Parent = v163
-                function tbl_40.OnDisabledClick()
-                    --[[
-                      name: OnDisabledClick
-                      line: 1635
-                      upvalues:
-                        findPlayer (copy, index: 1)
-                        u81 (ref,  index: 2)
-                        tbl_upv_25 (copy, index: 3)
-                        u83 (copy, index: 4)
-                        a1 (copy, index: 5)
-                    ]]
-                    local v167 = findPlayer(u81)
-                    if v167 then
-                        local v168 = tbl_upv_25[v167.userId]
-                        if v168 == nil then
-                            v168 = tonumber(v167.team) or 0
-                        end
-                        local v169
-                        if v168 == 1 or v168 == 2 then
-                            v169 = v168
-                        else
-                            v169 = 0
-                        end
-                        if v169 == u83 then
-                            return
-                        end
-                        a1.Toast(("Team %* is full"):format(u83), "info")
+
+                for _, v496 in v493 do
+                    if type(v496) == "table" and v496.userId == a492 then
+                        return v496
                     end
                 end
-                local v170 = UI_upv_1.Button(tbl_40)
-                v170.Activated:Connect(
-                    function()
-                        --[[
-                          line: 1642
-                          upvalues:
-                            u81 (ref,  index: 1)
-                            tbl_upv_35 (ref,  index: 2)
-                            Custom_upv_1 (copy, index: 3)
-                            setTeamOf (copy, index: 4)
-                            u83 (copy, index: 5)
-                        ]]
-                        u81 = 0
-                        if tbl_upv_35 then
-                            tbl_upv_35.layer.Visible = false
-                        end
-                        if u81 == 0 or not Custom_upv_1.IsHost() then
-                            return
-                        end
-                        task.spawn(setTeamOf, u81, u83)
-                    end
-                )
-                tbl_37[n_7] = v170
+
+                return nil
             end
-            local v171 = UI_upv_1.Button({Text = "CANCEL", Name = "Cancel", Style = "Dark", ZIndex = 43, TextSize = 21, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 28, 1, -24), Size = fromOffset_upv_1(200, 58), Parent = v163})
-            local v172 = UI_upv_1.Button({Text = "REMOVE", Name = "Remove", Style = "Danger", ZIndex = 43, TextSize = 21, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -28, 1, -24), Size = fromOffset_upv_1(200, 58), Parent = v163})
-            v171.Activated:Connect(closeMove)
-            v172.Activated:Connect(
-                function()
-                    --[[
-                      line: 1654
-                      upvalues:
-                        u81 (ref,  index: 1)
-                        findPlayer (copy, index: 2)
-                        tbl_upv_35 (ref,  index: 3)
-                        u82 (ref,  index: 4)
-                    ]]
-                    local v173 = findPlayer(u81)
-                    u81 = 0
-                    if tbl_upv_35 then
-                        tbl_upv_35.layer.Visible = false
+
+            v189 = function(a497)
+                --[[
+                  line: 1571
+                  upvalues:
+                    findPlayer (copy, index: 1)
+                    custom (copy, index: 2)
+                    v487 (ref,  index: 3)
+                    ui (copy, index: 4)
+                    colors (copy, index: 5)
+                    v22 (copy, index: 6)
+                    closeMove (copy, index: 7)
+                    udim2FromOffset (copy, index: 8)
+                    fonts (copy, index: 9)
+                    v91 (copy, index: 10)
+                    theme (copy, index: 11)
+                    v489 (copy, index: 12)
+                    v488 (ref,  index: 13)
+                    v228 (copy, index: 14)
+                    a11 (copy, index: 15)
+                    setTeamOf (copy, index: 16)
+                    v480 (ref,  index: 17)
+                    sideCount (copy, index: 18)
+                    CustomMatch (copy, index: 19)
+                    modeOf (copy, index: 20)
+                    guiService (copy, index: 21)
+                ]]
+                local player = findPlayer(a497)
+
+                if not custom.IsHost() or not player then
+                    return
+                end
+
+                local formattedText
+                local v500
+
+                if not v487 then
+                    local ui2 = ui.new("TextButton", {Name = "Move", Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.3, Text = "", AutoButtonColor = false, Selectable = false, ZIndex = 40, (ui.Corner(UDim.new(0, 16))), Parent = v22.Holder})
+                    ui2.Activated:Connect(closeMove)
+                    local v502 = ui.Panel({Name = "Card", BackgroundTransparency = 0.02, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = udim2FromOffset(540, 286), Radius = UDim.new(0, 16), Parent = ui2})
+                    ui.new("TextButton", {Name = "Sink", BackgroundTransparency = 1, Text = "", Selectable = false, ZIndex = 41, Size = UDim2.fromScale(1, 1), Parent = v502})
+                    local title = ui.DisplayText({Name = "Title", Text = "", TextSize = 32, ZIndex = 42, Position = udim2FromOffset(28, 24), Size = UDim2.new(1, -56, 0, 40), TextColor3 = colors.Text, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v502})
+                    local body = ui.new("TextLabel", {Name = "Body", Text = "", TextSize = 18, ZIndex = 42, Position = udim2FromOffset(28, 66), Size = UDim2.new(1, -56, 0, 22), FontFace = fonts.Bold, TextColor3 = colors.TextDim, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v502})
+                    local picks = {}
+                    local marks = {}
+                    local v507 = {v91[1], v91[2], colors.TextMuted}
+
+                    for index = 1, 3 do
+                        local team = index == 3 and 0 or index
+                        local ui3 = ui.new("Frame", {Name = "Mark", Size = udim2FromOffset(16, 16)})
+                        ui.new("Frame", {Name = "Dot", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = udim2FromOffset(12, 12), BackgroundColor3 = v507[index], (ui.Corner(theme.Radius.Pill)), Parent = ui3})
+                        local v511 = ui.Icon("check", 16, colors.TextDim, {AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Parent = ui3})
+                        v511.Name = "Check"
+                        v511.Visible = false
+                        marks[index] = ui3
+
+                        local v512 = ui.Button(
+                            {
+                                TextSize = 19,
+                                Style = "Dark",
+                                ZIndex = 43,
+                                Name = "Pick" .. team,
+                                Text = v489[index],
+                                Icon = ui3,
+                                Position = udim2FromOffset(((index - 1) * 165) + 28, 110),
+                                Size = udim2FromOffset(153, 58),
+                                Parent = v502,
+                                OnDisabledClick = (function()
+                                    --[[
+                                      name: OnDisabledClick
+                                      line: 1635
+                                      upvalues:
+                                        findPlayer (copy, index: 1)
+                                        v488 (ref,  index: 2)
+                                        v228 (copy, index: 3)
+                                        team (copy, index: 4)
+                                        a11 (copy, index: 5)
+                                    ]]
+                                    if const player = findPlayer(v488) then
+                                        local v514 = v228[player.userId]
+                                        if v514 == nil then
+                                            v514 = tonumber(player.team) or 0
+                                        end
+
+                                        local v515 = v514 ~= 1 and v514 ~= 2 and 0 or v514
+
+                                        if v515 ~= team then
+                                            a11.Toast(`Team {team} is full`, "info")
+                                        end
+                                    end
+                                end)
+                            }
+                        )
+
+                        v512.Activated:Connect(
+                            function()
+                                --[[
+                                  line: 1642
+                                  upvalues:
+                                    v488 (ref,  index: 1)
+                                    v487 (ref,  index: 2)
+                                    custom (copy, index: 3)
+                                    setTeamOf (copy, index: 4)
+                                    team (copy, index: 5)
+                                ]]
+                                local userId = v488
+                                v488 = 0
+
+                                if v487 then
+                                    v487.layer.Visible = false
+                                end
+
+                                if userId ~= 0 and custom.IsHost() then
+                                    task.spawn(setTeamOf, userId, team)
+                                end
+                            end
+                        )
+
+                        picks[index] = v512
                     end
-                    if not v173 then
+
+                    local cancel = ui.Button({Name = "Cancel", Text = "CANCEL", TextSize = 21, Style = "Dark", ZIndex = 43, AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 28, 1, -24), Size = udim2FromOffset(200, 58), Parent = v502})
+                    local remove = ui.Button({Name = "Remove", Text = "REMOVE", TextSize = 21, Style = "Danger", ZIndex = 43, AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -28, 1, -24), Size = udim2FromOffset(200, 58), Parent = v502})
+                    cancel.Activated:Connect(closeMove)
+
+                    remove.Activated:Connect(
+                        function()
+                            --[[
+                              line: 1654
+                              upvalues:
+                                v488 (ref,  index: 1)
+                                findPlayer (copy, index: 2)
+                                v487 (ref,  index: 3)
+                                v480 (ref,  index: 4)
+                            ]]
+                            local v519 = v488
+                            local player = findPlayer(v519)
+                            v488 = 0
+
+                            if v487 then
+                                v487.layer.Visible = false
+                            end
+
+                            if player then
+                                v480(v519, (tostring(player.name or "Player")))
+                            end
+                        end
+                    )
+
+                    v487 = {layer = ui2, card = v502, title = title, body = body, picks = picks, marks = marks, cancel = cancel, remove = remove}
+                end
+
+                local v521 = v487
+                v488 = a497
+                local v522 = v228[player.userId]
+                if v522 == nil then
+                    v522 = tonumber(player.team) or 0
+                end
+
+                local v523 = v522 ~= 1 and v522 ~= 2 and 0 or v522
+                v521.title.AutoLocalize = false
+                v521.title.Text = string.upper((tostring(player.name or "Player")))
+                local body = v521.body
+                local stringFormat = string.format
+                local text = tostring((player.username or ""))
+
+                if v523 ~= 0 then
+                    formattedText = `Team {v523}`
+                else
+                    formattedText = "Random team"
+                end
+
+                body.Text = stringFormat("@%s  ·  %s", text, formattedText)
+                v500 = nil
+
+                for v527, pick in v521.picks do
+                    local markKey = v527 == 3 and 0 or v527
+                    local v530 = false
+
+                    if markKey ~= 0 then
+                        v530 = false
+
+                        if markKey ~= v523 then
+                            local v531 = sideCount(markKey, a497)
+                            local v532 = custom.State() or {}
+                            v530 = CustomMatch.TeamSize(modeOf(v532)) <= v531
+                        end
+                    end
+
+                    local enabled = markKey ~= v523 and not v530
+                    pick:SetEnabled(enabled)
+                    local text2 = if v530 then v489[markKey] .. " FULL" else v489[v527]
+                    pick:SetText(text2)
+                    pick.Label.TextSize = v530 and 17 or 19
+                    local mark = v521.marks[markKey]
+                    local dot = mark:FindFirstChild("Dot")
+                    dot.Visible = markKey ~= v523
+
+                    local check = mark:FindFirstChild("Check")
+                    check.Visible = markKey == v523
+                    local v538 = v500 or (if enabled then pick else nil)
+                    v500 = v538
+                end
+
+                v521.layer.Visible = true
+                ui.Enter(v521.card, Vector2.new(0, 16), 0, UDim2.fromScale(0.5, 0.5))
+                a11.Sounds.Play("Open")
+
+                if ui.Gamepad then
+                    local v539 = v500 or v521.cancel
+                    guiService.SelectedObject = v539.Instance
+                end
+            end
+
+            local function layout()
+                --[[
+                  name: layout
+                  line: 1692
+                  upvalues:
+                    v12 (ref,  index: 1)
+                    ui (copy, index: 2)
+                    v9 (copy, index: 3)
+                    v8 (copy, index: 4)
+                    v22 (copy, index: 5)
+                    udim2FromOffset (copy, index: 6)
+                    v30 (copy, index: 7)
+                    parent (copy, index: 8)
+                    ui2 (copy, index: 9)
+                    v26 (copy, index: 10)
+                    parent2 (copy, index: 11)
+                    ui3 (copy, index: 12)
+                    parent3 (copy, index: 13)
+                    v36 (copy, index: 14)
+                    ui4 (copy, index: 15)
+                    ui5 (copy, index: 16)
+                    ui6 (copy, index: 17)
+                    v66 (copy, index: 18)
+                    v41 (copy, index: 19)
+                    v44 (copy, index: 20)
+                    parent5 (copy, index: 21)
+                    ui7 (copy, index: 22)
+                    ui8 (copy, index: 23)
+                    parent4 (copy, index: 24)
+                    v46 (copy, index: 25)
+                    parent7 (copy, index: 26)
+                    parent8 (copy, index: 27)
+                    parent10 (copy, index: 28)
+                    parent11 (copy, index: 29)
+                    v69 (copy, index: 30)
+                    v70 (copy, index: 31)
+                    v71 (copy, index: 32)
+                    v75 (copy, index: 33)
+                    v76 (copy, index: 34)
+                    v77 (copy, index: 35)
+                    v59 (copy, index: 36)
+                    v61 (copy, index: 37)
+                    v63 (copy, index: 38)
+                    ui9 (copy, index: 39)
+                    v80 (copy, index: 40)
+                    v82 (copy, index: 41)
+                    ui10 (copy, index: 42)
+                    parent9 (copy, index: 43)
+                    v78 (copy, index: 44)
+                    v83 (copy, index: 45)
+                    ui11 (copy, index: 46)
+                    parent6 (copy, index: 47)
+                    v85 (copy, index: 48)
+                    parent12 (copy, index: 49)
+                    ui12 (copy, index: 50)
+                    updateFade (copy, index: 51)
+                    v232 (ref,  index: 52)
+                    flooredValue (ref,  index: 53)
+                    v92 (copy, index: 54)
+                    v93 (copy, index: 55)
+                    v135 (copy, index: 56)
+                    v136 (copy, index: 57)
+                    v139 (copy, index: 58)
+                    ui13 (copy, index: 59)
+                    custom (copy, index: 60)
+                    CustomMatch (copy, index: 61)
+                    modeOf (copy, index: 62)
+                    v125 (copy, index: 63)
+                    v126 (copy, index: 64)
+                    v156 (copy, index: 65)
+                    parent14 (copy, index: 66)
+                    v359 (ref,  index: 67)
+                ]]
+                local textSize
+                local parent13
+                v12 = if ui.Compact then v9 else v8
+                local v543 = ui.CanvasSize()
+                local v544 = ui.TopInset()
+
+                if ui.Compact then
+                    v22.Holder.Size = udim2FromOffset(math.floor((math.min(v12.W, v543.X - 24))), (math.floor((math.min(v12.H, (v543.Y - v544) - 12)))))
+                else
+                    v22.Holder.Size = udim2FromOffset(math.floor((math.clamp(v543.X - 240, v12.W, 1280))), (math.floor((math.clamp((v543.Y - v544) - 90, 660, 740)))))
+                end
+
+                v22.Subtitle.TextSize = ui.Compact and 15 or 17
+                local v545 = ui.Compact and 226 or 246
+                local v546 = ui.Compact and 44 or 48
+                local v547 = ui.Compact and 116 or 118
+                local v548 = ui.WindowCloseSize() + 30
+                v30.Instance.Position = UDim2.new(1, -v548, 0, 14)
+                v30.Instance.Size = udim2FromOffset(v547, v546 + 3)
+                v30.Label.TextSize = ui.Compact and 18 or 17
+                parent.Size = udim2FromOffset(v545, v546)
+                parent.Position = UDim2.new(1, -((v548 + v547) + 10), 0, 14)
+                ui2.TextSize = ui.Compact and 25 or 28
+                local v549 = ui.Compact and 8 or 9
+
+                for v550, child in v26:GetChildren() do
+                    local v552
+                    local v553 = tonumber(string.match(child.Name, "%d+")) or v550
+                    local v554 = v549 * 0.55
+                    local v555 = v549 * 1.35
+                    child.Size = udim2FromOffset(v549, v549)
+                    local v556 = (v553 - 1) * (v549 + v554)
+
+                    if not (3 < v553) then
+                        v552 = 0
+                    else
+                        v552 = v555 - v554
+                    end
+
+                    child.Position = udim2FromOffset(v556 + v552, 0)
+                end
+
+                v26.Size = udim2FromOffset(((v549 * 6) + ((v549 * 4) * 0.55)) + (v549 * 1.35), v549)
+                parent2.Position = UDim2.new(1, -8, 0.5, 0)
+                ui3.Position = UDim2.new(1, -v548, 0, (v546 + 14) + 4)
+                ui3.Size = udim2FromOffset((v545 + v547) + 10, 14)
+                local v557 = (v545 + v547) + v548 + 40
+                v22.Title.Size = UDim2.new(1, -v557, 0, 40)
+                v22.Subtitle.Size = UDim2.new(1, -v557, 0, 20)
+                v22.Subtitle.TextTruncate = Enum.TextTruncate.AtEnd
+                local v558 = v22.Holder.Size.X.Offset - 44
+                local v559 = v22.Holder.Size.Y.Offset - 80 - 32
+                local left = v12.left
+                parent3.Size = udim2FromOffset(left, v559)
+                local pad = v12.pad
+                local v562 = left - pad * 2
+                v36.Size = UDim2.new(1, 0, 0, v12.sectionH)
+                local pad2 = pad
+                ui4.Position = udim2FromOffset(pad + 2, pad2 + 11)
+                ui5.Position = udim2FromOffset(pad + 20, pad2)
+                ui5.Size = udim2FromOffset(v562 - 110, 22)
+                ui5.TextSize = v12.status
+                ui6.Position = UDim2.new(1, -pad, 0, pad2)
+                ui6.Size = udim2FromOffset(100, 22)
+                ui6.TextSize = v12.status - 1
+                local v564 = pad2 + 32
+                local v565 = not ui.Compact and 0 or v66.Instance.Size.X.Offset + 8
+                v66.Instance.Position = udim2FromOffset(pad, v564)
+
+                for _, v567 in {v41, v44} do
+                    v567.Instance.Position = udim2FromOffset(pad + v565, v564)
+                    v567.Instance.Size = udim2FromOffset(v562 - v565, v12.button)
+                    v567.Label.TextSize = ui.Compact and 23 or 26
+                end
+
+                parent5.Position = udim2FromOffset(pad, v564)
+                parent5.Size = udim2FromOffset(v562, v12.button - 3)
+                ui7.TextSize = ui.Compact and 19 or 20
+                local v568 = v564 + (v12.button + 8)
+                ui8.Position = udim2FromOffset(pad, v568)
+                ui8.Size = udim2FromOffset(v562, v12.hint + 2)
+                ui8.TextSize = v12.hint
+                local v569 = v568 + (((v12.hint + 2) + pad) - 4)
+                local v570 = v12.sectionH + v12.sectionGap
+                parent4.Position = udim2FromOffset(0, v570)
+                parent4.Size = udim2FromOffset(left, v569)
+                local v571 = v570 + v569 + v12.blockGap
+                v46.Position = udim2FromOffset(0, v571)
+                v46.Size = UDim2.new(1, 0, 0, v12.sectionH)
+                local v572 = v571 + v12.sectionH + v12.sectionGap
+                parent7.Visible = not ui.Compact
+                parent8:FindFirstChild("Divider").Visible = not ui.Compact
+                local v573 = ui.Compact and {parent8, parent10, parent11} or {parent7, parent8, parent10, parent11}
+
+                for v574, v575 in v573 do
+                    v575.Position = udim2FromOffset(0, (v574 - 1) * v12.rowH)
+                    v575.Size = udim2FromOffset(left, v12.rowH)
+                end
+
+                local v576 = {{parent8, v69, v70, v71}, {parent10, v75, v76, v77}, {parent7, v59, parent7:FindFirstChild("Label"), v61}}
+
+                for _, v578 in v576 do
+                    local v579
+                    local v580 = v578[1]
+                    local v581 = v578[2]
+                    local v582 = v578[3]
+                    local v583 = v578[4]
+
+                    if v580 == parent7 then
+                        v579 = 140
+                    else
+                        v579 = 86
+                    end
+
+                    v581.Position = UDim2.new(0, pad + 2, 0.5, 0)
+                    v581.TextSize = 22
+                    v582.Position = udim2FromOffset(pad + 36, (math.floor(v12.rowH / 2) - v12.label) - 1)
+                    v582.Size = udim2FromOffset((v562 - 36) - v579, v12.label + 2)
+                    v582.TextSize = v12.label
+                    v583.Position = udim2FromOffset(pad + 36, math.floor(v12.rowH / 2) + 2)
+                    v583.Size = udim2FromOffset((v562 - 36) - v579, v12.desc + 2)
+                    v583.TextSize = v12.desc
+                end
+
+                v63.Instance.Position = UDim2.new(1, -pad, 0.5, 0)
+                ui9.Position = UDim2.new(1, -pad, 0.5, 0)
+                ui9.Size = udim2FromOffset(60, 22)
+                ui9.TextSize = v12.label
+                v80.Position = UDim2.new(0, pad + 2, 0.5, 0)
+                local label = parent11:FindFirstChild("Label")
+                label.Position = udim2FromOffset(pad + 36, (math.floor(v12.rowH / 2) - v12.label) - 1)
+                label.Size = udim2FromOffset((v562 - 36) - 86, v12.label + 2)
+                label.TextSize = v12.label
+                v82.Position = udim2FromOffset(pad + 36, math.floor(v12.rowH / 2) + 2)
+                v82.Size = udim2FromOffset((v562 - 36) - 86, v12.desc + 2)
+                v82.TextSize = v12.desc
+                ui10.Position = UDim2.new(1, -pad, 0.5, 0)
+                ui10.Size = udim2FromOffset(60, 20)
+                ui10.TextSize = v12.label - 2
+                parent9.Position = udim2FromOffset(pad - 4, 8)
+                parent9.Size = udim2FromOffset(v562 + 8, v12.rowH - 16)
+                parent9.TextSize = v12.label
+                v78.Instance.Position = UDim2.new(1, -pad, 0.5, 0)
+                v83.Instance.Position = UDim2.new(1, -pad, 0.5, 0)
+                ui11.Position = UDim2.new(1, -pad, 0.5, 0)
+                ui11.Size = udim2FromOffset(60, 22)
+                ui11.TextSize = v12.label
+                parent6.Position = udim2FromOffset(0, v572)
+                parent6.Size = udim2FromOffset(left, #v573 * v12.rowH)
+                local label2 = v85.Label
+
+                if ui.Compact then
+                    textSize = 17
+                else
+                    textSize = 18
+                end
+
+                label2.TextSize = textSize
+                local v586 = (v572 + (#v573 * v12.rowH)) + 12 + v12.leaveH <= v559
+
+                if v586 then
+                    parent13, parent13 = v559, parent12
+                else
+                    parent13 = v572 + (#v573 * v12.rowH) + 2
+                    parent13 = parent12
+                end
+
+                parent3.CanvasSize = udim2FromOffset(0, parent13)
+                parent13.Position = udim2FromOffset((left + v12.gap) - 8, -8)
+                local v587 = v558 - left - v12.gap
+                parent13.Size = udim2FromOffset(v587 + 8, v559 + 8)
+                ui12.Position = udim2FromOffset(left + v12.gap, v559)
+                ui12.Size = udim2FromOffset(v587 - 10, 40)
+                task.defer(updateFade)
+                v232 = v587 - 14
+                flooredValue = math.floor((v232 - v12.teamGap) / 2)
+
+                for _, v589 in {{v92, v93}, {v135, v136}, {v139, ui13}} do
+                    local v590 = v589[1]
+                    local v591 = v589[2]
+                    v590.Size = UDim2.new(0, v232, 0, v12.sectionH)
+                    v591.Size = udim2FromOffset(math.floor(v232 * 0.62), 18)
+                    v591.TextSize = v12.sectionHint
+                end
+
+                ui13.TextSize = 15
+                local v592 = custom.State() or {}
+                local v593 = CustomMatch.TeamSize(modeOf(v592))
+                local v594 = v12.teamHead + (v593 * v12.seatH) + ((v593 - 1) * v12.seatGap) + 8
+
+                for _, v596 in v125 do
+                    v596.frame.Size = udim2FromOffset(flooredValue, v594)
+                    v596.dot.Position = UDim2.new(0, 16, 0, math.floor(v12.teamHead / 2) + 1)
+                    v596.dot.Size = udim2FromOffset(10, 10)
+                    v596.title.Position = UDim2.new(0, 34, 0, math.floor(v12.teamHead / 2) + 1)
+                    v596.title.Size = udim2FromOffset(160, 22)
+                    v596.title.TextSize = v12.label
+                    v596.count.Position = UDim2.new(1, -16, 0, math.floor(v12.teamHead / 2) + 1)
+                    v596.count.Size = udim2FromOffset(80, 22)
+                    v596.count.TextSize = v12.label - 1
+                end
+
+                for _, v598 in v126 do
+                    v598.ring.Position = udim2FromOffset(10, (math.floor(v12.seatH / 2)))
+                    v598.ring.Size = udim2FromOffset(v12.head, v12.head)
+                    v598.label.Position = udim2FromOffset((10 + v12.head) + 10, (math.floor(v12.seatH / 2)))
+                    v598.label.Size = udim2FromOffset(160, 22)
+                    v598.label.TextSize = v12.playerName - 1
+                end
+
+                local mapCols = v12.mapCols
+                local flooredValue2 = math.floor((v232 - ((mapCols - 1) * v12.mapGap)) / mapCols)
+                local flooredValue3 = math.floor((flooredValue2 * 9) / 16)
+                local ceilingValue = math.ceil(math.max(1, #v156) / mapCols)
+
+                for v603, v604 in v156 do
+                    local v605 = (v603 - 1) % mapCols
+                    local v606 = (v603 - 1) // mapCols
+                    v604.btn.AnchorPoint = Vector2.new(0.5, 0.5)
+                    v604.btn.Position = udim2FromOffset((v605 * (flooredValue2 + v12.mapGap)) + math.floor(flooredValue2 / 2), v606 * (flooredValue3 + v12.mapGap) + math.floor(flooredValue3 / 2))
+                    v604.btn.Size = udim2FromOffset(flooredValue2, flooredValue3)
+                    v604.name.TextSize = v12.mapName
+                end
+
+                parent14.Size = udim2FromOffset(v232, ceilingValue * flooredValue3 + ((ceilingValue - 1) * v12.mapGap))
+
+                if v586 then
+                    v85.Instance.Parent = parent3
+                    v85.Instance.AnchorPoint = Vector2.new(0, 1)
+                    v85.Instance.Position = UDim2.new(0, 0, 1, 0)
+                    v85.Instance.Size = udim2FromOffset(left, v12.leaveH)
+                else
+                    v85.Instance.Parent = parent13
+                    v85.Instance.AnchorPoint = Vector2.new(0, 0)
+                    v85.Instance.Size = udim2FromOffset(v232, v12.leaveH)
+                end
+
+                v359 = not v586
+                v22.Refit()
+            end
+
+            do
+                local function relayout()
+                    --[[
+                      name: relayout
+                      line: 1893
+                      upvalues:
+                        v22 (copy, index: 1)
+                        paint (copy, index: 2)
+                        layout (copy, index: 3)
+                    ]]
+                    if not v22.IsOpen then
                         return
                     end
-                    u82(u81, (tostring(v173.name or "Player")))
-                end
-            )
-            tbl_upv_35 = {layer = v162, card = v163, title = body_1, body = v164, picks = tbl_37, marks = tbl_38, cancel = v171, remove = v172}
-        end
-        local v174 = tbl_upv_35
-        u81 = a71
-        body_1 = tbl_upv_25[v161.userId]
-        if body_1 == nil then
-            body_1 = tonumber(v161.team) or 0
-        end
-        local v175
-        if body_1 == 1 or body_1 == 2 then
-            v175 = body_1
-        else
-            v175 = 0
-        end
-        v174.title.AutoLocalize = false
-        v174.title.Text = string.upper(tostring(v161.name or "Player"))
-        body_1 = v174.body
-        local format_1 = string.format
-        local str_3 = tostring(v161.username or "")
-        local v176
-        if v175 ~= 0 then
-            v176 = ("Team %*"):format(v175)
-        else
-            v176 = "Random team"
-        end
-        body_1.Text = format_1("@%s  \194\183  %s", str_3, v176)
-        local v177 = nil
-        local v178, v179 = nil, nil
-        v161 = v177
-        local v180 = nil
-        for key_4, value_17 in v174.picks do
-            if key_4 ~= 3 then
-                v180 = key_4
-            else
-                v180 = 0
-            end
-            v178 = false
-            if v180 ~= 0 then
-                v178 = false
-                if v180 ~= v175 then
-                    local v181 = sideCount(v180, a71)
-                    local v182 = Custom_upv_1.State() or {}
-                    if CustomMatch_upv_1.TeamSize(modeOf(v182)) <= v181 then
-                        v178 = true
-                    else
-                        v178 = false
-                    end
-                end
-            end
-            local v181 = (v180 ~= v175) and (not v178)
-            value_17:SetEnabled(v181)
-            value_17:SetText((v178 and (tbl_upv_36[key_4] .. " FULL")) or (tbl_upv_36[key_4]))
-            value_17.Label.TextSize = (v178 and 17) or 19
-            v178 = v174.marks[key_4]
-            local Dot_1 = v178:FindFirstChild("Dot")
-            Dot_1.Visible = v180 ~= v175
-            v179 = v178:FindFirstChild("Check")
-            v179.Visible = v180 == v175
-            if v161 then
-                v179 = v161
-                v161 = v179
-                continue
-            end
-            if v181 then
-                v179 = value_17
-            else
-                v179 = nil
-            end
-            v161 = v179
-        end
-        v174.layer.Visible = true
-        UI_upv_1.Enter(v174.card, Vector2.new(0, 16), 0, UDim2.fromScale(0.5, 0.5))
-        a1.Sounds.Play("Open")
-        if not UI_upv_1.Gamepad then
-            return
-        end
-        GuiService_upv_1.SelectedObject = (v161 or (v174.cancel)).Instance
-    end
-    local function layout()
-        --[[
-          name: layout
-          line: 1692
-          upvalues:
-            tbl_upv_2 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            tbl_upv_2 (copy, index: 3)
-            u2 (copy, index: 5)
-            fromOffset_upv_1 (copy, index: 6)
-            u8 (copy, index: 7)
-            u3 (copy, index: 8)
-            u4 (copy, index: 9)
-            tbl_upv_3 (copy, index: 10)
-            u5 (copy, index: 11)
-            u9 (copy, index: 12)
-            u10 (copy, index: 13)
-            u11 (copy, index: 14)
-            u13 (copy, index: 15)
-            u14 (copy, index: 16)
-            u15 (copy, index: 17)
-            u27 (copy, index: 18)
-            u16 (copy, index: 19)
-            tbl_upv_5 (copy, index: 20)
-            u17 (copy, index: 21)
-            u18 (copy, index: 22)
-            u19 (copy, index: 23)
-            u12 (copy, index: 24)
-            u20 (copy, index: 25)
-            u23 (copy, index: 26)
-            u30 (copy, index: 27)
-            u36 (copy, index: 28)
-            u40 (copy, index: 29)
-            u33 (copy, index: 30)
-            u31 (copy, index: 31)
-            u32 (copy, index: 32)
-            tbl_upv_6 (copy, index: 33)
-            u37 (copy, index: 34)
-            u38 (copy, index: 35)
-            u24 (copy, index: 36)
-            u25 (copy, index: 37)
-            u28 (copy, index: 38)
-            u29 (copy, index: 39)
-            u41 (copy, index: 40)
-            u42 (copy, index: 41)
-            u34 (copy, index: 42)
-            u35 (copy, index: 43)
-            u39 (copy, index: 44)
-            u43 (copy, index: 45)
-            u44 (copy, index: 46)
-            u21 (copy, index: 47)
-            u45 (copy, index: 48)
-            u46 (copy, index: 49)
-            u47 (copy, index: 50)
-            updateFade (copy, index: 51)
-            u68 (ref,  index: 52)
-            u69 (ref,  index: 53)
-            u48 (copy, index: 54)
-            u49 (copy, index: 55)
-            u56 (copy, index: 56)
-            u57 (copy, index: 57)
-            u59 (copy, index: 58)
-            u55 (copy, index: 59)
-            Custom_upv_1 (copy, index: 60)
-            CustomMatch_upv_1 (copy, index: 61)
-            modeOf (copy, index: 62)
-            tbl_upv_11 (copy, index: 63)
-            tbl_upv_12 (copy, index: 64)
-            tbl_upv_15 (copy, index: 65)
-            u60 (copy, index: 66)
-            u76 (ref,  index: 67)
-        ]]
-        local v183 = UI_upv_1.CanvasSize()
-        local v184 = UI_upv_1.TopInset()
-        if UI_upv_1.Compact then
-            u2.Holder.Size = fromOffset_upv_1(math.floor(math.min(tbl_upv_2.W, v183.X - 24)), math.floor(math.min(tbl_upv_2.H, (v183.Y - v184) - 12)))
-        else
-            u2.Holder.Size = fromOffset_upv_1(math.floor(math.clamp(v183.X - 240, tbl_upv_2.W, 1280)), math.floor(math.clamp((v183.Y - v184) - 90, 660, 740)))
-        end
-        u2.Subtitle.TextSize = ((UI_upv_1.Compact) and 15) or 17
-        local v185 = ((UI_upv_1.Compact) and 226) or 246
-        local v186 = ((UI_upv_1.Compact) and 44) or 48
-        local v187 = ((UI_upv_1.Compact) and 116) or 118
-        local v188 = UI_upv_1.WindowCloseSize() + 30
-        u8.Instance.Position = UDim2.new(1, -v188, 0, 14)
-        u8.Instance.Size = fromOffset_upv_1(v187, v186 + 3)
-        u8.Label.TextSize = ((UI_upv_1.Compact) and 18) or 17
-        u3.Size = fromOffset_upv_1(v185, v186)
-        u3.Position = UDim2.new(1, -((v188 + v187) + 10), 0, 14)
-        u4.TextSize = ((UI_upv_1.Compact) and 25) or 28
-        local v189 = ((UI_upv_1.Compact) and 8) or 9
-        for key_5, value_18 in tbl_upv_3:GetChildren() do
-            local v190 = tonumber(string.match(value_18.Name, "%d+")) or key_5
-            local v191 = v189 * 0.55
-            value_18.Size = fromOffset_upv_1(v189, v189)
-            value_18.Position = fromOffset_upv_1((v190 - 1) * (v189 + v191) + (((v190 > 3) and (v189 * 1.35 - v191)) or 0), 0)
-        end
-        tbl_upv_3.Size = fromOffset_upv_1(((v189 * 6) + ((v189 * 4) * 0.55)) + (v189 * 1.35), v189)
-        u5.Position = UDim2.new(1, -8, 0.5, 0)
-        u9.Position = UDim2.new(1, -v188, 0, (v186 + 14) + 4)
-        u9.Size = fromOffset_upv_1((v185 + v187) + 10, 14)
-        local v192 = (v185 + v187) + v188 + 40
-        u2.Title.Size = UDim2.new(1, -v192, 0, 40)
-        u2.Subtitle.Size = UDim2.new(1, -v192, 0, 20)
-        u2.Subtitle.TextTruncate = Enum.TextTruncate.AtEnd
-        local v193 = u2.Holder.Size.Y.Offset - 80 - 32
-        local left_1 = tbl_upv_2.left
-        u10.Size = fromOffset_upv_1(left_1, v193)
-        local pad_1 = tbl_upv_2.pad
-        local v194 = left_1 - pad_1 * 2
-        u11.Size = UDim2.new(1, 0, 0, tbl_upv_2.sectionH)
-        local v195 = pad_1
-        u13.Position = fromOffset_upv_1(pad_1 + 2, v195 + 11)
-        u14.Position = fromOffset_upv_1(pad_1 + 20, v195)
-        u14.Size = fromOffset_upv_1(v194 - 110, 22)
-        u14.TextSize = tbl_upv_2.status
-        u15.Position = UDim2.new(1, -pad_1, 0, v195)
-        u15.Size = fromOffset_upv_1(100, 22)
-        u15.TextSize = tbl_upv_2.status - 1
-        local v196 = v195 + 32
-        local v197 = ((UI_upv_1.Compact) and (u27.Instance.Size.X.Offset + 8)) or 0
-        u27.Instance.Position = fromOffset_upv_1(pad_1, v196)
-        for _, value_19 in {u16, tbl_upv_5} do
-            value_19.Instance.Position = fromOffset_upv_1(pad_1 + v197, v196)
-            value_19.Instance.Size = fromOffset_upv_1(v194 - v197, tbl_upv_2.button)
-            value_19.Label.TextSize = ((UI_upv_1.Compact) and 23) or 26
-        end
-        u17.Position = fromOffset_upv_1(pad_1, v196)
-        u17.Size = fromOffset_upv_1(v194, tbl_upv_2.button - 3)
-        u18.TextSize = ((UI_upv_1.Compact) and 19) or 20
-        local v198 = v196 + (tbl_upv_2.button + 8)
-        u19.Position = fromOffset_upv_1(pad_1, v198)
-        u19.Size = fromOffset_upv_1(v194, tbl_upv_2.hint + 2)
-        u19.TextSize = tbl_upv_2.hint
-        local v199 = v198 + (((tbl_upv_2.hint + 2) + pad_1) - 4)
-        local v200 = tbl_upv_2.sectionH + tbl_upv_2.sectionGap
-        u12.Position = fromOffset_upv_1(0, v200)
-        u12.Size = fromOffset_upv_1(left_1, v199)
-        local v201 = v200 + v199 + tbl_upv_2.blockGap
-        u20.Position = fromOffset_upv_1(0, v201)
-        u20.Size = UDim2.new(1, 0, 0, tbl_upv_2.sectionH)
-        local v202 = v201 + tbl_upv_2.sectionH + tbl_upv_2.sectionGap
-        u23.Visible = not UI_upv_1.Compact
-        u30:FindFirstChild("Divider").Visible = not UI_upv_1.Compact
-        local v203 = ((UI_upv_1.Compact) and {u30, u36, u40}) or {u23, u30, u36, u40}
-        for key_6, value_20 in v203 do
-            value_20.Position = fromOffset_upv_1(0, (key_6 - 1) * tbl_upv_2.rowH)
-            value_20.Size = fromOffset_upv_1(left_1, tbl_upv_2.rowH)
-        end
-        local tbl_41 = {{u30, u33, u31, u32}, {u36, tbl_upv_6, u37, u38}, {u23, u24, u23:FindFirstChild("Label"), u25}}
-        for _, value_21 in tbl_41 do
-            local v204 = value_21[2]
-            local v205 = value_21[3]
-            local v206 = value_21[4]
-            local v207 = ((value_21[1] ~= u23) and 86) or 140
-            v204.Position = UDim2.new(0, pad_1 + 2, 0.5, 0)
-            v204.TextSize = 22
-            v205.Position = fromOffset_upv_1(pad_1 + 36, (math.floor(tbl_upv_2.rowH / 2) - tbl_upv_2.label) - 1)
-            v205.Size = fromOffset_upv_1((v194 - 36) - v207, tbl_upv_2.label + 2)
-            v205.TextSize = tbl_upv_2.label
-            v206.Position = fromOffset_upv_1(pad_1 + 36, math.floor(tbl_upv_2.rowH / 2) + 2)
-            v206.Size = fromOffset_upv_1((v194 - 36) - v207, tbl_upv_2.desc + 2)
-            v206.TextSize = tbl_upv_2.desc
-        end
-        u28.Instance.Position = UDim2.new(1, -pad_1, 0.5, 0)
-        u29.Position = UDim2.new(1, -pad_1, 0.5, 0)
-        u29.Size = fromOffset_upv_1(60, 22)
-        u29.TextSize = tbl_upv_2.label
-        u41.Position = UDim2.new(0, pad_1 + 2, 0.5, 0)
-        local Label_1 = u40:FindFirstChild("Label")
-        Label_1.Position = fromOffset_upv_1(pad_1 + 36, (math.floor(tbl_upv_2.rowH / 2) - tbl_upv_2.label) - 1)
-        Label_1.Size = fromOffset_upv_1((v194 - 36) - 86, tbl_upv_2.label + 2)
-        Label_1.TextSize = tbl_upv_2.label
-        u42.Position = fromOffset_upv_1(pad_1 + 36, math.floor(tbl_upv_2.rowH / 2) + 2)
-        u42.Size = fromOffset_upv_1((v194 - 36) - 86, tbl_upv_2.desc + 2)
-        u42.TextSize = tbl_upv_2.desc
-        u34.Position = UDim2.new(1, -pad_1, 0.5, 0)
-        u34.Size = fromOffset_upv_1(60, 20)
-        u34.TextSize = tbl_upv_2.label - 2
-        u35.Position = fromOffset_upv_1(pad_1 - 4, 8)
-        u35.Size = fromOffset_upv_1(v194 + 8, tbl_upv_2.rowH - 16)
-        u35.TextSize = tbl_upv_2.label
-        u39.Instance.Position = UDim2.new(1, -pad_1, 0.5, 0)
-        u43.Instance.Position = UDim2.new(1, -pad_1, 0.5, 0)
-        u44.Position = UDim2.new(1, -pad_1, 0.5, 0)
-        u44.Size = fromOffset_upv_1(60, 22)
-        u44.TextSize = tbl_upv_2.label
-        u21.Position = fromOffset_upv_1(0, v202)
-        u21.Size = fromOffset_upv_1(left_1, #v203 * tbl_upv_2.rowH)
-        u45.Label.TextSize = ((UI_upv_1.Compact) and 17) or 18
-        local v208 = (v202 + (#v203 * tbl_upv_2.rowH)) + 12 + tbl_upv_2.leaveH <= v193
-        local v209
-        if v208 then
-            v209 = v193
-        else
-            v209 = v202 + (#v203 * tbl_upv_2.rowH) + 2
-        end
-        u10.CanvasSize = fromOffset_upv_1(0, v209)
-        u46.Position = fromOffset_upv_1((left_1 + tbl_upv_2.gap) - 8, -8)
-        local v210 = u2.Holder.Size.X.Offset - 44 - left_1 - tbl_upv_2.gap
-        u46.Size = fromOffset_upv_1(v210 + 8, v193 + 8)
-        u47.Position = fromOffset_upv_1(left_1 + tbl_upv_2.gap, v193)
-        u47.Size = fromOffset_upv_1(v210 - 10, 40)
-        task.defer(updateFade)
-        u68 = v210 - 14
-        u69 = math.floor((u68 - tbl_upv_2.teamGap) / 2)
-        for _, value_22 in {{u48, u49}, {u56, u57}, {u59, u55}} do
-            local v211 = value_22[2]
-            value_22[1].Size = UDim2.new(0, u68, 0, tbl_upv_2.sectionH)
-            v211.Size = fromOffset_upv_1(math.floor(u68 * 0.62), 18)
-            v211.TextSize = tbl_upv_2.sectionHint
-        end
-        u55.TextSize = 15
-        local v212 = Custom_upv_1.State() or {}
-        local v213 = CustomMatch_upv_1.TeamSize(modeOf(v212))
-        local v214 = tbl_upv_2.teamHead + (v213 * tbl_upv_2.seatH) + ((v213 - 1) * tbl_upv_2.seatGap) + 8
-        for _, value_23 in tbl_upv_11 do
-            value_23.frame.Size = fromOffset_upv_1(u69, v214)
-            value_23.dot.Position = UDim2.new(0, 16, 0, math.floor(tbl_upv_2.teamHead / 2) + 1)
-            value_23.dot.Size = fromOffset_upv_1(10, 10)
-            value_23.title.Position = UDim2.new(0, 34, 0, math.floor(tbl_upv_2.teamHead / 2) + 1)
-            value_23.title.Size = fromOffset_upv_1(160, 22)
-            value_23.title.TextSize = tbl_upv_2.label
-            value_23.count.Position = UDim2.new(1, -16, 0, math.floor(tbl_upv_2.teamHead / 2) + 1)
-            value_23.count.Size = fromOffset_upv_1(80, 22)
-            value_23.count.TextSize = tbl_upv_2.label - 1
-        end
-        for _, value_24 in tbl_upv_12 do
-            value_24.ring.Position = fromOffset_upv_1(10, math.floor(tbl_upv_2.seatH / 2))
-            value_24.ring.Size = fromOffset_upv_1(tbl_upv_2.head, tbl_upv_2.head)
-            value_24.label.Position = fromOffset_upv_1((10 + tbl_upv_2.head) + 10, math.floor(tbl_upv_2.seatH / 2))
-            value_24.label.Size = fromOffset_upv_1(160, 22)
-            value_24.label.TextSize = tbl_upv_2.playerName - 1
-        end
-        local mapCols_1 = tbl_upv_2.mapCols
-        local v215 = math.floor((u68 - ((mapCols_1 - 1) * tbl_upv_2.mapGap)) / mapCols_1)
-        local v216 = math.floor((v215 * 9) / 16)
-        local v217 = math.ceil(math.max(1, #tbl_upv_15) / mapCols_1)
-        for key_7, value_25 in tbl_upv_15 do
-            value_25.btn.AnchorPoint = Vector2.new(0.5, 0.5)
-            value_25.btn.Position = fromOffset_upv_1((((key_7 - 1) % mapCols_1) * (v215 + tbl_upv_2.mapGap)) + math.floor(v215 / 2), ((key_7 - 1) // mapCols_1) * (v216 + tbl_upv_2.mapGap) + math.floor(v216 / 2))
-            value_25.btn.Size = fromOffset_upv_1(v215, v216)
-            value_25.name.TextSize = tbl_upv_2.mapName
-        end
-        u60.Size = fromOffset_upv_1(u68, (v217 * v216) + ((v217 - 1) * tbl_upv_2.mapGap))
-        if v208 then
-            u45.Instance.Parent = u10
-            u45.Instance.AnchorPoint = Vector2.new(0, 1)
-            u45.Instance.Position = UDim2.new(0, 0, 1, 0)
-            u45.Instance.Size = fromOffset_upv_1(left_1, tbl_upv_2.leaveH)
-        else
-            u45.Instance.Parent = u46
-            u45.Instance.AnchorPoint = Vector2.new(0, 0)
-            u45.Instance.Size = fromOffset_upv_1(u68, tbl_upv_2.leaveH)
-        end
-        u76 = not v208
-        u2.Refit()
-    end
-    local function relayout()
-        --[[
-          name: relayout
-          line: 1893
-          upvalues:
-            u2 (copy, index: 1)
-            paint (copy, index: 2)
-            layout (copy, index: 3)
-        ]]
-        if not u2.IsOpen then
-            return
-        end
-        paint(true)
-        layout()
-        paint(true)
-    end
-    UI_upv_1.LayoutChanged:Connect(relayout)
-    UI_upv_1.ScaleChanged:Connect(relayout)
-    Custom_upv_1.Changed:Connect(
-        function()
-            --[[
-              line: 1904
-              upvalues:
-                u2 (copy, index: 1)
-                u63 (ref,  index: 2)
-                Custom_upv_1 (copy, index: 3)
-                u35 (copy, index: 4)
-                u81 (ref,  index: 5)
-                findPlayer (copy, index: 6)
-                tbl_upv_35 (ref,  index: 7)
-                tbl_upv_15 (copy, index: 8)
-                paint (copy, index: 9)
-                layout (copy, index: 10)
-            ]]
-            if not u2.IsOpen then
-                return
-            end
-            if u63 and not (Custom_upv_1.IsHost()) then
-                u35:ReleaseFocus()
-            end
-            if u81 ~= 0 and (not Custom_upv_1.IsHost() or not findPlayer(u81)) then
-                u81 = 0
-                if tbl_upv_35 then
-                    tbl_upv_35.layer.Visible = false
-                end
-                paint()
-                if #tbl_upv_15 ~= #tbl_upv_15 then
+
+                    paint(true)
                     layout()
                     paint(true)
                 end
-                return
+
+                ui.LayoutChanged:Connect(relayout)
+                ui.ScaleChanged:Connect(relayout)
             end
-            paint()
-            if #tbl_upv_15 ~= #tbl_upv_15 then
-                layout()
-                paint(true)
-            end
+
+            custom.Changed:Connect(
+                function()
+                    --[[
+                      line: 1904
+                      upvalues:
+                        v22 (copy, index: 1)
+                        isBusy2 (ref,  index: 2)
+                        custom (copy, index: 3)
+                        parent9 (copy, index: 4)
+                        v488 (ref,  index: 5)
+                        findPlayer (copy, index: 6)
+                        v487 (ref,  index: 7)
+                        v156 (copy, index: 8)
+                        paint (copy, index: 9)
+                        layout (copy, index: 10)
+                    ]]
+                    if not v22.IsOpen then
+                        return
+                    end
+
+                    if isBusy2 and not custom.IsHost() then
+                        parent9:ReleaseFocus()
+                    end
+
+                    if v488 ~= 0 and (not custom.IsHost() or not findPlayer(v488)) then
+                        v488 = 0
+
+                        if v487 then
+                            v487.layer.Visible = false
+                        end
+                    end
+
+                    local length = #v156
+                    paint()
+
+                    if #v156 ~= length then
+                        layout()
+                        paint(true)
+                    end
+                end
+            )
+
+            a11.MenuManager.Register(
+                "CustomHost",
+                {
+                    open = (function()
+                        --[[
+                          name: open
+                          line: 1923
+                          upvalues:
+                            a11 (copy, index: 1)
+                            v143 (copy, index: 2)
+                            v228 (copy, index: 3)
+                            v460 (ref,  index: 4)
+                            v459 (ref,  index: 5)
+                            v488 (ref,  index: 6)
+                            v487 (ref,  index: 7)
+                            isBusy2 (ref,  index: 8)
+                            parent9 (copy, index: 9)
+                            v71 (copy, index: 10)
+                            v70 (copy, index: 11)
+                            ui10 (copy, index: 12)
+                            v69 (copy, index: 13)
+                            paint (copy, index: 14)
+                            layout (copy, index: 15)
+                            parent12 (copy, index: 16)
+                            v22 (copy, index: 17)
+                            ui (copy, index: 18)
+                            parent3 (copy, index: 19)
+                            guiService (copy, index: 20)
+                            v41 (copy, index: 21)
+                            v44 (copy, index: 22)
+                            custom (copy, index: 23)
+                        ]]
+                        a11.SetHudHidden("CustomHost", true)
+                        table.clear(v143)
+                        table.clear(v228)
+                        v460 = nil
+
+                        if v459 then
+                            v459.layer.Visible = false
+                        end
+
+                        v488 = 0
+
+                        if v487 then
+                            v487.layer.Visible = false
+                        end
+
+                        if isBusy2 then
+                            isBusy2 = false
+                            parent9.Visible = false
+                            v71.Visible = true
+                            v70.Visible = true
+                            ui10.Visible = true
+                            v69.Visible = true
+                        end
+
+                        paint(true)
+                        layout()
+                        paint(true)
+                        parent12.CanvasPosition = Vector2.zero
+                        v22:Open()
+                        ui.SlideIn(parent3, Vector2.new(-18, 0), TweenInfo.new(0.38, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), UDim2.new())
+
+                        if ui.Gamepad then
+                            local v609
+
+                            if v41.Instance.Visible then
+                                v609 = v41.Instance
+                            else
+                                v609 = if v44.Instance.Visible then v44.Instance else v22.CloseButton
+                            end
+
+                            guiService.SelectedObject = v609
+                        end
+
+                        task.spawn(
+                            function()
+                                --[[
+                                  line: 1944
+                                  upvalues:
+                                    custom (copy, index: 1)
+                                ]]
+                                custom.Host("Get")
+                            end
+                        )
+                    end),
+                    close = (function(a610)
+                        --[[
+                          name: close
+                          line: 1948
+                          upvalues:
+                            a11 (copy, index: 1)
+                            v460 (ref,  index: 2)
+                            v459 (ref,  index: 3)
+                            v488 (ref,  index: 4)
+                            v487 (ref,  index: 5)
+                            isBusy2 (ref,  index: 6)
+                            parent9 (copy, index: 7)
+                            ui2 (copy, index: 8)
+                            v441 (ref,  index: 9)
+                            copying (ref,  index: 10)
+                            ui3 (copy, index: 11)
+                            v30 (copy, index: 12)
+                            icon (copy, index: 13)
+                            custom (copy, index: 14)
+                            guiService (copy, index: 15)
+                            v22 (copy, index: 16)
+                        ]]
+                        a11.SetHudHidden("CustomHost", false)
+                        v460 = nil
+
+                        if v459 then
+                            v459.layer.Visible = false
+                        end
+
+                        v488 = 0
+
+                        if v487 then
+                            v487.layer.Visible = false
+                        end
+
+                        if isBusy2 then
+                            parent9:ReleaseFocus()
+                        end
+
+                        if ui2:IsFocused() then
+                            ui2:ReleaseFocus()
+                        end
+
+                        v441 = 0
+                        copying = false
+                        local timestamp = os.clock()
+
+                        if v441 <= timestamp then
+                            ui3.Visible = false
+                            v30:SetText("COPY")
+                            icon.Text = "two-stacked-squares"
+                        end
+
+                        custom.Hide()
+                        local selectedObject = guiService.SelectedObject
+
+                        if selectedObject and selectedObject:IsDescendantOf(v22.Root) then
+                            guiService.SelectedObject = nil
+                        end
+
+                        v22:Close(a610)
+                    end)
+                }
+            )
         end
-    )
-    local tbl_42 = {}
-    function tbl_42.open()
-        --[[
-          name: open
-          line: 1923
-          upvalues:
-            a1 (copy, index: 1)
-            tbl_upv_14 (copy, index: 2)
-            tbl_upv_25 (copy, index: 3)
-            u80 (ref,  index: 4)
-            tbl_upv_34 (ref,  index: 5)
-            u81 (ref,  index: 6)
-            tbl_upv_35 (ref,  index: 7)
-            u63 (ref,  index: 8)
-            u35 (copy, index: 9)
-            u32 (copy, index: 10)
-            u31 (copy, index: 11)
-            u34 (copy, index: 12)
-            u33 (copy, index: 13)
-            paint (copy, index: 14)
-            layout (copy, index: 15)
-            u46 (copy, index: 16)
-            u2 (copy, index: 17)
-            UI_upv_1 (copy, index: 18)
-            u10 (copy, index: 19)
-            GuiService_upv_1 (copy, index: 20)
-            u16 (copy, index: 21)
-            tbl_upv_5 (copy, index: 22)
-            Custom_upv_1 (copy, index: 23)
-        ]]
-        a1.SetHudHidden("CustomHost", true)
-        table.clear(tbl_upv_14)
-        table.clear(tbl_upv_25)
-        u80 = nil
-        if tbl_upv_34 then
-            tbl_upv_34.layer.Visible = false
-        end
-        u81 = 0
-        if tbl_upv_35 then
-            tbl_upv_35.layer.Visible = false
-        end
-        if u63 then
-            u63 = false
-            u35.Visible = false
-            u32.Visible = true
-            u31.Visible = true
-            u34.Visible = true
-            u33.Visible = true
-        end
-        paint(true)
-        layout()
-        paint(true)
-        u46.CanvasPosition = Vector2.zero
-        u2:Open()
-        UI_upv_1.SlideIn(u10, Vector2.new(-18, 0), TweenInfo.new(0.38, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), UDim2.new())
-        if UI_upv_1.Gamepad then
-            local v218
-            if u16.Instance.Visible then
-                v218 = u16.Instance
-            elseif tbl_upv_5.Instance.Visible then
-                v218 = tbl_upv_5.Instance
-            else
-                v218 = u2.CloseButton
-            end
-            GuiService_upv_1.SelectedObject = v218
-        end
-        task.spawn(
-            function()
-                --[[
-                  line: 1944
-                  upvalues:
-                    Custom_upv_1 (copy, index: 1)
-                ]]
-                Custom_upv_1.Host("Get")
-            end
-        )
-    end
-    function tbl_42.close(a72)
-        --[[
-          name: close
-          line: 1948
-          upvalues:
-            a1 (copy, index: 1)
-            u80 (ref,  index: 2)
-            tbl_upv_34 (ref,  index: 3)
-            u81 (ref,  index: 4)
-            tbl_upv_35 (ref,  index: 5)
-            u63 (ref,  index: 6)
-            u35 (copy, index: 7)
-            u4 (copy, index: 8)
-            u78 (ref,  index: 9)
-            u75 (ref,  index: 10)
-            u9 (copy, index: 11)
-            u8 (copy, index: 12)
-            u7 (copy, index: 13)
-            Custom_upv_1 (copy, index: 14)
-            GuiService_upv_1 (copy, index: 15)
-            u2 (copy, index: 16)
-        ]]
-        a1.SetHudHidden("CustomHost", false)
-        u80 = nil
-        if tbl_upv_34 then
-            tbl_upv_34.layer.Visible = false
-        end
-        u81 = 0
-        if tbl_upv_35 then
-            tbl_upv_35.layer.Visible = false
-        end
-        if u63 then
-            u35:ReleaseFocus()
-        end
-        if u4:IsFocused() then
-            u4:ReleaseFocus()
-        end
-        u78 = 0
-        u75 = false
-        local v219 = os.clock()
-        if u78 <= v219 then
-            u9.Visible = false
-            u8:SetText("COPY")
-            u7.Text = "two-stacked-squares"
-        end
-        Custom_upv_1.Hide()
-        local SelectedObject_1 = GuiService_upv_1.SelectedObject
-        if SelectedObject_1 and SelectedObject_1:IsDescendantOf(u2.Root) then
-            GuiService_upv_1.SelectedObject = nil
-        end
-        u2:Close(a72)
-    end
-    a1.MenuManager.Register("CustomHost", tbl_42)
-    a1.Debug.customHost = function(a73, a74)
-        --[[
-          line: 1975
-          upvalues:
-            card (copy, index: 1)
-            tbl_upv_11 (copy, index: 2)
-            u50 (ref,  index: 3)
-            u66 (ref,  index: 4)
-            tbl_upv_35 (ref,  index: 5)
-            u81 (ref,  index: 6)
-            a1 (copy, index: 7)
-            u65 (ref,  index: 8)
-            host (copy, index: 9)
-            u26 (ref,  index: 10)
-            u16 (copy, index: 11)
-            tbl_upv_5 (copy, index: 12)
-            tbl_upv_20 (copy, index: 13)
-            u82 (ref,  index: 14)
-            u45 (copy, index: 15)
-            tbl_upv_34 (ref,  index: 16)
-            u80 (ref,  index: 17)
-            u63 (ref,  index: 18)
-            u35 (copy, index: 19)
-            Custom_upv_1 (copy, index: 20)
-            CustomMatch_upv_1 (copy, index: 21)
-            LocalPlayer_upv_1 (copy, index: 22)
-            u32 (copy, index: 23)
-            u31 (copy, index: 24)
-            u34 (copy, index: 25)
-            u33 (copy, index: 26)
-            copyCode (copy, index: 27)
-            tbl_upv_15 (copy, index: 28)
-            u2 (copy, index: 29)
-            u19 (copy, index: 30)
-            u28 (copy, index: 31)
-            u29 (copy, index: 32)
-            modeOf (copy, index: 33)
-            u4 (copy, index: 34)
-            tbl_upv_3 (copy, index: 35)
-            u5 (copy, index: 36)
-            u75 (ref,  index: 37)
-            u9 (copy, index: 38)
-            u8 (copy, index: 39)
-            u17 (copy, index: 40)
-            u70 (ref,  index: 41)
-            tbl_upv_26 (copy, index: 42)
-            u15 (copy, index: 43)
-        ]]
-        local v220 = nil
-        local function joinSeat(a75)
+
+        a11.Debug.customHost = function(a613, a614)
             --[[
-              name: joinSeat
-              line: 1976
+              line: 1975
               upvalues:
-                card (copy, index: 1)
-                tbl_upv_11 (copy, index: 2)
+                seat (copy, index: 1)
+                v125 (copy, index: 2)
+                v94 (ref,  index: 3)
+                v189 (ref,  index: 4)
+                v487 (ref,  index: 5)
+                v488 (ref,  index: 6)
+                a11 (copy, index: 7)
+                v158 (ref,  index: 8)
+                host (copy, index: 9)
+                v62 (ref,  index: 10)
+                v41 (copy, index: 11)
+                v44 (copy, index: 12)
+                v182 (copy, index: 13)
+                v480 (ref,  index: 14)
+                v85 (copy, index: 15)
+                v459 (ref,  index: 16)
+                v460 (ref,  index: 17)
+                isBusy2 (ref,  index: 18)
+                parent9 (copy, index: 19)
+                custom (copy, index: 20)
+                CustomMatch (copy, index: 21)
+                localPlayer (copy, index: 22)
+                v71 (copy, index: 23)
+                v70 (copy, index: 24)
+                ui10 (copy, index: 25)
+                v69 (copy, index: 26)
+                copyCode (copy, index: 27)
+                v156 (copy, index: 28)
+                v22 (copy, index: 29)
+                ui8 (copy, index: 30)
+                v63 (copy, index: 31)
+                ui9 (copy, index: 32)
+                modeOf (copy, index: 33)
+                ui2 (copy, index: 34)
+                v26 (copy, index: 35)
+                parent2 (copy, index: 36)
+                copying (ref,  index: 37)
+                ui3 (copy, index: 38)
+                v30 (copy, index: 39)
+                parent5 (copy, index: 40)
+                v234 (ref,  index: 41)
+                v235 (copy, index: 42)
+                ui6 (copy, index: 43)
             ]]
-            local v221 = nil
-            if a75 ~= 0 then
-                v221 = tbl_upv_11[a75]
-                if not (v221) then
-                    v221 = {}
-                    v221.seats = {}
-                end
-                for _, value_26 in v221.seats do
-                    if not (value_26.btn.Visible) or not (value_26.join) then
-                        continue
+            local players
+            local moreShown
+
+            local function joinSeat(a618: number?)
+                --[[
+                  name: joinSeat
+                  line: 1976
+                  upvalues:
+                    seat (copy, index: 1)
+                    v125 (copy, index: 2)
+                ]]
+                if a618 == 0 then
+                    if seat.btn.Visible and seat.join then
+                        return seat
                     end
-                    return value_26
+
+                    return nil
                 end
-            elseif card.btn.Visible and card.join then
-                return card
-            end
-            return nil
-        end
-        if a73 == "join" then
-            v220 = joinSeat(tonumber(a74) or 0)
-            if not v220 then
-                return "no JOIN seat there"
-            end
-            u50(v220.team)
-            local v222 = Custom_upv_1.State() or {}
-            local tbl_43 = {}
-            tbl_43.open = u2.IsOpen
-            tbl_43.host = Custom_upv_1.IsHost()
-            tbl_43.status = v222.status or false
-            tbl_43.canStart = v222.canStart or false
-            tbl_43.hint = u19.Text
-            tbl_43.map = v222.map or false
-            tbl_43.public = v222.public or false
-            tbl_43.bots = v222.bots or false
-            tbl_43.mode = v222.mode or false
-            tbl_43.modeShown = u28.Value
-            local v223
-            if u29.Visible then
-                v223 = u29.Text
-            else
-                v223 = false
-            end
-            tbl_43.modeValue = v223
-            tbl_43.seats = CustomMatch_upv_1.TeamSize(modeOf(v222))
-            if type(v222.players) ~= "table" then
-                v223 = 0
-            else
-                v223 = #v222.players
-            end
-            tbl_43.players = v223
-            tbl_43.mapCards = #tbl_upv_15
-            v223 = (tbl_upv_34 ~= nil) and (tbl_upv_34.layer.Visible)
-            tbl_43.confirm = v223
-            tbl_43.code = u4.Text
-            if tbl_upv_3.Visible then
-                v223 = Custom_upv_1.MASK
-            else
-                v223 = u4.Text
-            end
-            tbl_43.codeShown = v223
-            tbl_43.masked = tbl_upv_3.Visible
-            tbl_43.eye = u5.Visible
-            tbl_43.copying = u75
-            tbl_43.focused = u4:IsFocused()
-            tbl_43.selection = string.format("%d..%d", u4.SelectionStart, u4.CursorPosition)
-            if u9.Visible then
-                v223 = u9.Text
-            else
-                v223 = false
-            end
-            tbl_43.copyHint = v223
-            tbl_43.copyLabel = u8.Label.Text
-            tbl_43.readOnly = u17.Visible
-            tbl_43.size = string.format("%dx%d", u2.Holder.Size.X.Offset, u2.Holder.Size.Y.Offset)
-            tbl_43.team = u70 or false
-            tbl_43.team1 = tbl_upv_26[1]
-            tbl_43.team2 = tbl_upv_26[2]
-            tbl_43.random = tbl_upv_26[3]
-            if joinSeat(1) ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.join1 = v223
-            if joinSeat(2) ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.join2 = v223
-            local v224 = not (card.btn.Visible) or not (card.join) or card
-            if v224 ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.joinRandom = v223
-            tbl_43.preview = u15.Text
-            tbl_43.move = tbl_upv_35 ~= nil and tbl_upv_35.layer.Visible
-            tbl_43.movePicks = tbl_upv_35 and {tbl_upv_35.picks[1].Enabled, tbl_upv_35.picks[2].Enabled, tbl_upv_35.picks[3].Enabled} or false
-            local v225 = 0
-            local v223 = v225
-            for _, value_27 in tbl_upv_20 do
-                v223 = ((value_27.more.Visible) and (v223 + 1)) or v223
-            end
-            tbl_43.moreShown = v223
-            return tbl_43
-        elseif a73 == "more" then
-            u66(tonumber(a74) or 0)
-            local v222 = Custom_upv_1.State() or {}
-            local tbl_43 = {}
-            tbl_43.open = u2.IsOpen
-            tbl_43.host = Custom_upv_1.IsHost()
-            tbl_43.status = v222.status or false
-            tbl_43.canStart = v222.canStart or false
-            tbl_43.hint = u19.Text
-            tbl_43.map = v222.map or false
-            tbl_43.public = v222.public or false
-            tbl_43.bots = v222.bots or false
-            tbl_43.mode = v222.mode or false
-            tbl_43.modeShown = u28.Value
-            local v223
-            if u29.Visible then
-                v223 = u29.Text
-            else
-                v223 = false
-            end
-            tbl_43.modeValue = v223
-            tbl_43.seats = CustomMatch_upv_1.TeamSize(modeOf(v222))
-            if type(v222.players) ~= "table" then
-                v223 = 0
-            else
-                v223 = #v222.players
-            end
-            tbl_43.players = v223
-            tbl_43.mapCards = #tbl_upv_15
-            v223 = (tbl_upv_34 ~= nil) and (tbl_upv_34.layer.Visible)
-            tbl_43.confirm = v223
-            tbl_43.code = u4.Text
-            if tbl_upv_3.Visible then
-                v223 = Custom_upv_1.MASK
-            else
-                v223 = u4.Text
-            end
-            tbl_43.codeShown = v223
-            tbl_43.masked = tbl_upv_3.Visible
-            tbl_43.eye = u5.Visible
-            tbl_43.copying = u75
-            tbl_43.focused = u4:IsFocused()
-            tbl_43.selection = string.format("%d..%d", u4.SelectionStart, u4.CursorPosition)
-            if u9.Visible then
-                v223 = u9.Text
-            else
-                v223 = false
-            end
-            tbl_43.copyHint = v223
-            tbl_43.copyLabel = u8.Label.Text
-            tbl_43.readOnly = u17.Visible
-            tbl_43.size = string.format("%dx%d", u2.Holder.Size.X.Offset, u2.Holder.Size.Y.Offset)
-            tbl_43.team = u70 or false
-            tbl_43.team1 = tbl_upv_26[1]
-            tbl_43.team2 = tbl_upv_26[2]
-            tbl_43.random = tbl_upv_26[3]
-            if joinSeat(1) ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.join1 = v223
-            if joinSeat(2) ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.join2 = v223
-            local v224 = not (card.btn.Visible) or not (card.join) or card
-            if v224 ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.joinRandom = v223
-            tbl_43.preview = u15.Text
-            v223 = tbl_upv_35 ~= nil and tbl_upv_35.layer.Visible
-            tbl_43.move = tbl_upv_35 ~= nil and tbl_upv_35.layer.Visible
-            local v223 = tbl_upv_35 and {tbl_upv_35.picks[1].Enabled, tbl_upv_35.picks[2].Enabled, tbl_upv_35.picks[3].Enabled} or false
-            tbl_43.movePicks = tbl_upv_35 and {tbl_upv_35.picks[1].Enabled, tbl_upv_35.picks[2].Enabled, tbl_upv_35.picks[3].Enabled} or false
-            local v225 = 0
-            local v223 = v225
-            for _, value_27 in tbl_upv_20 do
-                v223 = ((value_27.more.Visible) and (v223 + 1)) or v223
-            end
-            tbl_43.moreShown = v223
-            return tbl_43
-        elseif a73 ~= "movePick" then
-            if a73 ~= "moveRemove" then
-                if a73 == "moveCancel" then
-                    u81 = 0
-                    if tbl_upv_35 then
-                        tbl_upv_35.layer.Visible = false
+
+                local v619 = v125[a618] or {seats = {}}
+
+                for _, seat2 in v619.seats do
+                    if seat2.btn.Visible and seat2.join then
+                        return seat2
                     end
-                elseif a73 == "open" then
-                    a1.MenuManager.Open("CustomHost")
-                elseif a73 == "map" then
-                    u65((tostring(a74 or "")))
-                elseif a73 == "public" then
-                    local v226 = a74 ~= false
-                    task.spawn(host, "SetPublic", v226, "public", a74 ~= false)
-                elseif a73 == "bots" then
-                    local v227 = a74 == true
-                    task.spawn(host, "SetBots", v227, "bots", a74 == true)
-                elseif a73 == "mode" then
-                    u26((tostring(a74 or "")))
-                elseif a73 == "start" then
-                    u16.Activated:Fire()
-                elseif a73 == "end" then
-                    tbl_upv_5.Activated:Fire()
-                elseif a73 == "kick" then
-                    local v228 = tbl_upv_20[tonumber(a74) or 0]
-                    local v229 = u82
-                    local v230 = tonumber(a74) or 0
-                    v229(v230, ((not v228) and "Player") or (v228.name.Text))
-                elseif a73 == "leave" then
-                    u45.Activated:Fire()
-                elseif a73 ~= "confirmYes" then
-                    if a73 == "confirmNo" then
-                        u80 = nil
-                        if tbl_upv_34 then
-                            tbl_upv_34.layer.Visible = false
-                        end
-                    elseif a73 ~= "edit" then
-                        if a73 == "name" then
-                            if not (u63) then
-                                u63 = true
-                                local v231 = Custom_upv_1.State() or {}
-                                u35.Text = tostring(v231.name or "")
-                                u35.PlaceholderText = CustomMatch_upv_1.DefaultName(LocalPlayer_upv_1.DisplayName)
-                                u35.Visible = true
-                                u32.Visible = false
-                                u31.Visible = false
-                                u34.Visible = false
-                                u33.Visible = false
-                                u35:CaptureFocus()
-                            end
-                            u35.Text = tostring(a74 or "")
-                            u35:ReleaseFocus()
-                        elseif a73 == "copy" then
-                            copyCode()
-                        elseif a73 ~= "reveal" then
-                            if a73 == "hoverMap" then
-                                for _, value_28 in tbl_upv_15 do
-                                    if value_28.id == tostring(a74 or "") then
-                                        value_28.scaleObj.Scale = 1.03
-                                        value_28.stroke.Transparency = 0.55
-                                    end
-                                end
-                            end
-                        elseif a74 ~= false then
-                            Custom_upv_1.Reveal()
-                        else
-                            Custom_upv_1.Hide()
-                        end
-                    elseif not (u63) then
-                        u63 = true
-                        local v232 = Custom_upv_1.State() or {}
-                        u35.Text = tostring(v232.name or "")
-                        u35.PlaceholderText = CustomMatch_upv_1.DefaultName(LocalPlayer_upv_1.DisplayName)
-                        u35.Visible = true
-                        u32.Visible = false
-                        u31.Visible = false
-                        u34.Visible = false
-                        u33.Visible = false
-                        u35:CaptureFocus()
-                    end
-                elseif tbl_upv_34 then
-                    tbl_upv_34.yes.Activated:Fire()
                 end
-            elseif tbl_upv_35 then
-                tbl_upv_35.remove.Activated:Fire()
+
+                return nil
             end
-            local v222 = Custom_upv_1.State() or {}
-            local tbl_43 = {}
-            tbl_43.open = u2.IsOpen
-            tbl_43.host = Custom_upv_1.IsHost()
-            tbl_43.status = v222.status or false
-            tbl_43.canStart = v222.canStart or false
-            tbl_43.hint = u19.Text
-            tbl_43.map = v222.map or false
-            tbl_43.public = v222.public or false
-            tbl_43.bots = v222.bots or false
-            tbl_43.mode = v222.mode or false
-            tbl_43.modeShown = u28.Value
-            local v223
-            if u29.Visible then
-                v223 = u29.Text
+
+            if a613 == "join" then
+                local v622 = joinSeat((tonumber(a614) or 0))
+                if not v622 then
+                    return "no JOIN seat there"
+                end
+
+                v94(v622.team)
+            elseif a613 == "more" then
+                v189((tonumber(a614) or 0))
+            elseif a613 == "movePick" then
+                local v623 = a614 == 0 and 3 or tonumber(a614) or 0
+                local pick = v487 and v487.picks[v623]
+
+                if not pick or not pick.Enabled then
+                    return "that pick is off"
+                end
+
+                pick.Activated:Fire()
+            elseif a613 == "moveRemove" then
+                if v487 then
+                    v487.remove.Activated:Fire()
+                end
+            elseif a613 == "moveCancel" then
+                v488 = 0
+
+                if v487 then
+                    v487.layer.Visible = false
+                end
+            elseif a613 == "open" then
+                a11.MenuManager.Open("CustomHost")
+            elseif a613 == "map" then
+                v158((tostring((a614 or ""))))
+            elseif a613 == "public" then
+                task.spawn(host, "SetPublic", a614 ~= false, "public", a614 ~= false)
+            elseif a613 == "bots" then
+                task.spawn(host, "SetBots", a614 == true, "bots", a614 == true)
+            elseif a613 == "mode" then
+                v62((tostring((a614 or ""))))
+            elseif a613 == "start" then
+                v41.Activated:Fire()
+            elseif a613 == "end" then
+                v44.Activated:Fire()
+            elseif a613 == "kick" then
+                local text
+                local v626 = v182[tonumber(a614) or 0]
+                local v627 = v480
+                local number = tonumber(a614) or 0
+
+                if v626 then
+                    text = v626.name.Text
+                else
+                    text = "Player"
+                end
+
+                v627(number, text)
+            elseif a613 == "leave" then
+                v85.Activated:Fire()
+            elseif a613 == "confirmYes" then
+                if v459 then
+                    v459.yes.Activated:Fire()
+                end
+            elseif a613 == "confirmNo" then
+                v460 = nil
+
+                if v459 then
+                    v459.layer.Visible = false
+                end
+            elseif a613 == "edit" then
+                if not isBusy2 then
+                    isBusy2 = true
+                    local v629 = custom.State() or {}
+                    parent9.Text = tostring((v629.name or ""))
+                    parent9.PlaceholderText = CustomMatch.DefaultName(localPlayer.DisplayName)
+                    parent9.Visible = true
+                    v71.Visible = false
+                    v70.Visible = false
+                    ui10.Visible = false
+                    v69.Visible = false
+                    parent9:CaptureFocus()
+                end
+            elseif a613 == "name" then
+                if not isBusy2 then
+                    isBusy2 = true
+                    local v630 = custom.State() or {}
+                    parent9.Text = tostring((v630.name or ""))
+                    parent9.PlaceholderText = CustomMatch.DefaultName(localPlayer.DisplayName)
+                    parent9.Visible = true
+                    v71.Visible = false
+                    v70.Visible = false
+                    ui10.Visible = false
+                    v69.Visible = false
+                    parent9:CaptureFocus()
+                end
+
+                parent9.Text = tostring((a614 or ""))
+                parent9:ReleaseFocus()
+            elseif a613 == "copy" then
+                copyCode()
+            elseif a613 == "reveal" then
+                if a614 ~= false then
+                    custom.Reveal()
+                else
+                    custom.Hide()
+                end
+            elseif a613 == "hoverMap" then
+                for _, v632 in v156 do
+                    if v632.id == tostring((a614 or "")) then
+                        v632.scaleObj.Scale = 1.03
+                        v632.stroke.Transparency = 0.55
+                    end
+                end
+            end
+
+            local v633 = custom.State() or {}
+            local v634 = {open = v22.IsOpen, host = custom.IsHost(), status = v633.status or false, canStart = v633.canStart
+                or false, hint = ui8.Text, map = v633.map or false, public = v633.public or false, bots = v633.bots
+                or false, mode = v633.mode or false, modeShown = v63.Value, modeValue = if ui9.Visible then ui9.Text else false}
+            v634.seats = CustomMatch.TeamSize(modeOf(v633))
+
+            if type(v633.players) ~= "table" then
+                players = 0
             else
-                v223 = false
+                players = #v633.players
             end
-            tbl_43.modeValue = v223
-            tbl_43.seats = CustomMatch_upv_1.TeamSize(modeOf(v222))
-            if type(v222.players) ~= "table" then
-                v223 = 0
-            else
-                v223 = #v222.players
+
+            v634.players = players
+            v634.mapCards = #v156
+            v634.confirm = v459 ~= nil and v459.layer.Visible
+            v634.code = ui2.Text
+            v634.codeShown = if v26.Visible then custom.MASK else ui2.Text
+            v634.masked = v26.Visible
+            v634.eye = parent2.Visible
+            v634.copying = copying
+            v634.focused = ui2:IsFocused()
+            v634.selection = string.format("%d..%d", ui2.SelectionStart, ui2.CursorPosition)
+            v634.copyHint = if ui3.Visible then ui3.Text else false
+            v634.copyLabel = v30.Label.Text
+            v634.readOnly = parent5.Visible
+            v634.size = string.format("%dx%d", v22.Holder.Size.X.Offset, v22.Holder.Size.Y.Offset)
+            v634.team = v234 or false
+            v634.team1 = v235[1]
+            v634.team2 = v235[2]
+            v634.random = v235[3]
+            local join1 = joinSeat(1) ~= nil
+            v634.join1 = join1
+            local join2 = joinSeat(2) ~= nil
+            v634.join2 = join2
+            local v637 = if seat.btn.Visible and seat.join then seat else nil
+            v634.joinRandom = v637 ~= nil
+            v634.preview = ui6.Text
+            v634.move = v487 ~= nil and v487.layer.Visible
+            v634.movePicks = v487
+                and {v487.picks[1].Enabled, v487.picks[2].Enabled, v487.picks[3].Enabled}
+                or false
+            local v638 = 0
+            moreShown = v638
+
+            for _, v640 in v182 do
+                if v640.more.Visible then
+                    moreShown += 1
+                end
             end
-            tbl_43.players = v223
-            tbl_43.mapCards = #tbl_upv_15
-            v223 = (tbl_upv_34 ~= nil) and (tbl_upv_34.layer.Visible)
-            tbl_43.confirm = v223
-            tbl_43.code = u4.Text
-            if tbl_upv_3.Visible then
-                v223 = Custom_upv_1.MASK
-            else
-                v223 = u4.Text
-            end
-            tbl_43.codeShown = v223
-            tbl_43.masked = tbl_upv_3.Visible
-            tbl_43.eye = u5.Visible
-            tbl_43.copying = u75
-            tbl_43.focused = u4:IsFocused()
-            tbl_43.selection = string.format("%d..%d", u4.SelectionStart, u4.CursorPosition)
-            if u9.Visible then
-                v223 = u9.Text
-            else
-                v223 = false
-            end
-            tbl_43.copyHint = v223
-            tbl_43.copyLabel = u8.Label.Text
-            tbl_43.readOnly = u17.Visible
-            tbl_43.size = string.format("%dx%d", u2.Holder.Size.X.Offset, u2.Holder.Size.Y.Offset)
-            tbl_43.team = u70 or false
-            tbl_43.team1 = tbl_upv_26[1]
-            tbl_43.team2 = tbl_upv_26[2]
-            tbl_43.random = tbl_upv_26[3]
-            if joinSeat(1) ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.join1 = v223
-            if joinSeat(2) ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.join2 = v223
-            local v224 = not (card.btn.Visible) or not (card.join) or card
-            if v224 ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.joinRandom = v223
-            tbl_43.preview = u15.Text
-            v223 = tbl_upv_35 ~= nil and tbl_upv_35.layer.Visible
-            tbl_43.move = tbl_upv_35 ~= nil and tbl_upv_35.layer.Visible
-            local v223 = tbl_upv_35 and {tbl_upv_35.picks[1].Enabled, tbl_upv_35.picks[2].Enabled, tbl_upv_35.picks[3].Enabled} or false
-            tbl_43.movePicks = tbl_upv_35 and {tbl_upv_35.picks[1].Enabled, tbl_upv_35.picks[2].Enabled, tbl_upv_35.picks[3].Enabled} or false
-            local v225 = 0
-            local v223 = v225
-            for _, value_27 in tbl_upv_20 do
-                v223 = ((value_27.more.Visible) and (v223 + 1)) or v223
-            end
-            tbl_43.moreShown = v223
-            return tbl_43
-        else
-            local v233 = ((a74 == 0) and 3) or (tonumber(a74) or 0)
-            local v234 = tbl_upv_35 and (tbl_upv_35.picks[v233])
-            if not v234 or not v234.Enabled then
-                return "that pick is off"
-            end
-            v234.Activated:Fire()
-            local v222 = Custom_upv_1.State() or {}
-            local tbl_43 = {}
-            tbl_43.open = u2.IsOpen
-            tbl_43.host = Custom_upv_1.IsHost()
-            tbl_43.status = v222.status or false
-            tbl_43.canStart = v222.canStart or false
-            tbl_43.hint = u19.Text
-            tbl_43.map = v222.map or false
-            tbl_43.public = v222.public or false
-            tbl_43.bots = v222.bots or false
-            tbl_43.mode = v222.mode or false
-            tbl_43.modeShown = u28.Value
-            local v223
-            if u29.Visible then
-                v223 = u29.Text
-            else
-                v223 = false
-            end
-            tbl_43.modeValue = v223
-            tbl_43.seats = CustomMatch_upv_1.TeamSize(modeOf(v222))
-            if type(v222.players) ~= "table" then
-                v223 = 0
-            else
-                v223 = #v222.players
-            end
-            tbl_43.players = v223
-            tbl_43.mapCards = #tbl_upv_15
-            v223 = (tbl_upv_34 ~= nil) and (tbl_upv_34.layer.Visible)
-            tbl_43.confirm = v223
-            tbl_43.code = u4.Text
-            if tbl_upv_3.Visible then
-                v223 = Custom_upv_1.MASK
-            else
-                v223 = u4.Text
-            end
-            tbl_43.codeShown = v223
-            tbl_43.masked = tbl_upv_3.Visible
-            tbl_43.eye = u5.Visible
-            tbl_43.copying = u75
-            tbl_43.focused = u4:IsFocused()
-            tbl_43.selection = string.format("%d..%d", u4.SelectionStart, u4.CursorPosition)
-            if u9.Visible then
-                v223 = u9.Text
-            else
-                v223 = false
-            end
-            tbl_43.copyHint = v223
-            tbl_43.copyLabel = u8.Label.Text
-            tbl_43.readOnly = u17.Visible
-            tbl_43.size = string.format("%dx%d", u2.Holder.Size.X.Offset, u2.Holder.Size.Y.Offset)
-            tbl_43.team = u70 or false
-            tbl_43.team1 = tbl_upv_26[1]
-            tbl_43.team2 = tbl_upv_26[2]
-            tbl_43.random = tbl_upv_26[3]
-            if joinSeat(1) ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.join1 = v223
-            if joinSeat(2) ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.join2 = v223
-            local v224 = not (card.btn.Visible) or not (card.join) or card
-            if v224 ~= nil then
-                v223 = true
-            else
-                v223 = false
-            end
-            tbl_43.joinRandom = v223
-            tbl_43.preview = u15.Text
-            v223 = tbl_upv_35 ~= nil and tbl_upv_35.layer.Visible
-            tbl_43.move = tbl_upv_35 ~= nil and tbl_upv_35.layer.Visible
-            local v223 = tbl_upv_35 and {tbl_upv_35.picks[1].Enabled, tbl_upv_35.picks[2].Enabled, tbl_upv_35.picks[3].Enabled} or false
-            tbl_43.movePicks = tbl_upv_35 and {tbl_upv_35.picks[1].Enabled, tbl_upv_35.picks[2].Enabled, tbl_upv_35.picks[3].Enabled} or false
-            local v225 = 0
-            local v223 = v225
-            for _, value_27 in tbl_upv_20 do
-                v223 = ((value_27.more.Visible) and (v223 + 1)) or v223
-            end
-            tbl_43.moreShown = v223
-            return tbl_43
+
+            v634.moreShown = moreShown
+
+            return v634
         end
     end
 end
-return tbl_1
+
+return v7

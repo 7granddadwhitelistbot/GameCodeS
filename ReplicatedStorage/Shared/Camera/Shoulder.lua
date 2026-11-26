@@ -1,186 +1,205 @@
-local Occlusion_upv_1 = require(script.Parent:WaitForChild("Occlusion"))
-local tbl_upv_1 = {}
-local u1 = 1
-local u2 = 1
-local u3 = nil
-local u4 = 0
-local u5 = 22
-local u6 = 2.9
-local function swapTo(a1, a2)
+local Occlusion = require(script.Parent:WaitForChild("Occlusion"))
+local v2 = {}
+local v3 = 1
+local v4 = 1
+local v5 = nil
+local v6 = 0
+local v7 = 22
+local v8 = 2.9
+
+local function swapTo(a10, a11)
     --[[
       name: swapTo
       line: 33
       upvalues:
-        u2 (ref,  index: 1)
-        u3 (ref,  index: 2)
-        Occlusion_upv_1 (copy, index: 3)
-        u4 (ref,  index: 4)
-        u5 (ref,  index: 5)
-        u6 (ref,  index: 6)
+        v4 (ref,  index: 1)
+        v5 (ref,  index: 2)
+        Occlusion (copy, index: 3)
+        v6 (ref,  index: 4)
+        v7 (ref,  index: 5)
+        v8 (ref,  index: 6)
     ]]
-    if a1 == u2 then
+    if a10 == v4 then
         return
     end
-    u2 = a1
-    local v1 = u3
-    local v2 = Occlusion_upv_1.Shown()
-    if v1 and math.abs(v2) < math.abs(v1) - 0.01 and v2 * v1 >= 0 then
-        u3 = v2
-        u4 = 0
+
+    v4 = a10
+    local v12 = v5
+    local v13 = Occlusion.Shown()
+
+    if v12 and math.abs(v13) < math.abs(v12) - 0.01 and 0 <= v13 * v12 then
+        v5 = v13
+        v6 = 0
     end
-    if a2 then
-        u5 = 22
-        if u3 then
-            u4 = ((u6 * u2) - u3) * 11
+
+    if a11 then
+        v7 = 22
+
+        if v12 then
+            v6 = (v8 * v4 - v12) * 11
         end
     else
-        u5 = 9
+        v7 = 9
     end
 end
-function tbl_upv_1.Step(a1, a2)
+
+function v2.Step(a14: number, a15)
     --[[
       name: Step
       line: 55
       upvalues:
-        u6 (ref, index: 1)
-        u2 (ref, index: 2)
-        u3 (ref, index: 3)
-        u4 (ref, index: 4)
-        u5 (ref, index: 5)
+        v8 (ref, index: 1)
+        v4 (ref, index: 2)
+        v5 (ref, index: 3)
+        v6 (ref, index: 4)
+        v7 (ref, index: 5)
     ]]
-    u6 = a2
-    local v3 = a2 * u2
-    local v4 = u3
-    if v4 ~= nil and v4 == v4 and u4 == u4 and a1 == a1 then
-        local v5 = v4 - v3
-        local v6 = math.exp(-u5 * math.max(a1, 0))
-        local v7 = (u4 + (u5 * v5)) * a1
-        local v8 = v3 + (v5 + v7) * v6
-        u4 = (u4 - (u5 * v7)) * v6
-        u3 = v8
-        return v8
+    v8 = a15
+    local v16 = a15 * v4
+    local v17 = v5
+
+    if v17 == nil or v17 ~= v17 or v6 ~= v6 or a14 ~= a14 then
+        v5 = v16
+        v6 = 0
+
+        return v16
     end
-    u3 = v3
-    u4 = 0
-    return v3
+
+    local v18 = v17 - v16
+    local v19 = math.exp(-v7 * math.max(a14, 0))
+    local v20 = (v6 + (v7 * v18)) * a14
+    local v21 = v16 + (v18 + v20) * v19
+    v6 = (v6 - (v7 * v20)) * v19
+    v5 = v21
+
+    return v21
 end
-function tbl_upv_1.Value()
+
+function v2.Value()
     --[[
       name: Value
       line: 73
       upvalues:
-        u3 (ref, index: 1)
-        u6 (ref, index: 2)
-        u2 (ref, index: 3)
+        v5 (ref, index: 1)
+        v8 (ref, index: 2)
+        v4 (ref, index: 3)
     ]]
-    local v9 = u3 or (u6 * u2)
-    return v9
+    return v5 or v8 * v4
 end
-function tbl_upv_1.Toggle()
+
+function v2.Toggle()
     --[[
       name: Toggle
       line: 78
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        u2 (ref,  index: 2)
+        v2 (copy, index: 1)
+        v4 (ref,  index: 2)
     ]]
-    tbl_upv_1.Set(-u2)
+    v2.Set(-v4)
 end
-function tbl_upv_1.Set(a1)
+
+function v2.Set(a22)
     --[[
       name: Set
       line: 83
       upvalues:
-        u1 (ref,  index: 1)
-        u2 (ref,  index: 2)
-        u3 (ref,  index: 3)
-        Occlusion_upv_1 (copy, index: 4)
-        u4 (ref,  index: 5)
-        u5 (ref,  index: 6)
-        u6 (ref,  index: 7)
+        v3 (ref,  index: 1)
+        v4 (ref,  index: 2)
+        v5 (ref,  index: 3)
+        Occlusion (copy, index: 4)
+        v6 (ref,  index: 5)
+        v7 (ref,  index: 6)
+        v8 (ref,  index: 7)
     ]]
-    u1 = ((a1 < 0) and -1) or 1
-    local v10 = u1
-    local v11 = nil
-    if v10 ~= u2 then
-        u2 = v10
-        v11 = u3
-        local v12 = Occlusion_upv_1.Shown()
-        if v11 and math.abs(v12) < math.abs(v11) - 0.01 and v12 * v11 >= 0 then
-            u3 = v12
-            u4 = 0
+    v3 = not (a22 < 0) and 1 or -1
+    local v23 = v3
+
+    if v23 ~= v4 then
+        v4 = v23
+        local v24 = v5
+        local v25 = Occlusion.Shown()
+
+        if v24 and math.abs(v25) < math.abs(v24) - 0.01 and 0 <= v25 * v24 then
+            v5 = v25
+            v6 = 0
         end
-        u5 = 22
-        if u3 then
-            u4 = ((u6 * u2) - u3) * 11
+
+        v7 = 22
+
+        if v24 then
+            v6 = (v8 * v4 - v24) * 11
         end
     end
-    Occlusion_upv_1.ManualSwap()
+
+    Occlusion.ManualSwap()
 end
-function tbl_upv_1.Update(a1, a2, a3, a4)
+
+function v2.Update(a26, a27, a28, a29)
     --[[
       name: Update
       line: 90
       upvalues:
-        Occlusion_upv_1 (copy, index: 1)
-        u1 (ref,  index: 2)
-        u2 (ref,  index: 3)
-        u3 (ref,  index: 4)
-        u4 (ref,  index: 5)
-        u5 (ref,  index: 6)
+        Occlusion (copy, index: 1)
+        v3 (ref,  index: 2)
+        v4 (ref,  index: 3)
+        v5 (ref,  index: 4)
+        v6 (ref,  index: 5)
+        v7 (ref,  index: 6)
     ]]
-    local v13 = Occlusion_upv_1.Side(a1, a2, a3, u1, a4)
-    if v13 == u2 then
+    local v30 = Occlusion.Side(a26, a27, a28, v3, a29)
+
+    if v30 == v4 then
         return
     end
-    u2 = v13
-    local v14 = u3
-    local v15 = Occlusion_upv_1.Shown()
-    if v14 and math.abs(v15) < math.abs(v14) - 0.01 and v15 * v14 >= 0 then
-        u3 = v15
-        u4 = 0
+
+    v4 = v30
+    local v31 = v5
+    local v32 = Occlusion.Shown()
+
+    if v31 and math.abs(v32) < math.abs(v31) - 0.01 and 0 <= v32 * v31 then
+        v5 = v32
+        v6 = 0
     end
-    u5 = 9
+
+    v7 = 9
 end
-function tbl_upv_1.Get()
+
+function v2.Get()
     --[[
       name: Get
       line: 95
       upvalues:
-        u2 (ref, index: 1)
+        v4 (ref, index: 1)
     ]]
-    return u2
+    return v4
 end
-function tbl_upv_1.Preferred()
+
+function v2.Preferred()
     --[[
       name: Preferred
       line: 99
       upvalues:
-        u1 (ref, index: 1)
+        v3 (ref, index: 1)
     ]]
-    return u1
+    return v3
 end
-function tbl_upv_1.Reset(a1)
+
+function v2.Reset(a33)
     --[[
       name: Reset
       line: 104
       upvalues:
-        u1 (ref, index: 1)
-        u2 (ref, index: 2)
-        u3 (ref, index: 3)
-        u4 (ref, index: 4)
-        u5 (ref, index: 5)
+        v3 (ref, index: 1)
+        v4 (ref, index: 2)
+        v5 (ref, index: 3)
+        v6 (ref, index: 4)
+        v7 (ref, index: 5)
     ]]
-    local v16
-    if (a1) and (a1 < 0) then
-        v16 = -1
-    else
-        v16 = 1
-    end
-    u1 = v16
-    u2 = u1
-    u3 = nil
-    u4 = 0
-    u5 = 22
+    v3 = a33 and a33 < 0 and -1 or 1
+    v4 = v3
+    v5 = nil
+    v6 = 0
+    v7 = 22
 end
-return tbl_upv_1
+
+return v2

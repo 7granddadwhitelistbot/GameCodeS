@@ -1,477 +1,499 @@
-local ReplicatedStorage_1 = game:GetService("ReplicatedStorage")
-local Workspace_upv_1 = game:GetService("Workspace")
-local Shared_1 = ReplicatedStorage_1:WaitForChild("Shared")
-local Combat_upv_1 = require(Shared_1:WaitForChild("Combat"))
-local tbl_upv_1 = {}
-local Parent_upv_1 = script.Parent.Parent
-local u1 = 5
-local u2 = 7
-local u3 = 21
-local u4 = 8
-local u5 = 0.03
-local u6 = 0.002617993877991494
-local Camera_1 = Shared_1:FindFirstChild("Camera")
-local v1 = Camera_1 and (Camera_1:FindFirstChild("FirstPerson"))
-if v1 then
-    local v2 = v1:IsA("ModuleScript")
-    if v2 then
-        local success_1, v3 = pcall(require, v1)
-        if success_1 and type(v3) == "table" then
-            u1 = tonumber(v3.EYE_EASE) or u1
-            u2 = tonumber(v3.STRIDE) or u2
-            u3 = tonumber(v3.BOB_SPEED) or u3
-            u4 = tonumber(v3.BOB_EASE) or u4
-            u5 = tonumber(v3.CAM_BOB_Y) or u5
-            u6 = tonumber(v3.CAM_BOB_ROLL) or u6
-        end
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local workspace = game:GetService("Workspace")
+local shared = replicatedStorage:WaitForChild("Shared")
+local Combat = require(shared:WaitForChild("Combat"))
+local v5 = {}
+local parent = script.Parent.Parent
+local number = 5
+local number2 = 7
+local number3 = 21
+local number4 = 8
+local number5 = 0.03
+local number6 = 0.002617993877991494
+local camera = shared:FindFirstChild("Camera")
+local firstPerson = camera and camera:FindFirstChild("FirstPerson")
+
+if firstPerson and firstPerson:IsA("ModuleScript") then
+    local success, result = pcall(require, firstPerson)
+
+    if success and type(result) == "table" then
+        number = tonumber(result.EYE_EASE) or number
+        number2 = tonumber(result.STRIDE) or number2
+        number3 = tonumber(result.BOB_SPEED) or number3
+        number4 = tonumber(result.BOB_EASE) or number4
+        number5 = tonumber(result.CAM_BOB_Y) or number5
+        number6 = tonumber(result.CAM_BOB_ROLL) or number6
     end
 end
-local u7 = nil
+
+local result = nil
+
 local function viewModel()
     --[[
       name: viewModel
       line: 53
       upvalues:
-        u7 (ref,  index: 1)
-        Parent_upv_1 (copy, index: 2)
+        result (ref,  index: 1)
+        parent (copy, index: 2)
     ]]
-    if u7 == nil then
-        u7 = false
-        local Character_1 = Parent_upv_1:FindFirstChild("Character")
-        local v4 = Character_1 and (Character_1:FindFirstChild("ViewModel"))
-        if v4 and v4:IsA("ModuleScript") then
-            local success_2, v5 = pcall(require, v4)
-            if success_2 and type(v5) == "table" and type(v5.SetExternal) == "function" then
-                u7 = v5
+    if result == nil then
+        result = false
+        local instance = parent:FindFirstChild("Character")
+        instance = instance and instance:FindFirstChild("ViewModel")
+
+        if instance and instance:IsA("ModuleScript") then
+            local success, result2 = pcall(require, instance)
+
+            if success and type(result2) == "table" and type(result2.SetExternal) == "function" then
+                result = result2
             end
         end
     end
-    return u7 or nil
+
+    return result or nil
 end
-local tbl_upv_2 = {active = false, phase = 0, lastBlock = false, amount = 0, speed = 0}
-local tbl_upv_3 = {valid = false, first = false, bobY = 0, bobRoll = 0, yaw = 0, aimCam = false, fov = 70, pitch = 0}
-local tbl_upv_4 = {visible = false, bobAmount = 0, rootY = 0, grounded = true, dt = 0, sliding = false, aiming = false, bobPhase = 0}
-function tbl_upv_1.Begin(a1)
+
+local v22 = {active = false, params = nil, eyeOff = nil, phase = 0, amount = 0, speed = 0, lastPos = nil, hiddenModel = nil, hiddenItem = nil, lastBlock = false}
+local v23 = {valid = false, yaw = 0, pitch = 0, fov = 70, first = false, aimCam = false, eye = nil, bobY = 0, bobRoll = 0}
+local v24 = {dt = 0, visible = false, id = nil, kind = nil, charges = nil, grounded = true, rootY = 0, sliding = false, aiming = false, bobPhase = 0, bobAmount = 0, wall = nil}
+
+function v5.Begin(params)
     --[[
       name: Begin
       line: 122
       upvalues:
-        tbl_upv_1 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
+        v5 (copy, index: 1)
+        v22 (copy, index: 2)
         viewModel (copy, index: 3)
     ]]
-    tbl_upv_1.End()
-    tbl_upv_2.active = true
-    tbl_upv_2.params = a1
-    tbl_upv_2.eyeOff = nil
-    tbl_upv_2.phase = 0
-    tbl_upv_2.amount = 0
-    tbl_upv_2.speed = 0
-    tbl_upv_2.lastPos = nil
-    tbl_upv_2.lastBlock = false
-    local v6 = viewModel()
-    if not v6 then
-        return
+    v5.End()
+    v22.active = true
+    v22.params = params
+    v22.eyeOff = nil
+    v22.phase = 0
+    v22.amount = 0
+    v22.speed = 0
+    v22.lastPos = nil
+    v22.lastBlock = false
+
+    if const v26 = viewModel() then
+        pcall(v26.SetExternal, true)
     end
-    pcall(v6.SetExternal, true)
 end
-local function setHidden(a1, a2)
+
+local function setHidden(a28, a29: boolean)
     --[[
       name: setHidden
       line: 135
     ]]
-    if not a1 then
+    if not a28 then
         return
     end
-    for _, value_1 in a1:GetDescendants() do
-        if value_1:IsA("BasePart") or value_1:IsA("Decal") then
-            value_1.LocalTransparencyModifier = (a2 and 1) or 0
+
+    for _, descendant in a28:GetDescendants() do
+        if descendant:IsA("BasePart") or descendant:IsA("Decal") then
+            descendant.LocalTransparencyModifier = a29 and 1 or 0
         end
     end
 end
-function tbl_upv_1.End()
+
+function v5.End()
     --[[
       name: End
       line: 146
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v22 (copy, index: 1)
         setHidden (copy, index: 2)
         viewModel (copy, index: 3)
     ]]
-    if not tbl_upv_2.active then
+    if not v22.active then
         return
     end
-    tbl_upv_2.active = false
-    setHidden(tbl_upv_2.hiddenModel, false)
-    tbl_upv_2.hiddenModel = nil
-    local v7 = viewModel()
-    if not v7 then
-        return
+
+    v22.active = false
+    setHidden(v22.hiddenModel, false)
+    v22.hiddenModel = nil
+
+    if const v32 = viewModel() then
+        pcall(v32.SetExternal, false)
     end
-    pcall(v7.SetExternal, false)
 end
-local function event(a1, a2)
+
+local function event(a34, a35)
     --[[
       name: event
       line: 159
       upvalues:
         viewModel (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
+        v22 (copy, index: 2)
     ]]
-    local v8 = viewModel()
-    if not v8 or not tbl_upv_2.active then
-        return
+    local v36 = viewModel()
+
+    if v36 and v22.active then
+        pcall(v36.ExternalEvent, a34, a35)
     end
-    pcall(v8.ExternalEvent, a1, a2)
 end
-function tbl_upv_1.OnFighterEvent(a1, a2, a3)
+
+function v5.OnFighterEvent(a37, a38, charge)
     --[[
       name: OnFighterEvent
       line: 168
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        Combat_upv_1 (copy, index: 2)
+        v22 (copy, index: 1)
+        Combat (copy, index: 2)
         viewModel (copy, index: 3)
     ]]
-    if not tbl_upv_2.active then
+    local weaponId
+    local v41
+
+    if not v22.active then
         return
     end
-    local v9
-    if type(a2.weaponId) ~= "string" then
-        v9 = nil
+
+    if type(a38.weaponId) ~= "string" then
+        weaponId = nil
     else
-        v9 = a2.weaponId
+        weaponId = a38.weaponId
     end
-    local v10 = Combat_upv_1.Kind(v9)
-    local success_3, v11 = pcall(Combat_upv_1.Tuning, v9)
-    if (success_3) and type(v11) == "table" then
-        v9 = v11
+
+    local v42 = Combat.Kind(weaponId)
+    local success, result = pcall(Combat.Tuning, weaponId)
+
+    if not success or type(result) ~= "table" then
+        v41 = {}
     else
-        v9 = {}
+        v41 = result
     end
-    if a1 == "Swing" then
-        local v12 = nil
-        if a2.heavy ~= true then
-            local v13, v14, v15 = nil, nil, nil
-            if a2.lunge ~= true then
-                local v16 = tonumber(a2.step) or 1
-                local tbl_6 = {finisher = 0}
-                tbl_6.step = v16
-                tbl_6.finisher = v16 >= 3
-                v13 = viewModel()
-                if v13 and tbl_upv_2.active then
-                    pcall(v13.ExternalEvent, "Swing", tbl_6)
+
+    if a37 == "Swing" then
+        local time
+        local v46, v47 = false, false
+
+        if a38.heavy ~= true then
+            if a38.lunge ~= true then
+                local number = tonumber(a38.step) or 1
+                local v49 = {step = number, finisher = 3 <= number}
+                local v50 = viewModel()
+
+                if v50 and v22.active then
+                    pcall(v50.ExternalEvent, "Swing", v49)
+                    return
                 end
             else
-                v14 = v9.lunge
-                local tbl_7
-                if type(v14) == "table" and type(v14.distance) == "number" and type(v14.speed) == "number" and v14.speed > 0 then
-                    tbl_7 = v14.distance / v14.speed
+                local lunge = v41.lunge
+
+                if type(lunge) ~= "table" then
+                    v46 = true
+                elseif type(lunge.distance) ~= "number" then
+                    v46 = true
+                elseif type(lunge.speed) ~= "number" then
+                    v46 = true
+                elseif not (0 < lunge.speed) then
+                    v46 = true
                 else
-                    tbl_7 = 0.25
-                end
-                local tbl_8 = {}
-                tbl_8.time = tbl_7
-                v15 = viewModel()
-                if v15 and tbl_upv_2.active then
-                    pcall(v15.ExternalEvent, "Lunge", tbl_8)
+                    time = lunge.distance / lunge.speed
+                    v47 = true
                 end
             end
         else
-            local tbl_7 = {}
-            v12 = viewModel()
-            if v12 and tbl_upv_2.active then
-                pcall(v12.ExternalEvent, "Heavy", tbl_7)
+            local v52 = {}
+            local v53 = viewModel()
+
+            if v53 and v22.active then
+                pcall(v53.ExternalEvent, "Heavy", v52)
+                return
             end
         end
-    elseif a1 == "Charge" then
-        local str_1 = tostring(a2.kind)
-        local v17 = a2.on == true
-        local v18 = nil
-        if str_1 ~= "Draw" then
-            local v19, v20 = nil, nil
-            if str_1 == "Throw" then
-                local tbl_9 = {}
-                tbl_9.on = v17
-                tbl_9.time = v9.drawTime or 0.5
-                v20 = viewModel()
-                if v20 and tbl_upv_2.active then
-                    pcall(v20.ExternalEvent, "Windup", tbl_9)
+
+        if v46 then
+            time = 0.25
+            v47 = true
+        end
+
+        if v47 then
+            local v54 = {time = time}
+            local v55 = viewModel()
+
+            if v55 and v22.active then
+                pcall(v55.ExternalEvent, "Lunge", v54)
+            end
+        end
+    elseif a37 == "Charge" then
+        local text = tostring(a38.kind)
+        local on = a38.on == true
+
+        if text == "Draw" then
+            local v58 = {on = on, time = v41.drawTime or 1}
+            local v59 = viewModel()
+
+            if v59 and v22.active then
+                pcall(v59.ExternalEvent, "Draw", v58)
+            end
+        elseif text == "Throw" then
+            local v60 = {on = on, time = v41.drawTime or 0.5}
+            local v61 = viewModel()
+
+            if v61 and v22.active then
+                pcall(v61.ExternalEvent, "Windup", v60)
+            end
+        else
+            local charge2
+
+            if text ~= "Heavy" and text ~= "Lunge" then
+                return
+            end
+
+            local v63 = if text == "Heavy" then v41.heavy else v41.lunge
+            local v64 = {kind = text, on = on}
+
+            if type(v63) ~= "table" then
+                charge2 = 0.6
+            else
+                charge2 = v63.charge or 0.6
+            end
+
+            v64.time = charge2
+            local v65 = viewModel()
+
+            if v65 and v22.active then
+                pcall(v65.ExternalEvent, "Charge", v64)
+            end
+        end
+    elseif a37 == "Projectile" then
+        if v42 ~= "Bow" then
+            if Combat.UsesAmmo(v42) then
+                local v66 = {aimed = false, kick = v41.kick or 2}
+                local v67 = viewModel()
+
+                if v67 and v22.active then
+                    pcall(v67.ExternalEvent, "Fire", v66)
                 end
-            elseif str_1 == "Heavy" or str_1 == "Lunge" then
-                local v13
-                if str_1 ~= "Heavy" then
-                    v13 = v9.lunge
-                else
-                    v13 = v9.heavy
-                end
-                local tbl_10 = {time = 0}
-                tbl_10.kind = str_1
-                tbl_10.on = v17
-                if type(v13) ~= "table" then
-                    v19 = 0.6
-                else
-                    v19 = v13.charge or 0.6
-                end
-                tbl_10.time = v19
-                v19 = viewModel()
-                if v19 and tbl_upv_2.active then
-                    pcall(v19.ExternalEvent, "Charge", tbl_10)
+            else
+                local v68 = {charge = charge}
+                local v69 = viewModel()
+
+                if v69 and v22.active then
+                    pcall(v69.ExternalEvent, "Throw", v68)
                 end
             end
         else
-            local tbl_11 = {}
-            tbl_11.on = v17
-            tbl_11.time = v9.drawTime or 1
-            v18 = viewModel()
-            if v18 and tbl_upv_2.active then
-                pcall(v18.ExternalEvent, "Draw", tbl_11)
+            local v70 = {charge = charge}
+            local v71 = viewModel()
+
+            if v71 and v22.active then
+                pcall(v71.ExternalEvent, "Release", v70)
             end
         end
-    elseif a1 ~= "Projectile" then
-        local v21 = nil
-        if a1 == "Reload" then
-            local tbl_12 = {time = 0}
-            tbl_12.time = tonumber(a2.duration) or v9.reloadTime or 1.2
-            v21 = viewModel()
-            if v21 and tbl_upv_2.active then
-                pcall(v21.ExternalEvent, "Reload", tbl_12)
-            end
-        elseif a1 == "Use" then
-            local v23, v24 = nil, nil
-            if typeof(a2.position) ~= "Vector3" then
-                local tbl_13 = {on = true, time = 0}
-                tbl_13.time = tonumber(a2.duration) or v9.useTime or 1
-                v23 = viewModel()
-                if v23 and tbl_upv_2.active then
-                    pcall(v23.ExternalEvent, "Use", tbl_13)
-                end
-            else
-                local tbl_14 = {}
-                v24 = viewModel()
-                if v24 and tbl_upv_2.active then
-                    pcall(v24.ExternalEvent, "Place", tbl_14)
-                end
-            end
-        elseif a1 == "Heal" then
-            local tbl_15 = {on = false, done = true}
-            local v26 = viewModel()
-            if v26 and tbl_upv_2.active then
-                pcall(v26.ExternalEvent, "Use", tbl_15)
-            end
+    elseif a37 == "Reload" then
+        local v72 = {}
+        local v73 = tonumber(a38.duration) or v41.reloadTime or 1.2
+        v72.time = v73
+        local v74 = viewModel()
+
+        if v74 and v22.active then
+            pcall(v74.ExternalEvent, "Reload", v72)
         end
-    else
-        local v27 = nil
-        if v10 ~= "Bow" then
-            local v28, v29 = nil, nil
-            if Combat_upv_1.UsesAmmo(v10) then
-                local tbl_16 = {aimed = false}
-                tbl_16.kick = v9.kick or 2
-                v28 = viewModel()
-                if v28 and tbl_upv_2.active then
-                    pcall(v28.ExternalEvent, "Fire", tbl_16)
-                end
-            else
-                local tbl_17 = {}
-                tbl_17.charge = a3
-                v29 = viewModel()
-                if v29 and tbl_upv_2.active then
-                    pcall(v29.ExternalEvent, "Throw", tbl_17)
-                end
+    elseif a37 == "Use" then
+        if typeof(a38.position) ~= "Vector3" then
+            local v75 = {on = true}
+            local v76 = tonumber(a38.duration) or v41.useTime or 1
+            v75.time = v76
+            local v77 = viewModel()
+
+            if v77 and v22.active then
+                pcall(v77.ExternalEvent, "Use", v75)
             end
         else
-            local tbl_18 = {}
-            tbl_18.charge = a3
-            v27 = viewModel()
-            if v27 and tbl_upv_2.active then
-                pcall(v27.ExternalEvent, "Release", tbl_18)
+            local v78 = {}
+            local v79 = viewModel()
+
+            if v79 and v22.active then
+                pcall(v79.ExternalEvent, "Place", v78)
             end
+        end
+    elseif a37 == "Heal" then
+        local v80 = {on = false, done = true}
+        local v81 = viewModel()
+
+        if v81 and v22.active then
+            pcall(v81.ExternalEvent, "Use", v80)
         end
     end
 end
-function tbl_upv_1.Hurt(a1, a2)
+
+function v5.Hurt(amount, blocked)
     --[[
       name: Hurt
       line: 219
       upvalues:
         viewModel (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
+        v22 (copy, index: 2)
     ]]
-    local tbl_19 = {}
-    tbl_19.amount = a1
-    tbl_19.blocked = a2
-    local v30 = viewModel()
-    if not v30 or not tbl_upv_2.active then
-        return
+    local v84 = {amount = amount, blocked = blocked}
+    local v85 = viewModel()
+
+    if v85 and v22.active then
+        pcall(v85.ExternalEvent, "Hurt", v84)
     end
-    pcall(v30.ExternalEvent, "Hurt", tbl_19)
 end
-function tbl_upv_1.Frame(a1, a2, a3, a4)
+
+function v5.Frame(a86, a87, a88, a89)
     --[[
       name: Frame
       line: 225
       upvalues:
-        tbl_upv_3 (copy, index: 1)
-        tbl_upv_2 (copy, index: 2)
-        u3 (ref,  index: 3)
-        u4 (ref,  index: 4)
-        u2 (ref,  index: 5)
-        u1 (ref,  index: 6)
-        u5 (ref,  index: 7)
-        u6 (ref,  index: 8)
+        v23 (copy, index: 1)
+        v22 (copy, index: 2)
+        number3 (ref,  index: 3)
+        number4 (ref,  index: 4)
+        number2 (ref,  index: 5)
+        number (ref,  index: 6)
+        number5 (ref,  index: 7)
+        number6 (ref,  index: 8)
     ]]
-    local v31 = tbl_upv_2.active
-    local v32 = nil
-    if v31 then
-        v32 = a2.present
-        local v33 = nil
-        if v32 then
-            v33 = a2.view
-            if v33 then
-                v31 = a4
-            else
-                v31 = v33
-            end
-        else
-            v31 = v32
+    local clampedValue
+    v23.valid = v22.active and a87.present and a87.view and a89
+    v23.yaw, v23.pitch, v23.fov = a87.viewYaw, a87.viewPitch, a87.fov
+    v23.first = a87.first == true
+    v23.aimCam = a87.aimCam == true
+    v23.eye = nil
+    v23.bobY = 0
+    v23.bobRoll = 0
+
+    if not a87.present then
+        v22.lastPos = nil
+        return v23
+    end
+
+    local position = a87.cf.Position
+    local v92 = bit32.btest(a87.flags, 2)
+    local v93 = bit32.btest(a87.flags, 4)
+    local v94 = 0
+    local lastPos = v22.lastPos
+
+    if lastPos and 0 < a86 then
+        local v96 = position - lastPos
+        v94 = Vector3.new(v96.X, 0, v96.Z).Magnitude / a86
+
+        if 80 < v94 then
+            v94 = 0
         end
     end
-    tbl_upv_3.valid = v31
-    tbl_upv_3.yaw = a2.viewYaw
-    tbl_upv_3.pitch = a2.viewPitch
-    tbl_upv_3.fov = a2.fov
-    tbl_upv_3.first = a2.first == true
-    tbl_upv_3.aimCam = a2.aimCam == true
-    tbl_upv_3.eye = nil
-    tbl_upv_3.bobY = 0
-    tbl_upv_3.bobRoll = 0
-    if a2.present then
-        local Position_1 = a2.cf.Position
-        v31 = bit32.btest(a2.flags, 2)
-        local v34 = bit32.btest(a2.flags, 4)
-        local v35 = 0
-        local v36 = tbl_upv_2.lastPos
-        if v36 and a1 > 0 then
-            local _ = Position_1 - v36
-            v35 = Vector3.new((Position_1 - v36).X, 0, (Position_1 - v36).Z).Magnitude / a1
-            v35 = ((v35 > 80) and 0) or v35
-        end
-        tbl_upv_2.lastPos = Position_1
-        tbl_upv_2.speed = tbl_upv_2.speed + ((v35 - tbl_upv_2.speed) * (1 - math.exp(a1 * -12)))
-        if not (v31) or v34 then
-            v36 = 0
-        else
-            v36 = math.clamp((tbl_upv_2.speed - 1) / (u3 - 1), 0, 1.25)
-        end
-        tbl_upv_2.amount = tbl_upv_2.amount + ((v36 - tbl_upv_2.amount) * (1 - math.exp(-u4 * a1)))
-        if v31 then
-            tbl_upv_2.phase = (tbl_upv_2.phase + ((((v35 * a1) / u2) * 2) * math.pi)) % 12.566370614359172
-        end
-        if tbl_upv_3.valid and tbl_upv_3.first then
-            v36 = a3 and (a3:FindFirstChild("Head"))
-            local v37
-            if (v36) and (v36:IsA("BasePart")) then
-                v37 = v36.Position.Y - Position_1.Y
-            else
-                v37 = 1.5
-            end
-            v35 = v37 + 0.25
-            v36 = tbl_upv_2.eyeOff
-            if v36 ~= nil then
-                v36 = v36 + (v35 - v36) * (1 - math.exp(-u1 * a1))
-            else
-                v36 = v35
-            end
-            tbl_upv_2.eyeOff = v36
-            v35 = Vector3.new(-math.sin(tbl_upv_3.yaw), 0, -math.cos(tbl_upv_3.yaw))
-            tbl_upv_3.eye = (Position_1 + Vector3.new(0, v36, 0)) - (v35 * 0.3)
-            if a2.bobbing and tbl_upv_2.amount > 0 then
-                tbl_upv_3.bobY = (-math.cos(tbl_upv_2.phase * 2) * 0.5) * u5 * tbl_upv_2.amount
-                tbl_upv_3.bobRoll = math.sin(tbl_upv_2.phase) * u6 * tbl_upv_2.amount
-            end
-        else
-            tbl_upv_2.eyeOff = nil
-        end
+
+    v22.lastPos = position
+    v22.speed += ((v94 - v22.speed) * (1 - math.exp(a86 * -12)))
+
+    if not v92 or v93 then
+        clampedValue = 0
     else
-        tbl_upv_2.lastPos = nil
+        clampedValue = math.clamp((v22.speed - 1) / (number3 - 1), 0, 1.25)
     end
-    return tbl_upv_3
+
+    v22.amount += ((clampedValue - v22.amount) * (1 - math.exp(-number4 * a86)))
+
+    if v92 then
+        v22.phase = (v22.phase + (((v94 * a86 / number2) * 2) * math.pi)) % 12.566370614359172
+    end
+
+    if not v23.valid or not v23.first then
+        v22.eyeOff = nil
+    else
+        local head = a88 and a88:FindFirstChild("Head")
+        local v98 = if head and head:IsA("BasePart") then head.Position.Y - position.Y else 1.5
+        local v99 = v98 + 0.25
+        local eyeOff = v22.eyeOff
+        local y = if eyeOff == nil then v99 else eyeOff + (v99 - eyeOff) * (1 - math.exp(-number * a86))
+        v22.eyeOff = y
+        local vector3 = Vector3.new(-math.sin(v23.yaw), 0, -math.cos(v23.yaw))
+        v23.eye = position + Vector3.new(0, y, 0) - (vector3 * 0.3)
+
+        if a87.bobbing and 0 < v22.amount then
+            v23.bobY = (-math.cos(v22.phase * 2) * 0.5) * number5 * v22.amount
+            v23.bobRoll = math.sin(v22.phase) * number6 * v22.amount
+        end
+    end
+
+    return v23
 end
-function tbl_upv_1.AfterCamera(a1, a2, a3, a4, a5, a6, a7)
+
+function v5.AfterCamera(dt, a104, a105, a106, a107, a108, charges)
     --[[
       name: AfterCamera
       line: 278
       upvalues:
-        tbl_upv_2 (copy, index: 1)
+        v22 (copy, index: 1)
         setHidden (copy, index: 2)
         viewModel (copy, index: 3)
-        Workspace_upv_1 (copy, index: 4)
-        tbl_upv_4 (copy, index: 5)
-        Combat_upv_1 (copy, index: 6)
+        workspace (copy, index: 4)
+        v24 (copy, index: 5)
+        Combat (copy, index: 6)
     ]]
-    if not tbl_upv_2.active then
+    local v110
+
+    if not v22.active then
         return
     end
-    local v38
-    if a5 and (a4 and (a2.present)) then
-        v38 = a3
-    else
-        v38 = nil
-    end
-    if v38 ~= tbl_upv_2.hiddenModel or v38 and a6 ~= tbl_upv_2.hiddenItem then
-        if tbl_upv_2.hiddenModel ~= v38 then
-            setHidden(tbl_upv_2.hiddenModel, false)
+
+    local present = a107 and a106 and a104.present
+    local hiddenModel = if present then a105 else nil
+
+    if hiddenModel ~= v22.hiddenModel or hiddenModel and a108 ~= v22.hiddenItem then
+        if v22.hiddenModel ~= hiddenModel then
+            setHidden(v22.hiddenModel, false)
         end
-        setHidden(v38, true)
-        tbl_upv_2.hiddenModel = v38
-        tbl_upv_2.hiddenItem = a6
+
+        setHidden(hiddenModel, true)
+        v22.hiddenModel = hiddenModel
+        v22.hiddenItem = a108
     end
-    local v39 = bit32.btest(a2.flags, 8)
-    local v40 = nil
-    if v39 ~= tbl_upv_2.lastBlock then
-        tbl_upv_2.lastBlock = v39
-        local tbl_20 = {}
-        tbl_20.on = v39
-        v40 = viewModel()
-        if v40 and tbl_upv_2.active then
-            pcall(v40.ExternalEvent, "Block", tbl_20)
+
+    local v113 = bit32.btest(a104.flags, 8)
+
+    if v113 ~= v22.lastBlock then
+        v22.lastBlock = v113
+        local v114 = {on = v113}
+        local v115 = viewModel()
+
+        if v115 and v22.active then
+            pcall(v115.ExternalEvent, "Block", v114)
         end
     end
-    local v41 = viewModel()
-    if not v41 then
+
+    local v116 = viewModel()
+    if not v116 then
         return
     end
-    local CurrentCamera_1 = Workspace_upv_1.CurrentCamera
-    v40 = nil
-    if a5 and CurrentCamera_1 then
-        local v42 = nil
-        if tbl_upv_2.params then
-            v42 = Workspace_upv_1:Spherecast(CurrentCamera_1.CFrame.Position, 0.15, CurrentCamera_1.CFrame.LookVector * 1.8, tbl_upv_2.params)
-            if v42 then
-                v40 = v42.Distance
+
+    local camera = workspace.CurrentCamera
+    local v118 = nil
+
+    if present then
+        if camera then
+            if v22.params then
+                v110 = if const raycastResult = workspace:Spherecast(camera.CFrame.Position, 0.15, camera.CFrame.LookVector * 1.8, v22.params) then raycastResult.Distance else nil
             else
-                v40 = nil
+                v110 = v118
             end
+        else
+            v110 = v118
         end
-    end
-    tbl_upv_4.dt = a1
-    tbl_upv_4.visible = a5
-    tbl_upv_4.id = a6
-    local v43
-    if a6 then
-        v43 = Combat_upv_1.Kind(a6)
     else
-        v43 = nil
+        v110 = v118
     end
-    tbl_upv_4.kind = v43
-    tbl_upv_4.charges = a7
-    tbl_upv_4.grounded = bit32.btest(a2.flags, 2)
-    tbl_upv_4.rootY = a2.cf.Position.Y
-    tbl_upv_4.sliding = bit32.btest(a2.flags, 4)
-    tbl_upv_4.aiming = a2.aimCam == true
-    tbl_upv_4.bobPhase = tbl_upv_2.phase
-    tbl_upv_4.bobAmount = tbl_upv_2.amount
-    tbl_upv_4.wall = v40
-    pcall(v41.ExternalFrame, tbl_upv_4)
+
+    v24.dt = dt
+    v24.visible = present
+    v24.id = a108
+    v24.kind = if a108 then Combat.Kind(a108) else nil
+    v24.charges = charges
+    v24.grounded = bit32.btest(a104.flags, 2)
+    v24.rootY = a104.cf.Position.Y
+    v24.sliding = bit32.btest(a104.flags, 4)
+    v24.aiming = a104.aimCam == true
+    v24.bobPhase = v22.phase
+    v24.bobAmount = v22.amount
+    v24.wall = v110
+    pcall(v116.ExternalFrame, v24)
 end
-return tbl_upv_1
+
+return v5

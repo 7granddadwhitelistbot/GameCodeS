@@ -1,2993 +1,3426 @@
-local RunService_upv_1 = game:GetService("RunService")
-local TextChatService_upv_1 = game:GetService("TextChatService")
-local StarterGui_upv_1 = game:GetService("StarterGui")
-local GuiService_upv_1 = game:GetService("GuiService")
-local Unlocks_upv_1 = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Unlocks"))
-local RankArt_upv_1 = require(script.Parent.Parent.RankArt)
-local tbl_1 = {}
-local u1 = nil
+local runService = game:GetService("RunService")
+local textChatService = game:GetService("TextChatService")
+local starterGui = game:GetService("StarterGui")
+local guiService = game:GetService("GuiService")
+local Unlocks = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Unlocks"))
+local RankArt = require(script.Parent.Parent.RankArt)
+local v7 = {}
+local v8 = nil
+
 local function hideChat()
     --[[
       name: hideChat
       line: 41
       upvalues:
-        u1 (ref, index: 1)
+        v8 (ref,  index: 1)
+        textChatService (copy, index: 2)
+        starterGui (copy, index: 3)
     ]]
-    if u1 then
+    if v8 then
         return
     end
-    local tbl_2 = {}
-    pcall(function() end)
-    u1 = tbl_2
+
+    local v10 = {}
+
+    pcall(
+        function()
+            --[[
+              line: 46
+              upvalues:
+                textChatService (copy, index: 1)
+                v10 (copy, index: 2)
+                starterGui (copy, index: 3)
+            ]]
+            if textChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then
+                v10.core = starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
+                starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+            else
+                local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                if chatWindowConfiguration then
+                    v10.window = chatWindowConfiguration.Enabled
+                    chatWindowConfiguration.Enabled = false
+                end
+
+                if chatInputBarConfiguration then
+                    v10.bar = chatInputBarConfiguration.Enabled
+                    chatInputBarConfiguration.Enabled = false
+                end
+            end
+        end
+    )
+
+    v8 = v10
 end
+
 local function restoreChat()
     --[[
       name: restoreChat
       line: 65
       upvalues:
-        u1 (ref, index: 1)
+        v8 (ref,  index: 1)
+        textChatService (copy, index: 2)
+        starterGui (copy, index: 3)
     ]]
-    local v1 = u1
-    if not v1 then
+    local v14 = v8
+    if not v14 then
         return
     end
-    u1 = nil
-    pcall(function() end)
+
+    v8 = nil
+
+    pcall(
+        function()
+            --[[
+              line: 71
+              upvalues:
+                textChatService (copy, index: 1)
+                v14 (copy, index: 2)
+                starterGui (copy, index: 3)
+            ]]
+            local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+            local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+            if chatWindowConfiguration and v14.window ~= nil then
+                chatWindowConfiguration.Enabled = v14.window
+            end
+
+            if chatInputBarConfiguration and v14.bar ~= nil then
+                chatInputBarConfiguration.Enabled = v14.bar
+            end
+
+            if v14.core ~= nil then
+                starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, v14.core)
+            end
+        end
+    )
 end
-local function hex(a1)
+
+local function hex(a18)
     --[[
       name: hex
       line: 86
     ]]
-    return string.format("#%02X%02X%02X", math.floor((a1.R * 255) + 0.5), math.floor((a1.G * 255) + 0.5), math.floor((a1.B * 255) + 0.5))
+    return string.format("#%02X%02X%02X", math.floor((a18.R * 255) + 0.5), math.floor((a18.G * 255) + 0.5), (math.floor((a18.B * 255) + 0.5)))
 end
-function tbl_1.Init(a1)
+
+function v7.Init(a19)
     --[[
       name: Init
       line: 90
       upvalues:
-        Unlocks_upv_1 (copy, index: 1)
-        GuiService_upv_1 (copy, index: 2)
-        RankArt_upv_1 (copy, index: 3)
-        RunService_upv_1 (copy, index: 4)
-        u1 (ref,  index: 5)
-        TextChatService_upv_1 (copy, index: 6)
-        StarterGui_upv_1 (copy, index: 7)
+        Unlocks (copy, index: 1)
+        guiService (copy, index: 2)
+        RankArt (copy, index: 3)
+        runService (copy, index: 4)
+        v8 (ref,  index: 5)
+        textChatService (copy, index: 6)
+        starterGui (copy, index: 7)
         restoreChat (copy, index: 8)
     ]]
-    local UI_upv_1 = a1.UI
-    local Theme_upv_1 = a1.Theme
-    local State_upv_1 = a1.State
-    local WeaponInfo_upv_1 = a1.WeaponInfo
-    local WeaponIcon_upv_1 = a1.WeaponIcon
-    local Economy_upv_1 = a1.Economy
-    local Colors_upv_1 = Theme_upv_1.Colors
-    local Fonts_upv_1 = Theme_upv_1.Fonts
-    local fromOffset_upv_1 = UDim2.fromOffset
-    local MAX_LEVEL_upv_1 = Economy_upv_1.MAX_LEVEL
-    local Success_upv_1 = Colors_upv_1.Success
-    local Gold_upv_1 = Colors_upv_1.Gold
-    local TextMuted_1 = Colors_upv_1.TextMuted
-    local u2 = string.format("#%02X%02X%02X", math.floor((TextMuted_1.R * 255) + 0.5), math.floor((TextMuted_1.G * 255) + 0.5), math.floor((TextMuted_1.B * 255) + 0.5))
-    local u3 = Theme_upv_1.Lighten(Success_upv_1, 0.15)
-    local u4 = string.format("#%02X%02X%02X", math.floor((u3.R * 255) + 0.5), math.floor((u3.G * 255) + 0.5), math.floor((u3.B * 255) + 0.5))
-    u3 = string.format("#%02X%02X%02X", math.floor((Gold_upv_1.R * 255) + 0.5), math.floor((Gold_upv_1.G * 255) + 0.5), math.floor((Gold_upv_1.B * 255) + 0.5))
-    local function catOf(a2)
-        --[[
-          name: catOf
-          line: 104
-          upvalues:
-            Economy_upv_1 (copy, index: 1)
-        ]]
-        return Economy_upv_1.CategoryColor(a2)
-    end
-    local function catWord(a3)
-        --[[
-          name: catWord
-          line: 107
-          upvalues:
-            WeaponInfo_upv_1 (copy, index: 1)
-        ]]
-        local v2 = WeaponInfo_upv_1.Get(a3)
-        return string.upper(((not v2) and "") or (WeaponInfo_upv_1.CATEGORY_SINGULAR[v2.category] or ""))
-    end
-    local function tint(a4, a5)
-        --[[
-          name: tint
-          line: 111
-          upvalues:
-            Colors_upv_1 (copy, index: 1)
-        ]]
-        return ColorSequence.new(a4:Lerp(Colors_upv_1.Panel, 1 - a5), Colors_upv_1.PanelHi:Lerp(Colors_upv_1.Panel, 0.6))
-    end
-    local function stateOf(a6)
-        --[[
-          name: stateOf
-          line: 118
-          upvalues:
-            Economy_upv_1 (copy, index: 1)
-        ]]
-        if Economy_upv_1.Level(a6) <= 0 then
-            return "locked"
-        else
-            local _, v4, v3 = Economy_upv_1.Progress(a6)
-            if v3 ~= "max" then
-                if Economy_upv_1.CanUpgrade(a6) then
-                    return "ready"
-                end
-                return "owned"
-            elseif Economy_upv_1.MaxLevel(a6) <= 1 then
-                return "fixed"
-            else
-                return "max"
-            end
+    local ui = a19.UI
+    local theme = a19.Theme
+    local state = a19.State
+    local weaponInfo = a19.WeaponInfo
+    local weaponIcon = a19.WeaponIcon
+    local economy = a19.Economy
+    local colors = theme.Colors
+    local fonts = theme.Fonts
+    local udim2FromOffset = UDim2.fromOffset
+    local maxLevel = economy.MAX_LEVEL
+    local success = colors.Success
+    local gold = colors.Gold
+    local textMuted = colors.TextMuted
+    local formattedText = string.format("#%02X%02X%02X", math.floor((textMuted.R * 255) + 0.5), math.floor((textMuted.G * 255) + 0.5), (math.floor((textMuted.B * 255) + 0.5)))
+    local v34 = theme.Lighten(success, 0.15)
+    local formattedText2 = string.format("#%02X%02X%02X", math.floor((v34.R * 255) + 0.5), math.floor((v34.G * 255) + 0.5), (math.floor((v34.B * 255) + 0.5)))
+    v34 = string.format("#%02X%02X%02X", math.floor((gold.R * 255) + 0.5), math.floor((gold.G * 255) + 0.5), (math.floor((gold.B * 255) + 0.5)))
+
+    do
+        local function catOf(a37)
+            --[[
+              name: catOf
+              line: 104
+              upvalues:
+                economy (copy, index: 1)
+            ]]
+            return economy.CategoryColor(a37)
         end
     end
-    local function OnCloseRequested()
-        --[[
-          name: OnCloseRequested
-          line: 140
-          upvalues:
-            a1 (copy, index: 1)
-        ]]
-        a1.MenuManager.Close("Collection")
+
+    do
+        local function catWord(a39)
+            --[[
+              name: catWord
+              line: 107
+              upvalues:
+                weaponInfo (copy, index: 1)
+            ]]
+            local text
+            local v41 = weaponInfo.Get(a39)
+            local stringUpper = string.upper
+
+            if v41 then
+                text = weaponInfo.CATEGORY_SINGULAR[v41.category] or ""
+            else
+                text = ""
+            end
+
+            return stringUpper(text)
+        end
     end
-    local u5 = UI_upv_1.Window({HeaderHeight = 80, Name = "Collection", OpenSound = "Armory_Open", Title = "COLLECTION", Subtitle = string.format("Win matches to find shards  \194\183  Shards unlock items and upgrade them (max +%d%%)", Economy_upv_1.MaxBonusPercent()), Size = UDim2.fromOffset(1180, 720), Parent = a1.Canvas.Menus, OnCloseRequested = OnCloseRequested})
-    local Content_1 = u5.Content
-    local u6 = UI_upv_1.new("TextLabel", {RichText = true, Text = "", Name = "Summary", TextSize = 16, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -(UI_upv_1.WindowCloseSize() + 34), 0, 22), Size = fromOffset_upv_1(420, 24), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = u5.Header})
-    local u7 = UI_upv_1.new("Frame", {Name = "CollectionSelection", Size = UDim2.fromScale(1, 1), UI_upv_1.Corner(14), UI_upv_1.Stroke(Colors_upv_1.Accent, 3, 0)})
-    local u8 = UI_upv_1.Panel({Name = "Detail", BackgroundTransparency = 0.06, Size = fromOffset_upv_1(360, 500), Radius = UDim.new(0, 14), Parent = Content_1})
-    local u9 = u8:FindFirstChildOfClass("UIGradient")
-    local u10 = u8:FindFirstChildOfClass("UIStroke")
-    local u11 = UI_upv_1.new("Frame", {Name = "Preview", Size = fromOffset_upv_1(320, 220), BackgroundColor3 = Color3.new(1, 1, 1), ClipsDescendants = true, [1] = UI_upv_1.Corner(12), Parent = u8})
-    local u12 = UI_upv_1.Gradient(Colors_upv_1.Accent, Colors_upv_1.Panel, 115)
-    u12.Parent = u11
-    local u13 = UI_upv_1.Image(UI_upv_1.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 0.5, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1.1, 1.3), ImageColor3 = Colors_upv_1.Accent, Parent = u11})
-    local u14 = UI_upv_1.new("Frame", {Name = "Icon", ZIndex = 2, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromScale(0.86, 0.86), Parent = u11})
-    local u15 = UI_upv_1.new("Frame", {Name = "Flash", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Gold_upv_1, BackgroundTransparency = 1, ZIndex = 5, [1] = UI_upv_1.Corner(12), Parent = u11})
-    local u16 = UI_upv_1.Image(UI_upv_1.Assets.Fx.Ring, {ImageTransparency = 1, Name = "Ring", ZIndex = 6, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = fromOffset_upv_1(60, 60), ImageColor3 = Gold_upv_1, Parent = u11})
-    local u17 = UI_upv_1.new("Frame", {ZIndex = 7, Name = "Burst", Size = UDim2.fromScale(1, 1), Parent = u11})
-    local u18 = UI_upv_1.DisplayText({StrokeThickness = 3, Text = "", Name = "LevelSlam", ZIndex = 8, TextSize = 52, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1, 0, 0, 60), TextColor3 = Gold_upv_1, Parent = u11})
-    u18.Visible = false
-    local u19 = UI_upv_1.new("Frame", {Name = "Level", Position = fromOffset_upv_1(10, 10), Size = fromOffset_upv_1(76, 34), BackgroundColor3 = Colors_upv_1.Void, BackgroundTransparency = 0.2, ZIndex = 9, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u11})
-    local u20 = UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.8)
-    u20.Parent = u19
-    local u21 = UI_upv_1.new("TextLabel", {Text = "LV", Name = "Lv", ZIndex = 9, TextSize = 14, Position = fromOffset_upv_1(12, 0), Size = fromOffset_upv_1(22, 34), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = u19})
-    local u22 = UI_upv_1.new("Frame", {Name = "Num", ZIndex = 9, ClipsDescendants = true, Position = fromOffset_upv_1(36, 2), Size = fromOffset_upv_1(30, 30), Parent = u19})
-    local u23 = UI_upv_1.new("TextLabel", {ZIndex = 9, Name = "A", Text = "1", TextSize = 24, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, TextXAlignment = Enum.TextXAlignment.Left, Parent = u22})
-    local u24 = UI_upv_1.new("TextLabel", {Text = "", Name = "B", ZIndex = 9, TextSize = 24, Position = UDim2.fromScale(0, 1), Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, TextColor3 = Gold_upv_1, TextXAlignment = Enum.TextXAlignment.Left, Parent = u22})
-    local u25 = UI_upv_1.new("Frame", {Name = "Lock", Position = fromOffset_upv_1(10, 10), Size = fromOffset_upv_1(36, 36), BackgroundColor3 = Colors_upv_1.Void, BackgroundTransparency = 0.2, ZIndex = 9, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u11})
-    UI_upv_1.Image(UI_upv_1.Assets.Icons.Lock, {ZIndex = 9, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = fromOffset_upv_1(18, 18), ImageColor3 = Colors_upv_1.TextDim, Parent = u25})
-    local u26 = UI_upv_1.new("TextLabel", {Name = "ItemName", Text = "", TextSize = 30, TextScaled = true, FontFace = Fonts_upv_1.Display, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, Parent = u8})
-    local u27 = UI_upv_1.new("UITextSizeConstraint", {MaxTextSize = 30, MinTextSize = 14, Parent = u26})
-    local u28 = UI_upv_1.new("TextLabel", {RichText = true, Name = "Sub", Text = "", TextSize = 14, FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, Parent = u8})
-    local u29 = UI_upv_1.new("TextLabel", {Name = "BarCaption", Text = "SHARDS", TextSize = 12, FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, Parent = u8})
-    local u30 = UI_upv_1.new("TextLabel", {Name = "BarGoal", Text = "", TextSize = 12, FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = u8})
-    local u31 = UI_upv_1.Bar({Name = "Shards", Stroke = false, Size = fromOffset_upv_1(300, 24), Color = Colors_upv_1.Accent, Parent = u8})
-    local u32 = UI_upv_1.new("TextLabel", {Name = "Count", ZIndex = 3, Text = "", TextSize = 16, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, Parent = u31.Frame})
-    UI_upv_1.TextStroke(Colors_upv_1.Void, 1.5, 0.35).Parent = u32
-    local u33 = UI_upv_1.new("Frame", {Name = "Divider", BackgroundTransparency = 0.9, BackgroundColor3 = Colors_upv_1.Text, Size = fromOffset_upv_1(300, 1), Parent = u8})
-    local u34 = UI_upv_1.new("TextLabel", {Name = "BonusCaption", Text = "DAMAGE BONUS", TextSize = 12, FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, Parent = u8})
-    local u35 = UI_upv_1.new("Frame", {Name = "Bonus", Size = fromOffset_upv_1(300, 36), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 10, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center), Parent = u8})
-    local u36 = UI_upv_1.new("TextLabel", {LayoutOrder = 1, Name = "Now", TextSize = 32, Text = "+0%", AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), FontFace = Fonts_upv_1.Display, Parent = u35})
-    local u37 = UI_upv_1.Icon("chevRight", 18, Colors_upv_1.TextMuted, {LayoutOrder = 2, Parent = u35})
-    local u38 = UI_upv_1.new("TextLabel", {LayoutOrder = 3, Text = "+2%", Name = "Next", TextSize = 32, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), FontFace = Fonts_upv_1.Display, TextColor3 = Theme_upv_1.Lighten(Success_upv_1, 0.15), Parent = u35})
-    local u39 = UI_upv_1.new("TextLabel", {LayoutOrder = 4, AutoLocalize = false, Text = "damage", Name = "Word", TextSize = 16, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), FontFace = Fonts_upv_1.Bold, TextColor3 = Colors_upv_1.TextDim, Parent = u35})
-    local function pct(a7)
+
+    do
+        local function tint(startValue, a45)
+            --[[
+              name: tint
+              line: 111
+              upvalues:
+                colors (copy, index: 1)
+            ]]
+            return ColorSequence.new(startValue:Lerp(colors.Panel, 1 - a45), colors.PanelHi:Lerp(colors.Panel, 0.6))
+        end
+    end
+
+    local function pct(a47: number)
         --[[
           name: pct
           line: 114
         ]]
-        return string.format("+%d%%", a7)
+        return string.format("+%d%%", a47)
     end
-    local u40 = UI_upv_1.CountUp(
-        u36,
-        function(a8)
+
+    local function stateOf(a49)
+        --[[
+          name: stateOf
+          line: 118
+          upvalues:
+            economy (copy, index: 1)
+        ]]
+        if economy.Level(a49) <= 0 then
+            return "locked"
+        end
+
+        local _, _, v52 = economy.Progress(a49)
+
+        if v52 ~= "max" then
+            if economy.CanUpgrade(a49) then
+                return "ready"
+            end
+
+            return "owned"
+        end
+
+        if economy.MaxLevel(a49) <= 1 then
+            return "fixed"
+        end
+
+        return "max"
+    end
+
+    local v53 = ui.Window(
+        {
+            Name = "Collection",
+            Title = "COLLECTION",
+            HeaderHeight = 80,
+            OpenSound = "Armory_Open",
+            Subtitle = string.format("Win matches to find shards  ·  Shards unlock items and upgrade them (max +%d%%)", economy.MaxBonusPercent()),
+            Size = UDim2.fromOffset(1180, 720),
+            Parent = a19.Canvas.Menus,
+            OnCloseRequested = (function()
+                --[[
+                  name: OnCloseRequested
+                  line: 140
+                  upvalues:
+                    a19 (copy, index: 1)
+                ]]
+                a19.MenuManager.Close("Collection")
+            end)
+        }
+    )
+    local content = v53.Content
+    local ui2 = ui.new("TextLabel", {Name = "Summary", Text = "", RichText = true, TextSize = 16, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -(ui.WindowCloseSize() + 34), 0, 22), Size = udim2FromOffset(420, 24), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = v53.Header})
+    local selectionImageObject = ui.new("Frame", {Name = "CollectionSelection", Size = UDim2.fromScale(1, 1), ui.Corner(14), ui.Stroke(colors.Accent, 3, 0)})
+    local parent = ui.Panel({Name = "Detail", BackgroundTransparency = 0.06, Size = udim2FromOffset(360, 500), Radius = UDim.new(0, 14), Parent = content})
+    local uiGradient = parent:FindFirstChildOfClass("UIGradient")
+    local uiStroke = parent:FindFirstChildOfClass("UIStroke")
+    local parent2 = ui.new("Frame", {Name = "Preview", Size = udim2FromOffset(320, 220), BackgroundColor3 = Color3.new(1, 1, 1), ClipsDescendants = true, (ui.Corner(12)), Parent = parent})
+    local v61 = ui.Gradient(colors.Accent, colors.Panel, 115)
+    v61.Parent = parent2
+    local v62 = ui.Image(ui.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 0.5, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1.1, 1.3), ImageColor3 = colors.Accent, Parent = parent2})
+    local ui3 = ui.new("Frame", {Name = "Icon", ZIndex = 2, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = UDim2.fromScale(0.86, 0.86), Parent = parent2})
+    local ui4 = ui.new("Frame", {Name = "Flash", Size = UDim2.fromScale(1, 1), BackgroundColor3 = gold, BackgroundTransparency = 1, ZIndex = 5, (ui.Corner(12)), Parent = parent2})
+    local v65 = ui.Image(ui.Assets.Fx.Ring, {Name = "Ring", ImageTransparency = 1, ZIndex = 6, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = udim2FromOffset(60, 60), ImageColor3 = gold, Parent = parent2})
+    local parent3 = ui.new("Frame", {Name = "Burst", ZIndex = 7, Size = UDim2.fromScale(1, 1), Parent = parent2})
+    local v67 = ui.DisplayText({Name = "LevelSlam", Text = "", TextSize = 52, StrokeThickness = 3, ZIndex = 8, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1, 0, 0, 60), TextColor3 = gold, Parent = parent2})
+    v67.Visible = false
+    local parent4 = ui.new("Frame", {Name = "Level", Position = udim2FromOffset(10, 10), Size = udim2FromOffset(76, 34), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.2, ZIndex = 9, (ui.Corner(theme.Radius.Pill)), Parent = parent2})
+    local v69 = ui.Stroke(colors.Stroke, 1, 0.8)
+    v69.Parent = parent4
+    local ui5 = ui.new("TextLabel", {Name = "Lv", Text = "LV", TextSize = 14, ZIndex = 9, Position = udim2FromOffset(12, 0), Size = udim2FromOffset(22, 34), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent4})
+    local parent5 = ui.new("Frame", {Name = "Num", ClipsDescendants = true, ZIndex = 9, Position = udim2FromOffset(36, 2), Size = udim2FromOffset(30, 30), Parent = parent4})
+    local ui6 = ui.new("TextLabel", {Name = "A", Text = "1", TextSize = 24, ZIndex = 9, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent5})
+    local ui7 = ui.new("TextLabel", {Name = "B", Text = "", TextSize = 24, ZIndex = 9, Position = UDim2.fromScale(0, 1), Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, TextColor3 = gold, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent5})
+    local parent6 = ui.new("Frame", {Name = "Lock", Position = udim2FromOffset(10, 10), Size = udim2FromOffset(36, 36), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.2, ZIndex = 9, (ui.Corner(theme.Radius.Pill)), Parent = parent2})
+    ui.Image(ui.Assets.Icons.Lock, {ZIndex = 9, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = udim2FromOffset(18, 18), ImageColor3 = colors.TextDim, Parent = parent6})
+    local parent7 = ui.new("TextLabel", {Name = "ItemName", Text = "", TextSize = 30, TextScaled = true, FontFace = fonts.Display, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center, Parent = parent})
+    local ui8 = ui.new("UITextSizeConstraint", {MaxTextSize = 30, MinTextSize = 14, Parent = parent7})
+    local ui9 = ui.new("TextLabel", {Name = "Sub", Text = "", RichText = true, TextSize = 14, FontFace = fonts.Heavy, TextColor3 = colors.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent})
+    local ui10 = ui.new("TextLabel", {Name = "BarCaption", Text = "SHARDS", TextSize = 12, FontFace = fonts.Heavy, TextColor3 = colors.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent})
+    local ui11 = ui.new("TextLabel", {Name = "BarGoal", Text = "", TextSize = 12, FontFace = fonts.Heavy, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Right, Parent = parent})
+    local v80 = ui.Bar({Name = "Shards", Stroke = false, Size = udim2FromOffset(300, 24), Color = colors.Accent, Parent = parent})
+    local parent8 = ui.new("TextLabel", {Name = "Count", Text = "", TextSize = 16, ZIndex = 3, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, Parent = v80.Frame})
+    ui.TextStroke(colors.Void, 1.5, 0.35).Parent = parent8
+    local ui12 = ui.new("Frame", {Name = "Divider", BackgroundTransparency = 0.9, BackgroundColor3 = colors.Text, Size = udim2FromOffset(300, 1), Parent = parent})
+    local ui13 = ui.new("TextLabel", {Name = "BonusCaption", Text = "DAMAGE BONUS", TextSize = 12, FontFace = fonts.Heavy, TextColor3 = colors.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent})
+    local parent9 = ui.new("Frame", {Name = "Bonus", Size = udim2FromOffset(300, 36), (ui.List(Enum.FillDirection.Horizontal, 10, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)), Parent = parent})
+    local ui14 = ui.new("TextLabel", {Name = "Now", Text = "+0%", TextSize = 32, LayoutOrder = 1, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), FontFace = fonts.Display, Parent = parent9})
+    local v86 = ui.Icon("chevRight", 18, colors.TextMuted, {LayoutOrder = 2, Parent = parent9})
+    local ui15 = ui.new("TextLabel", {Name = "Next", Text = "+2%", TextSize = 32, LayoutOrder = 3, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), FontFace = fonts.Display, TextColor3 = theme.Lighten(success, 0.15), Parent = parent9})
+    local ui16 = ui.new("TextLabel", {Name = "Word", AutoLocalize = false, Text = "damage", TextSize = 16, LayoutOrder = 4, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), FontFace = fonts.Bold, TextColor3 = colors.TextDim, Parent = parent9})
+    local v89 = ui.CountUp(
+        ui14,
+        function(a90: number)
             --[[
               line: 303
               upvalues:
                 pct (copy, index: 1)
             ]]
-            return pct(a8)
+            return pct(a90)
         end,
         0.6
     )
-    local u41 = UI_upv_1.CountUp(
-        u38,
-        function(a9)
+    local v91 = ui.CountUp(
+        ui15,
+        function(a92: number)
             --[[
               line: 306
               upvalues:
                 pct (copy, index: 1)
             ]]
-            return pct(a9)
+            return pct(a92)
         end,
         0.6
     )
-    local u42 = UI_upv_1.new("Frame", {Name = "Pips", Size = fromOffset_upv_1(300, 10), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center), Parent = u8})
-    local tbl_upv_3 = {}
-    for n_1 = 1, MAX_LEVEL_upv_1 do
-        tbl_upv_3[n_1] = UI_upv_1.new("Frame", {Name = "Pip" .. n_1, Size = fromOffset_upv_1(40, 8), BackgroundColor3 = Colors_upv_1.Inset, LayoutOrder = n_1, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = u42})
-        local u43 = n_1
+    local parent10 = ui.new("Frame", {Name = "Pips", Size = udim2FromOffset(300, 10), (ui.List(Enum.FillDirection.Horizontal, 6, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Center)), Parent = parent})
+    local v94 = {}
+
+    for layoutOrder = 1, maxLevel do
+        v94[layoutOrder] = ui.new("Frame", {Name = "Pip" .. layoutOrder, Size = udim2FromOffset(40, 8), BackgroundColor3 = colors.Inset, LayoutOrder = layoutOrder, (ui.Corner(theme.Radius.Pill)), Parent = parent10})
     end
-    local u44 = UI_upv_1.new("TextLabel", {AutoLocalize = false, Text = "", Name = "Note", TextSize = 14, TextWrapped = true, FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Parent = u8})
-    local u45 = UI_upv_1.new("Frame", {Name = "ActionBox", Size = fromOffset_upv_1(300, 56), Parent = u8})
-    local u43 = UI_upv_1.GetScaleObj(u45, "Pulse")
-    local u46 = UI_upv_1.Image(UI_upv_1.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.55), Size = UDim2.new(1, 60, 2.4, 0), ImageColor3 = Success_upv_1, Parent = u45})
-    local u47 = UI_upv_1.Button({PassInput = true, Radius = 12, Name = "Action", Style = "Success", Text = "UPGRADE", TextSize = 21, Size = UDim2.fromScale(1, 1), Parent = u45})
-    u47.Label.RichText = true
-    local u48 = UI_upv_1.new("TextLabel", {RichText = true, Name = "ActionNote", Text = "", TextSize = 13, AutoLocalize = false, FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextMuted, Parent = u8})
-    local u49 = UI_upv_1.new("ScrollingFrame", {Name = "Grid", ScrollBarThickness = 5, ScrollBarImageTransparency = 0.4, AutomaticCanvasSize = Enum.AutomaticSize.None, ScrollBarImageColor3 = Colors_upv_1.TextMuted, Parent = Content_1})
-    local u50 = 900
-    local function screenPerDesign()
-        --[[
-          name: screenPerDesign
-          line: 358
-          upvalues:
-            u49 (copy, index: 1)
-            u50 (ref,  index: 2)
-        ]]
-        return (math.max(u49.AbsoluteSize.X / math.max(u50, 1), 0.01))
-    end
-    local tbl_upv_4 = {"owned", "locked"}
-    local tbl_upv_5 = {}
-    local function makeHeader(a10, a11, a12)
-        --[[
-          name: makeHeader
-          line: 364
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            fromOffset_upv_1 (copy, index: 2)
-            Fonts_upv_1 (copy, index: 3)
-            Colors_upv_1 (copy, index: 4)
-        ]]
-        local v4 = UI_upv_1.new("Frame", {Name = a10, Size = UDim2.new(1, -8, 0, 34), Parent = a12})
-        UI_upv_1.new("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 10), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = v4})
-        UI_upv_1.new("UIPadding", {PaddingLeft = UDim.new(0, 4), Parent = v4})
-        local tbl_6 = {}
-        tbl_6.Name = "Bar"
-        tbl_6.BackgroundColor3 = a11
-        tbl_6.Size = fromOffset_upv_1(4, 18)
-        tbl_6.LayoutOrder = 0
-        tbl_6[1] = UI_upv_1.Corner(2)
-        tbl_6.Parent = v4
-        local tbl_7 = {}
-        tbl_7.frame = v4
-        tbl_7.tick = UI_upv_1.new("Frame", tbl_6)
-        tbl_7.title = UI_upv_1.new("TextLabel", {LayoutOrder = 1, RichText = true, Text = "", Name = "Text", TextSize = 16, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextDim, Parent = v4})
-        tbl_7.sub = UI_upv_1.new("TextLabel", {LayoutOrder = 2, Text = "", Name = "Sub", TextSize = 14, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextMuted, Parent = v4})
-        return tbl_7
-    end
-    tbl_upv_5.owned = makeHeader("Section_owned", Colors_upv_1.Accent, u49)
-    tbl_upv_5.locked = makeHeader("Section_locked", Colors_upv_1.TextMuted, u49)
-    tbl_upv_5.owned.sub.Text = string.format("level up with shards  \194\183  +%d%% per level", math.floor((Economy_upv_1.BONUS_PER_LEVEL * 100) + 0.5))
-    tbl_upv_5.locked.sub.Text = "find shards in drops to unlock"
-    local u51 = UI_upv_1.new("Frame", {Visible = false, Name = "Shop", Size = UDim2.new(1, -12, 0, 104), Parent = u49})
-    local _ = UI_upv_1.Panel({StrokeTransparency = 0.6, Name = "Bg", BackgroundTransparency = 0.05, Size = UDim2.fromScale(1, 1), Radius = UDim.new(0, 14), TopColor = Gold_upv_1:Lerp(Colors_upv_1.Panel, 0.8), BottomColor = Gold_upv_1:Lerp(Colors_upv_1.PanelLo, 0.92), StrokeColor = Gold_upv_1, Parent = u51})
-    local u52 = UI_upv_1.new("Frame", {Name = "Emblem", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.5, 0), Size = fromOffset_upv_1(76, 76), Parent = u51})
-    UI_upv_1.Image(UI_upv_1.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 0.55, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1.7, 1.7), ImageColor3 = Gold_upv_1, Parent = u52})
-    local tbl_8 = {}
-    tbl_8.Name = "Gem"
-    tbl_8.AnchorPoint = Vector2.new(0.5, 0.5)
-    tbl_8.Position = UDim2.fromScale(0.5, 0.5)
-    tbl_8.Size = UDim2.fromScale(0.66, 0.66)
-    tbl_8.Rotation = 45
-    tbl_8.BackgroundColor3 = Color3.new(1, 1, 1)
-    tbl_8[1], tbl_8[2], tbl_8[3] = UI_upv_1.Corner(10), UI_upv_1.Gradient(Color3.fromRGB(255, 214, 110), Color3.fromRGB(214, 138, 20), 90), UI_upv_1.Stroke(Color3.fromRGB(255, 230, 160), 2, 0.3)
-    tbl_8.Parent = u52
-    local v5 = UI_upv_1.new("Frame", tbl_8)
-    UI_upv_1.new("Frame", {Name = "Facet", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.62, 0.62), BackgroundColor3 = Color3.fromRGB(255, 226, 150), BackgroundTransparency = 0.55, [1] = UI_upv_1.Corner(6), Parent = v5})
-    UI_upv_1.Image(UI_upv_1.Assets.Icons.Star, {Name = "Star", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = fromOffset_upv_1(26, 26), ImageColor3 = Color3.fromRGB(120, 70, 8), Parent = u52})
-    local u53 = UI_upv_1.new("TextLabel", {Text = "GOLDEN DROP", Name = "Title", TextSize = 24, Position = fromOffset_upv_1(104, 18), Size = fromOffset_upv_1(300, 28), FontFace = Fonts_upv_1.Display, TextColor3 = Gold_upv_1, TextXAlignment = Enum.TextXAlignment.Left, Parent = u51})
-    local u54 = UI_upv_1.new("TextLabel", {Text = "", TextWrapped = true, Name = "Line", TextSize = 14, Position = fromOffset_upv_1(104, 48), Size = fromOffset_upv_1(300, 40), FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Parent = u51})
-    local u55 = UI_upv_1.new("Frame", {Name = "Buttons", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0), Size = fromOffset_upv_1(470, 50), [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 10, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center), Parent = u51})
-    local u56 = UI_upv_1.Button({LayoutOrder = 1, Radius = 10, Name = "Odds", Style = "Dark", Text = "VIEW ODDS", TextSize = 15, Size = fromOffset_upv_1(122, 46), Parent = u55})
-    local u57 = UI_upv_1.Button({LayoutOrder = 2, Radius = 10, Name = "Buy1", Style = "Success", Text = "", TextSize = 16, Size = fromOffset_upv_1(150, 46), Parent = u55})
-    local u58 = UI_upv_1.Button({LayoutOrder = 3, Radius = 10, Name = "Buy5", Style = "Success", Text = "", TextSize = 16, Size = fromOffset_upv_1(166, 46), Parent = u55})
-    u57.Label.RichText = true
-    u58.Label.RichText = true
-    local u59 = UI_upv_1.Pill("", Gold_upv_1, {PadX = 7, Transparency = 0, Name = "Save", Height = 20, ZIndex = 3, TextSize = 11, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, -1), TextColor = Colors_upv_1.TextDark})
-    u59.Parent = u58.Instance
-    local u60 = UI_upv_1.Pill("", Color3.fromRGB(245, 52, 64), {Visible = false, PadX = 8, Transparency = 0, Name = "Sale", Height = 22, ZIndex = 3, TextSize = 12, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, -1)})
-    u60.Parent = u57.Instance
-    local u61 = UI_upv_1.new("TextButton", {Visible = false, Name = "Odds", BackgroundTransparency = 0.35, Selectable = false, ZIndex = 20, Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Void, Parent = u5.Body})
-    UI_upv_1.Corner(UDim.new(0, 16)).Parent = u61
-    local u62 = UI_upv_1.Panel({StrokeTransparency = 0.6, Active = true, Name = "Card", ZIndex = 21, BackgroundTransparency = 0.02, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = fromOffset_upv_1(560, 420), Radius = UDim.new(0, 16), StrokeColor = Gold_upv_1, Parent = u61})
-    local u63 = UI_upv_1.GetScaleObj(u62, "FitScale")
-    UI_upv_1.new("TextLabel", {Text = "GOLDEN DROP ODDS", Name = "Title", ZIndex = 22, TextSize = 26, Position = fromOffset_upv_1(24, 18), Size = UDim2.new(1, -90, 0, 30), FontFace = Fonts_upv_1.Display, TextColor3 = Gold_upv_1, TextXAlignment = Enum.TextXAlignment.Left, Parent = u62})
-    local u64 = UI_upv_1.new("TextLabel", {Text = "", Name = "Sub", ZIndex = 22, TextSize = 14, Position = fromOffset_upv_1(24, 50), Size = UDim2.new(1, -48, 0, 18), FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = u62})
-    local v6 = UI_upv_1.IconButton({IconName = "cross", Name = "Close", Sound = "Close", ZIndex = 23, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 14), Size = fromOffset_upv_1(44, 44), Color = Colors_upv_1.Raised, HoverColor = Colors_upv_1.Danger, Parent = u62})
-    local u65 = UI_upv_1.new("ScrollingFrame", {Name = "List", Position = fromOffset_upv_1(24, 80), Size = UDim2.new(1, -48, 1, -164), AutomaticCanvasSize = Enum.AutomaticSize.Y, ScrollBarThickness = 4, ScrollBarImageColor3 = Colors_upv_1.TextMuted, ZIndex = 22, [1] = UI_upv_1.List(Enum.FillDirection.Vertical, 2, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Top), Parent = u62})
-    local oddsValue = UI_upv_1.new("Frame", {Name = "Buy", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -18), Size = UDim2.new(1, -48, 0, 50), ZIndex = 22, [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 12, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center), Parent = u62})
-    local u66 = UI_upv_1.Button({LayoutOrder = 1, Radius = 10, Text = "", Name = "Buy1", Style = "Success", ZIndex = 23, TextSize = 17, Size = fromOffset_upv_1(220, 48), Parent = oddsValue})
-    local u67 = UI_upv_1.Button({LayoutOrder = 2, Radius = 10, Text = "", Name = "Buy5", Style = "Success", ZIndex = 23, TextSize = 17, Size = fromOffset_upv_1(220, 48), Parent = oddsValue})
-    u66.Label.RichText = true
-    u67.Label.RichText = true
-    local function oddsLabel(a13)
-        --[[
-          name: oddsLabel
-          line: 549
-          upvalues:
-            WeaponInfo_upv_1 (copy, index: 1)
-        ]]
-        local v7 = ((type(a13.item) == "string") and (a13.item)) or (((type(a13.id) == "string" and not (not (WeaponInfo_upv_1.Get(a13.id)))) and (a13.id)) or nil)
-        if v7 and WeaponInfo_upv_1.Get(v7) then
-            return WeaponInfo_upv_1.Name(v7)
-        end
-        for _, value_1 in {"label", "name", "text", "kind", "title"} do
-            if type(a13[value_1]) ~= "string" then
-                continue
-            end
-            return a13[value_1]
-        end
-        return "?"
-    end
-    oddsValue = function(a14)
-        --[[
-          name: oddsValue
-          line: 532
-        ]]
-        for _, value_2 in {"value", "text"} do
-            if type(a14[value_2]) ~= "string" or not (string.find(a14[value_2], "%%")) then
-                continue
-            end
-            return a14[value_2]
-        end
-        local v8 = a14.chance or (a14.p or (a14.probability or (a14.percent or (a14.odds or (a14.weight)))))
-        if type(v8) ~= "number" then
-            return nil
-        end
-        local v9 = (a14.percent ~= nil) and (type(a14.percent) == "number")
-        local v10
-        if v9 or v8 > 1 then
-            v10 = v8
-        else
-            v10 = v8 * 100
-        end
-        if v10 > 0 and v10 < 0.1 then
-            return "<0.1%"
-        elseif math.abs(v10 - math.floor(v10 + 0.5)) < 0.05 then
-            return (string.format("%d%%", math.floor(v10 + 0.5)))
-        else
-            return (string.format("%.1f%%", v10))
-        end
-    end
-    local function addOddsRow(a15, a16, a17, a18, a19)
-        --[[
-          name: addOddsRow
-          line: 561
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            u65 (copy, index: 2)
-            Fonts_upv_1 (copy, index: 3)
-            Colors_upv_1 (copy, index: 4)
-            a1 (copy, index: 5)
-            u2 (copy, index: 6)
-            Gold_upv_1 (copy, index: 7)
-        ]]
-        local v11 = UI_upv_1.new("Frame", {ZIndex = 22, Name = "Row" .. a18, Size = UDim2.new(1, -8, 0, ((a15 == "title") and 34) or (((a15 ~= "note") and 28) or 0)), LayoutOrder = a18, Parent = u65})
-        if a15 ~= "note" then
-            local new_1 = UI_upv_1.new
-            local v12 = "TextLabel"
-            local tbl_9 = {RichText = true, AutoLocalize = false, TextColor3 = 0, Parent = 0, Text = 0, ZIndex = 22, TextTruncate = 0, TextXAlignment = 0, FontFace = 0, TextYAlignment = 0, TextSize = 0}
-            tbl_9.Size = UDim2.new(1, -150, 1, 0)
-            local T_1 = a1.Loc.T
-            local v13
-            if a15 == "title" then
-                v13 = string.upper(a16)
-            elseif a19 then
-                v13 = string.format("%s  <font size=\"12\" color=\"%s\">%s</font>", a16, u2, a19)
-            else
-                v13 = a16
-            end
-            tbl_9.Text = T_1(v13)
-            local v14
-            if a15 ~= "title" then
-                v14 = Fonts_upv_1.Bold
-            else
-                v14 = Fonts_upv_1.Heavy
-            end
-            tbl_9.FontFace = v14
-            tbl_9.TextSize = ((a15 ~= "title") and 16) or 14
-            local v15
-            if a15 ~= "title" then
-                v15 = Colors_upv_1.Text
-            else
-                v15 = Colors_upv_1.TextMuted
-            end
-            tbl_9.TextColor3 = v15
-            tbl_9.TextXAlignment = Enum.TextXAlignment.Left
-            if a15 ~= "title" then
-                v15 = Enum.TextYAlignment.Center
-            else
-                v15 = Enum.TextYAlignment.Bottom
-            end
-            tbl_9.TextYAlignment = v15
-            tbl_9.TextTruncate = Enum.TextTruncate.AtEnd
-            tbl_9.Parent = v11
-            new_1(v12, tbl_9)
-            if a17 then
-                UI_upv_1.new("TextLabel", {ZIndex = 22, TextSize = 17, AnchorPoint = Vector2.new(1, 0), Position = UDim2.fromScale(1, 0), Size = UDim2.new(0, 150, 1, 0), Text = a17, FontFace = Fonts_upv_1.Display, TextColor3 = Gold_upv_1, TextXAlignment = Enum.TextXAlignment.Right, Parent = v11})
-            end
-            if a15 == "row" then
-                UI_upv_1.new("Frame", {BackgroundTransparency = 0.93, ZIndex = 22, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, 1), BackgroundColor3 = Colors_upv_1.Text, Parent = v11})
-            end
-        else
-            v11.AutomaticSize = Enum.AutomaticSize.Y
-            UI_upv_1.new("TextLabel", {TextSize = 13, TextWrapped = true, ZIndex = 22, Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = a16, FontFace = Fonts_upv_1.SemiBold, TextColor3 = Colors_upv_1.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, Parent = v11})
-        end
-    end
-    local function priceLabel(a20, a21)
-        --[[
-          name: priceLabel
-          line: 686
-          upvalues:
-            Economy_upv_1 (copy, index: 1)
-            Unlocks_upv_1 (copy, index: 2)
-        ]]
-        if Economy_upv_1.Pending(a20) then
-            return "\226\128\166"
-        else
-            local v16
-            if a20 ~= Unlocks_upv_1.FIRST_DROP.key then
-                v16 = nil
-            else
-                v16 = Economy_upv_1.Price("drop_golden")
-            end
-            local v17
-            if v16 then
-                v17 = string.format("<font color=\"#C9F5D6\"><s>%d</s></font> ", v16)
-            else
-                v17 = ""
-            end
-            return string.format("%s  <font color=\"%s\">%s</font> %s%s", a21, "#FFFFFF", Economy_upv_1.ROBUX, v17, Economy_upv_1.PriceAmount(a20))
-        end
-    end
-    local function buildOdds()
-        --[[
-          name: buildOdds
-          line: 613
-          upvalues:
-            u65 (copy, index: 1)
-            addOddsRow (copy, index: 2)
-            oddsLabel (copy, index: 3)
-            oddsValue (copy, index: 4)
-            Economy_upv_1 (copy, index: 5)
-            WeaponInfo_upv_1 (copy, index: 6)
-        ]]
-        for _, value_3 in u65:GetChildren() do
-            if value_3:IsA("Frame") then
-                value_3:Destroy()
+
+    do
+        local ui17 = ui.new("TextLabel", {AutoLocalize = false, Name = "Note", Text = "", TextSize = 14, TextWrapped = true, FontFace = fonts.SemiBold, TextColor3 = colors.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Parent = parent})
+        local parent11 = ui.new("Frame", {Name = "ActionBox", Size = udim2FromOffset(300, 56), Parent = parent})
+        local scaleObj = ui.GetScaleObj(parent11, "Pulse")
+        local v99 = ui.Image(ui.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 1, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.55), Size = UDim2.new(1, 60, 2.4, 0), ImageColor3 = success, Parent = parent11})
+        local v100 = ui.Button({Name = "Action", Text = "UPGRADE", TextSize = 21, Style = "Success", Radius = 12, PassInput = true, Size = UDim2.fromScale(1, 1), Parent = parent11})
+        v100.Label.RichText = true
+        local ui18 = ui.new("TextLabel", {Name = "ActionNote", Text = "", AutoLocalize = false, RichText = true, TextSize = 13, FontFace = fonts.SemiBold, TextColor3 = colors.TextMuted, Parent = parent})
+        local parent12 = ui.new("ScrollingFrame", {Name = "Grid", ScrollBarThickness = 5, ScrollBarImageTransparency = 0.4, AutomaticCanvasSize = Enum.AutomaticSize.None, ScrollBarImageColor3 = colors.TextMuted, Parent = content})
+        local v103 = 900
+
+        do
+            local function screenPerDesign()
+                --[[
+                  name: screenPerDesign
+                  line: 358
+                  upvalues:
+                    parent12 (copy, index: 1)
+                    v103 (ref,  index: 2)
+                ]]
+                return (math.max(parent12.AbsoluteSize.X / math.max(v103, 1), 0.01))
             end
         end
-        local u68 = 0
-        local u69 = 0
-        local function walk_upv_1(a22, a23)
+
+        local function makeHeader(name: string, backgroundColor3, parent)
             --[[
-              name: walk
-              line: 621
+              name: makeHeader
+              line: 364
               upvalues:
-                u68 (ref,  index: 1)
+                ui (copy, index: 1)
+                udim2FromOffset (copy, index: 2)
+                fonts (copy, index: 3)
+                colors (copy, index: 4)
+            ]]
+            local ui2 = ui.new("Frame", {Name = name, Size = UDim2.new(1, -8, 0, 34), Parent = parent})
+            ui.new("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 10), VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Parent = ui2})
+            ui.new("UIPadding", {PaddingLeft = UDim.new(0, 4), Parent = ui2})
+            local tick = ui.new("Frame", {Name = "Bar", BackgroundColor3 = backgroundColor3, Size = udim2FromOffset(4, 18), LayoutOrder = 0, (ui.Corner(2)), Parent = ui2})
+            local title = ui.new("TextLabel", {Name = "Text", Text = "", RichText = true, TextSize = 16, LayoutOrder = 1, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), FontFace = fonts.Heavy, TextColor3 = colors.TextDim, Parent = ui2})
+            local sub = ui.new("TextLabel", {Name = "Sub", Text = "", TextSize = 14, LayoutOrder = 2, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), FontFace = fonts.SemiBold, TextColor3 = colors.TextMuted, Parent = ui2})
+
+            return {frame = ui2, tick = tick, title = title, sub = sub}
+        end
+
+        local v113 = {"owned", "locked"}
+        local v114 = {owned = makeHeader("Section_owned", colors.Accent, parent12), locked = makeHeader("Section_locked", colors.TextMuted, parent12)}
+        v114.owned.sub.Text = string.format("level up with shards  ·  +%d%% per level", (math.floor((economy.BONUS_PER_LEVEL * 100) + 0.5)))
+        v114.locked.sub.Text = "find shards in drops to unlock"
+        local parent13 = ui.new("Frame", {Name = "Shop", Visible = false, Size = UDim2.new(1, -12, 0, 104), Parent = parent12})
+        ui.Panel({Name = "Bg", BackgroundTransparency = 0.05, StrokeTransparency = 0.6, Size = UDim2.fromScale(1, 1), Radius = UDim.new(0, 14), TopColor = gold:Lerp(colors.Panel, 0.8), BottomColor = gold:Lerp(colors.PanelLo, 0.92), StrokeColor = gold, Parent = parent13})
+        local parent14 = ui.new("Frame", {Name = "Emblem", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.5, 0), Size = udim2FromOffset(76, 76), Parent = parent13})
+        ui.Image(ui.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 0.55, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1.7, 1.7), ImageColor3 = gold, Parent = parent14})
+
+        do
+            local parent15 = ui.new("Frame", {Name = "Gem", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.66, 0.66), Rotation = 45, BackgroundColor3 = Color3.new(1, 1, 1), ui.Corner(10), ui.Gradient(Color3.fromRGB(255, 214, 110), Color3.fromRGB(214, 138, 20), 90), (ui.Stroke(Color3.fromRGB(255, 230, 160), 2, 0.3)), Parent = parent14})
+            ui.new("Frame", {Name = "Facet", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.62, 0.62), BackgroundColor3 = Color3.fromRGB(255, 226, 150), BackgroundTransparency = 0.55, (ui.Corner(6)), Parent = parent15})
+        end
+
+        ui.Image(ui.Assets.Icons.Star, {Name = "Star", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = udim2FromOffset(26, 26), ImageColor3 = Color3.fromRGB(120, 70, 8), Parent = parent14})
+        local ui19 = ui.new("TextLabel", {Name = "Title", Text = "GOLDEN DROP", TextSize = 24, Position = udim2FromOffset(104, 18), Size = udim2FromOffset(300, 28), FontFace = fonts.Display, TextColor3 = gold, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent13})
+        local ui20 = ui.new("TextLabel", {Name = "Line", Text = "", TextSize = 14, TextWrapped = true, Position = udim2FromOffset(104, 48), Size = udim2FromOffset(300, 40), FontFace = fonts.SemiBold, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, Parent = parent13})
+        local parent16 = ui.new("Frame", {Name = "Buttons", AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -14, 0.5, 0), Size = udim2FromOffset(470, 50), (ui.List(Enum.FillDirection.Horizontal, 10, Enum.HorizontalAlignment.Right, Enum.VerticalAlignment.Center)), Parent = parent13})
+        local v121 = ui.Button({Name = "Odds", Text = "VIEW ODDS", TextSize = 15, Style = "Dark", Radius = 10, LayoutOrder = 1, Size = udim2FromOffset(122, 46), Parent = parent16})
+        local v122 = ui.Button({Name = "Buy1", Text = "", TextSize = 16, Style = "Success", Radius = 10, LayoutOrder = 2, Size = udim2FromOffset(150, 46), Parent = parent16})
+        local v123 = ui.Button({Name = "Buy5", Text = "", TextSize = 16, Style = "Success", Radius = 10, LayoutOrder = 3, Size = udim2FromOffset(166, 46), Parent = parent16})
+        v122.Label.RichText = true
+        v123.Label.RichText = true
+        local v124 = ui.Pill("", gold, {Name = "Save", Height = 20, TextSize = 11, Transparency = 0, PadX = 7, ZIndex = 3, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, -1), TextColor = colors.TextDark})
+        v124.Parent = v123.Instance
+        local color3 = Color3.fromRGB(245, 52, 64)
+        local v126 = ui.Pill("", color3, {Name = "Sale", Height = 22, TextSize = 12, Transparency = 0, PadX = 8, ZIndex = 3, Visible = false, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, -1)})
+        v126.Parent = v122.Instance
+        local ancestor = ui.new("TextButton", {Name = "Odds", BackgroundTransparency = 0.35, Visible = false, Selectable = false, ZIndex = 20, Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Void, Parent = v53.Body})
+        ui.Corner(UDim.new(0, 16)).Parent = ancestor
+        local parent17 = ui.Panel({Name = "Card", BackgroundTransparency = 0.02, StrokeTransparency = 0.6, ZIndex = 21, Active = true, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = udim2FromOffset(560, 420), Radius = UDim.new(0, 16), StrokeColor = gold, Parent = ancestor})
+        local scaleObj2 = ui.GetScaleObj(parent17, "FitScale")
+        ui.new("TextLabel", {Name = "Title", Text = "GOLDEN DROP ODDS", TextSize = 26, ZIndex = 22, Position = udim2FromOffset(24, 18), Size = UDim2.new(1, -90, 0, 30), FontFace = fonts.Display, TextColor3 = gold, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent17})
+        local ui21 = ui.new("TextLabel", {Name = "Sub", Text = "", TextSize = 14, ZIndex = 22, Position = udim2FromOffset(24, 50), Size = UDim2.new(1, -48, 0, 18), FontFace = fonts.SemiBold, TextColor3 = colors.TextDim, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent17})
+        local v131 = ui.IconButton({Name = "Close", IconName = "cross", Sound = "Close", ZIndex = 23, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 14), Size = udim2FromOffset(44, 44), Color = colors.Raised, HoverColor = colors.Danger, Parent = parent17})
+        local parent18 = ui.new("ScrollingFrame", {Name = "List", Position = udim2FromOffset(24, 80), Size = UDim2.new(1, -48, 1, -164), AutomaticCanvasSize = Enum.AutomaticSize.Y, ScrollBarThickness = 4, ScrollBarImageColor3 = colors.TextMuted, ZIndex = 22, (ui.List(Enum.FillDirection.Vertical, 2, Enum.HorizontalAlignment.Left, Enum.VerticalAlignment.Top)), Parent = parent17})
+        local parent19 = ui.new("Frame", {Name = "Buy", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -18), Size = UDim2.new(1, -48, 0, 50), ZIndex = 22, (ui.List(Enum.FillDirection.Horizontal, 12, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)), Parent = parent17})
+        local v134 = ui.Button({Name = "Buy1", Text = "", TextSize = 17, Style = "Success", Radius = 10, ZIndex = 23, LayoutOrder = 1, Size = udim2FromOffset(220, 48), Parent = parent19})
+        local v135 = ui.Button({Name = "Buy5", Text = "", TextSize = 17, Style = "Success", Radius = 10, ZIndex = 23, LayoutOrder = 2, Size = udim2FromOffset(220, 48), Parent = parent19})
+        v134.Label.RichText = true
+        v135.Label.RichText = true
+
+        local function oddsValue(a137)
+            --[[
+              name: oddsValue
+              line: 532
+            ]]
+            for _, v139 in {"value", "text"} do
+                if type(a137[v139]) == "string" and string.find(a137[v139], "%%") then
+                    return a137[v139]
+                end
+            end
+
+            local v140 = a137.chance
+                or a137.p
+                or a137.probability
+                or a137.percent
+                or a137.odds
+                or a137.weight
+
+            if type(v140) ~= "number" then
+                return nil
+            end
+
+            local v141 = a137.percent ~= nil and type(a137.percent) == "number"
+            local v142 = if not v141 and not (1 < v140) then v140 * 100 else v140
+
+            if 0 < v142 and v142 < 0.1 then
+                return "<0.1%"
+            end
+            if not (math.abs(v142 - math.floor(v142 + 0.5)) < 0.05) then
+                return (string.format("%.1f%%", v142))
+            end
+
+            return (string.format("%d%%", (math.floor(v142 + 0.5))))
+        end
+
+        local function oddsLabel(a144)
+            --[[
+              name: oddsLabel
+              line: 549
+              upvalues:
+                weaponInfo (copy, index: 1)
+            ]]
+            local v145 = type(a144.item) == "string" and a144.item
+                or type(a144.id) == "string" and weaponInfo.Get(a144.id) and a144.id
+                or nil
+
+            if v145 and weaponInfo.Get(v145) then
+                return weaponInfo.Name(v145)
+            end
+
+            for _, v147 in {"label", "name", "text", "kind", "title"} do
+                if type(a144[v147]) == "string" then
+                    return a144[v147]
+                end
+            end
+
+            return "?"
+        end
+
+        local function addOddsRow(a149: string, text, text2, layoutOrder: number, a153)
+            --[[
+              name: addOddsRow
+              line: 561
+              upvalues:
+                ui (copy, index: 1)
+                parent18 (copy, index: 2)
+                fonts (copy, index: 3)
+                colors (copy, index: 4)
+                a19 (copy, index: 5)
+                formattedText (copy, index: 6)
+                gold (copy, index: 7)
+            ]]
+            local v154
+            local v155 = a149 ~= "title" and (a149 ~= "note" and 28 or 0) or 34
+            local parent = ui.new("Frame", {ZIndex = 22, Name = "Row" .. layoutOrder, Size = UDim2.new(1, -8, 0, v155), LayoutOrder = layoutOrder, Parent = parent18})
+
+            if a149 == "note" then
+                parent.AutomaticSize = Enum.AutomaticSize.Y
+                ui.new("TextLabel", {TextSize = 13, TextWrapped = true, ZIndex = 22, Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = text, FontFace = fonts.SemiBold, TextColor3 = colors.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, Parent = parent})
+
+                return
+            end
+
+            local newUi = ui.new
+            local v158 = "TextLabel"
+            local v159 = {AutoLocalize = false, RichText = true, ZIndex = 22, Size = UDim2.new(1, -150, 1, 0)}
+            local t = a19.Loc.T
+
+            if a149 ~= "title" then
+                v154 = if a153 then string.format("%s  <font size=\"12\" color=\"%s\">%s</font>", text, formattedText, a153) else text
+            else
+                v154 = string.upper(text)
+            end
+
+            v159.Text = t(v154)
+            v159.FontFace = if a149 == "title" then fonts.Heavy else fonts.Bold
+            v159.TextSize = a149 ~= "title" and 16 or 14
+            v159.TextColor3 = if a149 == "title" then colors.TextMuted else colors.Text
+            v159.TextXAlignment = Enum.TextXAlignment.Left
+            v159.TextYAlignment = if a149 == "title" then Enum.TextYAlignment.Bottom else Enum.TextYAlignment.Center
+            v159.TextTruncate = Enum.TextTruncate.AtEnd
+            v159.Parent = parent
+            newUi(v158, v159)
+
+            if text2 then
+                ui.new("TextLabel", {TextSize = 17, ZIndex = 22, AnchorPoint = Vector2.new(1, 0), Position = UDim2.fromScale(1, 0), Size = UDim2.new(0, 150, 1, 0), Text = text2, FontFace = fonts.Display, TextColor3 = gold, TextXAlignment = Enum.TextXAlignment.Right, Parent = parent})
+            end
+
+            if a149 == "row" then
+                ui.new("Frame", {BackgroundTransparency = 0.93, ZIndex = 22, AnchorPoint = Vector2.new(0, 1), Position = UDim2.fromScale(0, 1), Size = UDim2.new(1, 0, 0, 1), BackgroundColor3 = colors.Text, Parent = parent})
+            end
+        end
+
+        local function buildOdds()
+            --[[
+              name: buildOdds
+              line: 613
+              upvalues:
+                parent18 (copy, index: 1)
                 addOddsRow (copy, index: 2)
                 oddsLabel (copy, index: 3)
-                walk_upv_1 (copy, index: 4)
-                oddsValue (copy, index: 5)
-                u69 (ref,  index: 6)
+                oddsValue (copy, index: 4)
+                economy (copy, index: 5)
+                weaponInfo (copy, index: 6)
             ]]
-            for _, value_4 in a22 do
-                if type(value_4) ~= "table" then
-                    continue
+            for _, child in parent18:GetChildren() do
+                if child:IsA("Frame") then
+                    child:Destroy()
                 end
-                local v18 = ((type(value_4.rows) == "table") and (value_4.rows)) or (((type(value_4.items) == "table") and (value_4.items)) or (((type(value_4.odds) == "table") and (value_4.odds)) or (((type(value_4.entries) == "table") and (value_4.entries)) or nil)))
-                if not (v18) or not (a23 < 2) then
-                    local v19 = oddsValue(value_4)
-                    u68 = u68 + 1
-                    if v19 then
-                        u69 = u69 + 1
-                        addOddsRow("row", oddsLabel(value_4), v19, u68)
-                        continue
+            end
+
+            local v164 = 0
+            local v165 = 0
+
+            local function walk(a167, a168: number)
+                --[[
+                  name: walk
+                  line: 621
+                  upvalues:
+                    v164 (ref,  index: 1)
+                    addOddsRow (copy, index: 2)
+                    oddsLabel (copy, index: 3)
+                    walk (copy, index: 4)
+                    oddsValue (copy, index: 5)
+                    v165 (ref,  index: 6)
+                ]]
+                for _, v170 in a167 do
+                    if type(v170) == "table" then
+                        local v171 = type(v170.rows) == "table" and v170.rows
+                            or type(v170.items) == "table" and v170.items
+                            or type(v170.odds) == "table" and v170.odds
+                            or type(v170.entries) == "table" and v170.entries
+                            or nil
+
+                        if v171 and a168 < 2 then
+                            v164 += 1
+                            addOddsRow("title", oddsLabel(v170), nil, v164)
+                            walk(v171, a168 + 1)
+
+                            if type(v170.note) == "string" then
+                                v164 += 1
+                                addOddsRow("note", v170.note, nil, v164)
+                            end
+                        else
+                            local text = oddsValue(v170)
+                            v164 += 1
+
+                            if text then
+                                v165 += 1
+                                addOddsRow("row", oddsLabel(v170), text, v164)
+                            elseif type(v170.note) == "string" or type(v170.text) == "string" then
+                                addOddsRow("note", (v170.note or v170.text), nil, v164)
+                            end
+                        end
                     end
-                    if type(value_4.note) == "string" or type(value_4.text) == "string" then
-                        addOddsRow("note", value_4.note or (value_4.text), nil, u68)
-                        continue
-                    end
-                    continue
-                end
-                u68 = u68 + 1
-                addOddsRow("title", oddsLabel(value_4), nil, u68)
-                walk_upv_1(v18, a23 + 1)
-                if type(value_4.note) == "string" then
-                    u68 = u68 + 1
-                    addOddsRow("note", value_4.note, nil, u68)
                 end
             end
-        end
-        local v20 = Economy_upv_1.Odds("golden")
-        local v21 = Economy_upv_1.DropInfo("golden")
-        if type(v20) == "table" and type(v20.items) == "table" then
-            local function fmt_1(a24)
-                --[[
-                  name: fmt
-                  line: 652
-                  upvalues:
-                    oddsValue (copy, index: 1)
-                ]]
-                return oddsValue({chance = a24}) or "0%"
-            end
-            u68 = u68 + 1
-            addOddsRow("title", "Every Golden Drop", nil, u68)
-            if type(v21.stacks) == "number" and type(v21.min) == "number" then
-                u68 = u68 + 1
-                addOddsRow("row", "Stacks of shards", string.format("%d \195\151 %d\226\128\147%d", v21.stacks, v21.min, v21.max or (v21.min)), u68)
-            end
-            if type(v20.lockedChance) == "number" then
-                u68 = u68 + 1
-                u69 = u69 + 1
-                addOddsRow("row", "An item you don't own yet", oddsValue({chance = v20.lockedChance}) or "0%", u68)
-            end
-            u68 = u68 + 1
-            addOddsRow("title", "Chance each item is in your drop", nil, u68)
-            for _, value_5 in v20.items do
-                if type(value_5) ~= "table" or type(value_5.item) ~= "string" then
-                    continue
-                end
-                if type(value_5.chance) == "number" then
-                    u68 = u68 + 1
-                    u69 = u69 + 1
-                    local v22 = WeaponInfo_upv_1.Name(value_5.item)
-                    local v23 = oddsValue({chance = value_5.chance}) or "0%"
-                    addOddsRow("row", v22, v23, u68, ((value_5.locked) and "LOCKED") or nil)
-                end
-            end
-            u68 = u68 + 1
-            addOddsRow("note", "For your collection right now: maxed items never drop, and items in the loadout you carry turn up more often. Stack sizes are random within the range above.", nil, u68)
-        else
-            walk_upv_1(v20, 0)
-        end
-        if u69 == 0 then
-            u68 = u68 + 1
-            addOddsRow("note", "The odds are on their way from the server. Try again in a moment.", nil, u68)
-        end
-        return u69
-    end
-    local function paintShop()
-        --[[
-          name: paintShop
-          line: 696
-          upvalues:
-            Economy_upv_1 (copy, index: 1)
-            u54 (copy, index: 2)
-            a1 (copy, index: 3)
-            u60 (copy, index: 4)
-            u64 (copy, index: 5)
-            u57 (copy, index: 6)
-            priceLabel (copy, index: 7)
-            u58 (copy, index: 8)
-            u66 (copy, index: 9)
-            u67 (copy, index: 10)
-            u59 (copy, index: 11)
-        ]]
-        local v24 = Economy_upv_1.DropInfo("golden")
-        local v25 = tonumber(v24.stacks) or 4
-        local num_1 = tonumber(v24.min)
-        local num_2 = tonumber(v24.max)
-        if (num_1) and (num_2) then
-            v24 = math.floor(((v25 * (num_1 + num_2)) / 2) + 0.5)
-        else
-            v24 = 60
-        end
-        local v26 = Economy_upv_1.GoldenOffer()
-        local v27 = Economy_upv_1.OfferLeft()
-        if v26 and v26.state == "active" and v27 then
-            u54.RichText = true
-            a1.Loc.Rich(u54, string.format("<font color=\"#FF8C92\"><b>ONE-TIME OFFER</b>: ends in %s</font>\nAbout %d shards in %d big stacks.", Economy_upv_1.FormatLeft(v27), v24, v25))
-        else
-            a1.Loc.Rich(u54, string.format("About %d shards in %d big stacks.\nOne is always an item you don't own yet.", v24, v25))
-        end
-        num_1 = not (v26) or v26.state ~= "active" or Economy_upv_1.OfferDiscount()
-        local v28
-        if num_1 ~= nil then
-            v28 = true
-        else
-            v28 = false
-        end
-        u60.Visible = v28
-        if num_1 then
-            local Text_1 = u60:FindFirstChild("Text")
-            Text_1.Text = string.format("-%d%%", num_1)
-        end
-        u64.Text = string.format("About %d shards in %d stacks. Odds for your collection, before you buy.", v24, v25)
-        local v29 = Economy_upv_1.DropKey(1)
-        local v30 = Economy_upv_1.DropKey(5)
-        u57:SetText(priceLabel(v29, "1 DROP"))
-        u58:SetText(priceLabel(v30, "5 DROPS"))
-        u66:SetText(priceLabel(v29, "BUY 1"))
-        u67:SetText(priceLabel(v30, "BUY 5"))
-        u57:SetEnabled(not Economy_upv_1.Pending(v29))
-        u58:SetEnabled(not Economy_upv_1.Pending(v30))
-        u66:SetEnabled(not Economy_upv_1.Pending(v29))
-        u67:SetEnabled(not Economy_upv_1.Pending(v30))
-        local v31 = Economy_upv_1.Price(v29) or 0
-        local v32 = Economy_upv_1.Price(v30) or 0
-        if (v31 > 0) and (v32 > 0) then
-            v28 = math.floor(((1 - (v32 / (5 * v31))) * 100) + 0.5)
-        else
-            v28 = 0
-        end
-        local v33
-        if v28 >= 5 then
-            v33 = true
-        else
-            v33 = false
-        end
-        u59.Visible = v33
-        local Text_2 = u59:FindFirstChild("Text")
-        Text_2.Text = string.format("SAVE %d%%", v28)
-    end
-    local function closeOdds()
-        --[[
-          name: closeOdds
-          line: 747
-          upvalues:
-            u61 (copy, index: 1)
-            GuiService_upv_1 (copy, index: 2)
-            u56 (copy, index: 3)
-        ]]
-        if not u61.Visible then
-            return
-        end
-        u61.Visible = false
-        local SelectedObject_1 = GuiService_upv_1.SelectedObject
-        if not SelectedObject_1 then
-            return
-        end
-        if SelectedObject_1:IsDescendantOf(u61) then
-            GuiService_upv_1.SelectedObject = u56.Instance
-        end
-    end
-    local function openOdds()
-        --[[
-          name: openOdds
-          line: 730
-          upvalues:
-            buildOdds (copy, index: 1)
-            paintShop (copy, index: 2)
-            UI_upv_1 (copy, index: 3)
-            u5 (copy, index: 4)
-            u62 (copy, index: 5)
-            fromOffset_upv_1 (copy, index: 6)
-            u63 (copy, index: 7)
-            u61 (copy, index: 8)
-            Theme_upv_1 (copy, index: 9)
-            a1 (copy, index: 10)
-            GuiService_upv_1 (copy, index: 11)
-            u66 (copy, index: 12)
-        ]]
-        buildOdds()
-        paintShop()
-        local _ = UI_upv_1.CanvasSize()
-        u62.Size = fromOffset_upv_1(560, math.min(460, math.floor(u5.Holder.Size.Y.Offset - 40)))
-        u63.Scale = math.min(1, (u5.Holder.Size.X.Offset - 40) / 560)
-        u61.Visible = true
-        u61.BackgroundTransparency = 1
-        UI_upv_1.Tween(u61, Theme_upv_1.Tween.Smooth, {BackgroundTransparency = 0.35})
-        UI_upv_1.SlideIn(u62, Vector2.new(0, 24), Theme_upv_1.Tween.Pop, UDim2.fromScale(0.5, 0.5))
-        a1.Sounds.Play("Open")
-        if not UI_upv_1.Gamepad then
-            return
-        end
-        GuiService_upv_1.SelectedObject = u66.Instance
-    end
-    u56.Activated:Connect(openOdds)
-    v6.Activated:Connect(closeOdds)
-    u61.Activated:Connect(closeOdds)
-    local function buyDrops(a25)
-        --[[
-          name: buyDrops
-          line: 760
-          upvalues:
-            Economy_upv_1 (copy, index: 1)
-            paintShop (copy, index: 2)
-        ]]
-        if not Economy_upv_1.DropsAllowed() then
-            return
-        end
-        Economy_upv_1.Buy(Economy_upv_1.DropKey(a25))
-        paintShop()
-    end
-    u57.Activated:Connect(
-        function()
-            --[[
-              line: 767
-              upvalues:
-                Economy_upv_1 (copy, index: 1)
-                paintShop (copy, index: 2)
-            ]]
-            if not Economy_upv_1.DropsAllowed() then
-                return
-            end
-            Economy_upv_1.Buy(Economy_upv_1.DropKey(1))
-            paintShop()
-        end
-    )
-    u58.Activated:Connect(
-        function()
-            --[[
-              line: 770
-              upvalues:
-                Economy_upv_1 (copy, index: 1)
-                paintShop (copy, index: 2)
-            ]]
-            if not Economy_upv_1.DropsAllowed() then
-                return
-            end
-            Economy_upv_1.Buy(Economy_upv_1.DropKey(5))
-            paintShop()
-        end
-    )
-    u66.Activated:Connect(
-        function()
-            --[[
-              line: 773
-              upvalues:
-                Economy_upv_1 (copy, index: 1)
-                paintShop (copy, index: 2)
-            ]]
-            if not Economy_upv_1.DropsAllowed() then
-                return
-            end
-            Economy_upv_1.Buy(Economy_upv_1.DropKey(1))
-            paintShop()
-        end
-    )
-    u67.Activated:Connect(
-        function()
-            --[[
-              line: 776
-              upvalues:
-                Economy_upv_1 (copy, index: 1)
-                paintShop (copy, index: 2)
-            ]]
-            if not Economy_upv_1.DropsAllowed() then
-                return
-            end
-            Economy_upv_1.Buy(Economy_upv_1.DropKey(5))
-            paintShop()
-        end
-    )
-    local function cardH()
-        --[[
-          name: cardH
-          line: 781
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-        ]]
-        if UI_upv_1.Compact then
-            return 184
-        end
-        return 212
-    end
-    local tbl_upv_10 = {}
-    local tbl_upv_11 = {}
-    local u70 = nil
-    local u71 = nil
-    local u72 = nil
-    local u73 = nil
-    local function makeCard(a26)
-        --[[
-          name: makeCard
-          line: 826
-          upvalues:
-            Economy_upv_1 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-            fromOffset_upv_1 (copy, index: 3)
-            u49 (copy, index: 4)
-            u7 (copy, index: 5)
-            Colors_upv_1 (copy, index: 6)
-            Theme_upv_1 (copy, index: 7)
-            Fonts_upv_1 (copy, index: 8)
-            RankArt_upv_1 (copy, index: 9)
-            Success_upv_1 (copy, index: 10)
-            a1 (copy, index: 11)
-            u71 (ref,  index: 12)
-            u72 (ref,  index: 13)
-            u70 (ref,  index: 14)
-            u73 (ref,  index: 15)
-        ]]
-        local v34 = Economy_upv_1.CategoryColor(a26.id)
-        local new_2 = UI_upv_1.new
-        local tbl_12 = {Selectable = true, Parent = 0, Size = 0}
-        tbl_12.Name = a26.id
-        tbl_12.Size = fromOffset_upv_1(170, ((UI_upv_1.Compact) and 184) or 212)
-        tbl_12.Parent = u49
-        local v35 = new_2("TextButton", tbl_12)
-        v35.SelectionImageObject = u7
-        local u74 = UI_upv_1.GetScaleObj(v35, "HoverScale")
-        local v36 = UI_upv_1.new("Frame", {Name = "Inner", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.08, ClipsDescendants = true, [1] = UI_upv_1.Corner(14), Parent = v35})
-        local v37 = UI_upv_1.Gradient(v34:Lerp(Colors_upv_1.Panel, 0.82), Colors_upv_1.PanelHi:Lerp(Colors_upv_1.Panel, 0.6), 115)
-        v37.Parent = v36
-        local v38 = UI_upv_1.Stroke(Colors_upv_1.Stroke, 1, 0.9)
-        v38.Parent = v36
-        local v39 = UI_upv_1.Image(UI_upv_1.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 0.72, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 64), Size = fromOffset_upv_1(190, 150), ImageColor3 = v34, Parent = v36})
-        local v40 = UI_upv_1.new("Frame", {Name = "Icon", ZIndex = 2, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), Size = UDim2.new(1, -28, 1, -100), Parent = v36})
-        local tbl_13 = {}
-        tbl_13.Name = "Level"
-        tbl_13.Position = fromOffset_upv_1(8, 8)
-        tbl_13.AutomaticSize = Enum.AutomaticSize.X
-        tbl_13.Size = fromOffset_upv_1(0, 24)
-        tbl_13.BackgroundColor3 = Colors_upv_1.Void
-        tbl_13.BackgroundTransparency = 0.25
-        tbl_13.ZIndex = 4
-        tbl_13[1], tbl_13[2] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Padding(0, 9, 0, 9)
-        tbl_13.Parent = v36
-        local v41 = UI_upv_1.new("Frame", tbl_13)
-        local v42 = UI_upv_1.new("TextLabel", {RichText = true, Text = "LV 1", Name = "Text", TextSize = 14, ZIndex = 4, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromScale(0, 1), FontFace = Fonts_upv_1.Display, Parent = v41})
-        tbl_13 = UI_upv_1.new("Frame", {Name = "Lock", Position = fromOffset_upv_1(8, 8), Size = fromOffset_upv_1(28, 28), BackgroundColor3 = Colors_upv_1.Void, BackgroundTransparency = 0.25, ZIndex = 4, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v36})
-        UI_upv_1.Image(UI_upv_1.Assets.Icons.Lock, {ZIndex = 4, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = fromOffset_upv_1(15, 15), ImageColor3 = Colors_upv_1.TextDim, Parent = tbl_13})
-        local v43 = UI_upv_1.new("TextLabel", {Name = "ItemName", ZIndex = 3, TextSize = 17, Position = UDim2.new(0, 12, 1, -84), Size = UDim2.new(1, -24, 0, 22), Text = a26.name, FontFace = Fonts_upv_1.Bold, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v36})
-        local v44 = UI_upv_1.new("TextLabel", {Text = "", Name = "Sub", ZIndex = 3, TextSize = 11, Position = UDim2.new(0, 12, 1, -61), Size = UDim2.new(0.62, -12, 0, 15), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = v36})
-        local v45 = UI_upv_1.new("TextLabel", {Text = "", Name = "Meta", ZIndex = 3, TextSize = 11, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -12, 1, -61), Size = UDim2.new(0.38, 0, 0, 15), FontFace = Fonts_upv_1.Heavy, TextColor3 = Colors_upv_1.TextMuted, TextXAlignment = Enum.TextXAlignment.Right, Parent = v36})
-        local v46 = RankArt_upv_1.Emblem(1, 18, {ZIndex = 3, Name = "RankEmblem", Position = UDim2.new(0, 10, 1, -62.5), Parent = v36})
-        v46.Visible = false
-        local v47 = UI_upv_1.new("Frame", {Name = "Shards", AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 10, 1, -10), Size = UDim2.new(1, -20, 0, 22), BackgroundColor3 = Colors_upv_1.Inset, BackgroundTransparency = 0.1, ClipsDescendants = true, ZIndex = 3, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v36})
-        local v48 = UI_upv_1.new("Frame", {Name = "Fill", Size = UDim2.fromScale(0, 1), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 3, [1] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), Parent = v47})
-        local v49 = UI_upv_1.Gradient(Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.2), Colors_upv_1.Accent, 90)
-        v49.Parent = v48
-        local v50 = UI_upv_1.new("TextLabel", {Name = "Count", ZIndex = 4, Text = "", TextSize = 14, Size = UDim2.fromScale(1, 1), FontFace = Fonts_upv_1.Display, Parent = v47})
-        UI_upv_1.TextStroke(Colors_upv_1.Void, 1.2, 0.35).Parent = v50
-        local tbl_14 = {}
-        tbl_14.Name = "Upgrade"
-        tbl_14.AnchorPoint = Vector2.new(0.5, 1)
-        tbl_14.Position = UDim2.new(0.5, 0, 1, -8)
-        tbl_14.Size = UDim2.new(1, -16, 0, 30)
-        tbl_14.BackgroundColor3 = Color3.new(1, 1, 1)
-        tbl_14.Text = ""
-        tbl_14.Selectable = true
-        tbl_14.Visible = false
-        tbl_14.ZIndex = 6
-        tbl_14[1], tbl_14[2], tbl_14[3] = UI_upv_1.Corner(Theme_upv_1.Radius.Pill), UI_upv_1.Gradient(Color3.fromRGB(84, 224, 124), Color3.fromRGB(40, 184, 92), 90), UI_upv_1.Stroke(Color3.fromRGB(170, 255, 200), 1, 0.5)
-        tbl_14.Parent = v36
-        local u75 = UI_upv_1.new("TextButton", tbl_14)
-        u75.SelectionImageObject = u7
-        local v51 = UI_upv_1.GetScaleObj(u75, "Pulse")
-        tbl_14 = UI_upv_1.Image(UI_upv_1.Assets.Icons.Glow, {ImageTransparency = 0.6, Name = "Glow", ZIndex = 5, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1, 30, 2.6, 0), ImageColor3 = Success_upv_1, Parent = u75})
-        local v52 = UI_upv_1.new("Frame", {Size = UDim2.fromScale(1, 1), ZIndex = 6, [1] = UI_upv_1.List(Enum.FillDirection.Horizontal, 5, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center), Parent = u75})
-        UI_upv_1.Icon("chevUp", 13, Colors_upv_1.Text, {LayoutOrder = 1, ZIndex = 6, Parent = v52})
-        UI_upv_1.new("TextLabel", {LayoutOrder = 2, TextSize = 15, ZIndex = 6, Text = "UPGRADE", AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromScale(0, 1), FontFace = Fonts_upv_1.Display, Parent = v52})
-        local v53 = UI_upv_1.new("Frame", {Name = "Flash", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Colors_upv_1.Accent, BackgroundTransparency = 1, ZIndex = 5, [1] = UI_upv_1.Corner(14), Parent = v36})
-        local tbl_upv_15 = {visible = true, h = 0, y = 0, hover = false, shown = false, section = "locked", state = "locked", rendered = false}
-        tbl_upv_15.id = a26.id
-        tbl_upv_15.holder = v35
-        tbl_upv_15.scale = u74
-        tbl_upv_15.inner = v36
-        tbl_upv_15.grad = v37
-        tbl_upv_15.stroke = v38
-        tbl_upv_15.glow = v39
-        tbl_upv_15.icon = v40
-        tbl_upv_15.lv = v41
-        tbl_upv_15.lvText = v42
-        tbl_upv_15.lock = tbl_13
-        tbl_upv_15.name = v43
-        tbl_upv_15.sub = v44
-        tbl_upv_15.meta = v45
-        tbl_upv_15.rankEmblem = v46
-        tbl_upv_15.barBg = v47
-        tbl_upv_15.barFill = v48
-        tbl_upv_15.barFillGrad = v49
-        tbl_upv_15.barText = v50
-        tbl_upv_15.up = u75
-        tbl_upv_15.upScale = v51
-        tbl_upv_15.upGlow = tbl_14
-        tbl_upv_15.flash = v53
-        tbl_upv_15.h = ((UI_upv_1.Compact) and 184) or 212
-        v35.MouseEnter:Connect(
-            function()
-                --[[
-                  line: 986
-                  upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    tbl_upv_15 (copy, index: 2)
-                    a1 (copy, index: 3)
-                    u74 (copy, index: 4)
-                    Theme_upv_1 (copy, index: 5)
-                    u71 (ref,  index: 6)
-                ]]
-                if UI_upv_1.Touch then
-                    return
-                end
-                tbl_upv_15.hover = true
-                a1.Sounds.Play("Hover")
-                UI_upv_1.Tween(u74, Theme_upv_1.Tween.PopSmall, {Scale = 1.03})
-                u71(tbl_upv_15)
-            end
-        )
-        v35.MouseLeave:Connect(
-            function()
-                --[[
-                  line: 995
-                  upvalues:
-                    tbl_upv_15 (copy, index: 1)
-                    UI_upv_1 (copy, index: 2)
-                    u74 (copy, index: 3)
-                    Theme_upv_1 (copy, index: 4)
-                    u71 (ref,  index: 5)
-                ]]
-                tbl_upv_15.hover = false
-                UI_upv_1.Tween(u74, Theme_upv_1.Tween.Fast, {Scale = 1})
-                u71(tbl_upv_15)
-            end
-        )
-        v35.MouseButton1Down:Connect(
-            function()
-                --[[
-                  line: 1000
-                  upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    u74 (copy, index: 2)
-                    Theme_upv_1 (copy, index: 3)
-                ]]
-                UI_upv_1.Tween(u74, Theme_upv_1.Tween.Instant, {Scale = 0.97})
-            end
-        )
-        v35.MouseButton1Up:Connect(
-            function()
-                --[[
-                  line: 1003
-                  upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    u74 (copy, index: 2)
-                    Theme_upv_1 (copy, index: 3)
-                    tbl_upv_15 (copy, index: 4)
-                ]]
-                local Tween_1 = UI_upv_1.Tween
-                local PopSmall_1 = Theme_upv_1.Tween.PopSmall
-                local tbl_16 = {Scale = 0}
-                tbl_16.Scale = ((tbl_upv_15.hover) and 1.03) or 1
-                Tween_1(u74, PopSmall_1, tbl_16)
-            end
-        )
-        v35.Activated:Connect(
-            function()
-                --[[
-                  line: 1006
-                  upvalues:
-                    a1 (copy, index: 1)
-                    u72 (ref,  index: 2)
-                    a26 (copy, index: 3)
-                ]]
-                a1.Sounds.Play("Select")
-                u72(a26.id)
-            end
-        )
-        v35.SelectionGained:Connect(
-            function()
-                --[[
-                  line: 1010
-                  upvalues:
-                    u70 (ref,  index: 1)
-                    a26 (copy, index: 2)
-                    u72 (ref,  index: 3)
-                ]]
-                if u70 == a26.id then
-                    return
-                end
-                u72(a26.id, {quiet = true})
-            end
-        )
-        UI_upv_1.TrackPress(u75)
-        u75.MouseEnter:Connect(
-            function()
-                --[[
-                  line: 1016
-                  upvalues:
-                    UI_upv_1 (copy, index: 1)
-                    a1 (copy, index: 2)
-                ]]
-                if (UI_upv_1.Touch) then
-                    return
-                end
-                a1.Sounds.Play("Hover")
-            end
-        )
-        u75.Activated:Connect(
-            function(a27)
-                --[[
-                  line: 1021
-                  upvalues:
-                    u72 (ref,  index: 1)
-                    a26 (copy, index: 2)
-                    u73 (ref,  index: 3)
-                    u75 (copy, index: 4)
-                ]]
-                u72(a26.id, {quiet = true})
-                u73(a26.id, a27, u75)
-            end
-        )
-        return tbl_upv_15
-    end
-    u71 = function(a28)
-        --[[
-          line: 1028
-          upvalues:
-            stateOf (copy, index: 1)
-            Economy_upv_1 (copy, index: 2)
-            u70 (ref,  index: 3)
-            Gold_upv_1 (copy, index: 4)
-            Colors_upv_1 (copy, index: 5)
-            a1 (copy, index: 6)
-            WeaponIcon_upv_1 (copy, index: 7)
-            Success_upv_1 (copy, index: 8)
-            Theme_upv_1 (copy, index: 9)
-            RankArt_upv_1 (copy, index: 10)
-            WeaponInfo_upv_1 (copy, index: 11)
-        ]]
-        local id_1 = a28.id
-        local v54 = stateOf(id_1)
-        a28.state = v54
-        local v55 = Economy_upv_1.Level(id_1)
-        local v56, v57 = Economy_upv_1.Progress(id_1)
-        local v58 = Economy_upv_1.CategoryColor(id_1)
-        local v59 = u70 == id_1
-        local v60 = v54 == "locked"
-        a28.lock.Visible = v60
-        a28.lv.Visible = not v60
-        if v54 ~= "max" then
-            a28.lv.BackgroundColor3 = Colors_upv_1.Void
-            a28.lv.BackgroundTransparency = 0.25
-            local TextDim_1 = Colors_upv_1.TextDim
-            a1.Loc.Rich(a28.lvText, string.format("<font size=\"11\" color=\"%s\">LV</font> %d", string.format("#%02X%02X%02X", math.floor((TextDim_1.R * 255) + 0.5), math.floor((TextDim_1.G * 255) + 0.5), math.floor((TextDim_1.B * 255) + 0.5)), v55))
-            a28.lvText.TextColor3 = Colors_upv_1.Text
-        else
-            a28.lv.BackgroundColor3 = Gold_upv_1
-            a28.lv.BackgroundTransparency = 0
-            a28.lvText.Text = "MAX"
-            a28.lvText.TextColor3 = Colors_upv_1.TextDark
-        end
-        local grad_1 = a28.grad
-        local v61
-        if v60 then
-            v61 = ColorSequence.new(Colors_upv_1.Panel, Colors_upv_1.Panel)
-        else
-            v61 = ColorSequence.new(v58:Lerp(Colors_upv_1.Panel, 1 - (((v54 == "max") and 0.22) or (((a28.hover) and 0.24) or 0.18))), Colors_upv_1.PanelHi:Lerp(Colors_upv_1.Panel, 0.6))
-        end
-        grad_1.Color = v61
-        a28.inner.BackgroundTransparency = (v60 and 0.3) or 0.08
-        local glow_1 = a28.glow
-        if v60 then
-            v61 = 1
-        elseif a28.hover or v59 then
-            v61 = 0.62
-        else
-            v61 = 0.74
-        end
-        glow_1.ImageTransparency = v61
-        if a28.rendered then
-            WeaponIcon_upv_1.SetDim(a28.icon, v60)
-        end
-        local name_1 = a28.name
-        if v60 then
-            v61 = Colors_upv_1.TextDim
-        else
-            v61 = Colors_upv_1.Text
-        end
-        name_1.TextColor3 = v61
-        if v59 then
-            local stroke_1 = a28.stroke
-            if v54 ~= "ready" then
-                v61 = Colors_upv_1.Accent
+
+            local v173 = economy.Odds("golden")
+            local v174 = economy.DropInfo("golden")
+
+            if type(v173) ~= "table" or type(v173.items) ~= "table" then
+                walk(v173, 0)
             else
-                v61 = Success_upv_1
-            end
-            stroke_1.Color = v61
-            a28.stroke.Thickness = 2
-            a28.stroke.Transparency = 0
-        elseif v54 == "ready" then
-            a28.stroke.Color = Success_upv_1
-            a28.stroke.Thickness = 2
-        elseif v54 ~= "max" then
-            a28.stroke.Color = Colors_upv_1.Stroke
-            a28.stroke.Thickness = 1
-            a28.stroke.Transparency = ((a28.hover) and 0.6) or 0.9
-        else
-            a28.stroke.Color = Gold_upv_1
-            a28.stroke.Thickness = 1
-            a28.stroke.Transparency = 0.55
-        end
-        a28.up.Visible = v54 == "ready"
-        a28.barBg.Visible = v54 ~= "ready"
-        local v62 = ((not (v57 > 0)) and 1) or (math.clamp(v56 / v57, 0, 1))
-        local barFill_1 = a28.barFill
-        local v63
-        if v54 ~= "max" then
-            v63 = v62
-        else
-            v63 = 1
-        end
-        barFill_1.Size = UDim2.fromScale(v63, 1)
-        local barFill_2 = a28.barFill
-        v61 = true
-        if v54 ~= "max" then
-            v61 = v56 > 0
-        end
-        barFill_2.Visible = v61
-        a28.rankEmblem.Visible = false
-        a28.sub.Position = UDim2.new(0, 12, 1, -61)
-        a28.sub.Size = UDim2.new(0.62, -12, 0, 15)
-        if v54 ~= "max" then
-            if v60 and not (Economy_upv_1.RankAllows(id_1)) then
-                local v64 = Economy_upv_1.ItemRank(id_1)
-                a28.barFillGrad.Color = ColorSequence.new(Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.1), Colors_upv_1.AccentDark)
-                a28.barText.Text = string.format("%d / %d", v56, v57)
-                RankArt_upv_1.SetEmblem(a28.rankEmblem, v64)
-                a28.rankEmblem.Visible = true
-                a28.sub.Position = UDim2.new(0, 32, 1, -61)
-                a28.sub.Size = UDim2.new(1, -44, 0, 15)
-                a28.sub.Text = "REACH " .. string.upper(RankArt_upv_1.Ranks.Get(v64).name)
-                a28.sub.TextColor3 = RankArt_upv_1.Color(v64)
-                a28.meta.Text = ""
-                return
-            end
-            if v60 then
-                a28.barFillGrad.Color = ColorSequence.new(Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.1), Colors_upv_1.AccentDark)
-                a28.barText.Text = string.format("%d / %d", v56, v57)
-                a28.sub.Text = "LOCKED"
-                a28.sub.TextColor3 = Colors_upv_1.TextMuted
-                a28.meta.Text = "TO UNLOCK"
-                a28.meta.TextColor3 = Colors_upv_1.TextMuted
-            elseif v54 == "ready" then
-                a28.sub.Text = "UPGRADE READY"
-                a28.sub.TextColor3 = Theme_upv_1.Lighten(Success_upv_1, 0.15)
-                a28.meta.Text = string.format("%d / %d", v56, v57)
-                a28.meta.TextColor3 = Colors_upv_1.TextDim
-            elseif v54 ~= "fixed" then
-                a28.barFillGrad.Color = ColorSequence.new(Theme_upv_1.Lighten(Colors_upv_1.Accent, 0.2), Colors_upv_1.Accent)
-                a28.barText.Text = string.format("%d / %d", v56, v57)
-                local sub_1 = a28.sub
-                if v55 > 1 then
-                    v61 = string.upper(Economy_upv_1.BonusText(id_1, v55))
-                else
-                    local v65 = WeaponInfo_upv_1.Get(id_1)
-                    v61 = string.upper(((not v65) and "") or (WeaponInfo_upv_1.CATEGORY_SINGULAR[v65.category] or ""))
+                local function fmt(chance)
+                    --[[
+                      name: fmt
+                      line: 652
+                      upvalues:
+                        oddsValue (copy, index: 1)
+                    ]]
+                    return oddsValue({chance = chance}) or "0%"
                 end
-                sub_1.Text = v61
-                a28.sub.TextColor3 = Colors_upv_1.TextMuted
-                a28.meta.Text = "TO LV " .. v55 + 1
-                a28.meta.TextColor3 = Colors_upv_1.TextMuted
-            else
-                a28.barFill.Visible = false
-                a28.barText.Text = "NO LEVELS"
-                local sub_2 = a28.sub
-                local v66 = WeaponInfo_upv_1.Get(id_1)
-                sub_2.Text = string.upper(((not v66) and "") or (WeaponInfo_upv_1.CATEGORY_SINGULAR[v66.category] or ""))
-                a28.sub.TextColor3 = Colors_upv_1.TextMuted
-                a28.meta.Text = ""
-            end
-        else
-            a28.barFillGrad.Color = ColorSequence.new(Theme_upv_1.Lighten(Gold_upv_1, 0.15), Gold_upv_1:Lerp(Color3.fromRGB(180, 110, 10), 0.3))
-            a28.barText.Text = "MAX"
-            a28.sub.Text = "MAX LEVEL"
-            a28.sub.TextColor3 = Gold_upv_1
-            a28.meta.Text = string.upper(Economy_upv_1.BonusText(id_1, v55))
-            a28.meta.TextColor3 = Gold_upv_1
-        end
-    end
-    local tbl_upv_17 = {}
-    local function queueVisible()
-        --[[
-          name: queueVisible
-          line: 1131
-          upvalues:
-            u49 (copy, index: 1)
-            u50 (ref,  index: 2)
-            tbl_upv_10 (copy, index: 3)
-            tbl_upv_17 (copy, index: 4)
-            WeaponIcon_upv_1 (copy, index: 5)
-        ]]
-        local v67 = math.max(u49.AbsoluteSize.X / math.max(u50, 1), 0.01)
-        local v68 = u49.CanvasPosition.Y / v67
-        local v69 = v68 + u49.AbsoluteWindowSize.Y / v67
-        for _, value_6 in tbl_upv_10 do
-            if not value_6.visible or not (v68 - value_6.h <= value_6.y + value_6.h) or not (value_6.y <= v69 + value_6.h) or value_6.rendered then
-                if not (value_6.rendered) then
-                    continue
+
+                v164 += 1
+                addOddsRow("title", "Every Golden Drop", nil, v164)
+
+                if type(v174.stacks) == "number" and type(v174.min) == "number" then
+                    v164 += 1
+                    local stringFormat = string.format
+                    local stacks = v174.stacks
+                    local min = v174.min
+                    local v180 = v174.max or v174.min
+                    addOddsRow("row", "Stacks of shards", stringFormat("%d × %d–%d", stacks, min, v180), v164)
                 end
-                if not (value_6.visible) or value_6.y + value_6.h < v68 - (value_6.h * 2) or v69 + (value_6.h * 2) < value_6.y then
-                    value_6.rendered = false
-                    local v70 = table.find(tbl_upv_17, value_6)
-                    if v70 then
-                        table.remove(tbl_upv_17, v70)
-                    end
-                    WeaponIcon_upv_1.Set(value_6.icon, nil)
+
+                if type(v173.lockedChance) == "number" then
+                    v164 += 1
+                    v165 += 1
+                    addOddsRow("row", "An item you don't own yet", (oddsValue({chance = v173.lockedChance}) or "0%"), v164)
                 end
-                continue
-            end
-            value_6.rendered = true
-            table.insert(tbl_upv_17, value_6)
-        end
-    end
-    RunService_upv_1.Heartbeat:Connect(
-        function()
-            --[[
-              line: 1151
-              upvalues:
-                tbl_upv_17 (copy, index: 1)
-                u5 (copy, index: 2)
-                UI_upv_1 (copy, index: 3)
-                WeaponIcon_upv_1 (copy, index: 4)
-            ]]
-            if #tbl_upv_17 == 0 or not u5.IsOpen then
-                return
-            end
-            for _ = 1, ((UI_upv_1.Touch) and 2) or 4 do
-                local v71 = table.remove(tbl_upv_17, 1)
-                if v71 then
-                    WeaponIcon_upv_1.Set(v71.icon, v71.id, {outline = false, glow = false})
-                    WeaponIcon_upv_1.SetDim(v71.icon, v71.state == "locked")
-                    continue
-                else
-                    break
-                end
-            end
-        end
-    )
-    u49:GetPropertyChangedSignal("CanvasPosition"):Connect(queueVisible)
-    local u76 = true
-    local function layoutPanel(a29, a30, a31)
-        --[[
-          name: layoutPanel
-          line: 1168
-          upvalues:
-            u8 (copy, index: 1)
-            fromOffset_upv_1 (copy, index: 2)
-            u11 (copy, index: 3)
-            u27 (copy, index: 4)
-            u26 (copy, index: 5)
-            u28 (copy, index: 6)
-            UI_upv_1 (copy, index: 7)
-            u19 (copy, index: 8)
-            u25 (copy, index: 9)
-            u18 (copy, index: 10)
-            u29 (copy, index: 11)
-            u30 (copy, index: 12)
-            u31 (copy, index: 13)
-            u32 (copy, index: 14)
-            u33 (copy, index: 15)
-            u34 (copy, index: 16)
-            tbl_upv_3 (copy, index: 17)
-            MAX_LEVEL_upv_1 (copy, index: 18)
-            u42 (copy, index: 19)
-            u35 (copy, index: 20)
-            u36 (copy, index: 21)
-            u38 (copy, index: 22)
-            u39 (copy, index: 23)
-            u44 (copy, index: 24)
-            u76 (ref,  index: 25)
-            u45 (copy, index: 26)
-            u47 (copy, index: 27)
-            u48 (copy, index: 28)
-        ]]
-        u8.Size = fromOffset_upv_1(a29, a30)
-        local v72 = (a31 and 12) or 16
-        local v73 = a29 - v72 * 2
-        local v74 = (a31 and 48) or 56
-        local v75 = (a31 and 14) or 16
-        local v76
-        if a31 then
-            u11.Position = fromOffset_upv_1(v72, v72)
-            u11.Size = fromOffset_upv_1(104, 104)
-            local v77 = v72 + 104 + 12
-            u27.MaxTextSize = 24
-            u26.Position = fromOffset_upv_1(v77, v72 + 20)
-            u26.Size = fromOffset_upv_1((a29 - v77) - v72, 30)
-            u28.Position = fromOffset_upv_1(v77, v72 + 54)
-            u28.Size = fromOffset_upv_1((a29 - v77) - v72, 16)
-            u28.TextSize = 12
-            v76 = v72 + 104 + 12
-        else
-            local v78 = math.clamp(a30 - v72 - 279 - (v74 + 16 + 4 + v75 + v72), 150, 300)
-            u11.Position = fromOffset_upv_1(v72, v72)
-            u11.Size = fromOffset_upv_1(v73, v78)
-            u27.MaxTextSize = 30
-            local v79 = v72 + v78 + 14
-            u26.Position = fromOffset_upv_1(v72, v79)
-            u26.Size = fromOffset_upv_1(v73, 36)
-            local v80 = v79 + 36
-            u28.Position = fromOffset_upv_1(v72, v80)
-            u28.Size = fromOffset_upv_1(v73, 20)
-            u28.TextSize = 15
-            v80 = v80 + 38
-            v76 = v80
-        end
-        local v81 = (a31 and 0.8) or 1
-        UI_upv_1.GetScaleObj(u19, "Size").Scale = v81
-        UI_upv_1.GetScaleObj(u25, "Size").Scale = v81
-        u18.TextSize = (a31 and 30) or 52
-        u29.Position = fromOffset_upv_1(v72, v76)
-        u29.Size = fromOffset_upv_1(v73, 16)
-        u29.TextSize = (a31 and 11) or 12
-        u30.Position = fromOffset_upv_1(v72, v76)
-        u30.Size = fromOffset_upv_1(v73, 16)
-        u30.TextSize = (a31 and 11) or 12
-        v76 = v76 + 18
-        local v82 = (a31 and 20) or 26
-        u31.Frame.Position = fromOffset_upv_1(v72, v76)
-        u31.Frame.Size = fromOffset_upv_1(v73, v82)
-        u32.TextSize = (a31 and 14) or 17
-        v76 = v76 + (v82 + ((a31 and 12) or 16))
-        u33.Position = fromOffset_upv_1(v72, v76)
-        u33.Size = fromOffset_upv_1(v73, 1)
-        v76 = v76 + (((a31 and 10) or 16) + 1)
-        u34.Position = fromOffset_upv_1(v72, v76)
-        u34.Size = fromOffset_upv_1(v73, 16)
-        u34.TextSize = (a31 and 11) or 12
-        local v83 = (a31 and 18) or 26
-        for _, value_7 in tbl_upv_3 do
-            value_7.Size = fromOffset_upv_1(v83, (a31 and 6) or 8)
-        end
-        local v84 = MAX_LEVEL_upv_1 * v83 + (MAX_LEVEL_upv_1 - 1) * 6
-        u42.Position = fromOffset_upv_1((v72 + v73) - v84, v76 + 4)
-        u42.Size = fromOffset_upv_1(v84, 8)
-        v76 = v76 + (((a31 and 2) or 4) + 16)
-        u35.Position = fromOffset_upv_1(v72, v76)
-        u35.Size = fromOffset_upv_1(v73, (a31 and 30) or 40)
-        u36.TextSize = (a31 and 24) or 34
-        u38.TextSize = (a31 and 24) or 34
-        u39.TextSize = (a31 and 14) or 17
-        local v85 = (a31 and 30) or 40
-        v76 = v76 + (v85 + ((a31 and 4) or 8))
-        u44.Position = fromOffset_upv_1(v72, v76)
-        u44.Size = fromOffset_upv_1(v73, (a31 and 34) or 40)
-        u44.TextSize = (a31 and 13) or 14
-        u76 = (v75 + 4) <= ((((a30 - (v76 + ((a31 and 34) or 40))) - v72) - v74) - 8)
-        local v86 = (u76 and (((a30 - v72) - v75) - 4 - v74)) or (a30 - v72 - v74)
-        u45.Position = fromOffset_upv_1(v72, v86)
-        u45.Size = fromOffset_upv_1(v73, v74)
-        u47.Label.TextSize = (a31 and 18) or 21
-        u48.Position = fromOffset_upv_1(v72, (v86 + v74) + 4)
-        u48.Size = fromOffset_upv_1(v73, v75)
-        u48.TextSize = (a31 and 12) or 13
-    end
-    local u77 = nil
-    local u78 = 0
-    local u79 = nil
-    local u80 = nil
-    local u81 = function()
-        --[[
-          line: 1263
-          upvalues:
-            u70 (ref,  index: 1)
-            stateOf (copy, index: 2)
-            Economy_upv_1 (copy, index: 3)
-            u77 (ref,  index: 4)
-            u79 (ref,  index: 5)
-            WeaponIcon_upv_1 (copy, index: 6)
-            u14 (copy, index: 7)
-            UI_upv_1 (copy, index: 8)
-            Theme_upv_1 (copy, index: 9)
-            u26 (copy, index: 10)
-            WeaponInfo_upv_1 (copy, index: 11)
-            a1 (copy, index: 12)
-            u28 (copy, index: 13)
-            u2 (copy, index: 14)
-            u3 (copy, index: 15)
-            Colors_upv_1 (copy, index: 16)
-            MAX_LEVEL_upv_1 (copy, index: 17)
-            Success_upv_1 (copy, index: 18)
-            Gold_upv_1 (copy, index: 19)
-            u12 (copy, index: 20)
-            u13 (copy, index: 21)
-            u9 (copy, index: 22)
-            u10 (copy, index: 23)
-            u25 (copy, index: 24)
-            u19 (copy, index: 25)
-            u21 (copy, index: 26)
-            fromOffset_upv_1 (copy, index: 27)
-            u22 (copy, index: 28)
-            u23 (copy, index: 29)
-            u24 (copy, index: 30)
-            u20 (copy, index: 31)
-            u31 (copy, index: 32)
-            u32 (copy, index: 33)
-            u30 (copy, index: 34)
-            u34 (copy, index: 35)
-            u39 (copy, index: 36)
-            u35 (copy, index: 37)
-            u42 (copy, index: 38)
-            u40 (copy, index: 39)
-            u41 (copy, index: 40)
-            u36 (copy, index: 41)
-            u37 (copy, index: 42)
-            u38 (copy, index: 43)
-            tbl_upv_3 (copy, index: 44)
-            u44 (copy, index: 45)
-            RankArt_upv_1 (copy, index: 46)
-            u46 (copy, index: 47)
-            u47 (copy, index: 48)
-            u48 (copy, index: 49)
-            u80 (ref,  index: 50)
-            u4 (copy, index: 51)
-            u76 (ref,  index: 52)
-        ]]
-        local v87 = u70
-        if not v87 then
-            return
-        end
-        local v88 = stateOf(v87)
-        local v89 = Economy_upv_1.Level(v87)
-        local v90, v91 = Economy_upv_1.Progress(v87)
-        local v92 = Economy_upv_1.CategoryColor(v87)
-        local v93 = v88 == "locked"
-        local v94 = (u77 ~= nil) and (u77.id == u70)
-        if u79 ~= u70 then
-            u79 = u70
-            WeaponIcon_upv_1.Set(u14, u70, {outline = true, spin = true, outlineTransparency = 0.5, outlineScale = 1.035, glow = false, outlineColor = v92:Lerp(Color3.new(1, 1, 1), 0.55)})
-            UI_upv_1.Pop(u14, 0.85, Theme_upv_1.Tween.PopSmall)
-        end
-        WeaponIcon_upv_1.SetDim(u14, v93)
-        u26.Text = string.upper(WeaponInfo_upv_1.Name(u70))
-        local v95 = WeaponInfo_upv_1.Get(u70)
-        local v96 = string.upper(((not v95) and "") or (WeaponInfo_upv_1.CATEGORY_SINGULAR[v95.category] or ""))
-        if v93 then
-            a1.Loc.Rich(u28, string.format("%s  <font color=\"%s\">\194\183  LOCKED</font>", v96, u2))
-        elseif v88 == "max" then
-            a1.Loc.Rich(u28, string.format("%s  <font color=\"%s\">\194\183  MAX LEVEL</font>", v96, u3))
-        elseif v88 ~= "fixed" then
-            local TextDim_2 = Colors_upv_1.TextDim
-            a1.Loc.Rich(u28, string.format("%s  <font color=\"%s\">\194\183  LEVEL %d OF %d</font>", v96, string.format("#%02X%02X%02X", math.floor((TextDim_2.R * 255) + 0.5), math.floor((TextDim_2.G * 255) + 0.5), math.floor((TextDim_2.B * 255) + 0.5)), v89, MAX_LEVEL_upv_1))
-        else
-            a1.Loc.Rich(u28, string.format("%s  <font color=\"%s\">\194\183  NO LEVELS</font>", v96, u2))
-        end
-        local v97 = v88 == "fixed"
-        local v98
-        if v93 then
-            v98 = Colors_upv_1.TextMuted
-        elseif v88 == "ready" then
-            v98 = Success_upv_1
-        elseif v88 ~= "max" then
-            v98 = v92
-        else
-            v98 = Gold_upv_1
-        end
-        u12.Color = ColorSequence.new(v98:Lerp(Colors_upv_1.Panel, 1 - ((v93 and 0.18) or 0.35)), Colors_upv_1.PanelHi:Lerp(Colors_upv_1.Panel, 0.6))
-        u13.ImageColor3 = v98
-        u13.ImageTransparency = (v93 and 0.8) or 0.5
-        u9.Color = ColorSequence.new(v98:Lerp(Colors_upv_1.Panel, 0.9), Colors_upv_1.PanelLo)
-        local v99
-        if v88 == "ready" then
-            v99 = Success_upv_1
-        elseif v88 ~= "max" then
-            v99 = Colors_upv_1.Stroke
-        else
-            v99 = Gold_upv_1
-        end
-        u10.Color = v99
-        local v100
-        if v88 == "ready" or v88 == "max" then
-            v100 = 0.55
-        else
-            v100 = 0.88
-        end
-        u10.Transparency = v100
-        u25.Visible = v93
-        u19.Visible = not v93
-        if not (v94) then
-            if v88 ~= "max" then
-                u19.BackgroundColor3 = Colors_upv_1.Void
-                u19.BackgroundTransparency = 0.2
-                u21.Text = "LV"
-                u21.TextSize = 14
-                u21.TextColor3 = Colors_upv_1.TextDim
-                u21.Size = fromOffset_upv_1(22, 34)
-                u22.Visible = true
-                u23.Text = tostring(v89)
-                u23.Position = UDim2.new()
-                u23.TextColor3 = Colors_upv_1.Text
-                u24.Text = ""
-                u19.Size = fromOffset_upv_1(((v89 >= 10) and 90) or 70, 34)
-            else
-                u19.BackgroundColor3 = Gold_upv_1
-                u19.BackgroundTransparency = 0
-                u21.Text = "MAX"
-                u21.TextSize = 18
-                u21.TextColor3 = Colors_upv_1.TextDark
-                u21.Size = fromOffset_upv_1(52, 34)
-                u22.Visible = false
-                u19.Size = fromOffset_upv_1(76, 34)
-            end
-            local v101
-            if v88 ~= "ready" then
-                v101 = Colors_upv_1.Stroke
-            else
-                v101 = Success_upv_1
-            end
-            u20.Color = v101
-            local v102
-            if v88 ~= "ready" then
-                v102 = 0.8
-            else
-                v102 = 0.2
-            end
-            u20.Transparency = v102
-        end
-        v98 = ((not (v91 > 0)) and 1) or (math.clamp(v90 / v91, 0, 1))
-        if v88 == "max" then
-            u31.Set(1, true)
-            u31.SetColor(Gold_upv_1)
-            u32.Text = "MAX"
-            u30.Text = "MAX LEVEL"
-            u30.TextColor3 = Gold_upv_1
-        elseif v97 then
-            u31.Set(0, true)
-            u32.Text = "NO LEVELS"
-            u30.Text = ""
-        else
-            local v104 = nil
-            if not (v94) then
-                u31.Set(v98)
-                local SetColor_1 = u31.SetColor
-                if v88 == "ready" then
-                    v104 = Success_upv_1
-                elseif v93 then
-                    v104 = Colors_upv_1.AccentDark
-                else
-                    v104 = Colors_upv_1.Accent
-                end
-                SetColor_1(v104)
-                u32.Text = string.format("%d / %d", v90, v91)
-            end
-            u30.Text = (v93 and "TO UNLOCK") or ("TO LEVEL " .. v89 + 1)
-            if v88 ~= "ready" then
-                v104 = Colors_upv_1.TextDim
-            else
-                v104 = Theme_upv_1.Lighten(Success_upv_1, 0.15)
-            end
-            u30.TextColor3 = v104
-        end
-        local v105 = Economy_upv_1.StatWord(u70) or "damage"
-        u34.Text = v97 and "NO LEVEL BONUS" or string.upper(v105) .. " BONUS"
-        local Loc_1 = a1.Loc
-        local v107 = Loc_1.Pick(v105 .. " (bonus)", v105)
-        u39.Text = v107
-        u35.Visible = not v97
-        u42.Visible = not v97
-        v98 = (v93 and 0) or (Economy_upv_1.BonusPercent(v89))
-        local v108 = Economy_upv_1.BonusPercent(math.min(MAX_LEVEL_upv_1, math.max(v89, 1) + 1))
-        if not (v94) then
-            u40(v98, true)
-            u41(v108, true)
-        end
-        local v109
-        if v93 then
-            v109 = Colors_upv_1.TextMuted
-        elseif v88 ~= "max" then
-            v109 = Colors_upv_1.Text
-        else
-            v109 = Gold_upv_1
-        end
-        u36.TextColor3 = v109
-        local v110 = false
-        if v88 == "max" then
-            v109 = v110
-        else
-            v109 = not v93
-        end
-        u37.Visible = v109
-        local v111 = false
-        if v88 ~= "max" then
-            v111 = not v93
-        end
-        u38.Visible = v111
-        if not (v94) then
-            local v112 = nil
-            local _ = nil
-            local v113 = nil
-            for key_1, value_8 in tbl_upv_3 do
-                local v114 = key_1 <= v89
-                if v114 then
-                    if v88 ~= "max" then
-                        v112 = Colors_upv_1.Accent
-                    else
-                        v112 = Gold_upv_1
-                    end
-                else
-                    if key_1 ~= v89 + 1 or v88 ~= "ready" then
-                        v112 = Colors_upv_1.Inset
-                        value_8.BackgroundColor3 = v112
-                        if v114 or key_1 == v89 + 1 and v88 == "ready" then
-                            v112 = 0
-                            v113.BackgroundTransparency = v112
+
+                v164 += 1
+                addOddsRow("title", "Chance each item is in your drop", nil, v164)
+
+                for _, item in v173.items do
+                    if type(item) == "table" then
+                        if type(item.item) ~= "string" then
                             continue
                         end
-                        v112 = 0.1
-                        v113.BackgroundTransparency = v112
-                        continue
+                        if type(item.chance) ~= "number" then
+                            continue
+                        end
+
+                        v164 += 1
+                        v165 += 1
+                        local text = weaponInfo.Name(item.item)
+                        local text2 = oddsValue({chance = item.chance}) or "0%"
+                        local layoutOrder = v164
+                        local v186 = item.locked and "LOCKED" or nil
+                        addOddsRow("row", text, text2, layoutOrder, v186)
                     end
-                    v112 = Success_upv_1
                 end
-                value_8.BackgroundColor3 = v112
-                if v114 or key_1 == v89 + 1 and v88 == "ready" then
-                    v112 = 0
-                    v113.BackgroundTransparency = v112
-                    continue
-                end
-                v112 = 0.1
-                v113.BackgroundTransparency = v112
+
+                v164 += 1
+                addOddsRow("note", "For your collection right now: maxed items never drop, and items in the loadout you carry turn up more often. Stack sizes are random within the range above.", nil, v164)
             end
-        end
-        local v115 = math.floor((Economy_upv_1.BONUS_PER_LEVEL * 100) + 0.5)
-        if v97 then
-            u44.Text = Loc_1.T("Nothing on this item scales with levels: it's the same for everyone, and it never drops once you own it.")
-        elseif not (v93) or Economy_upv_1.RankAllows(u70) then
-            if (v93) and (Economy_upv_1.MaxLevel(u70) <= 1) then
-                u44.Text = Loc_1.T("Nothing on this item scales with levels: unlock it once and it's yours.")
-            elseif v93 then
-                u44.Text = Loc_1.T(string.format("Unlocks at level 1. Each level after that adds +%d%% %s, up to +%d%%.", v115, v107, Economy_upv_1.MaxBonusPercent()))
-            elseif v88 == "max" then
-                u44.Text = Loc_1.T(string.format("Maxed out: +%d%% %s for good. The cap may rise in a later update.", v98, v107))
-            elseif v89 <= 1 then
-                u44.Text = Loc_1.T(string.format("Level %d adds +%d%% %s.", v89 + 1, v115, v107))
-            else
-                u44.Text = Loc_1.T(string.format("Level %d adds another +%d%% %s (max +%d%%).", v89 + 1, v115, v107, Economy_upv_1.MaxBonusPercent()))
+
+            if v165 == 0 then
+                v164 += 1
+                addOddsRow("note", "The odds are on their way from the server. Try again in a moment.", nil, v164)
             end
-        else
-            v109 = RankArt_upv_1.Ranks.Get(Economy_upv_1.ItemRank(u70))
-            u44.Text = Loc_1.T(string.format("Joins your drops at %s (%s trophies). Win matches to climb the Rank Road.", v109.name, UI_upv_1.FormatNumber(v109.trophies)))
+
+            return v165
         end
-        local v116 = math.max(0, v91 - v90)
-        u46.ImageTransparency = 1
-        if not (v93) or Economy_upv_1.RankAllows(u70) then
-            if v93 then
-                local v117 = Economy_upv_1.ItemKey(u70)
-                v90 = Economy_upv_1.CanBuy(v117)
-                v109 = Economy_upv_1.Pending(v117)
-                if v90 then
-                    u47:SetStyle("Primary")
-                    u47:SetEnabled(not v109)
-                    local v113 = (v109 and "UNLOCKING\226\128\166") or (string.format("UNLOCK NOW   <font color=\"%s\">%s</font> %s", "#FFFFFF", Economy_upv_1.ROBUX, Economy_upv_1.PriceAmount(v117)))
-                    u47:SetText(v113)
-                    u48.Text = Loc_1.T(string.format("or find %d more shard%s in drops", v116, ((v116 ~= 1) and "s") or ""))
-                else
-                    u47:SetStyle("Dark")
-                    u47:SetEnabled(false)
-                    u47:SetText(string.format("FIND %d MORE SHARD%s", v116, ((v116 ~= 1) and "S") or ""))
-                    u48.Text = Loc_1.T("Win matches to find shards")
-                end
-            elseif v88 == "max" or v97 then
-                u47:SetStyle("Dark")
-                u47:SetEnabled(false)
-                u47:SetText((v97 and "NO UPGRADES") or "MAX LEVEL")
-                u48.Text = Loc_1.T("It won't drop any more: shards go to your other items")
-            elseif v88 ~= "ready" then
-                u47:SetStyle("Dark")
-                u47:SetEnabled(false)
-                u47:SetText(string.format("NEED %d MORE SHARD%s", v116, ((v116 ~= 1) and "S") or ""))
-                u48.Text = Loc_1.T("Win matches to find shards")
-            else
-                v109 = true
-                if u80 ~= u70 then
-                    v109 = Economy_upv_1.Upgrading(u70)
-                end
-                u47:SetStyle("Success")
-                u47:SetEnabled(not v109)
-                local v113
-                if v109 then
-                    v113 = "UPGRADING\226\128\166"
-                else
-                    v113 = string.format("UPGRADE TO LV %d", v89 + 1)
-                end
-                u47:SetText(v113)
-                u48.Text = Loc_1.T(string.format("Spends %d shards  \194\183  <font color=\"%s\">%s</font>", v91, u4, Loc_1.T(Economy_upv_1.BonusText(u70, v89 + 1))))
-            end
-        else
-            local v118 = Economy_upv_1.ItemRank(u70)
-            u47:SetStyle("Dark")
-            u47:SetEnabled(true)
-            u47:SetText("UNLOCKS AT " .. string.upper(RankArt_upv_1.Ranks.Get(v118).name))
-            u48.Text = Loc_1.T("See the Rank Road")
-        end
-        u48.Visible = u76
-        if not v94 then
-            return
-        end
-        u47:SetEnabled(false)
-    end
-    local function layoutWindow()
-        --[[
-          name: layoutWindow
-          line: 1443
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            u5 (copy, index: 2)
-            fromOffset_upv_1 (copy, index: 3)
-            u6 (copy, index: 4)
-            layoutPanel (copy, index: 5)
-            u8 (copy, index: 6)
-            u50 (ref,  index: 7)
-            u49 (copy, index: 8)
-            u51 (copy, index: 9)
-            u52 (copy, index: 10)
-            u56 (copy, index: 11)
-            u57 (copy, index: 12)
-            u58 (copy, index: 13)
-            u55 (copy, index: 14)
-            u53 (copy, index: 15)
-            u54 (copy, index: 16)
-        ]]
-        local v119 = UI_upv_1.CanvasSize()
-        local v120 = UI_upv_1.TopInset()
-        local Compact_1 = UI_upv_1.Compact
-        if Compact_1 then
-            u5.Holder.Size = fromOffset_upv_1(math.floor(math.clamp(v119.X - 24, 340, 1180)), math.floor(math.clamp((v119.Y - v120) - 12, 300, 720)))
-        else
-            u5.Holder.Size = fromOffset_upv_1(math.floor(math.clamp(v119.X - 160, 1180, 1400)), math.floor(math.clamp((v119.Y - v120) - 40, 720, 940)))
-        end
-        u5.Subtitle.Visible = true
-        u5.Subtitle.TextSize = (Compact_1 and 15) or 17
-        u6.TextSize = (Compact_1 and 14) or 16
-        local v121 = -(UI_upv_1.WindowCloseSize() + 34)
-        u6.Position = UDim2.new(1, v121, 0, (Compact_1 and 18) or 22)
-        local v122 = u5.Holder.Size.X.Offset - 44
-        local v123 = (Compact_1 and 300) or (math.clamp(math.floor(v122 * 0.28), 330, 390))
-        local v124 = (Compact_1 and 14) or 20
-        layoutPanel(v123, (u5.Holder.Size.Y.Offset - 80) - 32, Compact_1)
-        u8.Position = fromOffset_upv_1(0, 0)
-        u50 = (v122 - v123) - v124
-        u49.Position = fromOffset_upv_1(v123 + v124, 0)
-        u49.Size = UDim2.new(0, u50, 1, 0)
-        local v125 = u50 - 12
-        u51.Size = UDim2.new(1, -12, 0, (Compact_1 and 92) or 104)
-        local v126 = (Compact_1 and 64) or 76
-        u52.Size = fromOffset_upv_1(v126, (Compact_1 and 64) or 76)
-        local v127 = (Compact_1 and 104) or 122
-        local v128 = (Compact_1 and 138) or 150
-        local v129 = (Compact_1 and 152) or 166
-        u56.Instance.Size = fromOffset_upv_1(v127, 46)
-        u57.Instance.Size = fromOffset_upv_1(v128, 46)
-        u58.Instance.Size = fromOffset_upv_1(v129, 46)
-        local v130 = (v127 + v128) + v129 + 20
-        u55.Size = fromOffset_upv_1(v130, 50)
-        local v131 = ((Compact_1 and 64) or 76) + 28
-        u53.Position = fromOffset_upv_1(v131, (Compact_1 and 12) or 18)
-        u53.TextSize = (Compact_1 and 21) or 24
-        u54.Position = fromOffset_upv_1(v131, (Compact_1 and 40) or 48)
-        local v132 = math.max(160, ((v125 - v131) - v130) - 28)
-        u54.Size = fromOffset_upv_1(v132, (Compact_1 and 44) or 42)
-        u54.TextSize = (Compact_1 and 13) or 14
-    end
-    local function layoutGrid(a32)
-        --[[
-          name: layoutGrid
-          line: 1484
-          upvalues:
-            u50 (ref,  index: 1)
-            UI_upv_1 (copy, index: 2)
-            tbl_upv_10 (copy, index: 3)
-            u71 (ref,  index: 4)
-            Economy_upv_1 (copy, index: 5)
-            u51 (copy, index: 6)
-            fromOffset_upv_1 (copy, index: 7)
-            tbl_upv_4 (copy, index: 8)
-            tbl_upv_5 (copy, index: 9)
-            a1 (copy, index: 10)
-            u2 (copy, index: 11)
-            Theme_upv_1 (copy, index: 12)
-            u49 (copy, index: 13)
-        ]]
-        local v133 = u50 - 12
-        local v134 = math.clamp(math.floor((v133 + 12) / 162), 2, 7)
-        local v135 = math.floor((v133 - ((v134 - 1) * 12)) / v134)
-        local v136 = ((UI_upv_1.Compact) and 30) or 34
-        local v137 = ((UI_upv_1.Compact) and 184) or 212
-        local tbl_18 = {}
-        tbl_18.owned = {}
-        tbl_18.locked = {}
-        local tbl_upv_19 = {}
-        for key_2, value_9 in tbl_upv_10 do
-            tbl_upv_19[value_9] = key_2
-            u71(value_9)
-            value_9.section = ((value_9.state ~= "locked") and "owned") or "locked"
-            table.insert(tbl_18[value_9.section], value_9)
-        end
-        table.sort(
-            tbl_18.owned,
-            function(a33, a34)
-                --[[
-                  line: 1499
-                  upvalues:
-                    tbl_upv_19 (copy, index: 1)
-                ]]
-                local v138 = a33.state == "ready"
-                if v138 == (a34.state == "ready") then
-                    return tbl_upv_19[a33] < tbl_upv_19[a34]
-                end
-                return v138
-            end
-        )
-        local function frac_1(a35)
+
+        local function priceLabel(a188, a189: string)
             --[[
-              name: frac
-              line: 1506
+              name: priceLabel
+              line: 686
               upvalues:
-                Economy_upv_1 (copy, index: 1)
+                economy (copy, index: 1)
+                Unlocks (copy, index: 2)
             ]]
-            local v139, v140 = Economy_upv_1.Progress(a35.id)
-            return v139 / math.max(v140, 1), v140
-        end
-        table.sort(
-            tbl_18.locked,
-            function(a36, a37)
-                --[[
-                  line: 1510
-                  upvalues:
-                    Economy_upv_1 (copy, index: 1)
-                    tbl_upv_19 (copy, index: 2)
-                ]]
-                local v141, v142 = Economy_upv_1.Progress(a36.id)
-                local v143 = v141 / math.max(v142, 1)
-                local v144, v145 = Economy_upv_1.Progress(a37.id)
-                local v146 = v144 / math.max(v145, 1)
-                if v143 == v146 then
-                    if v142 == v145 then
-                        return tbl_upv_19[a36] < tbl_upv_19[a37]
-                    end
-                    return v142 < v145
-                end
-                return v146 < v143
+            if economy.Pending(a188) then
+                return "…"
             end
-        )
-        local v147 = 0
-        local v148 = Economy_upv_1.DropsAllowed()
-        u51.Visible = v148
-        if v148 then
-            u51.Position = fromOffset_upv_1(4, 4)
-            v147 = u51.Size.Y.Offset + 14
+
+            local v191 = if const v190 = if a188 == Unlocks.FIRST_DROP.key then economy.Price("drop_golden") else nil then string.format("<font color=\"#C9F5D6\"><s>%d</s></font> ", v190) else ""
+
+            return string.format("%s  <font color=\"%s\">%s</font> %s%s", a189, "#FFFFFF", economy.ROBUX, v191, economy.PriceAmount(a188))
         end
-        for _, value_10 in tbl_upv_4 do
-            v148 = tbl_18[value_10]
-            local v149 = tbl_upv_5[value_10]
-            v149.frame.Visible = #v148 > 0
-            if not (#v148 > 0) then
-                continue
-            end
-            a1.Loc.Rich(v149.title, string.format("%s  <font color=\"%s\">\194\183  %d</font>", ((value_10 ~= "owned") and "LOCKED") or "YOUR ITEMS", u2, #v148))
-            v149.sub.TextSize = ((UI_upv_1.Compact) and 13) or 14
-            v149.frame.Size = UDim2.new(1, -8, 0, v136)
-            v149.frame.Position = fromOffset_upv_1(4, v147)
-            v147 = v147 + v136
-            for key_3, value_11 in v148 do
-                value_11.y = v147 + (((key_3 - 1) // v134) * (v137 + 12))
-                value_11.h = v137
-                value_11.visible = true
-                value_11.holder.Visible = true
-                local v150 = fromOffset_upv_1(((key_3 - 1) % v134 * (v135 + 12)) + 4, value_11.y + 4)
-                if (a32) and (value_11.shown) and value_11.holder.Position ~= v150 then
-                    UI_upv_1.Tween(value_11.holder, Theme_upv_1.Tween.Smooth, {Position = v150})
+
+        local function paintShop()
+            --[[
+              name: paintShop
+              line: 696
+              upvalues:
+                economy (copy, index: 1)
+                ui20 (copy, index: 2)
+                a19 (copy, index: 3)
+                v126 (copy, index: 4)
+                ui21 (copy, index: 5)
+                v122 (copy, index: 6)
+                priceLabel (copy, index: 7)
+                v123 (copy, index: 8)
+                v134 (copy, index: 9)
+                v135 (copy, index: 10)
+                v124 (copy, index: 11)
+            ]]
+            local flooredValue
+            local v194
+            local flooredValue2
+            local v196, v197, v198, v199 = false, false, false, false
+            local v200 = economy.DropInfo("golden")
+            local number = tonumber(v200.stacks) or 4
+            local number2 = tonumber(v200.min)
+            local number3 = tonumber(v200.max)
+
+            if number2 then
+                if number3 then
+                    flooredValue2 = math.floor(((number * (number2 + number3)) / 2) + 0.5)
                 else
-                    value_11.holder.Position = v150
+                    v196 = true
                 end
-                value_11.holder.Size = fromOffset_upv_1(v135, v137)
-                value_11.glow.Size = fromOffset_upv_1(math.floor(v135 * 1.05), 150)
-                value_11.glow.Position = UDim2.new(0.5, 0, 0, math.floor((v137 - 88) / 2) + 6)
-            end
-            v147 = v147 + ((math.ceil(#v148 / v134) * (v137 + 12)) + 12)
-        end
-        for _, value_12 in tbl_upv_10 do
-            value_12.shown = value_12.visible
-        end
-        u49.CanvasSize = fromOffset_upv_1(0, v147 + 8)
-    end
-    local function paintSummary()
-        --[[
-          name: paintSummary
-          line: 1565
-          upvalues:
-            WeaponInfo_upv_1 (copy, index: 1)
-            Economy_upv_1 (copy, index: 2)
-            u2 (copy, index: 3)
-            u4 (copy, index: 4)
-            a1 (copy, index: 5)
-            u6 (copy, index: 6)
-        ]]
-        local v151 = 0
-        local v152 = 0
-        for _, value_13 in WeaponInfo_upv_1.AllItems() do
-            v151 = v151 + 1
-            v152 = (Economy_upv_1.Owns(value_13.id) and (v152 + 1)) or v152
-        end
-        local v153 = Economy_upv_1.UpgradesReady()
-        local v154 = string.format("%d / %d <font color=\"%s\">UNLOCKED</font>", v152, v151, u2)
-        if v153 > 0 then
-            v154 = v154 .. string.format("   <font color=\"%s\">\194\183   %d UPGRADE%s READY</font>", u4, v153, ((v153 ~= 1) and "S") or "")
-        end
-        a1.Loc.Rich(u6, v154)
-    end
-    local u82 = function(a38)
-        --[[
-          line: 1581
-          upvalues:
-            layoutGrid (copy, index: 1)
-            u81 (ref,  index: 2)
-            paintShop (copy, index: 3)
-            paintSummary (copy, index: 4)
-            queueVisible (copy, index: 5)
-        ]]
-        layoutGrid(a38)
-        u81()
-        paintShop()
-        paintSummary()
-        task.defer(queueVisible)
-    end
-    u72 = function(a39, a40)
-        --[[
-          line: 1596
-          upvalues:
-            tbl_upv_11 (copy, index: 1)
-            u70 (ref,  index: 2)
-            u71 (ref,  index: 3)
-            u81 (ref,  index: 4)
-            UI_upv_1 (copy, index: 5)
-            u14 (copy, index: 6)
-            Theme_upv_1 (copy, index: 7)
-        ]]
-        if not tbl_upv_11[a39] then
-            return
-        end
-        local v155 = u70 and (tbl_upv_11[u70])
-        u70 = a39
-        if v155 then
-            u71(v155)
-        end
-        u71(tbl_upv_11[a39])
-        u81()
-        if type(a40) == "table" and (a40.quiet) then
-            return
-        end
-        UI_upv_1.Pop(u14, 0.9, Theme_upv_1.Tween.PopSmall)
-    end
-    local function flashCard(a41, a42)
-        --[[
-          name: flashCard
-          line: 1590
-          upvalues:
-            Colors_upv_1 (copy, index: 1)
-            UI_upv_1 (copy, index: 2)
-        ]]
-        a41.flash.BackgroundColor3 = a42 or (Colors_upv_1.Accent)
-        a41.flash.BackgroundTransparency = 0.65
-        local tbl_20 = {BackgroundTransparency = 1}
-        UI_upv_1.Tween(a41.flash, TweenInfo.new(0.7, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_20)
-    end
-    local function shardBurst(a43)
-        --[[
-          name: shardBurst
-          line: 1613
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-            fromOffset_upv_1 (copy, index: 2)
-            Theme_upv_1 (copy, index: 3)
-            u17 (copy, index: 4)
-        ]]
-        local v156 = ((UI_upv_1.Touch) and 9) or 14
-        for n_2 = 1, v156 do
-            local v157 = ((n_2 / v156) * math.pi) * 2 + math.random() * 0.4
-            local v158 = 0.32 + math.random() * 0.22
-            local v159 = math.random(12, 22)
-            local Image_1 = UI_upv_1.Image
-            local Shard_1 = UI_upv_1.Assets.Fx.Shard
-            local tbl_21 = {ImageTransparency = 0.05, ImageColor3 = 0, Parent = 0, ZIndex = 7}
-            tbl_21.AnchorPoint = Vector2.new(0.5, 0.5)
-            tbl_21.Position = UDim2.fromScale(0.5, 0.52)
-            tbl_21.Size = fromOffset_upv_1(v159, v159)
-            tbl_21.Rotation = math.random(0, 360)
-            local v160
-            if n_2 % 3 ~= 0 then
-                v160 = a43
             else
-                v160 = Theme_upv_1.Lighten(a43, 0.25)
+                v196 = true
             end
-            tbl_21.ImageColor3 = v160
-            tbl_21.Parent = u17
-            local u83 = Image_1(Shard_1, tbl_21)
-            UI_upv_1.Tween(u83, TweenInfo.new(0.6 + (math.random() * 0.25), Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 1, Position = UDim2.fromScale(0.5 + (math.cos(v157) * v158), 0.52 + ((math.sin(v157) * v158) * 0.9)), Rotation = u83.Rotation + math.random(-160, 160), Size = fromOffset_upv_1(v159 * 0.5, v159 * 0.5)})
-            task.delay(
-                1,
-                function()
-                    --[[
-                      line: 1636
-                      upvalues:
-                        u83 (copy, index: 1)
-                    ]]
-                    u83:Destroy()
+
+            if v196 then
+                flooredValue2 = 60
+            end
+
+            local v204 = economy.GoldenOffer()
+            local v205 = economy.OfferLeft()
+
+            if v204 then
+                if v204.state ~= "active" then
+                    v197 = true
+                elseif v205 then
+                    ui20.RichText = true
+                    a19.Loc.Rich(ui20, string.format("<font color=\"#FF8C92\"><b>ONE-TIME OFFER</b>: ends in %s</font>\nAbout %d shards in %d big stacks.", economy.FormatLeft(v205), flooredValue2, number))
+                else
+                    v197 = true
                 end
-            )
+            else
+                v197 = true
+            end
+
+            if v197 then
+                a19.Loc.Rich(ui20, string.format("About %d shards in %d big stacks.\nOne is always an item you don't own yet.", flooredValue2, number))
+            end
+
+            if v204 then
+                if v204.state ~= "active" then
+                    v198 = true
+                else
+                    v194 = economy.OfferDiscount()
+                end
+            else
+                v198 = true
+            end
+
+            if v198 then
+                v194 = nil
+            end
+
+            v126.Visible = v194 ~= nil
+
+            if v194 then
+                v126:FindFirstChild("Text").Text = string.format("-%d%%", v194)
+            end
+
+            ui21.Text = string.format("About %d shards in %d stacks. Odds for your collection, before you buy.", flooredValue2, number)
+            local v206 = economy.DropKey(1)
+            local v207 = economy.DropKey(5)
+            v122:SetText(priceLabel(v206, "1 DROP"))
+            v123:SetText(priceLabel(v207, "5 DROPS"))
+            v134:SetText(priceLabel(v206, "BUY 1"))
+            v135:SetText(priceLabel(v207, "BUY 5"))
+            v122:SetEnabled(not economy.Pending(v206))
+            v123:SetEnabled(not economy.Pending(v207))
+            v134:SetEnabled(not economy.Pending(v206))
+            v135:SetEnabled(not economy.Pending(v207))
+            local v208 = economy.Price(v206) or 0
+            local v209 = economy.Price(v207) or 0
+
+            if not (0 < v208) then
+                v199 = true
+            elseif not (0 < v209) then
+                v199 = true
+            else
+                flooredValue = math.floor(((1 - (v209 / (5 * v208))) * 100) + 0.5)
+            end
+
+            if v199 then
+                flooredValue = 0
+            end
+
+            v124.Visible = 5 <= flooredValue
+            v124:FindFirstChild("Text").Text = string.format("SAVE %d%%", flooredValue)
         end
-    end
-    local function levelUpMoment(a44, a45, a46)
-        --[[
-          name: levelUpMoment
-          line: 1642
-          upvalues:
-            u78 (ref,  index: 1)
-            u77 (ref,  index: 2)
-            MAX_LEVEL_upv_1 (copy, index: 3)
-            Gold_upv_1 (copy, index: 4)
-            Success_upv_1 (copy, index: 5)
-            u31 (copy, index: 6)
-            u15 (copy, index: 7)
-            UI_upv_1 (copy, index: 8)
-            u11 (copy, index: 9)
-            u16 (copy, index: 10)
-            fromOffset_upv_1 (copy, index: 11)
-            shardBurst (copy, index: 12)
-            u13 (copy, index: 13)
-            u14 (copy, index: 14)
-            Theme_upv_1 (copy, index: 15)
-            a1 (copy, index: 16)
-            u19 (copy, index: 17)
-            Colors_upv_1 (copy, index: 18)
-            u21 (copy, index: 19)
-            u22 (copy, index: 20)
-            u23 (copy, index: 21)
-            u24 (copy, index: 22)
-            u20 (copy, index: 23)
-            u18 (copy, index: 24)
-            Economy_upv_1 (copy, index: 25)
-            u40 (copy, index: 26)
-            u41 (copy, index: 27)
-            u36 (copy, index: 28)
-            tbl_upv_3 (copy, index: 29)
-            u32 (copy, index: 30)
-            tbl_upv_11 (copy, index: 31)
-            flashCard (copy, index: 32)
-            u82 (ref,  index: 33)
-        ]]
-        u78 = u78 + 1
-        local u84 = u78
-        u77 = {id = a44, token = u84}
-        local u85 = MAX_LEVEL_upv_1 <= a46
-        local v161
-        if u85 then
-            v161 = Gold_upv_1
-        else
-            v161 = Success_upv_1
+
+        local function openOdds()
+            --[[
+              name: openOdds
+              line: 730
+              upvalues:
+                buildOdds (copy, index: 1)
+                paintShop (copy, index: 2)
+                ui (copy, index: 3)
+                v53 (copy, index: 4)
+                parent17 (copy, index: 5)
+                udim2FromOffset (copy, index: 6)
+                scaleObj2 (copy, index: 7)
+                ancestor (copy, index: 8)
+                theme (copy, index: 9)
+                a19 (copy, index: 10)
+                guiService (copy, index: 11)
+                v134 (copy, index: 12)
+            ]]
+            buildOdds()
+            paintShop()
+            local _ = ui.CanvasSize()
+            local v212 = math.min(460, (math.floor(v53.Holder.Size.Y.Offset - 40)))
+            parent17.Size = udim2FromOffset(560, v212)
+            scaleObj2.Scale = math.min(1, (v53.Holder.Size.X.Offset - 40) / 560)
+            ancestor.Visible = true
+            ancestor.BackgroundTransparency = 1
+            ui.Tween(ancestor, theme.Tween.Smooth, {BackgroundTransparency = 0.35})
+            ui.SlideIn(parent17, Vector2.new(0, 24), theme.Tween.Pop, UDim2.fromScale(0.5, 0.5))
+            a19.Sounds.Play("Open")
+
+            if ui.Gamepad then
+                guiService.SelectedObject = v134.Instance
+            end
         end
-        u31.SetColor(Success_upv_1)
-        u31.Set(1, false, TweenInfo.new(0.18, Enum.EasingStyle.Quad))
-        u15.BackgroundColor3 = v161
-        u15.BackgroundTransparency = 0.55
-        local tbl_22 = {BackgroundTransparency = 1}
-        UI_upv_1.Tween(u15, TweenInfo.new(0.55, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), tbl_22)
-        local Offset_1 = u11.Size.X.Offset
-        u16.ImageColor3 = v161
-        u16.Size = fromOffset_upv_1(60, 60)
-        u16.ImageTransparency = 0.15
-        UI_upv_1.Tween(u16, TweenInfo.new(0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 1, Size = fromOffset_upv_1(Offset_1 * 1.4, Offset_1 * 1.4)})
-        shardBurst(v161)
-        u13.ImageColor3 = v161
-        u13.ImageTransparency = 0.2
-        local tbl_23 = {ImageTransparency = 0.5}
-        UI_upv_1.Tween(u13, TweenInfo.new(0.9, Enum.EasingStyle.Quad), tbl_23)
-        UI_upv_1.Pop(u14, 0.7, Theme_upv_1.Tween.Slam)
-        a1.Sounds.Play("LevelUp")
-        u19.BackgroundColor3 = Colors_upv_1.Void
-        u19.BackgroundTransparency = 0.2
-        u21.Text = "LV"
-        u21.TextSize = 14
-        u21.TextColor3 = Colors_upv_1.TextDim
-        u21.Size = fromOffset_upv_1(22, 34)
-        u22.Visible = true
-        u19.Size = fromOffset_upv_1(70, 34)
-        u23.Text = tostring(a45)
-        u23.TextColor3 = Colors_upv_1.Text
-        u23.Position = UDim2.new()
-        u24.Text = tostring(a46)
-        u24.TextColor3 = Gold_upv_1
-        u24.Position = UDim2.fromScale(0, 1)
-        u20.Color = Gold_upv_1
-        u20.Transparency = 0
-        task.delay(
-            0.12,
-            function()
+
+        do
+            local function closeOdds()
                 --[[
-                  line: 1683
+                  name: closeOdds
+                  line: 747
                   upvalues:
-                    u84 (copy, index: 1)
-                    u78 (ref,  index: 2)
-                    a1 (copy, index: 3)
-                    UI_upv_1 (copy, index: 4)
-                    u23 (copy, index: 5)
-                    u24 (copy, index: 6)
-                    u19 (copy, index: 7)
-                    Theme_upv_1 (copy, index: 8)
+                    ancestor (copy, index: 1)
+                    guiService (copy, index: 2)
+                    v121 (copy, index: 3)
                 ]]
-                if u84 ~= u78 then
+                if not ancestor.Visible then
                     return
                 end
-                a1.Sounds.Play("XP_Tick")
-                local v162 = TweenInfo.new(0.34, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-                UI_upv_1.Tween(u23, v162, {Position = UDim2.fromScale(0, -1)})
-                UI_upv_1.Tween(u24, v162, {Position = UDim2.new()})
+
+                ancestor.Visible = false
+                local selectedObject = guiService.SelectedObject
+
+                if selectedObject and selectedObject:IsDescendantOf(ancestor) then
+                    guiService.SelectedObject = v121.Instance
+                end
+            end
+
+            v121.Activated:Connect(openOdds)
+            v131.Activated:Connect(closeOdds)
+            ancestor.Activated:Connect(closeOdds)
+        end
+
+        do
+            local function buyDrops(a216)
+                --[[
+                  name: buyDrops
+                  line: 760
+                  upvalues:
+                    economy (copy, index: 1)
+                    paintShop (copy, index: 2)
+                ]]
+                if not economy.DropsAllowed() then
+                    return
+                end
+
+                economy.Buy(economy.DropKey(a216))
+                paintShop()
+            end
+        end
+
+        v122.Activated:Connect(
+            function()
+                --[[
+                  line: 767
+                  upvalues:
+                    economy (copy, index: 1)
+                    paintShop (copy, index: 2)
+                ]]
+                if not economy.DropsAllowed() then
+                    return
+                end
+
+                economy.Buy(economy.DropKey(1))
+                paintShop()
+            end
+        )
+
+        v123.Activated:Connect(
+            function()
+                --[[
+                  line: 770
+                  upvalues:
+                    economy (copy, index: 1)
+                    paintShop (copy, index: 2)
+                ]]
+                if not economy.DropsAllowed() then
+                    return
+                end
+
+                economy.Buy(economy.DropKey(5))
+                paintShop()
+            end
+        )
+
+        v134.Activated:Connect(
+            function()
+                --[[
+                  line: 773
+                  upvalues:
+                    economy (copy, index: 1)
+                    paintShop (copy, index: 2)
+                ]]
+                if not economy.DropsAllowed() then
+                    return
+                end
+
+                economy.Buy(economy.DropKey(1))
+                paintShop()
+            end
+        )
+
+        v135.Activated:Connect(
+            function()
+                --[[
+                  line: 776
+                  upvalues:
+                    economy (copy, index: 1)
+                    paintShop (copy, index: 2)
+                ]]
+                if not economy.DropsAllowed() then
+                    return
+                end
+
+                economy.Buy(economy.DropKey(5))
+                paintShop()
+            end
+        )
+
+        do
+            local function cardH()
+                --[[
+                  name: cardH
+                  line: 781
+                  upvalues:
+                    ui (copy, index: 1)
+                ]]
+                if ui.Compact then
+                    return 184
+                end
+
+                return 212
+            end
+        end
+
+        local targets = {}
+        local v219 = {}
+        local v220 = nil
+        local v221 = nil
+        local v222 = nil
+        local v223 = nil
+
+        local function makeCard(a225)
+            --[[
+              name: makeCard
+              line: 826
+              upvalues:
+                economy (copy, index: 1)
+                ui (copy, index: 2)
+                udim2FromOffset (copy, index: 3)
+                parent12 (copy, index: 4)
+                selectionImageObject (copy, index: 5)
+                colors (copy, index: 6)
+                theme (copy, index: 7)
+                fonts (copy, index: 8)
+                RankArt (copy, index: 9)
+                success (copy, index: 10)
+                a19 (copy, index: 11)
+                v221 (ref,  index: 12)
+                v222 (ref,  index: 13)
+                v220 (ref,  index: 14)
+                v223 (ref,  index: 15)
+            ]]
+            local h
+            local id = a225.id
+            local startValue = economy.CategoryColor(id)
+            local newUi = ui.new
+            local v230 = {Selectable = true, Name = a225.id}
+            local v231 = ui.Compact and 184 or 212
+            v230.Size = udim2FromOffset(170, v231)
+            v230.Parent = parent12
+            local ui2 = newUi("TextButton", v230)
+            ui2.SelectionImageObject = selectionImageObject
+            local scale = ui.GetScaleObj(ui2, "HoverScale")
+            local ui3 = ui.new("Frame", {Name = "Inner", Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 0.08, ClipsDescendants = true, (ui.Corner(14)), Parent = ui2})
+            local grad = ui.Gradient(startValue:Lerp(colors.Panel, 0.82), colors.PanelHi:Lerp(colors.Panel, 0.6), 115)
+            grad.Parent = ui3
+
+            local stroke = ui.Stroke(colors.Stroke, 1, 0.9)
+            stroke.Parent = ui3
+            local glow = ui.Image(ui.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 0.72, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0, 64), Size = udim2FromOffset(190, 150), ImageColor3 = startValue, Parent = ui3})
+            local icon = ui.new("Frame", {Name = "Icon", ZIndex = 2, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 12), Size = UDim2.new(1, -28, 1, -100), Parent = ui3})
+            local ui4 = ui.new("Frame", {Name = "Level", Position = udim2FromOffset(8, 8), AutomaticSize = Enum.AutomaticSize.X, Size = udim2FromOffset(0, 24), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.25, ZIndex = 4, ui.Corner(theme.Radius.Pill), (ui.Padding(0, 9, 0, 9)), Parent = ui3})
+            local lvText = ui.new("TextLabel", {Name = "Text", Text = "LV 1", RichText = true, TextSize = 14, ZIndex = 4, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromScale(0, 1), FontFace = fonts.Display, Parent = ui4})
+            local ui5 = ui.new("Frame", {Name = "Lock", Position = udim2FromOffset(8, 8), Size = udim2FromOffset(28, 28), BackgroundColor3 = colors.Void, BackgroundTransparency = 0.25, ZIndex = 4, (ui.Corner(theme.Radius.Pill)), Parent = ui3})
+            ui.Image(ui.Assets.Icons.Lock, {ZIndex = 4, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = udim2FromOffset(15, 15), ImageColor3 = colors.TextDim, Parent = ui5})
+            local name = ui.new("TextLabel", {Name = "ItemName", TextSize = 17, ZIndex = 3, Position = UDim2.new(0, 12, 1, -84), Size = UDim2.new(1, -24, 0, 22), Text = a225.name, FontFace = fonts.Bold, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = ui3})
+            local sub = ui.new("TextLabel", {Name = "Sub", Text = "", TextSize = 11, ZIndex = 3, Position = UDim2.new(0, 12, 1, -61), Size = UDim2.new(0.62, -12, 0, 15), FontFace = fonts.Heavy, TextColor3 = colors.TextMuted, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Parent = ui3})
+            local meta = ui.new("TextLabel", {Name = "Meta", Text = "", TextSize = 11, ZIndex = 3, AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -12, 1, -61), Size = UDim2.new(0.38, 0, 0, 15), FontFace = fonts.Heavy, TextColor3 = colors.TextMuted, TextXAlignment = Enum.TextXAlignment.Right, Parent = ui3})
+            local rankEmblem = RankArt.Emblem(1, 18, {Name = "RankEmblem", ZIndex = 3, Position = UDim2.new(0, 10, 1, -62.5), Parent = ui3})
+            rankEmblem.Visible = false
+            local ui6 = ui.new("Frame", {Name = "Shards", AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 10, 1, -10), Size = UDim2.new(1, -20, 0, 22), BackgroundColor3 = colors.Inset, BackgroundTransparency = 0.1, ClipsDescendants = true, ZIndex = 3, (ui.Corner(theme.Radius.Pill)), Parent = ui3})
+            local ui7 = ui.new("Frame", {Name = "Fill", Size = UDim2.fromScale(0, 1), BackgroundColor3 = Color3.new(1, 1, 1), ZIndex = 3, (ui.Corner(theme.Radius.Pill)), Parent = ui6})
+            local barFillGrad = ui.Gradient(theme.Lighten(colors.Accent, 0.2), colors.Accent, 90)
+            barFillGrad.Parent = ui7
+            local ui8 = ui.new("TextLabel", {Name = "Count", Text = "", TextSize = 14, ZIndex = 4, Size = UDim2.fromScale(1, 1), FontFace = fonts.Display, Parent = ui6})
+            ui.TextStroke(colors.Void, 1.2, 0.35).Parent = ui8
+            local ui9 = ui.new("TextButton", {Name = "Upgrade", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -8), Size = UDim2.new(1, -16, 0, 30), BackgroundColor3 = Color3.new(1, 1, 1), Text = "", Selectable = true, Visible = false, ZIndex = 6, ui.Corner(theme.Radius.Pill), ui.Gradient(Color3.fromRGB(84, 224, 124), Color3.fromRGB(40, 184, 92), 90), (ui.Stroke(Color3.fromRGB(170, 255, 200), 1, 0.5)), Parent = ui3})
+            ui9.SelectionImageObject = selectionImageObject
+            local upScale = ui.GetScaleObj(ui9, "Pulse")
+            local upGlow = ui.Image(ui.Assets.Icons.Glow, {Name = "Glow", ImageTransparency = 0.6, ZIndex = 5, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1, 30, 2.6, 0), ImageColor3 = success, Parent = ui9})
+            local parent = ui.new("Frame", {Size = UDim2.fromScale(1, 1), ZIndex = 6, (ui.List(Enum.FillDirection.Horizontal, 5, Enum.HorizontalAlignment.Center, Enum.VerticalAlignment.Center)), Parent = ui9})
+            ui.Icon("chevUp", 13, colors.Text, {LayoutOrder = 1, ZIndex = 6, Parent = parent})
+            ui.new("TextLabel", {Text = "UPGRADE", TextSize = 15, LayoutOrder = 2, ZIndex = 6, AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.fromScale(0, 1), FontFace = fonts.Display, Parent = parent})
+            local flash = ui.new("Frame", {Name = "Flash", Size = UDim2.fromScale(1, 1), BackgroundColor3 = colors.Accent, BackgroundTransparency = 1, ZIndex = 5, (ui.Corner(14)), Parent = ui3})
+            local v255 = {state = "locked", section = "locked", rendered = false, visible = true, shown = false, hover = false, y = 0, id = a225.id, holder = ui2, scale = scale, inner = ui3, grad = grad, stroke = stroke, glow = glow, icon = icon, lv = ui4, lvText = lvText, lock = ui5, name = name, sub = sub, meta = meta, rankEmblem = rankEmblem, barBg = ui6, barFill = ui7, barFillGrad = barFillGrad, barText = ui8, up = ui9, upScale = upScale, upGlow = upGlow, flash = flash}
+
+            if ui.Compact then
+                h = 184
+            else
+                h = 212
+            end
+
+            v255.h = h
+
+            ui2.MouseEnter:Connect(
+                function()
+                    --[[
+                      line: 986
+                      upvalues:
+                        ui (copy, index: 1)
+                        v255 (copy, index: 2)
+                        a19 (copy, index: 3)
+                        scale (copy, index: 4)
+                        theme (copy, index: 5)
+                        v221 (ref,  index: 6)
+                    ]]
+                    if ui.Touch then
+                        return
+                    end
+
+                    v255.hover = true
+                    a19.Sounds.Play("Hover")
+                    ui.Tween(scale, theme.Tween.PopSmall, {Scale = 1.03})
+                    v221(v255)
+                end
+            )
+
+            ui2.MouseLeave:Connect(
+                function()
+                    --[[
+                      line: 995
+                      upvalues:
+                        v255 (copy, index: 1)
+                        ui (copy, index: 2)
+                        scale (copy, index: 3)
+                        theme (copy, index: 4)
+                        v221 (ref,  index: 5)
+                    ]]
+                    v255.hover = false
+                    ui.Tween(scale, theme.Tween.Fast, {Scale = 1})
+                    v221(v255)
+                end
+            )
+
+            ui2.MouseButton1Down:Connect(
+                function()
+                    --[[
+                      line: 1000
+                      upvalues:
+                        ui (copy, index: 1)
+                        scale (copy, index: 2)
+                        theme (copy, index: 3)
+                    ]]
+                    ui.Tween(scale, theme.Tween.Instant, {Scale = 0.97})
+                end
+            )
+
+            ui2.MouseButton1Up:Connect(
+                function()
+                    --[[
+                      line: 1003
+                      upvalues:
+                        ui (copy, index: 1)
+                        scale (copy, index: 2)
+                        theme (copy, index: 3)
+                        v255 (copy, index: 4)
+                    ]]
+                    local scale2
+                    local tween = ui.Tween
+                    local popSmall = theme.Tween.PopSmall
+                    local v259 = {}
+
+                    if v255.hover then
+                        scale2 = 1.03
+                    else
+                        scale2 = 1
+                    end
+
+                    v259.Scale = scale2
+                    tween(scale, popSmall, v259)
+                end
+            )
+
+            ui2.Activated:Connect(
+                function()
+                    --[[
+                      line: 1006
+                      upvalues:
+                        a19 (copy, index: 1)
+                        v222 (ref,  index: 2)
+                        a225 (copy, index: 3)
+                    ]]
+                    a19.Sounds.Play("Select")
+                    v222(a225.id)
+                end
+            )
+
+            ui2.SelectionGained:Connect(
+                function()
+                    --[[
+                      line: 1010
+                      upvalues:
+                        v220 (ref,  index: 1)
+                        a225 (copy, index: 2)
+                        v222 (ref,  index: 3)
+                    ]]
+                    if v220 ~= a225.id then
+                        v222(a225.id, {quiet = true})
+                    end
+                end
+            )
+
+            ui.TrackPress(ui9)
+
+            ui9.MouseEnter:Connect(
+                function()
+                    --[[
+                      line: 1016
+                      upvalues:
+                        ui (copy, index: 1)
+                        a19 (copy, index: 2)
+                    ]]
+                    if not ui.Touch then
+                        a19.Sounds.Play("Hover")
+                    end
+                end
+            )
+
+            ui9.Activated:Connect(
+                function(a260)
+                    --[[
+                      line: 1021
+                      upvalues:
+                        v222 (ref,  index: 1)
+                        a225 (copy, index: 2)
+                        v223 (ref,  index: 3)
+                        ui9 (copy, index: 4)
+                    ]]
+                    v222(a225.id, {quiet = true})
+                    v223(a225.id, a260, ui9)
+                end
+            )
+
+            return v255
+        end
+
+        v221 = function(a261)
+            --[[
+              line: 1028
+              upvalues:
+                stateOf (copy, index: 1)
+                economy (copy, index: 2)
+                v220 (ref,  index: 3)
+                gold (copy, index: 4)
+                colors (copy, index: 5)
+                a19 (copy, index: 6)
+                weaponIcon (copy, index: 7)
+                success (copy, index: 8)
+                theme (copy, index: 9)
+                RankArt (copy, index: 10)
+                weaponInfo (copy, index: 11)
+            ]]
+            local color
+            local id = a261.id
+            local state = stateOf(id)
+            a261.state = state
+            local v265 = economy.Level(id)
+            local v266, v267 = economy.Progress(id)
+            local startValue = economy.CategoryColor(id)
+            local v269 = v220 == id
+            local visible = state == "locked"
+            a261.lock.Visible = visible
+            a261.lv.Visible = not visible
+
+            if state ~= "max" then
+                a261.lv.BackgroundColor3 = colors.Void
+                a261.lv.BackgroundTransparency = 0.25
+                local rich = a19.Loc.Rich
+                local lvText = a261.lvText
+                local stringFormat = string.format
+                local textDim = colors.TextDim
+                rich(lvText, stringFormat("<font size=\"11\" color=\"%s\">LV</font> %d", string.format("#%02X%02X%02X", math.floor((textDim.R * 255) + 0.5), math.floor((textDim.G * 255) + 0.5), (math.floor((textDim.B * 255) + 0.5))), v265))
+                a261.lvText.TextColor3 = colors.Text
+            else
+                a261.lv.BackgroundColor3 = gold
+                a261.lv.BackgroundTransparency = 0
+                a261.lvText.Text = "MAX"
+                a261.lvText.TextColor3 = colors.TextDark
+            end
+
+            local grad = a261.grad
+
+            if visible then
+                color = ColorSequence.new(colors.Panel, colors.Panel)
+            else
+                local v276 = state ~= "max" and (a261.hover and 0.24 or 0.18) or 0.22
+                color = ColorSequence.new(startValue:Lerp(colors.Panel, 1 - v276), colors.PanelHi:Lerp(colors.Panel, 0.6))
+            end
+
+            grad.Color = color
+            a261.inner.BackgroundTransparency = visible and 0.3 or 0.08
+            a261.glow.ImageTransparency = visible and 1 or a261.hover and 0.62 or v269 and 0.62 or 0.74
+
+            if a261.rendered then
+                weaponIcon.SetDim(a261.icon, visible)
+            end
+
+            a261.name.TextColor3 = if visible then colors.TextDim else colors.Text
+
+            if v269 then
+                a261.stroke.Color = if state == "ready" then success else colors.Accent
+                a261.stroke.Thickness = 2
+                a261.stroke.Transparency = 0
+            elseif state == "ready" then
+                a261.stroke.Color = success
+                a261.stroke.Thickness = 2
+            elseif state == "max" then
+                a261.stroke.Color = gold
+                a261.stroke.Thickness = 1
+                a261.stroke.Transparency = 0.55
+            else
+                a261.stroke.Color = colors.Stroke
+                a261.stroke.Thickness = 1
+                a261.stroke.Transparency = a261.hover and 0.6 or 0.9
+            end
+
+            a261.up.Visible = state == "ready"
+            a261.barBg.Visible = state ~= "ready"
+            local v277 = not (0 < v267) and 1 or math.clamp(v266 / v267, 0, 1)
+            local barFill = a261.barFill
+            local v279 = UDim2.fromScale
+            local v280 = state == "max" and 1 or v277
+            barFill.Size = v279(v280, 1)
+            a261.barFill.Visible = (state == "max") or (0 < v266)
+            a261.rankEmblem.Visible = false
+            a261.sub.Position = UDim2.new(0, 12, 1, -61)
+            a261.sub.Size = UDim2.new(0.62, -12, 0, 15)
+
+            if state == "max" then
+                a261.barFillGrad.Color = ColorSequence.new(theme.Lighten(gold, 0.15), gold:Lerp(Color3.fromRGB(180, 110, 10), 0.3))
+                a261.barText.Text = "MAX"
+                a261.sub.Text = "MAX LEVEL"
+                a261.sub.TextColor3 = gold
+                a261.meta.Text = string.upper(economy.BonusText(id, v265))
+                a261.meta.TextColor3 = gold
+
+                return
+            end
+
+            if visible and not economy.RankAllows(id) then
+                local v281 = economy.ItemRank(id)
+                a261.barFillGrad.Color = ColorSequence.new(theme.Lighten(colors.Accent, 0.1), colors.AccentDark)
+                a261.barText.Text = string.format("%d / %d", v266, v267)
+                RankArt.SetEmblem(a261.rankEmblem, v281)
+                a261.rankEmblem.Visible = true
+                a261.sub.Position = UDim2.new(0, 32, 1, -61)
+                a261.sub.Size = UDim2.new(1, -44, 0, 15)
+                a261.sub.Text = "REACH " .. string.upper(RankArt.Ranks.Get(v281).name)
+                a261.sub.TextColor3 = RankArt.Color(v281)
+                a261.meta.Text = ""
+
+                return
+            end
+
+            if visible then
+                a261.barFillGrad.Color = ColorSequence.new(theme.Lighten(colors.Accent, 0.1), colors.AccentDark)
+                a261.barText.Text = string.format("%d / %d", v266, v267)
+                a261.sub.Text = "LOCKED"
+                a261.sub.TextColor3 = colors.TextMuted
+                a261.meta.Text = "TO UNLOCK"
+                a261.meta.TextColor3 = colors.TextMuted
+
+                return
+            end
+
+            if state == "ready" then
+                a261.sub.Text = "UPGRADE READY"
+                a261.sub.TextColor3 = theme.Lighten(success, 0.15)
+                a261.meta.Text = string.format("%d / %d", v266, v267)
+                a261.meta.TextColor3 = colors.TextDim
+
+                return
+            end
+
+            if state == "fixed" then
+                local v282
+                a261.barFill.Visible = false
+                a261.barText.Text = "NO LEVELS"
+                local sub = a261.sub
+                local v284 = weaponInfo.Get(id)
+                v279 = string.upper
+
+                if v284 then
+                    v282 = weaponInfo.CATEGORY_SINGULAR[v284.category] or ""
+                else
+                    v282 = ""
+                end
+
+                sub.Text = v279(v282)
+                a261.sub.TextColor3 = colors.TextMuted
+                a261.meta.Text = ""
+
+                return
+            end
+
+            local text2
+            a261.barFillGrad.Color = ColorSequence.new(theme.Lighten(colors.Accent, 0.2), colors.Accent)
+            a261.barText.Text = string.format("%d / %d", v266, v267)
+            local sub = a261.sub
+
+            if not (1 < v265) then
+                local text
+                local v288 = weaponInfo.Get(id)
+                local stringUpper = string.upper
+
+                if v288 then
+                    text = weaponInfo.CATEGORY_SINGULAR[v288.category] or ""
+                else
+                    text = ""
+                end
+
+                text2 = stringUpper(text)
+            else
+                text2 = string.upper(economy.BonusText(id, v265))
+            end
+
+            sub.Text = text2
+            a261.sub.TextColor3 = colors.TextMuted
+            a261.meta.Text = "TO LV " .. v265 + 1
+            a261.meta.TextColor3 = colors.TextMuted
+        end
+
+        local v290 = {}
+
+        local function queueVisible()
+            --[[
+              name: queueVisible
+              line: 1131
+              upvalues:
+                parent12 (copy, index: 1)
+                v103 (ref,  index: 2)
+                targets (copy, index: 3)
+                v290 (copy, index: 4)
+                weaponIcon (copy, index: 5)
+            ]]
+            local v292 = math.max(parent12.AbsoluteSize.X / math.max(v103, 1), 0.01)
+            local v293 = parent12.CanvasPosition.Y / v292
+            local v294 = v293 + parent12.AbsoluteWindowSize.Y / v292
+
+            for _, target in targets do
+                local v297
+                local visible = target.visible
+
+                if visible then
+                    v297 = false
+                    local v299 = target.y + target.h
+
+                    if v293 - target.h <= v299 then
+                        v297 = target.y <= v294 + target.h
+                    end
+                else
+                    v297 = visible
+                end
+
+                local v300, v301 = false, false
+
+                if v297 then
+                    if target.rendered then
+                        v300 = true
+                    else
+                        target.rendered = true
+                        table.insert(v290, target)
+                    end
+                else
+                    v300 = true
+                end
+
+                if v300 and target.rendered then
+                    if target.visible then
+                        if target.y + target.h < v293 - (target.h * 2) then
+                            v301 = true
+                        else
+                            local y = target.y
+
+                            if v294 + (target.h * 2) < y then
+                                v301 = true
+                            end
+                        end
+                    else
+                        v301 = true
+                    end
+                end
+
+                if v301 then
+                    target.rendered = false
+
+                    if const index = table.find(v290, target) then
+                        table.remove(v290, index)
+                    end
+
+                    weaponIcon.Set(target.icon, nil)
+                end
+            end
+        end
+
+        runService.Heartbeat:Connect(
+            function()
+                --[[
+                  line: 1151
+                  upvalues:
+                    v290 (copy, index: 1)
+                    v53 (copy, index: 2)
+                    ui (copy, index: 3)
+                    weaponIcon (copy, index: 4)
+                ]]
+                if #v290 == 0 or not v53.IsOpen then
+                    return
+                end
+
+                local v304 = ui.Touch and 2 or 4
+
+                for _ = 1, v304 do
+                    local removedValue = table.remove(v290, 1)
+                    if not removedValue then
+                        break
+                    end
+
+                    weaponIcon.Set(removedValue.icon, removedValue.id, {outline = false, glow = false})
+                    weaponIcon.SetDim(removedValue.icon, removedValue.state == "locked")
+                end
+            end
+        )
+
+        parent12:GetPropertyChangedSignal("CanvasPosition"):Connect(queueVisible)
+        local visible = true
+
+        local function layoutPanel(a309, a310, compact)
+            --[[
+              name: layoutPanel
+              line: 1168
+              upvalues:
+                parent (copy, index: 1)
+                udim2FromOffset (copy, index: 2)
+                parent2 (copy, index: 3)
+                ui8 (copy, index: 4)
+                parent7 (copy, index: 5)
+                ui9 (copy, index: 6)
+                ui (copy, index: 7)
+                parent4 (copy, index: 8)
+                parent6 (copy, index: 9)
+                v67 (copy, index: 10)
+                ui10 (copy, index: 11)
+                ui11 (copy, index: 12)
+                v80 (copy, index: 13)
+                parent8 (copy, index: 14)
+                ui12 (copy, index: 15)
+                ui13 (copy, index: 16)
+                v94 (copy, index: 17)
+                maxLevel (copy, index: 18)
+                parent10 (copy, index: 19)
+                parent9 (copy, index: 20)
+                ui14 (copy, index: 21)
+                ui15 (copy, index: 22)
+                ui16 (copy, index: 23)
+                ui17 (copy, index: 24)
+                visible (ref,  index: 25)
+                parent11 (copy, index: 26)
+                v100 (copy, index: 27)
+                ui18 (copy, index: 28)
+            ]]
+            local v312
+            parent.Size = udim2FromOffset(a309, a310)
+            local v313 = compact and 12 or 16
+            local v314 = a309 - v313 * 2
+            local v315 = compact and 48 or 56
+            local v316 = compact and 14 or 16
+
+            if compact then
+                parent2.Position = udim2FromOffset(v313, v313)
+                parent2.Size = udim2FromOffset(104, 104)
+                local v317 = v313 + 104 + 12
+                ui8.MaxTextSize = 24
+                parent7.Position = udim2FromOffset(v317, v313 + 20)
+                parent7.Size = udim2FromOffset((a309 - v317) - v313, 30)
+                ui9.Position = udim2FromOffset(v317, v313 + 54)
+                ui9.Size = udim2FromOffset((a309 - v317) - v313, 16)
+                ui9.TextSize = 12
+                v312 = v313 + 104 + 12
+            else
+                local v318 = ((v315 + 16) + 4) + v316 + v313
+                local clampedValue = math.clamp(((a310 - v313) - 279) - v318, 150, 300)
+                parent2.Position = udim2FromOffset(v313, v313)
+                parent2.Size = udim2FromOffset(v314, clampedValue)
+                ui8.MaxTextSize = 30
+                local v320 = v313 + clampedValue + 14
+                parent7.Position = udim2FromOffset(v313, v320)
+                parent7.Size = udim2FromOffset(v314, 36)
+                local v321 = v320 + 36
+                ui9.Position = udim2FromOffset(v313, v321)
+                ui9.Size = udim2FromOffset(v314, 20)
+                ui9.TextSize = 15
+                v312 = v321 + 38
+            end
+
+            local scale = compact and 0.8 or 1
+            ui.GetScaleObj(parent4, "Size").Scale = scale
+            ui.GetScaleObj(parent6, "Size").Scale = scale
+            v67.TextSize = compact and 30 or 52
+            ui10.Position = udim2FromOffset(v313, v312)
+            ui10.Size = udim2FromOffset(v314, 16)
+            ui10.TextSize = compact and 11 or 12
+            ui11.Position = udim2FromOffset(v313, v312)
+            ui11.Size = udim2FromOffset(v314, 16)
+            ui11.TextSize = compact and 11 or 12
+            local v323 = v312 + 18
+            local v324 = compact and 20 or 26
+            v80.Frame.Position = udim2FromOffset(v313, v323)
+            v80.Frame.Size = udim2FromOffset(v314, v324)
+            parent8.TextSize = compact and 14 or 17
+            local v325 = compact and 12 or 16
+            v323 += v324 + v325
+            ui12.Position = udim2FromOffset(v313, v323)
+            ui12.Size = udim2FromOffset(v314, 1)
+            local v326 = compact and 10 or 16
+            v323 += v326 + 1
+            ui13.Position = udim2FromOffset(v313, v323)
+            ui13.Size = udim2FromOffset(v314, 16)
+            ui13.TextSize = compact and 11 or 12
+            local v327 = compact and 18 or 26
+
+            for _, v329 in v94 do
+                local v330 = compact and 6 or 8
+                v329.Size = udim2FromOffset(v327, v330)
+            end
+
+            local v331 = maxLevel * v327 + (maxLevel - 1) * 6
+            parent10.Position = udim2FromOffset((v313 + v314) - v331, v323 + 4)
+            parent10.Size = udim2FromOffset(v331, 8)
+            local v332 = compact and 2 or 4
+            v323 += v332 + 16
+            parent9.Position = udim2FromOffset(v313, v323)
+            local v333 = compact and 30 or 40
+            parent9.Size = udim2FromOffset(v314, v333)
+            ui14.TextSize = compact and 24 or 34
+            ui15.TextSize = compact and 24 or 34
+            ui16.TextSize = compact and 14 or 17
+            local v334 = compact and 30 or 40
+            local v335 = compact and 4 or 8
+            v323 += v334 + v335
+            ui17.Position = udim2FromOffset(v313, v323)
+            local v336 = compact and 34 or 40
+            ui17.Size = udim2FromOffset(v314, v336)
+            ui17.TextSize = compact and 13 or 14
+            local v337 = compact and 34 or 40
+            local v338 = ((a310 - (v323 + v337)) - v313) - v315 - 8
+            visible = (v316 + 4) <= v338
+            local v339 = if visible then ((a310 - v313) - v316) - 4 - v315 else a310 - v313 - v315
+            parent11.Position = udim2FromOffset(v313, v339)
+            parent11.Size = udim2FromOffset(v314, v315)
+            v100.Label.TextSize = compact and 18 or 21
+            ui18.Position = udim2FromOffset(v313, (v339 + v315) + 4)
+            ui18.Size = udim2FromOffset(v314, v316)
+            ui18.TextSize = compact and 12 or 13
+        end
+
+        local v340 = nil
+        local count = 0
+        local v342 = nil
+        local v343 = nil
+
+        local v344 = function()
+            --[[
+              line: 1263
+              upvalues:
+                v220 (ref,  index: 1)
+                stateOf (copy, index: 2)
+                economy (copy, index: 3)
+                v340 (ref,  index: 4)
+                v342 (ref,  index: 5)
+                weaponIcon (copy, index: 6)
+                ui3 (copy, index: 7)
+                ui (copy, index: 8)
+                theme (copy, index: 9)
+                parent7 (copy, index: 10)
+                weaponInfo (copy, index: 11)
+                a19 (copy, index: 12)
+                ui9 (copy, index: 13)
+                formattedText (copy, index: 14)
+                v34 (copy, index: 15)
+                colors (copy, index: 16)
+                maxLevel (copy, index: 17)
+                success (copy, index: 18)
+                gold (copy, index: 19)
+                v61 (copy, index: 20)
+                v62 (copy, index: 21)
+                uiGradient (copy, index: 22)
+                uiStroke (copy, index: 23)
+                parent6 (copy, index: 24)
+                parent4 (copy, index: 25)
+                ui5 (copy, index: 26)
+                udim2FromOffset (copy, index: 27)
+                parent5 (copy, index: 28)
+                ui6 (copy, index: 29)
+                ui7 (copy, index: 30)
+                v69 (copy, index: 31)
+                v80 (copy, index: 32)
+                parent8 (copy, index: 33)
+                ui11 (copy, index: 34)
+                ui13 (copy, index: 35)
+                ui16 (copy, index: 36)
+                parent9 (copy, index: 37)
+                parent10 (copy, index: 38)
+                v89 (copy, index: 39)
+                v91 (copy, index: 40)
+                ui14 (copy, index: 41)
+                v86 (copy, index: 42)
+                ui15 (copy, index: 43)
+                v94 (copy, index: 44)
+                ui17 (copy, index: 45)
+                RankArt (copy, index: 46)
+                v99 (copy, index: 47)
+                v100 (copy, index: 48)
+                ui18 (copy, index: 49)
+                v343 (ref,  index: 50)
+                formattedText2 (copy, index: 51)
+                visible (ref,  index: 52)
+            ]]
+            local text
+            local v346
+            local v347
+            local v348
+            local v349 = v220
+            if not v349 then
+                return
+            end
+
+            local v350 = stateOf(v349)
+            local v351 = economy.Level(v349)
+            local v352, v353 = economy.Progress(v349)
+            local startValue = economy.CategoryColor(v349)
+            local visible2 = v350 == "locked"
+            local v356 = v340 ~= nil and v340.id == v349
+
+            if v342 ~= v349 then
+                v342 = v349
+                weaponIcon.Set(ui3, v349, {spin = true, outline = true, glow = false, outlineScale = 1.035, outlineTransparency = 0.5, outlineColor = startValue:Lerp(Color3.new(1, 1, 1), 0.55)})
+                ui.Pop(ui3, 0.85, theme.Tween.PopSmall)
+            end
+
+            weaponIcon.SetDim(ui3, visible2)
+            parent7.Text = string.upper(weaponInfo.Name(v349))
+            local v357 = weaponInfo.Get(v349)
+            local stringUpper = string.upper
+
+            if v357 then
+                text = weaponInfo.CATEGORY_SINGULAR[v357.category] or ""
+            else
+                text = ""
+            end
+
+            local uppercaseText = stringUpper(text)
+
+            if visible2 then
+                a19.Loc.Rich(ui9, string.format("%s  <font color=\"%s\">·  LOCKED</font>", uppercaseText, formattedText))
+            elseif v350 == "max" then
+                a19.Loc.Rich(ui9, string.format("%s  <font color=\"%s\">·  MAX LEVEL</font>", uppercaseText, v34))
+            elseif v350 == "fixed" then
+                a19.Loc.Rich(ui9, string.format("%s  <font color=\"%s\">·  NO LEVELS</font>", uppercaseText, formattedText))
+            else
+                local rich = a19.Loc.Rich
+                local stringFormat = string.format
+                local textDim = colors.TextDim
+                rich(ui9, stringFormat("%s  <font color=\"%s\">·  LEVEL %d OF %d</font>", uppercaseText, string.format("#%02X%02X%02X", math.floor((textDim.R * 255) + 0.5), math.floor((textDim.G * 255) + 0.5), (math.floor((textDim.B * 255) + 0.5))), v351, maxLevel))
+            end
+
+            local v363 = v350 == "fixed"
+
+            if visible2 then
+                v346 = colors.TextMuted
+            elseif v350 ~= "ready" then
+                v346 = if v350 == "max" then gold else startValue
+            else
+                v346 = success
+            end
+
+            local v364 = visible2 and 0.18 or 0.35
+            v61.Color = ColorSequence.new(v346:Lerp(colors.Panel, 1 - v364), colors.PanelHi:Lerp(colors.Panel, 0.6))
+            v62.ImageColor3 = v346
+            v62.ImageTransparency = visible2 and 0.8 or 0.5
+            uiGradient.Color = ColorSequence.new(v346:Lerp(colors.Panel, 0.9), colors.PanelLo)
+
+            if v350 ~= "ready" then
+                v347 = if v350 == "max" then gold else colors.Stroke
+            else
+                v347 = success
+            end
+
+            uiStroke.Color = v347
+            uiStroke.Transparency = v350 ~= "ready" and v350 ~= "max" and 0.88 or 0.55
+            parent6.Visible = visible2
+            parent4.Visible = not visible2
+
+            if not v356 then
+                if v350 ~= "max" then
+                    local v365
+                    parent4.BackgroundColor3 = colors.Void
+                    parent4.BackgroundTransparency = 0.2
+                    ui5.Text = "LV"
+                    ui5.TextSize = 14
+                    ui5.TextColor3 = colors.TextDim
+                    ui5.Size = udim2FromOffset(22, 34)
+                    parent5.Visible = true
+                    ui6.Text = tostring(v351)
+                    ui6.Position = UDim2.new()
+                    ui6.TextColor3 = colors.Text
+                    ui7.Text = ""
+
+                    if not (10 <= v351) then
+                        v365 = 70
+                    else
+                        v365 = 90
+                    end
+
+                    parent4.Size = udim2FromOffset(v365, 34)
+                else
+                    parent4.BackgroundColor3 = gold
+                    parent4.BackgroundTransparency = 0
+                    ui5.Text = "MAX"
+                    ui5.TextSize = 18
+                    ui5.TextColor3 = colors.TextDark
+                    ui5.Size = udim2FromOffset(52, 34)
+                    parent5.Visible = false
+                    parent4.Size = udim2FromOffset(76, 34)
+                end
+
+                v69.Color = if v350 == "ready" then success else colors.Stroke
+                v69.Transparency = v350 ~= "ready" and 0.8 or 0.2
+            end
+
+            local v366 = not (0 < v353) and 1 or math.clamp(v352 / v353, 0, 1)
+
+            if v350 ~= "max" then
+                if v363 then
+                    v80.Set(0, true)
+                    parent8.Text = "NO LEVELS"
+                    ui11.Text = ""
+                else
+                    if not v356 then
+                        local v367
+                        v80.Set(v366)
+                        local setColor = v80.SetColor
+
+                        if v350 ~= "ready" then
+                            v367 = if visible2 then colors.AccentDark else colors.Accent
+                        else
+                            v367 = success
+                        end
+
+                        setColor(v367)
+                        parent8.Text = string.format("%d / %d", v352, v353)
+                    end
+
+                    ui11.Text = visible2 and "TO UNLOCK" or "TO LEVEL " .. v351 + 1
+                    ui11.TextColor3 = if v350 == "ready" then theme.Lighten(success, 0.15) else colors.TextDim
+                end
+            else
+                v80.Set(1, true)
+                v80.SetColor(gold)
+                parent8.Text = "MAX"
+                ui11.Text = "MAX LEVEL"
+                ui11.TextColor3 = gold
+            end
+
+            local text2 = economy.StatWord(v349) or "damage"
+            ui13.Text = v363 and "NO LEVEL BONUS" or string.upper(text2) .. " BONUS"
+            local loc = a19.Loc
+            local text6 = loc.Pick(text2 .. " (bonus)", text2)
+            ui16.Text = text6
+            parent9.Visible = not v363
+            parent10.Visible = not v363
+            local v372 = visible2 and 0 or economy.BonusPercent(v351)
+            local v373 = economy.BonusPercent((math.min(maxLevel, math.max(v351, 1) + 1)))
+
+            if not v356 then
+                v89(v372, true)
+                v91(v373, true)
+            end
+
+            if visible2 then
+                v348 = colors.TextMuted
+            else
+                v348 = if v350 == "max" then gold else colors.Text
+            end
+
+            ui14.TextColor3 = v348
+            v86.Visible = (v350 ~= "max") and not visible2
+            ui15.Visible = (v350 ~= "max") and not visible2
+
+            if not v356 then
+                for v374, v375 in v94 do
+                    local v376
+                    local backgroundTransparency
+                    local v378 = v374 <= v351
+
+                    if v378 then
+                        v376 = if v350 == "max" then gold else colors.Accent
+                    else
+                        v376 = if v374 == v351 + 1 and v350 == "ready" then success else colors.Inset
+                    end
+
+                    v375.BackgroundColor3 = v376
+
+                    if v378 or v374 == v351 + 1 and v350 == "ready" then
+                        backgroundTransparency = 0
+                    else
+                        backgroundTransparency = 0.1
+                    end
+
+                    v375.BackgroundTransparency = backgroundTransparency
+                end
+            end
+
+            local flooredValue = math.floor((economy.BONUS_PER_LEVEL * 100) + 0.5)
+
+            if v363 then
+                ui17.Text = loc.T("Nothing on this item scales with levels: it's the same for everyone, and it never drops once you own it.")
+            elseif visible2 and not economy.RankAllows(v349) then
+                local v380 = RankArt.Ranks.Get(economy.ItemRank(v349))
+                ui17.Text = loc.T(string.format("Joins your drops at %s (%s trophies). Win matches to climb the Rank Road.", v380.name, ui.FormatNumber(v380.trophies)))
+            elseif visible2 and economy.MaxLevel(v349) <= 1 then
+                ui17.Text = loc.T("Nothing on this item scales with levels: unlock it once and it's yours.")
+            elseif visible2 then
+                ui17.Text = loc.T(string.format("Unlocks at level 1. Each level after that adds +%d%% %s, up to +%d%%.", flooredValue, text6, economy.MaxBonusPercent()))
+            elseif v350 ~= "max" then
+                if not (v351 <= 1) then
+                    ui17.Text = loc.T(string.format("Level %d adds another +%d%% %s (max +%d%%).", v351 + 1, flooredValue, text6, economy.MaxBonusPercent()))
+                else
+                    ui17.Text = loc.T(string.format("Level %d adds +%d%% %s.", v351 + 1, flooredValue, text6))
+                end
+            else
+                ui17.Text = loc.T(string.format("Maxed out: +%d%% %s for good. The cap may rise in a later update.", v372, text6))
+            end
+
+            local v381 = math.max(0, v353 - v352)
+            v99.ImageTransparency = 1
+
+            if visible2 and not economy.RankAllows(v349) then
+                local v382 = economy.ItemRank(v349)
+                v100:SetStyle("Dark")
+                v100:SetEnabled(true)
+                v100:SetText("UNLOCKS AT " .. string.upper(RankArt.Ranks.Get(v382).name))
+                ui18.Text = loc.T("See the Rank Road")
+            elseif visible2 then
+                local v383 = economy.ItemKey(v349)
+                local canBuy = economy.CanBuy(v383)
+                local v385 = economy.Pending(v383)
+
+                if canBuy then
+                    v100:SetStyle("Primary")
+                    v100:SetEnabled(not v385)
+                    local text3 = v385 and "UNLOCKING…"
+                        or string.format("UNLOCK NOW   <font color=\"%s\">%s</font> %s", "#FFFFFF", economy.ROBUX, economy.PriceAmount(v383))
+                    v100:SetText(text3)
+                    local t = loc.T
+                    local stringFormat = string.format
+                    local v389 = v381 ~= 1 and "s" or ""
+                    ui18.Text = t(stringFormat("or find %d more shard%s in drops", v381, v389))
+                else
+                    v100:SetStyle("Dark")
+                    v100:SetEnabled(false)
+                    local stringFormat = string.format
+                    local v391 = v381 ~= 1 and "S" or ""
+                    v100:SetText(stringFormat("FIND %d MORE SHARD%s", v381, v391))
+                    ui18.Text = loc.T("Win matches to find shards")
+                end
+            elseif v350 == "max" or v363 then
+                v100:SetStyle("Dark")
+                v100:SetEnabled(false)
+                local text4 = v363 and "NO UPGRADES" or "MAX LEVEL"
+                v100:SetText(text4)
+                ui18.Text = loc.T("It won't drop any more: shards go to your other items")
+            elseif v350 == "ready" then
+                local v393 = v343 == v349 or economy.Upgrading(v349)
+                v100:SetStyle("Success")
+                v100:SetEnabled(not v393)
+                local text5 = v393 and "UPGRADING…" or string.format("UPGRADE TO LV %d", v351 + 1)
+                v100:SetText(text5)
+                ui18.Text = loc.T(string.format("Spends %d shards  ·  <font color=\"%s\">%s</font>", v353, formattedText2, loc.T(economy.BonusText(v349, v351 + 1))))
+            else
+                v100:SetStyle("Dark")
+                v100:SetEnabled(false)
+                local stringFormat = string.format
+                local v396 = v381 ~= 1 and "S" or ""
+                v100:SetText(stringFormat("NEED %d MORE SHARD%s", v381, v396))
+                ui18.Text = loc.T("Win matches to find shards")
+            end
+
+            ui18.Visible = visible
+
+            if v356 then
+                v100:SetEnabled(false)
+            end
+        end
+
+        local function layoutWindow()
+            --[[
+              name: layoutWindow
+              line: 1443
+              upvalues:
+                ui (copy, index: 1)
+                v53 (copy, index: 2)
+                udim2FromOffset (copy, index: 3)
+                ui2 (copy, index: 4)
+                layoutPanel (copy, index: 5)
+                parent (copy, index: 6)
+                v103 (ref,  index: 7)
+                parent12 (copy, index: 8)
+                parent13 (copy, index: 9)
+                parent14 (copy, index: 10)
+                v121 (copy, index: 11)
+                v122 (copy, index: 12)
+                v123 (copy, index: 13)
+                parent16 (copy, index: 14)
+                ui19 (copy, index: 15)
+                ui20 (copy, index: 16)
+            ]]
+            local v398
+            local v399 = ui.CanvasSize()
+            local v400 = ui.TopInset()
+            local compact = ui.Compact
+
+            if compact then
+                v53.Holder.Size = udim2FromOffset(math.floor((math.clamp(v399.X - 24, 340, 1180))), (math.floor((math.clamp((v399.Y - v400) - 12, 300, 720)))))
+            else
+                v53.Holder.Size = udim2FromOffset(math.floor((math.clamp(v399.X - 160, 1180, 1400))), (math.floor((math.clamp((v399.Y - v400) - 40, 720, 940)))))
+            end
+
+            v53.Subtitle.Visible = true
+            v53.Subtitle.TextSize = compact and 15 or 17
+            ui2.TextSize = compact and 14 or 16
+            local newUDim2 = UDim2.new
+            local v403 = -(ui.WindowCloseSize() + 34)
+            local v404 = compact and 18 or 22
+            ui2.Position = newUDim2(1, v403, 0, v404)
+            local v405 = v53.Holder.Size.X.Offset - 44
+            local v406 = v53.Holder.Size.Y.Offset - 80 - 32
+            local v407 = compact and 300 or math.clamp(math.floor(v405 * 0.28), 330, 390)
+            local v408 = compact and 14 or 20
+            layoutPanel(v407, v406, compact)
+            parent.Position = udim2FromOffset(0, 0)
+            v103 = (v405 - v407) - v408
+            parent12.Position = udim2FromOffset(v407 + v408, 0)
+            parent12.Size = UDim2.new(0, v103, 1, 0)
+            local v409 = v103 - 12
+            local v410 = compact and 92 or 104
+            parent13.Size = UDim2.new(1, -12, 0, v410)
+            local v411 = compact and 64 or 76
+            local v412 = compact and 64 or 76
+            parent14.Size = udim2FromOffset(v411, v412)
+            local v413 = compact and 104 or 122
+            local v414 = compact and 138 or 150
+            local v415 = compact and 152 or 166
+            v121.Instance.Size = udim2FromOffset(v413, 46)
+            v122.Instance.Size = udim2FromOffset(v414, 46)
+            v123.Instance.Size = udim2FromOffset(v415, 46)
+            local v416 = (v413 + v414) + v415 + 20
+            parent16.Size = udim2FromOffset(v416, 50)
+            local v417 = compact and 64 or 76
+            local v418 = v417 + 28
+            local v419 = compact and 12 or 18
+            ui19.Position = udim2FromOffset(v418, v419)
+            ui19.TextSize = compact and 21 or 24
+            local v420 = compact and 40 or 48
+            ui20.Position = udim2FromOffset(v418, v420)
+            local v421 = math.max(160, ((v409 - v418) - v416) - 28)
+
+            if compact then
+                v398 = 44
+            else
+                v398 = 42
+            end
+
+            ui20.Size = udim2FromOffset(v421, v398)
+            ui20.TextSize = compact and 13 or 14
+        end
+
+        local function layoutGrid(a423: boolean?)
+            --[[
+              name: layoutGrid
+              line: 1484
+              upvalues:
+                v103 (ref,  index: 1)
+                ui (copy, index: 2)
+                targets (copy, index: 3)
+                v221 (ref,  index: 4)
+                economy (copy, index: 5)
+                parent13 (copy, index: 6)
+                udim2FromOffset (copy, index: 7)
+                v113 (copy, index: 8)
+                v114 (copy, index: 9)
+                a19 (copy, index: 10)
+                formattedText (copy, index: 11)
+                theme (copy, index: 12)
+                parent12 (copy, index: 13)
+            ]]
+            local v424
+            local v425
+            local v426 = v103 - 12
+            local clampedValue = math.clamp(math.floor((v426 + 12) / 162), 2, 7)
+            local flooredValue = math.floor((v426 - ((clampedValue - 1) * 12)) / clampedValue)
+
+            if ui.Compact then
+                v424 = 30
+            else
+                v424 = 34
+            end
+
+            local h = ui.Compact and 184 or 212
+            local v430 = {owned = {}, locked = {}}
+            local v431 = {}
+
+            for v432, v433 in targets do
+                v431[v433] = v432
+                v221(v433)
+                v433.section = v433.state ~= "locked" and "owned" or "locked"
+                table.insert(v430[v433.section], v433)
+            end
+
+            table.sort(
+                v430.owned,
+                function(left, right)
+                    --[[
+                      line: 1499
+                      upvalues:
+                        v431 (copy, index: 1)
+                    ]]
+                    local v436 = left.state == "ready"
+
+                    if v436 == (right.state == "ready") then
+                        return v431[left] < v431[right]
+                    end
+
+                    return v436
+                end
+            )
+
+            local function frac(a438)
+                --[[
+                  name: frac
+                  line: 1506
+                  upvalues:
+                    economy (copy, index: 1)
+                ]]
+                local v439, v440 = economy.Progress(a438.id)
+                return v439 / math.max(v440, 1), v440
+            end
+
+            table.sort(
+                v430.locked,
+                function(left, right)
+                    --[[
+                      line: 1510
+                      upvalues:
+                        economy (copy, index: 1)
+                        v431 (copy, index: 2)
+                    ]]
+                    local v443, v444 = economy.Progress(left.id)
+                    local v445 = v443 / math.max(v444, 1)
+                    local v446 = v444
+                    local v447, v448 = economy.Progress(right.id)
+                    local v449 = v447 / math.max(v448, 1)
+                    local v450 = v448
+
+                    if v445 ~= v449 then
+                        return v449 < v445
+                    end
+                    if v446 ~= v450 then
+                        return v446 < v450
+                    end
+
+                    return v431[left] < v431[right]
+                end
+            )
+
+            local v451 = 0
+            local visible = economy.DropsAllowed()
+            parent13.Visible = visible
+
+            if visible then
+                parent13.Position = udim2FromOffset(4, 4)
+                v451 = parent13.Size.Y.Offset + 14
+            end
+
+            v425 = v451
+
+            for _, v454 in v113 do
+                local v455 = v430[v454]
+                local v456 = v114[v454]
+                v456.frame.Visible = 0 < #v455
+
+                if 0 < #v455 then
+                    local v457 = v454 ~= "owned" and "LOCKED" or "YOUR ITEMS"
+                    a19.Loc.Rich(v456.title, string.format("%s  <font color=\"%s\">·  %d</font>", v457, formattedText, #v455))
+                    v456.sub.TextSize = ui.Compact and 13 or 14
+                    v456.frame.Size = UDim2.new(1, -8, 0, v424)
+                    v456.frame.Position = udim2FromOffset(4, v425)
+                    v425 += v424
+
+                    for v458, v459 in v455 do
+                        local v460 = false
+                        local v461 = (v458 - 1) % clampedValue
+                        v459.y = v425 + ((v458 - 1) // clampedValue * (h + 12))
+                        v459.h = h
+                        v459.visible = true
+                        v459.holder.Visible = true
+                        local position = udim2FromOffset((v461 * (flooredValue + 12)) + 4, v459.y + 4)
+
+                        if a423 then
+                            if v459.shown then
+                                if v459.holder.Position == position then
+                                    v460 = true
+                                else
+                                    ui.Tween(v459.holder, theme.Tween.Smooth, {Position = position})
+                                end
+                            else
+                                v460 = true
+                            end
+                        else
+                            v460 = true
+                        end
+
+                        if v460 then
+                            v459.holder.Position = position
+                        end
+
+                        v459.holder.Size = udim2FromOffset(flooredValue, h)
+                        v459.glow.Size = udim2FromOffset(math.floor(flooredValue * 1.05), 150)
+                        v459.glow.Position = UDim2.new(0.5, 0, 0, math.floor((h - 88) / 2) + 6)
+                    end
+
+                    v425 += (math.ceil(#v455 / clampedValue) * (h + 12)) + 12
+                end
+            end
+
+            for _, v464 in targets do
+                v464.shown = v464.visible
+            end
+
+            parent12.CanvasSize = udim2FromOffset(0, v425 + 8)
+        end
+
+        local function paintSummary()
+            --[[
+              name: paintSummary
+              line: 1565
+              upvalues:
+                weaponInfo (copy, index: 1)
+                economy (copy, index: 2)
+                formattedText (copy, index: 3)
+                formattedText2 (copy, index: 4)
+                a19 (copy, index: 5)
+                ui2 (copy, index: 6)
+            ]]
+            local count = 0
+            local count2 = 0
+
+            for _, v469 in weaponInfo.AllItems() do
+                count += 1
+
+                if economy.Owns(v469.id) then
+                    count2 += 1
+                end
+            end
+
+            local v470 = economy.UpgradesReady()
+            local v471 = string.format("%d / %d <font color=\"%s\">UNLOCKED</font>", count2, count, formattedText)
+
+            if 0 < v470 then
+                local stringFormat = string.format
+                local v473 = v470 ~= 1 and "S" or ""
+                v471 ..= stringFormat("   <font color=\"%s\">·   %d UPGRADE%s READY</font>", formattedText2, v470, v473)
+            end
+
+            a19.Loc.Rich(ui2, v471)
+        end
+
+        local v474 = function(a475: boolean?)
+            --[[
+              line: 1581
+              upvalues:
+                layoutGrid (copy, index: 1)
+                v344 (ref,  index: 2)
+                paintShop (copy, index: 3)
+                paintSummary (copy, index: 4)
+                queueVisible (copy, index: 5)
+            ]]
+            layoutGrid(a475)
+            v344()
+            paintShop()
+            paintSummary()
+            task.defer(queueVisible)
+        end
+
+        local function flashCard(a477, a478)
+            --[[
+              name: flashCard
+              line: 1590
+              upvalues:
+                colors (copy, index: 1)
+                ui (copy, index: 2)
+            ]]
+            a477.flash.BackgroundColor3 = a478 or colors.Accent
+            a477.flash.BackgroundTransparency = 0.65
+            local v479 = {BackgroundTransparency = 1}
+            ui.Tween(a477.flash, TweenInfo.new(0.7, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), v479)
+        end
+
+        v222 = function(key, a481)
+            --[[
+              line: 1596
+              upvalues:
+                v219 (copy, index: 1)
+                v220 (ref,  index: 2)
+                v221 (ref,  index: 3)
+                v344 (ref,  index: 4)
+                ui (copy, index: 5)
+                ui3 (copy, index: 6)
+                theme (copy, index: 7)
+            ]]
+            if not v219[key] then
+                return
+            end
+
+            local v482 = v220 and v219[v220]
+            v220 = key
+
+            if v482 then
+                v221(v482)
+            end
+
+            v221(v219[key])
+            v344()
+
+            if type(a481) ~= "table" or not a481.quiet then
+                ui.Pop(ui3, 0.9, theme.Tween.PopSmall)
+            end
+        end
+
+        local function shardBurst(a484)
+            --[[
+              name: shardBurst
+              line: 1613
+              upvalues:
+                ui (copy, index: 1)
+                udim2FromOffset (copy, index: 2)
+                theme (copy, index: 3)
+                parent3 (copy, index: 4)
+            ]]
+            local v485 = ui.Touch and 9 or 14
+
+            for index = 1, v485 do
+                local v487 = ((index / v485) * math.pi) * 2 + math.random() * 0.4
+                local v488 = 0.32 + math.random() * 0.22
+                local v489 = math.random(12, 22)
+                local image = ui.Image
+                local shard = ui.Assets.Fx.Shard
+                local v492 = {ImageTransparency = 0.05, ZIndex = 7, AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.52), Size = udim2FromOffset(v489, v489), Rotation = math.random(0, 360), ImageColor3 = if index % 3 == 0 then theme.Lighten(a484, 0.25) else a484}
+                v492.Parent = parent3
+                local v493 = image(shard, v492)
+                local tweenInfo = TweenInfo.new(0.6 + (math.random() * 0.25), Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+                ui.Tween(v493, tweenInfo, {ImageTransparency = 1, Position = UDim2.fromScale(0.5 + (math.cos(v487) * v488), 0.52 + ((math.sin(v487) * v488) * 0.9)), Rotation = v493.Rotation + math.random(-160, 160), Size = udim2FromOffset(v489 * 0.5, v489 * 0.5)})
                 task.delay(
-                    0.3,
+                    1,
                     function()
                         --[[
-                          line: 1691
+                          line: 1636
                           upvalues:
-                            u84 (copy, index: 1)
-                            u78 (ref,  index: 2)
-                            UI_upv_1 (copy, index: 3)
-                            u19 (copy, index: 4)
-                            Theme_upv_1 (copy, index: 5)
+                            v493 (copy, index: 1)
                         ]]
-                        if u84 ~= u78 then
-                            return
-                        end
-                        UI_upv_1.Pop(u19, 1.45, Theme_upv_1.Tween.Slam)
+                        v493:Destroy()
                     end
                 )
             end
-        )
-        u18.Text = (u85 and "MAX LEVEL") or ("LEVEL " .. a46)
-        local v163
-        if u85 then
-            v163 = Gold_upv_1
-        else
-            v163 = Theme_upv_1.Lighten(Success_upv_1, 0.2)
         end
-        u18.TextColor3 = v163
-        u18.Visible = true
-        UI_upv_1.Unfade(u18)
-        UI_upv_1.Pop(u18, 1.9, Theme_upv_1.Tween.Slam)
-        local u86 = Economy_upv_1.BonusPercent(a46)
-        local u87 = Economy_upv_1.BonusPercent(math.min(MAX_LEVEL_upv_1, a46 + 1))
-        task.delay(
-            0.25,
-            function()
-                --[[
-                  line: 1706
-                  upvalues:
-                    u84 (copy, index: 1)
-                    u78 (ref,  index: 2)
-                    u40 (copy, index: 3)
-                    u86 (copy, index: 4)
-                    u41 (copy, index: 5)
-                    u87 (copy, index: 6)
-                    UI_upv_1 (copy, index: 7)
-                    u36 (copy, index: 8)
-                    tbl_upv_3 (copy, index: 9)
-                    a46 (copy, index: 10)
-                    u85 (copy, index: 11)
-                    Gold_upv_1 (copy, index: 12)
-                    Colors_upv_1 (copy, index: 13)
-                    Theme_upv_1 (copy, index: 14)
-                ]]
-                if u84 == u78 then
-                    u40(u86)
-                    u41(u87)
-                    UI_upv_1.Bump(u36, 0.2)
-                    local v164 = nil
-                    for key_4, value_14 in tbl_upv_3 do
-                        if key_4 ~= a46 then
-                            continue
+
+        local function levelUpMoment(id, a497, a498)
+            --[[
+              name: levelUpMoment
+              line: 1642
+              upvalues:
+                count (ref,  index: 1)
+                v340 (ref,  index: 2)
+                maxLevel (copy, index: 3)
+                gold (copy, index: 4)
+                success (copy, index: 5)
+                v80 (copy, index: 6)
+                ui4 (copy, index: 7)
+                ui (copy, index: 8)
+                parent2 (copy, index: 9)
+                v65 (copy, index: 10)
+                udim2FromOffset (copy, index: 11)
+                shardBurst (copy, index: 12)
+                v62 (copy, index: 13)
+                ui3 (copy, index: 14)
+                theme (copy, index: 15)
+                a19 (copy, index: 16)
+                parent4 (copy, index: 17)
+                colors (copy, index: 18)
+                ui5 (copy, index: 19)
+                parent5 (copy, index: 20)
+                ui6 (copy, index: 21)
+                ui7 (copy, index: 22)
+                v69 (copy, index: 23)
+                v67 (copy, index: 24)
+                economy (copy, index: 25)
+                v89 (copy, index: 26)
+                v91 (copy, index: 27)
+                ui14 (copy, index: 28)
+                v94 (copy, index: 29)
+                parent8 (copy, index: 30)
+                v219 (copy, index: 31)
+                flashCard (copy, index: 32)
+                v474 (ref,  index: 33)
+            ]]
+            local text
+            count += 1
+            local token = count
+            v340 = {id = id, token = token}
+            local v501 = maxLevel <= a498
+            local v502 = if v501 then gold else success
+            v80.SetColor(success)
+            v80.Set(1, false, TweenInfo.new(0.18, Enum.EasingStyle.Quad))
+            ui4.BackgroundColor3 = v502
+            ui4.BackgroundTransparency = 0.55
+            local v503 = {BackgroundTransparency = 1}
+            ui.Tween(ui4, TweenInfo.new(0.55, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), v503)
+            local offset = parent2.Size.X.Offset
+            v65.ImageColor3 = v502
+            v65.Size = udim2FromOffset(60, 60)
+            v65.ImageTransparency = 0.15
+            ui.Tween(v65, TweenInfo.new(0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {ImageTransparency = 1, Size = udim2FromOffset(offset * 1.4, offset * 1.4)})
+            shardBurst(v502)
+            v62.ImageColor3 = v502
+            v62.ImageTransparency = 0.2
+            local v505 = {ImageTransparency = 0.5}
+            ui.Tween(v62, TweenInfo.new(0.9, Enum.EasingStyle.Quad), v505)
+            ui.Pop(ui3, 0.7, theme.Tween.Slam)
+            a19.Sounds.Play("LevelUp")
+            parent4.BackgroundColor3 = colors.Void
+            parent4.BackgroundTransparency = 0.2
+            ui5.Text = "LV"
+            ui5.TextSize = 14
+            ui5.TextColor3 = colors.TextDim
+            ui5.Size = udim2FromOffset(22, 34)
+            parent5.Visible = true
+            parent4.Size = udim2FromOffset(70, 34)
+            ui6.Text = tostring(a497)
+            ui6.TextColor3 = colors.Text
+            ui6.Position = UDim2.new()
+            ui7.Text = tostring(a498)
+            ui7.TextColor3 = gold
+            ui7.Position = UDim2.fromScale(0, 1)
+            v69.Color = gold
+            v69.Transparency = 0
+
+            task.delay(
+                0.12,
+                function()
+                    --[[
+                      line: 1683
+                      upvalues:
+                        token (copy, index: 1)
+                        count (ref,  index: 2)
+                        a19 (copy, index: 3)
+                        ui (copy, index: 4)
+                        ui6 (copy, index: 5)
+                        ui7 (copy, index: 6)
+                        parent4 (copy, index: 7)
+                        theme (copy, index: 8)
+                    ]]
+                    if token ~= count then
+                        return
+                    end
+
+                    a19.Sounds.Play("XP_Tick")
+                    local tweenInfo = TweenInfo.new(0.34, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+                    ui.Tween(ui6, tweenInfo, {Position = UDim2.fromScale(0, -1)})
+                    ui.Tween(ui7, tweenInfo, {Position = UDim2.new()})
+
+                    task.delay(
+                        0.3,
+                        function()
+                            --[[
+                              line: 1691
+                              upvalues:
+                                token (copy, index: 1)
+                                count (ref,  index: 2)
+                                ui (copy, index: 3)
+                                parent4 (copy, index: 4)
+                                theme (copy, index: 5)
+                            ]]
+                            if token == count then
+                                ui.Pop(parent4, 1.45, theme.Tween.Slam)
+                            end
                         end
-                        if u85 then
-                            v164 = Gold_upv_1
-                        else
-                            v164 = Colors_upv_1.Accent
+                    )
+                end
+            )
+
+            if v501 then
+                text = "MAX LEVEL"
+            else
+                text = "LEVEL " .. a498
+            end
+
+            v67.Text = text
+            v67.TextColor3 = if v501 then gold else theme.Lighten(success, 0.2)
+            v67.Visible = true
+            ui.Unfade(v67)
+            ui.Pop(v67, 1.9, theme.Tween.Slam)
+            local v507 = economy.BonusPercent(a498)
+            local v508 = economy.BonusPercent((math.min(maxLevel, a498 + 1)))
+
+            task.delay(
+                0.25,
+                function()
+                    --[[
+                      line: 1706
+                      upvalues:
+                        token (copy, index: 1)
+                        count (ref,  index: 2)
+                        v89 (copy, index: 3)
+                        v507 (copy, index: 4)
+                        v91 (copy, index: 5)
+                        v508 (copy, index: 6)
+                        ui (copy, index: 7)
+                        ui14 (copy, index: 8)
+                        v94 (copy, index: 9)
+                        a498 (copy, index: 10)
+                        v501 (copy, index: 11)
+                        gold (copy, index: 12)
+                        colors (copy, index: 13)
+                        theme (copy, index: 14)
+                    ]]
+                    if token ~= count then
+                        return
+                    end
+
+                    v89(v507)
+                    v91(v508)
+                    ui.Bump(ui14, 0.2)
+
+                    for v509, v510 in v94 do
+                        if v509 == a498 then
+                            v510.BackgroundColor3 = if v501 then gold else colors.Accent
+                            v510.BackgroundTransparency = 0
+                            ui.Pop(v510, 1.8, theme.Tween.Slam)
                         end
-                        value_14.BackgroundColor3 = v164
-                        value_14.BackgroundTransparency = 0
-                        UI_upv_1.Pop(value_14, 1.8, Theme_upv_1.Tween.Slam)
                     end
                 end
-            end
-        )
-        task.delay(
-            0.35,
-            function()
-                --[[
-                  line: 1721
-                  upvalues:
-                    u84 (copy, index: 1)
-                    u78 (ref,  index: 2)
-                    Economy_upv_1 (copy, index: 3)
-                    a44 (copy, index: 4)
-                    u31 (copy, index: 5)
-                    u85 (copy, index: 6)
-                    Gold_upv_1 (copy, index: 7)
-                    Colors_upv_1 (copy, index: 8)
-                    u32 (copy, index: 9)
-                ]]
-                if u84 ~= u78 then
-                    return
+            )
+
+            task.delay(
+                0.35,
+                function()
+                    --[[
+                      line: 1721
+                      upvalues:
+                        token (copy, index: 1)
+                        count (ref,  index: 2)
+                        economy (copy, index: 3)
+                        id (copy, index: 4)
+                        v80 (copy, index: 5)
+                        v501 (copy, index: 6)
+                        gold (copy, index: 7)
+                        colors (copy, index: 8)
+                        parent8 (copy, index: 9)
+                    ]]
+                    if token ~= count then
+                        return
+                    end
+
+                    local v511, v512 = economy.Progress(id)
+                    v80.Set(0, true)
+                    local setColor = v80.SetColor
+                    local v514 = if v501 then gold else colors.Accent
+                    setColor(v514)
+                    local set = v80.Set
+                    local v516 = not (0 < v512) and 1 or v511 / v512
+                    set(v516, false, TweenInfo.new(0.5, Enum.EasingStyle.Quint))
+                    parent8.Text = v501 and "MAX" or string.format("%d / %d", v511, v512)
                 end
-                local v165, v166 = Economy_upv_1.Progress(a44)
-                u31.Set(0, true)
-                local SetColor_2 = u31.SetColor
-                local v167
-                if u85 then
-                    v167 = Gold_upv_1
-                else
-                    v167 = Colors_upv_1.Accent
-                end
-                SetColor_2(v167)
-                u31.Set(((v166 > 0) and (v165 / v166)) or 1, false, TweenInfo.new(0.5, Enum.EasingStyle.Quint))
-                u32.Text = u85 and "MAX" or string.format("%d / %d", v165, v166)
+            )
+
+            if const v517 = v219[id] then
+                flashCard(v517, v502)
+                ui.Pop(v517.icon, 0.8, theme.Tween.PopSmall)
             end
-        )
-        local v169 = tbl_upv_11[a44]
-        if v169 then
-            flashCard(v169, v161)
-            UI_upv_1.Pop(v169.icon, 0.8, Theme_upv_1.Tween.PopSmall)
+
+            task.delay(
+                1.15,
+                function()
+                    --[[
+                      line: 1736
+                      upvalues:
+                        token (copy, index: 1)
+                        count (ref,  index: 2)
+                        ui (copy, index: 3)
+                        v67 (copy, index: 4)
+                    ]]
+                    if token ~= count then
+                        return
+                    end
+
+                    ui.FadeOut(v67, TweenInfo.new(0.3))
+                end
+            )
+
+            task.delay(
+                1.5,
+                function()
+                    --[[
+                      line: 1742
+                      upvalues:
+                        token (copy, index: 1)
+                        count (ref,  index: 2)
+                        v340 (ref,  index: 3)
+                        v67 (copy, index: 4)
+                        ui (copy, index: 5)
+                        v474 (ref,  index: 6)
+                    ]]
+                    if token ~= count then
+                        return
+                    end
+
+                    v340 = nil
+                    v67.Visible = false
+                    ui.Unfade(v67)
+                    v474(true)
+                end
+            )
         end
-        task.delay(
-            1.15,
-            function()
-                --[[
-                  line: 1736
-                  upvalues:
-                    u84 (copy, index: 1)
-                    u78 (ref,  index: 2)
-                    UI_upv_1 (copy, index: 3)
-                    u18 (copy, index: 4)
-                ]]
-                if u84 ~= u78 then
-                    return
-                end
-                UI_upv_1.FadeOut(u18, TweenInfo.new(0.3))
+
+        v223 = function(id, a519, a520)
+            --[[
+              line: 1754
+              upvalues:
+                v343 (ref,  index: 1)
+                economy (copy, index: 2)
+                state (copy, index: 3)
+                a19 (copy, index: 4)
+                v340 (ref,  index: 5)
+                count (ref,  index: 6)
+                v344 (ref,  index: 7)
+                ui (copy, index: 8)
+                v220 (ref,  index: 9)
+                v222 (ref,  index: 10)
+                levelUpMoment (copy, index: 11)
+                parent11 (copy, index: 12)
+                v474 (ref,  index: 13)
+            ]]
+            if v343 or not economy.CanUpgrade(id) then
+                return
             end
-        )
-        task.delay(
-            1.5,
-            function()
-                --[[
-                  line: 1742
-                  upvalues:
-                    u84 (copy, index: 1)
-                    u78 (ref,  index: 2)
-                    u77 (ref,  index: 3)
-                    u18 (copy, index: 4)
-                    UI_upv_1 (copy, index: 5)
-                    u82 (ref,  index: 6)
-                ]]
-                if u84 ~= u78 then
-                    return
-                end
-                u77 = nil
-                u18.Visible = false
-                UI_upv_1.Unfade(u18)
-                u82(true)
+
+            if state.InMatch() then
+                a19.Toast("Upgrade in the lobby", "warning")
+                return
             end
-        )
-    end
-    u73 = function(a47, a48, a49)
-        --[[
-          line: 1754
-          upvalues:
-            u80 (ref,  index: 1)
-            Economy_upv_1 (copy, index: 2)
-            State_upv_1 (copy, index: 3)
-            a1 (copy, index: 4)
-            u77 (ref,  index: 5)
-            u78 (ref,  index: 6)
-            u81 (ref,  index: 7)
-            UI_upv_1 (copy, index: 8)
-            u70 (ref,  index: 9)
-            u72 (ref,  index: 10)
-            levelUpMoment (copy, index: 11)
-            u45 (copy, index: 12)
-            u82 (ref,  index: 13)
-        ]]
-        if (u80) or not Economy_upv_1.CanUpgrade(a47) then
-            return
-        end
-        if State_upv_1.InMatch() then
-            a1.Toast("Upgrade in the lobby", "warning")
-        else
-            u80 = a47
-            local u88 = Economy_upv_1.Level(a47)
-            u77 = {id = a47, token = u78}
-            u81()
+
+            v343 = id
+            local v521 = economy.Level(id)
+            v340 = {id = id, token = count}
+            v344()
+
             task.spawn(
                 function()
                     --[[
                       line: 1768
                       upvalues:
-                        Economy_upv_1 (copy, index: 1)
-                        a47 (copy, index: 2)
-                        UI_upv_1 (copy, index: 3)
-                        a48 (copy, index: 4)
-                        a49 (copy, index: 5)
-                        u80 (ref,  index: 6)
-                        u70 (ref,  index: 7)
-                        u72 (ref,  index: 8)
+                        economy (copy, index: 1)
+                        id (copy, index: 2)
+                        ui (copy, index: 3)
+                        a519 (copy, index: 4)
+                        a520 (copy, index: 5)
+                        v343 (ref,  index: 6)
+                        v220 (ref,  index: 7)
+                        v222 (ref,  index: 8)
                         levelUpMoment (copy, index: 9)
-                        u88 (copy, index: 10)
-                        u77 (ref,  index: 11)
-                        u45 (copy, index: 12)
-                        u82 (ref,  index: 13)
-                        u81 (ref,  index: 14)
+                        v521 (copy, index: 10)
+                        v340 (ref,  index: 11)
+                        parent11 (copy, index: 12)
+                        v474 (ref,  index: 13)
+                        v344 (ref,  index: 14)
                     ]]
-                    local v170, v171 = Economy_upv_1.Upgrade(a47, "collection", UI_upv_1.PressKind(a48, a49))
-                    u80 = nil
-                    if v170 then
-                        if u70 ~= a47 then
-                            u72(a47, {quiet = true})
+                    local v522, v523 = economy.Upgrade(id, "collection", ui.PressKind(a519, a520))
+                    v343 = nil
+
+                    if v522 then
+                        if v220 ~= id then
+                            v222(id, {quiet = true})
                         end
-                        levelUpMoment(a47, u88, v171 or (u88 + 1))
+
+                        levelUpMoment(id, v521, (v523 or (v521 + 1)))
                     else
-                        u77 = nil
-                        UI_upv_1.Shake(u45, 6)
-                        u82(true)
+                        v340 = nil
+                        ui.Shake(parent11, 6)
+                        v474(true)
                     end
-                    u81()
+
+                    v344()
                 end
             )
         end
-    end
-    u47.Activated:Connect(
-        function(a50)
-            --[[
-              line: 1784
-              upvalues:
-                u70 (ref,  index: 1)
-                stateOf (copy, index: 2)
-                u73 (ref,  index: 3)
-                u47 (copy, index: 4)
-                Economy_upv_1 (copy, index: 5)
-                a1 (copy, index: 6)
-                u81 (ref,  index: 7)
-            ]]
-            local v172 = u70
-            if not v172 then
-                return
-            end
-            local v173 = stateOf(v172)
-            if v173 ~= "ready" then
-                if v173 == "locked" and not (Economy_upv_1.RankAllows(v172)) then
-                    a1.Sounds.Play("Click")
-                    if a1.RankRoad then
-                        a1.RankRoad.Focus(Economy_upv_1.ItemRank(v172))
-                    else
-                        a1.EnsureScreen("RankRoad")
-                        if a1.RankRoad then
-                            a1.RankRoad.Focus(Economy_upv_1.ItemRank(v172))
-                        end
-                    end
-                    a1.MenuManager.Open("Ranks")
+
+        v100.Activated:Connect(
+            function(a524)
+                --[[
+                  line: 1784
+                  upvalues:
+                    v220 (ref,  index: 1)
+                    stateOf (copy, index: 2)
+                    v223 (ref,  index: 3)
+                    v100 (copy, index: 4)
+                    economy (copy, index: 5)
+                    a19 (copy, index: 6)
+                    v344 (ref,  index: 7)
+                ]]
+                local v525 = v220
+                if not v525 then
                     return
                 end
-                if v173 == "locked" then
-                    local v174 = Economy_upv_1.ItemKey(u70)
-                    if not Economy_upv_1.CanBuy(v174) then
-                        return
-                    end
-                    Economy_upv_1.Buy(v174)
-                    u81()
+
+                local v526 = stateOf(v525)
+
+                if v526 == "ready" then
+                    v223(v525, a524, v100.Instance)
+                    return
                 end
-            else
-                u73(v172, a50, u47.Instance)
-            end
-        end
-    )
-    RunService_upv_1.Heartbeat:Connect(
-        function()
-            --[[
-              line: 1813
-              upvalues:
-                u5 (copy, index: 1)
-                tbl_upv_10 (copy, index: 2)
-                u70 (ref,  index: 3)
-                stateOf (copy, index: 4)
-                u77 (ref,  index: 5)
-                u80 (ref,  index: 6)
-                u43 (copy, index: 7)
-                u46 (copy, index: 8)
-            ]]
-            if not u5.IsOpen then
-                return
-            end
-            local v175 = math.sin(os.clock() * 4.2) * 0.5 + 0.5
-            for _, value_15 in tbl_upv_10 do
-                if value_15.state ~= "ready" or not (value_15.visible) then
-                    continue
-                end
-                if u70 ~= value_15.id then
-                    value_15.stroke.Transparency = (v175 * 0.45) + 0.1
-                end
-                value_15.upScale.Scale = (v175 * 0.035) + 1
-                value_15.upGlow.ImageTransparency = ((1 - v175) * 0.35) + 0.45
-            end
-            local v176 = u70
-            if v176 and stateOf(v176) == "ready" and not u77 and u80 == nil then
-                u43.Scale = (v175 * 0.025) + 1
-                u46.ImageTransparency = ((1 - v175) * 0.4) + 0.45
-            elseif u43.Scale ~= 1 then
-                u43.Scale = 1
-                u46.ImageTransparency = 1
-            end
-        end
-    )
-    local u89 = false
-    local tbl_upv_24 = {}
-    local function stepAside(a51, a52)
-        --[[
-          name: stepAside
-          line: 1841
-          upvalues:
-            tbl_upv_24 (copy, index: 1)
-            u5 (copy, index: 2)
-            u89 (ref,  index: 3)
-            u79 (ref,  index: 4)
-            u82 (ref,  index: 5)
-            u70 (ref,  index: 6)
-            tbl_upv_11 (copy, index: 7)
-            flashCard (copy, index: 8)
-        ]]
-        local v177 = next(tbl_upv_24) ~= nil
-        tbl_upv_24[a51] = (a52 and true) or nil
-        local v178 = next(tbl_upv_24) ~= nil
-        if v178 == v177 then
-            return
-        end
-        if not v178 or not u5.IsOpen then
-            if not (v178) then
-                u5.Holder.Visible = true
-                if u5.IsOpen and u89 then
-                    u79 = nil
-                    u82(true)
-                    local v179 = u70 and (tbl_upv_11[u70])
-                    if v179 then
-                        flashCard(v179)
-                    end
-                end
-            end
-            return
-        end
-        u5.Holder.Visible = false
-    end
-    Economy_upv_1.Changed:Connect(
-        function()
-            --[[
-              line: 1862
-              upvalues:
-                u5 (copy, index: 1)
-                u89 (ref,  index: 2)
-                u77 (ref,  index: 3)
-                u82 (ref,  index: 4)
-                paintShop (copy, index: 5)
-            ]]
-            if u5.IsOpen and u89 and not (u77) then
-                u82(true)
-                return
-            end
-            if not u5.IsOpen or not u89 then
-                return
-            end
-            paintShop()
-        end
-    )
-    UI_upv_1.Every(
-        u5.Root,
-        1,
-        function()
-            --[[
-              line: 1870
-              upvalues:
-                u5 (copy, index: 1)
-                u89 (ref,  index: 2)
-                Economy_upv_1 (copy, index: 3)
-                paintShop (copy, index: 4)
-            ]]
-            if not u5.IsOpen or not u89 or not Economy_upv_1.OfferLeft() then
-                return
-            end
-            paintShop()
-        end
-    )
-    Economy_upv_1.CelebrationChanged:Connect(
-        function(a53)
-            --[[
-              line: 1877
-              upvalues:
-                stepAside (copy, index: 1)
-            ]]
-            stepAside("unlock", a53)
-        end
-    )
-    Economy_upv_1.RevealChanged:Connect(
-        function(a54)
-            --[[
-              line: 1880
-              upvalues:
-                stepAside (copy, index: 1)
-            ]]
-            stepAside("reveal", a54)
-        end
-    )
-    Economy_upv_1.Event:Connect(
-        function(a55, a56)
-            --[[
-              line: 1883
-              upvalues:
-                u5 (copy, index: 1)
-                tbl_upv_11 (copy, index: 2)
-                u72 (ref,  index: 3)
-            ]]
-            if a55 ~= "Unlocked" or type(a56.item) ~= "string" or not u5.IsOpen or not tbl_upv_11[a56.item] then
-                return
-            end
-            u72(a56.item, {quiet = true})
-        end
-    )
-    local function isGamepad()
-        --[[
-          name: isGamepad
-          line: 1889
-          upvalues:
-            UI_upv_1 (copy, index: 1)
-        ]]
-        return UI_upv_1.Gamepad
-    end
-    local function firstTarget()
-        --[[
-          name: firstTarget
-          line: 1892
-          upvalues:
-            tbl_upv_10 (copy, index: 1)
-        ]]
-        local v180 = nil
-        for _, value_16 in tbl_upv_10 do
-            if not (value_16.visible) then
-                continue
-            end
-            if not (v180) or value_16.y < v180.y or value_16.y == v180.y and value_16.holder.Position.X.Offset < v180.holder.Position.X.Offset then
-                v180 = value_16
-            end
-        end
-        return (v180 and (v180.holder)) or nil
-    end
-    local function defaultSelection()
-        --[[
-          name: defaultSelection
-          line: 1902
-          upvalues:
-            Economy_upv_1 (copy, index: 1)
-            tbl_upv_11 (copy, index: 2)
-            firstTarget (copy, index: 3)
-        ]]
-        local v181 = Economy_upv_1.ReadyList()
-        if v181[1] then
-            return v181[1]
-        end
-        local v182 = Economy_upv_1.Spotlight()
-        if v182 and tbl_upv_11[v182] then
-            return v182
-        end
-        local v183 = firstTarget()
-        return (v183 and (v183.Name)) or nil
-    end
-    local tbl_25 = {}
-    function tbl_25.open(a57)
-        --[[
-          name: open
-          line: 1916
-          upvalues:
-            layoutWindow (copy, index: 1)
-            u89 (ref,  index: 2)
-            WeaponInfo_upv_1 (copy, index: 3)
-            makeCard (copy, index: 4)
-            tbl_upv_10 (copy, index: 5)
-            tbl_upv_11 (copy, index: 6)
-            u79 (ref,  index: 7)
-            u61 (copy, index: 8)
-            u1 (ref,  index: 9)
-            TextChatService_upv_1 (copy, index: 10)
-            StarterGui_upv_1 (copy, index: 11)
-            u5 (copy, index: 12)
-            Economy_upv_1 (copy, index: 13)
-            openOdds (copy, index: 14)
-            layoutGrid (copy, index: 15)
-            u70 (ref,  index: 16)
-            firstTarget (copy, index: 17)
-            u82 (ref,  index: 18)
-            u49 (copy, index: 19)
-            u50 (ref,  index: 20)
-            UI_upv_1 (copy, index: 21)
-            flashCard (copy, index: 22)
-            queueVisible (copy, index: 23)
-            fromOffset_upv_1 (copy, index: 24)
-            GuiService_upv_1 (copy, index: 25)
-        ]]
-        layoutWindow()
-        if not (u89) then
-            u89 = true
-            for _, value_17 in WeaponInfo_upv_1.AllItems() do
-                local v184 = makeCard(value_17)
-                table.insert(tbl_upv_10, v184)
-                tbl_upv_11[value_17.id] = v184
-            end
-        end
-        u79 = nil
-        u61.Visible = false
-        local u90
-        if not (u1) then
-            u90 = {}
-            pcall(
-                function()
-                    --[[
-                      line: 46
-                      upvalues:
-                        TextChatService_upv_1 (copy, index: 1)
-                        u90 (copy, index: 2)
-                        StarterGui_upv_1 (copy, index: 3)
-                    ]]
-                    local v185, v186 = nil, nil
-                    if TextChatService_upv_1.ChatVersion ~= Enum.ChatVersion.TextChatService then
-                        u90.core = StarterGui_upv_1:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
-                        StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+
+                if v526 == "locked" and not economy.RankAllows(v525) then
+                    a19.Sounds.Play("Click")
+
+                    if a19.RankRoad then
+                        a19.RankRoad.Focus(economy.ItemRank(v525))
                     else
-                        v185 = TextChatService_upv_1:FindFirstChildOfClass("ChatWindowConfiguration")
-                        v186 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                        if v185 then
-                            u90.window = v185.Enabled
-                            v185.Enabled = false
-                        end
-                        if not v186 then
-                            return
-                        end
-                        u90.bar = v186.Enabled
-                        v186.Enabled = false
-                    end
-                end
-            )
-            u1 = u90
-        end
-        u5:Open()
-        if type(a57) == "table" and type(a57.focus) == "string" then
-            u90 = tbl_upv_11[a57.focus] and a57.focus or nil
-        else
-            u90 = nil
-        end
-        if type(a57) == "table" and a57.odds == true and Economy_upv_1.DropsAllowed() then
-            task.delay(0.15, openOdds)
-        end
-        task.defer(
-            function()
-                --[[
-                  line: 1934
-                  upvalues:
-                    tbl_upv_10 (copy, index: 1)
-                    layoutGrid (copy, index: 2)
-                    u70 (ref,  index: 3)
-                    u90 (copy, index: 4)
-                    Economy_upv_1 (copy, index: 5)
-                    tbl_upv_11 (copy, index: 6)
-                    firstTarget (copy, index: 7)
-                    u82 (ref,  index: 8)
-                    u49 (copy, index: 9)
-                    u50 (ref,  index: 10)
-                    UI_upv_1 (copy, index: 11)
-                    flashCard (copy, index: 12)
-                    queueVisible (copy, index: 13)
-                    fromOffset_upv_1 (copy, index: 14)
-                    GuiService_upv_1 (copy, index: 15)
-                ]]
-                for _, value_18 in tbl_upv_10 do
-                    value_18.shown = false
-                end
-                layoutGrid(false)
-                local v187 = u90
-                if not (v187) then
-                    if Economy_upv_1.UpgradesReady() > 0 then
-                        v187 = nil
-                    else
-                        v187 = u70
-                    end
-                    local v188 = nil
-                    if not (v187) then
-                        v188 = Economy_upv_1.ReadyList()
-                        if v188[1] then
-                            v187 = v188[1]
-                        else
-                            v188 = Economy_upv_1.Spotlight()
-                            if (v188) and (tbl_upv_11[v188]) then
-                                v187 = v188
-                            else
-                                local v189 = firstTarget()
-                                v187 = (v189 and (v189.Name)) or nil
-                            end
+                        a19.EnsureScreen("RankRoad")
+
+                        if a19.RankRoad then
+                            a19.RankRoad.Focus(economy.ItemRank(v525))
                         end
                     end
+
+                    a19.MenuManager.Open("Ranks")
+
+                    return
                 end
-                u70 = v187
-                u82(false)
-                local u91 = (u70 and (tbl_upv_11[u70])) or nil
-                local v190 = 0
-                if u91 and u90 then
-                    local v191 = math.max(u49.AbsoluteSize.X / math.max(u50, 1), 0.01)
-                    local v192 = math.max(0, u49.AbsoluteCanvasSize.Y - u49.AbsoluteWindowSize.Y)
-                    local v193 = math.min(math.max(0, (u91.y - (((UI_upv_1.Compact) and 30) or 34)) - 4) * v191, v192)
-                    task.delay(
-                        0.25,
-                        function()
-                            --[[
-                              line: 1950
-                              upvalues:
-                                flashCard (copy, index: 1)
-                                u91 (copy, index: 2)
-                            ]]
-                            flashCard(u91)
-                        end
-                    )
-                    v190 = v193
-                end
-                u49.CanvasPosition = Vector2.new(0, v190)
-                queueVisible()
-                v190 = 0
-                for _, value_19 in tbl_upv_10 do
-                    if not (value_19.visible) then
-                        continue
+
+                if v526 == "locked" then
+                    local v527 = economy.ItemKey(v525)
+
+                    if economy.CanBuy(v527) then
+                        economy.Buy(v527)
+                        v344()
                     end
-                    if value_19.y < 520 then
-                        value_19.inner.Position = fromOffset_upv_1(0, 14)
-                        UI_upv_1.Tween(value_19.inner, TweenInfo.new(0.32, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0, false, math.min(v190 * 0.018, 0.2)), {Position = UDim2.new()})
-                        v190 = v190 + 1
-                    end
-                end
-                if UI_upv_1.Gamepad then
-                    local v195
-                    if u91 then
-                        v195 = u91.holder
-                    else
-                        v195 = firstTarget()
-                    end
-                    GuiService_upv_1.SelectedObject = v195
                 end
             end
         )
-    end
-    function tbl_25.close(a58)
-        --[[
-          name: close
-          line: 1969
-          upvalues:
-            u1 (ref,  index: 1)
-            TextChatService_upv_1 (copy, index: 2)
-            StarterGui_upv_1 (copy, index: 3)
-            u61 (copy, index: 4)
-            GuiService_upv_1 (copy, index: 5)
-            u5 (copy, index: 6)
-        ]]
-        local u92 = u1
-        if u92 then
-            u1 = nil
-            pcall(
+
+        runService.Heartbeat:Connect(
+            function()
+                --[[
+                  line: 1813
+                  upvalues:
+                    v53 (copy, index: 1)
+                    targets (copy, index: 2)
+                    v220 (ref,  index: 3)
+                    stateOf (copy, index: 4)
+                    v340 (ref,  index: 5)
+                    v343 (ref,  index: 6)
+                    scaleObj (copy, index: 7)
+                    v99 (copy, index: 8)
+                ]]
+                if not v53.IsOpen then
+                    return
+                end
+
+                local v528 = math.sin(os.clock() * 4.2) * 0.5 + 0.5
+
+                for _, v530 in targets do
+                    if v530.state == "ready" then
+                        if not v530.visible then
+                            continue
+                        end
+
+                        if v220 ~= v530.id then
+                            v530.stroke.Transparency = (v528 * 0.45) + 0.1
+                        end
+
+                        v530.upScale.Scale = (v528 * 0.035) + 1
+                        v530.upGlow.ImageTransparency = ((1 - v528) * 0.35) + 0.45
+                    end
+                end
+
+                local v531 = v220
+
+                if v531 and stateOf(v531) == "ready" and not v340 and v343 == nil then
+                    scaleObj.Scale = (v528 * 0.025) + 1
+                    v99.ImageTransparency = ((1 - v528) * 0.4) + 0.45
+
+                    return
+                end
+
+                if scaleObj.Scale ~= 1 then
+                    scaleObj.Scale = 1
+                    v99.ImageTransparency = 1
+                end
+            end
+        )
+
+        local v532 = false
+
+        do
+            local v533 = {}
+
+            local function stepAside(key: string, a536)
+                --[[
+                  name: stepAside
+                  line: 1841
+                  upvalues:
+                    v533 (copy, index: 1)
+                    v53 (copy, index: 2)
+                    v532 (ref,  index: 3)
+                    v342 (ref,  index: 4)
+                    v474 (ref,  index: 5)
+                    v220 (ref,  index: 6)
+                    v219 (copy, index: 7)
+                    flashCard (copy, index: 8)
+                ]]
+                local v537 = next(v533) ~= nil
+                v533[key] = a536 and true or nil
+                local v538 = next(v533) ~= nil
+
+                if v538 == v537 then
+                    return
+                end
+
+                if v538 and v53.IsOpen then
+                    v53.Holder.Visible = false
+                    return
+                end
+
+                if not v538 then
+                    v53.Holder.Visible = true
+
+                    if v53.IsOpen and v532 then
+                        v342 = nil
+                        v474(true)
+
+                        if const v539 = v220 and v219[v220] then
+                            flashCard(v539)
+                        end
+                    end
+                end
+            end
+
+            economy.Changed:Connect(
                 function()
                     --[[
-                      line: 71
+                      line: 1862
                       upvalues:
-                        TextChatService_upv_1 (copy, index: 1)
-                        u92 (copy, index: 2)
-                        StarterGui_upv_1 (copy, index: 3)
+                        v53 (copy, index: 1)
+                        v532 (ref,  index: 2)
+                        v340 (ref,  index: 3)
+                        v474 (ref,  index: 4)
+                        paintShop (copy, index: 5)
                     ]]
-                    local v196 = TextChatService_upv_1:FindFirstChildOfClass("ChatWindowConfiguration")
-                    local v197 = TextChatService_upv_1:FindFirstChildOfClass("ChatInputBarConfiguration")
-                    if v196 and u92.window ~= nil then
-                        v196.Enabled = u92.window
-                    end
-                    if v197 and u92.bar ~= nil then
-                        v197.Enabled = u92.bar
-                    end
-                    if u92.core == nil then
+                    if v53.IsOpen and v532 and not v340 then
+                        v474(true)
                         return
                     end
-                    StarterGui_upv_1:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, u92.core)
+
+                    if v53.IsOpen and v532 then
+                        paintShop()
+                    end
+                end
+            )
+
+            ui.Every(
+                v53.Root,
+                1,
+                function()
+                    --[[
+                      line: 1870
+                      upvalues:
+                        v53 (copy, index: 1)
+                        v532 (ref,  index: 2)
+                        economy (copy, index: 3)
+                        paintShop (copy, index: 4)
+                    ]]
+                    if v53.IsOpen and v532 and economy.OfferLeft() then
+                        paintShop()
+                    end
+                end
+            )
+
+            economy.CelebrationChanged:Connect(
+                function(a540)
+                    --[[
+                      line: 1877
+                      upvalues:
+                        stepAside (copy, index: 1)
+                    ]]
+                    stepAside("unlock", a540)
+                end
+            )
+            economy.RevealChanged:Connect(
+                function(a541)
+                    --[[
+                      line: 1880
+                      upvalues:
+                        stepAside (copy, index: 1)
+                    ]]
+                    stepAside("reveal", a541)
                 end
             )
         end
-        u61.Visible = false
-        local SelectedObject_2 = GuiService_upv_1.SelectedObject
-        if SelectedObject_2 then
-            local v198 = SelectedObject_2:IsDescendantOf(u5.Root)
-            if v198 then
-                GuiService_upv_1.SelectedObject = nil
-            end
-        end
-        u5:Close(a58)
-    end
-    function tbl_25.back()
-        --[[
-          name: back
-          line: 1979
-          upvalues:
-            u61 (copy, index: 1)
-            GuiService_upv_1 (copy, index: 2)
-            u56 (copy, index: 3)
-        ]]
-        if u61.Visible then
-            local v199 = nil
-            if u61.Visible then
-                u61.Visible = false
-                v199 = GuiService_upv_1.SelectedObject
-                if v199 and v199:IsDescendantOf(u61) then
-                    GuiService_upv_1.SelectedObject = u56.Instance
+
+        economy.Event:Connect(
+            function(a542, a543)
+                --[[
+                  line: 1883
+                  upvalues:
+                    v53 (copy, index: 1)
+                    v219 (copy, index: 2)
+                    v222 (ref,  index: 3)
+                ]]
+                if a542 == "Unlocked" and type(a543.item) == "string" and v53.IsOpen and v219[a543.item] then
+                    v222(a543.item, {quiet = true})
                 end
             end
-            return true
+        )
+
+        do
+            local function isGamepad()
+                --[[
+                  name: isGamepad
+                  line: 1889
+                  upvalues:
+                    ui (copy, index: 1)
+                ]]
+                return ui.Gamepad
+            end
         end
-        return false
-    end
-    a1.MenuManager.Register("Collection", tbl_25)
-    u5.Closed:Connect(restoreChat)
-    State_upv_1.PlayerStateChanged:Connect(
-        function(a59)
+
+        local function firstTarget()
             --[[
-              line: 1988
+              name: firstTarget
+              line: 1892
               upvalues:
-                a1 (copy, index: 1)
+                targets (copy, index: 1)
             ]]
-            if a59 ~= "Match" or not a1.MenuManager.IsOpen("Collection") then
-                return
-            end
-            a1.MenuManager.Close("Collection", true)
-        end
-    )
-    local function relayout()
-        --[[
-          name: relayout
-          line: 1993
-          upvalues:
-            u5 (copy, index: 1)
-            layoutWindow (copy, index: 2)
-            u79 (ref,  index: 3)
-            u82 (ref,  index: 4)
-        ]]
-        if not u5.IsOpen then
-            return
-        end
-        layoutWindow()
-        u5.Refit()
-        u79 = nil
-        task.defer(u82)
-    end
-    UI_upv_1.LayoutChanged:Connect(relayout)
-    UI_upv_1.OnResize(relayout)
-    a1.Debug.collection = function(a60, a61, a62, a63)
-        --[[
-          line: 2008
-          upvalues:
-            u70 (ref,  index: 1)
-            a1 (copy, index: 2)
-            u72 (ref,  index: 3)
-            u47 (copy, index: 4)
-            Economy_upv_1 (copy, index: 5)
-            paintShop (copy, index: 6)
-            openOdds (copy, index: 7)
-            u61 (copy, index: 8)
-            GuiService_upv_1 (copy, index: 9)
-            u56 (copy, index: 10)
-            u49 (copy, index: 11)
-            tbl_upv_11 (copy, index: 12)
-            firstTarget (copy, index: 13)
-            levelUpMoment (copy, index: 14)
-            tbl_upv_10 (copy, index: 15)
-            u5 (copy, index: 16)
-            u51 (copy, index: 17)
-            u65 (copy, index: 18)
-            u77 (ref,  index: 19)
-            u50 (ref,  index: 20)
-        ]]
-        local v200
-        if type(a61) ~= "string" then
-            v200 = u70
-        else
-            v200 = a61
-        end
-        if a60 == "open" then
-            local Open_1 = a1.MenuManager.Open
-            local v201
-            if type(a61) ~= "string" then
-                v201 = nil
-            else
-                v201 = {}
-                v201.focus = a61
-            end
-            Open_1("Collection", v201)
-        elseif a60 == "select" and type(a61) == "string" then
-            u72(a61)
-        elseif a60 == "upgrade" and (v200) then
-            if u70 ~= v200 then
-                u72(v200, {quiet = true})
-            end
-            u47.Activated:Fire(a62, 0)
-        elseif a60 == "unlock" and (v200) then
-            if u70 ~= v200 then
-                u72(v200, {quiet = true})
-            end
-            u47.Activated:Fire()
-        elseif a60 == "buy" then
-            local v202 = ((a61 ~= 5) and 1) or 5
-            if Economy_upv_1.DropsAllowed() then
-                Economy_upv_1.Buy(Economy_upv_1.DropKey(v202))
-                paintShop()
-            end
-        elseif a60 == "odds" then
-            openOdds()
-        elseif a60 == "closeOdds" then
-            local v203 = nil
-            if u61.Visible then
-                u61.Visible = false
-                v203 = GuiService_upv_1.SelectedObject
-                if v203 and v203:IsDescendantOf(u61) then
-                    GuiService_upv_1.SelectedObject = u56.Instance
+            local v546
+
+            for _, v548 in targets do
+                if v548.visible then
+                    if not v546
+                        or v548.y < v546.y
+                        or v548.y == v546.y
+                            and v548.holder.Position.X.Offset < v546.holder.Position.X.Offset
+                    then
+                        v546 = v548
+                    end
                 end
             end
-        elseif a60 == "scroll" and type(a61) == "number" then
-            u49.CanvasPosition = Vector2.new(0, a61)
-        elseif a60 == "gamepad" then
-            local v204 = ((u70 and (tbl_upv_11[u70])) and (tbl_upv_11[u70].holder)) or (firstTarget())
-            GuiService_upv_1.SelectedObject = v204
-        elseif a60 == "mock" then
-            local SetMock_1 = Economy_upv_1.SetMock
-            local v204
-            if a61 ~= false then
-                v204 = a61
+
+            return v546 and v546.holder or nil
+        end
+
+        do
+            local function defaultSelection()
+                --[[
+                  name: defaultSelection
+                  line: 1902
+                  upvalues:
+                    economy (copy, index: 1)
+                    v219 (copy, index: 2)
+                    firstTarget (copy, index: 3)
+                ]]
+                local v550 = economy.ReadyList()
+
+                if v550[1] then
+                    return v550[1]
+                end
+
+                local v551 = economy.Spotlight()
+
+                if v551 and v219[v551] then
+                    return v551
+                end
+
+                local v552 = firstTarget()
+
+                return v552 and v552.Name or nil
+            end
+        end
+
+        a19.MenuManager.Register(
+            "Collection",
+            {
+                open = (function(a553)
+                    --[[
+                      name: open
+                      line: 1916
+                      upvalues:
+                        layoutWindow (copy, index: 1)
+                        v532 (ref,  index: 2)
+                        weaponInfo (copy, index: 3)
+                        makeCard (copy, index: 4)
+                        targets (copy, index: 5)
+                        v219 (copy, index: 6)
+                        v342 (ref,  index: 7)
+                        ancestor (copy, index: 8)
+                        v8 (ref,  index: 9)
+                        textChatService (copy, index: 10)
+                        starterGui (copy, index: 11)
+                        v53 (copy, index: 12)
+                        economy (copy, index: 13)
+                        openOdds (copy, index: 14)
+                        layoutGrid (copy, index: 15)
+                        v220 (ref,  index: 16)
+                        firstTarget (copy, index: 17)
+                        v474 (ref,  index: 18)
+                        parent12 (copy, index: 19)
+                        v103 (ref,  index: 20)
+                        ui (copy, index: 21)
+                        flashCard (copy, index: 22)
+                        queueVisible (copy, index: 23)
+                        udim2FromOffset (copy, index: 24)
+                        guiService (copy, index: 25)
+                    ]]
+                    layoutWindow()
+
+                    if not v532 then
+                        v532 = true
+
+                        for _, v555 in weaponInfo.AllItems() do
+                            local card = makeCard(v555)
+                            table.insert(targets, card)
+                            v219[v555.id] = card
+                        end
+                    end
+
+                    v342 = nil
+                    ancestor.Visible = false
+
+                    if not v8 then
+                        local v557 = {}
+
+                        pcall(
+                            function()
+                                --[[
+                                  line: 46
+                                  upvalues:
+                                    textChatService (copy, index: 1)
+                                    v557 (copy, index: 2)
+                                    starterGui (copy, index: 3)
+                                ]]
+                                if textChatService.ChatVersion ~= Enum.ChatVersion.TextChatService then
+                                    v557.core = starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Chat)
+                                    starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+                                else
+                                    local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                                    local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                                    if chatWindowConfiguration then
+                                        v557.window = chatWindowConfiguration.Enabled
+                                        chatWindowConfiguration.Enabled = false
+                                    end
+
+                                    if chatInputBarConfiguration then
+                                        v557.bar = chatInputBarConfiguration.Enabled
+                                        chatInputBarConfiguration.Enabled = false
+                                    end
+                                end
+                            end
+                        )
+
+                        v8 = v557
+                    end
+
+                    v53:Open()
+                    local focus = type(a553) == "table"
+                        and type(a553.focus) == "string"
+                        and v219[a553.focus]
+                        and a553.focus
+                        or nil
+
+                    if type(a553) == "table" and a553.odds == true and economy.DropsAllowed() then
+                        task.delay(0.15, openOdds)
+                    end
+
+                    task.defer(
+                        function()
+                            --[[
+                              line: 1934
+                              upvalues:
+                                targets (copy, index: 1)
+                                layoutGrid (copy, index: 2)
+                                v220 (ref,  index: 3)
+                                focus (copy, index: 4)
+                                economy (copy, index: 5)
+                                v219 (copy, index: 6)
+                                firstTarget (copy, index: 7)
+                                v474 (ref,  index: 8)
+                                parent12 (copy, index: 9)
+                                v103 (ref,  index: 10)
+                                ui (copy, index: 11)
+                                flashCard (copy, index: 12)
+                                queueVisible (copy, index: 13)
+                                udim2FromOffset (copy, index: 14)
+                                guiService (copy, index: 15)
+                            ]]
+                            local v561
+
+                            for _, v563 in targets do
+                                v563.shown = false
+                            end
+
+                            layoutGrid(false)
+                            local v564 = focus
+
+                            if focus then
+                                v564 = focus
+                            elseif const v565 = if 0 < economy.UpgradesReady() then nil else v220 then
+                                v564 = v565
+                            else
+                                local v566 = economy.ReadyList()
+
+                                if v566[1] then
+                                    v564 = v566[1]
+                                else
+                                    v566 = economy.Spotlight()
+
+                                    if v566 and v219[v566] then
+                                        v564 = v566
+                                    else
+                                        local v567 = firstTarget()
+                                        v564 = v567 and v567.Name or nil
+                                    end
+                                end
+                            end
+
+                            v220 = v564
+                            v474(false)
+
+                            if v220 then
+                                v561 = v219[v220]
+                                v561 = v561 or nil
+                            else
+                                v561 = nil
+                            end
+
+                            local y = 0
+
+                            if v561 and focus then
+                                local v569
+                                local v570 = math.max(parent12.AbsoluteSize.X / math.max(v103, 1), 0.01)
+                                local v571 = math.max(0, parent12.AbsoluteCanvasSize.Y - parent12.AbsoluteWindowSize.Y)
+
+                                if ui.Compact then
+                                    v569 = 30
+                                else
+                                    v569 = 34
+                                end
+
+                                y = math.min(math.max(0, (v561.y - v569) - 4) * v570, v571)
+                                task.delay(
+                                    0.25,
+                                    function()
+                                        --[[
+                                          line: 1950
+                                          upvalues:
+                                            flashCard (copy, index: 1)
+                                            v561 (copy, index: 2)
+                                        ]]
+                                        flashCard(v561)
+                                    end
+                                )
+                            end
+
+                            parent12.CanvasPosition = Vector2.new(0, y)
+                            queueVisible()
+                            local v572 = 0
+                            local v573 = v572
+
+                            for _, v575 in targets do
+                                if v575.visible and v575.y < 520 then
+                                    v575.inner.Position = udim2FromOffset(0, 14)
+                                    ui.Tween(v575.inner, TweenInfo.new(0.32, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, 0, false, (math.min(v573 * 0.018, 0.2))), {Position = UDim2.new()})
+                                    v573 += 1
+                                end
+                            end
+
+                            if ui.Gamepad then
+                                guiService.SelectedObject = if v561 then v561.holder else firstTarget()
+                            end
+                        end
+                    )
+                end),
+                close = (function(a576)
+                    --[[
+                      name: close
+                      line: 1969
+                      upvalues:
+                        v8 (ref,  index: 1)
+                        textChatService (copy, index: 2)
+                        starterGui (copy, index: 3)
+                        ancestor (copy, index: 4)
+                        guiService (copy, index: 5)
+                        v53 (copy, index: 6)
+                    ]]
+                    if const v577 = v8 then
+                        v8 = nil
+
+                        pcall(
+                            function()
+                                --[[
+                                  line: 71
+                                  upvalues:
+                                    textChatService (copy, index: 1)
+                                    v577 (copy, index: 2)
+                                    starterGui (copy, index: 3)
+                                ]]
+                                local chatWindowConfiguration = textChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+                                local chatInputBarConfiguration = textChatService:FindFirstChildOfClass("ChatInputBarConfiguration")
+
+                                if chatWindowConfiguration and v577.window ~= nil then
+                                    chatWindowConfiguration.Enabled = v577.window
+                                end
+
+                                if chatInputBarConfiguration and v577.bar ~= nil then
+                                    chatInputBarConfiguration.Enabled = v577.bar
+                                end
+
+                                if v577.core ~= nil then
+                                    starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, v577.core)
+                                end
+                            end
+                        )
+                    end
+
+                    ancestor.Visible = false
+                    local selectedObject = guiService.SelectedObject
+
+                    if selectedObject and selectedObject:IsDescendantOf(v53.Root) then
+                        guiService.SelectedObject = nil
+                    end
+
+                    v53:Close(a576)
+                end),
+                back = (function()
+                    --[[
+                      name: back
+                      line: 1979
+                      upvalues:
+                        ancestor (copy, index: 1)
+                        guiService (copy, index: 2)
+                        v121 (copy, index: 3)
+                    ]]
+                    if not ancestor.Visible then
+                        return false
+                    end
+
+                    if ancestor.Visible then
+                        ancestor.Visible = false
+                        local selectedObject = guiService.SelectedObject
+
+                        if selectedObject and selectedObject:IsDescendantOf(ancestor) then
+                            guiService.SelectedObject = v121.Instance
+                        end
+                    end
+
+                    return true
+                end)
+            }
+        )
+
+        v53.Closed:Connect(restoreChat)
+
+        state.PlayerStateChanged:Connect(
+            function(a582)
+                --[[
+                  line: 1988
+                  upvalues:
+                    a19 (copy, index: 1)
+                ]]
+                if a582 == "Match" and a19.MenuManager.IsOpen("Collection") then
+                    a19.MenuManager.Close("Collection", true)
+                end
+            end
+        )
+
+        do
+            local function relayout()
+                --[[
+                  name: relayout
+                  line: 1993
+                  upvalues:
+                    v53 (copy, index: 1)
+                    layoutWindow (copy, index: 2)
+                    v342 (ref,  index: 3)
+                    v474 (ref,  index: 4)
+                ]]
+                if v53.IsOpen then
+                    layoutWindow()
+                    v53.Refit()
+                    v342 = nil
+                    task.defer(v474)
+                end
+            end
+
+            ui.LayoutChanged:Connect(relayout)
+            ui.OnResize(relayout)
+        end
+
+        a19.Debug.collection = function(a584, focus: number, a586, a587)
+            --[[
+              line: 2008
+              upvalues:
+                v220 (ref,  index: 1)
+                a19 (copy, index: 2)
+                v222 (ref,  index: 3)
+                v100 (copy, index: 4)
+                economy (copy, index: 5)
+                paintShop (copy, index: 6)
+                openOdds (copy, index: 7)
+                ancestor (copy, index: 8)
+                guiService (copy, index: 9)
+                v121 (copy, index: 10)
+                parent12 (copy, index: 11)
+                v219 (copy, index: 12)
+                firstTarget (copy, index: 13)
+                levelUpMoment (copy, index: 14)
+                targets (copy, index: 15)
+                v53 (copy, index: 16)
+                parent13 (copy, index: 17)
+                parent18 (copy, index: 18)
+                v340 (ref,  index: 19)
+                v103 (ref,  index: 20)
+            ]]
+            local v588
+
+            if type(focus) ~= "string" then
+                v588 = v220
             else
-                v204 = nil
+                v588 = focus
             end
-            SetMock_1(v204)
-        elseif a60 == "reveal" then
-            Economy_upv_1.SetRevealShowing(a61 == true)
-        elseif a60 == "levelup" and type(a61) == "string" then
-            if u70 ~= a61 then
-                u72(a61, {quiet = true})
+
+            if a584 == "open" then
+                local v589
+                local open = a19.MenuManager.Open
+
+                if type(focus) ~= "string" then
+                    v589 = nil
+                else
+                    v589 = {focus = focus}
+                end
+
+                open("Collection", v589)
+            elseif a584 == "select" and type(focus) == "string" then
+                v222(focus)
+            elseif a584 == "upgrade" and v588 then
+                if v220 ~= v588 then
+                    v222(v588, {quiet = true})
+                end
+
+                v100.Activated:Fire(a586, 0)
+            elseif a584 == "unlock" and v588 then
+                if v220 ~= v588 then
+                    v222(v588, {quiet = true})
+                end
+
+                v100.Activated:Fire()
+            elseif a584 == "buy" then
+                local v591 = focus ~= 5 and 1 or 5
+
+                if economy.DropsAllowed() then
+                    economy.Buy(economy.DropKey(v591))
+                    paintShop()
+                end
+            elseif a584 == "odds" then
+                openOdds()
+            elseif a584 == "closeOdds" then
+                if ancestor.Visible then
+                    ancestor.Visible = false
+                    local selectedObject = guiService.SelectedObject
+
+                    if selectedObject and selectedObject:IsDescendantOf(ancestor) then
+                        guiService.SelectedObject = v121.Instance
+                    end
+                end
+            elseif a584 == "scroll" and type(focus) == "number" then
+                parent12.CanvasPosition = Vector2.new(0, focus)
+            elseif a584 == "gamepad" then
+                guiService.SelectedObject = v220 and v219[v220] and v219[v220].holder or firstTarget()
+            elseif a584 == "mock" then
+                local setMock = economy.SetMock
+                local v594 = if focus == false then nil else focus
+                setMock(v594)
+            elseif a584 == "reveal" then
+                economy.SetRevealShowing(focus == true)
+            elseif a584 == "levelup" and type(focus) == "string" then
+                if v220 ~= focus then
+                    v222(focus, {quiet = true})
+                end
+
+                levelUpMoment(focus, (tonumber(a586) or 1), (tonumber(a587) or 2))
             end
-            levelUpMoment(a61, tonumber(a62) or 1, tonumber(a63) or 2)
+
+            local count = 0
+            local count2 = 0
+            local v597 = {locked = 0, owned = 0, ready = 0, max = 0}
+
+            for _, v599 in targets do
+                if v599.rendered then
+                    count += 1
+                end
+
+                v597[v599.state] = (v597[v599.state] or 0) + 1
+            end
+
+            for _, descendant in v53.Root:GetDescendants() do
+                if descendant:IsA("ViewportFrame") then
+                    count2 += 1
+                end
+            end
+
+            local progress
+            local level
+            local v604, v605 = false, false
+            local v606 = v220
+            local v607 = 0
+            local v608 = 0
+            local v609 = "?"
+
+            if v606 then
+                v607, v608, v609 = economy.Progress(v606)
+            end
+
+            local v610 = {open = v53.IsOpen, selected = v606 or false}
+
+            if v606 then
+                level = economy.Level(v606)
+
+                if not level then
+                    v604 = true
+                end
+            else
+                v604 = true
+            end
+
+            if v604 then
+                level = false
+            end
+
+            v610.level = level
+
+            if v606 then
+                progress = string.format("%d/%d %s", v607, v608, v609)
+
+                if not progress then
+                    v605 = true
+                end
+            else
+                v605 = true
+            end
+
+            if v605 then
+                progress = false
+            end
+
+            local gamepadSelected
+            v610.progress = progress
+            v610.action = v100.Label.Text
+            v610.actionEnabled = v100.Enabled
+            v610.cards = #targets
+            v610.rendered = count
+            v610.viewports = count2
+            v610.locked = v597.locked
+            v610.owned = v597.owned
+            v610.ready = v597.ready
+            v610.max = v597.max
+            v610.shop = parent13.Visible
+            v610.odds = ancestor.Visible
+            v610.oddsRows = #parent18:GetChildren()
+            v610.animating = v340 ~= nil
+            v610.grid = string.format("%dx%d", v103, (math.floor(parent12.AbsoluteWindowSize.Y / math.max(parent12.AbsoluteSize.X / math.max(v103, 1), 0.01))))
+            v610.canvas = math.floor(parent12.CanvasSize.Y.Offset)
+
+            if guiService.SelectedObject then
+                gamepadSelected = guiService.SelectedObject:GetFullName()
+            else
+                gamepadSelected = false
+            end
+
+            v610.gamepadSelected = gamepadSelected
+            v610.mock = economy.Mock ~= nil
+
+            return v610
         end
-        local v205 = 0
-        local v206 = 0
-        local tbl_27 = {locked = 0, max = 0, owned = 0, ready = 0}
-        for _, value_20 in tbl_upv_10 do
-            v205 = ((value_20.rendered) and (v205 + 1)) or v205
-            tbl_27[value_20.state] = (tbl_27[value_20.state] or 0) + 1
-        end
-        for _, value_21 in u5.Root:GetDescendants() do
-            v206 = (value_21:IsA("ViewportFrame") and (v206 + 1)) or v206
-        end
-        local v207 = u70
-        if v207 then
-            Economy_upv_1.Progress(v207)
-        end
-        local tbl_28 = {cards = 0, action = 0, progress = 0, oddsRows = 0, gamepadSelected = 0, grid = 0, shop = 0, mock = 0, locked = 0, ready = 0, odds = 0, max = 0, viewports = 0, canvas = 0, rendered = 0, animating = 0, owned = 0, actionEnabled = 0, level = 0}
-        tbl_28.open = u5.IsOpen
-        tbl_28.selected = u70 or false
-        tbl_28.level = v207 and Economy_upv_1.Level(u70) or false
-        tbl_28.progress = v207 and string.format("%d/%d %s", 0, 0, "?") or false
-        tbl_28.action = u47.Label.Text
-        tbl_28.actionEnabled = u47.Enabled
-        tbl_28.cards = #tbl_upv_10
-        tbl_28.rendered = v205
-        tbl_28.viewports = v206
-        tbl_28.locked = tbl_27.locked
-        tbl_28.owned = tbl_27.owned
-        tbl_28.ready = tbl_27.ready
-        tbl_28.max = tbl_27.max
-        tbl_28.shop = u51.Visible
-        tbl_28.odds = u61.Visible
-        tbl_28.oddsRows = #u65:GetChildren()
-        tbl_28.animating = u77 ~= nil
-        tbl_28.grid = string.format("%dx%d", u50, math.floor(u49.AbsoluteWindowSize.Y / math.max(u49.AbsoluteSize.X / math.max(u50, 1), 0.01)))
-        tbl_28.canvas = math.floor(u49.CanvasSize.Y.Offset)
-        local v210
-        if GuiService_upv_1.SelectedObject then
-            v210 = GuiService_upv_1.SelectedObject:GetFullName()
-        else
-            v210 = false
-        end
-        tbl_28.gamepadSelected = v210
-        tbl_28.mock = Economy_upv_1.Mock ~= nil
-        return tbl_28
     end
 end
-return tbl_1
+
+return v7

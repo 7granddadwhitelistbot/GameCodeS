@@ -1,590 +1,714 @@
-local Players_1 = game:GetService("Players")
-local CommonUtils_1 = require(script.Parent.Parent.Parent:WaitForChild("CommonUtils"))
-local u1 = CommonUtils_1.get("FlagUtil")
-local v1 = CommonUtils_1.get("CameraWrapper")
-local v2 = CommonUtils_1.get("ConnectionUtil")
-local u2 = u1.getUserFlag("UserRaycastUpdateAPI2")
-local u3 = u1.getUserFlag("UserCurrentCameraUpdate2")
-local u4 = u1.getUserFlag("UserPlayerConnectionMemoryLeak")
-if u3 then
-    u1 = v1.new()
+local camera
+local nearPlaneZ
+local queryPoint, queryViewport, writeIndex
+local players = game:GetService("Players")
+local CommonUtils = require(script.Parent.Parent.Parent:WaitForChild("CommonUtils"))
+local v8 = CommonUtils.get("FlagUtil")
+local v9 = CommonUtils.get("CameraWrapper")
+local v10 = CommonUtils.get("ConnectionUtil")
+local userFlag = v8.getUserFlag("UserRaycastUpdateAPI2")
+local userFlag2 = v8.getUserFlag("UserCurrentCameraUpdate2")
+local userFlag3 = v8.getUserFlag("UserPlayerConnectionMemoryLeak")
+local v14 = if userFlag2 then v9.new() else nil
+
+if userFlag2 then
+    camera = nil
 else
-    u1 = nil
+    camera = game.Workspace.CurrentCamera
 end
-local u5 = u3 or game.Workspace.CurrentCamera
-if u3 then
-    u1:Enable()
+
+if userFlag2 then
+    v14:Enable()
 end
-local min_upv_1 = math.min
-local tan_upv_1 = math.tan
-local rad_upv_1 = math.rad
-local new_upv_1 = Ray.new
-local u6 = RaycastParams.new()
-u6.IgnoreWater = true
-u6.FilterType = Enum.RaycastFilterType.Exclude
-u6.RespectCanCollide = true
-local u7 = RaycastParams.new()
-u7.IgnoreWater = true
-u7.FilterType = Enum.RaycastFilterType.Include
-if u4 then
-    local _ = v2.new()
-else
-    local u8 = nil
-end
-local function getTotalTransparency(a1)
+
+local mathMin = math.min
+local mathTan = math.tan
+local mathRad = math.rad
+local newRay = Ray.new
+local raycastParams = RaycastParams.new()
+raycastParams.IgnoreWater = true
+raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+raycastParams.RespectCanCollide = true
+
+local raycastParams2 = RaycastParams.new()
+raycastParams2.IgnoreWater = true
+raycastParams2.FilterType = Enum.RaycastFilterType.Include
+local v21 = if userFlag3 then v10.new() else nil
+
+local function getTotalTransparency(a23)
     --[[
       name: getTotalTransparency
       line: 43
     ]]
-    return 1 - ((1 - a1.Transparency) * (1 - a1.LocalTransparencyModifier))
+    return 1 - ((1 - a23.Transparency) * (1 - a23.LocalTransparencyModifier))
 end
-local function eraseFromEnd(a1, a2)
+
+local function eraseFromEnd(a25, a26)
     --[[
       name: eraseFromEnd
       line: 47
     ]]
-    for n_1 = #a1, a2 + 1, -1 do
-        a1[n_1] = nil
+    for index = #a25, a26 + 1, -1 do
+        a25[index] = nil
     end
 end
-local u9 = nil
-local u10 = nil
-if u3 then
+
+local v28 = nil
+local v29 = nil
+
+if userFlag2 then
     local function updateProjection()
         --[[
           name: updateProjection
           line: 57
           upvalues:
-            u1 (copy, index: 1)
-            rad_upv_1 (copy, index: 2)
-            u10 (ref,  index: 3)
-            tan_upv_1 (copy, index: 4)
-            u9 (ref,  index: 5)
+            v14 (copy, index: 1)
+            mathRad (copy, index: 2)
+            v29 (ref,  index: 3)
+            mathTan (copy, index: 4)
+            v28 (ref,  index: 5)
         ]]
-        local v3 = u1:getCamera()
-        local v4 = rad_upv_1(v3.FieldOfView)
-        local ViewportSize_1 = v3.ViewportSize
-        u10 = tan_upv_1(v4 / 2) * 2
-        u9 = (ViewportSize_1.X / ViewportSize_1.Y) * u10
+        local camera = v14:getCamera()
+        local v32 = mathRad(camera.FieldOfView)
+        local viewportSize = camera.ViewportSize
+        local v34 = viewportSize.X / viewportSize.Y
+        v29 = mathTan(v32 / 2) * 2
+        v28 = v34 * v29
     end
-    u1:Connect("FieldOfView", updateProjection)
-    u1:Connect("ViewportSize", updateProjection)
-    local v5 = u1:getCamera()
-    local v6 = rad_upv_1(v5.FieldOfView)
-    local ViewportSize_2 = v5.ViewportSize
-    local v7 = tan_upv_1(v6 / 2)
-    u10 = v7 * 2
-    u9 = ViewportSize_2.X / ViewportSize_2.Y * u10
-    local v8 = u1:getCamera()
-    local NearPlaneZ_upv_1 = v8.NearPlaneZ
-    u1:Connect(
+
+    v14:Connect("FieldOfView", updateProjection)
+    v14:Connect("ViewportSize", updateProjection)
+    local camera2 = v14:getCamera()
+    local v36 = mathRad(camera2.FieldOfView)
+    local viewportSize = camera2.ViewportSize
+    local v38 = viewportSize.X / viewportSize.Y
+    v29 = mathTan(v36 / 2) * 2
+    v28 = v38 * v29
+    local nearPlaneZ2 = v14:getCamera().NearPlaneZ
+    v14:Connect(
         "NearPlaneZ",
         function()
             --[[
               line: 73
               upvalues:
-                NearPlaneZ_upv_1 (ref,  index: 1)
-                u1 (copy, index: 2)
+                nearPlaneZ2 (ref,  index: 1)
+                v14 (copy, index: 2)
             ]]
-            NearPlaneZ_upv_1 = u1:getCamera().NearPlaneZ
+            nearPlaneZ2 = v14:getCamera().NearPlaneZ
         end
     )
+    nearPlaneZ = nearPlaneZ2
 else
-    local function updateProjection_2()
+    local function updateProjection()
         --[[
           name: updateProjection
           line: 79
           upvalues:
-            u5 (ref,  index: 1)
-            rad_upv_1 (copy, index: 2)
-            u10 (ref,  index: 3)
-            tan_upv_1 (copy, index: 4)
-            u9 (ref,  index: 5)
+            camera (ref,  index: 1)
+            mathRad (copy, index: 2)
+            v29 (ref,  index: 3)
+            mathTan (copy, index: 4)
+            v28 (ref,  index: 5)
         ]]
-        local v9 = rad_upv_1(u5.FieldOfView)
-        local ViewportSize_3 = u5.ViewportSize
-        u10 = tan_upv_1(v9 / 2) * 2
-        u9 = (ViewportSize_3.X / ViewportSize_3.Y) * u10
+        local v41 = mathRad(camera.FieldOfView)
+        local viewportSize = camera.ViewportSize
+        local v43 = viewportSize.X / viewportSize.Y
+        v29 = mathTan(v41 / 2) * 2
+        v28 = v43 * v29
     end
-    u5:GetPropertyChangedSignal("FieldOfView"):Connect(updateProjection_2)
-    u5:GetPropertyChangedSignal("ViewportSize"):Connect(updateProjection_2)
-    local v10 = rad_upv_1(u5.FieldOfView)
-    local ViewportSize_4 = u5.ViewportSize
-    local v11 = tan_upv_1(v10 / 2)
-    u10 = v11 * 2
-    u9 = ViewportSize_4.X / ViewportSize_4.Y * u10
-    local NearPlaneZ_upv_2 = u5.NearPlaneZ
-    u5:GetPropertyChangedSignal("NearPlaneZ"):Connect(
+
+    camera:GetPropertyChangedSignal("FieldOfView"):Connect(updateProjection)
+    camera:GetPropertyChangedSignal("ViewportSize"):Connect(updateProjection)
+    local v44 = mathRad(camera.FieldOfView)
+    local viewportSize = camera.ViewportSize
+    local v46 = viewportSize.X / viewportSize.Y
+    v29 = mathTan(v44 / 2) * 2
+    v28 = v46 * v29
+    local nearPlaneZ3 = camera.NearPlaneZ
+    camera:GetPropertyChangedSignal("NearPlaneZ"):Connect(
         function()
             --[[
               line: 93
               upvalues:
-                NearPlaneZ_upv_2 (ref, index: 1)
-                u5 (ref, index: 2)
+                nearPlaneZ3 (ref, index: 1)
+                camera (ref, index: 2)
             ]]
-            NearPlaneZ_upv_2 = u5.NearPlaneZ
+            nearPlaneZ3 = camera.NearPlaneZ
         end
     )
+    nearPlaneZ = nearPlaneZ3
 end
-local tbl_upv_1 = {}
-local tbl_upv_2 = {}
+
+local filterDescendantsInstances = {}
+local v49 = {}
+
 local function refreshIgnoreList()
     --[[
       name: refreshIgnoreList
-      line: 102
+      line: 103
       upvalues:
-        tbl_upv_1 (ref,  index: 1)
-        tbl_upv_2 (copy, index: 2)
+        filterDescendantsInstances (ref,  index: 1)
+        v49 (copy, index: 2)
     ]]
-    local v12 = 1
-    tbl_upv_1 = {}
-    for _, value_1 in pairs(tbl_upv_2) do
-        tbl_upv_1[v12] = value_1
-        v12 = v12 + 1
+    local writeIndex = 1
+    filterDescendantsInstances = {}
+
+    for _, v53 in pairs(v49) do
+        filterDescendantsInstances[writeIndex] = v53
+        writeIndex += 1
     end
 end
-local u8
-local function playerAdded(a1)
+
+local function playerAdded(player: Player)
     --[[
       name: playerAdded
-      line: 111
+      line: 112
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        tbl_upv_1 (ref,  index: 2)
-        u4 (copy, index: 3)
-        u8 (copy, index: 4)
+        v49 (copy, index: 1)
+        filterDescendantsInstances (ref,  index: 2)
+        userFlag3 (copy, index: 3)
+        v21 (copy, index: 4)
     ]]
-    local function characterAdded_1(a2)
+    local function characterAdded(character: Model)
         --[[
           name: characterAdded
-          line: 112
+          line: 113
           upvalues:
-            tbl_upv_2 (copy, index: 1)
-            a1 (copy, index: 2)
-            tbl_upv_1 (ref,  index: 3)
+            v49 (copy, index: 1)
+            player (copy, index: 2)
+            filterDescendantsInstances (ref,  index: 3)
         ]]
-        tbl_upv_2[a1] = a2
-        local v13 = 1
-        tbl_upv_1 = {}
-        for _, value_2 in pairs(tbl_upv_2) do
-            tbl_upv_1[v13] = value_2
-            v13 = v13 + 1
+        v49[player] = character
+        local writeIndex = 1
+        filterDescendantsInstances = {}
+
+        for _, v60 in pairs(v49) do
+            filterDescendantsInstances[writeIndex] = v60
+            writeIndex += 1
         end
     end
-    local function characterRemoving_1()
+
+    local function characterRemoving()
         --[[
           name: characterRemoving
-          line: 116
+          line: 117
           upvalues:
-            tbl_upv_2 (copy, index: 1)
-            a1 (copy, index: 2)
-            tbl_upv_1 (ref,  index: 3)
+            v49 (copy, index: 1)
+            player (copy, index: 2)
+            filterDescendantsInstances (ref,  index: 3)
         ]]
-        tbl_upv_2[a1] = nil
-        local v14 = 1
-        tbl_upv_1 = {}
-        for _, value_3 in pairs(tbl_upv_2) do
-            tbl_upv_1[v14] = value_3
-            v14 = v14 + 1
+        v49[player] = nil
+        local writeIndex = 1
+        filterDescendantsInstances = {}
+
+        for _, v64 in pairs(v49) do
+            filterDescendantsInstances[writeIndex] = v64
+            writeIndex += 1
         end
     end
-    if u4 then
-        u8:trackConnection(("%*CharacterAdded"):format(a1.UserId), a1.CharacterAdded:Connect(characterAdded_1))
-        u8:trackConnection(("%*CharacterRemoving"):format(a1.UserId), a1.CharacterRemoving:Connect(characterRemoving_1))
+
+    if userFlag3 then
+        v21:trackConnection(`{player.UserId}CharacterAdded`, player.CharacterAdded:Connect(characterAdded))
+        v21:trackConnection(`{player.UserId}CharacterRemoving`, player.CharacterRemoving:Connect(characterRemoving))
     else
-        a1.CharacterAdded:Connect(characterAdded_1)
-        a1.CharacterRemoving:Connect(characterRemoving_1)
+        player.CharacterAdded:Connect(characterAdded)
+        player.CharacterRemoving:Connect(characterRemoving)
     end
-    if a1.Character then
-        tbl_upv_2[a1] = a1.Character
-        local v15 = 1
-        tbl_upv_1 = {}
-        local v16 = v15
-        for _, value_4 in pairs(tbl_upv_2) do
-            tbl_upv_1[v16] = value_4
-            v16 = v16 + 1
+
+    if player.Character then
+        v49[player] = player.Character
+        local v65 = 1
+        filterDescendantsInstances = {}
+        local writeIndex = v65
+
+        for _, v68 in pairs(v49) do
+            filterDescendantsInstances[writeIndex] = v68
+            writeIndex += 1
         end
     end
 end
-local function playerRemoving(a1)
+
+local function playerRemoving(player: Player)
     --[[
       name: playerRemoving
-      line: 134
+      line: 141
       upvalues:
-        tbl_upv_2 (copy, index: 1)
-        tbl_upv_1 (ref,  index: 2)
-        u4 (copy, index: 3)
-        u8 (copy, index: 4)
+        v49 (copy, index: 1)
+        filterDescendantsInstances (ref,  index: 2)
+        userFlag3 (copy, index: 3)
+        v21 (copy, index: 4)
     ]]
-    tbl_upv_2[a1] = nil
-    local v17 = 1
-    tbl_upv_1 = {}
-    for _, value_5 in pairs(tbl_upv_2) do
-        tbl_upv_1[v17] = value_5
-        v17 = v17 + 1
+    v49[player] = nil
+    local writeIndex = 1
+    filterDescendantsInstances = {}
+
+    for _, v73 in pairs(v49) do
+        filterDescendantsInstances[writeIndex] = v73
+        writeIndex += 1
     end
-    if not u4 then
-        return
+
+    if userFlag3 then
+        v21:disconnect((`{player.UserId}CharacterAdded`))
+        v21:disconnect((`{player.UserId}CharacterRemoving`))
     end
-    u8:disconnect((("%*CharacterAdded"):format(a1.UserId)))
-    u8:disconnect((("%*CharacterRemoving"):format(a1.UserId)))
 end
-Players_1.PlayerAdded:Connect(playerAdded)
-Players_1.PlayerRemoving:Connect(playerRemoving)
-for _, value_6 in ipairs(Players_1:GetPlayers()) do
-    playerAdded(value_6)
+
+players.PlayerAdded:Connect(playerAdded)
+players.PlayerRemoving:Connect(playerRemoving)
+
+for _, player in ipairs(players:GetPlayers()) do
+    playerAdded(player)
 end
-local v18 = 1
-tbl_upv_1 = {}
-local v7 = v18
-for _, value_7 in pairs(tbl_upv_2) do
-    tbl_upv_1[v7] = value_7
-    v7 = v7 + 1
+
+local v76 = 1
+filterDescendantsInstances = {}
+writeIndex = v76
+
+for _, v78 in pairs(v49) do
+    filterDescendantsInstances[writeIndex] = v78
+    writeIndex += 1
 end
-local u11 = nil
-local u12 = nil
-if u3 then
-    u1:Connect(
+
+local v79 = nil
+local v80 = nil
+
+if userFlag2 then
+    v14:Connect(
         "CameraSubject",
         function()
             --[[
-              line: 174
+              line: 181
               upvalues:
-                u1 (copy, index: 1)
-                u12 (ref,  index: 2)
+                v14 (copy, index: 1)
+                v80 (ref,  index: 2)
             ]]
-            local CameraSubject_1 = u1:getCamera().CameraSubject
-            if CameraSubject_1 and CameraSubject_1:IsA("Humanoid") then
-                u12 = CameraSubject_1.RootPart
+            local cameraSubject = v14:getCamera().CameraSubject
+
+            if cameraSubject and cameraSubject:IsA("Humanoid") then
+                v80 = cameraSubject.RootPart
                 return
             end
-            if CameraSubject_1 and CameraSubject_1:IsA("BasePart") then
-                u12 = CameraSubject_1
-            else
-                u12 = nil
+
+            if cameraSubject and cameraSubject:IsA("BasePart") then
+                v80 = cameraSubject
+                return
             end
+
+            v80 = nil
         end
     )
 else
-    u5:GetPropertyChangedSignal("CameraSubject"):Connect(
+    camera:GetPropertyChangedSignal("CameraSubject"):Connect(
         function()
             --[[
-              line: 185
+              line: 192
               upvalues:
-                u5 (ref, index: 1)
-                u12 (ref, index: 2)
+                camera (ref, index: 1)
+                v80 (ref, index: 2)
             ]]
-            local CameraSubject_2 = u5.CameraSubject
-            if CameraSubject_2:IsA("Humanoid") then
-                u12 = CameraSubject_2.RootPart
-            elseif CameraSubject_2:IsA("BasePart") then
-                u12 = CameraSubject_2
-            else
-                u12 = nil
+            local cameraSubject = camera.CameraSubject
+
+            if cameraSubject:IsA("Humanoid") then
+                v80 = cameraSubject.RootPart
+                return
             end
+
+            if cameraSubject:IsA("BasePart") then
+                v80 = cameraSubject
+                return
+            end
+
+            v80 = nil
         end
     )
 end
-local function canOcclude(a1)
+
+local function canOcclude(a84)
     --[[
       name: canOcclude
-      line: 197
+      line: 204
       upvalues:
-        u2 (copy, index: 1)
-        u11 (ref,  index: 2)
+        userFlag (copy, index: 1)
+        v79 (ref,  index: 2)
     ]]
-    local v19 = false
-    if 1 - ((1 - a1.Transparency) * (1 - a1.LocalTransparencyModifier)) < 0.25 then
-        if u2 then
-            v19 = (u11 ~= (a1:GetRootPart() or a1)) and (not a1:IsA("TrussPart"))
+    local v85 = false
+    local v86 = false
+
+    if 1 - ((1 - a84.Transparency) * (1 - a84.LocalTransparencyModifier)) < 0.25 then
+        if userFlag then
+            v85 = true
         else
-            v19 = a1.CanCollide
-            v19 = a1.CanCollide and u11 ~= (a1:GetRootPart() or a1) and not a1:IsA("TrussPart")
+            v86 = a84.CanCollide
+
+            if v86 then
+                v85 = true
+            end
         end
     end
-    return v19
+
+    if v85 then
+        v86 = false
+
+        if v79 ~= (a84:GetRootPart() or a84) then
+            v86 = not a84:IsA("TrussPart")
+        end
+    end
+
+    return v86
 end
-local tbl_upv_3 = {Vector2.new(0.4, 0), Vector2.new(-0.4, 0), Vector2.new(0, -0.4), Vector2.new(0, 0.4), Vector2.new(0, 0.2)}
-local function getCollisionPoint(a1, a2)
+
+local v87 = {Vector2.new(0.4, 0), Vector2.new(-0.4, 0), Vector2.new(0, -0.4), Vector2.new(0, 0.4), Vector2.new(0, 0.2)}
+
+local function getCollisionPoint(origin, direction)
     --[[
       name: getCollisionPoint
-      line: 225
+      line: 231
       upvalues:
-        u2 (copy, index: 1)
-        u6 (copy, index: 2)
-        tbl_upv_1 (ref,  index: 3)
-        new_upv_1 (copy, index: 4)
+        userFlag (copy, index: 1)
+        raycastParams (copy, index: 2)
+        filterDescendantsInstances (ref,  index: 3)
+        newRay (copy, index: 4)
     ]]
-    local v20 = nil
-    if u2 then
-        u6.FilterDescendantsInstances = tbl_upv_1
-        v20 = workspace:Raycast(a1, a2, u6)
-        if v20 then
-            return v20.Position, true
+    if userFlag then
+        raycastParams.FilterDescendantsInstances = filterDescendantsInstances
+
+        if const raycastResult = workspace:Raycast(origin, direction, raycastParams) then
+            return raycastResult.Position, true
         end
-        return a1 + a2, false
     else
-        local v21 = #tbl_upv_1
-        local v22 = nil
+        local v92, v93, v94
+        local filterDescendantsInstanceCount = #filterDescendantsInstances
+
         while true do
-            local v23, v22 = workspace:FindPartOnRayWithIgnoreList(new_upv_1(a1, a2), tbl_upv_1, false, true)
-            if v23 then
-                if v23.CanCollide then
-                    for n_2 = #tbl_upv_1, v21 + 1, -1 do
-                        tbl_upv_1[n_2] = nil
+            local partOnRay
+            partOnRay, v92 = workspace:FindPartOnRayWithIgnoreList(newRay(origin, direction), filterDescendantsInstances, false, true)
+
+            if partOnRay then
+                if partOnRay.CanCollide then
+                    v93 = filterDescendantsInstances
+
+                    for index = #v93, filterDescendantsInstanceCount + 1, -1 do
+                        v93[index] = nil
                     end
-                    return v22, true
+
+                    return v92, true
                 end
-                tbl_upv_1[#tbl_upv_1 + 1] = v23
+
+                filterDescendantsInstances[#filterDescendantsInstances + 1] = partOnRay
             end
-            if v23 then
-                continue
+
+            if not partOnRay then
+                v94 = filterDescendantsInstances
+
+                for index = #v94, filterDescendantsInstanceCount + 1, -1 do
+                    v94[index] = nil
+                end
+
+                return origin + direction, false
             end
-            for n_3 = #tbl_upv_1, v21 + 1, -1 do
-                tbl_upv_1[n_3] = nil
-            end
-            return a1 + a2, false
         end
     end
+
+    return origin + direction, false
 end
-local u13
-local function queryPoint(a1, a2, a3, a4)
+
+queryPoint = function(a99, a100, a101, origin)
     --[[
       name: queryPoint
-      line: 258
+      line: 262
       upvalues:
-        tbl_upv_1 (ref,  index: 1)
-        u13 (ref,  index: 2)
-        u2 (copy, index: 3)
-        u6 (copy, index: 4)
-        u11 (ref,  index: 5)
-        u7 (copy, index: 6)
-        new_upv_1 (copy, index: 7)
+        filterDescendantsInstances (ref,  index: 1)
+        nearPlaneZ (ref,  index: 2)
+        userFlag (copy, index: 3)
+        raycastParams (copy, index: 4)
+        v79 (ref,  index: 5)
+        raycastParams2 (copy, index: 6)
+        newRay (copy, index: 7)
     ]]
     debug.profilebegin("queryPoint")
-    local v24 = #tbl_upv_1
-    a3 = a3 + u13
-    local v25 = a1 + a2 * a3
-    local v26 = math.huge
-    local v27 = math.huge
-    local v28 = 0
-    local v29, v30 = nil, nil
-    if u2 then
-        u6.FilterDescendantsInstances = tbl_upv_1
-        local v31 = a1
-        local v32 = nil
-        while true do
-            local v33 = workspace:Raycast(v31, v25 - v31, u6)
-            if not (v33) then
+    local filterDescendantsInstanceCount = #filterDescendantsInstances
+    a101 += nearPlaneZ
+    local origin2 = a99 + a100 * a101
+    local magnitude = math.huge
+    local magnitude2 = math.huge
+    local count = 0
+
+    if userFlag then
+        local v108, raycastParams3, v110, magnitude3
+        raycastParams.FilterDescendantsInstances = filterDescendantsInstances
+        v108, raycastParams3, v110 = a99, raycastParams, count
+
+        while const raycastResult = workspace:Raycast(v108, origin2 - v108, raycastParams3) do
+            local canCollide
+            local v114
+            local v115
+            local v116, v117, v118 = false, false, false
+            v110 += 1
+            local instance = raycastResult.Instance
+            local position = raycastResult.Position
+            magnitude3 = (position - a99).Magnitude
+
+            if not (64 <= v110) then
+                v115 = false
+
+                if not (1 - ((1 - instance.Transparency) * (1 - instance.LocalTransparencyModifier)) < 0.25) then
+                    v117 = true
+                elseif userFlag then
+                    v116 = true
+                else
+                    canCollide = instance.CanCollide
+
+                    if canCollide then
+                        v116 = true
+                    else
+                        v115 = canCollide
+                        v117 = true
+                    end
+                end
+            else
+                magnitude2 = magnitude3
+            end
+
+            if v116 then
+                v115 = false
+
+                if v79 ~= (instance:GetRootPart() or instance) then
+                    v115 = not instance:IsA("TrussPart")
+                end
+
+                v117 = true
+            end
+
+            if v117 and v115 then
+                raycastParams2.FilterDescendantsInstances = {instance}
+
+                if workspace:Raycast(origin2, position - origin2, raycastParams2) then
+                    if origin then
+                        v114 = workspace:Raycast(origin, origin2 - origin, raycastParams2)
+                        v114 = v114 or workspace:Raycast(origin2, origin - origin2, raycastParams2)
+                    else
+                        v114 = false
+                    end
+
+                    v118 = true
+                else
+                    magnitude2 = magnitude3
+                end
+            end
+
+            if v118 then
+                if v114 then
+                    magnitude2 = magnitude3
+                elseif a101 < magnitude then
+                    magnitude = magnitude3
+                end
+            end
+
+            raycastParams3:AddToFilter(instance)
+            v108 = position - a100 * 0.001
+
+            if magnitude2 < math.huge then
                 break
             end
-            v28 = v28 + 1
-            local Instance_1 = v33.Instance
-            v29 = v33.Position
-            local Magnitude_1 = (v29 - a1).Magnitude
-            if v28 >= 64 then
-                v27 = Magnitude_1
-            else
-                v32 = false
-                if 1 - ((1 - Instance_1.Transparency) * (1 - Instance_1.LocalTransparencyModifier)) < 0.25 then
-                    if u2 then
-                        v32 = (u11 ~= (Instance_1:GetRootPart() or Instance_1)) and (not Instance_1:IsA("TrussPart"))
-                    else
-                        v32 = Instance_1.CanCollide
-                        v32 = Instance_1.CanCollide and u11 ~= (Instance_1:GetRootPart() or Instance_1) and not Instance_1:IsA("TrussPart")
-                    end
-                end
-                if v32 then
-                    u7.FilterDescendantsInstances = {Instance_1}
-                    if workspace:Raycast(v25, v29 - v25, u7) then
-                        local v34
-                        if a4 then
-                            v34 = workspace:Raycast(a4, v25 - a4, u7) or (workspace:Raycast(v25, a4 - v25, u7))
-                        else
-                            v34 = false
-                        end
-                        if v34 then
-                            v27 = Magnitude_1
-                        elseif a3 < v26 then
-                            v26 = Magnitude_1
-                        end
-                    else
-                        v27 = Magnitude_1
-                    end
-                end
+            if not instance then
+                break
             end
-            u6:AddToFilter(Instance_1)
-            v31 = v29 - a2 * 0.001
-            if not (v27 < math.huge) and Instance_1 then
-                continue
-            end
-            break
+
+            raycastParams3 = raycastParams
         end
     else
-        local v31 = a1
-        local v35, v36 = nil, nil
-        local v37
+        local v121, v122, magnitude4, canCollide
+        v121 = a99
+        local partOnRay
+
         repeat
-            local v38
-            v37, v38 = workspace:FindPartOnRayWithIgnoreList(new_upv_1(v31, v25 - v31), tbl_upv_1, false, true)
-            v28 = v28 + 1
-            if v37 then
-                v29 = v28 >= 64
-                v35 = false
-                if 1 - ((1 - v37.Transparency) * (1 - v37.LocalTransparencyModifier)) < 0.25 then
-                    if u2 then
-                        v35 = (u11 ~= (v37:GetRootPart() or v37)) and (not v37:IsA("TrussPart"))
+            partOnRay, v122 = workspace:FindPartOnRayWithIgnoreList(newRay(v121, origin2 - v121), filterDescendantsInstances, false, true)
+            count += 1
+
+            if partOnRay then
+                local v126 = 64 <= count
+                local v127 = false
+                local v128 = false
+
+                if 1 - ((1 - partOnRay.Transparency) * (1 - partOnRay.LocalTransparencyModifier)) < 0.25 then
+                    if userFlag then
+                        v127 = true
                     else
-                        v30 = v37.CanCollide
-                        if v30 then
-                            v35 = (u11 ~= (v37:GetRootPart() or v37)) and (not v37:IsA("TrussPart"))
+                        canCollide = partOnRay.CanCollide
+
+                        if canCollide then
+                            v127 = true
                         else
-                            v35 = v30
+                            v128 = canCollide
                         end
                     end
                 end
-                if v35 or v29 then
-                    local tbl_4 = {v37}
-                    local v39 = workspace:FindPartOnRayWithWhitelist(new_upv_1(v25, v38 - v25), tbl_4, true)
-                    local Magnitude_2 = (v38 - a1).Magnitude
-                    if not (v39) or v29 then
-                        v27 = Magnitude_2
-                        tbl_upv_1[#tbl_upv_1 + 1] = v37
-                        v31 = v38 - a2 * 0.001
-                        if v27 < math.huge or not (v37) then
-                            break
-                        end
-                    end
-                    v36 = false
-                    if a4 then
-                        v36 = workspace:FindPartOnRayWithWhitelist(new_upv_1(a4, v25 - a4), tbl_4, true) or workspace:FindPartOnRayWithWhitelist(new_upv_1(v25, a4 - v25), tbl_4, true)
-                    end
-                    if v36 then
-                        v27 = Magnitude_2
-                    elseif a3 < v26 then
-                        v26 = Magnitude_2
-                    end
-                    tbl_upv_1[#tbl_upv_1 + 1] = v37
-                    v31 = v38 - a2 * 0.001
-                    if v27 < math.huge or not (v37) then
-                        break
+
+                if v127 then
+                    v128 = false
+
+                    if v79 ~= (partOnRay:GetRootPart() or partOnRay) then
+                        v128 = not partOnRay:IsA("TrussPart")
                     end
                 end
-                tbl_upv_1[#tbl_upv_1 + 1] = v37
-                v31 = v38 - a2 * 0.001
+
+                if v128 or v126 then
+                    local whitelistDescendantsTable = {partOnRay}
+                    local partOnRay2 = workspace:FindPartOnRayWithWhitelist(newRay(origin2, v122 - origin2), whitelistDescendantsTable, true)
+                    magnitude4 = (v122 - a99).Magnitude
+
+                    if partOnRay2 then
+                        if v126 then
+                            magnitude2 = magnitude4
+                        else
+                            local partOnRay3 = false
+
+                            if origin then
+                                partOnRay3 = workspace:FindPartOnRayWithWhitelist(newRay(origin, origin2 - origin), whitelistDescendantsTable, true)
+                                    or workspace:FindPartOnRayWithWhitelist(newRay(origin2, origin - origin2), whitelistDescendantsTable, true)
+                            end
+
+                            if partOnRay3 then
+                                magnitude2 = magnitude4
+                            elseif a101 < magnitude then
+                                magnitude = magnitude4
+                            end
+                        end
+                    else
+                        magnitude2 = magnitude4
+                    end
+                end
+
+                filterDescendantsInstances[#filterDescendantsInstances + 1] = partOnRay
+                v121 = v122 - a100 * 0.001
             end
-            if v27 < math.huge then
-                break
-            end
-        until not (v37)
-        for n_4 = #tbl_upv_1, v24 + 1, -1 do
-            tbl_upv_1[n_4] = nil
+        until magnitude2 < math.huge or not partOnRay
+
+        local v132 = filterDescendantsInstances
+
+        for index = #v132, filterDescendantsInstanceCount + 1, -1 do
+            v132[index] = nil
         end
     end
+
     debug.profileend()
-    return v26 - u13, v27 - u13
+
+    return magnitude - nearPlaneZ, magnitude2 - nearPlaneZ
 end
-local function queryViewport(a1, a2)
+
+queryViewport = function(a134, a135)
     --[[
       name: queryViewport
-      line: 361
+      line: 373
       upvalues:
-        u5 (ref,  index: 1)
-        u3 (copy, index: 2)
-        u1 (copy, index: 3)
-        u9 (ref,  index: 4)
-        u10 (ref,  index: 5)
-        u13 (ref,  index: 6)
+        camera (ref,  index: 1)
+        userFlag2 (copy, index: 2)
+        v14 (copy, index: 3)
+        v28 (ref,  index: 4)
+        v29 (ref,  index: 5)
+        nearPlaneZ (ref,  index: 6)
         queryPoint (copy, index: 7)
     ]]
     debug.profilebegin("queryViewport")
-    local Position_1 = a1.Position
-    local rightVector_1 = a1.rightVector
-    local upVector_1 = a1.upVector
-    local v41
-    if u3 then
-        v41 = u1:getCamera()
-    else
-        v41 = u5
-    end
-    u5 = v41
-    local ViewportSize_5 = u5.ViewportSize
-    local v42 = math.huge
-    local v43 = math.huge
-    for n_5 = 0, 1 do
-        local v44 = rightVector_1 * ((n_5 - 0.5) * u9)
-        for n_6 = 0, 1 do
-            local v45, v46 = queryPoint(Position_1 + (u13 * (v44 + (upVector_1 * ((n_6 - 0.5) * u10)))), -a1.lookVector, a2, u5:ViewportPointToRay(ViewportSize_5.x * n_5, ViewportSize_5.y * n_6).Origin)
-            if v46 < v42 then
-                v42 = v46
+    local position = a134.Position
+    local rightVector = a134.rightVector
+    local upVector = a134.upVector
+    local v139 = -a134.lookVector
+    camera = if userFlag2 then v14:getCamera() else camera
+    local viewportSize = camera.ViewportSize
+    local minValue = math.huge
+    local minValue2 = math.huge
+
+    for index = 0, 1 do
+        local v144 = rightVector * ((index - 0.5) * v28)
+        local v145
+
+        for index2 = 0, 1 do
+            local v147 = position + nearPlaneZ * (v144 + upVector * ((index2 - 0.5) * v29))
+            local camera2 = camera
+            local v149
+            v145, v149 = queryPoint(v147, v139, a135, camera2:ViewportPointToRay(viewportSize.x * index, viewportSize.y * index2).Origin)
+
+            if v149 < minValue then
+                minValue = v149
             end
-            if v45 < v43 then
-                v43 = v45
+
+            if v145 < minValue2 then
+                minValue2 = v145
             end
         end
     end
+
     debug.profileend()
-    return v43, v42
+
+    return minValue2, minValue
 end
-local function testPromotion(a1, a2, a3)
+
+local function testPromotion(a151, a152, a153)
     --[[
       name: testPromotion
-      line: 404
+      line: 413
       upvalues:
         getCollisionPoint (copy, index: 1)
-        min_upv_1 (copy, index: 2)
+        mathMin (copy, index: 2)
         queryPoint (copy, index: 3)
-        tbl_upv_3 (copy, index: 4)
+        v87 (copy, index: 4)
     ]]
     debug.profilebegin("testPromotion")
-    local Position_2 = a1.Position
-    local rightVector_2 = a1.rightVector
-    local upVector_2 = a1.upVector
+    local position = a151.Position
+    local rightVector = a151.rightVector
+    local upVector = a151.upVector
+    local v157 = -a151.lookVector
     debug.profilebegin("extrapolate")
-    for n_7 = 0, min_upv_1(1.25, a3.rotVelocity.magnitude + ((getCollisionPoint(Position_2, a3.posVelocity * 1.25) - Position_2).Magnitude / a3.posVelocity.magnitude)), 0.0625 do
-        local v47 = a3.extrapolate(n_7)
-        if not (a2 <= queryPoint(v47.Position, -v47.lookVector, a2)) then
-            continue
+    local magnitude = (getCollisionPoint(position, a153.posVelocity * 1.25) - position).Magnitude
+    local magnitude2 = a153.posVelocity.magnitude
+
+    for index = 0, mathMin(1.25, a153.rotVelocity.magnitude + (magnitude / magnitude2)), 0.0625 do
+        local v161 = a153.extrapolate(index)
+
+        if a152 <= queryPoint(v161.Position, -v161.lookVector, a152) then
+            return false
         end
-        return false
     end
+
     debug.profileend()
     debug.profilebegin("testOffsets")
-    for _, value_8 in ipairs(tbl_upv_3) do
-        local v48 = getCollisionPoint(Position_2, (rightVector_2 * value_8.x) + (upVector_2 * value_8.y))
-        if queryPoint(v48, ((Position_2 + (-a1.lookVector * a2)) - v48).Unit, a2) ~= math.huge then
-            continue
+
+    for _, vector2 in ipairs(v87) do
+        local collisionPoint = getCollisionPoint(position, rightVector * vector2.x + (upVector * vector2.y))
+
+        if queryPoint(collisionPoint, ((position + (v157 * a152)) - collisionPoint).Unit, a152) == math.huge then
+            return false
         end
-        return false
     end
+
     debug.profileend()
     debug.profileend()
+
     return true
 end
-local function Popper(a1, a2, a3)
+
+return function(a165, a166, a167)
     --[[
       name: Popper
-      line: 453
+      line: 462
       upvalues:
-        u11 (ref,  index: 1)
-        u12 (ref,  index: 2)
+        v79 (ref,  index: 1)
+        v80 (ref,  index: 2)
         queryViewport (copy, index: 3)
         testPromotion (copy, index: 4)
     ]]
     debug.profilebegin("popper")
-    local v49 = (u12 and (u12:GetRootPart())) or u12
-    u11 = v49
-    local v50, v51 = queryViewport(a1, a2)
-    if v51 < a2 then
+    v79 = v80 and v80:GetRootPart() or v80
+    local v168, v169 = queryViewport(a165, a166)
+    local v170 = if v169 < a166 then v169 else a166
 
+    if v168 < v170 and testPromotion(a165, a166, a167) then
+        v170 = v168
     end
-    if v50 < a2 then
-        if testPromotion(a1, a2, a3) then
 
-        end
-    end
-    u11 = nil
+    v79 = nil
     debug.profileend()
-    return a2
+
+    return v170
 end
-return Popper
