@@ -1,21 +1,22 @@
+local contentProvider = game:GetService("ContentProvider")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local runService = game:GetService("RunService")
-local v3 = {}
-local v4 = nil
+local v4 = {}
 local v5 = nil
+local v6 = nil
 local instance = nil
 local color3 = Color3.fromRGB(128, 132, 142)
-local v8 = setmetatable({}, {__mode = "k"})
-local v9 = {}
+local v9 = setmetatable({}, {__mode = "k"})
+local v10 = {}
 local childNames = {ammo_arrows = "Arrow", ammo_shot = "Ball", ammo_fire_arrows = "FireArrow", fire_arrows = "FireArrow"}
-local v11 = {shield = true, palisade = true, harpoon = true, scythe = true}
-local v12 = {war_horn = true}
-local v13 = {bow = "CrossedArrows", gun = "CrossedArrows", melee = "Sword", throwable = "Sword", utility = "Fire", healing = "Star", armor = "Shield"}
+local v12 = {shield = true, palisade = true, harpoon = true, scythe = true}
+local v13 = {war_horn = true}
+local v14 = {bow = "CrossedArrows", gun = "CrossedArrows", melee = "Sword", throwable = "Sword", utility = "Fire", healing = "Star", armor = "Shield"}
 
 local function findWeaponsFolder()
     --[[
       name: findWeaponsFolder
-      line: 36
+      line: 37
       upvalues:
         instance (ref,  index: 1)
         replicatedStorage (copy, index: 2)
@@ -37,7 +38,7 @@ end
 local function modelSource(childName)
     --[[
       name: modelSource
-      line: 48
+      line: 49
       upvalues:
         instance (ref,  index: 1)
         replicatedStorage (copy, index: 2)
@@ -82,40 +83,40 @@ end
 local function isArmorSource(instance: Instance?)
     --[[
       name: isArmorSource
-      line: 74
+      line: 75
     ]]
     return instance:GetAttribute("Armor") == true
 end
 
-local function armorIconPart(a28)
+local function armorIconPart(a29)
     --[[
       name: armorIconPart
-      line: 77
+      line: 78
     ]]
-    return string.find(string.lower(a28.Name), "boots", 1, true) == nil
+    return string.find(string.lower(a29.Name), "boots", 1, true) == nil
 end
 
 local function cloneVisual(instance: Instance?)
     --[[
       name: cloneVisual
-      line: 82
+      line: 83
     ]]
     local armor = instance:GetAttribute("Armor") == true
     local parent = Instance.new("Model")
-    local v33 = false
+    local v34 = false
 
     local function copyPart(instance: Instance?)
         --[[
           name: copyPart
-          line: 86
+          line: 87
           upvalues:
             parent (copy, index: 1)
-            v33 (ref,  index: 2)
+            v34 (ref,  index: 2)
         ]]
         local success, result = pcall(
             function()
                 --[[
-                  line: 87
+                  line: 88
                   upvalues:
                     instance (copy, index: 1)
                 ]]
@@ -129,6 +130,7 @@ local function cloneVisual(instance: Instance?)
                     if descendant:IsA("Decal") then
                         continue
                     end
+
                     if descendant:IsA("Texture") then
                         continue
                     end
@@ -144,7 +146,7 @@ local function cloneVisual(instance: Instance?)
             result.CanQuery = false
             result.CanTouch = false
             result.Parent = parent
-            v33 = true
+            v34 = true
         end
     end
 
@@ -164,7 +166,7 @@ local function cloneVisual(instance: Instance?)
         end
     end
 
-    if not v33 then
+    if not v34 then
         parent:Destroy()
         return nil
     end
@@ -188,27 +190,27 @@ end
 local function computeArmorFraming(id, model: Model?)
     --[[
       name: computeArmorFraming
-      line: 132
+      line: 133
       upvalues:
-        v9 (copy, index: 1)
+        v10 (copy, index: 1)
     ]]
     local boundingBox, vector3 = model:GetBoundingBox()
     local position = boundingBox.Position
     local dist = ((math.max(vector3.X * 0.92, vector3.Y * 1.05) * 0.5) * 1.04) / 0.2679491924311227 + vector3.Z
     local vector32 = position + Vector3.new(0.40055739879608154, 0.1736481785774231, -0.8996666669845581) * dist
     local pivotInv = model:GetPivot():Inverse()
-    v9[id] = {axis = Vector3.new(0, 1, 0), cf = pivotInv * CFrame.lookAt(vector32, position, Vector3.new(0, 1, 0)), dist = dist, center = pivotInv * position, pivotInv = pivotInv}
+    v10[id] = {axis = Vector3.new(0, 1, 0), cf = pivotInv * CFrame.lookAt(vector32, position, Vector3.new(0, 1, 0)), dist = dist, center = pivotInv * position, pivotInv = pivotInv}
 end
 
 local function computeFraming(id, model: Model?, instance: Instance?)
     --[[
       name: computeFraming
-      line: 154
+      line: 155
       upvalues:
         computeArmorFraming (copy, index: 1)
-        v11 (copy, index: 2)
-        v12 (copy, index: 3)
-        v9 (copy, index: 4)
+        v12 (copy, index: 2)
+        v13 (copy, index: 3)
+        v10 (copy, index: 4)
         isArmorSource (copy, index: 5)
     ]]
     if isArmorSource(instance) then
@@ -217,111 +219,111 @@ local function computeFraming(id, model: Model?, instance: Instance?)
     end
 
     local boundingBox, vector3 = model:GetBoundingBox()
-    local v60 = {boundingBox.RightVector, boundingBox.UpVector, boundingBox.LookVector}
-    local v61 = {vector3.X, vector3.Y, vector3.Z}
-    local v62 = {1, 2, 3}
+    local v61 = {boundingBox.RightVector, boundingBox.UpVector, boundingBox.LookVector}
+    local v62 = {vector3.X, vector3.Y, vector3.Z}
+    local v63 = {1, 2, 3}
 
     table.sort(
-        v62,
+        v63,
         function(left: number, right: number)
             --[[
-              line: 163
+              line: 164
               upvalues:
-                v61 (copy, index: 1)
+                v62 (copy, index: 1)
             ]]
-            local v65 = v61[left]
-            return v61[right] < v65
+            local v66 = v62[left]
+            return v62[right] < v66
         end
     )
 
-    local v66 = v60[v62[1]]
-    local v67 = v60[v62[2]]
+    local v67 = v61[v63[1]]
+    local v68 = v61[v63[2]]
     local handle = instance:FindFirstChild("Handle", true)
-    local instance2 = if v11[id] and handle then handle:FindFirstChild("Tip") else nil
+    local instance2 = if v12[id] and handle then handle:FindFirstChild("Tip") else nil
 
     if instance2 and instance2:IsA("Attachment") then
-        if (instance2.WorldPosition - boundingBox.Position):Dot(v66) < 0 then
-            v66 = -v66
-        end
-
-        local v70 = -handle.CFrame.LookVector
-
-        if 0 < (v66 - v67):Cross(v66 + v67):Dot(v70) then
+        if (instance2.WorldPosition - boundingBox.Position):Dot(v67) < 0 then
             v67 = -v67
         end
-    elseif handle and handle:IsA("BasePart") and 0 < (handle.Position - boundingBox.Position):Dot(v66) then
-        v66 = -v66
+
+        local v71 = -handle.CFrame.LookVector
+
+        if 0 < (v67 - v68):Cross(v67 + v68):Dot(v71) then
+            v68 = -v68
+        end
+    elseif handle and handle:IsA("BasePart") and 0 < (handle.Position - boundingBox.Position):Dot(v67) then
+        v67 = -v67
     end
 
-    local v71 = (v66 - v67).Unit
-    local unit = (v66 + v67).Unit
+    local v72 = (v67 - v68).Unit
+    local unit = (v67 + v68).Unit
 
-    if v12[id] then
-        v71 = -v71
+    if v13[id] then
+        v72 = -v72
     end
 
-    local unit2 = v71:Cross(unit).Unit
-    local dist = ((((v61[v62[1]] + v61[v62[2]]) / math.sqrt2) * 0.5) / 0.2679491924311227) * 1 + v61[v62[3]]
+    local unit2 = v72:Cross(unit).Unit
+    local dist = ((((v62[v63[1]] + v62[v63[2]]) / math.sqrt2) * 0.5) / 0.2679491924311227) * 1 + v62[v63[3]]
     local pivotInv = model:GetPivot():Inverse()
-    v9[id] = {cf = pivotInv * CFrame.fromMatrix(boundingBox.Position + (unit2 * dist), v71, unit, unit2), dist = dist, center = pivotInv * boundingBox.Position, pivotInv = pivotInv}
+    v10[id] = {cf = pivotInv * CFrame.fromMatrix(boundingBox.Position + (unit2 * dist), v72, unit, unit2), dist = dist, center = pivotInv * boundingBox.Position, pivotInv = pivotInv}
 end
 
-local function clearHolder(parent, a78)
+local function clearHolder(parent, a79)
     --[[
       name: clearHolder
-      line: 202
+      line: 203
     ]]
-    if a78.spinConn then
-        a78.spinConn:Disconnect()
-        a78.spinConn = nil
+    if a79.spinConn then
+        a79.spinConn:Disconnect()
+        a79.spinConn = nil
     end
 
-    for _, v80 in {"WeaponIcon", "WeaponOutline", "WeaponGlow"} do
-        if const v81 = parent:FindFirstChild(v80) then
-            v81:Destroy()
+    for _, v81 in {"WeaponIcon", "WeaponOutline", "WeaponGlow"} do
+        if const v82 = parent:FindFirstChild(v81) then
+            v82:Destroy()
         end
     end
 
-    a78.vpf = nil
-    a78.model = nil
-    a78.kind = nil
-    a78.outlineCam = nil
+    a79.vpf = nil
+    a79.model = nil
+    a79.kind = nil
+    a79.outlineCam = nil
 end
 
-local function addGlow(parent, a84)
+local function addGlow(parent, a85)
     --[[
       name: addGlow
-      line: 220
+      line: 221
       upvalues:
-        v4 (ref, index: 1)
+        v5 (ref, index: 1)
     ]]
-    if a84.opts.glow == false or not v4.Assets.Icons.Glow then
+    if a85.opts.glow == false or not v5.Assets.Icons.Glow then
         return
     end
 
-    local new = v4.new
-    local v86 = {Name = "WeaponGlow", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1.25, 1.25), Image = v4.Assets.Icons.Glow}
-    local v87 = a84.opts.glowColor or Color3.fromRGB(96, 108, 132)
-    v86.ImageColor3 = v87
-    v86.ImageTransparency = a84.opts.glowTransparency or 0.25
-    v86.ZIndex = parent.ZIndex
-    v86.Parent = parent
-    new("ImageLabel", v86)
+    local new = v5.new
+    local v87 = {Name = "WeaponGlow", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(1.25, 1.25), Image = v5.Assets.Icons.Glow}
+    local v88 = a85.opts.glowColor or Color3.fromRGB(96, 108, 132)
+    v87.ImageColor3 = v88
+    v87.ImageTransparency = a85.opts.glowTransparency or 0.25
+    v87.ZIndex = parent.ZIndex
+    v87.Parent = parent
+    new("ImageLabel", v87)
 end
 
 local color32 = Color3.fromRGB(226, 232, 242)
 
-local function addOutline(parent, a91, model: Model?, cFrame)
+local function addOutline(parent, a92, model: Model?, cFrame)
     --[[
       name: addOutline
-      line: 240
+      line: 241
       upvalues:
-        v4 (ref,  index: 1)
+        v5 (ref,  index: 1)
         color32 (copy, index: 2)
     ]]
-    local v94
+    local v95
 
-    if a91.opts.outline == false then
+    if a92.opts.outline == false then
         return
     end
 
@@ -336,7 +338,7 @@ local function addOutline(parent, a91, model: Model?, cFrame)
                 pcall(
                     function()
                         --[[
-                          line: 250
+                          line: 251
                           upvalues:
                             descendant (copy, index: 1)
                         ]]
@@ -351,79 +353,96 @@ local function addOutline(parent, a91, model: Model?, cFrame)
         end
     end
 
-    local new = v4.new
-    local v99 = {Name = "WeaponOutline", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale((a91.opts.outlineScale
-        or 1.06), (a91.opts.outlineScale or 1.06)), Ambient = Color3.new(1, 1, 1), LightColor = Color3.new(0, 0, 0)}
+    local new = v5.new
+    local v100 = {Name = "WeaponOutline", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale((a92.opts.outlineScale
+        or 1.06), (a92.opts.outlineScale or 1.06)), Ambient = Color3.new(1, 1, 1), LightColor = Color3.new(0, 0, 0)}
 
-    if a91.dim then
-        local v100 = a91.opts.outlineColor or color32
-        v94 = v100:Lerp(Color3.new(0, 0, 0), 0.4)
+    if a92.dim then
+        local v101 = a92.opts.outlineColor or color32
+        v95 = v101:Lerp(Color3.new(0, 0, 0), 0.4)
     else
-        v94 = a91.opts.outlineColor or color32
+        v95 = a92.opts.outlineColor or color32
     end
 
-    v99.ImageColor3 = v94
-    v99.ImageTransparency = a91.opts.outlineTransparency or 0.15
-    v99.ZIndex = parent.ZIndex
-    v99.Parent = parent
-    local parent2 = new("ViewportFrame", v99)
+    v100.ImageColor3 = v95
+    v100.ImageTransparency = a92.opts.outlineTransparency or 0.15
+    v100.ZIndex = parent.ZIndex
+    v100.Parent = parent
+    local parent2 = new("ViewportFrame", v100)
     local camera = Instance.new("Camera")
     camera.FieldOfView = 30
     camera.CFrame = cFrame
     camera.Parent = parent2
     parent2.CurrentCamera = camera
     model2.Parent = parent2
-    a91.outlineCam = camera
+    a92.outlineCam = camera
 end
 
-local v103 = {0.05, 0.2, 0.45, 0.8, 1.3, 2, 3, 4.5, 6.5}
+local v104 = {0.05, 0.2, 0.45, 0.8, 1.3, 2, 3, 4.5, 6.5}
 
-local function keepRedrawing(a105, a106)
+local function keepRedrawing(a106, a107, model: Model?)
     --[[
       name: keepRedrawing
-      line: 285
+      line: 289
       upvalues:
-        v103 (copy, index: 1)
+        v104 (copy, index: 1)
+        contentProvider (copy, index: 2)
     ]]
-    for v107, v108 in v103 do
-        task.delay(
-            v108,
+    local function nudge(a110)
+        --[[
+          name: nudge
+          line: 290
+          upvalues:
+            a106 (copy, index: 1)
+            a107 (copy, index: 2)
+        ]]
+        if not a106.Parent then
+            return
+        end
+
+        for _, v112 in a107 do
+            if v112.Parent then
+                v112.CFrame *= CFrame.new(0, 0, a110 * 4e-04)
+            end
+        end
+    end
+
+    for v113, v114 in v104 do
+        local taskDelay = task.delay
+        local v116 = v113 % 2 ~= 0 and 1 or -1
+        taskDelay(v114, nudge, v116)
+    end
+
+    if model then
+        task.spawn(
             function()
                 --[[
-                  line: 287
+                  line: 304
                   upvalues:
-                    a105 (copy, index: 1)
-                    a106 (copy, index: 2)
-                    v107 (copy, index: 3)
+                    contentProvider (copy, index: 1)
+                    model (copy, index: 2)
+                    nudge (copy, index: 3)
                 ]]
-                if not a105.Parent then
-                    return
-                end
-
-                for _, v110 in a106 do
-                    if v110.Parent then
-                        local cFrame = v110.CFrame
-                        local newCFrame = CFrame.new
-                        local z = v107 % 2 ~= 0 and 4e-04 or -4e-04
-                        v110.CFrame = cFrame * newCFrame(0, 0, z)
-                    end
-                end
+                pcall(contentProvider.PreloadAsync, contentProvider, {model})
+                nudge(1)
+                task.wait(0.1)
+                nudge(-1)
             end
         )
     end
 end
 
-local function renderModel(parent, a116, id, instance: Instance?)
+local function renderModel(parent, a119, id, instance: Instance?)
     --[[
       name: renderModel
-      line: 300
+      line: 313
       upvalues:
         cloneVisual (copy, index: 1)
-        v9 (copy, index: 2)
+        v10 (copy, index: 2)
         computeFraming (copy, index: 3)
         addGlow (copy, index: 4)
         addOutline (copy, index: 5)
-        v4 (ref,  index: 6)
+        v5 (ref,  index: 6)
         color3 (copy, index: 7)
         keepRedrawing (copy, index: 8)
         runService (copy, index: 9)
@@ -435,85 +454,86 @@ local function renderModel(parent, a116, id, instance: Instance?)
 
     model:PivotTo(CFrame.new())
 
-    if not v9[id] then
+    if not v10[id] then
         computeFraming(id, model, instance)
     end
 
-    local v120 = v9[id]
-    addGlow(parent, a116)
-    addOutline(parent, a116, model, v120.cf)
-    local unit = (v120.cf.LookVector - (v120.cf.UpVector * 0.8) + (v120.cf.RightVector * 0.5)).Unit
-    local v122 = v120.axis ~= nil
-    local new = v4.new
-    local v124 = {Name = "WeaponIcon", Size = UDim2.fromScale(1, 1), Ambient = if v122 then Color3.fromRGB(112, 116, 128) else Color3.fromRGB(176, 180, 192), LightColor = if v122 then Color3.fromRGB(255, 248, 238) else Color3.fromRGB(255, 250, 242)}
-    v124.LightDirection = unit
-    v124.ImageTransparency = a116.opts.transparency or 0
-    v124.ImageColor3 = a116.dim and color3 or Color3.new(1, 1, 1)
-    v124.ZIndex = parent.ZIndex
-    v124.Parent = parent
-    local v125 = new("ViewportFrame", v124)
+    local v123 = v10[id]
+    addGlow(parent, a119)
+    addOutline(parent, a119, model, v123.cf)
+    local unit = (v123.cf.LookVector - (v123.cf.UpVector * 0.8) + (v123.cf.RightVector * 0.5)).Unit
+    local v125 = v123.axis ~= nil
+    local new = v5.new
+    local v127 = {Name = "WeaponIcon", Size = UDim2.fromScale(1, 1), Ambient = if v125 then Color3.fromRGB(112, 116, 128) else Color3.fromRGB(176, 180, 192), LightColor = if v125 then Color3.fromRGB(255, 248, 238) else Color3.fromRGB(255, 250, 242)}
+    v127.LightDirection = unit
+    v127.ImageTransparency = a119.opts.transparency or 0
+    v127.ImageColor3 = a119.dim and color3 or Color3.new(1, 1, 1)
+    v127.ZIndex = parent.ZIndex
+    v127.Parent = parent
+    local v128 = new("ViewportFrame", v127)
     local currentCamera = Instance.new("Camera")
     currentCamera.FieldOfView = 30
-    currentCamera.CFrame = v120.cf
-    currentCamera.Parent = v125
-    v125.CurrentCamera = currentCamera
-    model.Parent = v125
-    a116.vpf = v125
-    a116.model = model
-    a116.kind = "model"
+    currentCamera.CFrame = v123.cf
+    currentCamera.Parent = v128
+    v128.CurrentCamera = currentCamera
+    model.Parent = v128
+    a119.vpf = v128
+    a119.model = model
+    a119.kind = "model"
 
-    if not a116.opts.spin then
-        local v127 = {currentCamera}
+    if not a119.opts.spin then
+        local v130 = {currentCamera}
 
-        if a116.outlineCam then
-            table.insert(v127, a116.outlineCam)
+        if a119.outlineCam then
+            table.insert(v130, a119.outlineCam)
         end
 
-        keepRedrawing(v125, v127)
+        keepRedrawing(v128, v130, model)
     end
 
-    if a116.opts.spin then
-        local cframe = CFrame.new(v120.center)
+    if a119.opts.spin then
+        local cframe = CFrame.new(v123.center)
         local elapsedTime = 0
 
-        a116.spinConn = runService.RenderStepped:Connect(
+        a119.spinConn = runService.RenderStepped:Connect(
             function(deltaTime: number)
                 --[[
-                  line: 348
+                  line: 361
                   upvalues:
-                    v125 (copy, index: 1)
+                    v128 (copy, index: 1)
                     parent (copy, index: 2)
                     elapsedTime (ref,  index: 3)
                     cframe (copy, index: 4)
-                    v120 (copy, index: 5)
+                    v123 (copy, index: 5)
                     currentCamera (copy, index: 6)
-                    a116 (copy, index: 7)
+                    a119 (copy, index: 7)
                 ]]
-                if not v125.Parent then
+                if not v128.Parent then
                     return
                 end
+
                 if not parent.Visible or not parent:IsDescendantOf(game) then
                     return
                 end
 
-                local v131
+                local v134
                 elapsedTime += deltaTime
-                local v132 = cframe:Inverse() * v120.cf
+                local v135 = cframe:Inverse() * v123.cf
                 local cframeFromAxisAngle = CFrame.fromAxisAngle
-                local v134 = v120.axis or v120.cf.UpVector
-                local v135 = math.sin(elapsedTime * 0.9)
+                local v137 = v123.axis or v123.cf.UpVector
+                local v138 = math.sin(elapsedTime * 0.9)
 
-                if v120.axis then
-                    v131 = 0.6
-                    v131 = a116
+                if v123.axis then
+                    v134 = 0.6
+                    v134 = a119
                 else
-                    v131 = 0.87
-                    v131 = a116
+                    v134 = 0.87
+                    v134 = a119
                 end
 
-                currentCamera.CFrame = (cframe * cframeFromAxisAngle(v134, v135 * v131)) * v132
+                currentCamera.CFrame = (cframe * cframeFromAxisAngle(v137, v138 * v134)) * v135
 
-                if const outlineCam = v131.outlineCam then
+                if const outlineCam = v134.outlineCam then
                     outlineCam.CFrame = currentCamera.CFrame
                 end
             end
@@ -523,144 +543,144 @@ local function renderModel(parent, a116, id, instance: Instance?)
     return true
 end
 
-local function renderImage(parent, a139, image, a141, a142: number?)
+local function renderImage(parent, a142, image, a144, a145: number?)
     --[[
       name: renderImage
-      line: 368
+      line: 381
       upvalues:
-        v4 (ref, index: 1)
+        v5 (ref, index: 1)
     ]]
-    local v143
-    local v144 = a142 or 0
-    local new = v4.new
-    local v146 = {Name = "WeaponIcon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1 - v144, 0, 1 - v144, 0), Image = image}
+    local v146
+    local v147 = a145 or 0
+    local new = v5.new
+    local v149 = {Name = "WeaponIcon", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(1 - v147, 0, 1 - v147, 0), Image = image}
 
-    if a139.dim then
-        local startValue = a141 or Color3.new(1, 1, 1)
-        v143 = startValue:Lerp(Color3.new(0, 0, 0), 0.45)
+    if a142.dim then
+        local startValue = a144 or Color3.new(1, 1, 1)
+        v146 = startValue:Lerp(Color3.new(0, 0, 0), 0.45)
     else
-        v143 = a141 or Color3.new(1, 1, 1)
+        v146 = a144 or Color3.new(1, 1, 1)
     end
 
-    v146.ImageColor3 = v143
-    v146.ImageTransparency = a139.opts.transparency or 0
-    v146.ScaleType = Enum.ScaleType.Fit
-    v146.ZIndex = parent.ZIndex
-    v146.Parent = parent
-    new("ImageLabel", v146)
+    v149.ImageColor3 = v146
+    v149.ImageTransparency = a142.opts.transparency or 0
+    v149.ScaleType = Enum.ScaleType.Fit
+    v149.ZIndex = parent.ZIndex
+    v149.Parent = parent
+    new("ImageLabel", v149)
 end
 
-local function render(parent, a150)
+local function render(parent, a153)
     --[[
       name: render
-      line: 384
+      line: 397
       upvalues:
         clearHolder (copy, index: 1)
         modelSource (copy, index: 2)
         renderModel (copy, index: 3)
-        v5 (ref,  index: 4)
+        v6 (ref,  index: 4)
         renderImage (copy, index: 5)
-        v4 (ref,  index: 6)
-        v13 (copy, index: 7)
+        v5 (ref,  index: 6)
+        v14 (copy, index: 7)
     ]]
-    clearHolder(parent, a150)
-    local id = a150.id
+    clearHolder(parent, a153)
+    local id = a153.id
     if not id then
         return
     end
 
     local instance = modelSource(id)
 
-    if instance and not a150.opts.noModel and renderModel(parent, a150, id, instance) then
+    if instance and not a153.opts.noModel and renderModel(parent, a153, id, instance) then
         return
     end
 
-    local v153 = v5.Get(id)
-    local icon = v153 and v153.icon
+    local v156 = v6.Get(id)
+    local icon = v156 and v156.icon
 
     if type(icon) == "string" and icon ~= "" then
-        renderImage(parent, a150, icon)
-        a150.kind = "icon"
+        renderImage(parent, a153, icon)
+        a153.kind = "icon"
 
         return
-    elseif const image = v4.Assets.WeaponArt and v4.Assets.WeaponArt[id] then
-        renderImage(parent, a150, image, nil, 0.06)
-        a150.kind = "art"
+    elseif const image = v5.Assets.WeaponArt and v5.Assets.WeaponArt[id] then
+        renderImage(parent, a153, image, nil, 0.06)
+        a153.kind = "art"
 
         return
     end
 
-    local icons = v4.Assets.Icons
-    local category = v153 and v153.category or "melee"
+    local icons = v5.Assets.Icons
+    local category = v156 and v156.category or "melee"
 
-    if const icon2 = icons[v13[category] or "Sword"] then
-        renderImage(parent, a150, icon2, v4.Theme.Colors.TextMuted, 0.4)
+    if const icon2 = icons[v14[category] or "Sword"] then
+        renderImage(parent, a153, icon2, v5.Theme.Colors.TextMuted, 0.4)
     end
 
-    a150.kind = "glyph"
+    a153.kind = "glyph"
 end
 
-function v3.Set(key, id, a161)
+function v4.Set(key, id, a164)
     --[[
       name: Set
-      line: 415
+      line: 428
       upvalues:
-        v8 (copy, index: 1)
+        v9 (copy, index: 1)
         render (copy, index: 2)
     ]]
-    local v162 = v8[key]
+    local v165 = v9[key]
 
-    if v162 and v162.id == id and v162.kind ~= nil and v162.kind ~= "glyph" and v162.kind ~= "art" then
+    if v165 and v165.id == id and v165.kind ~= nil and v165.kind ~= "glyph" and v165.kind ~= "art" then
         return
     end
 
-    if not v162 then
-        v162 = {id = id, opts = a161 or {}}
-        v8[key] = v162
+    if not v165 then
+        v165 = {id = id, opts = a164 or {}}
+        v9[key] = v165
 
         key.Destroying:Connect(
             function()
                 --[[
-                  line: 423
+                  line: 436
                   upvalues:
-                    v8 (copy, index: 1)
+                    v9 (copy, index: 1)
                     key (copy, index: 2)
                 ]]
-                local v163 = v8[key]
+                local v166 = v9[key]
 
-                if v163 and v163.spinConn then
-                    v163.spinConn:Disconnect()
+                if v166 and v166.spinConn then
+                    v166.spinConn:Disconnect()
                 end
 
-                v8[key] = nil
+                v9[key] = nil
             end
         )
     end
 
-    v162.id = id
-    v162.opts = a161 or v162.opts or {}
-    render(key, v162)
+    v165.id = id
+    v165.opts = a164 or v165.opts or {}
+    render(key, v165)
 end
 
-function v3.SetDim(key, dim)
+function v4.SetDim(key, dim)
     --[[
       name: SetDim
-      line: 437
+      line: 450
       upvalues:
-        v8 (copy, index: 1)
+        v9 (copy, index: 1)
         color32 (copy, index: 2)
         color3 (copy, index: 3)
     ]]
-    local v166 = v8[key]
-    if v166 then
-        v166.dim = dim
+    local v169 = v9[key]
+    if v169 then
+        v169.dim = dim
     end
 
     local weaponOutline = key:FindFirstChild("WeaponOutline")
 
     if weaponOutline and weaponOutline:IsA("ViewportFrame") then
-        local v168 = v166 and v166.opts and v166.opts.outlineColor or color32
-        weaponOutline.ImageColor3 = if dim then v168:Lerp(Color3.new(0, 0, 0), 0.4) else v168
+        local v171 = v169 and v169.opts and v169.opts.outlineColor or color32
+        weaponOutline.ImageColor3 = if dim then v171:Lerp(Color3.new(0, 0, 0), 0.4) else v171
     end
 
     local weaponIcon = key:FindFirstChild("WeaponIcon")
@@ -671,104 +691,147 @@ function v3.SetDim(key, dim)
     end
 
     if weaponIcon and weaponIcon:IsA("ImageLabel") then
-        local v170 = weaponIcon:GetAttribute("BaseColor")
+        local v173 = weaponIcon:GetAttribute("BaseColor")
 
-        if typeof(v170) ~= "Color3" then
-            v170 = weaponIcon.ImageColor3
-            weaponIcon:SetAttribute("BaseColor", v170)
+        if typeof(v173) ~= "Color3" then
+            v173 = weaponIcon.ImageColor3
+            weaponIcon:SetAttribute("BaseColor", v173)
         end
 
-        weaponIcon.ImageColor3 = if dim then v170:Lerp(Color3.new(0, 0, 0), 0.45) else v170
+        weaponIcon.ImageColor3 = if dim then v173:Lerp(Color3.new(0, 0, 0), 0.45) else v173
     end
 end
 
-function v3.SetTransparency(a171, imageTransparency)
+function v4.SetTransparency(a174, imageTransparency)
     --[[
       name: SetTransparency
-      line: 460
+      line: 473
     ]]
-    local weaponIcon = a171:FindFirstChild("WeaponIcon")
+    local weaponIcon = a174:FindFirstChild("WeaponIcon")
 
     if weaponIcon and (weaponIcon:IsA("ViewportFrame") or weaponIcon:IsA("ImageLabel")) then
         weaponIcon.ImageTransparency = imageTransparency
     end
 end
 
-function v3.Init(a174, a175)
+function v4.Init(a177, a178)
     --[[
       name: Init
-      line: 467
+      line: 480
       upvalues:
-        v4 (ref,  index: 1)
-        v5 (ref,  index: 2)
-        v9 (copy, index: 3)
-        v8 (copy, index: 4)
+        v5 (ref,  index: 1)
+        v6 (ref,  index: 2)
+        v10 (copy, index: 3)
+        v9 (copy, index: 4)
         render (copy, index: 5)
         instance (ref,  index: 6)
         replicatedStorage (copy, index: 7)
-        modelSource (copy, index: 8)
+        contentProvider (copy, index: 8)
+        modelSource (copy, index: 9)
     ]]
     local instance2
-    v4 = a174
-    v5 = a175
+    v5 = a177
+    v6 = a178
 
-    local function hook(a178)
+    local function hook(a181)
         --[[
           name: hook
-          line: 471
+          line: 484
           upvalues:
-            v9 (copy, index: 1)
-            v8 (copy, index: 2)
+            v10 (copy, index: 1)
+            v9 (copy, index: 2)
             render (copy, index: 3)
         ]]
-        a178.ChildAdded:Connect(
-            function(a179)
+        a181.ChildAdded:Connect(
+            function(a182)
                 --[[
-                  line: 472
+                  line: 485
                   upvalues:
-                    v9 (copy, index: 1)
-                    v8 (copy, index: 2)
+                    v10 (copy, index: 1)
+                    v9 (copy, index: 2)
                     render (copy, index: 3)
                 ]]
-                v9[a179.Name] = nil
+                v10[a182.Name] = nil
 
-                for parent, v181 in v8 do
-                    if v181.id == a179.Name and v181.kind ~= "model" then
-                        task.defer(render, parent, v181)
+                for parent, v184 in v9 do
+                    if v184.id == a182.Name and v184.kind ~= "model" then
+                        task.defer(render, parent, v184)
                     end
                 end
             end
         )
     end
 
+    task.delay(
+        3,
+        function()
+            --[[
+              line: 496
+              upvalues:
+                instance (ref,  index: 1)
+                replicatedStorage (copy, index: 2)
+                contentProvider (copy, index: 3)
+            ]]
+            local instance2
+
+            if instance and instance.Parent then
+                instance2 = instance
+            else
+                local instance3 = replicatedStorage:FindFirstChild("Assets")
+                instance3 = instance3 and instance3:FindFirstChild("Weapons")
+
+                if instance3 then
+                    instance = instance3
+                end
+
+                instance2 = instance3
+            end
+
+            if not instance2 then
+                return
+            end
+
+            local v187 = {}
+
+            for _, child in instance2:GetChildren() do
+                if child:FindFirstChildWhichIsA("SurfaceAppearance", true) then
+                    table.insert(v187, child)
+                end
+            end
+
+            if 0 < #v187 then
+                pcall(contentProvider.PreloadAsync, contentProvider, v187)
+            end
+        end
+    )
+
     if instance and instance.Parent then
         instance2 = instance
     else
-        local instance3 = replicatedStorage:FindFirstChild("Assets")
-        instance3 = instance3 and instance3:FindFirstChild("Weapons")
-
-        if instance3 then
-            instance = instance3
+        local assets = replicatedStorage:FindFirstChild("Assets")
+        local weapons = assets and assets:FindFirstChild("Weapons")
+        if weapons then
+            instance = weapons
         end
 
-        instance2 = instance3
+        instance2 = weapons
     end
 
     if instance2 then
         instance2.ChildAdded:Connect(
             function(child)
                 --[[
-                  line: 472
+                  line: 485
                   upvalues:
-                    v9 (copy, index: 1)
-                    v8 (copy, index: 2)
+                    v10 (copy, index: 1)
+                    v9 (copy, index: 2)
                     render (copy, index: 3)
                 ]]
-                v9[child.Name] = nil
+                v10[child.Name] = nil
 
-                for parent, v185 in v8 do
-                    if v185.id == child.Name and v185.kind ~= "model" then
-                        task.defer(render, parent, v185)
+                for parent, v194 in v9 do
+                    if v194.id == child.Name and v194.kind ~= "model" then
+                        task.defer(render, parent, v194)
                     end
                 end
             end
@@ -780,12 +843,12 @@ function v3.Init(a174, a175)
     task.spawn(
         function()
             --[[
-              line: 485
+              line: 515
               upvalues:
                 replicatedStorage (copy, index: 1)
                 instance (ref,  index: 2)
-                v9 (copy, index: 3)
-                v8 (copy, index: 4)
+                v10 (copy, index: 3)
+                v9 (copy, index: 4)
                 render (copy, index: 5)
                 modelSource (copy, index: 6)
             ]]
@@ -798,25 +861,25 @@ function v3.Init(a174, a175)
                 weapons.ChildAdded:Connect(
                     function(child: Instance)
                         --[[
-                          line: 472
+                          line: 485
                           upvalues:
-                            v9 (copy, index: 1)
-                            v8 (copy, index: 2)
+                            v10 (copy, index: 1)
+                            v9 (copy, index: 2)
                             render (copy, index: 3)
                         ]]
-                        v9[child.Name] = nil
+                        v10[child.Name] = nil
 
-                        for parent, v190 in v8 do
-                            if v190.id == child.Name and v190.kind ~= "model" then
-                                task.defer(render, parent, v190)
+                        for parent, v199 in v9 do
+                            if v199.id == child.Name and v199.kind ~= "model" then
+                                task.defer(render, parent, v199)
                             end
                         end
                     end
                 )
 
-                for parent, v192 in v8 do
-                    if v192.kind ~= "model" and modelSource((v192.id or "")) then
-                        task.defer(render, parent, v192)
+                for parent, v201 in v9 do
+                    if v201.kind ~= "model" and modelSource((v201.id or "")) then
+                        task.defer(render, parent, v201)
                     end
                 end
             end
@@ -824,4 +887,4 @@ function v3.Init(a174, a175)
     )
 end
 
-return v3
+return v4
